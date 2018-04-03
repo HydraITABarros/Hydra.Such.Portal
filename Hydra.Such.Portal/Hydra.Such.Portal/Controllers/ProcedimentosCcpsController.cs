@@ -733,6 +733,109 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
+        //NR 20180329
+        [HttpPost]
+        public JsonResult CreateNota([FromBody] NotasProcedimentosCcp data)
+        {
+            bool result = false;
+            try
+            {
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+
+                NotasProcedimentosCcp Notas = new NotasProcedimentosCcp();
+
+                Notas.NºProcedimento = data.NºProcedimento;
+                Notas.Nota = data.Nota;
+                Notas.Utilizador = UserDetails.IdUtilizador;
+                Notas.UtilizadorCriação = UserDetails.IdUtilizador;
+                Notas.UtilizadorModificação = UserDetails.IdUtilizador;
+                Notas.DataHora = DateTime.Now;
+                Notas.DataHoraCriação = DateTime.Now;
+                Notas.DataHoraModificação = DateTime.Now;
+
+                var dbCreateResult = DBProcedimentosCCP.CreateNota(Notas);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        //NR 20180329
+        [HttpPost]
+        public JsonResult DeleteNota([FromBody] NotasProcedimentosCcp data)
+        {
+            bool result = false;
+            try
+            {
+                bool dbDeleteResult = DBProcedimentosCCP.__DeleteNotaProcedimento(data.NºProcedimento, data.NºLinha);
+
+                result = dbDeleteResult;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        //NR 20180329
+        [HttpPost]
+        public JsonResult CreateAta([FromBody] RegistoDeAtas data)
+        {
+            JsonResult result = Json(ReturnHandlers.Error);
+
+            bool IsElementSecretariadoCA = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._SecretariadoCA);
+
+            if (!IsElementSecretariadoCA)
+            {
+                return Json(ReturnHandlers.UserNotAllowed);
+            }
+
+            bool AtaExiste = DBProcedimentosCCP.CheckAtaNumber(data.NºProcedimento, data.NºAta);
+
+            if (AtaExiste)
+            {
+                return Json(ReturnHandlers.ProcedimentoAtaNumberExists);
+            }
+
+            try
+            {
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+                RegistoDeAtas Atas = new RegistoDeAtas();
+
+                Atas.NºProcedimento = data.NºProcedimento;
+                Atas.NºAta = data.NºAta;
+                Atas.DataDaAta = data.DataDaAta;
+                Atas.Observações = data.Observações;
+                Atas.DataHoraCriação = DateTime.Now;
+                Atas.UtilizadorCriação = UserDetails.IdUtilizador;
+                Atas.DataHoraModificação = DateTime.Now;
+                Atas.UtilizadorModificação = UserDetails.IdUtilizador;
+
+                var dbCreateResult = DBProcedimentosCCP.CreateAta(Atas);
+
+                if (dbCreateResult != null)
+                    result = Json(ReturnHandlers.Success);
+                else
+                    result = Json(ReturnHandlers.Error);
+            }
+            catch (Exception ex)
+            {
+                result = Json(ReturnHandlers.Error);
+            }
+
+            return result;
+        }
+
         /*
          *      In the following methods the ErrorHandler will return:
          *          0 -> SUCCESS
@@ -5042,7 +5145,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
-
 
         #region The following methods map the Buttons, named "Confirmar" in the "Workflow" tab on the NAV form
 

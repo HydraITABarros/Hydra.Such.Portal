@@ -114,6 +114,10 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+
+            /*vaadin-text-field.disabled:after {
+                background: #ff0000;
+            }*/
         </style>
 
         <!-- DROPDOWNS POPULATE -->
@@ -448,7 +452,11 @@
                             <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
                             <!--<vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>-->
                         </div>
+                        >
+
                         <div class="col-sm-3">
+                            >
+
                             <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
                             <!--<vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>-->
                         </div>
@@ -456,7 +464,11 @@
                             <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
                             <!--<vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>-->
                         </div>
+                        >
+
                         <div class="col-sm-3">
+                            >
+
                             <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
                             <!--<vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>-->
                         </div>
@@ -464,7 +476,7 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
+                            <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -488,7 +500,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" label="Matricula" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-value-changed="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -506,8 +518,8 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-1 alignPoga">
-                        <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
+                    <div class="marginSpace">
+                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>
                 </div>
 
@@ -1444,8 +1456,8 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-1 alignPoga">
-                        <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
+                    <div class="marginSpace">
+                        <paper-button raised id="btn_updateFH2" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>
                 </div>
             </div>
@@ -1831,6 +1843,16 @@
                     return false;
                 },
 
+                _validacaoTipoDeslocacao: function () {
+                    //debugger;
+                    if (this.$.tipoDeslocacao.value != "" & this.$.tipoDeslocacao.value != "1") {
+
+                        if (this.$.matricula.value != "") {
+                            this.$.matricula.value = "";
+                        }
+                    }
+                },
+
                 _validarFolhaDeHoras: function () {
                     //debugger;
                     if (this._validateFolhaHoras()) {
@@ -2045,18 +2067,33 @@
                                             if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
                                                 if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
                                                     if (this._AjudaDataValidar()) {
-                                                        this.$.page_createajuda_ajax.body = JSON.stringify({
-                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                                                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
-                                                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
-                                                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
-                                                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
-                                                            dataDespesa: this.$.ajudaDataDespesa.value,
-                                                            observacao: this.$.ajudaJustificacao.value
-                                                        });
-                                                        this.$.page_createajuda_ajax.generateRequest();
-                                                        this.$.tabAjuda.clearCache();
+                                                        if (this._AjudaQuantidadeValidar()) {
+                                                            if (this._AjudaCustoUnitarioValidar()) {
+                                                                if (this._AjudaPrecoUnitarioValidar()) {
+                                                                    this.$.page_createajuda_ajax.body = JSON.stringify({
+                                                                        noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                                        tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
+                                                                        codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
+                                                                        quantidade: parseFloat(this.$.ajudaQuantidade.value),
+                                                                        custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
+                                                                        precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
+                                                                        dataDespesa: this.$.ajudaDataDespesa.value,
+                                                                        observacao: this.$.ajudaJustificacao.value
+                                                                    });
+                                                                    this.$.page_createajuda_ajax.generateRequest();
+                                                                    this.$.tabAjuda.clearCache();
+                                                                }
+                                                                else {
+                                                                    this._showErrorMessage('O campo Preço Unitário tem que ser superior ou igual a zero.');
+                                                                }
+                                                            }
+                                                            else {
+                                                                this._showErrorMessage('O campo Custo Unitário tem que ser superior ou igual a zero.');
+                                                            }
+                                                        }
+                                                        else {
+                                                            this._showErrorMessage('O campo Quantidade tem que ser superior ou igual a zero.');
+                                                        }
                                                     }
                                                     else {
                                                         this._showErrorMessage('O campo Data Despesa tem que estar contido no período de tempo do Cabeçalho.');
@@ -2180,6 +2217,44 @@
                     return false;
                 },
 
+                _AjudaQuantidadeValidar: function () {
+                    debugger;
+                    if (this.$.ajudaQuantidade.value != "") {
+                        var quant = parseInt(this.$.ajudaQuantidade.value);
+                        if (quant < 0) {
+                            this._showErrorMessage('O campo Quantidade tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
+
+                _AjudaCustoUnitarioValidar: function () {
+                    debugger;
+                    if (this.$.ajudaCustoUnitario.value != "") {
+                        var custo = parseInt(this.$.ajudaCustoUnitario.value);
+                        if (custo < 0) {
+                            this._showErrorMessage('O campo Custo Unitário tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
+
+                _AjudaPrecoUnitarioValidar: function () {
+                    debugger;
+                    if (this.$.ajudaPrecoUnitario.value != "") {
+                        var preco = parseInt(this.$.ajudaPrecoUnitario.value);
+                        if (preco < 0) {
+                            this._showErrorMessage('O campo Preço Unitário tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
 
 
                 //AJUDAS DE CUSTO
@@ -3158,13 +3233,18 @@
 
                 _updateLinhaPercursoResponse: function (e) {
                     //debugger;
-                    if (this.LinhaPercursoUpdated) {
+                    if (this.LinhaPercursoUpdated == 0) {
                         this._showMessage('Percurso(s) actualizado(s) com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar o(s) Percurso(s).');
+                        if (this.LinhaPercursoUpdated == 1) {
+                            this._showErrorMessage('O valor da Distância Efectuada tem que ser superior ou igual a 0 e inferior a 10 000.');
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar o Percurso.');
+                        }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 //AJUDA
@@ -3216,13 +3296,33 @@
 
                 _updateLinhaAjudaResponse: function (e) {
                     //debugger;
-                    if (this.LinhaAjudaUpdated) {
+                    if (this.LinhaAjudaUpdated == 0) {
                         this._showMessage('Ajuda actualizada com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                        if (this.LinhaAjudaUpdated == 1) {
+                            this._showErrorMessage('O valor da quantidade tem que ser superior ou igual a 0 e inferior a 10 000.');
+                        }
+                        else {
+                            if (this.LinhaAjudaUpdated == 2) {
+                                this._showErrorMessage('O valor do Custo Unitário tem que ser superior ou igual a 0.');
+                            }
+                            else {
+                                if (this.LinhaAjudaUpdated == 3) {
+                                    this._showErrorMessage('O valor do Preço Unitário tem que ser superior ou igual a 0.');
+                                }
+                                else {
+                                    if (this.LinhaAjudaUpdated == 4) {
+                                        this._showErrorMessage('O valor do Preço de Venda tem que ser superior ou igual a 0.');
+                                    }
+                                    else {
+                                        this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                                    }
+                                }
+                            }
+                        }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 //AJUDA DE CUSTOS

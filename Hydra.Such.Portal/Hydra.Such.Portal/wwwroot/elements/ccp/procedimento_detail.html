@@ -35,6 +35,7 @@
 <link rel="import" href="/lib/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/vaadin-progress-bar/vaadin-progress-bar.html">
 
 <dom-module id="x-procedimentodetails">
     <template>
@@ -70,11 +71,6 @@
                 border-bottom: var(--vaadin-grid-header-cell_-_border-bottom);
                 background-color: white !important;
             }*/
-
-
-
-
-
 
             .mb-15 {
                 margin-bottom: 15px;
@@ -543,7 +539,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-
         <!--NR 20180322-->
         <iron-ajax url="/ProcedimentosCcps/CBRejeitar1CA"
                    last-response="{{ RejectAberturaProcedimento }}"
@@ -606,8 +601,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-
         <!--NR 20180328-->
         <iron-ajax url="/ProcedimentosCcps/MudarEstado"
                    last-response="{{ MudarEstado }}"
@@ -617,9 +610,32 @@
                    on-response="_mudarEstadoResponse"
                    content-type="application/json">
         </iron-ajax>
-        
 
-
+        <!-- NR 20180229 -->
+        <iron-ajax url="/ProcedimentosCcps/CreateNota"
+                   last-response="{{ CreateNota }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createNota_ajax"
+                   on-response="_createNotaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteNota"
+                   last-response="{{ DeleteNota }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteNota_ajax"
+                   on-response="_deleteNotaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CreateAta"
+                   last-response="{{ CreateAta }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createAta_ajax"
+                   on-response="_createAtaResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--NR 20180306-->
         <iron-ajax url="/ProcedimentosCcps/ReturnToAreaToJustifyProcess"
@@ -796,7 +812,6 @@
                    on-response="_enviarParaCompras_13Response"
                    content-type="application/json">
         </iron-ajax>
-
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -1317,9 +1332,6 @@
                                                 <div class="col-sm-6">
                                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
-                                                <!--<div class="col-sm-3">
-                                    <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
-                                </div>-->
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
@@ -1355,7 +1367,6 @@
                                         <div class="break_clear">
                                             <!-- NR 20180226 -->
                                             <vaadin-grid id="tabLinhaProdutos" aria-label="Tabela Linhas Produtos Serviços" items="{{ data.linhasPEncomendaProcedimentosCcp }}" class="editGrid">
-
                                                 <vaadin-grid-column width="50px" hidden>
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
@@ -1417,7 +1428,6 @@
                                                         <vaadin-text-field name="tabCodProduto" id="tabCodProduto" value="{{item.codigo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="200px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="descricao" style="text-align:center;">Descrição</vaadin-grid-sorter>
@@ -1511,42 +1521,9 @@
 
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
-
-                                        <!--<div class="col-lg-6">
-                            <br />
-                            <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                <template>
-                                    <style>
-                                        .my-menu {
-                                            padding: 8px 0;
-                                            background: #fff;
-                                        }
-
-                                        .my-menu-item {
-                                            display: block;
-                                            padding: 8px 24px;
-                                            text-decoration: none;
-                                            color: #000;
-                                        }
-
-                                            .my-menu-item:hover {
-                                                background: #FFD5D3;
-                                            }
-                                    </style>
-                                    <vaadin-list-box>
-                                        <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
-                                        <vaadin-item class="my-menu-item" on-tap="_imobReturnToArea">Devolver à Área</vaadin-item>
-                                    </vaadin-list-box>
-                                </template>
-
-                                <paper-button raised id="actionButtonContabilidade1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                            </vaadin-context-menu>
-                        </div>-->
-
                                         <div class="col-lg-6">
                                             <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1762,8 +1739,6 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
@@ -1773,7 +1748,6 @@
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1812,7 +1786,6 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
-
                             <paper-collapse-item header="A Preencher pela área - Pedido de Abertura de Procedimento (7)">
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
@@ -2001,9 +1974,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <br />
-                                <!--&nbsp;-->
                                 <paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
-
                                 <div class="panel panel-default" id="sendToEval_Email" hidden="true">
                                     <div class="panel-heading">Email</div>
                                     <div class="panel-body">
@@ -2073,40 +2044,9 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <!--<div class="col-lg-6">
-                        <br />
-                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                            <template>
-                                <style>
-                                    .my-menu {
-                                        padding: 8px 0;
-                                        background: #fff;
-                                    }
-
-                                    .my-menu-item {
-                                        display: block;
-                                        padding: 8px 24px;
-                                        text-decoration: none;
-                                        color: #000;
-                                    }
-
-                                        .my-menu-item:hover {
-                                            background: #FFD5D3;
-                                        }
-                                </style>
-                                <vaadin-list-box>
-                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras_6">Devolver a Compras (4)</vaadin-item>
-                                </vaadin-list-box>
-                            </template>
-                            <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                        </vaadin-context-menu>
-                    </div>-->
-
-
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2140,41 +2080,9 @@
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <!--<div class="col-lg-6">
-                        <br />
-                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                            <template>
-                                <style>
-                                    .my-menu {
-                                        padding: 8px 0;
-                                        background: #fff;
-                                    }
-
-                                    .my-menu-item {
-                                        display: block;
-                                        padding: 8px 24px;
-                                        text-decoration: none;
-                                        color: #000;
-                                    }
-
-                                        .my-menu-item:hover {
-                                            background: #FFD5D3;
-                                        }
-                                </style>
-                                <vaadin-list-box>
-                                    <vaadin-item class="my-menu-item" on-tap="_enviaParaCompras_14">Enviar p/ Compras (15)</vaadin-item>
-                                </vaadin-list-box>
-                            </template>
-                            <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                        </vaadin-context-menu>
-                    </div>-->
-
-
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2364,13 +2272,9 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
@@ -2378,7 +2282,6 @@
                                         <div class="col-sm-12">
                                             <vaadin-checkbox checked="{{data.ratificarCaAbertura}}" id="ratificarCaAbertura">Ratificar CA</vaadin-checkbox>
                                             <vaadin-checkbox checked="{{data.criticoAbertura}}" id="criticoAbertura">Critico</vaadin-checkbox>
-
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -2841,15 +2744,154 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Notas" opened>
-                                <div class="col-xs-12">
-
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-10">
+                                                    <such-textarea rows="2" id="_NovaNota" name="_NovaNota" label="Nota"> </such-textarea>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarNota" raised on-tap="_createNota"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="tabNotas" aria-label="Tabela Notas" items="{{ data.notasProcedimentosCcp }}" class="editGrid">
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noProcedimento" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasNoProcedimento" id="tabNotasNoProcedimento" value="{{item.noProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noLinha" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasNoLinha" id="tabNotasNoLinha" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizador" style="text-align:left;">Utilizador</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="utilizador" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasutilizador" id="tabNotasutilizador" value="{{item.utilizador}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataHora_Show" style="text-align:center;">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataHora_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasdataHora_Show" id="tabNotasdataHora_Show" value="{{item.dataHora_Show}}" readonly style="text-align:center;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="70%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="nota" style="text-align:left;">Nota</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="nota" />
+                                                    </template>
+                                                    <template>
+                                                        <!--<vaadin-text-field name="tabNotasnota" id="tabNotasnota" value="{{item.nota}}" disabled="true" style="text-align:left;"></vaadin-text-field>-->
+                                                        <such-textarea rows="2" id="tabNotasnota" name="tabNotasnota" value="{{item.nota}}" readonly style="text-align:left;"> </such-textarea>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <paper-button class="btnRemove" id="btnDeleteNota" raised on-tap="_deleteNota" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Registo de Atas">
-                                <div class="col-xs-12">
-
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field value="{{data.registoDeAtas.length}}" id="numActa" name="numActa" label="Nº Atas" disabled="true"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field id="gNumActa" name="gNumActa" label="Ata Nº"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-date-picker id="gDataActa" name="gDataAta" label="Data da Ata"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <vaadin-text-field id="gObsData" name="gObsData" label="Obs."> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <br />
+                                            <paper-button class="btnSave" id="btnCriarAta" raised on-tap="_createAta"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="tabActas" aria-label="Tabela Actas" items="{{ data.registoDeAtas }}" class="editGrid">
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numProcedimento" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasnumProcedimento" id="tabActasnumProcedimento" value="{{item.numProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizadorCriacao" style="text-align:left;">Criada por</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="utilizadorCriacao" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasutilizador" id="tabActasutilizador" value="{{item.utilizadorCriacao}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numActa" style="text-align:center;">Nº ata</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numActa" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasnumActa" id="tabActasnumActa" value="{{item.numActa}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataDaActa_Show" style="text-align:center;">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataDaActa_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasdataDaActa_Show" id="tabActasdataDaActa_Show" value="{{item.dataDaActa_Show}}" readonly style="text-align:center;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="70%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="observacoes" style="text-align:left;">Observações</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="observacoes" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasobservacoes" id="tabActasobservacoes" value="{{item.observacoes}}" readonly style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2861,15 +2903,474 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Estados - Análise de tempos" opened>
-                                <div class="col-xs-12">
-
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">1 - Cabimento</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault1" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado1}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho1" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado1Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde1" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado1Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault1" value="{{data.temposPaCcp.estado1}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">11 - Relat. Preliminar</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault11" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado11}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho11" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado11Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde11" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado11Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault11" value="{{data.temposPaCcp.estado11}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">2 - Aval. Imobilizado</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault2" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado2}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho2" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado2Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde2" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado2Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault2" value="{{data.temposPaCcp.estado2}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">12 - Aud. Prévia</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault12" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado12}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho12" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado12Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde12" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado12Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault12" value="{{data.temposPaCcp.estado12}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">3 - Autoriz. CA Imob.</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault3" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado3}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho3" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado3Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde3" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado3Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">13 - Relat. Final</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault13" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado13}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho13" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado13Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde13" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado13Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault13" value="{{data.temposPaCcp.estado13}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">4 - Fund. Processual</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault4" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado4}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho4" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado4Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde4" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado4Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault4" value="{{data.temposPaCcp.estado4}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">14 - Aval. Juríd. Contrato</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault14" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado14}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho14" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado14Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde14" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado14Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault14" value="{{data.temposPaCcp.estado14}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">5 - Fund. Financeiro</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault5" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado5}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho5" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado5Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde5" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado5Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault5" value="{{data.temposPaCcp.estado5}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">15 - Valor Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault15" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado15}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho15" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado15Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde15" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado15Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault15" value="{{data.temposPaCcp.estado15}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">6 - Fund. Jurídico</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault6" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado6}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho6" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado6Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde6" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado6Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault6" value="{{data.temposPaCcp.estado6}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">16 - Pedido Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault16" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado16}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho16" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado16Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde16" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado16Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault16" value="{{data.temposPaCcp.estado16}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">7 - Pedido Abertura</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault7" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado7}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho7" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado7Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde7" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado7Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault7" value="{{data.temposPaCcp.estado7}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">17 - Autoriz. Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault17" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado17}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho17" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado17Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde17" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado17Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault17" value="{{data.temposPaCcp.estado17}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">8 - Autorização Abertura</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault8" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado8}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho8" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado8Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde8" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado8Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault8" value="{{data.temposPaCcp.estado8}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">18 - Adjudic. Fornecedor</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault18" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado18}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho18" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado18Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde18" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado18Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault18" value="{{data.temposPaCcp.estado18}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">9 - Publicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault9" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado9}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho9" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado9Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde9" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado9Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault9" value="{{data.temposPaCcp.estado9}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">19 - Final Processo</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault19" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado19}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho19" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado19Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde19" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado19Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault19" value="{{data.temposPaCcp.estado19}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">10 - Recolha Proposta</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault10" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado10}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho10" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado10Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde10" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado10Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault10" value="{{data.temposPaCcp.estado10}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">20 - Fecho</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault20" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado20}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho20" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado20Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde20" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado20Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault20" value="{{data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Total Dias">
-                                <div class="col-xs-12">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-1">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Atríbuidos</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <vaadin-text-field name="diasAtribuidos_total" id="diasAtribuidos_total" value="{{data.temposPaCcp.somaEstadosAtribuidos}}" readonly style="text-align:right;"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <paper-tooltip for="CBDefault_diasAtribuidos" position="top" offset="-1" animation-delay="1">
+                                                Dias atribuidos - [ {{data.temposPaCcp.somaEstadosAtribuidos}} ]
+                                            </paper-tooltip>
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.somaEstadosAtribuidos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field name="diasAtribuidos_data" id="diasAtribuidos_data" value="{{data.dataFechoPrevista}}" readonly style="text-align:center;"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-1">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Gastos</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <vaadin-text-field name="diasGastos_total" id="diasGastos_total" value="{{data.temposPaCcp.somaEstadosGastos}}" readonly style="text-align:right;"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <paper-tooltip for="CBDefault_diasGastos_vermelho" position="top" offset="-1" animation-delay="1">
+                                                Dias Gastos - [ {{data.temposPaCcp.somaEstadosGastos}} ]
+                                            </paper-tooltip>
+                                            <paper-tooltip for="CBDefault_diasGastos_verde" position="top" offset="-1" animation-delay="1">
+                                                Dias Gastos - [ {{data.temposPaCcp.somaEstadosGastos}} ]
+                                            </paper-tooltip>
+                                            <vaadin-progress-bar theme="error" id="CBDefault_diasGastos_vermelho" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="success" id="CBDefault_diasGastos_verde" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100" visible="false"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            
+                                        </div>
+                                    </div>
 
+                                    <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
+
+                                    <div class="row break_clear">
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias atribuidos</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="error" id="CBVermelho_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos no prazo</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="success" id="CBVerde_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos fora do prazo</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -3093,7 +3594,6 @@
                     if (item != null) {
                         this.$._DescricaoProduto.value = item.name;
                         this.$._UnitMeasureCode.value = item.measureUnit;
-                        //this.$._linhaCustoUnitario.value = item.lastCostDirect;
                     }
                 },
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -3111,7 +3611,6 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                //_ajaxRequest.body = JSON.stringify(_Procedimento);
                                 _ajaxRequest.generateRequest();
                             }
                         }
@@ -3134,8 +3633,6 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                debugger;
-
                                 new bootbox.confirm({
                                     message: _message2,
                                     buttons: {
@@ -3150,7 +3647,6 @@
                                     },
                                     callback: function (result) {
                                         if (result) {
-                                            debugger;
                                             this.data.ratificarCaAdjudicacao = true;
 
                                             bootbox.confirm({
@@ -3167,24 +3663,18 @@
                                                 },
                                                 callback: function (result) {
                                                     if (result) {
-                                                        debugger;
                                                         this.data.ratificarCaAdjudicacao = true;
-                                                        
                                                     }
                                                 }
                                             });
-
-                                            
                                         }
                                     }
                                 });
-
                                 _ajaxRequest.generateRequest();
                             }
                         }
                     });
                 },
-
 
                 _confirmAndExecuteActionToast_NR: function (_message, _ajaxRequest) {
                     var _this = this;
@@ -3230,7 +3720,6 @@
 
                 _update: function () {
                     if (this._onUpdateValidateElementoJuri()) {
-                        //this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
                         this.$.ajax_update_procedimento.generateRequest();
                     }
@@ -3257,7 +3746,7 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-                    
+
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProcedimento") !== -1) {
                             if (self.data.No == "") {
@@ -3266,6 +3755,7 @@
                             }
 
                             self._setFieldsEditability(self.data);
+                            self._setProgressBar_Tempos(self.data);
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
@@ -3319,7 +3809,7 @@
                     if (this.userAllowed) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
-                        
+
                         // set user permissions
                         for (var i in this.UserAccesses) {
                             switch (this.UserAccesses[i]) {
@@ -3404,54 +3894,12 @@
                     } else
                         return true;
                 },
-                //_createElementoJuri: function () {
-                //    this.isJuriElementAction = true;
-                //    if (this._validateElementoJuriData()) {
-                //        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
-
-                //        this.$.ajax_createelementojuri.body = JSON.stringify({
-                //            noProcedimento: this.data.no,
-                //            utilizador: this._userName,
-                //            presidente: this.chkPresidente,
-                //            vogal: this.chkVogal,
-                //            suplente: this.chkSuplente,
-                //            enviarEmail: this.chkSendMail
-                //        });
-
-                //        this.$.ajax_createelementojuri.generateRequest();
-                //        this.$.gridElementosJuri.clearCache();
-                //        this.$.gridElementosJuri_4.clearCache();
-                //    }
-                //},
-                //_createElementoJuriResponse: function (e) {
-                //    if (this.ElementoCreated.eReasonCode == 0) {
-                //        this._openToast('Elemento Júri adicionado com sucesso');
-                //        this.$.page_databound_ajax.generateRequest();
-
-                //        this.$.gridElementosJuri.clearCache();
-                //        this.$.gridElementosJuri_4.clearCache();
-
-                //        this.$.users.value = "";
-                //        this.chkPresidente = false;
-                //        this.chkVogal = false;
-                //        this.chkSuplente = false;
-                //        this.chkSendMail = false;
-                //    } else {
-                //        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4) {
-                //            this._openToast(this.ElementoCreated.eMessage);
-                //        }
-                //        else {
-                //            this._openToast('Não foi possível criar o Elemento do Juri');
-                //        }
-                //    }
-                //},
-
 
                 //NR 20180316
                 _createElementoJuri: function () {
                     this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
-                        
+
                         this.$.ajax_createelementojuri.body = JSON.stringify({
                             noProcedimento: this.data.no,
                             utilizador: this._userName,
@@ -3460,7 +3908,7 @@
                             suplente: this.chkSuplente,
                             enviarEmail: this.chkSendMail
                         });
-                        
+
                         this.$.ajax_createelementojuri.generateRequest();
                         this.$.gridElementosJuri.clearCache();
                     }
@@ -3986,8 +4434,8 @@
                         this._openToast(this.EnviarParaArea_15.eMessage);
                     }
                 },
-                
-                _submeterProcesso_16: function() {
+
+                _submeterProcesso_16: function () {
                     var ajax_request = this.$.ajax_submeterProcesso_16;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -4017,7 +4465,7 @@
                 },
 
                 //NR 20180320
-                _rejectAutorizacaoAdjudicacao: function() {
+                _rejectAutorizacaoAdjudicacao: function () {
                     var ajax_request = this.$.ajax_rejectAutorizacaoAdjudicacao;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -4125,7 +4573,7 @@
                     this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.body = JSON.stringify(this.data);
                 },
                 _confirmAutorizacaoAdjudicacao_ConfirmarResponse: function (e) {
-                    
+
                     this._confirmAutorizacaoAdjudicacao();
                 },
 
@@ -4340,9 +4788,79 @@
                     }
                 },
 
+                //NR 20180329
+                _createNota: function () {
+                    this.$.page_createNota_ajax.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        nota: this.$._NovaNota.value
+                    });
+                    this.$.page_createNota_ajax.generateRequest();
+                    this.$.tabNotas.clearCache();
+                },
+                _createNotaResponse: function (e) {
+                    if (this.CreateNota) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Nota com sucesso.');
 
+                        this.$.tabNotas.clearCache();
 
+                        this.$._NovaNota.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a Nota.');
+                    }
+                },
+                _deleteNota: function (e) {
+                    var index = this.data.notasProcedimentosCcp.indexOf(e.model.item);
+                    this.data.notasProcedimentosCcp.splice(index, 1);
+                    this.$.page_deleteNota_ajax.body = JSON.stringify({ nºProcedimento: e.model.item.noProcedimento, nºLinha: e.model.item.noLinha });
+                    this.$.page_deleteNota_ajax.generateRequest();
+                    this.$.tabNotas.clearCache();
 
+                },
+                _deleteNotaResponse: function (e) {
+                    if (this.DeleteNota) {
+                        this._openToast('Nota eliminada com sucesso');
+                        this.$.tabNotas.clearCache();
+                    } else {
+                        this._openToast('Não foi possível eliminar a Nota!')
+                    }
+                },
+                _createAta: function () {
+                    if (this.$.gNumActa.value == '') {
+                        this._openToast('Tem que indicar um Nº de ata');
+                        return;
+                    }
+
+                    var ajax_request = this.$.page_createAta_ajax;
+                    ajax_request.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        nºAta: this.$.gNumActa.value,
+                        dataDaAta: this.$.gDataActa.value,
+                        observações: this.$.gObsData.value
+                    });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o registo da Ata?", ajax_request
+                    );
+
+                    this.$.tabActas.clearCache();
+                },
+                _createAtaResponse: function (e) {
+                    if (this.CreateAta.eReasonCode == 0) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Ata com sucesso.');
+
+                        this.$.tabActas.clearCache();
+
+                        this.$.gNumActa.value = "";
+                        this.$.gDataActa.value = "";
+                        this.$.gObsData.value = "";
+                    }
+                    else {
+                        this._openToast(this.CreateAta.eMessage);
+                    }
+                },
 
                 //NR 20180308
                 _enviarParaCAAbertura: function () {
@@ -4927,7 +5445,7 @@
                     this._newStatus = item.value;
 
                     switch (this._newStatus) {
-                        case 1: 
+                        case 1:
                             this._enviarParaFinanceiros();
                             break;
                         case 2:
@@ -5125,7 +5643,7 @@
                     if (data.estado != 2) {
                         $(_self.$.actionButtonArea2).addClass('disabled');
                     }
-                    
+
                     _self.$.comentarioImobCA.disabled = (data.estado != 3);
                     if (data.estado != 3) {
                         $(_self.$.btnAutorizarImobilizadoConfirm).addClass('disabled');
@@ -5176,7 +5694,7 @@
                         $(_self.$.btnAberturaProcedimentoConfirm).addClass('disabled');
                         $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
                     }
-                    
+
                     //NR 20180305
                     _self.$.comentarioPublicacao.disabled = (data.estado != 9);
                     _self.$.dataPublicacao.disabled = (data.estado != 9);
@@ -5265,7 +5783,7 @@
                     if (data.estado != 16) {
                         $(_self.$.btnSubmeterProcesso_16).addClass('disabled');
                     }
-                    
+
 
                     _self.$.comentarioCA17.disabled = (data.estado != 17);
                     _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);
@@ -5306,6 +5824,119 @@
                     //_self.$.seccaoTeste.hidden = true;
 
                 },
+
+                //NR 20180403
+                _setProgressBar_Tempos(data) {
+                    var _self = this;
+
+                    if (data.temposPaCcp.estado1Tg <= data.temposPaCcp.estado1) {
+                        $(_self.$.CBVermelho1).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde1).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado2Tg <= data.temposPaCcp.estado2) {
+                        $(_self.$.CBVermelho2).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde2).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado3Tg <= data.temposPaCcp.estado3) {
+                        $(_self.$.CBVermelho3).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde3).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado4Tg <= data.temposPaCcp.estado4) {
+                        $(_self.$.CBVermelho4).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde4).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado5Tg <= data.temposPaCcp.estado5) {
+                        $(_self.$.CBVermelho5).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde5).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado6Tg <= data.temposPaCcp.estado6) {
+                        $(_self.$.CBVermelho6).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde6).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado7Tg <= data.temposPaCcp.estado7) {
+                        $(_self.$.CBVermelho7).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde7).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado8Tg <= data.temposPaCcp.estado8) {
+                        $(_self.$.CBVermelho8).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde8).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado9Tg <= data.temposPaCcp.estado9) {
+                        $(_self.$.CBVermelho9).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde9).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado10Tg <= data.temposPaCcp.estado10) {
+                        $(_self.$.CBVermelho10).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde10).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado11Tg <= data.temposPaCcp.estado11) {
+                        $(_self.$.CBVermelho11).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde11).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado12Tg <= data.temposPaCcp.estado12) {
+                        $(_self.$.CBVermelho12).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde12).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado13Tg <= data.temposPaCcp.estado13) {
+                        $(_self.$.CBVermelho13).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde13).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado14Tg <= data.temposPaCcp.estado14) {
+                        $(_self.$.CBVermelho14).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde14).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado15Tg <= data.temposPaCcp.estado15) {
+                        $(_self.$.CBVermelho15).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde15).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado16Tg <= data.temposPaCcp.estado16) {
+                        $(_self.$.CBVermelho16).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde16).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado17Tg <= data.temposPaCcp.estado17) {
+                        $(_self.$.CBVermelho17).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde17).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado18Tg <= data.temposPaCcp.estado18) {
+                        $(_self.$.CBVermelho18).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde18).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado19Tg <= data.temposPaCcp.estado19) {
+                        $(_self.$.CBVermelho19).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde19).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado20Tg <= data.temposPaCcp.estado20) {
+                        $(_self.$.CBVermelho20).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde20).addClass('hidden');
+                    }
+
+                    if (data.temposPaCcp.somaEstadosGastos <= data.temposPaCcp.somaEstadosAtribuidos) {
+                        $(_self.$.CBDefault_diasGastos_vermelho).addClass('hidden');
+                    } else {
+                        $(_self.$.CBDefault_diasGastos_verde).addClass('hidden');
+                    }
+                },
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;

@@ -358,6 +358,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eMessage = "Não pode alterar para este estado! A Aquisição não é de Imobilizado"
         };
 
+        //NR 20180329
+        public static ErrorHandler ProcedimentoAtaNumberExists = new ErrorHandler
+        {
+            eReasonCode = 609,
+            eMessage = "Já existe este Nº de Ata!"
+        };
+
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
             eReasonCode = 700,

@@ -1268,29 +1268,34 @@ namespace Hydra.Such.Portal.Controllers
         //Atualiza um percurso
         public JsonResult UpdateLinhaPercurso([FromBody] LinhasFolhaHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
+
             try
             {
-                LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
+                if ((decimal)data.Distancia < 0 || (decimal)data.Distancia > 9999)
+                    result = 1;
 
-                Percurso.CodOrigem = data.CodOrigem;
-                Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
-                Percurso.CodDestino = data.CodDestino;
-                Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
-                Percurso.DataDespesa = data.DataDespesa;
-                Percurso.Observacao = data.Observacao;
-                Percurso.Distancia = data.Distancia;
-                Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                Percurso.CustoUnitario = data.CustoUnitario;
-                Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
-                Percurso.UtilizadorModificacao = User.Identity.Name;
-                Percurso.DataHoraModificacao = DateTime.Now;
+                if (result == 0)
+                {
+                    LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
 
-                DBLinhasFolhaHoras.UpdatePercurso(Percurso);
+                    Percurso.CodOrigem = data.CodOrigem;
+                    Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
+                    Percurso.CodDestino = data.CodDestino;
+                    Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso.DataDespesa = data.DataDespesa;
+                    Percurso.Observacao = data.Observacao;
+                    Percurso.Distancia = data.Distancia;
+                    Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso.CustoUnitario = data.CustoUnitario;
+                    Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso.UtilizadorModificacao = User.Identity.Name;
+                    Percurso.DataHoraModificacao = DateTime.Now;
 
-                result = true;
+                    DBLinhasFolhaHoras.UpdatePercurso(Percurso);
+                }
 
-                if (result)
+                if (result == 0)
                 {
                     DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
                 }
@@ -1298,6 +1303,7 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 //log
+                result = 99;
             }
             return Json(result);
         }
@@ -1448,36 +1454,52 @@ namespace Hydra.Such.Portal.Controllers
         //Atualiza uma Ajuda
         public JsonResult UpdateLinhaAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
-                LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+                if ((decimal)data.Quantidade < 0 || (decimal)data.Quantidade > 9999)
+                    result = 1;
 
-                Ajuda.TipoCusto = data.TipoCusto;
-                Ajuda.CodTipoCusto = data.CodTipoCusto;
-                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
-                Ajuda.Quantidade = data.Quantidade;
-                Ajuda.CustoUnitario = data.CustoUnitario;
-                Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
-                Ajuda.PrecoUnitario = data.PrecoUnitario;
-                Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
-                Ajuda.DataDespesa = data.DataDespesa;
-                Ajuda.Observacao = data.Observacao;
-                Ajuda.UtilizadorModificacao = User.Identity.Name;
-                Ajuda.DataHoraModificacao = DateTime.Now;
+                if ((decimal)data.CustoUnitario < 0)
+                    result = 2;
 
-                DBLinhasFolhaHoras.UpdateAjuda(Ajuda);
+                if ((decimal)data.PrecoUnitario < 0)
+                    result = 3;
 
-                result = true;
+                if ((decimal)data.PrecoVenda < 0)
+                    result = 4;
 
-                if (result)
+                if (result == 0)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+
+                    LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+
+                    Ajuda.TipoCusto = data.TipoCusto;
+                    Ajuda.CodTipoCusto = data.CodTipoCusto;
+                    Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                    Ajuda.Quantidade = data.Quantidade;
+                    Ajuda.CustoUnitario = data.CustoUnitario;
+                    Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
+                    Ajuda.PrecoUnitario = data.PrecoUnitario;
+                    Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
+                    Ajuda.DataDespesa = data.DataDespesa;
+                    Ajuda.Observacao = data.Observacao;
+                    Ajuda.UtilizadorModificacao = User.Identity.Name;
+                    Ajuda.DataHoraModificacao = DateTime.Now;
+
+                    DBLinhasFolhaHoras.UpdateAjuda(Ajuda);
+
+                    result = 0;
+
+                    if (result == 0)
+                    {
+                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
