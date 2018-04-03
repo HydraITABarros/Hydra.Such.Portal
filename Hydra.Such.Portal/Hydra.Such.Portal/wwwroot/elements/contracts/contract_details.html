@@ -18,7 +18,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
@@ -156,10 +157,27 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/CreateProposalFromContract"
+                   last-response="{{CreateProposalResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="createProposal_ajax"
+                   on-response="_createProposalResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/UpdateContractPrices"
+                   last-response="{{UpdatePricesResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatePrices_ajax"
+                   on-response="_updatePricesResponseProcessor"
+                   content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
+                <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
             </div>
         </template>
 
@@ -439,8 +457,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
 
                                 <!--Faturação-->
                                 <div>
@@ -1389,6 +1405,45 @@
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="dlgCreateProposal" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-checkbox id="chkUpdateLines" on-checked-changed="_chkUpdateLinesChanged">Atualizar os valores das linhas?</vaadin-checkbox>
+                <vaadin-text-field id="txtPercentage" disabled on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="txtPercentage" label="Insira percentagem"></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_createNewProposal">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCreateProposalDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
+            <div class="row break_clear">
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Inicial" id="dpStartDate" name="dpStartDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Expiração" id="dpDueDate" name="dpDueDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-text-field id="txtClientRequisitionNo" name="txtClientRequisitionNo" label="Nº Req. do Cliente" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Receção Requisição" id="dpRequisitionReceiveDate" name="dpRequisitionReceiveDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Próxima Fatura" id="dpNextInvoiceDate" name="dpNextInvoiceDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-text-field id="txtContractLinesPercentage" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" name="txtContractLinesPercentage" label="Percentagem"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_updatePrices">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeUpdatePricesDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -2157,13 +2212,106 @@
                     return "";
                 },
 
+                _createNewProposal: function (param) {
+                    if (this.$.chkUpdateLines.checked) {
+                        if (this.$.txtPercentage.validate() && this.$.txtPercentage.value != "") {
+                            this._createProposal();
+                        }
+                        else {
+                            this.$.txtPercentage.invalid = true;
+                            return false;
+                        }
+                    }
+                    else {
+                        this._createProposal();
+                    }
+                },
+                _createProposal: function () {
+                    var contractId = this.data.contractNo;
+                    var version = this.data.versionNo;
+                    var percentageToApply = null;
 
+                    if (this.$.chkUpdateLines.checked) 
+                        percentageToApply = this.$.txtPercentage.value;
 
+                    this.$.createProposal_ajax.body = JSON.stringify({ "contractId": contractId, "versionNo": version, "percentageToApllyInLines": percentageToApply });
+                    this.$.createProposal_ajax.generateRequest();
+                },
+                _openNewproposalDialog: function (param) {
+                    this.$.dlgCreateProposal.open();
+                },
+                _closeCreateProposalDlg: function () {
+                    this.$.dlgCreateProposal.close();
+                },
+                _chkUpdateLinesChanged: function (param) {
+                    if (param.detail.value) 
+                        this.$.txtPercentage.disabled = false;
+                    else
+                        this.$.txtPercentage.disabled = true;
 
+                    this.$.txtPercentage.value = "";
+                },
+                _createProposalResponseProcessor: function () {
+                    if (this.CreateProposalResponse.eReasonCode == 1) {
+                        this._openToast(this.CreateProposalResponse.eMessage);
+                        this.$.txtPercentage.value = "";
+                        this.$.chkUpdateLines.checked = false;
+                        this.$.dlgCreateProposal.close();
+                    } else {
+                        this._openToastError(this.CreateProposalResponse.eMessage);
+                    }
+                },
+                _closeUpdatePricesDlg : function () {
+                    this.$.dlgUpdatePrices.close();
+                },
+                _openUpdatePricesDlg: function () {
+                    this.$.dlgUpdatePrices.open();
+                },
+                _validateUpdatePricesDlgInput: function () {
+                    if (this.$.dpStartDate.validate() &
+                        this.$.dpDueDate.validate() &
+                        this.$.txtClientRequisitionNo.validate() &
+                        this.$.dpRequisitionReceiveDate.validate() &
+                        this.$.dpNextInvoiceDate.validate() &
+                        this.$.txtContractLinesPercentage.validate()) {
+                            return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _updatePrices: function () {
+                    if (this._validateUpdatePricesDlgInput()) {
 
+                        var updPriceRequest = { // UpdateContractPricesRequest
+                            "ContractType": this.data.contractType,
+                            "ContractNo": this.data.contractNo,
+                            "VersionNo": this.data.versionNo,
+                            "NextInvoiceDate": this.$.dpNextInvoiceDate.value,
+                            "StartDate": this.$.dpStartDate.value,
+                            "DueDate": this.$.dpDueDate.value,
+                            "ClientRequisitionNo": this.$.txtClientRequisitionNo.value,
+                            "RequisitionReceiveDate": this.$.dpRequisitionReceiveDate.value,
+                            "percentageToApllyInLines": this.$.txtContractLinesPercentage.value
+                        };
+                        this.$.updatePrices_ajax.body = JSON.stringify(updPriceRequest);
+                        this.$.updatePrices_ajax.generateRequest();
+                    }
+                },
+                _updatePricesResponseProcessor: function () {
+                    if (this.UpdatePricesResponse.eReasonCode == 1) {
+                        this._openToast(this.UpdatePricesResponse.eMessage);
+                        this.$.dlgCreateProposal.close();
 
-
-
+                        var contractNo = this.UpdatePricesResponse.contractNo;
+                        var versionNo = this.UpdatePricesResponse.versionNo;
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesContrato/" + contractNo + "?version=" + versionNo;
+                            }, 1000);
+                    } else {
+                        this._openToastError(this.UpdatePricesResponse.eMessage);
+                    }
+                },
             });
         });
     </script>

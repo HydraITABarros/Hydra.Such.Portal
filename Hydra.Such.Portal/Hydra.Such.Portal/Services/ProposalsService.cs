@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hydra.Such.Data.Extensions;
+using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -23,7 +26,7 @@ namespace Hydra.Such.Portal.Services
         {
             if (contractToUpdate != null)
             {
-                if (contractToUpdate.ContractType == 2)
+                if (contractToUpdate.ContractType == (int)ContractType.Proposal)
                 {
                     Contratos updatedContract = null;
                     Contratos contractWithoutChanges = DBContracts.GetByIdAndVersion(contractToUpdate.ContractNo, contractToUpdate.VersionNo);
@@ -123,7 +126,7 @@ namespace Hydra.Such.Portal.Services
         {
             if (data != null)
             {
-                if (data.ContractType == 2)
+                if (data.ContractType == (int)ContractType.Proposal)
                 {
                     Contratos contract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
@@ -207,6 +210,71 @@ namespace Hydra.Such.Portal.Services
                 data.eMessage = "Ocorreu um erro ao arquivar.";
             }
             return data;
+        }
+
+        public ErrorHandler CreateProposalFromContract(string contractId, int version, decimal percentageToApllyInLines = decimal.MinValue)
+        {
+            ErrorHandler result = new ErrorHandler()
+            {
+                eReasonCode = 2,
+                eMessage = "Não foi possivel criar a proposta",
+            };
+            //Get contract data
+            var contractDb = DBContracts.GetByIdAndVersion(contractId, version);
+            ContractViewModel contract = DBContracts.ParseToViewModel(contractDb, string.Empty, string.Empty);
+            contract.LoadLines();
+            //Get Numeration
+            Configuração conf = DBConfigurations.GetById(1);
+            int entityNumerationConfId = conf.NumeraçãoPropostas.Value;
+
+            string proposalId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+
+            if (!string.IsNullOrEmpty(proposalId) && contract != null)
+            {
+                contract.ContractNo = proposalId;
+                contract.ContractType = (int)ContractType.Proposal;
+                contract.VersionNo = 1;
+                contract.Status = 1;
+                contract.CreateDate = DateTime.Now.ToString();
+                contract.CreateUser = changedByUserName;
+                contract.UpdateDate = string.Empty;
+                contract.UpdateUser = string.Empty;
+                
+                //Add Proposal Header
+                var proposal = ctx.Contratos.Add(DBContracts.ParseToDB(contract));
+                
+                //Add Proposal Lines
+                contract.Lines.ForEach(x =>
+                {
+                    x.ContractType = (int)ContractType.Proposal;
+                    x.ContractNo = proposalId;
+                    x.VersionNo = 1;
+                    x.LineNo = 0;
+                    if (percentageToApllyInLines > decimal.MinValue)
+                        x.UnitPrice = percentageToApllyInLines / 100 * x.UnitPrice;
+                    proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
+                });
+                ctx.SaveChanges();
+
+                result.eReasonCode = 1;
+                result.eMessage = "Foi criada a proposta " + proposalId + ".";
+                try
+                {
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                    if (configNumerations != null)
+                    {
+                        configNumerations.ÚltimoNºUsado = proposalId;
+                        configNumerations.UtilizadorModificação = changedByUserName;
+                        DBNumerationConfigurations.Update(configNumerations);
+                    }
+                }
+                catch
+                {
+                    result.eMessage += " Ocorreu um erro ao atualizar a numeração.";
+                }
+            }
+            return result;
         }
     }
 }

@@ -378,6 +378,8 @@ namespace Hydra.Such.Data.Logic.Contracts
 
         public static ContractViewModel ParseToViewModel(Contratos x, string NAVDatabaseName, string NAVCompanyName)
         {
+            if (x == null)
+                return null;
             ContractViewModel result = new ContractViewModel()
             {
                 ContractType = x.TipoContrato,

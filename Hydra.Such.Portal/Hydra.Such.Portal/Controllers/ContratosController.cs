@@ -405,17 +405,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult SetProposalStatus([FromBody] ContractViewModel item)
-        {
-            if (item != null)
-            {
-                ProposalsService serv = new ProposalsService(User.Identity.Name);
-                item = serv.SetStatus(item);
-            }
-            return Json(item);
-        }
-
-        [HttpPost]
         public JsonResult DeleteContract([FromBody] ContractViewModel data)
         {
             ErrorHandler result = new ErrorHandler();
@@ -468,60 +457,62 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                ContractsService serv = new ContractsService(User.Identity.Name);
+                data = serv.ArchiveContract(data);
+                //Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
-                if (cContract != null)
-                {
-                    try
-                    {
-                        //Create new contract and update old
-                        cContract.UtilizadorModificação = User.Identity.Name;
-                        cContract.Arquivado = true;
-                        DBContracts.Update(cContract);
+                //if (cContract != null)
+                //{
+                //    try
+                //    {
+                //        //Create new contract and update old
+                //        cContract.UtilizadorModificação = User.Identity.Name;
+                //        cContract.Arquivado = true;
+                //        DBContracts.Update(cContract);
 
-                        cContract.NºVersão = cContract.NºVersão + 1;
-                        cContract.UtilizadorCriação = User.Identity.Name;
-                        cContract.UtilizadorModificação = "";
-                        if(cContract.TipoContrato == 1)
-                        {
-                            cContract.NºProposta = "";
-                        }else if(cContract.TipoContrato == 2 )
-                        {
-                            cContract.NºContrato = "";
-                        }
+                //        cContract.NºVersão = cContract.NºVersão + 1;
+                //        cContract.UtilizadorCriação = User.Identity.Name;
+                //        cContract.UtilizadorModificação = "";
+                //        if(cContract.TipoContrato == 1)
+                //        {
+                //            cContract.NºProposta = "";
+                //        }else if(cContract.TipoContrato == 2 )
+                //        {
+                //            cContract.NºContrato = "";
+                //        }
                         
-                        cContract.DataHoraModificação = null;
-                        cContract.Arquivado = false;
+                //        cContract.DataHoraModificação = null;
+                //        cContract.Arquivado = false;
 
-                        if (data.ActionCode.HasValue && data.ActionCode.Value == 2)
-                        {
-                            cContract.Estado = 1;
-                            cContract.DataHoraModificação = DateTime.Now;
-                            cContract.UtilizadorModificação = User.Identity.Name;
-                        }
+                //        if (data.ActionCode.HasValue && data.ActionCode.Value == 2)
+                //        {
+                //            cContract.Estado = 1;
+                //            cContract.DataHoraModificação = DateTime.Now;
+                //            cContract.UtilizadorModificação = User.Identity.Name;
+                //        }
 
-                        DBContracts.Create(cContract);
+                //        DBContracts.Create(cContract);
 
-                        //Duplicate Contract Lines
-                        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
+                //        //Duplicate Contract Lines
+                //        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
 
-                        ContractLines.ForEach(x =>
-                        {
-                            x.NºVersão = cContract.NºVersão;
-                            DBContractLines.Create(x);
-                        });
+                //        ContractLines.ForEach(x =>
+                //        {
+                //            x.NºVersão = cContract.NºVersão;
+                //            DBContractLines.Create(x);
+                //        });
 
-                        data.VersionNo = cContract.NºVersão;
-                        data.eReasonCode = 1;
-                        data.eMessage = "Arquivado com sucesso.";
-                        return Json(data);
-                    }
-                    catch (Exception)
-                    {
-                        data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro ao arquivar.";
-                    }
-                }
+                //        data.VersionNo = cContract.NºVersão;
+                //        data.eReasonCode = 1;
+                //        data.eMessage = "Arquivado com sucesso.";
+                //        return Json(data);
+                //    }
+                //    catch (Exception)
+                //    {
+                //        data.eReasonCode = 2;
+                //        data.eMessage = "Ocorreu um erro ao arquivar.";
+                //    }
+                //}
             }
             else
             {
@@ -798,6 +789,26 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de contrato.";
             }
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateContractPrices([FromBody] UpdateContractPricesRequest updatePricesRequest)
+        {
+            ContractViewModel updatedContract;
+            try
+            {
+                ContractsService serv = new ContractsService(User.Identity.Name);
+                updatedContract = serv.UpdatePrices(updatePricesRequest);
+            }
+            catch
+            {
+                updatedContract = new ContractViewModel
+                {
+                    eReasonCode = 2,
+                    eMessage = "Ocorreu um erro ao criar a proposta"
+                };
+            }
+            return Json(updatedContract);
         }
         #endregion
 
@@ -1185,9 +1196,47 @@ namespace Hydra.Such.Portal.Controllers
             result.OportunityNo = "";
             return Json(result);
         }
-        
+
+        [HttpPost]
+        public JsonResult SetProposalStatus([FromBody] ContractViewModel item)
+        {
+            if (item != null)
+            {
+                ProposalsService serv = new ProposalsService(User.Identity.Name);
+                item = serv.SetStatus(item);
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult CreateProposalFromContract([FromBody] JObject requestParams)
+        {
+            string contractId = requestParams["contractId"].ToString();
+            int version = int.Parse(requestParams["versionNo"].ToString());
+            string percentage = requestParams["percentageToApllyInLines"].ToString();
+            decimal percentageToApllyInLines = decimal.MinValue;
+
+            if (!string.IsNullOrEmpty(percentage))
+                decimal.TryParse(requestParams["percentageToApllyInLines"].ToString(), out percentageToApllyInLines);
+            
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                ProposalsService serv = new ProposalsService(User.Identity.Name);
+                result = serv.CreateProposalFromContract(contractId, version, percentageToApllyInLines);
+            }
+            catch
+            {
+                result = new ErrorHandler()
+                {
+                    eReasonCode = 2,
+                    eMessage = "Ocorreu um erro ao criar a proposta",
+                };
+            }
+            return Json(result);
+        }
         #endregion
-        
+
         public JsonResult ParseContractType([FromBody] JObject requestParams)
         {
             // Parse Header
