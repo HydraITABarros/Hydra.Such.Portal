@@ -1454,36 +1454,52 @@ namespace Hydra.Such.Portal.Controllers
         //Atualiza uma Ajuda
         public JsonResult UpdateLinhaAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
-                LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+                if ((decimal)data.Quantidade < 0 || (decimal)data.Quantidade > 9999)
+                    result = 1;
 
-                Ajuda.TipoCusto = data.TipoCusto;
-                Ajuda.CodTipoCusto = data.CodTipoCusto;
-                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
-                Ajuda.Quantidade = data.Quantidade;
-                Ajuda.CustoUnitario = data.CustoUnitario;
-                Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
-                Ajuda.PrecoUnitario = data.PrecoUnitario;
-                Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
-                Ajuda.DataDespesa = data.DataDespesa;
-                Ajuda.Observacao = data.Observacao;
-                Ajuda.UtilizadorModificacao = User.Identity.Name;
-                Ajuda.DataHoraModificacao = DateTime.Now;
+                if ((decimal)data.CustoUnitario < 0)
+                    result = 2;
 
-                DBLinhasFolhaHoras.UpdateAjuda(Ajuda);
+                if ((decimal)data.PrecoUnitario < 0)
+                    result = 3;
 
-                result = true;
+                if ((decimal)data.PrecoVenda < 0)
+                    result = 4;
 
-                if (result)
+                if (result == 0)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+
+                    LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+
+                    Ajuda.TipoCusto = data.TipoCusto;
+                    Ajuda.CodTipoCusto = data.CodTipoCusto;
+                    Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                    Ajuda.Quantidade = data.Quantidade;
+                    Ajuda.CustoUnitario = data.CustoUnitario;
+                    Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
+                    Ajuda.PrecoUnitario = data.PrecoUnitario;
+                    Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
+                    Ajuda.DataDespesa = data.DataDespesa;
+                    Ajuda.Observacao = data.Observacao;
+                    Ajuda.UtilizadorModificacao = User.Identity.Name;
+                    Ajuda.DataHoraModificacao = DateTime.Now;
+
+                    DBLinhasFolhaHoras.UpdateAjuda(Ajuda);
+
+                    result = 0;
+
+                    if (result == 0)
+                    {
+                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
