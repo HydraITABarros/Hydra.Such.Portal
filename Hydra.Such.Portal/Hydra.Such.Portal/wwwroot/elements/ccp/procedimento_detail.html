@@ -3315,16 +3315,16 @@
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Atríbuidos</label>
                                         </div>
                                         <div class="col-sm-1">
-                                            <vaadin-text-field type="number" name="diasAtribuidos_total" id="diasAtribuidos_total" value="{{data.temposPaCcp.estado0 + data.temposPaCcp.estado1 + data.temposPaCcp.estado2 + data.temposPaCcp.estado3 + data.temposPaCcp.estado4 + data.temposPaCcp.estado5 + data.temposPaCcp.estado6 + data.temposPaCcp.estado7 + data.temposPaCcp.estado8 + data.temposPaCcp.estado9 + data.temposPaCcp.estado10 + data.temposPaCcp.estado11 + data.temposPaCcp.estado12 + data.temposPaCcp.estado13 + data.temposPaCcp.estado14 + data.temposPaCcp.estado15 + data.temposPaCcp.estado16 + data.temposPaCcp.estado17 + data.temposPaCcp.estado18 + data.temposPaCcp.estado19 + data.temposPaCcp.estado20}}" readonly style="text-align:right;"></vaadin-text-field>
+                                            <vaadin-text-field name="diasAtribuidos_total" id="diasAtribuidos_total" value="{{data.temposPaCcp.somaEstadosAtribuidos}}" readonly style="text-align:right;"></vaadin-text-field>
                                         </div>
                                         <div class="col-sm-8">
                                             <paper-tooltip for="CBDefault_diasAtribuidos" position="top" offset="-1" animation-delay="1">
-                                                Dias atribuidos - [ {{data.temposPaCcp.estado0}} + {{data.temposPaCcp.estado1}} ]
+                                                Dias atribuidos - [ {{data.temposPaCcp.somaEstadosAtribuidos}} ]
                                             </paper-tooltip>
-                                            <vaadin-progress-bar theme="contrast" id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.estado0 + data.temposPaCcp.estado1 + data.temposPaCcp.estado2 + data.temposPaCcp.estado3 + data.temposPaCcp.estado4 + data.temposPaCcp.estado5 + data.temposPaCcp.estado6 + data.temposPaCcp.estado7 + data.temposPaCcp.estado8 + data.temposPaCcp.estado9 + data.temposPaCcp.estado10 + data.temposPaCcp.estado11 + data.temposPaCcp.estado12 + data.temposPaCcp.estado13 + data.temposPaCcp.estado14 + data.temposPaCcp.estado15 + data.temposPaCcp.estado16 + data.temposPaCcp.estado17 + data.temposPaCcp.estado18 + data.temposPaCcp.estado19 + data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.somaEstadosAtribuidos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-text-field name="diasAtribuidos_data" id="diasAtribuidos_data" readonly style="text-align:center;"></vaadin-text-field>
+                                            <vaadin-text-field name="diasAtribuidos_data" id="diasAtribuidos_data" value="{{data.dataFechoPrevista}}" readonly style="text-align:center;"></vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -3332,14 +3332,20 @@
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Gastos</label>
                                         </div>
                                         <div class="col-sm-1">
-                                            <vaadin-text-field name="diasGastos_total" id="diasGastos_total" readonly style="text-align:right;"></vaadin-text-field>
+                                            <vaadin-text-field name="diasGastos_total" id="diasGastos_total" value="{{data.temposPaCcp.somaEstadosGastos}}" readonly style="text-align:right;"></vaadin-text-field>
                                         </div>
                                         <div class="col-sm-8">
-                                            <vaadin-progress-bar theme="error" id="CBDefault_diasGastos_vermelho" value="0" min="0" max="100"></vaadin-progress-bar>
-                                            <vaadin-progress-bar theme="success" id="CBDefault_diasGastos_verde" value="0" min="0" max="100" visible="false"></vaadin-progress-bar>
+                                            <paper-tooltip for="CBDefault_diasGastos_vermelho" position="top" offset="-1" animation-delay="1">
+                                                Dias Gastos - [ {{data.temposPaCcp.somaEstadosGastos}} ]
+                                            </paper-tooltip>
+                                            <paper-tooltip for="CBDefault_diasGastos_verde" position="top" offset="-1" animation-delay="1">
+                                                Dias Gastos - [ {{data.temposPaCcp.somaEstadosGastos}} ]
+                                            </paper-tooltip>
+                                            <vaadin-progress-bar theme="error" id="CBDefault_diasGastos_vermelho" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="success" id="CBDefault_diasGastos_verde" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100" visible="false"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
-
+                                            
                                         </div>
                                     </div>
 
@@ -3347,19 +3353,19 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="contrast" id="CBDefault_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias atribuidos</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="error" id="CBVermelho_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="error" id="CBVermelho_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos no prazo</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="success" id="CBVerde_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="success" id="CBVerde_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos fora do prazo</label>
@@ -3749,6 +3755,7 @@
                             }
 
                             self._setFieldsEditability(self.data);
+                            self._setProgressBar_Tempos(self.data);
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
@@ -5817,6 +5824,119 @@
                     //_self.$.seccaoTeste.hidden = true;
 
                 },
+
+                //NR 20180403
+                _setProgressBar_Tempos(data) {
+                    var _self = this;
+
+                    if (data.temposPaCcp.estado1Tg <= data.temposPaCcp.estado1) {
+                        $(_self.$.CBVermelho1).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde1).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado2Tg <= data.temposPaCcp.estado2) {
+                        $(_self.$.CBVermelho2).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde2).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado3Tg <= data.temposPaCcp.estado3) {
+                        $(_self.$.CBVermelho3).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde3).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado4Tg <= data.temposPaCcp.estado4) {
+                        $(_self.$.CBVermelho4).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde4).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado5Tg <= data.temposPaCcp.estado5) {
+                        $(_self.$.CBVermelho5).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde5).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado6Tg <= data.temposPaCcp.estado6) {
+                        $(_self.$.CBVermelho6).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde6).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado7Tg <= data.temposPaCcp.estado7) {
+                        $(_self.$.CBVermelho7).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde7).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado8Tg <= data.temposPaCcp.estado8) {
+                        $(_self.$.CBVermelho8).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde8).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado9Tg <= data.temposPaCcp.estado9) {
+                        $(_self.$.CBVermelho9).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde9).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado10Tg <= data.temposPaCcp.estado10) {
+                        $(_self.$.CBVermelho10).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde10).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado11Tg <= data.temposPaCcp.estado11) {
+                        $(_self.$.CBVermelho11).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde11).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado12Tg <= data.temposPaCcp.estado12) {
+                        $(_self.$.CBVermelho12).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde12).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado13Tg <= data.temposPaCcp.estado13) {
+                        $(_self.$.CBVermelho13).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde13).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado14Tg <= data.temposPaCcp.estado14) {
+                        $(_self.$.CBVermelho14).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde14).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado15Tg <= data.temposPaCcp.estado15) {
+                        $(_self.$.CBVermelho15).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde15).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado16Tg <= data.temposPaCcp.estado16) {
+                        $(_self.$.CBVermelho16).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde16).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado17Tg <= data.temposPaCcp.estado17) {
+                        $(_self.$.CBVermelho17).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde17).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado18Tg <= data.temposPaCcp.estado18) {
+                        $(_self.$.CBVermelho18).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde18).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado19Tg <= data.temposPaCcp.estado19) {
+                        $(_self.$.CBVermelho19).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde19).addClass('hidden');
+                    }
+                    if (data.temposPaCcp.estado20Tg <= data.temposPaCcp.estado20) {
+                        $(_self.$.CBVermelho20).addClass('hidden');
+                    } else {
+                        $(_self.$.CBVerde20).addClass('hidden');
+                    }
+
+                    if (data.temposPaCcp.somaEstadosGastos <= data.temposPaCcp.somaEstadosAtribuidos) {
+                        $(_self.$.CBDefault_diasGastos_vermelho).addClass('hidden');
+                    } else {
+                        $(_self.$.CBDefault_diasGastos_verde).addClass('hidden');
+                    }
+                },
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;

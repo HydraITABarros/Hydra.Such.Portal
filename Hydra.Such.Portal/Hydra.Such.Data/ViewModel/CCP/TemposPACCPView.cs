@@ -56,5 +56,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
         public int? SomaEstadosAtribuidos { get; set; }
         public int? SomaEstadosGastos { get; set; }
+
+        public int? SomaEstadosAtribuidos_percentagem { get; set; }
+        public int? SomaEstadosGastos_percentagem { get; set; }
     }
 }

@@ -1208,22 +1208,23 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 4,
                 Value = "PN"
             },
+            
+            //NR 20180403 - Tipo repetido. Comentado e alterado ID dos 2 estados seguintes, DC e CPI
+            //new EnumData()
+            //{
+            //    Id = 5,
+            //    Value = "PN"
+            //},
 
             new EnumData()
             {
                 Id = 5,
-                Value = "PN"
-            },
-
-            new EnumData()
-            {
-                Id = 6,
                 Value = "DC"
             },
 
             new EnumData()
             {
-                Id = 7,
+                Id = 6,
                 Value = "CPI"
             }
         };
