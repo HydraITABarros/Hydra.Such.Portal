@@ -1268,29 +1268,34 @@ namespace Hydra.Such.Portal.Controllers
         //Atualiza um percurso
         public JsonResult UpdateLinhaPercurso([FromBody] LinhasFolhaHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
+
             try
             {
-                LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
+                if ((decimal)data.Distancia < 0 || (decimal)data.Distancia > 9999)
+                    result = 1;
 
-                Percurso.CodOrigem = data.CodOrigem;
-                Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
-                Percurso.CodDestino = data.CodDestino;
-                Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
-                Percurso.DataDespesa = data.DataDespesa;
-                Percurso.Observacao = data.Observacao;
-                Percurso.Distancia = data.Distancia;
-                Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                Percurso.CustoUnitario = data.CustoUnitario;
-                Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
-                Percurso.UtilizadorModificacao = User.Identity.Name;
-                Percurso.DataHoraModificacao = DateTime.Now;
+                if (result == 0)
+                {
+                    LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
 
-                DBLinhasFolhaHoras.UpdatePercurso(Percurso);
+                    Percurso.CodOrigem = data.CodOrigem;
+                    Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
+                    Percurso.CodDestino = data.CodDestino;
+                    Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso.DataDespesa = data.DataDespesa;
+                    Percurso.Observacao = data.Observacao;
+                    Percurso.Distancia = data.Distancia;
+                    Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso.CustoUnitario = data.CustoUnitario;
+                    Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso.UtilizadorModificacao = User.Identity.Name;
+                    Percurso.DataHoraModificacao = DateTime.Now;
 
-                result = true;
+                    DBLinhasFolhaHoras.UpdatePercurso(Percurso);
+                }
 
-                if (result)
+                if (result == 0)
                 {
                     DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
                 }
@@ -1298,6 +1303,7 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 //log
+                result = 99;
             }
             return Json(result);
         }
