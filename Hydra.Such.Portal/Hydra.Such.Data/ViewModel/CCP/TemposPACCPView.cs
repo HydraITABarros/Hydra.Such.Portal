@@ -53,5 +53,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorModificacao { get; set; }
+
+        public int? SomaEstadosAtribuidos { get; set; }
+        public int? SomaEstadosGastos { get; set; }
     }
 }
