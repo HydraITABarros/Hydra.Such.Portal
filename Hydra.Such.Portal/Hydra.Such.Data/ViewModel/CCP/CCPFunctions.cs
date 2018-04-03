@@ -566,6 +566,40 @@ namespace Hydra.Such.Data.ViewModel.CCP
         }
         public static TemposPACCPView CastTemposPaCcpToTemposCCPView(TemposPaCcp Tempos)
         {
+            int sum_estados_atribuidos = (Tempos.Estado0.HasValue ? Tempos.Estado0.Value : 0) + (Tempos.Estado1.HasValue ? Tempos.Estado1.Value : 0) + (Tempos.Estado2.HasValue ? Tempos.Estado2.Value : 0) + (Tempos.Estado3.HasValue ? Tempos.Estado3.Value : 0) + (Tempos.Estado4.HasValue ? Tempos.Estado4.Value : 0) + (Tempos.Estado5.HasValue ? Tempos.Estado5.Value : 0) + (Tempos.Estado6.HasValue ? Tempos.Estado6.Value : 0) + (Tempos.Estado7.HasValue ? Tempos.Estado7.Value : 0) + (Tempos.Estado8.HasValue ? Tempos.Estado8.Value : 0) + (Tempos.Estado9.HasValue ? Tempos.Estado9.Value : 0) + (Tempos.Estado10.HasValue ? Tempos.Estado10.Value : 0) + (Tempos.Estado11.HasValue ? Tempos.Estado11.Value : 0) + (Tempos.Estado12.HasValue ? Tempos.Estado12.Value : 0) + (Tempos.Estado13.HasValue ? Tempos.Estado13.Value : 0) + (Tempos.Estado14.HasValue ? Tempos.Estado14.Value : 0) + (Tempos.Estado15.HasValue ? Tempos.Estado15.Value : 0) + (Tempos.Estado16.HasValue ? Tempos.Estado16.Value : 0) + (Tempos.Estado17.HasValue ? Tempos.Estado17.Value : 0) + (Tempos.Estado18.HasValue ? Tempos.Estado18.Value : 0) + (Tempos.Estado19.HasValue ? Tempos.Estado19.Value : 0) + (Tempos.Estado20.HasValue ? Tempos.Estado20.Value : 0);
+            int sum_estados_gastos = (Tempos.Estado0Tg.HasValue ? Tempos.Estado0Tg.Value : 0) + (Tempos.Estado1Tg.HasValue ? Tempos.Estado1Tg.Value : 0) + (Tempos.Estado2Tg.HasValue ? Tempos.Estado2Tg.Value : 0) + (Tempos.Estado3Tg.HasValue ? Tempos.Estado3Tg.Value : 0) + (Tempos.Estado4Tg.HasValue ? Tempos.Estado4Tg.Value : 0) + (Tempos.Estado5Tg.HasValue ? Tempos.Estado5Tg.Value : 0) + (Tempos.Estado6Tg.HasValue ? Tempos.Estado6Tg.Value : 0) + (Tempos.Estado7Tg.HasValue ? Tempos.Estado7Tg.Value : 0) + (Tempos.Estado8Tg.HasValue ? Tempos.Estado8Tg.Value : 0) + (Tempos.Estado9Tg.HasValue ? Tempos.Estado9Tg.Value : 0) + (Tempos.Estado10Tg.HasValue ? Tempos.Estado10Tg.Value : 0) + (Tempos.Estado11Tg.HasValue ? Tempos.Estado11Tg.Value : 0) + (Tempos.Estado12Tg.HasValue ? Tempos.Estado12Tg.Value : 0) + (Tempos.Estado13Tg.HasValue ? Tempos.Estado13Tg.Value : 0) + (Tempos.Estado14Tg.HasValue ? Tempos.Estado14Tg.Value : 0) + (Tempos.Estado15Tg.HasValue ? Tempos.Estado15Tg.Value : 0) + (Tempos.Estado16Tg.HasValue ? Tempos.Estado16Tg.Value : 0) + (Tempos.Estado17Tg.HasValue ? Tempos.Estado17Tg.Value : 0) + (Tempos.Estado18Tg.HasValue ? Tempos.Estado18Tg.Value : 0) + (Tempos.Estado19Tg.HasValue ? Tempos.Estado19Tg.Value : 0) + (Tempos.Estado20Tg.HasValue ? Tempos.Estado20Tg.Value : 0);
+
+            int sum_estados_atribuidos_percentagem = 0;
+            int sum_estados_gastos_percentagem = 0;
+
+            if (sum_estados_atribuidos >= sum_estados_gastos)
+            {
+                if (sum_estados_atribuidos >= 100)
+                {
+                    sum_estados_atribuidos_percentagem = 100;
+                    sum_estados_gastos_percentagem = Convert.ToInt32((100 * sum_estados_gastos) / sum_estados_atribuidos);
+                }
+                else
+                {
+                    sum_estados_atribuidos_percentagem = sum_estados_atribuidos;
+                    sum_estados_gastos_percentagem = sum_estados_gastos;
+                }
+            }
+            else
+            {
+                if (sum_estados_gastos >= 100)
+                {
+                    sum_estados_gastos_percentagem = 100;
+                    sum_estados_atribuidos_percentagem = Convert.ToInt32((100 * sum_estados_atribuidos) / sum_estados_gastos);
+                }
+                else
+                {
+                    sum_estados_gastos_percentagem = sum_estados_gastos;
+                    sum_estados_atribuidos_percentagem = sum_estados_atribuidos;
+                }
+            }
+
+
             return (new TemposPACCPView()
             {
                 NumProcedimento = Tempos.NºProcedimento,
@@ -615,9 +649,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorCriacao = Tempos.UtilizadorCriação,
                 DataHoraModificacao = Tempos.DataHoraModificação,
                 UtilizadorModificacao = Tempos.UtilizadorModificação,
-
-                SomaEstadosAtribuidos = (Tempos.Estado0.HasValue ? Tempos.Estado0.Value : 0) + (Tempos.Estado1.HasValue ? Tempos.Estado1.Value : 0) + (Tempos.Estado2.HasValue ? Tempos.Estado2.Value : 0) + (Tempos.Estado3.HasValue ? Tempos.Estado3.Value : 0) + (Tempos.Estado4.HasValue ? Tempos.Estado4.Value : 0) + (Tempos.Estado5.HasValue ? Tempos.Estado5.Value : 0) + (Tempos.Estado6.HasValue ? Tempos.Estado6.Value : 0) + (Tempos.Estado7.HasValue ? Tempos.Estado7.Value : 0) + (Tempos.Estado8.HasValue ? Tempos.Estado8.Value : 0) + (Tempos.Estado9.HasValue ? Tempos.Estado9.Value : 0) + (Tempos.Estado10.HasValue ? Tempos.Estado10.Value : 0) + (Tempos.Estado11.HasValue ? Tempos.Estado11.Value : 0) + (Tempos.Estado12.HasValue ? Tempos.Estado12.Value : 0) + (Tempos.Estado13.HasValue ? Tempos.Estado13.Value : 0) + (Tempos.Estado14.HasValue ? Tempos.Estado14.Value : 0) + (Tempos.Estado15.HasValue ? Tempos.Estado15.Value : 0) + (Tempos.Estado16.HasValue ? Tempos.Estado16.Value : 0) + (Tempos.Estado17.HasValue ? Tempos.Estado17.Value : 0) + (Tempos.Estado18.HasValue ? Tempos.Estado18.Value : 0) + (Tempos.Estado19.HasValue ? Tempos.Estado19.Value : 0) + (Tempos.Estado20.HasValue ? Tempos.Estado20.Value : 0)
-
+                
+                //NR 20180403
+                SomaEstadosAtribuidos = sum_estados_atribuidos,
+                SomaEstadosGastos = sum_estados_gastos,
+                SomaEstadosAtribuidos_percentagem = sum_estados_atribuidos_percentagem,
+                SomaEstadosGastos_percentagem = sum_estados_gastos_percentagem
             });
         }
 
