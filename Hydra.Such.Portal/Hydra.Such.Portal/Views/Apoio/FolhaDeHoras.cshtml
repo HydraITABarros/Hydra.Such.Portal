@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "Folha De Horas - Apoio - Such";
+    ViewData["Title"] = "Folha de Horas Apoio";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="title">Folha De Horas Apoio</h1>
+<h1 class="title">Folha de Horas Apoio</h1>
 <link rel="import" href="~/elements/folhasdehoras/folhadehora_list.html">
 
 <x-folhadehoralist _areaid="5" _folhadehoraid="@ViewBag.FolhaDeHorasNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _estado="0" _validacao="0" _integracaoajuda="0" _integracaokms="0"></x-folhadehoralist>

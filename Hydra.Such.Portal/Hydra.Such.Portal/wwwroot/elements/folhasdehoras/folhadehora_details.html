@@ -417,7 +417,7 @@
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -452,11 +452,7 @@
                             <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
                             <!--<vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>-->
                         </div>
-                        >
-
                         <div class="col-sm-3">
-                            >
-
                             <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
                             <!--<vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>-->
                         </div>
@@ -464,11 +460,7 @@
                             <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
                             <!--<vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>-->
                         </div>
-                        >
-
                         <div class="col-sm-3">
-                            >
-
                             <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
                             <!--<vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>-->
                         </div>
@@ -706,7 +698,7 @@
 
 
                 <paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Ajudas De Custo / Despesas" closed>
+                    <paper-collapse-item class="panel-heading" header="Ajudas de Custo / Despesas" closed>
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
@@ -892,7 +884,7 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1150,7 +1142,7 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-6">
@@ -2690,7 +2682,7 @@
                         var Hora2Saida = Date.parseExact(new Date(), this.$.presencaHora2Saida.value);
 
                         if ((Hora1Entrada > Hora1Saida) | (Hora1Entrada > Hora2Entrada) | (Hora1Entrada > Hora2Saida)) {
-                            this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.');
+                            this._showErrorMessage('Ocorreu um erro ao criar a Folha de Horas.');
                         }
 
                     }
@@ -2866,7 +2858,7 @@
                             this._showMessage('Folha de Horas atualizada com sucesso.')
                         }
                     } else {
-                        this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
+                        this._showErrorMessage('Ocorreu um erro ao criar a Folha de Horas.')
                     }
                 },
 
@@ -2874,7 +2866,7 @@
                     //debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._showMessage('Folha de Hora criado com sucesso.');
+                        this._showMessage('Folha de Horas criada com sucesso.');
                     } else {
                         this._showErrorMessage(this.data.eMessage);
                     }
@@ -3055,7 +3047,7 @@
                         }
 
                         if (this.FolhaDeHorasUpdated == 2) {
-                            this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
+                            this._showErrorMessage('Ocorreu um erro ao actualizar a Folha de Horas.');
                         }
 
                         if (this.FolhaDeHorasUpdated == 99) {
@@ -3096,7 +3088,7 @@
                                             this._showErrorMessage('Não pode validar esta Folha de Horas pois a mesma já se encontra Validada.');
                                         }
                                         else {
-                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
+                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha de Horas.');
                                         }
                                     }
                                 }
@@ -3136,7 +3128,7 @@
                                                 this._showErrorMessage('A Folha de Horas tem que estar no estado Validado');
                                             }
                                             else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha de Horas.');
                                             }
                                         }
                                     }
@@ -3177,7 +3169,7 @@
                                                 this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
                                             }
                                             else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha De Horas.');
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha de Horas.');
                                             }
                                         }
                                     }

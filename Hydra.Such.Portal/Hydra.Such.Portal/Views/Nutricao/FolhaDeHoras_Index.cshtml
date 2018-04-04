@@ -1,18 +1,18 @@
 ﻿
 @{
-    ViewData["Title"] = "Nutrição - Such";
+    ViewData["Title"] = "Folha de Horas Nutrição";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="title">Nutrição - Folha de Horas</h1>
+<h1 class="title">Folha de Horas Nutriçã</h1>
 
 <link rel="import" href="/elements/submenu/subMenuItemView.html">
 
 <ul class="list-unstyled">
     <x-submenu link="@Url.Action("FolhaDeHoras", "Nutricao")" image="folhadehoras.png" title="FH Criadas"></x-submenu>
-    <x-submenu link="@Url.Action("FolhaDeHoras_Validacao", "Nutricao")" image="folhadehoras.png" title="FH Por Validadar"></x-submenu>
-    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoAjudaCusto", "Nutricao")" image="folhadehoras.png" title="FH Por Integrar Aj Custo RH"></x-submenu>
-    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoKMS", "Nutricao")" image="folhadehoras.png" title="FH Por Integrar KMs RH"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_Validacao", "Nutricao")" image="folhadehoras.png" title="FH por Validar"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoAjudaCusto", "Nutricao")" image="folhadehoras.png" title="FH por Integrar Aj. Custo RH"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoKMS", "Nutricao")" image="folhadehoras.png" title="FH por Integrar KMs RH"></x-submenu>
     <x-submenu link="@Url.Action("FolhaDeHoras_Historico", "Nutricao")" image="folhadehoras.png" title="FH Histórico"></x-submenu>
 </ul>
 
