@@ -28,7 +28,7 @@
 
 <dom-module id="x-oportunitydetails">
     <template>
-
+        
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -165,7 +165,7 @@
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        ">
+        
           <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
                    last-response="{{data}}"
