@@ -87,14 +87,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFeatures()
         {
-            List<EnumData> enumData = new List<EnumData>();
-            var items = EnumHelper.GetItemsFor(typeof(Features));
-            items.ForEach(x =>
-                enumData.Add(new EnumData(x.Key, x.Value))
-            );
-            return Json(enumData);
-            //List<EnumData> result = EnumerablesFixed.Features;
-            //return Json(result);
+            List<EnumData> result = EnumerablesFixed.Features;
+            return Json(result);
         }
 
         [HttpPost]

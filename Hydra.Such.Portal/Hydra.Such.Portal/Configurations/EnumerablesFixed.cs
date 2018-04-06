@@ -24,7 +24,7 @@ namespace Hydra.Such.Portal.Configurations
 
     public class EnumerablesFixed
     {
-        private static List<EnumData> AreasEnumData
+        private static List<EnumData> areasEnumData
         {
             get
             {
@@ -36,8 +36,21 @@ namespace Hydra.Such.Portal.Configurations
                 return enumData;
             }
         }
-        
-        public static readonly List<EnumData> Areas = AreasEnumData;
+
+        private static List<EnumData> featuresEnumData
+        {
+            get
+            {
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Features));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
+            }
+        }
+
+        public static readonly List<EnumData> Areas = areasEnumData;
         //new List<EnumData>(){
         //    new EnumData()
         //    {
@@ -103,251 +116,252 @@ namespace Hydra.Such.Portal.Configurations
         //    }
         //};
 
-        public static readonly List<EnumData> Features = new List<EnumData>(){
-            new EnumData()
-            {
-                Id = 1,
-                Value = "Projetos"
-            },
-            new EnumData()
-            {
-                Id = 2,
-                Value = "Contratos"
-            },
-            new EnumData()
-            {
-                Id = 3,
-                Value = "Pré-Requisições"
-            },
-            new EnumData()
-            {
-                Id = 4,
-                Value = "Requisições"
-            },
-            new EnumData()
-            {
-                Id = 5,
-                Value = "Requisições Simplificadas"
-            },
-            new EnumData()
-            {
-                Id = 6,
-                Value = "Folhas de Horas"
-            },
-            new EnumData()
-            {
-                Id = 7,
-                Value = "Unidades Produtivas"
-            },
-            new EnumData()
-            {
-                Id = 8,
-                Value = "Fichas Técnicas de Pratos"
-            },
-            new EnumData()
-            {
-                Id = 9,
-                Value = "Pedido de Aquisição"
-            },
-            new EnumData()
-            {
-                Id = 10,
-                Value = "Pedido Simplificado"
-            },
-            new EnumData()
-            {
-                Id = 11,
-                Value = "Viaturas"
-            },
-            new EnumData()
-            {
-                Id = 12,
-                Value = "Telemoveis"
-            },
-            new EnumData()
-            {
-                Id = 13,
-                Value = "Telefones"
-            },
-            new EnumData()
-            {
-                Id = 14,
-                Value = "Processos Disciplinares"
-            },
-            new EnumData()
-            {
-                Id = 15,
-                Value = "Processos de Inquérito"
-            },
-            new EnumData()
-            {
-                Id = 16,
-                Value = "Receção de Compras"
-            },
-            new EnumData()
-            {
-                Id = 17,
-                Value = "Receção de Faturação"
-            },
-            new EnumData()
-            {
-                Id = 18,
-                Value = "Administração"
-            },
-            new EnumData()
-            {
-                Id = 19,
-                Value = "Diário de Projeto"
-            },
-            new EnumData()
-            {
-                Id = 20,
-                Value = "Oportunidades"
-            },
-             new EnumData()
-            {
-                Id = 21,
-                Value = "Propostas"
-            },
-             new EnumData()
-            {
-                Id = 22,
-                Value = "Autorizaçãp Faturação"
-            },
+        public static readonly List<EnumData> Features = featuresEnumData;
+       //     new List<EnumData>(){
+       //     new EnumData()
+       //     {
+       //         Id = 1,
+       //         Value = "Projetos"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 2,
+       //         Value = "Contratos"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 3,
+       //         Value = "Pré-Requisições"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 4,
+       //         Value = "Requisições"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 5,
+       //         Value = "Requisições Simplificadas"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 6,
+       //         Value = "Folhas de Horas"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 7,
+       //         Value = "Unidades Produtivas"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 8,
+       //         Value = "Fichas Técnicas de Pratos"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 9,
+       //         Value = "Pedido de Aquisição"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 10,
+       //         Value = "Pedido Simplificado"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 11,
+       //         Value = "Viaturas"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 12,
+       //         Value = "Telemoveis"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 13,
+       //         Value = "Telefones"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 14,
+       //         Value = "Processos Disciplinares"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 15,
+       //         Value = "Processos de Inquérito"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 16,
+       //         Value = "Receção de Compras"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 17,
+       //         Value = "Receção de Faturação"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 18,
+       //         Value = "Administração"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 19,
+       //         Value = "Diário de Projeto"
+       //     },
+       //     new EnumData()
+       //     {
+       //         Id = 20,
+       //         Value = "Oportunidades"
+       //     },
+       //      new EnumData()
+       //     {
+       //         Id = 21,
+       //         Value = "Propostas"
+       //     },
+       //      new EnumData()
+       //     {
+       //         Id = 22,
+       //         Value = "Autorizaçãp Faturação"
+       //     },
 
-             // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
-             new EnumData()
-             {
-                 Id = 23,
-                 Value = "Elemento Juri CCP"
-             },
+        //      // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
+        //      new EnumData()
+        //      {
+        //          Id = 23,
+        //          Value = "Elemento Juri CCP"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 24,
-                 Value = "Contactos"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 24,
+        //          Value = "Contactos"
+        //      },
 
-            
-            #region 1. identify user roles related to CCP
-		     new EnumData()
-             {
-                 Id = 25,
-                 Value = "Checklist - Elemento Pre-Area 0"
-             },
 
-             new EnumData()
-             {
-                 Id  = 26,
-                 Value = "Checklist - Elemento Pre-Area"
-             },
+        //     #region 1. identify user roles related to CCP
+        //new EnumData()
+        //      {
+        //          Id = 25,
+        //          Value = "Checklist - Elemento Pre-Area 0"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 27,
-                 Value = "Checklist - Elemento Compras"
-             },
+        //      new EnumData()
+        //      {
+        //          Id  = 26,
+        //          Value = "Checklist - Elemento Pre-Area"
+        //      },
 
-             new EnumData()
-             {
-                 Id  = 28,
-                 Value = "Checklist - Elemento Juri"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 27,
+        //          Value = "Checklist - Elemento Compras"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 29,
-                 Value = "Checklist - Elemento Contabilidade"
-             },
+        //      new EnumData()
+        //      {
+        //          Id  = 28,
+        //          Value = "Checklist - Elemento Juri"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 30,
-                 Value = "Checklist - Elemento Juridico"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 29,
+        //          Value = "Checklist - Elemento Contabilidade"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 31,
-                 Value = "Checklist - Elemento CA"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 30,
+        //          Value = "Checklist - Elemento Juridico"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 32,
-                 Value = "Checklist - Gestor Processo"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 31,
+        //          Value = "Checklist - Elemento CA"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 33,
-                 Value = "Checklist - Secretariado CA"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 32,
+        //          Value = "Checklist - Gestor Processo"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 34,
-                 Value = "Checklist - Fecho de Processo"
-             },
-	        #endregion
+        //      new EnumData()
+        //      {
+        //          Id = 33,
+        //          Value = "Checklist - Secretariado CA"
+        //      },
 
-             new EnumData()
-             {
-                 Id = 35,
-                 Value = "Cafetarias/Refeitórios"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 34,
+        //          Value = "Checklist - Fecho de Processo"
+        //      },
+        //  #endregion
 
-             new EnumData()
-             {
-                 Id = 36,
-                 Value = "Diário Cafetarias/Refeitórios"
-             },
+        //      new EnumData()
+        //      {
+        //          Id = 35,
+        //          Value = "Cafetarias/Refeitórios"
+        //      },
 
-            #region 2. identify user roles related to CCP
-             new EnumData
-             {
-                 Id = 37,
-                 Value = "Checklist - Elemento Area"
-             },
-	        #endregion
+        //      new EnumData()
+        //      {
+        //          Id = 36,
+        //          Value = "Diário Cafetarias/Refeitórios"
+        //      },
 
-             new EnumData()
-            {
-                Id = 38,
-                Value = "Modelos Requisições Simplificadas"
-            },
+        //     #region 2. identify user roles related to CCP
+        //      new EnumData
+        //      {
+        //          Id = 37,
+        //          Value = "Checklist - Elemento Area"
+        //      },
+        //  #endregion
 
-              new EnumData()
-            {
-                Id = 39,
-                Value = "Localizações"
-            },
-              new EnumData()
-            {
-                Id = 40,
-                Value = "Requisições Simplificadas"
-            },
-            new EnumData()
-            {
-                Id = 41,
-                Value = "Necessidade de Compras"
-            },
-            new EnumData()
-            {
-                Id = 42,
-                Value = "Fichas Tecnicas de Pratos"
-            },
-            new EnumData()
-            {
-                Id = 43,
-                Value = "Histórico de Requisições"
-            },
-            new EnumData()
-            {
-                Id = 44,
-                Value = "Necessidade de Compras Direta"
-            }
-        };
+        //      new EnumData()
+        //     {
+        //         Id = 38,
+        //         Value = "Modelos Requisições Simplificadas"
+        //     },
+
+        //       new EnumData()
+        //     {
+        //         Id = 39,
+        //         Value = "Localizações"
+        //     },
+        //       new EnumData()
+        //     {
+        //         Id = 40,
+        //         Value = "Requisições Simplificadas"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 41,
+        //         Value = "Necessidade de Compras"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 42,
+        //         Value = "Fichas Tecnicas de Pratos"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 43,
+        //         Value = "Histórico de Requisições"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 44,
+        //         Value = "Necessidade de Compras Direta"
+        //     }
+        // };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
             new EnumData()
