@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -134,6 +135,19 @@ namespace Hydra.Such.Data.Logic
                 {
                     return ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).ToList();
                 }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Areas area, Features feature)
+        {
+            try
+            {
+                return GetByUserAreaFunctionality(userId, (int)area, (int)feature);
             }
             catch (Exception ex)
             {

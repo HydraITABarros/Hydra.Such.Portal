@@ -13,6 +13,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {

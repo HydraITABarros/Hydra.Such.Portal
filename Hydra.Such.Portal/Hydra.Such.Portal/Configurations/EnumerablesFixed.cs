@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Configurations
 {
@@ -23,70 +24,84 @@ namespace Hydra.Such.Portal.Configurations
 
     public class EnumerablesFixed
     {
-        public static readonly List<EnumData> Areas = new List<EnumData>(){
-            new EnumData()
+        private static List<EnumData> AreasEnumData
+        {
+            get
             {
-                Id = 1,
-                Value = "Engenharia"
-            },
-            new EnumData()
-            {
-                Id = 2,
-                Value = "Ambiente"
-            },
-            new EnumData()
-            {
-                Id = 3,
-                Value = "Nutrição"
-            },
-            new EnumData()
-            {
-                Id = 4,
-                Value = "Vendas"
-            },
-            new EnumData()
-            {
-                Id = 5,
-                Value = "Apoio"
-            },
-            new EnumData()
-            {
-                Id = 6,
-                Value = "P&O"
-            },
-            new EnumData()
-            {
-                Id = 7,
-                Value = "Novas Áreas"
-            },
-            new EnumData()
-            {
-                Id = 8,
-                Value = "Internacional"
-            },
-            new EnumData()
-            {
-                Id = 9,
-                Value = "Jurídico"
-            },
-            new EnumData()
-            {
-                Id = 10,
-                Value = "Compras"
-            },
-            new EnumData()
-            {
-                Id = 11,
-                Value = "Administração"
-            },
-
-            // zpgm. Generic Area to allow features to be applied to all Areas
-            new EnumData()
-            {
-                Id = 99,
-                Value = "Genérica"
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Hydra.Such.Data.Enumerations.Areas));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
             }
-        };
+        }
+        
+        public static readonly List<EnumData> Areas = AreasEnumData;
+        //new List<EnumData>(){
+        //    new EnumData()
+        //    {
+        //        Id = 1,
+        //        Value = "Engenharia"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 2,
+        //        Value = "Ambiente"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 3,
+        //        Value = "Nutrição"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 4,
+        //        Value = "Vendas"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 5,
+        //        Value = "Apoio"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 6,
+        //        Value = "P&O"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 7,
+        //        Value = "Novas Áreas"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 8,
+        //        Value = "Internacional"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 9,
+        //        Value = "Jurídico"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 10,
+        //        Value = "Compras"
+        //    },
+        //    new EnumData()
+        //    {
+        //        Id = 11,
+        //        Value = "Administração"
+        //    },
+
+        //    // zpgm. Generic Area to allow features to be applied to all Areas
+        //    new EnumData()
+        //    {
+        //        Id = 99,
+        //        Value = "Genérica"
+        //    }
+        //};
 
         public static readonly List<EnumData> Features = new List<EnumData>(){
             new EnumData()
@@ -1820,7 +1835,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Compras.RequisitionStates));
+                var items = EnumHelper.GetItemsFor(typeof(RequisitionStates));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );

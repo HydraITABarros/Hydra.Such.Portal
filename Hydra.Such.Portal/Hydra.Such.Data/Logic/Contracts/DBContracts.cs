@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Hydra.Such.Data.Extensions;
 namespace Hydra.Such.Data.Logic.Contracts
 {
     public static class DBContracts
@@ -204,6 +204,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    
                     return ctx.Contratos.Where(x => x.TipoContrato == ContractType).ToList();
                 }
             }

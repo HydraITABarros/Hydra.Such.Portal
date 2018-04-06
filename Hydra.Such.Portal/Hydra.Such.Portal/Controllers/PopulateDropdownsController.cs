@@ -21,6 +21,7 @@ using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Extensions;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -86,8 +87,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFeatures()
         {
-            List<EnumData> result = EnumerablesFixed.Features;
-            return Json(result);
+            List<EnumData> enumData = new List<EnumData>();
+            var items = EnumHelper.GetItemsFor(typeof(Features));
+            items.ForEach(x =>
+                enumData.Add(new EnumData(x.Key, x.Value))
+            );
+            return Json(enumData);
+            //List<EnumData> result = EnumerablesFixed.Features;
+            //return Json(result);
         }
 
         [HttpPost]

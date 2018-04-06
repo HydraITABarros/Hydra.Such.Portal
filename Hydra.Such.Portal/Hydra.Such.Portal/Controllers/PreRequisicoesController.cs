@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Portal.Extensions;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {

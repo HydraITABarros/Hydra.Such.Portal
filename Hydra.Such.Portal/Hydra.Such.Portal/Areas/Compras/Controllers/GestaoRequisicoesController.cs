@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
-
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
