@@ -255,7 +255,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        #region Folha De Horas
+        #region Folha de Horas
         public IActionResult FolhaDeHoras(string folhaDeHoraNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 6);
