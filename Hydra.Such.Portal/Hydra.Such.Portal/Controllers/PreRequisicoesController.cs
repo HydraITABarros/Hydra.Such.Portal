@@ -16,6 +16,7 @@ using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Portal.Extensions;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -32,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
 
@@ -78,7 +79,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 
@@ -470,7 +471,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult RequisiçõesModeloLista(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreReqNo = id;
