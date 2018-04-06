@@ -819,6 +819,7 @@
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
                 </template>
@@ -826,6 +827,7 @@
                     <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <div class="marginSpace" hidden="{{ disabledFields }}">
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
