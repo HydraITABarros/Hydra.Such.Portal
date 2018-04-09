@@ -114,8 +114,6 @@ namespace Hydra.Such.Data
             Localizações = 39,
             [Description("Necessidade de Compras")]
             NecessidadeCompras = 41,
-            [Description("Fichas Tecnicas de Pratos")]
-            FichasTecnicasPratos = 42,
             [Description("Histórico de Requisições")]
             HistóricoRequisições = 43,
             [Description("Necessidade de Compras Direta")]
