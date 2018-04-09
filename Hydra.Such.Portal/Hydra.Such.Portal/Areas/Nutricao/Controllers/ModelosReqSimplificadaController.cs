@@ -74,7 +74,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                //return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 

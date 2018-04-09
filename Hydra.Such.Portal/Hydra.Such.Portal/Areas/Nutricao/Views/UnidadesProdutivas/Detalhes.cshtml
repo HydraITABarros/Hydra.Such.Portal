@@ -129,7 +129,9 @@
         </div><!--on-response="_gridListResponse"-->
 
         <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
         </div>
 
         <div class="row break_frm">

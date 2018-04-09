@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
@@ -36,33 +37,42 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Index(int option)
         {
-            HttpContext.Session.Remove("aprovadoSession");
-            ViewBag.RequisitionsApprovals = "false";
-            //‘Requisições simplificadas para Registar’ com estado aprovado
-            if (option == 1)
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.RequisiçõesSimplificadas);
+
+            if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.Option = "resgitar";
-            }
-            //Histórico Requisições simplificadas
-            else if (option == 2)
-            {
-                ViewBag.Option = "historico";
+                HttpContext.Session.Remove("aprovadoSession");
+                ViewBag.RequisitionsApprovals = "false";
+                //‘Requisições simplificadas para Registar’ com estado aprovado
+                if (option == 1)
+                {
+                    ViewBag.Option = "resgitar";
+                }
+                //Histórico Requisições simplificadas
+                else if (option == 2)
+                {
+                    ViewBag.Option = "historico";
+                }
+                else
+                {
+                    ViewBag.Option = "";
+                }
+                return View();
             }
             else
             {
-                ViewBag.Option = "";
+                //return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
-            return View();
         }
 
         [Area("Nutricao")]
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 40);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.RequisiçõesSimplificadas);
 
             if (UPerm != null && UPerm.Read.Value)
             {
-
                 ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
                 ViewBag.User = User.Identity.Name;
                 //Registar requisições aprovadas
@@ -93,7 +103,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                //return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
@@ -120,6 +131,20 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 HttpContext.Session.SetString("aprovadoSession", "");
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsiblePendente(User.Identity.Name));
+            }
+            if (result != null)
+            {
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //Regions
+                if (userDimensions.Where(y => y.Dimensão == (int)Enumerations.Dimensions.Region).Count() > 0)
+                    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Enumerations.Dimensions.Region && (y.ValorDimensão == x.RegionCode || string.IsNullOrEmpty(x.RegionCode))));
+                //FunctionalAreas
+                if (userDimensions.Where(y => y.Dimensão == (int)Enumerations.Dimensions.FunctionalArea).Count() > 0)
+                    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Enumerations.Dimensions.FunctionalArea && (y.ValorDimensão == x.FunctionalAreaCode || string.IsNullOrEmpty(x.FunctionalAreaCode))));
+                //ResponsabilityCenter
+                if (userDimensions.Where(y => y.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter).Count() > 0)
+                    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.ResponsabilityCenterCode || string.IsNullOrEmpty(x.ResponsabilityCenterCode))));
             }
             return Json(result);
         }

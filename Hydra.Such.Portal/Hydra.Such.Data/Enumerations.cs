@@ -112,8 +112,6 @@ namespace Hydra.Such.Data
             ModelosRequisiçõesSimplificadas = 38,
             [Description("Localizações")]
             Localizações = 39,
-            //[Description("Requisições Simplificadas")]
-            //RequisiçõesSimplificadas = 40,
             [Description("Necessidade de Compras")]
             NecessidadeCompras = 41,
             [Description("Fichas Tecnicas de Pratos")]
