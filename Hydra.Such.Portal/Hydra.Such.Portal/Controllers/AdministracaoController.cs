@@ -23,6 +23,7 @@ using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -616,7 +617,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Configuracoes()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -2748,47 +2760,47 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
             if (id == "Engenharia")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Engenharia, (int)Enumerations.Features.Administração);
             }
             if (id == "Ambiente")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Ambiente, (int)Enumerations.Features.Administração);
             }
             if (id == "Nutricao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Nutrição, (int)Enumerations.Features.Administração);
             }
             if (id == "Vendas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 4, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Vendas, (int)Enumerations.Features.Administração);
             }
             if (id == "Apoio")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Apoio, (int)Enumerations.Features.Administração);
             }
             if (id == "PO")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 6, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.PO, (int)Enumerations.Features.Administração);
             }
             if (id == "NovasAreas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.NovasÁreas, (int)Enumerations.Features.Administração);
             }
             if (id == "Internacionalizacao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Internacional, (int)Enumerations.Features.Administração);
             }
             if (id == "Juridico")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Jurídico, (int)Enumerations.Features.Administração);
             }
             if (id == "Compras")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Compras, (int)Enumerations.Features.Administração);
             }
             if (id == "Administracao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 11, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Administração, (int)Enumerations.Features.Administração);
             }
 
             return UPerm;

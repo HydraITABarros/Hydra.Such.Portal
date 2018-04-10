@@ -224,12 +224,14 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
-            <paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
-            <such-dropdown-menu on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
-            <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
-            <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
-            <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
+                <paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+                <such-dropdown-menu on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+                <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+                <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+            </template>
         </div>
 
         <div class="row break_frm">
@@ -952,6 +954,7 @@
                                     </template>
                                 </vaadin-grid-column>
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
                                     <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
                                         <template class="header">
                                         </template>
@@ -959,6 +962,7 @@
                                             <paper-button class="btnRemove" raised on-tap="_deleteRequisitionLine">Eliminar</paper-button>
                                         </template>
                                     </vaadin-grid-column>
+                                    </template>
                                 </template>
                             </vaadin-grid>
                         </div>
