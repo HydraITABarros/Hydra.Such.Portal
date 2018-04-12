@@ -47,18 +47,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Utilizadores
         public IActionResult ConfiguracaoUtilizadores()
         {
-            UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
+            return View();
         }
 
         [HttpPost]
@@ -468,18 +457,7 @@ namespace Hydra.Such.Portal.Controllers
         #region PerfisModelo
         public IActionResult PerfisModelo()
         {
-            UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
+            return View();
         }
 
         [HttpPost]
@@ -729,18 +707,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ConfiguracaoNumeracoes()
         {
-            UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
+            return View();
         }
 
         [HttpPost]
