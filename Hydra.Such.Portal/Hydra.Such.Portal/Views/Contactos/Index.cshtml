@@ -26,10 +26,11 @@
 
         <iron-ajax id="contacts_grid_datasource" url="/Contactos/GetContacts" last-response="{{Contacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax id="deleteContact_ajax" url="/Contactos/DeleteContact" last-response="{{DeleteContactResponse}}" on-response="_deleteContactResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
+        <template is="dom-if" if="{{ _permissions.create }}">
         <div class="marginSpace">
             <paper-button class="btnSave" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
+        </template>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
@@ -50,14 +51,15 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                </template>
-            </vaadin-grid-column>
-
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -73,7 +75,11 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
                 },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -95,7 +101,7 @@
                 },
                 _deleteContact: function (e) {
                     var ajax_request = this.$.deleteContact_ajax;
-                    
+
                     var contactToDelete = e.model.item;//this.activeItem;
 
                     bootbox.confirm({

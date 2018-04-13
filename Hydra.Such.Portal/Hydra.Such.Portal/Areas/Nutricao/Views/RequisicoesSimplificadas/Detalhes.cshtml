@@ -200,12 +200,16 @@ else
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <div class="subMenu">
+                    
+                    <div class="subMenu">
+                        <template is="dom-if" if="{{ _permissions.create }}">
                             <paper-button class="tablinks" on-tap="_createNew"><i class="fa fa-plus-square" aria-hidden="true"></i> Nova Requisição</paper-button>
+                        </template>
+                        <template is="dom-if" if="{{ _permissions.update }}">
                             <paper-button class="tablinks" on-tap="_finishRequisition"><i class="fa fa-check-square" aria-hidden="true"></i> Terminar Requisição</paper-button>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
+                    
                 </div>
             </div>
 
@@ -815,17 +819,19 @@ else
                                     </template>
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column>
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <div style="display:{{ _showLinesForm }};">
-                                        <center>
-                                            <paper-button class="btnRemove" raised on-tap="_deleteRequisitionsLine">Eliminar</paper-button>
-                                        </center>
-                                    </div>
-                                </template>
-                            </vaadin-grid-column>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <vaadin-grid-column>
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <div style="display:{{ _showLinesForm }};">
+                                            <center>
+                                                <paper-button class="btnRemove" raised on-tap="_deleteRequisitionsLine">Eliminar</paper-button>
+                                            </center>
+                                        </div>
+                                    </template>
+                                </vaadin-grid-column>
+                            </template>
                         </vaadin-grid>
                     </div>
                     <div class="marginSpace" style="display: {{ _showLinesForm }};">

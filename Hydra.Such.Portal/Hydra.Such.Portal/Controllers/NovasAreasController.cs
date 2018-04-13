@@ -8,6 +8,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -22,7 +23,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Projetos
         public IActionResult Projetos()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 1);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Projetos); //7, 1);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -36,7 +37,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 1);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Projetos); //7, 1);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -51,7 +52,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ProjetosContrato(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 1);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Projetos); //7, 1);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -66,7 +67,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DiarioProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 19);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.DiárioProjeto); //7, 19);
             if (UPerm != null && UPerm.Read.Value)
             {
                 // UPerm.Update = false;
@@ -83,7 +84,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult AutorizacaoFaturacao(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 22);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.AutorizaçãoFaturação); //7, 22);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -102,7 +103,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Contratos
         public IActionResult Contratos(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Contratos); //7, 2);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -119,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesContrato(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Contratos); //7, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -148,7 +149,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Oportunidades
         public IActionResult Oportunidades(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 20);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Oportunidades); //7, 20);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -165,7 +166,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesOportunidade(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 20);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Oportunidades); //7, 20);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -194,7 +195,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Propostas
         public IActionResult Propostas(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 21);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Propostas); //7, 21);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -211,7 +212,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProposta(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 21);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Propostas); //7, 21);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -239,7 +240,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public ActionResult Administracao()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 18);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração); //7, 18);
             if (UPerm != null && UPerm.Read.Value)
             {
                 return View();
@@ -250,10 +251,10 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        #region Folha De Horas
+        #region Folha de Horas
         public IActionResult FolhaDeHoras(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -270,7 +271,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_Index(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -287,7 +288,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_IntegracaoAjudaCusto(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -304,7 +305,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_IntegracaoKMS(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -321,7 +322,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_Validacao(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -338,7 +339,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_Historico(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.FolhasHoras); //7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -358,7 +359,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PreRequisicoesLista()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.PréRequisições); //7, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 7;
@@ -373,7 +374,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PreRequisicoesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.PréRequisições); //7, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 7;
@@ -391,7 +392,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Pending Requesitions
         public IActionResult RequisicoesPendentes()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 0);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.NovasÁreas, 0);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 7;

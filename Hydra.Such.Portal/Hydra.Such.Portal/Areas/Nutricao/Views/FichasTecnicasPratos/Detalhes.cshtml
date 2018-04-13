@@ -55,7 +55,9 @@
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <div class="subMenu" hidden="{{ _permissionssubMenu }}">
-            <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
+            </template> 
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlates" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
@@ -159,7 +161,11 @@
                 properties: {
                     _SelectedLine: {
                         observer: '_rowSelected'
-                    }
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
                 },
                 _openCreate: function (item) {
                     if (item != null) {

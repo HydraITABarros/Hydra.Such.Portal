@@ -103,7 +103,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button raised id="btnViaturaAdd" class="" on-tap="_goToNewViatura"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button raised id="btnViaturaAdd" class="" on-tap="_goToNewViatura"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    </template>
                 </template>
                 <paper-button raised id="btnViaturaArchive" class="" on-tap="_goToViatutras"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de Viaturas</paper-button>
             </div>
@@ -367,7 +369,9 @@
 
                                     <div class="col-lg-6">
                                         <label part="label" id="vaadin-text-field-label" class="grey">Imagem</label>
-                                        <vaadin-upload value="{{data.imagem}}" id="Imagem" name="Imagem" label="Imagem" nodrop max-files="1" accept='image/*'></vaadin-upload>
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <vaadin-upload value="{{data.imagem}}" id="Imagem" name="Imagem" label="Imagem" nodrop max-files="1" accept='image/*'></vaadin-upload>
+                                        </template>
                                     </div>
                                 </div>
 

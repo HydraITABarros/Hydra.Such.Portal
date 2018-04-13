@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -30,16 +31,13 @@ namespace Hydra.Such.Portal.Controllers
             List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList());
 
             //Apply User Dimensions Validations
-            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodigoRegiao));
-            //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodigoAreaFuncional));
-            //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodigoCentroResponsabilidade));
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodigoRegiao));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodigoAreaFuncional));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodigoCentroResponsabilidade));
 
             result.ForEach(x =>
             {

@@ -3,28 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public enum RequisitionStates
-    {
-        [Description("Pendente")]
-        Pending,
-        [Description("Recebido")]
-        Received,
-        [Description("Tratado")]
-        Treated,
-        [Description("Validado")]
-        Validated,
-        [Description("Aprovado")]
-        Approved,
-        [Description("Disponibilizado")]
-        Available,
-        [Description("Arquivado")]
-        Archived
-
-    }
-
     public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }

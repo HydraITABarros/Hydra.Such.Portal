@@ -468,8 +468,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 col-lg-12">
-
+                                    <div class="col-md-12 col-lg-12" hidden="{{ !_permissionsVal.update }}">
                                         <form method="post" enctype="multipart/form-data">
                                             <input type="file" id="files" name="files" />
                                             <button class="btn btn-primary start" type="button" id="upload" value="Upload Selected Files" on-tap="_Upload">

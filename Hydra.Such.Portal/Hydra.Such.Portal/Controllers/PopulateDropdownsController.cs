@@ -21,6 +21,7 @@ using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Extensions;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {

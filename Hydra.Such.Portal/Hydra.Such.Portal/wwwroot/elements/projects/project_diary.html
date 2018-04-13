@@ -142,9 +142,11 @@
             }
         </style>
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -819,6 +821,7 @@
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
                 </template>
@@ -826,6 +829,7 @@
                     <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <div class="marginSpace" hidden="{{ disabledFields }}">
             <div class="marginSpace" hidden="{{ !_permissions.update }}">

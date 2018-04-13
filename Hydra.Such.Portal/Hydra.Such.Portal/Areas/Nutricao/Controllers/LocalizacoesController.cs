@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
@@ -16,7 +17,17 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Index()
         {
-            return View();
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Localizações);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UserPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
         }
 
         [Area("Nutricao")]
@@ -31,7 +42,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 39);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Localizações);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -41,7 +52,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 

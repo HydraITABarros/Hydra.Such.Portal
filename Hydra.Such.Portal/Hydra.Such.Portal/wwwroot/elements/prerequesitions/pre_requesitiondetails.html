@@ -524,9 +524,11 @@
                                 <!--Anexos-->
                                 <div>
                                     <div class="row break_clear">
-                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-                                        </vaadin-upload>
+                                            </vaadin-upload>
+                                        </template>
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
@@ -742,7 +744,9 @@
                                     </div>
                                     <div class="col-lg-2">
                                         <br />
-                                        <paper-button raised id="btnPreReqLine" class="btnSave" on-tap="_createPreReqLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        <template is="dom-if" if="{{ _permissions.create }}">
+                                            <paper-button raised id="btnPreReqLine" class="btnSave" on-tap="_createPreReqLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
                                     </div>
                                 </div>
                                 <br />
@@ -1095,8 +1099,8 @@
                                 <template is="dom-if" if="{{ _permissions.update }}">
                                     <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                     <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-                                    <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
                                 </template>
+                                <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
                             </div>
                             <br />
                         </paper-collapse-group>
