@@ -147,7 +147,7 @@
                             <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Vendas", new { area = "" }, null)</li>
+                            @*<li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Vendas", new { area = "" }, null)</li>*@
                             <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Vendas", new { area = "" }, null)</li>
                         </ul>
@@ -165,7 +165,7 @@
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Apoio", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Apoio", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições", "Resquisicoes", "Apoio", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Apoio", new { area = "" }, null)</li>
+                            @*<li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Apoio", new { area = "" }, null)</li>*@
                             <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", new { area = "" }, null)</li>
 
                             <li data-toggle="collapse" data-target="#FolhasDeHorasApoio" class="collapsed active">
@@ -334,8 +334,6 @@
                     </footer>*@
             </div>
         </div>
-
-
 
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
