@@ -61,17 +61,6 @@
                 outline-width: 8px;
             }
 
-
-
-            /*.vaadin-grid-table-header .vaadin-grid-cell-content .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(vaadin-grid-cell-content) {
-                font-weight: 500;
-                height: var(--vaadin-grid-header-cell_-_height);
-                color: var(--vaadin-grid-header-cell_-_color);
-                font-size: var(--vaadin-grid-header-cell_-_font-size);
-                border-bottom: var(--vaadin-grid-header-cell_-_border-bottom);
-                background-color: white !important;
-            }*/
-
             .mb-15 {
                 margin-bottom: 15px;
             }
@@ -2919,9 +2908,9 @@
                                                 <paper-tooltip for="CBVerde1" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado1Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault1" value="{{data.temposPaCcp.estado1}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault1" value="{{data.temposPaCcp.estado1}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -2938,9 +2927,9 @@
                                                 <paper-tooltip for="CBVerde11" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado11Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault11" value="{{data.temposPaCcp.estado11}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault11" value="{{data.temposPaCcp.estado11}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -2959,9 +2948,9 @@
                                                 <paper-tooltip for="CBVerde2" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado2Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault2" value="{{data.temposPaCcp.estado2}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault2" value="{{data.temposPaCcp.estado2}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -2978,9 +2967,9 @@
                                                 <paper-tooltip for="CBVerde12" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado12Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault12" value="{{data.temposPaCcp.estado12}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault12" value="{{data.temposPaCcp.estado12}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -2999,9 +2988,9 @@
                                                 <paper-tooltip for="CBVerde3" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado3Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3018,9 +3007,9 @@
                                                 <paper-tooltip for="CBVerde13" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado13Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault13" value="{{data.temposPaCcp.estado13}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault13" value="{{data.temposPaCcp.estado13}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3039,9 +3028,9 @@
                                                 <paper-tooltip for="CBVerde4" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado4Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault4" value="{{data.temposPaCcp.estado4}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault4" value="{{data.temposPaCcp.estado4}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3058,9 +3047,9 @@
                                                 <paper-tooltip for="CBVerde14" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado14Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault14" value="{{data.temposPaCcp.estado14}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault14" value="{{data.temposPaCcp.estado14}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3079,9 +3068,9 @@
                                                 <paper-tooltip for="CBVerde5" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado5Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault5" value="{{data.temposPaCcp.estado5}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault5" value="{{data.temposPaCcp.estado5}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3098,9 +3087,9 @@
                                                 <paper-tooltip for="CBVerde15" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado15Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault15" value="{{data.temposPaCcp.estado15}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault15" value="{{data.temposPaCcp.estado15}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3119,9 +3108,9 @@
                                                 <paper-tooltip for="CBVerde6" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado6Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault6" value="{{data.temposPaCcp.estado6}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault6" value="{{data.temposPaCcp.estado6}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3138,9 +3127,9 @@
                                                 <paper-tooltip for="CBVerde16" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado16Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault16" value="{{data.temposPaCcp.estado16}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault16" value="{{data.temposPaCcp.estado16}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3159,9 +3148,9 @@
                                                 <paper-tooltip for="CBVerde7" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado7Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault7" value="{{data.temposPaCcp.estado7}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault7" value="{{data.temposPaCcp.estado7}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3178,9 +3167,9 @@
                                                 <paper-tooltip for="CBVerde17" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado17Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault17" value="{{data.temposPaCcp.estado17}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault17" value="{{data.temposPaCcp.estado17}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3199,9 +3188,9 @@
                                                 <paper-tooltip for="CBVerde8" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado8Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault8" value="{{data.temposPaCcp.estado8}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault8" value="{{data.temposPaCcp.estado8}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3218,9 +3207,9 @@
                                                 <paper-tooltip for="CBVerde18" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado18Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault18" value="{{data.temposPaCcp.estado18}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault18" value="{{data.temposPaCcp.estado18}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3239,9 +3228,9 @@
                                                 <paper-tooltip for="CBVerde9" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado9Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault9" value="{{data.temposPaCcp.estado9}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault9" value="{{data.temposPaCcp.estado9}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3258,9 +3247,9 @@
                                                 <paper-tooltip for="CBVerde19" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado19Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault19" value="{{data.temposPaCcp.estado19}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault19" value="{{data.temposPaCcp.estado19}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3279,9 +3268,9 @@
                                                 <paper-tooltip for="CBVerde10" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado10Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault10" value="{{data.temposPaCcp.estado10}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault10" value="{{data.temposPaCcp.estado10}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -3298,9 +3287,9 @@
                                                 <paper-tooltip for="CBVerde20" position="top" offset="-1" animation-delay="1">
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado20Tg}} ]
                                                 </paper-tooltip>
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault20" value="{{data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar id="CBDefault20" value="{{data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
@@ -3321,7 +3310,7 @@
                                             <paper-tooltip for="CBDefault_diasAtribuidos" position="top" offset="-1" animation-delay="1">
                                                 Dias atribuidos - [ {{data.temposPaCcp.somaEstadosAtribuidos}} ]
                                             </paper-tooltip>
-                                            <vaadin-progress-bar theme="contrast" id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.somaEstadosAtribuidos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.somaEstadosAtribuidos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <vaadin-text-field name="diasAtribuidos_data" id="diasAtribuidos_data" value="{{data.dataFechoPrevista}}" readonly style="text-align:center;"></vaadin-text-field>
@@ -3341,8 +3330,8 @@
                                             <paper-tooltip for="CBDefault_diasGastos_verde" position="top" offset="-1" animation-delay="1">
                                                 Dias Gastos - [ {{data.temposPaCcp.somaEstadosGastos}} ]
                                             </paper-tooltip>
-                                            <vaadin-progress-bar theme="error" id="CBDefault_diasGastos_vermelho" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
-                                            <vaadin-progress-bar theme="success" id="CBDefault_diasGastos_verde" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100" visible="false"></vaadin-progress-bar>
+                                            <vaadin-progress-bar class="out-of-range" id="CBDefault_diasGastos_vermelho" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar class="in-range" id="CBDefault_diasGastos_verde" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100" visible="false"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             
@@ -3353,19 +3342,19 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="contrast" id="CBDefault_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar id="CBDefault_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias atribuidos</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="error" id="CBVermelho_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar class="out-of-range" id="CBVermelho_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos no prazo</label>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-progress-bar theme="success" id="CBVerde_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar class="in-range" id="CBVerde_Legenda" value="100" min="0" max="100"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
                                             <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos fora do prazo</label>
