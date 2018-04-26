@@ -18,7 +18,7 @@
 
 <h1 class="title">Unidades Produtivas</h1>
 
-<x-productivityunits></x-productivityunits>
+<x-productivityunits _permissions='@Html.Raw(Json.Serialize(ViewBag.UserPermissions))'></x-productivityunits>
 <dom-module id="x-productivityunits">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -128,29 +128,32 @@
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            Polymer({
-                is: 'x-productivityunits',
-                properties: {
-                    activeItem: {
-                        observer: '_rowSelected'
-                    },
-                    _filterActive: {
-                        type: Boolean,
-                        value:true
-                    }
-                },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/" + item.productivityUnitNo;
-                    }
-                },
-                _create: function (item) {
-                    if (item != null) {
-                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/";
-                    }
-                }
-            });
-        });
+                            Polymer({
+                                is: 'x-productivityunits',
+                                properties: {
+                                    activeItem: {
+                                        observer: '_rowSelected'
+                                    },
+                                    _filterActive: {
+                                        type: Boolean,
+                                        value: true
+                                    },
+                                    _permissions: {
+                                        type: Array
+                                    },
+                                },
+                                _rowSelected: function (item) {
+                                    if (item != null) {
+                                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/" + item.productivityUnitNo;
+                                    }
+                                },
+                                _create: function (item) {
+                                    if (item != null) {
+                                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/";
+                                    }
+                                }
+                            });
+                        });
     </script>
 
 </dom-module>

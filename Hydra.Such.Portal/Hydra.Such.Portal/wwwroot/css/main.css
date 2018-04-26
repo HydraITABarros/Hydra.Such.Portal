@@ -139,6 +139,11 @@ ul.nav li:hover {
     cursor: pointer;
 }
 
+.btnAddNew {
+    background-color: #71BCC1;
+    color: white;
+    cursor: pointer;
+}
 
 .btnDefault {
     max-width: 125px !important;
