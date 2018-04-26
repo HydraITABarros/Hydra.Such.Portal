@@ -911,6 +911,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
