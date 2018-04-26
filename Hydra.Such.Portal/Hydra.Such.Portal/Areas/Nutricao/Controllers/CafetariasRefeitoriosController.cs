@@ -81,7 +81,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
-
+        
         [HttpPost]
         [Area("Nutricao")]
         public JsonResult GetCoffeeShop([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
