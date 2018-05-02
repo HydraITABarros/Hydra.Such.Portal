@@ -74,6 +74,24 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
         #endregion
 
+        [Area("Nutricao")]
+        public IActionResult DetalhesCafetariasRefeitorios(int code)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Cafetarias_Refeitórios);
+            CafetariasRefeitórios coffeeShop = DBCoffeeShops.GetByCode(code);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.Code = code;
+
+                return Redirect(Url.Content("/Nutricao/CafetariasRefeitorios/Detalhes/" + "?productivityUnitNo=" + coffeeShop.NºUnidadeProdutiva + "&type=" + coffeeShop.Tipo + "&code=" + coffeeShop.Código + "&explorationStartDate=" + coffeeShop.DataInícioExploração));
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         #region Detalhes Unidades Produtivas
         [Area("Nutricao")]
         public IActionResult Detalhes(int id)
