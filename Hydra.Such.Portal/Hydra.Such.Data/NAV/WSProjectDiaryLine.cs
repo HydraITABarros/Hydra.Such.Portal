@@ -46,12 +46,12 @@ namespace Hydra.Such.Data.NAV
                     Quantity = Convert.ToDecimal(y.Quantity),
                     Unit_CostSpecified = true,
                     Unit_Cost = Convert.ToDecimal(y.UnitCost),
-                    Total_CostSpecified = true,
-                    Total_Cost = Convert.ToDecimal(y.TotalCost),
+                    //Total_CostSpecified = true,
+                    //Total_Cost = Convert.ToDecimal(y.TotalCost),
                     Unit_PriceSpecified = true,
                     Unit_Price = Convert.ToDecimal(y.UnitPrice),
-                    Total_PriceSpecified = true,
-                    Total_Price = Convert.ToDecimal(y.TotalPrice),
+                    //Total_PriceSpecified = true,
+                    //Total_Price = Convert.ToDecimal(y.TotalPrice),
                     Portal_Transaction_No = TransactID.ToString()
                 }).ToArray()
             };

@@ -973,15 +973,15 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
-            //Guid transactID = Guid.NewGuid();
+            Guid transactID = Guid.NewGuid();
 
             //Create Lines in NAV
-            //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
-            //TCreateNavDiaryLine.Wait();
+            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+            TCreateNavDiaryLine.Wait();
 
             ////Register Lines in NAV
-            //Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-            //TRegisterNavDiaryLine.Wait();
+            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+            TRegisterNavDiaryLine.Wait();
 
             //SET INTEGRATED IN DB
             if (dp != null)
