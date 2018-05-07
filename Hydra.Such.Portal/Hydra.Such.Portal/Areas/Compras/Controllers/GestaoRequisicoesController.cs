@@ -14,7 +14,8 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
-
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -32,14 +33,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult Index()
         {
-            return View();
-        }
-
-        [Area("Compras")]
-        public IActionResult Detalhes()
-        {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -47,20 +42,46 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
+        [Area("Compras")]
+        public IActionResult Detalhes()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult RequisicoesAprovadas()
         {
-            return View();
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
         }
 
         [Area("Compras")]
         public IActionResult DetalhesReqAprovada(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -73,14 +94,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult LinhasRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -95,14 +116,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult HistóricoCabeçalhoRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -117,7 +138,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
         [HttpPost]
@@ -129,14 +150,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
 
@@ -307,14 +328,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
         [HttpPost]
@@ -326,14 +347,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
         [HttpPost]
@@ -344,15 +365,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
-            //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
-            //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result);
         }
         [HttpPost]
@@ -1071,7 +1091,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult PontosSituacao()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -1081,14 +1101,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId,[FromQuery] string lineId)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1099,7 +1119,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
@@ -1222,7 +1242,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         public IActionResult HistoricoRequisicoes()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1230,7 +1250,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 

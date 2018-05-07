@@ -13,6 +13,8 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
@@ -32,7 +34,16 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Index()
         {
-            return View();
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.UnidadesProdutivas);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UserPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
         }
 
         [HttpPost]
@@ -40,33 +51,52 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         public JsonResult GetProductivityUnits()
         {
             List<ProductivityUnitViewModel> result = DBProductivityUnits.ParseListToViewModel(DBProductivityUnits.GetAll());
-
-            result.ForEach(x =>
+            if (result != null)
             {
-                x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-            });
+                result.ForEach(x =>
+                {
+                    x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+                });
 
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodeRegion));
-            //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodeFunctionalArea));
-            //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
-
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodeRegion));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodeFunctionalArea));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodeResponsabilityCenter));
+            }
             return Json(result);
         }
         #endregion
+
+        [Area("Nutricao")]
+        public IActionResult DetalhesCafetariasRefeitorios(int code)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Cafetarias_Refeitórios);
+            CafetariasRefeitórios coffeeShop = DBCoffeeShops.GetByCode(code);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.Code = code;
+
+                return Redirect(Url.Content("/Nutricao/CafetariasRefeitorios/Detalhes/" + "?productivityUnitNo=" + coffeeShop.NºUnidadeProdutiva + "&type=" + coffeeShop.Tipo + "&code=" + coffeeShop.Código + "&explorationStartDate=" + coffeeShop.DataInícioExploração));
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         #region Detalhes Unidades Produtivas
         [Area("Nutricao")]
         public IActionResult Detalhes(int id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.UnidadesProdutivas);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -76,7 +106,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
         

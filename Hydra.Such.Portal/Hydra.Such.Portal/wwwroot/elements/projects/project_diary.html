@@ -142,9 +142,11 @@
             }
         </style>
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -306,7 +308,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -349,7 +351,7 @@
         <iron-ajax url="/Projetos/GetMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post" dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetRelatedProjectInfo" last-response="{{related}}" id="ajax_related" method="post" on-response="_updateRelatedResponse" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" active-item="{{_SelectedLine}}">
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result.items]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -819,6 +821,7 @@
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
                 </template>
@@ -826,6 +829,7 @@
                     <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <div class="marginSpace" hidden="{{ disabledFields }}">
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
@@ -1414,7 +1418,7 @@
                     if (true)
                     //Validações
                     {
-                        this.result.unshift({
+                        this.result.items.unshift({
                             projectNo: this.projectNumber,
                             date: this.date,
                             movementType: this.projectMovementNumber,
@@ -1445,7 +1449,7 @@
                         });
 
                         // Save to DB
-                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                     } else {
@@ -1454,15 +1458,15 @@
                 },
 
                 _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
                     this.$.ajax_update.generateRequest();
                 },
 
                 _delete: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
+                    var index = this.result.items.indexOf(e.model.item);
+                    this.result.items.splice(index, 1);
                     // Save to DB
-                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
                     this.$.ajax_update.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
@@ -1485,60 +1489,82 @@
                 },
                 _updateResponse: function (e) {
                     var self = this;
+                    
                     if (e.detail.status === 200) {
-
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
+                        if (this.result.eReasonCode === 1) {
+                            
+                            this.openToastSuccess(this.result.eMessage);
+                            if (!this.disabledProjectNo) {
+                                this.projectNumber = "";
+                                this.codeRegion = "";
+                                this.codeFuncArea = "";
+                                this.codeResponsabilityCenter = "";
+                            }
+                            this.date = "";
+                            this.projectMovementNumber = "";
+                            this.projectTypeNumber = "";
+                            this.codeNumber = "";
+                            this.description = "";
+                            this.quantity = "";
+                            this.codeMeasurementUnit = "";
+                            this.codeLocation = "";
+                            this.codeProjectContabGroup = "";
+                            this.unitCost = "";
+                            this.totalCost = "";
+                            this.unitPrice = "";
+                            this.totalPrice = "";
+                            this.billable = true;
+                            this.invoiceClientNo = "";
+                            this.ddMealTypes = "";
+                            this.ddServiceGroupCode = "";
+                            this.residueguide = "";
+                            this.externalguide = "";
+                            this.consumptionDate = "";
+                            this.ddServiceClientCode = "";
+                            this.unitValueToInvoice = "";
+                            
 
-                        if (!this.disabledProjectNo) {
-                            this.projectNumber = "";
-                            this.codeRegion = "";
-                            this.codeFuncArea = "";
-                            this.codeResponsabilityCenter = "";
+                            this.$.piCode.value = "";
+                            this.$.piCode.valueText = "";
+                            this.$.piDescription.value = "";
+                            this.$.piCodeLocation.value = "";
+                            this.$.piCodeLocation.valueText = "";
+                            this.$.piCodeRegion.value = "";
+                            this.$.piCodeRegion.valueText = "";
+                            this.$.piFuncArea.value = "";
+                            this.$.piFuncArea.valueText = "";
+                            this.$.piCodeResponsabilityCenter.value = "";
+                            this.$.piCodeResponsabilityCenter.valueText = "";
+                            this.$.piUnitCost.value = "";
+                            this.$.piTotalCost.value = "";
+                            this.$.piUnitPrice.value = "";
+                            this.$.piTotalPrice.value = "";
+                            this.$.piUnitValueToInvoice.value = "";
+                            this.$.piCoin.value = "";
+                            this.$.pcInvoice.value = true;
+                            this.$.MealTypesCode.value = "";
+                            this.$.MealTypesCode.valueText = "";
+                            this.$.ServiceGroupCod.value = "";
+                            this.$.ServiceGroupCod.valueText = "";
+                            this.$.piResidueGuideNo.value = "";
+                            this.$.piExternalGuideNo.value = "";
+                            this.$.dpcompDate.value = "";
+                            this.$.piContabGroup.value = "";
+                            this.$.piContabGroup.valueText = "";
+                            this.$.piCodeMeasurementUnit.value = "";
+                            this.$.piCodeMeasurementUnit.valueText = "";
+                            this.$.projectList.value = "";
+                            this.$.projectList.valueText = "";
+                            this.$.projectMovementList.value = "";
+                            this.$.projectMovementList.valueText = "";
+                            this.$.projectTypeList.value = "";
+                            this.$.projectTypeList.valueText = "";
                         }
-                        this.date = "";
-                        this.projectMovementNumber = "";
-                        this.projectTypeNumber = "";
-                        this.codeNumber = "";
-                        this.description = "";
-                        this.quantity = "";
-                        this.codeMeasurementUnit = "";
-                        this.codeLocation = "";
-                        this.codeProjectContabGroup = "";
-                        this.unitCost = "";
-                        this.totalCost = "";
-                        this.unitPrice = "";
-                        this.totalPrice = "";
-                        this.billable = true;
-                        this.invoiceClientNo = "";
-                        this.ddMealTypes = "";
-                        this.ddServiceGroupCode = "";
-                        this.residueguide = "";
-                        this.externalguide = "";
-                        this.consumptionDate = "";
-                        this.ddServiceClientCode = "";
-                        this.unitValueToInvoice = "";
-                        this.openToastSuccess("Diário de Projeto atualizado.");
-                        
-                        this.$.piCode.value = "";
-                        this.$.piCode.valueText = "";
-                        this.$.piCodeLocation.value = "";
-                        this.$.piCodeRegion.value = "";
-                        this.$.piFuncArea.value = "";
-                        this.$.piCodeResponsabilityCenter.value = "";
-                        this.$.piUnitCost.value = "";
-                        this.$.piTotalCost.value = "";
-                        this.$.piUnitPrice.value = "";
-                        this.$.piTotalPrice.value = "";
-                        this.$.piUnitValueToInvoice.value = "";
-                        this.$.piCoin.value = "";
-                        this.$.pcInvoice.value = true;
-                        this.$.MealTypesCode.value = "";
-                        this.$.MealTypesCode.valueText = "";
-                        this.$.ServiceGroupCod.value = "";
-                        this.$.piResidueGuideNo.value = "";
-                        this.$.piExternalGuideNo.value = "";
-                        this.$.dpcompDate.value = "";
+                        else {
+                            this.openToastError(this.result.eMessage);
+                        }
                     } else {
                         this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
                     }
@@ -1546,8 +1572,10 @@
                 _confirm: function (selectedItem, selectedItems) {
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
+                        var destinationProject = this.$.projectTargetDlg.value;
                         for (var i = 0; i < selItms.length; i++) {
                             selItms[i].lineNo = 0;
+                            selItms[i].projectNo = destinationProject;
                         }
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
@@ -1559,7 +1587,6 @@
                 },
 
                 _projectChange: function (e) {
-                    debugger;;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1640,7 +1667,7 @@
                 },
 
                 _registerDiary: function () {
-                    this.$.ajax_register.body = JSON.stringify(this.result);
+                    this.$.ajax_register.body = JSON.stringify(this.result.items);
                     this.$.ajax_register.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
@@ -1727,17 +1754,17 @@
                     this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
                     this.$.contractlinecodesgrid_ajax.generateRequest();
 
-                    this.result.find(x => x == this._SelectedLine).code = "";
-                    this.result.find(x => x == this._SelectedLine).type = e.detail.value;
+                    this.result.items.find(x => x == this._SelectedLine).code = "";
+                    this.result.items.find(x => x == this._SelectedLine).type = e.detail.value;
                     this.$.projectDiaryProject.clearCache();
                 },
 
                 _lineCodeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
-                        this.result.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.result.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.result.items.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.result.items.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.result.items.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
                         this.$.projectDiaryProject.clearCache();
                     }
                 },
@@ -1909,7 +1936,7 @@
 
                 _lineCalcTotals: function (param) {
                     if (this.result != null) {
-                        var res = this.result.find(x => x == this._SelectedLine);
+                        var res = this.result.items.find(x => x == this._SelectedLine);
                         if (res != null) {
                             var qnt = res.quantity;
                             var unitCost = res.unitCost;
@@ -1944,13 +1971,13 @@
 
                 _lineSelected: function (item) {
                     if (item != null) {
-                        var oSel = this.result.find(x => x.selected);
+                        var oSel = this.result.items.find(x => x.selected);
                         if (oSel != undefined) {
                             oSel.selected = false;
                         }
-                        var sel = this.result.find(x => x == item);
+                        var sel = this.result.items.find(x => x == item);
                         if (sel != undefined) {
-                            this.result.find(x => x == item).selected = true;
+                            this.result.items.find(x => x == item).selected = true;
                             this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             this.$.contractlinecodesgrid_ajax.generateRequest();
                             this.$.projectDiaryProject.clearCache();

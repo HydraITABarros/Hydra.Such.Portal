@@ -6,6 +6,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -30,7 +31,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Administracao()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 18);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração); //9, 18);
             if (UPerm != null && UPerm.Read.Value)
             {
                 return View();

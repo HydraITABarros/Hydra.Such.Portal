@@ -175,15 +175,19 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
-                <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
-                <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                    <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
+                    <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
+                </template>
             </div>
         </template>
 
         <div class="row" style="display: {{ _showContractLines }};">
             <div class="col-lg-12">
-                <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
                 <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
             </div>
@@ -1019,9 +1023,11 @@
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
                                     </div>
-                                    <div class="col-lg-2">
-                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </div>
+                                    <template is="dom-if" if="{{ _permissions.create }}">
+                                        <div class="col-lg-2">
+                                            <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </div>
+                                    </template>
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
@@ -1395,8 +1401,10 @@
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _lockFields }}">
-                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <template is="dom-if" if="{{ _lockFields }}">
+                                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </template>
                             </template>
                         </div>
                     </div>
@@ -1865,11 +1873,11 @@
                         var contractNo = this.data.contractNo;
                         setTimeout(
                             function () {
-                                window.location.href = "../DetalhesContrato/" + contractNo;
+                                window.location.href = window.location.href + "/" + contractNo;//"DetalhesContrato/" + contractNo;
                             }, 1000);
 
                     } else {
-                        this._openToast(this.data.eMessage);
+                        this._openToastError(this.data.eMessage);
                     }
                 },
                 _responseValidatorProcessor: function (data) {
@@ -2231,7 +2239,7 @@
                     var version = this.data.versionNo;
                     var percentageToApply = null;
 
-                    if (this.$.chkUpdateLines.checked) 
+                    if (this.$.chkUpdateLines.checked)
                         percentageToApply = this.$.txtPercentage.value;
 
                     this.$.createProposal_ajax.body = JSON.stringify({ "contractId": contractId, "versionNo": version, "percentageToApllyInLines": percentageToApply });
@@ -2244,7 +2252,7 @@
                     this.$.dlgCreateProposal.close();
                 },
                 _chkUpdateLinesChanged: function (param) {
-                    if (param.detail.value) 
+                    if (param.detail.value)
                         this.$.txtPercentage.disabled = false;
                     else
                         this.$.txtPercentage.disabled = true;
@@ -2261,7 +2269,7 @@
                         this._openToastError(this.CreateProposalResponse.eMessage);
                     }
                 },
-                _closeUpdatePricesDlg : function () {
+                _closeUpdatePricesDlg: function () {
                     this.$.dlgUpdatePrices.close();
                 },
                 _openUpdatePricesDlg: function () {
@@ -2274,7 +2282,7 @@
                         this.$.dpRequisitionReceiveDate.validate() &
                         this.$.dpNextInvoiceDate.validate() &
                         this.$.txtContractLinesPercentage.validate()) {
-                            return true;
+                        return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
@@ -2315,6 +2323,4 @@
             });
         });
     </script>
-
 </dom-module>
-

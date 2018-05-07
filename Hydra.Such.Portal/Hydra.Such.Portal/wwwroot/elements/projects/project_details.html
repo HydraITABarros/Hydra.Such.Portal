@@ -661,7 +661,7 @@
                     },
                     //BUTTONS
                     _OpenProjectMovements: function (url, data) {
-                        window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
+                        window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo + "?areaid=" + this._areaid;
                     },
                     _OpenProjectDiary: function (url, data) {
                         window.location.href = "../DiarioProjeto/" + this.data.projectNo;

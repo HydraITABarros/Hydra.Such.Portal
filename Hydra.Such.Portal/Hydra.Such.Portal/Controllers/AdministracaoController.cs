@@ -23,6 +23,7 @@ using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -42,11 +43,22 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
-
+        
         #region Utilizadores
         public IActionResult ConfiguracaoUtilizadores()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -58,9 +70,14 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.ForEach(Utilizador =>
                 {
-                    Utilizador.RegiãoPorDefeito = Utilizador.RegiãoPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault().Name;
-                    Utilizador.AreaPorDefeito = Utilizador.AreaPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault().Name;
-                    Utilizador.CentroRespPorDefeito = Utilizador.CentroRespPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault().Name;
+                    var nomeRegião = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault();
+                    Utilizador.RegiãoPorDefeito = nomeRegião == null ? "" : nomeRegião.Name;
+
+                    var nomeÁreaPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault();
+                    Utilizador.AreaPorDefeito = nomeÁreaPorDefeito == null ? "" : nomeÁreaPorDefeito.Name;
+
+                    var nomeCentroRespPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault();
+                    Utilizador.CentroRespPorDefeito = nomeCentroRespPorDefeito == null ? "" : nomeCentroRespPorDefeito.Name;
                 });
             };
 
@@ -456,7 +473,18 @@ namespace Hydra.Such.Portal.Controllers
         #region PerfisModelo
         public IActionResult PerfisModelo()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -616,7 +644,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Configuracoes()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -695,7 +734,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ConfiguracaoNumeracoes()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -2748,47 +2798,47 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
             if (id == "Engenharia")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
             }
             if (id == "Ambiente")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
             }
             if (id == "Nutricao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
             }
             if (id == "Vendas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 4, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
             }
             if (id == "Apoio")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
             }
             if (id == "PO")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 6, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
             }
             if (id == "NovasAreas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
             }
             if (id == "Internacionalizacao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
             }
             if (id == "Juridico")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
             }
             if (id == "Compras")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
             }
             if (id == "Administracao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 11, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
             }
 
             return UPerm;

@@ -39,6 +39,16 @@ This program is available under Apache License Version 2.0, available at https:/
         width: 100%;
       }
 
+
+        :host(.in-range) #foreground {
+            background-color: rgba(0, 255, 0, 0.50);
+        }
+
+        :host(.out-of-range) #foreground {
+            background-color: rgba(255, 0, 0, 0.50);
+        }
+
+
       :host(:not([value])) #foreground {
         animation: indeterminate-progress-bar 1s infinite;
       }

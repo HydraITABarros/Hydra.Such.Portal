@@ -23,6 +23,16 @@ This program is available under Apache License Version 2.0, available at https:/
         position: relative;
       }
 
+
+
+        :host(.in-range) #foreground {
+            background-color: rgba(0, 255, 0, 0.50);
+        }
+
+        :host(.out-of-range) #foreground {
+            background-color: rgba(255, 0, 0, 0.50);
+        }
+
       #background {
         background: var(--vaadin-progress-background-color);
         height: 100%;

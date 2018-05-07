@@ -62,7 +62,7 @@ namespace Hydra.Such.Portal.Services
                                          * Alterar versão nas Linhas da Proposta para versão colocada em cabeçalho
                                          */
                                     updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
-                                    updatedContract.Estado = 1;
+                                    updatedContract.Estado = 3;
                                     updatedContract.DataEstadoProposta = null;
                                     contractToUpdate = ArchiveContract(DBContracts.ParseToViewModel(updatedContract, string.Empty, string.Empty));
                                     break;

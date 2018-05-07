@@ -5,6 +5,7 @@ using System.Text;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.Compras;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Request
 {

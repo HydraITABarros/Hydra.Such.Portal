@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -31,7 +32,7 @@ namespace Hydra.Such.Portal.Controllers
         // GET: Contactos
         public ActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 99, 24);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Genérica, Enumerations.Features.Contactos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UserPermissions = userPermissions;

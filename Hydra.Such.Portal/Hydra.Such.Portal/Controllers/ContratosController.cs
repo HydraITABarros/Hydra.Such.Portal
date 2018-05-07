@@ -13,6 +13,8 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Portal.Services;
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -80,12 +82,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (AreaId == 4)
                 {
-                    ContractsList = DBContracts.GetAllByContractType(3);
+                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Contract);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
                 else
                 {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 3);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Contract);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
             }
@@ -94,18 +96,17 @@ namespace Hydra.Such.Portal.Controllers
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
 
-
             //Apply User Dimensions Validations
-            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if  (CUserDimensions.Where(x => x.Dimensão == 1).Count() >0  )
-                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
             //FunctionalAreas
-            if (CUserDimensions.Where(x => x.Dimensão == 2).Count() > 0)
-                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
             //ResponsabilityCenter
-            if (CUserDimensions.Where(x => x.Dimensão == 3).Count() > 0)
-                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -826,13 +827,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (AreaId == 4)
                 {
-                    ContractsList = DBContracts.GetAllByContractType(1);
+                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Oportunity);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                     //ContractsList.RemoveAll(x => x.Estado == 9);
                 }
                 else
                 {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Oportunity);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                     //ContractsList.RemoveAll(x => x.Estado == 9);
                 }
@@ -841,15 +842,26 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (AreaId == 4)
                 {
-                    ContractsList = DBContracts.GetAllByContractType(1);
+                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Oportunity);
                     //ContractsList.RemoveAll(x => x.Estado != 9);
                 }
                 else
                 {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Oportunity);
                     //ContractsList.RemoveAll(x => x.Estado != 9);
                 }
             }
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
@@ -899,6 +911,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
@@ -1132,9 +1145,9 @@ namespace Hydra.Such.Portal.Controllers
             if (ContractNo == "")
             {
                 if (AreaId == 4)
-                    ContractsList = DBContracts.GetAllByContractType(2);
+                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Proposal);
                 else
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Proposal);
 
                 if(Archived == 0)
                     ContractsList.RemoveAll(x => x.Arquivado.Value);
@@ -1145,6 +1158,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
@@ -1160,7 +1185,13 @@ namespace Hydra.Such.Portal.Controllers
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
             List<EnumData> status = EnumerablesFixed.ProposalsStatus;
-            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault();
+                //x.CodeRegion = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, x.CodeRegion).FirstOrDefault().Name ?? "";
+                //x.CodeFunctionalArea = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, x.CodeFunctionalArea).FirstOrDefault().Name ?? "";
+                //x.CodeResponsabilityCenter = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, x.CodeResponsabilityCenter).FirstOrDefault().Name ?? "";
+                
+            });
+            
             return Json(result);
         }
 
@@ -1269,7 +1300,14 @@ namespace Hydra.Such.Portal.Controllers
                             List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
                             try
                             {
-                                thisHeader.Estado = 1;
+                                if (isParcial)
+                                {
+                                    thisHeader.Estado = 8;
+                                }
+                                else
+                                {
+                                    thisHeader.Estado = 7;
+                                }
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;
@@ -1333,6 +1371,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
 
+                                
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºOportunidade = contractNo;
                                 thisHeader.NºProposta = newNumeration;
