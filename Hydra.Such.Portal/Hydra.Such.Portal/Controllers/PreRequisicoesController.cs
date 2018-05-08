@@ -17,6 +17,8 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Portal.Extensions;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -57,7 +59,107 @@ namespace Hydra.Such.Portal.Controllers
             PreRequisition.ForEach(x => result.Add(DBPreRequesition.ParseToViewModel(x)));
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult CleanPreRequesition([FromBody] JObject requestParams)
+        {
+            try
+            {
+                string PreRequesitionsNo = requestParams["PreRequesitionsNo"].ToString();
+                PréRequisição PR = DBPreRequesition.GetByNo(PreRequesitionsNo);
+                if (PR != null && !String.IsNullOrEmpty(PreRequesitionsNo))
+                { 
+                    
+                    PR.Área = PR.Área;
+                    PR.CódigoRegião = PR.CódigoRegião;
+                    PR.CódigoÁreaFuncional = PR.CódigoÁreaFuncional;
+                    PR.CódigoCentroResponsabilidade = PR.CódigoCentroResponsabilidade;
+                    PR.TipoRequisição = null;
+                    PR.NºProjeto = null;
+                    PR.Urgente = false;
+                    PR.Amostra = false;
+                    PR.Anexo = null;
+                    PR.Imobilizado = false;
+                    PR.CompraADinheiro = false;
+                    PR.CódigoLocalRecolha = null;
+                    PR.CódigoLocalEntrega = null;
+                    PR.Observações = null;
+                    PR.ModeloDePréRequisição = null;
+                    PR.DataHoraModificação = DateTime.Now;
+                    PR.UtilizadorModificação = User.Identity.Name;
+                    PR.Exclusivo = false;
+                    PR.JáExecutado = false;
+                    PR.Equipamento = false;
+                    PR.ReposiçãoDeStock = false;
+                    PR.Reclamação = false;
+                    PR.CódigoLocalização = null;
+                    PR.CabimentoOrçamental = false;
+                    PR.NºFuncionário = null;
+                    PR.Viatura = null;
+                    PR.NºRequesiçãoReclamada = null;
+                    PR.ResponsávelCriação = null;
+                    PR.ResponsávelAprovação = null;
+                    PR.ResponsávelValidação = null;
+                    PR.ResponsávelReceção = null;
+                    PR.DataAprovação = null;
+                    PR.DataValidação = null;
+                    PR.DataReceção = null;
+                    PR.UnidadeProdutivaAlimentação = null;
+                    PR.RequisiçãoNutrição = null;
+                    PR.RequisiçãoDetergentes = null;
+                    PR.NºProcedimentoCcp = null;
+                    PR.Aprovadores = null;
+                    PR.MercadoLocal = null;
+                    PR.RegiãoMercadoLocal = null;
+                    PR.ReparaçãoComGarantia = null;
+                    PR.Emm = null;
+                    PR.DataEntregaArmazém = null;
+                    PR.LocalDeRecolha = null;
+                    PR.MoradaRecolha = null;
+                    PR.Morada2Recolha = null;
+                    PR.CodigoPostalRecolha = null;
+                    PR.LocalidadeRecolha = null;
+                    PR.ContatoRecolha = null;
+                    PR.ResponsávelReceçãoRecolha = null;
+                    PR.LocalEntrega = null;
+                    PR.MoradaEntrega = null;
+                    PR.Morada2Entrega = null;
+                    PR.CódigoPostalEntrega = null;
+                    PR.LocalidadeEntrega = null;
+                    PR.ContatoEntrega = null;
+                    PR.ResponsávelReceçãoReceção = null;
+                    PR.NºFatura = null;
+                    DBPreRequesition.Update(PR);
 
+                    List <Anexos> AllAttachments = DBAttachments.GetById(PreRequesitionsNo);
+                    if (AllAttachments.Count > 0)
+                    {
+                        foreach (Anexos Attach in AllAttachments)
+                        {
+                            DBAttachments.Delete(Attach);
+                        } 
+                    }
+                    return Json(PR);
+                }
+                else
+                {
+                    ErrorHandler data = new ErrorHandler();
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
+                    return Json(data);
+                }
+                
+               
+            }
+            catch (Exception e)
+            {
+                ErrorHandler data = new ErrorHandler();
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
+                return Json(data);
+            }
+            
+            
+        }
         #region Pre Requesition Details
         [HttpPost]
         public JsonResult GetPreRequesitionDetails([FromBody] PreRequesitionsViewModel data)
@@ -574,6 +676,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
+                List<string> AllRequesitionIds = new List<string>();
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
@@ -702,6 +805,7 @@ namespace Hydra.Such.Portal.Controllers
                             createReq = DBRequest.Create(createReq);
                             if(createReq != null)
                             {
+                                AllRequesitionIds.Add(createReq.NºRequisição); 
                                 //copy files
                                 var preReq = data.PreRequesitionsNo;
                                 List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
@@ -795,6 +899,57 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        public JsonResult SendReqForApproval([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["requisitionNo"].ToString();
+            Requisição createReq = DBRequest.GetById(ReqNo);
+            ErrorHandler ApprovalMovResult = new ErrorHandler();
+            string Error = "";
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+            if (result != null && result.Count >0)
+            {
+                foreach (ApprovalMovementsViewModel req in result)
+                {
+                    if (req.Number == ReqNo)
+                    {
+                        Error = "Esta Requisição já está à espera de Aprovação.";
+                    }
+                }
+
+                if (String.IsNullOrEmpty(Error))
+                {
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    if (ApprovalMovResult.eReasonCode != 100)
+                    {
+                        ApprovalMovResult.eReasonCode = 2;
+                        ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    }
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 3;
+                    ApprovalMovResult.eMessage = Error;
+                }
+            }
+            else
+            {
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                if (ApprovalMovResult.eReasonCode != 100)
+                {
+                    ApprovalMovResult.eReasonCode = 2;
+                    ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                }
+            }
+
+            if (ApprovalMovResult.eReasonCode !=3 && ApprovalMovResult.eReasonCode != 2)
+            {
+                ApprovalMovResult.eReasonCode = 1;
+                ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+            }
+            return Json(ApprovalMovResult);
+        }
+        
         #endregion
 
         #region Numeração Requisição
