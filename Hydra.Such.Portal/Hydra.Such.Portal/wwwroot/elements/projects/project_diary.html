@@ -1496,6 +1496,8 @@
                         if (this.result.eReasonCode === 1) {
                             
                             this.openToastSuccess(this.result.eMessage);
+                            //window.location.href = window.location.href;
+                            
                             if (!this.disabledProjectNo) {
                                 this.projectNumber = "";
                                 this.codeRegion = "";
@@ -1525,7 +1527,6 @@
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
                             
-
                             this.$.piCode.value = "";
                             this.$.piCode.valueText = "";
                             this.$.piDescription.value = "";
@@ -1533,10 +1534,13 @@
                             this.$.piCodeLocation.valueText = "";
                             this.$.piCodeRegion.value = "";
                             this.$.piCodeRegion.valueText = "";
+                            this.$.piCodeRegion.activeItem = null;
                             this.$.piFuncArea.value = "";
                             this.$.piFuncArea.valueText = "";
+                            this.$.piFuncArea.activeItem = null;
                             this.$.piCodeResponsabilityCenter.value = "";
                             this.$.piCodeResponsabilityCenter.valueText = "";
+                            this.$.piCodeResponsabilityCenter.activeItem = null;
                             this.$.piUnitCost.value = "";
                             this.$.piTotalCost.value = "";
                             this.$.piUnitPrice.value = "";
@@ -1587,6 +1591,7 @@
                 },
 
                 _projectChange: function (e) {
+                    //debugger;;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1633,10 +1638,11 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
+
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
-                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.invoiceClientNo = this.related.invoiceClientNo;
                     }
                     if (this.invoiceClientNo != null) {
@@ -1647,7 +1653,6 @@
                         this.$.ajax_SServiceClient.body = JSON.stringify(this.invoiceClientNo);
                         this.$.ajax_SServiceClient.params = { "allProjs": false };
                         this.$.ajax_SServiceClient.generateRequest();
-
                     }
                 },
                 _updateRegisterResponse: function (e) {
