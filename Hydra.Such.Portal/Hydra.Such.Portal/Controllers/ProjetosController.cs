@@ -1435,7 +1435,6 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result.Count > 0)
                 {
-                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                     foreach (var lst in result)
                     {
                         if (lst.MovementType == 3)
@@ -1447,9 +1446,9 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             lst.UnitPrice = lst.UnitValueToInvoice;
                         }
-
-                        lst.ClientName = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().Name;
-                        lst.ClientVATReg = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().VATRegistrationNo_;
+                        var customer = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault();
+                        lst.ClientName = customer != null ? customer.Name : string.Empty;
+                        lst.ClientVATReg = customer != null ? customer.VATRegistrationNo_ : string.Empty;
                     }
                 }
                 return Json(result);
@@ -1458,7 +1457,6 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
-
         }
 
 

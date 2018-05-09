@@ -288,11 +288,11 @@ namespace Hydra.Such.Data.Logic.Project
                     {
                         result.Add(new SPInvoiceListViewModel()
                         {
-                            ClientRequest = (string)temp.PedidodoCliente,
-                            InvoiceToClientNo = (string)temp.FaturaNoCliente,
-                            CommitmentNumber = (string)temp.NoCompromisso,
-                            ProjectNo = (string)temp.NoProjeto,
-                            Date = (string)temp.Data.ToString("yyyy-MM-dd"),
+                            ClientRequest = temp.PedidodoCliente.Equals(DBNull.Value) ? "" : (string)temp.PedidodoCliente,
+                            InvoiceToClientNo = temp.FaturaNoCliente.Equals(DBNull.Value) ? "" : (string)temp.FaturaNoCliente,
+                            CommitmentNumber = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso,
+                            ProjectNo = temp.NoProjeto.Equals(DBNull.Value) ? "" : (string)temp.NoProjeto,
+                            Date = temp.Data.Equals(DBNull.Value) ? "" : (string)temp.Data.ToString("yyyy-MM-dd"),
                             LineNo = (int)temp.NoLinha,
                             MovementType = (int?)temp.TipoMovimento,
                             //DocumentNo =  temp.NoDocumento.Equals(DBNull.Value) ? "" : (string)temp.NoDocumento,
@@ -344,7 +344,6 @@ namespace Hydra.Such.Data.Logic.Project
                         });
                     }
                 }
-
                 return result;
             }
             catch (Exception ex)
