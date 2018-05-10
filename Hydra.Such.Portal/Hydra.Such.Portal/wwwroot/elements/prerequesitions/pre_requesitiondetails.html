@@ -2020,7 +2020,10 @@
                         this._openToastError(this.ClPreReq.eMessage);
                     }
                     if (e.detail.status === 200) {
-                        location.reload();
+                        setTimeout(
+                            function () {
+                                location.reload();
+                            }, 2000);
                         //this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         //this.$.page_databound_ajax.generateRequest();
                         //this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
