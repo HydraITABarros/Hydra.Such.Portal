@@ -460,6 +460,13 @@
                 },
 
                 _update: function () {
+                    if (this.result != null) {
+                        var hasInvalid = this.result.some(x => x.level == null || x.level < 1);
+                        if (hasInvalid) {
+                            this.openToastError("O nivel de aprovação tem que ser superior a Zero");
+                            return;
+                        }
+                    }
                     this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
@@ -491,7 +498,7 @@
                         this.$.ajax_update.generateRequest();
                     }
                     else {
-                        this.openToastError("O nivel de avaliação não pode ser Zero");
+                        this.openToastError("O nivel de aprovação tem que ser superior a Zero");
 
                     }
                 },

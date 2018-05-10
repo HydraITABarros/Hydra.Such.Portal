@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Logic\Compras\DBRequestModels.cs" />
     <Compile Remove="Logic\FolhaDeHora\DBPercursosEAjudasCustoDespesasFolhaDeHoras.cs" />
     <Compile Remove="ViewModel\FH\PercursosEAjudasCustoDespesasFolhaDeHorasViewModel.cs" />
   </ItemGroup>
