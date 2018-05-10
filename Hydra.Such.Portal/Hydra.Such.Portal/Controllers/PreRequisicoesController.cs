@@ -130,6 +130,7 @@ namespace Hydra.Such.Portal.Controllers
                     PR.NºFatura = null;
                     DBPreRequesition.Update(PR);
 
+
                     List <Anexos> AllAttachments = DBAttachments.GetById(PreRequesitionsNo);
                     if (AllAttachments.Count > 0)
                     {
