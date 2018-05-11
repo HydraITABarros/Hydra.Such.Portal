@@ -133,13 +133,13 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-3">
+            @*<div class="col-lg-3">
                 <vaadin-combo-box items="[[AdminArea]]" id="ddArea" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
                     <template>
                         <b>[[item.value]]</b>
                     </template>
                 </vaadin-combo-box>
-            </div>
+            </div>*@
             <div class="col-lg-3">
                 <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="value" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
                     <template>
@@ -249,7 +249,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="150px">
+            @*<vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="area" />
@@ -267,7 +267,7 @@
                         </template>
                     </vaadin-combo-box>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
             <vaadin-grid-column resizable width="300px">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalArea">Área Funcional</vaadin-grid-sorter>
@@ -475,7 +475,7 @@
                     if (this.$.ddLevelApproval.value != null && this.$.ddLevelApproval.value != "") {
                         var line = {
                             Type: this.$.ddType.value,
-                            Area: this.$.ddArea.value,
+                            Area: 0,//this.$.ddArea.value,
                             Region: this.$.ddRegion.value,
                             FunctionalArea: this.$.ddFunctionalArea.value,
                             ResponsabilityCenter : this.$.ddResponsabilityCenter.value,
@@ -528,7 +528,7 @@
                         this.$.gridApprovals.clearCache();
 
                         this.$.ddType.value = "";
-                        this.$.ddArea.value = "";
+                        //this.$.ddArea.value = "";
                         this.$.ddLevelApproval.value = "";
                         this.$.ddUserApproval.value = "";
                         this.$.ddGroupApproval.value = "";

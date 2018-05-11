@@ -110,7 +110,7 @@
             }
         </style>
 
-        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
 
         <iron-ajax url="/PreRequisicoes/GetPendingReq"
@@ -118,6 +118,7 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   auto
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
@@ -127,7 +128,7 @@
                    id="grid_datareqlines_ajax"
                    on-response="_responseLines"
                    content-type="application/json"></iron-ajax>
-    
+
         <iron-ajax url="/PreRequisicoes/SendReqForApproval"
                    last-response="{{actionResult}}"
                    method="post"
@@ -135,6 +136,8 @@
                    on-response="_SendReqResponse"
                    id="SendReq_databound"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <vaadin-grid aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
@@ -331,9 +334,14 @@
                     }
                 },
                 ready: function () {
-                    _clFormatState(this.result.state);
-                },
 
+                },
+                _responsehead: function (data) {
+
+                    _clFormatState(this.result.state);
+
+                    debugger;;
+                },
                 _clFormatState: function (param) {
                     if (param != undefined) {
                         var sel = this.CBStatus.find(x => x.id == param);
@@ -351,19 +359,19 @@
                 },
                 _ToApproved: function (e) {
                     if (e != null) {
-                        this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo});
+                        this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo });
                         this.$.SendReq_databound.generateRequest();
                     }
                 },
-                _openToast: function(message) {
+                _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
-                _openToastError: function(message) {
+                _openToastError: function (message) {
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
                 },
-                _SendReqResponse: function(e) {
+                _SendReqResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.actionResult.eReasonCode === 1) {
                             this._openToast(this.actionResult.eMessage);
@@ -382,4 +390,4 @@
         });
     </script>
 
-</dom-module >
+</dom-module>
