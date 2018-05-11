@@ -291,6 +291,10 @@ namespace Hydra.Such.Portal.Controllers
 
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                if (TCreateNavProj.Exception != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+                                if(TCreateNavProj.Exception.InnerException != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
                             {
