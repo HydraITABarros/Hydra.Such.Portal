@@ -2034,15 +2034,15 @@
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 
-                        
+                        this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         if (this.CreateReqResponse.eMessages.length > 0) {
                             var errors = this.CreateReqResponse.eMessages[0].message;
                             for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
                                 errors += this.CreateReqResponse.eMessages[i].message + ";";
                             }
                             var thisCtx = this;
+
                             
-                            this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                             var req = this.$.CleanPreRequesition_ajax;
                             setTimeout(
                                 function () {
@@ -2051,6 +2051,9 @@
                                     //this.$.CleanPreRequesition_ajax.generateRequest();
                                     req.generateRequest();
                                 }, 4000);
+                        }
+                        else {
+                            this.$.CleanPreRequesition_ajax.generateRequest();
                         }
                     }
                     else {
