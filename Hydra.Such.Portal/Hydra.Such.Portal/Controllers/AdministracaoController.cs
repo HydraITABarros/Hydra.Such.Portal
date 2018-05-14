@@ -2551,6 +2551,10 @@ namespace Hydra.Such.Portal.Controllers
                     DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
                     DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
                 };
+
+                if (!aprovConfig.NívelAprovação.HasValue || aprovConfig.NívelAprovação.Value <= 0)
+                    throw new Exception("O nível de aprovação tem que ser maior que zero.");
+
                 if (x.Id > 0)
                 {
                     aprovConfig.Id = x.Id;

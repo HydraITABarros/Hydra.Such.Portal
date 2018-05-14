@@ -83,6 +83,17 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string PreRequisitionNo { get; set; }
 
         public List<RequisitionLineViewModel> Lines { get; set; }
-        
+
+        public decimal GetTotalValue()
+        {
+            decimal value = 0;
+            if (this.Lines != null && this.Lines.Count > 0)
+            {
+                value = this.Lines
+                    .Where(x => x.UnitCost.HasValue && x.QuantityToRequire.HasValue)
+                    .Sum(x => x.UnitCost.Value * x.QuantityToRequire.Value);
+            }
+            return value;
+        }
     }
 }

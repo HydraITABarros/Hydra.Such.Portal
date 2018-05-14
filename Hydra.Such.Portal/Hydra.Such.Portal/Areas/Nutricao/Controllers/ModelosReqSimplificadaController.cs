@@ -107,7 +107,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 //Validate if id is valid
                 if (!(item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null) && !numConf.Manual.Value)
                 {
-                    return Json("A numeração configurada para os modelos de requisição simplifacada não permite inserção manual.");
+                    return Json("A numeração configurada para os modelos de requisição simplificada não permite inserção manual.");
                 }
                 else if (item.RequisitionTemplateId == "" && !numConf.Automático.Value)
                 {

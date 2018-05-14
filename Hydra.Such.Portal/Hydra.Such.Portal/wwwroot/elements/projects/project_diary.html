@@ -1495,7 +1495,7 @@
                         this.$.projectDiaryProject.clearCache();
                         if (this.result.eReasonCode === 1) {
                             
-                            this.openToastSuccess(this.result.eMessage);
+                            this.openToastSuccess(this.result.eMessage);                            
                             if (!this.disabledProjectNo) {
                                 this.projectNumber = "";
                                 this.codeRegion = "";
@@ -1525,7 +1525,6 @@
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
                             
-
                             this.$.piCode.value = "";
                             this.$.piCode.valueText = "";
                             this.$.piDescription.value = "";
@@ -1587,6 +1586,7 @@
                 },
 
                 _projectChange: function (e) {
+                    //debugger;;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1633,10 +1633,11 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
+
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
-                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.invoiceClientNo = this.related.invoiceClientNo;
                     }
                     if (this.invoiceClientNo != null) {
@@ -1647,7 +1648,6 @@
                         this.$.ajax_SServiceClient.body = JSON.stringify(this.invoiceClientNo);
                         this.$.ajax_SServiceClient.params = { "allProjs": false };
                         this.$.ajax_SServiceClient.generateRequest();
-
                     }
                 },
                 _updateRegisterResponse: function (e) {
