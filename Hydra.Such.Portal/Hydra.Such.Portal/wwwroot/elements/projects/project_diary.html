@@ -345,7 +345,7 @@
 
         <h2 class="separator">Linhas de Diário</h2>
         <iron-ajax url="/Projetos/CreatePDByMovProj" last-response="{{result}}" id="ajax_createmovproj" method="post" on-response="_createmovprojResponse" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Projetos/GetAllProjectDiary" last-response="{{result}}" id="ajax_getall" method="post" on-response="_getAllResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllProjectDiary" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/UpdateProjectDiary" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/RegisterDiaryLines" last-response="{{data}}" id="ajax_register" method="post" on-response="_updateRegisterResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post" dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
@@ -1106,7 +1106,7 @@
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-3">
-                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
@@ -1494,14 +1494,17 @@
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                         if (this.result.eReasonCode === 1) {
-                            
-                            this.openToastSuccess(this.result.eMessage);                            
-                            if (!this.disabledProjectNo) {
+                            debugger;
+                            this.openToastSuccess(this.result.eMessage);
+                            if (this.disabledProjectNo == false) {
                                 this.projectNumber = "";
-                                this.codeRegion = "";
-                                this.codeFuncArea = "";
-                                this.codeResponsabilityCenter = "";
+                                this.$.projectList.value = "";
+                                this.$.projectList.valueText = "";
                             }
+
+                            //this.codeRegion = "";
+                            //this.codeFuncArea = "";
+                            //this.codeResponsabilityCenter = "";
                             this.date = "";
                             this.projectMovementNumber = "";
                             this.projectTypeNumber = "";
@@ -1524,18 +1527,20 @@
                             this.consumptionDate = "";
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
-                            
+
+
+
+                            //this.$.piCodeRegion.value = "";
+                            //this.$.piCodeRegion.valueText = "";
+                            //this.$.piFuncArea.value = "";
+                            //this.$.piFuncArea.valueText = "";
+                            //this.$.piCodeResponsabilityCenter.value = "";
+                            //this.$.piCodeResponsabilityCenter.valueText = "";
                             this.$.piCode.value = "";
                             this.$.piCode.valueText = "";
                             this.$.piDescription.value = "";
                             this.$.piCodeLocation.value = "";
                             this.$.piCodeLocation.valueText = "";
-                            this.$.piCodeRegion.value = "";
-                            this.$.piCodeRegion.valueText = "";
-                            this.$.piFuncArea.value = "";
-                            this.$.piFuncArea.valueText = "";
-                            this.$.piCodeResponsabilityCenter.value = "";
-                            this.$.piCodeResponsabilityCenter.valueText = "";
                             this.$.piUnitCost.value = "";
                             this.$.piTotalCost.value = "";
                             this.$.piUnitPrice.value = "";
@@ -1554,8 +1559,7 @@
                             this.$.piContabGroup.valueText = "";
                             this.$.piCodeMeasurementUnit.value = "";
                             this.$.piCodeMeasurementUnit.valueText = "";
-                            this.$.projectList.value = "";
-                            this.$.projectList.valueText = "";
+                            
                             this.$.projectMovementList.value = "";
                             this.$.projectMovementList.valueText = "";
                             this.$.projectTypeList.value = "";
@@ -1586,7 +1590,7 @@
                 },
 
                 _projectChange: function (e) {
-                    //debugger;;
+                    debugger;;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1654,7 +1658,7 @@
                     if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
-
+                        debugger;
                         if (e.detail.status === 200) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
