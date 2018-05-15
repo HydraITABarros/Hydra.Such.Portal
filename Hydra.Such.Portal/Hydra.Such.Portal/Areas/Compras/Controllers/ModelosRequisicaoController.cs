@@ -123,6 +123,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         item.eMessage = "Ocorreu um erro ao criar o registo.";
                     }
                 }
+                else
+                {
+                    item.eReasonCode = 5;
+                    item.eMessage = "A numeração configurada não é compativel com a inserida.";
+                }
             }
             else
             {
