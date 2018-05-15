@@ -1143,23 +1143,23 @@
                     //this.$.quantityReceivableId.value = "";
                     //this.$.quantityReceivedId.value = "";
                     this.$.txtUnitCost.value = "";
-                    this.$.RegionCode.value = "";
-                    this.$.FunctionalAreaCode.value = "";
-                    this.$.ResponsabilityCenterCode.value = "";
+                    this.$._CLRegion.value = this.$.RegionCode.value;
+                    this.$._CLFunctionalAreaCode.value = this.$.FunctionalAreaCode.value;
+                    this.$._CLResponsabilityCenterCode.value = this.$.ResponsabilityCenterCode.value;
                     this.$.CBVehicles.value = "";
                     //this.$.unitCostsouldId.value = "";
                     //this.$.budgetValueId.value = "";
                     this.$.maintenanceOrderLineNoId.value = "";
-                    this.$.createMarketSearchId.checked = false;
-                    this.$.submitPrePurchaseId.checked = false;
-                    this.$.sendPrePurchaseId.checked = false;
+                    //this.$.createMarketSearchId.checked = false;
+                    //this.$.submitPrePurchaseId.checked = false;
+                    //this.$.sendPrePurchaseId.checked = false;
                     this.$.CBSuppliers.value = "";
                     this.$.CBSuppliers.valueText = "";
                     this.$.CBPurchaseHeader.value = "";
                     this.$.CBPurchaseHeader.value = "";
                     this.$.queryCreatedMarketNoId.value = "";
-                    this.$.CBLineProjects.value = "";
-                    this.$.chkLocalMarket.checked = false;
+                    this.$.CBLineProjects.value = this.$.CBHeaderProjects.value;
+                    //this.$.chkLocalMarket.checked = false;
                 },
                 _notImplemented() {
                     alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
@@ -1398,7 +1398,7 @@
                                 setTimeout(
                                     function () {
                                         window.location.href = "../Detalhes/" + reqNo;
-                                    }, 2000);
+                                    }, 1000);
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
