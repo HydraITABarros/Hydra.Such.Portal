@@ -22,7 +22,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.ModelosRequisicao);
             if (userPermissions != null && userPermissions.Read.Value)
             {
-                ViewBag.UPermissions = userPermissions;
+                ViewBag.UserPermissions = userPermissions;
                 return View();
             }
             else
@@ -38,7 +38,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.ModelosRequisicao);
             if (userPermissions != null && userPermissions.Read.Value)
             {
-                ViewBag.UPermissions = userPermissions;
+                ViewBag.UserPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
                 return View();
             }
@@ -169,7 +169,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                var updatedItem = DBRequestTemplates.Delete(item.ParseToDB());
                 if (DBRequestTemplates.Delete(item.ParseToDB()))
                 {
                     item.eReasonCode = 1;
@@ -218,6 +217,96 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 return Json("Não foi possivel obter as configurações base de numeração.");
             }
             return Json("");
+        }
+
+        public JsonResult GetPlaces([FromBody] int placeId)
+        {
+            PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
+            return Json(PlacesData);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateRequisitionLine([FromBody] RequisitionTemplateLineViewModel item)
+        {
+            if (item != null)
+            {
+                item.CreateUser = User.Identity.Name;
+                var createdItem = DBRequestTemplateLines.Create(item.ParseToDB());
+                if (createdItem != null)
+                {
+                    item = createdItem.ParseToTemplateViewModel();
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo criado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionTemplateLineViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionTemplateLineViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisitionLines([FromBody] RequisitionTemplateViewModel item)
+        {
+            try
+            {
+                if (item != null && item.Lines != null)
+                {
+                    if (DBRequestTemplateLines.Update(item.Lines.ParseToDB()))
+                    {
+                        item.Lines.ForEach(x => x.Selected = false);
+                        item.eReasonCode = 1;
+                        item.eMessage = "Linhas atualizadas com sucesso.";
+                        return Json(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //item.eReasonCode = 2;
+                //item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            }
+            item.eReasonCode = 2;
+            item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult DeleteRequisitionLine([FromBody] RequisitionTemplateLineViewModel item)
+        {
+            if (item != null)
+            {
+                if (DBRequestTemplateLines.Delete(item.ParseToDB()))
+                {
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionTemplateLineViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionTemplateLineViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(item);
         }
     }
 }

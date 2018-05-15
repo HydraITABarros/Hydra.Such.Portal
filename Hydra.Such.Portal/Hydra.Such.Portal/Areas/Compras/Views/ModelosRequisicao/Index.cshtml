@@ -40,6 +40,13 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="marginSpace">
+                <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+            </div>
+        </template>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -131,7 +138,7 @@
                     <vaadin-grid-filter path="localMarketRegion" />
                 </template>
                 <template>
-                    {{item.localMarketRegion}}
+                    [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -246,7 +253,7 @@
                     {{item.createUser}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            @*<vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
                     <vaadin-grid-filter path="approvers" />
@@ -254,7 +261,7 @@
                 <template>
                     {{item.approvers}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
@@ -264,7 +271,7 @@
                     {{item.estimatedValue}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            @*<vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="updateUser" />
@@ -272,7 +279,7 @@
                 <template>
                     {{item.updateUser}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
         </vaadin-grid>
     </template>
     <script>
@@ -286,12 +293,16 @@
                 },
                 _SelectedLine: {
                     observer: '_rowSelected'
-                }
+                },
+                _permissions: {
+                    type: Array,
+                    value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                },
             },
             observers: [
-                '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'
+                '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
             ],
-            _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
+            _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData,LocalMarketRegions) {
                 if (!this.Flag) {
                     this.$.ajax_getgrid.generateRequest();
                 }
@@ -343,6 +354,15 @@
                     }
                 }
             },
+            _getLocalMarketRegionDescription: function (param) {
+                if (param != undefined && this.LocalMarketRegions != undefined) {
+                    var sel = this.LocalMarketRegions.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
             _parsecenterRespons: function (param) {
                 if (param != undefined && this.ResponsabilityCenterData != undefined ) {
                     var sel = this.ResponsabilityCenterData.find(x => x.id == param);
@@ -351,7 +371,12 @@
                     }
                 }
                 return "";
-            }
+            },
+            _create: function (item) {
+                if (item != null) {
+                    window.location.href = "/Compras/ModelosRequisicao/Detalhes/";
+                }
+            },
         });
     });
 

@@ -584,7 +584,6 @@
                                             <template is="dom-if" if="{{ !_isCreate }}">
                                                 <hr />
                                                 <template is="dom-if" if="{{ _permissions.update }}">
-
                                                     <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                                 </template>
                                                 <template is="dom-if" if="{{ _permissions.delete }}">
@@ -665,18 +664,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <!--<div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBVendor]]" id="_CBVendor" item-value-path="id" item-label-path="value" value="{{_CBVendor}}" label="Nº Fornecedor" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>-->
                                     <div class="col-sm-2">
                                         <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
                                                         items="[[CBVendor]]"
@@ -798,13 +785,6 @@
                                                         </paper-icon-item>
                                                     </template>
                                                 </vaadin-combo-box>
-                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.supplierProductCode}}"
-                                                items="[[CBItems]]"
-                                                text-path="code"
-                                                value-path="code"
-                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>-->
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.supplierProductCode}}
