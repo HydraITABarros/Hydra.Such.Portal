@@ -726,7 +726,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.LocalCode,
+                        x => x.SupplierNo,//.LocalCode,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {

@@ -2024,10 +2024,6 @@
                             function () {
                                 location.reload();
                             }, 2000);
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                        //this.$.page_databound_ajax.generateRequest();
-                        //this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
-                        //this.$.page_update_ajax.generateRequest();
                     }
                 },
                 _createRequesitionResponse: function (e) {
@@ -2035,6 +2031,8 @@
                         this._openToast(this.CreateReqResponse.eMessage);
 
                         this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                        var req = this.$.CleanPreRequesition_ajax;
+
                         if (this.CreateReqResponse.eMessages.length > 0) {
                             var errors = this.CreateReqResponse.eMessages[0].message;
                             for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
@@ -2042,18 +2040,14 @@
                             }
                             var thisCtx = this;
 
-                            
-                            var req = this.$.CleanPreRequesition_ajax;
                             setTimeout(
                                 function () {
                                     thisCtx._openToastError(errors);
-                                    //this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                                    //this.$.CleanPreRequesition_ajax.generateRequest();
                                     req.generateRequest();
                                 }, 4000);
                         }
                         else {
-                            this.$.CleanPreRequesition_ajax.generateRequest();
+                            req.generateRequest();
                         }
                     }
                     else {

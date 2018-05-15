@@ -168,7 +168,7 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Área == AreaId && x.Estado == Status).ToList();
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Estado == Status).ToList();
                 }
             }
             catch (Exception ex)

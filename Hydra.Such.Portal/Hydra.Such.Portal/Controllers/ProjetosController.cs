@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
 using static Hydra.Such.Data.Enumerations;
+using System.Net;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -977,19 +978,32 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
-            Guid transactID = Guid.NewGuid();
-
-            //Create Lines in NAV
-            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
-            TCreateNavDiaryLine.Wait();
-
-            ////Register Lines in NAV
-            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-            TRegisterNavDiaryLine.Wait();
-
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+                Guid transactID = Guid.NewGuid();
+                try
+                {
+                    //Create Lines in NAV
+                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+                    TCreateNavDiaryLine.Wait();
+
+                    ////Register Lines in NAV
+                    Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                    TRegisterNavDiaryLine.Wait();
+
+                    if (TRegisterNavDiaryLine == null)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        return Json(dp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    return Json(dp);
+                }
+
                 dp.ForEach(x =>
                 {
                     if (x.Code != null)
@@ -1042,13 +1056,9 @@ namespace Hydra.Such.Portal.Controllers
 
                             DBProjectMovements.Create(ProjectMovement);
                         }
-
-
                     }
                 });
             }
-
-
             return Json(dp);
         }
 

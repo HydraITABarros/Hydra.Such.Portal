@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<AcessosPerfil> AcessosPerfil { get; set; }
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
+        public virtual DbSet<AcordoPrecos> AcordoPrecos { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
         public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
         public virtual DbSet<AutorizarFaturaçãoContratos> AutorizarFaturaçãoContratos { get; set; }
@@ -42,8 +43,10 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<FichasTécnicasPratos> FichasTécnicasPratos { get; set; }
         public virtual DbSet<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public virtual DbSet<FolhasDeHoras> FolhasDeHoras { get; set; }
+        public virtual DbSet<FornecedoresAcordoPrecos> FornecedoresAcordoPrecos { get; set; }
         public virtual DbSet<GruposAprovação> GruposAprovação { get; set; }
         public virtual DbSet<Instrutores> Instrutores { get; set; }
+        public virtual DbSet<LinhasAcordoPrecos> LinhasAcordoPrecos { get; set; }
         public virtual DbSet<LinhasContratos> LinhasContratos { get; set; }
         public virtual DbSet<LinhasFaturaçãoContrato> LinhasFaturaçãoContrato { get; set; }
         public virtual DbSet<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
@@ -109,7 +112,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
+        public virtual DbSet<AcessosLocalizacoes> AcessosLocalizacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -237,6 +240,19 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<AcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => e.NoProcedimento);
+
+                entity.Property(e => e.NoProcedimento)
+                    .HasMaxLength(10)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DtFim).HasColumnType("datetime");
+
+                entity.Property(e => e.DtInicio).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Anexos>(entity =>
@@ -2441,6 +2457,23 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(200);
             });
 
+            modelBuilder.Entity<FornecedoresAcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => new { e.NoProcedimento, e.NoFornecedor });
+
+                entity.Property(e => e.NoProcedimento).HasMaxLength(10);
+
+                entity.Property(e => e.NoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.HasOne(d => d.NoProcedimentoNavigation)
+                    .WithMany(p => p.FornecedoresAcordoPrecos)
+                    .HasForeignKey(d => d.NoProcedimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FornecedoresAcordoPrecos_AcordoPrecos");
+            });
+
             modelBuilder.Entity<GruposAprovação>(entity =>
             {
                 entity.HasKey(e => e.Código);
@@ -2487,6 +2520,61 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<LinhasAcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => new { e.NoProcedimento, e.NoFornecedor, e.CodProduto, e.DtValidadeInicio, e.Cresp, e.Localizacao });
+
+                entity.Property(e => e.NoProcedimento).HasMaxLength(10);
+
+                entity.Property(e => e.NoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto).HasMaxLength(20);
+
+                entity.Property(e => e.DtValidadeInicio).HasColumnType("datetime");
+
+                entity.Property(e => e.Cresp).HasMaxLength(20);
+
+                entity.Property(e => e.Localizacao).HasMaxLength(20);
+
+                entity.Property(e => e.Area).HasMaxLength(20);
+
+                entity.Property(e => e.CodProdutoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DescricaoProdFornecedor).HasMaxLength(80);
+
+                entity.Property(e => e.DescricaoProduto).HasMaxLength(80);
+
+                entity.Property(e => e.DtValidadeFim).HasColumnType("datetime");
+
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.Property(e => e.QtdPorUm).HasColumnName("QtdPorUM");
+
+                entity.Property(e => e.Regiao).HasMaxLength(20);
+
+                entity.Property(e => e.Um)
+                    .HasColumnName("UM")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(30);
+
+                entity.HasOne(d => d.NoProcedimentoNavigation)
+                    .WithMany(p => p.LinhasAcordoPrecos)
+                    .HasForeignKey(d => d.NoProcedimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LinhasAcordoPrecos_AcordoPrecos");
+
+                entity.HasOne(d => d.No)
+                    .WithMany(p => p.LinhasAcordoPrecos)
+                    .HasForeignKey(d => new { d.NoProcedimento, d.NoFornecedor })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LinhasAcordoPrecos_FornecedoresAcordoPrecos");
             });
 
             modelBuilder.Entity<LinhasContratos>(entity =>
@@ -7108,6 +7196,37 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
+            });
+
+            modelBuilder.Entity<AcessosLocalizacoes>(entity =>
+            {
+                entity.HasKey(e => new { e.ID_Utilizador, e.Localizacao });
+
+                entity.ToTable("AcessosLocalizacoes");
+
+                entity.Property(e => e.ID_Utilizador)
+                    .HasColumnName("ID_Utilizador")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Localizacao)
+                    .HasColumnName("Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Utilizador_Criacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora_Criacao)
+                    .HasColumnName("DataHora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Utilizador_Modificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora_Modificacao)
+                    .HasColumnName("DataHora_Modificacao")
+                    .HasColumnType("datetime");
             });
         }
     }
