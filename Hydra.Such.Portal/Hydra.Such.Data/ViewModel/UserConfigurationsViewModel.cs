@@ -16,5 +16,6 @@ namespace Hydra.Such.Data.ViewModel
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
+        public List<UserAcessosLocalizacoesViewModel> UserAcessosLocalizacoes { get; set; }
     }
 }

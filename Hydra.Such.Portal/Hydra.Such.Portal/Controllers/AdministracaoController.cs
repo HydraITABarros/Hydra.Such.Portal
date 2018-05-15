@@ -43,7 +43,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
-        
+
         #region Utilizadores
         public IActionResult ConfiguracaoUtilizadores()
         {
@@ -130,6 +130,8 @@ namespace Hydra.Such.Portal.Controllers
                 }).ToList();
 
                 result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel();
+
+                result.UserAcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(data.IdUser).ParseToViewModel();
             }
 
             return Json(result);
@@ -178,6 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorCriação = User.Identity.Name
                 });
             });
+
             return Json(data);
         }
 
@@ -403,6 +406,35 @@ namespace Hydra.Such.Portal.Controllers
         {
             var userDimension = DBUserDimensions.GetById(data.UserId, data.Dimension, data.DimensionValue);
             return Json(userDimension != null ? DBUserDimensions.Delete(userDimension) : false);
+        }
+
+        [HttpPost]
+        public JsonResult CreateUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            bool result = false;
+            try
+            {
+                AcessosLocalizacoes userAcessosLocalizacoes = new AcessosLocalizacoes();
+                userAcessosLocalizacoes.ID_Utilizador = data.ID_Utilizador;
+                userAcessosLocalizacoes.Localizacao = data.Localizacao;
+                userAcessosLocalizacoes.Utilizador_Criacao = User.Identity.Name;
+                userAcessosLocalizacoes.DataHora_Criacao = DateTime.Now;
+
+                var dbCreateResult = DBAcessosLocalizacoes.Create(userAcessosLocalizacoes);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.ID_Utilizador, data.Localizacao);
+            return Json(userAcessosLocalizacoes != null ? DBAcessosLocalizacoes.Delete(userAcessosLocalizacoes) : false);
         }
 
         [HttpPost]
