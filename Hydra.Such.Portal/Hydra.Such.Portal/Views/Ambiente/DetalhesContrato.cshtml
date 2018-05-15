@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Contrato - Ambiente - Such";
+    ViewData["Title"] = "Detalhes Contrato - Ambiente - eSuch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -8,11 +8,11 @@
 
 @if (ViewBag.ContractNo == "")
 {
-    <h2>Criar novo contrato</h2>
+    <h1 class="title">Criar novo contrato</h1>
 }
 else
 {
-    <h2 class="separator">Contrato @ViewBag.ContractNo</h2>
+    <h1 class="title">Contrato @ViewBag.ContractNo</h1>
 }
 
 

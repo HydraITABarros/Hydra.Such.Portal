@@ -6,13 +6,13 @@
     <ErrorLevel>2</ErrorLevel>
     <OverwriteDatasets>False</OverwriteDatasets>
     <OverwriteDataSources>False</OverwriteDataSources>
-    <TargetServerVersion>SSRS2008R2</TargetServerVersion>
+    <TargetServerVersion>SSRS2016</TargetServerVersion>
     <Platform>Win32</Platform>
     <TargetReportFolder>eSUCH</TargetReportFolder>
     <TargetDatasetFolder>Datasets</TargetDatasetFolder>
     <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
     <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
-    <TargetServerURL>http://192.168.107.52/reportserver</TargetServerURL>
+    <TargetServerURL>http://10.101.1.10/ReportServer</TargetServerURL>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'DebugLocal' ">
     <FullPath>DebugLocal</FullPath>
@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Report Include="FolhaCaixa.rdl" />
+    <Report Include="FolhaHora.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="Requisições.rdl" />
   </ItemGroup>

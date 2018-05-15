@@ -84,247 +84,256 @@
            content-type="application/json"></iron-ajax>
         
 <vaadin-grid aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
-            
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-        <vaadin-grid-filter path="projectNo" />
-    </template>
-    <template>
-        {{item.projectNo}}
-    </template>
-</vaadin-grid-column>
-            
-<vaadin-grid-column width="110px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
-        <vaadin-grid-filter path="date" />
-    </template>
-    <template>
-        {{item.date}}
-    </template>
-</vaadin-grid-column>
 
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
-        <vaadin-grid-filter path="moveType" />
-    </template>
-    <template>                   
-        <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+            <vaadin-grid-filter path="projectNo" />
+        </template>
+        <template>
+            {{item.projectNo}}
+        </template>
+    </vaadin-grid-column>
 
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-        <vaadin-grid-filter path="type" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-        <vaadin-grid-filter path="code" />
-    </template>
-    <template>
-        {{item.code}}
-        <!--@*<vaadin-combo-box items="[[]]" item-value-path="id" disabled item-label-path="value" value="{{item.code}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>*@-->
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-        <vaadin-grid-filter path="description" />
-    </template>
-    <template>
-        {{item.description}}
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="110px" resizable>
-    <template class="header" width="200px" resizable>
-        <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-        <vaadin-grid-filter path="quantity" />
-    </template>
-    <template>
-        {{item.quantity}}
-    </template>
-</vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+            <vaadin-grid-filter path="date" />
+        </template>
+        <template>
+            {{item.date}}
+        </template>
+    </vaadin-grid-column>
 
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
-        <vaadin-grid-filter path="measurementUnitCode" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
-        <vaadin-grid-filter path="locationCode" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column  width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
-        <vaadin-grid-filter path="serviceObject" />
-    </template>
-    <template>
-        {{item.serviceObject}}
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
-        <vaadin-grid-filter path="regionCode" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
-        <vaadin-grid-filter path="functionalAreaCode" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-        <vaadin-grid-filter path="responsabilityCenterCode" />
-    </template>
-    <template>
-        <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-            <template>
-                <paper-icon-item>
-                    <paper-item-body two-line>
-                        <div>[[item.value]]</div>
-                    </paper-item-body>
-                </paper-icon-item>
-            </template>
-        </vaadin-combo-box>
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="160px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
-        <vaadin-grid-filter path="user" />
-    </template>
-    <template>
-        {{item.user}}
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="110px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-        <vaadin-grid-filter path="unitCost" />
-    </template>
-    <template>
-        {{item.unitCost}}€
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="110px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
-        <vaadin-grid-filter path="totalCost" />
-    </template>
-    <template>
-        {{item.totalCost}}€
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="110px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-        <vaadin-grid-filter path="unitPrice" />
-    </template>
-    <template>
-        {{item.unitPrice}}€
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="110px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
-        <vaadin-grid-filter path="TotalPrice" />
-    </template>
-    <template>
-        {{item.totalPrice}}€
-    </template>
-</vaadin-grid-column>
-<vaadin-grid-column width="100px" resizable>
-    <template class="header">
-        <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
-        <vaadin-grid-filter path="billable" />
-    </template>
-    <template>
-        <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
-    </template>
-</vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
+            <vaadin-grid-filter path="moveType" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+            <vaadin-grid-filter path="type" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+            <vaadin-grid-filter path="code" />
+        </template>
+        <template>
+            {{item.code}}
+            <!--@*<vaadin-combo-box items="[[]]" item-value-path="id" disabled item-label-path="value" value="{{item.code}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>*@-->
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+            <vaadin-grid-filter path="description" />
+        </template>
+        <template>
+            {{item.description}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header" width="200px" resizable>
+            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+            <vaadin-grid-filter path="quantity" />
+        </template>
+        <template>
+            {{item.quantity}}
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
+            <vaadin-grid-filter path="measurementUnitCode" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+            <vaadin-grid-filter path="locationCode" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
+            <vaadin-grid-filter path="serviceObject" />
+        </template>
+        <template>
+            {{item.serviceObject}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+            <vaadin-grid-filter path="regionCode" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
+            <vaadin-grid-filter path="functionalAreaCode" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+            <vaadin-grid-filter path="responsabilityCenterCode" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
+            <vaadin-grid-filter path="user" />
+        </template>
+        <template>
+            {{item.user}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+            <vaadin-grid-filter path="unitCost" />
+        </template>
+        <template>
+            {{item.unitCost}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+            <vaadin-grid-filter path="totalCost" />
+        </template>
+        <template>
+            {{item.totalCost}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+            <vaadin-grid-filter path="unitPrice" />
+        </template>
+        <template>
+            {{item.unitPrice}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
+            <vaadin-grid-filter path="TotalPrice" />
+        </template>
+        <template>
+            {{item.totalPrice}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="100px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
+            <vaadin-grid-filter path="billable" />
+        </template>
+        <template>
+            <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="140px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="folhaHoras">Folha de Horas</vaadin-grid-sorter>
+            <vaadin-grid-filter path="folhaHoras" />
+        </template>
+        <template>
+            {{item.folhaHoras}}
+        </template>
+    </vaadin-grid-column>
 </vaadin-grid>
 
 <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>

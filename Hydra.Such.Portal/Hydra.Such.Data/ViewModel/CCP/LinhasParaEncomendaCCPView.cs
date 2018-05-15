@@ -14,7 +14,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string CodLocalizacao { get; set; }
         public string Descricao { get; set; }
         public string CodUnidadeMedida { get; set; }
-        public decimal? CustoUnitário { get; set; }
+        public decimal? CustoUnitario { get; set; }
         public decimal? QuantARequerer { get; set; }
         public string CodigoRegiao { get; set; }
         public string CodigoAreaFuncional { get; set; }
@@ -30,5 +30,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public LinhasRequisição Nº { get; set; }
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }
         public Requisição NºRequisiçãoNavigation { get; set; }
+
+        //NR 20180227
+        public string TipoText { get; set; }
+        public string CodLocalizacaoText { get; set; }
     }
 }

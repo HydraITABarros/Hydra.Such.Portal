@@ -103,28 +103,45 @@ namespace Hydra.Such.Data.Logic.Approvals
         }
         #endregion
 
-
-        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDate(int type, int area, decimal value,DateTime fDate)
+        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDateAndDimensions(int type, int area, string functionalArea, string responsabiltyCenter, string region, decimal value, DateTime fDate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.Área == area && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
-                    return result;
+                    List<ConfiguraçãoAprovações> approvalConfigs = ctx.ConfiguraçãoAprovações
+                        .Where(x => x.Tipo == type &&
+                                    //x.Área == area && 
+                                    (x.CódigoÁreaFuncional == functionalArea || x.CódigoÁreaFuncional == string.Empty) &&
+                                    (x.CódigoCentroResponsabilidade == x.CódigoCentroResponsabilidade || x.CódigoCentroResponsabilidade == string.Empty) &&
+                                    (x.CódigoRegião == region || x.CódigoRegião == string.Empty) &&
+                                    (x.ValorAprovação >= value || x.ValorAprovação == 0 || !x.ValorAprovação.HasValue) &&
+                                    (x.DataInicial <= fDate && x.DataFinal >= fDate))
+                        .ToList();
+
+                    //Set empty to the max
+                    approvalConfigs
+                        .Where(x => !x.ValorAprovação.HasValue)
+                        .ToList()
+                        .ForEach(x => x.ValorAprovação = decimal.MaxValue);
+
+                    //Order by importance: approval limits first then dimension value strength
+                    List<DimensionStrengthItem> orderedItems = approvalConfigs
+                        .OrderBy(x => x.NívelAprovação).ThenBy(x => x.ValorAprovação)
+                        .Distinct()
+                        .Select(x => new DimensionStrengthItem(x))
+                        .OrderByDescending(x => x.DimensionsStrength)
+                        .ThenByDescending(x => x.DimensionsTypeStrength)
+                        .ToList();
+
+                    return orderedItems.ToList<ConfiguraçãoAprovações>();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
-
-
-
-
-
 
         #region Parses
         public static ApprovalConfigurationsViewModel ParseToViewModel(this ConfiguraçãoAprovações x)
@@ -137,6 +154,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                     Id = x.Id,
                     Type = x.Tipo,
                     Area = x.Área,
+                    FunctionalArea = x.CódigoÁreaFuncional,
+                    Region = x.CódigoRegião,
+                    ResponsabilityCenter = x.CódigoCentroResponsabilidade,
                     Level = x.NívelAprovação,
                     ApprovalValue = x.ValorAprovação,
                     ApprovalUser = x.UtilizadorAprovação,
@@ -167,6 +187,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                 Id = x.Id,
                 Tipo = x.Type,
                 Área = x.Area,
+                CódigoÁreaFuncional = x.FunctionalArea,
+                CódigoRegião = x.Region,
+                CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                 NívelAprovação = x.Level,
                 ValorAprovação = x.ApprovalValue,
                 UtilizadorAprovação = x.ApprovalUser,
@@ -181,5 +204,58 @@ namespace Hydra.Such.Data.Logic.Approvals
             };
         }
         #endregion
+
+        public class DimensionStrengthItem : ConfiguraçãoAprovações
+        {
+            public DimensionStrengthItem(ConfiguraçãoAprovações item)
+            {
+                this.CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade;
+                this.CódigoRegião = item.CódigoRegião;
+                this.CódigoÁreaFuncional = item.CódigoÁreaFuncional;
+                this.DataFinal = item.DataFinal;
+                this.DataHoraCriação = item.DataHoraCriação;
+                this.DataHoraModificação = item.DataHoraModificação;
+                this.DataInicial = item.DataInicial;
+                this.GrupoAprovação = item.GrupoAprovação;
+                this.Id = item.Id;
+                this.NívelAprovação = item.NívelAprovação;
+                this.Tipo = item.Tipo;
+                this.UtilizadorAprovação = item.UtilizadorAprovação;
+                this.UtilizadorCriação = item.UtilizadorCriação;
+                this.UtilizadorModificação = item.UtilizadorModificação;
+                this.ValorAprovação = item.ValorAprovação;
+                this.Área = item.Área;                
+            }
+
+            public int DimensionsStrength
+            {
+                get
+                {
+                    int value = 0;
+                    if (this.CódigoÁreaFuncional != string.Empty)
+                        value++;
+                    if (this.CódigoCentroResponsabilidade != string.Empty)
+                        value++;
+                    if (this.CódigoRegião != string.Empty)
+                        value++;
+                    return value;
+                }
+            }
+
+            public int DimensionsTypeStrength
+            {
+                get
+                {
+                    int value = 0;
+                    if (this.CódigoÁreaFuncional != string.Empty)
+                        value += 3;
+                    if (this.CódigoCentroResponsabilidade != string.Empty)
+                        value += 2;
+                    if (this.CódigoRegião != string.Empty)
+                        value += 1;
+                    return value;
+                }
+            }
+        }
     }
 }

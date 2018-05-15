@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "Contratos - Ambiente - Such";
+    ViewData["Title"] = "Contratos - Ambiente - eSuch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="separator">Contratos Ambiente</h2>
+<h1 class="title">Contratos Ambiente</h1>
 <link rel="import" href="~/elements/contracts/contract_list.html">
 
 <x-contractlist _areaid="2" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'  _contractno="@ViewBag.ContractNo"></x-contractlist>

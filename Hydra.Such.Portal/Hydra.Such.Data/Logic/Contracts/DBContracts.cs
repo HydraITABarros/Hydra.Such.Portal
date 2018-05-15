@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Hydra.Such.Data.Extensions;
 namespace Hydra.Such.Data.Logic.Contracts
 {
     public static class DBContracts
@@ -204,6 +204,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    
                     return ctx.Contratos.Where(x => x.TipoContrato == ContractType).ToList();
                 }
             }
@@ -260,10 +261,10 @@ namespace Hydra.Such.Data.Logic.Contracts
                 EnvioACódPostal = x.ShippingZipCode,
                 EnvioALocalidade = x.ShippingLocality,
                 PeríodoFatura = x.InvocePeriod,
-                ÚltimaDataFatura = x.LastInvoiceDate != null ? DateTime.Parse(x.LastInvoiceDate) : (DateTime?)null,
-                PróximaDataFatura = x.NextInvoiceDate != null ? DateTime.Parse(x.NextInvoiceDate) : (DateTime?)null,
-                DataInicial = x.StartData != null ? DateTime.Parse(x.StartData) : (DateTime?)null,
-                DataExpiração = x.DueDate != null ? DateTime.Parse(x.DueDate) : (DateTime?)null,
+                ÚltimaDataFatura = string.IsNullOrEmpty(x.LastInvoiceDate) ? (DateTime?)null : DateTime.Parse(x.LastInvoiceDate),
+                PróximaDataFatura = string.IsNullOrEmpty(x.NextInvoiceDate) ? (DateTime?)null : DateTime.Parse(x.NextInvoiceDate),
+                DataInicial = string.IsNullOrEmpty(x.StartData) ? (DateTime?)null : DateTime.Parse(x.StartData),
+                DataExpiração = string.IsNullOrEmpty(x.DueDate) ? (DateTime?)null : DateTime.Parse(x.DueDate),
                 JuntarFaturas = x.BatchInvoices,
                 PróximoPeríodoFact = x.NextBillingPeriod,
                 LinhasContratoEmFact = x.ContractLinesInBilling,
@@ -272,7 +273,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 TipoFaturação = x.BillingType,
                 TipoContratoManut = x.MaintenanceContractType,
                 NºRequisiçãoDoCliente = x.ClientRequisitionNo,
-                DataReceçãoRequisição = x.ReceiptDateRequisition != null ? DateTime.Parse(x.ReceiptDateRequisition) : (DateTime?)null,
+                DataReceçãoRequisição = string.IsNullOrEmpty(x.ReceiptDateRequisition) ? (DateTime?)null :  DateTime.Parse(x.ReceiptDateRequisition),
                 NºCompromisso = x.PromiseNo,
                 TaxaAprovisionamento = x.ProvisioningFee,
                 Mc = x.Mc,
@@ -281,12 +282,12 @@ namespace Hydra.Such.Data.Logic.Contracts
                 ObjetoServiço = x.ServiceObject,
                 ContratoAvençaVariável = x.VariableAvengeAgrement,
                 Notas = x.Notes,
-                DataInícioContrato = x.ContractStartDate != null ? DateTime.Parse(x.ContractStartDate) : (DateTime?)null,
-                DataFimContrato = x.ContractEndDate != null ? DateTime.Parse(x.ContractEndDate) : (DateTime?)null,
+                DataInícioContrato = string.IsNullOrEmpty(x.ContractStartDate) ? (DateTime?)null : DateTime.Parse(x.ContractStartDate),
+                DataFimContrato = string.IsNullOrEmpty(x.ContractEndDate) ? (DateTime?)null : DateTime.Parse(x.ContractEndDate),
                 DescriçãoDuraçãoContrato = x.ContractDurationDescription,
-                DataInício1ºContrato = x.StartDateFirstContract != null ? DateTime.Parse(x.StartDateFirstContract) : (DateTime?)null,
+                DataInício1ºContrato = string.IsNullOrEmpty(x.StartDateFirstContract) ? (DateTime?)null : DateTime.Parse(x.StartDateFirstContract),
                 Referência1ºContrato = x.FirstContractReference,
-                DuraçãoMáxContrato = x.ContractMaxDuration != null ? DateTime.Parse(x.ContractMaxDuration) : (DateTime?)null,
+                DuraçãoMáxContrato = string.IsNullOrEmpty(x.ContractMaxDuration) ? (DateTime?)null : DateTime.Parse(x.ContractMaxDuration),
                 RescisãoPrazoAviso = x.TerminationTermNotice,
                 CondiçõesParaRenovação = x.RenovationConditions,
                 CondiçõesRenovaçãoOutra = x.RenovationConditionsAnother,
@@ -294,8 +295,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 CondiçõesPagamentoOutra = x.PaymentTermsAnother,
                 AssinadoPeloCliente = x.CustomerSigned,
                 Juros = x.Interests,
-                DataDaAssinatura = x.SignatureDate != null ? DateTime.Parse(x.SignatureDate) : (DateTime?)null,
-                DataEnvioCliente = x.CustomerShipmentDate != null ? DateTime.Parse(x.CustomerShipmentDate) : (DateTime?)null,
+                DataDaAssinatura = string.IsNullOrEmpty(x.SignatureDate) ? (DateTime?)null : DateTime.Parse(x.SignatureDate),
+                DataEnvioCliente = string.IsNullOrEmpty(x.CustomerShipmentDate) ? (DateTime?)null : DateTime.Parse(x.CustomerShipmentDate),
                 UnidadePrestação = x.ProvisionUnit,
                 ReferênciaContrato = x.ContractReference,
                 ValorTotalProposta = x.TotalProposalValue,
@@ -303,59 +304,73 @@ namespace Hydra.Such.Data.Logic.Contracts
                 NºOportunidade = x.OportunityNo,
                 NºProposta = x.ProposalNo,
                 NºContato = x.ContactNo,
-                DataEstadoProposta = x.DateProposedState != null ? DateTime.Parse(x.DateProposedState) : (DateTime?)null,
+                DataEstadoProposta = string.IsNullOrEmpty(x.DateProposedState) ? (DateTime?)null : DateTime.Parse(x.DateProposedState),
                 OrigemDoPedido = x.OrderOrigin,
                 DescOrigemDoPedido = x.OrdOrderSource,
                 NumeraçãoInterna = x.InternalNumeration,
-                DataAlteraçãoProposta = x.ProposalChangeDate != null ? DateTime.Parse(x.ProposalChangeDate) : (DateTime?)null,
-                DataHoraLimiteEsclarecimentos = x.LimitClarificationDate != null ? DateTime.Parse(x.LimitClarificationDate) : (DateTime?)null,
-                DataHoraErrosEOmissões = x.ErrorsOmissionsDate != null ? DateTime.Parse(x.ErrorsOmissionsDate) : (DateTime?)null,
-                DataHoraRelatórioFinal = x.FinalReportDate != null ? DateTime.Parse(x.FinalReportDate) : (DateTime?)null,
-                DataHoraHabilitaçãoDocumental = x.DocumentationHabilitationDate != null ? DateTime.Parse(x.DocumentationHabilitationDate) : (DateTime?)null,
+                DataAlteraçãoProposta = string.IsNullOrEmpty(x.ProposalChangeDate) ? (DateTime?)null : DateTime.Parse(x.ProposalChangeDate),
+                DataHoraLimiteEsclarecimentos = string.IsNullOrEmpty(x.LimitClarificationDate) ? (DateTime?)null : DateTime.Parse(x.LimitClarificationDate),
+                DataHoraErrosEOmissões = string.IsNullOrEmpty(x.ErrorsOmissionsDate) ? (DateTime?)null : DateTime.Parse(x.ErrorsOmissionsDate),
+                DataHoraRelatórioFinal = string.IsNullOrEmpty(x.FinalReportDate) ? (DateTime?)null : DateTime.Parse(x.FinalReportDate),
+                DataHoraHabilitaçãoDocumental = string.IsNullOrEmpty(x.DocumentationHabilitationDate) ? (DateTime?)null : DateTime.Parse(x.DocumentationHabilitationDate),
+                DataHoraEntregaProposta = string.IsNullOrEmpty(x.ProposalDelivery) ? (DateTime?)null : DateTime.Parse(x.ProposalDelivery),
                 NºComprimissoObrigatório = x.CompulsoryCompulsoryNo,
-                DataHoraCriação = x.CreateDate != null ? DateTime.Parse(x.CreateDate) : (DateTime?)null,
-                DataHoraModificação = x.UpdateDate != null ? DateTime.Parse(x.UpdateDate) : (DateTime?)null,
+                DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate),
+                DataHoraModificação = string.IsNullOrEmpty(x.UpdateDate) ? (DateTime?)null : DateTime.Parse(x.UpdateDate),
                 UtilizadorCriação = x.CreateUser,
                 UtilizadorModificação = x.UpdateUser,
                 Arquivado = x.Filed,
+                RazãoArquivo = x.ArchiveReason,
                 ValorBaseProcedimento = x.BaseValueProcedure,
-                AudiênciaPrévia = x.PreviousHearing != null ? DateTime.Parse(x.PreviousHearing) : (DateTime?)null ,
+                AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
 
             };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
             {
                 result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Date;
-                result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(x.LimitClarificationTime));
+                if (!string.IsNullOrEmpty(x.LimitClarificationTime))
+                    result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(x.LimitClarificationTime));
                 Console.WriteLine(result.DataHoraLimiteEsclarecimentos.Value.ToString());
             }
 
             if (result.DataHoraErrosEOmissões != null)
             {
                 result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Date;
-                result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(x.ErrorsOmissionsTime));
+                if (!string.IsNullOrEmpty(x.ErrorsOmissionsTime))
+                    result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(x.ErrorsOmissionsTime));
                 Console.WriteLine(result.DataHoraErrosEOmissões.Value.ToString());
             }
 
             if (result.DataHoraRelatórioFinal != null)
             {
                 result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Date;
-                result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(x.FinalReportTime));
+                if (!string.IsNullOrEmpty(x.FinalReportTime))
+                    result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(x.FinalReportTime));
                 Console.WriteLine(result.DataHoraRelatórioFinal.Value.ToString());
             }
 
             if (result.DataHoraHabilitaçãoDocumental != null)
             {
                 result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Date;
-                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                if(!string.IsNullOrEmpty(x.PreviousHearingTime))
+                    result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
                 Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
             }
 
             if (result.AudiênciaPrévia != null)
             {
                 result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Date;
-                result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
-                Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
+                if (!string.IsNullOrEmpty(x.PreviousHearingTime))
+                    result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                Console.WriteLine(result.AudiênciaPrévia.Value.ToString());
+            }
+
+            if (result.DataHoraEntregaProposta != null)
+            {
+                result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Date;
+                if (!string.IsNullOrEmpty(x.ProposalDeliveryTime))
+                    result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(x.ProposalDeliveryTime));
             }
 
             return result;
@@ -364,6 +379,8 @@ namespace Hydra.Such.Data.Logic.Contracts
 
         public static ContractViewModel ParseToViewModel(Contratos x, string NAVDatabaseName, string NAVCompanyName)
         {
+            if (x == null)
+                return null;
             ContractViewModel result = new ContractViewModel()
             {
                 ContractType = x.TipoContrato,
@@ -437,7 +454,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 ErrorsOmissionsDate = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("yyyy-MM-dd") : "",
                 ErrorsOmissionsTime = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("HH:mm") : "",
                 FinalReportDate = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("yyyy-MM-dd") : "",
-                //FinalReportTime = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("HH:mm") : "",
+                FinalReportTime = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("HH:mm") : "",
                 DocumentationHabilitationDate = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("yyyy-MM-dd") : "",
                 DocumentationHabilitationTime = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("HH:mm") : "",
                 CompulsoryCompulsoryNo = x.NºComprimissoObrigatório,
@@ -446,6 +463,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
                 Filed = x.Arquivado,
+                ArchiveReason = x.RazãoArquivo,
                 RelatedContract = x.NºContrato,
                 //RequestOrigin = x.OrigemDoPedido,
                 //RequestOriginDescription = x.DescOrigemDoPedido,
@@ -458,6 +476,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 BaseValueProcedure = x.ValorBaseProcedimento,
                 PreviousHearing = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("yyyy-MM-dd") : "",
                 PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
+                ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
+                ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
@@ -465,6 +485,5 @@ namespace Hydra.Such.Data.Logic.Contracts
             return result;
 
         }
-
     }
 }

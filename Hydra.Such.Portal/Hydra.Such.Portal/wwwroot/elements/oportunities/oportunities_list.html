@@ -11,7 +11,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
 
 <dom-module id="x-oportunitieslist">
@@ -58,16 +57,19 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <template is="dom-if" if="{{ !_disabledCreate }}">
-                <div class="marginSpace">
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
-                </div>
+                </template>
             </template>
-        </template>
+            <paper-button class="" raised on-tap="_showHistoryButton">{{_showHistory}}</paper-button>
+            <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
+        </div>
+
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column width="150px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
@@ -76,7 +78,7 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startData" />
@@ -85,7 +87,7 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueDate" />
@@ -94,7 +96,7 @@
                     {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contactNo" />
@@ -103,7 +105,7 @@
                     {{item.contactNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" />
@@ -112,7 +114,7 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" />
@@ -121,7 +123,7 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -130,7 +132,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="150px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="status" />
@@ -139,7 +141,7 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -148,7 +150,7 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -157,7 +159,7 @@
                     {{item.codeFunctionalArea}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -166,15 +168,26 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%" resizable>
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
+                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="versionNo" />
                 </template>
                 <template>
-                    <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                    </center>
+                    {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" >
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -206,6 +219,10 @@
                         type: String,
                         value: false
                     },
+                    _showHistory: {
+                        type: String,
+                        value: "Exibir Histórico"
+                    },
                     _disabledCreate: {
                         type: Boolean,
                         value: false
@@ -225,7 +242,7 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    
+
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
@@ -244,7 +261,21 @@
                         }
                     }
                 },
+                _showHistoryButton: function (item) {
+                    if (item != null) {
+                        debugger;;
+                        this._archived = this._archived == 1 ? 0 : 1;
 
+                        if (this._archived == 1) {
+                            this._showHistory = "Exibir ativas";
+                        } else {
+                            this._showHistory = "Exibir histórico";
+                        }
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();

@@ -24,7 +24,9 @@
         <iron-ajax auto method="post" handle-as="json" content-type="application/json" last-response="{{Locations}}" id="grid_datasource" url="/Nutricao/Localizacoes/GetLocations"></iron-ajax>
 
         <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_redirectToNewLocationForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_redirectToNewLocationForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
         </div>
 
         <vaadin-grid aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -78,7 +80,11 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
                 },
                 _onLocationRowSelected: function (item) {
                     if (item != null) {

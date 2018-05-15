@@ -257,7 +257,31 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public static ErrorHandler UnableToUpdateFluxo = new ErrorHandler
         {
             eReasonCode = 202,
-            eMessage = "Não foipossível actualizar o Fluxo"
+            eMessage = "Não foi possível actualizar o Fluxo"
+        };
+        //NR 20180314
+        public static ErrorHandler ProcedimentoNotPublished = new ErrorHandler
+        {
+            eReasonCode = 203,
+            eMessage = "O Procedimento ainda não foi publicado"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPlatformNotGathering = new ErrorHandler
+        {
+            eReasonCode = 204,
+            eMessage = "Ainda não foi registada a recolha da plataforma"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPreliminaryReportNotValidated = new ErrorHandler
+        {
+            eReasonCode = 205,
+            eMessage = "Ainda não foi validado o relatório preliminar"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPriorHearingNotRegistered = new ErrorHandler
+        {
+            eReasonCode = 206,
+            eMessage = "Ainda não foi registada a Audiência Prévia"
         };
 
         public static ErrorHandler InvalidEmailAddres = new ErrorHandler
@@ -269,6 +293,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             eReasonCode = 401,
             eMessage = "Lista de endereços inválida"
+        };
+        //NR 20180308
+        public static ErrorHandler EmptyCAEmailAddress = new ErrorHandler
+        {
+            eReasonCode = 402,
+            eMessage = "Tem que indicar o email do destinatário do CA!"
         };
 
         public static ErrorHandler UserNotAllowed = new ErrorHandler
@@ -287,6 +317,53 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 601,
             eMessage = "Procedimento já submetido"
         };
+        //NR 20180319
+        public static ErrorHandler ProcedimentoAlreadyConfirmed = new ErrorHandler
+        {
+            eReasonCode = 602,
+            eMessage = "Procedimento já foi Confirmado"
+        };
+        //NR 20180320
+        public static ErrorHandler ProcedimentoAlreadyTreated = new ErrorHandler
+        {
+            eReasonCode = 603,
+            eMessage = "Este Procedimento já foi tratado. Verifique o WorkFlow"
+        };
+        //NR 20180323
+        public static ErrorHandler ProcedimentoNotImmobilized = new ErrorHandler
+        {
+            eReasonCode = 604,
+            eMessage = "Este Procedimento não é de imobilizado!"
+        };
+        public static ErrorHandler ProcedimentoAlreadyAuthorized = new ErrorHandler
+        {
+            eReasonCode = 605,
+            eMessage = "Este Procedimento já foi Autorizado!"
+        };
+        //NR 20180326
+        public static ErrorHandler ProcedimentoNotPossibleAuth = new ErrorHandler
+        {
+            eReasonCode = 606,
+            eMessage = "Neste estado não pode autorizar o processo!"
+        };
+        //NR 20180328
+        public static ErrorHandler ProcedimentoNotPossibleChangeToUpper = new ErrorHandler
+        {
+            eReasonCode = 607,
+            eMessage = "Não pode Avançar para um estado seguinte ou igual!"
+        };
+        public static ErrorHandler ProcedimentoNotPossibleChangeToImob = new ErrorHandler
+        {
+            eReasonCode = 608,
+            eMessage = "Não pode alterar para este estado! A Aquisição não é de Imobilizado"
+        };
+
+        //NR 20180329
+        public static ErrorHandler ProcedimentoAtaNumberExists = new ErrorHandler
+        {
+            eReasonCode = 609,
+            eMessage = "Já existe este Nº de Ata!"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
@@ -299,7 +376,26 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eMessage = "Tem que definir o Nome do Procedimento"
         };
 
+        //NR 20180308
+        public static ErrorHandler UnknownTipoProcedimento = new ErrorHandler
+        {
+            eReasonCode = 702,
+            eMessage = "Antes de prosseguir, tem que definir o tipo de procedimento"
+        };
 
+        //NR 20180314
+        public static ErrorHandler UnknownDatePublicacao = new ErrorHandler
+        {
+            eReasonCode = 703,
+            eMessage = "Antes de prosseguir, tem que indicar uma data!"
+        };
+
+        //NR 20180319
+        public static ErrorHandler UncompletedDecisionProposal = new ErrorHandler
+        {
+            eReasonCode = 704,
+            eMessage = "Proposta de decisão tem que estar preenchida"
+        };
 
     }
 

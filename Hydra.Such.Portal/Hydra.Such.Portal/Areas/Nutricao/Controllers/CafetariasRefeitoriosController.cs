@@ -10,6 +10,8 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
@@ -25,7 +27,17 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Index()
         {
-            return View();
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Cafetarias_Refeitórios);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UserPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
         }
 
         [HttpPost]
@@ -33,26 +45,24 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         public JsonResult GetCoffeeShops()
         {
             var items = DBCoffeeShops.GetAll().ParseToViewModel(config.NAVDatabaseName, config.NAVCompanyName);
-
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && (y.ValorDimensão == x.CodeRegion || string.IsNullOrEmpty(x.CodeRegion))));
-            //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && (y.ValorDimensão == x.CodeFunctionalArea || string.IsNullOrEmpty(x.CodeFunctionalArea))));
-            //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && (y.ValorDimensão == x.CodeResponsabilityCenter || string.IsNullOrEmpty(x.CodeResponsabilityCenter))));
-
+            if (items != null)
+            {
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && (y.ValorDimensão == x.CodeRegion || string.IsNullOrEmpty(x.CodeRegion))));
+                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CodeFunctionalArea || string.IsNullOrEmpty(x.CodeFunctionalArea))));
+                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CodeResponsabilityCenter || string.IsNullOrEmpty(x.CodeResponsabilityCenter))));
+            }
             return Json(items);
         }
 
         [Area("Nutricao")]
         public IActionResult Detalhes(int productivityUnitNo, int type, int code, string explorationStartDate)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 35);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Cafetarias_Refeitórios);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -68,10 +78,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
-
+        
         [HttpPost]
         [Area("Nutricao")]
         public JsonResult GetCoffeeShop([FromBody] Newtonsoft.Json.Linq.JObject requestParams)

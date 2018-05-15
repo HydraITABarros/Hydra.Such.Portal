@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string Code { get; set; }
         public string Descricao { get; set; }
         public string CodTipoTrabalho { get; set; }
+        public string CodTipoTrabalhoTexto { get; set; }
         public decimal? PrecoUnitario { get; set; }
         public decimal? CustoUnitario { get; set; }
         public DateTime? StartingDate { get; set; }

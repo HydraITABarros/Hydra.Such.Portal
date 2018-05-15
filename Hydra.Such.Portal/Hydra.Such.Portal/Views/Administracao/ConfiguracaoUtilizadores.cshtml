@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Utilizadores - Administração - Such";
+    ViewData["Title"] = "Configuração Utilizadores - Administração - eSuch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -38,7 +38,7 @@
             <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
         <vaadin-grid aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
@@ -47,7 +47,8 @@
                     {{item.idUtilizador}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nome" />
@@ -56,7 +57,38 @@
                     {{item.nome}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoPorDefeito">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoPorDefeito" />
+                </template>
+                <template>
+                    {{item.regiaoPorDefeito}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="areaPorDefeito">Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaPorDefeito" />
+                </template>
+                <template>
+                    {{item.areaPorDefeito}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="centroRespPorDefeito">CRESP</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="centroRespPorDefeito" />
+                </template>
+                <template>
+                    {{item.centroRespPorDefeito}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
@@ -69,7 +101,8 @@
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
                 </template>

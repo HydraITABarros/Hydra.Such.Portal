@@ -3,28 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public enum RequisitionStates
-    {
-        [Description("Pendente")]
-        Pending,
-        [Description("Recebido")]
-        Received,
-        [Description("Tratado")]
-        Treated,
-        [Description("Validado")]
-        Validated,
-        [Description("Aprovado")]
-        Approved,
-        [Description("Disponibilizado")]
-        Available,
-        [Description("Arquivado")]
-        Archived
-
-    }
-
     public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
@@ -101,6 +83,17 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string PreRequisitionNo { get; set; }
 
         public List<RequisitionLineViewModel> Lines { get; set; }
-        
+
+        public decimal GetTotalValue()
+        {
+            decimal value = 0;
+            if (this.Lines != null && this.Lines.Count > 0)
+            {
+                value = this.Lines
+                    .Where(x => x.UnitCost.HasValue && x.QuantityToRequire.HasValue)
+                    .Sum(x => x.UnitCost.Value * x.QuantityToRequire.Value);
+            }
+            return value;
+        }
     }
 }

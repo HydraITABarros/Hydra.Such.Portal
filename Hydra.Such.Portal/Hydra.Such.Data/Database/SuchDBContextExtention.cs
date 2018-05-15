@@ -3,15 +3,27 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hydra.Such.Data.Database
 {
+    public partial class SuchDBContext
+    {
+        public static string ConnectionString { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(ConnectionString);
+            }
+        }
+    }
+
     public class SuchDBContextExtention : SuchDBContext
     {
         public virtual IEnumerable<dynamic> execStoredProcedure(String cmdText, SqlParameter[] parameters)
         {
-
-            using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+            using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
@@ -54,7 +66,7 @@ namespace Hydra.Such.Data.Database
             int result = 0;
             try
             {
-                using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+                using (var connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
 

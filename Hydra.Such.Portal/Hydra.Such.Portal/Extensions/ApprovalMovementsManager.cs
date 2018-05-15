@@ -14,17 +14,19 @@ namespace Hydra.Such.Portal.Extensions
         //100 - Fluxo Iniciado com suceso
         //101 - Não existem configurações de numerações compativeis
         //102 - Erro desconhecido
-        public static ErrorHandler StartApprovalMovement(int type, int area, decimal value, string number, string requestUser)
+        public static ErrorHandler StartApprovalMovement(int type, int area, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
         {
             try
             {
                 ErrorHandler result = new ErrorHandler() {
                     eReasonCode = 100,
-                    eMessage = "Fluxo Iniciado com suceso"
+                    eMessage = "Fluxo Iniciado com sucesso",
+                    eMessages = new List<TraceInformation>()
                 };
-
+                
                 //Get Compatible ApprovalConfigurations
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(type, area, value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, area,functionalArea,responsabilityCenter,region, value, DateTime.Now);
+
                 int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
                 ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
 
@@ -35,6 +37,9 @@ namespace Hydra.Such.Portal.Extensions
                     {
                         Type = type,
                         Area = area,
+                        ResponsabilityCenter = responsabilityCenter,
+                        FunctionalArea = functionalArea,
+                        Region = region,
                         Number = number,
                         RequestUser = requestUser,
                         Value = value,
@@ -46,18 +51,21 @@ namespace Hydra.Such.Portal.Extensions
 
                     ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
 
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, ApprovalMovement.MovementNo.ToString()));
+
                     //Create User ApprovalMovements
                     List<string> UsersToNotify = new List<string>();
-                    ApprovalConfigurations.ForEach(x =>
-                    {
-                        if (x.UtilizadorAprovação != "" && x.UtilizadorAprovação != null)
+                    //ApprovalConfigurations.ForEach(x =>
+                    //{
+                    var approvalConfiguration = ApprovalConfigurations[0];
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                         {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = x.UtilizadorAprovação });
-                            UsersToNotify.Add(x.UtilizadorAprovação);
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
                         }
-                        else if (x.GrupoAprovação.HasValue)
+                        else if (approvalConfiguration.GrupoAprovação.HasValue)
                         {
-                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(x.GrupoAprovação.Value);
+                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
 
                             GUsers.ForEach(y =>
                             {
@@ -65,7 +73,7 @@ namespace Hydra.Such.Portal.Extensions
                                 UsersToNotify.Add(y);
                             });
                         }
-                    });
+                    //});
 
                     UsersToNotify = UsersToNotify.Distinct().ToList();
                     //Notify Users
@@ -135,7 +143,7 @@ namespace Hydra.Such.Portal.Extensions
                 DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, ApproveUser);
 
                 //Get Next Level Configuration
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.Value.Value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now);
                 ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
 
                 if (ApprovalConfigurations.Count > 0)
@@ -154,16 +162,17 @@ namespace Hydra.Such.Portal.Extensions
 
                     //Create User ApprovalMovements
                     List<string> UsersToNotify = new List<string>();
-                    ApprovalConfigurations.ForEach(x =>
-                    {
-                        if (x.UtilizadorAprovação != "" && x.UtilizadorAprovação != null)
+                    //ApprovalConfigurations.ForEach(x =>
+                    //{
+                    var approvalConfiguration = ApprovalConfigurations[0];
+                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                         {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = x.UtilizadorAprovação });
-                            UsersToNotify.Add(x.UtilizadorAprovação);
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
                         }
-                        else if (x.GrupoAprovação.HasValue)
+                        else if (approvalConfiguration.GrupoAprovação.HasValue)
                         {
-                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(x.GrupoAprovação.Value);
+                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
 
                             GUsers.ForEach(y =>
                             {
@@ -171,7 +180,7 @@ namespace Hydra.Such.Portal.Extensions
                                 UsersToNotify.Add(y);
                             });
                         }
-                    });
+                    //});
 
                     //Notify Users
                     UsersToNotify = UsersToNotify.Distinct().ToList();
@@ -202,7 +211,7 @@ namespace Hydra.Such.Portal.Extensions
                         Email.IsBodyHtml = true;
                         Email.EmailApproval = EmailApproval;
 
-                        Email.SendEmail();
+                        //Email.SendEmail();
                     });
                     return new ErrorHandler()
                     {
@@ -362,6 +371,5 @@ namespace Hydra.Such.Portal.Extensions
 
             return Body;
         }
-
     }
 }

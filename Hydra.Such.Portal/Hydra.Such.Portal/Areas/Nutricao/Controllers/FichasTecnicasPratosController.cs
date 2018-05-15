@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
@@ -17,23 +18,23 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             [Area("Nutricao")]
             public IActionResult Detalhes()
             {
-                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
-                if (userPermissions != null && userPermissions.Read.Value)
+                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            if (userPermissions != null && userPermissions.Read.Value)
                 {
                     ViewBag.UPermissions = userPermissions;
                     return View();
                 }
                 else
                 {
-                    return RedirectToAction("AccessDenied", "Error");
-                }
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
             }
             // Record Technical Of Plates form by id
             [Area("Nutricao")]
             public IActionResult FichaTecnica(string id)
             {
-                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
-                if (userPermissions != null && userPermissions.Read.Value)
+                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            if (userPermissions != null && userPermissions.Read.Value)
                 {
                     if (!string.IsNullOrEmpty(id))
                     {
@@ -49,8 +50,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("AccessDenied", "Error");
-                }
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
             }
         #endregion
 

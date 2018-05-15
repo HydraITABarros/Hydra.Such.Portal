@@ -1,0 +1,102 @@
+﻿
+<dom-module id="such-dropdown-menu">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            :host {
+                display: inline-block;
+            }
+            .dropdownMenu {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdownMenu-content {
+                display: none;
+                position: absolute;
+                background-color: #f1f1f1;
+                min-width: 160px;
+                overflow: auto;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+            .dropbtnItem {
+                font-family: -apple-system, BlinkMacSystemFont, Roboto, Segoe UI, Ubuntu, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+            }
+            .dropbtnItem:hover {
+                background-color: #ddd;
+            }
+            .showMenuItems {
+                display: block;
+            }
+        </style>
+
+        <div class="dropdownMenu">
+            <paper-button class="tablinks" on-tap="_showItems" id="mnuCreateItems"><i class="fa fa-chevron-down" aria-hidden="true"></i> [[ title ]]</paper-button>
+            <div id="itemsDropDownContent" class="dropdownMenu-content">
+                <template is="dom-repeat" items="[[items]]">
+                    <paper-button class="dropbtnItem" on-tap="_setSelectedItem" style="width: 250px;">[[ item.description ]]</paper-button>
+                </template>
+            </div>
+        </div>
+
+    </template>
+    <script>
+        class SuchDropdownMenu extends Polymer.Element {
+            static get is() {
+                return "such-dropdown-menu";
+            }
+            static get properties() {
+                return {
+                    title: {
+                        type: String,
+                        value: "Menu",
+                    },
+                    value: {
+                        type: Object,
+                        notify: true,
+                        observer: '_valueChanged',
+                    },
+                    items: {
+                        type: Array,
+                    },
+                }
+            }
+
+            constructor() {
+                super();
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    this.addEventListener('blur', this._onBlur);
+                });
+            }
+            ready() {
+                super.ready();
+            }
+            _onBlur(event) {
+                this._hideItems();
+            }
+
+            _showItems(e) {
+                var dropDownContainer = this.$.itemsDropDownContent;
+                if (dropDownContainer != null) {
+                    dropDownContainer.classList.toggle("showMenuItems");
+                }
+            }
+            _hideItems(e) {
+                var dropDownContainer = this.$.itemsDropDownContent;
+                if (dropDownContainer.classList.contains('showMenuItems')) {
+                    dropDownContainer.classList.remove('showMenuItems');
+                }
+            }
+            _setSelectedItem(e) {
+                this.value = e.model.item;
+            }
+            _valueChanged(newVal, oldVal) {
+                this._hideItems();
+            }
+        }
+        customElements.define(SuchDropdownMenu.is, SuchDropdownMenu);
+    </script>
+</dom-module>

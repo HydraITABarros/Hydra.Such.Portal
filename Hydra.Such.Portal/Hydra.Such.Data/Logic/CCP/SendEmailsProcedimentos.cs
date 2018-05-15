@@ -130,10 +130,17 @@ namespace Hydra.Such.Data.Logic.CCP
             MMessage.Body = Body;
             MMessage.IsBodyHtml = IsBodyHtml;
 
+            //MMessage.Attachments.Add
+
             Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
 
             string UserState = "EmailProcedimentos";
             Client.SendAsync(MMessage, UserState);
+        }
+
+        public void SendEmail_ToJuri_With_Attachment()
+        {
+            
         }
     }
 }

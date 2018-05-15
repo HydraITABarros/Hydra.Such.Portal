@@ -207,10 +207,10 @@
                                     <div class="col-md-3 ">
                                         <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
                                             <template>
-                                                <table width="180px">
+                                                <table width="500px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -219,10 +219,10 @@
                                     <div class="col-md-3 ">
                                         <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                             <template>
-                                                <table width="180px">
+                                                <table width="550px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="20%">[[item.id]]</td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>

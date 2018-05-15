@@ -14,6 +14,9 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
+using Hydra.Such.Data;
+using static Hydra.Such.Data.Enumerations;
+using System.Net;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -56,14 +59,46 @@ namespace Hydra.Such.Portal.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenterCode));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetByContract([FromBody] JObject requestParams)
+        {
+            string contractId = requestParams["contractId"].ToString();
+
+            List<ProjectListItemViewModel> result = string.IsNullOrEmpty(contractId) ? new List<ProjectListItemViewModel>() : DBProjects.GetByContract(contractId);
+
+            result.ForEach(x =>
+            {
+                if (x.Status.HasValue)
+                {
+                    x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                }
+                x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            });
+
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenterCode));
 
             return Json(result);
         }
@@ -257,6 +292,10 @@ namespace Hydra.Such.Portal.Controllers
 
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                if (TCreateNavProj.Exception != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+                                if(TCreateNavProj.Exception.InnerException != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
                             {
@@ -480,9 +519,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllProjectDiary([FromBody]string projectNo)
         {
+            List<ProjectDiaryViewModel> dp = null;
             if (projectNo == null || projectNo == "")
             {
-                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAllOpen(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                dp = DBProjectDiary.GetAllOpen(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -516,7 +556,7 @@ namespace Hydra.Such.Portal.Controllers
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
-                return Json(dp);
+                //return Json(dp);
             }
             else
             {
@@ -525,7 +565,7 @@ namespace Hydra.Such.Portal.Controllers
                 //{
                 //    vae
                 //}
-                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                dp = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -559,137 +599,161 @@ namespace Hydra.Such.Portal.Controllers
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
-                return Json(dp);
+                //return Json(dp);
+            }
+            ProjectDiaryResponse response = new ProjectDiaryResponse();
+            response.eReasonCode = 1;
+            response.Items = dp;
+
+            return Json(response);
+        }
+
+
+        public class ProjectDiaryResponse : ErrorHandler
+        {
+            public List<ProjectDiaryViewModel> Items { get; set; }
+
+            public ProjectDiaryResponse()
+            {
+                this.Items = new List<ProjectDiaryViewModel>();
             }
         }
 
         [HttpPost]
         public JsonResult UpdateProjectDiary([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
-            List<DiárioDeProjeto> previousList;
-            if (projectNo == null || projectNo == "")
-            {
-                // Get All
-                previousList = DBProjectDiary.GetAll(User.Identity.Name);
-            }
-            else
-            {
-                previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
-            }
-
-
-            //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
-            //previousList.ForEach(x => DBProjectDiary.Delete(x));
-            foreach (DiárioDeProjeto line in previousList)
-            {
-                if (!dp.Any(x => x.LineNo == line.NºLinha))
-                {
-                    DBProjectDiary.Delete(line);
-                }
-            }
-
+            ProjectDiaryResponse response = new ProjectDiaryResponse();
+            response.eReasonCode = 1;
+            response.eMessage = "Diário de Projeto atualizado.";
+            if (dp != null)
+                response.Items = dp;
             //Update or Create
             try
             {
+                List<DiárioDeProjeto> previousList;
+                //throw new Exception("aaa");
+                if (projectNo == null || projectNo == "")
+                {
+                    // Get All
+                    previousList = DBProjectDiary.GetAll(User.Identity.Name);
+                }
+                else
+                {
+                    previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
+                }
+
+
+                //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
+                //previousList.ForEach(x => DBProjectDiary.Delete(x));
+                foreach (DiárioDeProjeto line in previousList)
+                {
+                    if (!dp.Any(x => x.LineNo == line.NºLinha))
+                    {
+                        DBProjectDiary.Delete(line);
+                    }
+                }
+
+
                 dp.ForEach(x =>
-                           {
-                               List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
+                {
+                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
 
-                               if (dpObject.Count > 0)
-                               {
-                                   DiárioDeProjeto newdp = dpObject.FirstOrDefault();
+                    if (dpObject.Count > 0)
+                    {
+                        DiárioDeProjeto newdp = dpObject.FirstOrDefault();
 
-                                   newdp.NºLinha = x.LineNo;
-                                   newdp.NºProjeto = x.ProjectNo;
-                                   newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
-                                   newdp.TipoMovimento = x.MovementType;
-                                   newdp.Tipo = x.Type;
-                                   newdp.Código = x.Code;
-                                   newdp.Descrição = x.Description;
-                                   newdp.Quantidade = x.Quantity;
-                                   newdp.CódUnidadeMedida = x.MeasurementUnitCode;
-                                   newdp.CódLocalização = x.LocationCode;
-                                   newdp.GrupoContabProjeto = x.ProjectContabGroup;
-                                   newdp.CódigoRegião = x.RegionCode;
-                                   newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                                   newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
-                                   newdp.Utilizador = User.Identity.Name;
-                                   newdp.CustoUnitário = x.UnitCost;
-                                   newdp.CustoTotal = x.TotalCost;
-                                   newdp.PreçoUnitário = x.UnitPrice;
-                                   newdp.PreçoTotal = x.TotalPrice;
-                                   newdp.Faturável = x.Billable;
-                                   newdp.Registado = false;
-                                   newdp.FaturaANºCliente = x.InvoiceToClientNo;
-                                   newdp.Moeda = x.Currency;
-                                   newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
-                                   newdp.TipoRefeição = x.MealType;
-                                   newdp.CódGrupoServiço = x.ServiceGroupCode;
-                                   newdp.NºGuiaResíduos = x.ResidueGuideNo;
-                                   newdp.NºGuiaExterna = x.ExternalGuideNo;
-                                   newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
-                                   newdp.CódServiçoCliente = x.ServiceClientCode;
-                                   newdp.Faturada = x.Billed;
-                                   newdp.DataHoraModificação = DateTime.Now;
-                                   newdp.UtilizadorModificação = User.Identity.Name;
-                                   DBProjectDiary.Update(newdp);
-                               }
-                               else
-                               {
-                                   DiárioDeProjeto newdp = new DiárioDeProjeto()
-                                   {
-                                       NºLinha = x.LineNo,
-                                       NºProjeto = x.ProjectNo,
-                                       Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
-                                       TipoMovimento = x.MovementType,
-                                       Tipo = x.Type,
-                                       Código = x.Code,
-                                       Descrição = x.Description,
-                                       Quantidade = x.Quantity,
-                                       CódUnidadeMedida = x.MeasurementUnitCode,
-                                       CódLocalização = x.LocationCode,
-                                       GrupoContabProjeto = x.ProjectContabGroup,
-                                       CódigoRegião = x.RegionCode,
-                                       CódigoÁreaFuncional = x.FunctionalAreaCode,
-                                       CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
-                                       Utilizador = User.Identity.Name,
-                                       CustoUnitário = x.UnitCost,
-                                       CustoTotal = x.TotalCost,
-                                       PreçoUnitário = x.UnitPrice,
-                                       PreçoTotal = x.TotalPrice,
-                                       Faturável = x.Billable,
-                                       Registado = false,
-                                       FaturaANºCliente = x.InvoiceToClientNo,
-                                       Moeda = x.Currency,
-                                       ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                                       TipoRefeição = x.MealType,
-                                       CódGrupoServiço = x.ServiceGroupCode,
-                                       NºGuiaResíduos = x.ResidueGuideNo,
-                                       NºGuiaExterna = x.ExternalGuideNo,
-                                       DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                                       CódServiçoCliente = x.ServiceClientCode
+                        newdp.NºLinha = x.LineNo;
+                        newdp.NºProjeto = x.ProjectNo;
+                        newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
+                        newdp.TipoMovimento = x.MovementType;
+                        newdp.Tipo = x.Type;
+                        newdp.Código = x.Code;
+                        newdp.Descrição = x.Description;
+                        newdp.Quantidade = x.Quantity;
+                        newdp.CódUnidadeMedida = x.MeasurementUnitCode;
+                        newdp.CódLocalização = x.LocationCode;
+                        newdp.GrupoContabProjeto = x.ProjectContabGroup;
+                        newdp.CódigoRegião = x.RegionCode;
+                        newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                        newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
+                        newdp.Utilizador = User.Identity.Name;
+                        newdp.CustoUnitário = x.UnitCost;
+                        newdp.CustoTotal = x.TotalCost;
+                        newdp.PreçoUnitário = x.UnitPrice;
+                        newdp.PreçoTotal = x.TotalPrice;
+                        newdp.Faturável = x.Billable;
+                        newdp.Registado = false;
+                        newdp.FaturaANºCliente = x.InvoiceToClientNo;
+                        newdp.Moeda = x.Currency;
+                        newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
+                        newdp.TipoRefeição = x.MealType;
+                        newdp.CódGrupoServiço = x.ServiceGroupCode;
+                        newdp.NºGuiaResíduos = x.ResidueGuideNo;
+                        newdp.NºGuiaExterna = x.ExternalGuideNo;
+                        newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
+                        newdp.CódServiçoCliente = x.ServiceClientCode;
+                        newdp.Faturada = x.Billed;
+                        newdp.DataHoraModificação = DateTime.Now;
+                        newdp.UtilizadorModificação = User.Identity.Name;
+                        DBProjectDiary.Update(newdp);
+                    }
+                    else
+                    {
+                        DiárioDeProjeto newdp = new DiárioDeProjeto()
+                        {
+                            NºLinha = x.LineNo,
+                            NºProjeto = x.ProjectNo,
+                            Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                            TipoMovimento = x.MovementType,
+                            Tipo = x.Type,
+                            Código = x.Code,
+                            Descrição = x.Description,
+                            Quantidade = x.Quantity,
+                            CódUnidadeMedida = x.MeasurementUnitCode,
+                            CódLocalização = x.LocationCode,
+                            GrupoContabProjeto = x.ProjectContabGroup,
+                            CódigoRegião = x.RegionCode,
+                            CódigoÁreaFuncional = x.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                            Utilizador = User.Identity.Name,
+                            CustoUnitário = x.UnitCost,
+                            CustoTotal = x.TotalCost,
+                            PreçoUnitário = x.UnitPrice,
+                            PreçoTotal = x.TotalPrice,
+                            Faturável = x.Billable,
+                            Registado = false,
+                            FaturaANºCliente = x.InvoiceToClientNo,
+                            Moeda = x.Currency,
+                            ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                            TipoRefeição = x.MealType,
+                            CódGrupoServiço = x.ServiceGroupCode,
+                            NºGuiaResíduos = x.ResidueGuideNo,
+                            NºGuiaExterna = x.ExternalGuideNo,
+                            DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                            CódServiçoCliente = x.ServiceClientCode
 
-                                   };
+                        };
 
-                                   newdp.Faturada = false;
-                                   newdp.DataHoraCriação = DateTime.Now;
-                                   newdp.UtilizadorCriação = User.Identity.Name;
-                                   DBProjectDiary.Create(newdp);
-                               }
+                        newdp.Faturada = false;
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBProjectDiary.Create(newdp);
+                    }
 
 
-                           });
+                });
             }
             catch (Exception e)
             {
-                throw;
+                //throw;
+                response.eReasonCode = 2;
+                response.eMessage = "Occorreu um erro ao atualizar o Diário de Projeto.";
             }
 
-
-            return Json(dp);
+            return Json(response);
         }
 
-        public JsonResult UpdateProjectDiaryRequisition( List<ProjectDiaryViewModel> dp, string projectNo, string userName)
+        public JsonResult UpdateProjectDiaryRequisition(List<ProjectDiaryViewModel> dp, string projectNo, string userName)
         {
             List<DiárioDeProjeto> previousList;
             if (projectNo == null || projectNo == "")
@@ -806,7 +870,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception e)
             {
-                throw ;
+                throw;
             }
 
 
@@ -814,61 +878,74 @@ namespace Hydra.Such.Portal.Controllers
         }
         public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
-            //Create
-            dp.ForEach(x =>
+            ProjectDiaryResponse response = new ProjectDiaryResponse();
+            response.eReasonCode = 1;
+            response.eMessage = "Diário de Projeto atualizado.";
+            if(dp != null)
+                response.Items = dp;
+            try
             {
-                DiárioDeProjeto newdp = new DiárioDeProjeto()
+                //Create
+                dp.ForEach(x =>
                 {
-                    NºLinha = x.LineNo,
-                    NºProjeto = x.ProjectNo,
-                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
-                    TipoMovimento = x.MovementType,
-                    Tipo = x.Type,
-                    Código = x.Code,
-                    Descrição = x.Description,
-                    Quantidade = x.Quantity,
-                    CódUnidadeMedida = x.MeasurementUnitCode,
-                    CódLocalização = x.LocationCode,
-                    GrupoContabProjeto = x.ProjectContabGroup,
-                    CódigoRegião = x.RegionCode,
-                    CódigoÁreaFuncional = x.FunctionalAreaCode,
-                    CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
-                    Utilizador = User.Identity.Name,
-                    CustoUnitário = x.UnitCost,
-                    CustoTotal = x.TotalCost,
-                    PreçoUnitário = x.UnitPrice,
-                    PreçoTotal = x.TotalPrice,
-                    Faturável = x.Billable,
-                    Registado = false,
-                    FaturaANºCliente = x.InvoiceToClientNo,
-                    Moeda = x.Currency,
-                    ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                    TipoRefeição = x.MealType,
-                    CódGrupoServiço = x.ServiceGroupCode,
-                    NºGuiaResíduos = x.ResidueGuideNo,
-                    NºGuiaExterna = x.ExternalGuideNo,
-                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                    CódServiçoCliente = x.ServiceClientCode
+                    DiárioDeProjeto newdp = new DiárioDeProjeto()
+                    {
+                        NºLinha = x.LineNo,
+                        NºProjeto = x.ProjectNo,
+                        Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
+                        TipoMovimento = x.MovementType,
+                        Tipo = x.Type,
+                        Código = x.Code,
+                        Descrição = x.Description,
+                        Quantidade = x.Quantity,
+                        CódUnidadeMedida = x.MeasurementUnitCode,
+                        CódLocalização = x.LocationCode,
+                        GrupoContabProjeto = x.ProjectContabGroup,
+                        CódigoRegião = x.RegionCode,
+                        CódigoÁreaFuncional = x.FunctionalAreaCode,
+                        CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                        Utilizador = User.Identity.Name,
+                        CustoUnitário = x.UnitCost,
+                        CustoTotal = x.TotalCost,
+                        PreçoUnitário = x.UnitPrice,
+                        PreçoTotal = x.TotalPrice,
+                        Faturável = x.Billable,
+                        Registado = false,
+                        FaturaANºCliente = x.InvoiceToClientNo,
+                        Moeda = x.Currency,
+                        ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                        TipoRefeição = x.MealType,
+                        CódGrupoServiço = x.ServiceGroupCode,
+                        NºGuiaResíduos = x.ResidueGuideNo,
+                        NºGuiaExterna = x.ExternalGuideNo,
+                        DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                        CódServiçoCliente = x.ServiceClientCode
 
-                };
+                    };
 
-                if (x.LineNo > 0)
-                {
-                    newdp.Faturada = x.Billed;
-                    newdp.DataHoraModificação = DateTime.Now;
-                    newdp.UtilizadorModificação = User.Identity.Name;
-                    DBProjectDiary.Update(newdp);
-                }
-                else
-                {
-                    newdp.Faturada = false;
-                    newdp.DataHoraCriação = DateTime.Now;
-                    newdp.UtilizadorCriação = User.Identity.Name;
-                    DBProjectDiary.Create(newdp);
-                }
-            });
+                    if (x.LineNo > 0)
+                    {
+                        newdp.Faturada = x.Billed;
+                        newdp.DataHoraModificação = DateTime.Now;
+                        newdp.UtilizadorModificação = User.Identity.Name;
+                        DBProjectDiary.Update(newdp);
+                    }
+                    else
+                    {
+                        newdp.Faturada = false;
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBProjectDiary.Create(newdp);
+                    }
+                });
+            }
+            catch
+            {
+                response.eReasonCode = 2;
+                response.eMessage = "Occorreu um erro ao atualizar o Diário de Projeto.";
+            }
 
-            return Json(dp);
+            return Json(response);// dp);
         }
 
         [HttpPost]
@@ -901,19 +978,32 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
-            //Guid transactID = Guid.NewGuid();
-
-            //Create Lines in NAV
-            //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
-            //TCreateNavDiaryLine.Wait();
-
-            ////Register Lines in NAV
-            //Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-            //TRegisterNavDiaryLine.Wait();
-
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+                Guid transactID = Guid.NewGuid();
+                try
+                {
+                    //Create Lines in NAV
+                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+                    TCreateNavDiaryLine.Wait();
+
+                    ////Register Lines in NAV
+                    Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                    TRegisterNavDiaryLine.Wait();
+
+                    if (TRegisterNavDiaryLine == null)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        return Json(dp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    return Json(dp);
+                }
+
                 dp.ForEach(x =>
                 {
                     if (x.Code != null)
@@ -966,17 +1056,13 @@ namespace Hydra.Such.Portal.Controllers
 
                             DBProjectMovements.Create(ProjectMovement);
                         }
-
-                        
                     }
                 });
             }
-
-
             return Json(dp);
         }
 
-        public JsonResult RegisterDiaryLinesRequisition( List<ProjectDiaryViewModel> dp, string userName)
+        public JsonResult RegisterDiaryLinesRequisition(List<ProjectDiaryViewModel> dp, string userName)
         {
             //Guid transactID = Guid.NewGuid();
 
@@ -1088,21 +1174,21 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.eReasonCode = 4;
                             result.eMessage = "Este projeto não tem contrato com linhas associadas";
-                        }     
+                        }
                         foreach (var item in dp)
                         {
-                            
-                                DiárioDeProjeto dpValidation = new DiárioDeProjeto();
-                                item.UtilizadorCriação = User.Identity.Name;
-                                item.DataHoraCriação = DateTime.Now;
-                                dpValidation = DBProjectDiary.Create(item);
-                                if (dpValidation == null)
-                                {
-                                    result.eReasonCode = 5;
-                                    result.eMessage = "Occorreu um erro ao obter os movimentos";
-                                }                                                    
+
+                            DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                            item.UtilizadorCriação = User.Identity.Name;
+                            item.DataHoraCriação = DateTime.Now;
+                            dpValidation = DBProjectDiary.Create(item);
+                            if (dpValidation == null)
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Occorreu um erro ao obter os movimentos";
+                            }
                         }
-                       
+
                     }
                 }
                 else
@@ -1116,7 +1202,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Não foi selecionado nenhum projeto";
             }
-           
+
             return Json(result);
         }
 
@@ -1134,10 +1220,18 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Job Ledger Entry
-        public IActionResult MovimentosDeProjeto(String id)
+        //public IActionResult MovimentosDeProjeto(String id)
+        public IActionResult MovimentosDeProjeto(string id, [FromQuery]string areaid)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
-            if (UPerm != null && UPerm.Read.Value)
+            UserAccessesViewModel userAccesses = null;
+
+            if (!string.IsNullOrEmpty(areaid))
+            {
+                Enumerations.Areas area = (Enumerations.Areas)Enum.Parse(typeof(Enumerations.Areas), areaid);
+                if (Enum.IsDefined(typeof(Enumerations.Areas), area))
+                    userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, area, Enumerations.Features.Projetos);
+            }
+            if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
                 {
@@ -1180,7 +1274,8 @@ namespace Hydra.Such.Portal.Controllers
                 UnitPrice = x.PreçoUnitário,
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
-                Registered = x.Registado
+                Registered = x.Registado,
+                FolhaHoras = x.NºDocumento
             }).ToList();
 
             return Json(dp);
@@ -1217,7 +1312,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(dp);
         }
-
+        
         //[HttpPost]
         //public JsonResult GetJobLedgerEntries([FromBody] string ProjectNo)
         //{
@@ -1290,11 +1385,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                     List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                    if (userDimensionsViewModel.Where(x => x.Dimension == 1).Count() > 0)
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == 2).Count() > 0)
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == 3).Count() > 0)
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                 }
                 return Json(result);
@@ -1305,7 +1400,7 @@ namespace Hydra.Such.Portal.Controllers
             }
 
         }
-        
+
         private class InvoiceMessages
         {
             public bool Iserror { get; set; }
@@ -1317,16 +1412,16 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if(data != null)
+                if (data != null)
                 {
-                    foreach(var updatedata in data)
+                    foreach (var updatedata in data)
                     {
                         MovimentosDeProjeto lines = DBProjectMovements.GetByLineNo(updatedata.LineNo).FirstOrDefault();
                         lines.FaturaçãoAutorizada = true;
                         lines.DataAutorizaçãoFaturação = DateTime.Now;
                         DBProjectMovements.Update(lines);
                     }
-                    
+
                     return Json(data);
                 }
             }
@@ -1354,7 +1449,6 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result.Count > 0)
                 {
-                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                     foreach (var lst in result)
                     {
                         if (lst.MovementType == 3)
@@ -1366,9 +1460,9 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             lst.UnitPrice = lst.UnitValueToInvoice;
                         }
-
-                        lst.ClientName = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().Name;
-                        lst.ClientVATReg = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().VATRegistrationNo_;
+                        var customer = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault();
+                        lst.ClientName = customer != null ? customer.Name : string.Empty;
+                        lst.ClientVATReg = customer != null ? customer.VATRegistrationNo_ : string.Empty;
                     }
                 }
                 return Json(result);
@@ -1377,14 +1471,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
-
         }
 
 
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
         {
-            if(data != null)
+            if (data != null)
             {
                 List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
                 {
@@ -1400,11 +1493,11 @@ namespace Hydra.Such.Portal.Controllers
                     CommitmentNumber = x.Key.CommitmentNumber,
                     ClientRequest = x.Key.ClientRequest,
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
-                    
+
                 }).ToList();
 
 
-                if(groupedbyclient != null)
+                if (groupedbyclient != null)
                 {
                     foreach (var header in groupedbyclient)
                     {
@@ -1416,7 +1509,7 @@ namespace Hydra.Such.Portal.Controllers
                             string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
 
                             List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                            
+
                             foreach (var lines in data)
                             {
                                 if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)

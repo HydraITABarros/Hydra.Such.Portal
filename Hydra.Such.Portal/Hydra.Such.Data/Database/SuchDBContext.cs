@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<AcessosPerfil> AcessosPerfil { get; set; }
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
+        public virtual DbSet<AcordoPrecos> AcordoPrecos { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
         public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
         public virtual DbSet<AutorizarFaturaçãoContratos> AutorizarFaturaçãoContratos { get; set; }
@@ -34,6 +35,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<DiárioDesperdíciosAlimentares> DiárioDesperdíciosAlimentares { get; set; }
         public virtual DbSet<DiárioMovimentosViaturas> DiárioMovimentosViaturas { get; set; }
         public virtual DbSet<DiárioRequisiçãoUnidProdutiva> DiárioRequisiçãoUnidProdutiva { get; set; }
+        public virtual DbSet<DistanciaFh> DistanciaFh { get; set; }
         public virtual DbSet<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public virtual DbSet<ElementosJuri> ElementosJuri { get; set; }
         public virtual DbSet<EmailsAprovações> EmailsAprovações { get; set; }
@@ -41,8 +43,10 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<FichasTécnicasPratos> FichasTécnicasPratos { get; set; }
         public virtual DbSet<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public virtual DbSet<FolhasDeHoras> FolhasDeHoras { get; set; }
+        public virtual DbSet<FornecedoresAcordoPrecos> FornecedoresAcordoPrecos { get; set; }
         public virtual DbSet<GruposAprovação> GruposAprovação { get; set; }
         public virtual DbSet<Instrutores> Instrutores { get; set; }
+        public virtual DbSet<LinhasAcordoPrecos> LinhasAcordoPrecos { get; set; }
         public virtual DbSet<LinhasContratos> LinhasContratos { get; set; }
         public virtual DbSet<LinhasFaturaçãoContrato> LinhasFaturaçãoContrato { get; set; }
         public virtual DbSet<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
@@ -108,17 +112,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-        // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-            }
-        }
+        public virtual DbSet<AcessosLocalizacoes> AcessosLocalizacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -246,6 +240,19 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<AcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => e.NoProcedimento);
+
+                entity.Property(e => e.NoProcedimento)
+                    .HasMaxLength(10)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DtFim).HasColumnType("datetime");
+
+                entity.Property(e => e.DtInicio).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Anexos>(entity =>
@@ -804,6 +811,18 @@ namespace Hydra.Such.Data.Database
             {
                 entity.ToTable("Configuração Aprovações");
 
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataFinal)
                     .HasColumnName("Data Final")
                     .HasColumnType("datetime");
@@ -1002,6 +1021,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.AreaPorDefeito)
+                    .HasColumnName("Area por defeito")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CentroRespPorDefeito)
+                    .HasColumnName("Centro Resp por defeito")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -1022,6 +1049,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("ProcedimentosEmailEnvioParaCA")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.RegiãoPorDefeito)
+                    .HasColumnName("Região por defeito")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -1039,6 +1070,12 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.Cidade).HasMaxLength(30);
+
+                entity.Property(e => e.Cp)
+                    .HasColumnName("CP")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -1047,9 +1084,41 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Email).HasMaxLength(80);
+
+                entity.Property(e => e.EmailContato)
+                    .HasColumnName("Email Contato")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.Endereço).HasMaxLength(100);
+
+                entity.Property(e => e.FunçãoContato)
+                    .HasColumnName("Função Contato")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Nif)
+                    .HasColumnName("NIF")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.Nome)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.Notas).HasColumnType("text");
+
+                entity.Property(e => e.PessoaContato)
+                    .HasColumnName("Pessoa Contato")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Telefone).HasMaxLength(30);
+
+                entity.Property(e => e.TelefoneContato)
+                    .HasColumnName("Telefone Contato")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.TelemovelContato)
+                    .HasColumnName("Telemovel Contato")
+                    .HasMaxLength(30);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -1140,6 +1209,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraEntregaProposta)
+                    .HasColumnName("Data/Hora Entrega Proposta")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DataHoraErrosEOmissões)
@@ -1269,6 +1342,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.PróximoPeríodoFact)
                     .HasColumnName("Próximo Período Fact.")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.RazãoArquivo)
+                    .HasColumnName("Razão Arquivo")
+                    .HasMaxLength(2000);
 
                 entity.Property(e => e.Referência1ºContrato)
                     .HasColumnName("Referência 1º Contrato")
@@ -1791,6 +1868,39 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.DiárioRequisiçãoUnidProdutiva)
                     .HasForeignKey(d => d.TipoRefeição)
                     .HasConstraintName("FK_Diário Requisição Unid. Produtiva_Tipos Refeição");
+            });
+
+            modelBuilder.Entity<DistanciaFh>(entity =>
+            {
+                entity.HasKey(e => new { e.CódigoOrigem, e.CódigoDestino });
+
+                entity.ToTable("Distancia_FH");
+
+                entity.Property(e => e.CódigoOrigem)
+                    .HasColumnName("Código_Origem")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoDestino)
+                    .HasColumnName("Código_Destino")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("Alterado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("Criado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraÚltimaAlteração)
+                    .HasColumnName("Data/Hora Última Alteração")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Distância).HasColumnType("decimal(, 20)");
             });
 
             modelBuilder.Entity<DistribuiçãoCustoFolhaDeHoras>(entity =>
@@ -2347,6 +2457,23 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(200);
             });
 
+            modelBuilder.Entity<FornecedoresAcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => new { e.NoProcedimento, e.NoFornecedor });
+
+                entity.Property(e => e.NoProcedimento).HasMaxLength(10);
+
+                entity.Property(e => e.NoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.HasOne(d => d.NoProcedimentoNavigation)
+                    .WithMany(p => p.FornecedoresAcordoPrecos)
+                    .HasForeignKey(d => d.NoProcedimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FornecedoresAcordoPrecos_AcordoPrecos");
+            });
+
             modelBuilder.Entity<GruposAprovação>(entity =>
             {
                 entity.HasKey(e => e.Código);
@@ -2393,6 +2520,61 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<LinhasAcordoPrecos>(entity =>
+            {
+                entity.HasKey(e => new { e.NoProcedimento, e.NoFornecedor, e.CodProduto, e.DtValidadeInicio, e.Cresp, e.Localizacao });
+
+                entity.Property(e => e.NoProcedimento).HasMaxLength(10);
+
+                entity.Property(e => e.NoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto).HasMaxLength(20);
+
+                entity.Property(e => e.DtValidadeInicio).HasColumnType("datetime");
+
+                entity.Property(e => e.Cresp).HasMaxLength(20);
+
+                entity.Property(e => e.Localizacao).HasMaxLength(20);
+
+                entity.Property(e => e.Area).HasMaxLength(20);
+
+                entity.Property(e => e.CodProdutoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DescricaoProdFornecedor).HasMaxLength(80);
+
+                entity.Property(e => e.DescricaoProduto).HasMaxLength(80);
+
+                entity.Property(e => e.DtValidadeFim).HasColumnType("datetime");
+
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.Property(e => e.QtdPorUm).HasColumnName("QtdPorUM");
+
+                entity.Property(e => e.Regiao).HasMaxLength(20);
+
+                entity.Property(e => e.Um)
+                    .HasColumnName("UM")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(30);
+
+                entity.HasOne(d => d.NoProcedimentoNavigation)
+                    .WithMany(p => p.LinhasAcordoPrecos)
+                    .HasForeignKey(d => d.NoProcedimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LinhasAcordoPrecos_AcordoPrecos");
+
+                entity.HasOne(d => d.No)
+                    .WithMany(p => p.LinhasAcordoPrecos)
+                    .HasForeignKey(d => new { d.NoProcedimento, d.NoFornecedor })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LinhasAcordoPrecos_FornecedoresAcordoPrecos");
             });
 
             modelBuilder.Entity<LinhasContratos>(entity =>
@@ -3691,6 +3873,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºMovimento).HasColumnName("Nº Movimento");
 
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraAprovação)
                     .HasColumnName("Data/Hora Aprovação")
                     .HasColumnType("datetime");
@@ -4704,7 +4898,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Responsável Validação")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.TipoRequisição).HasColumnName("Tipo Requisição");
+                entity.Property(e => e.TipoRequisição)
+                    .HasColumnName("Tipo Requisição")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.UnidadeProdutivaAlimentação)
                     .HasColumnName("Unidade Produtiva Alimentação")
@@ -4761,6 +4957,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.DataIntTr)
+                    .HasColumnName("DataIntTR")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Hora1ªEntrada).HasColumnName("Hora 1ª Entrada");
 
                 entity.Property(e => e.Hora1ªSaída).HasColumnName("Hora 1ª Saída");
@@ -4768,6 +4968,12 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Hora2ªEntrada).HasColumnName("Hora 2ª Entrada");
 
                 entity.Property(e => e.Hora2ªSaída).HasColumnName("Hora 2ª Saída");
+
+                entity.Property(e => e.IntegradoTr).HasColumnName("IntegradoTR");
+
+                entity.Property(e => e.NoEmpregado)
+                    .HasColumnName("No Empregado")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.Observacoes).HasMaxLength(200);
 
@@ -6462,6 +6668,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.ToTable("Tipos Requisições");
 
+                entity.Property(e => e.Código)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -6986,6 +7196,37 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
+            });
+
+            modelBuilder.Entity<AcessosLocalizacoes>(entity =>
+            {
+                entity.HasKey(e => new { e.ID_Utilizador, e.Localizacao });
+
+                entity.ToTable("AcessosLocalizacoes");
+
+                entity.Property(e => e.ID_Utilizador)
+                    .HasColumnName("ID_Utilizador")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Localizacao)
+                    .HasColumnName("Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Utilizador_Criacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora_Criacao)
+                    .HasColumnName("DataHora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Utilizador_Modificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora_Modificacao)
+                    .HasColumnName("DataHora_Modificacao")
+                    .HasColumnType("datetime");
             });
         }
     }

@@ -22,12 +22,23 @@ using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
+using Microsoft.Extensions.Options;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class AdministracaoController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+
+        public AdministracaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -36,13 +47,40 @@ namespace Hydra.Such.Portal.Controllers
         #region Utilizadores
         public IActionResult ConfiguracaoUtilizadores()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
         public JsonResult GetListUsers()
         {
             List<ConfigUtilizadores> result = DBUserConfigurations.GetAll();
+
+            if (result != null)
+            {
+                result.ForEach(Utilizador =>
+                {
+                    var nomeRegião = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault();
+                    Utilizador.RegiãoPorDefeito = nomeRegião == null ? "" : nomeRegião.Name;
+
+                    var nomeÁreaPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault();
+                    Utilizador.AreaPorDefeito = nomeÁreaPorDefeito == null ? "" : nomeÁreaPorDefeito.Name;
+
+                    var nomeCentroRespPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault();
+                    Utilizador.CentroRespPorDefeito = nomeCentroRespPorDefeito == null ? "" : nomeCentroRespPorDefeito.Name;
+                });
+            };
+
             return Json(result);
         }
 
@@ -70,6 +108,9 @@ namespace Hydra.Such.Portal.Controllers
                 result.Name = CU.Nome;
                 result.Active = CU.Ativo;
                 result.Administrator = CU.Administrador;
+                result.Regiao = CU.RegiãoPorDefeito;
+                result.Area = CU.AreaPorDefeito;
+                result.Cresp = CU.CentroRespPorDefeito;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -89,6 +130,8 @@ namespace Hydra.Such.Portal.Controllers
                 }).ToList();
 
                 result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel();
+
+                result.UserAcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(data.IdUser).ParseToViewModel();
             }
 
             return Json(result);
@@ -103,6 +146,9 @@ namespace Hydra.Such.Portal.Controllers
                 Nome = data.Name,
                 Administrador = data.Administrator,
                 Ativo = data.Active,
+                RegiãoPorDefeito = data.Regiao,
+                AreaPorDefeito = data.Area,
+                CentroRespPorDefeito = data.Cresp,
                 UtilizadorCriação = User.Identity.Name,
             });
 
@@ -134,6 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorCriação = User.Identity.Name
                 });
             });
+
             return Json(data);
         }
 
@@ -153,6 +200,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.Nome = data.Name;
                 userConfig.Ativo = data.Active;
                 userConfig.Administrador = data.Administrator;
+                userConfig.RegiãoPorDefeito = data.Regiao;
+                userConfig.AreaPorDefeito = data.Area;
+                userConfig.CentroRespPorDefeito = data.Cresp;
                 userConfig.DataHoraModificação = DateTime.Now;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 DBUserConfigurations.Update(userConfig);
@@ -359,6 +409,35 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            bool result = false;
+            try
+            {
+                AcessosLocalizacoes userAcessosLocalizacoes = new AcessosLocalizacoes();
+                userAcessosLocalizacoes.ID_Utilizador = data.ID_Utilizador;
+                userAcessosLocalizacoes.Localizacao = data.Localizacao;
+                userAcessosLocalizacoes.Utilizador_Criacao = User.Identity.Name;
+                userAcessosLocalizacoes.DataHora_Criacao = DateTime.Now;
+
+                var dbCreateResult = DBAcessosLocalizacoes.Create(userAcessosLocalizacoes);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.ID_Utilizador, data.Localizacao);
+            return Json(userAcessosLocalizacoes != null ? DBAcessosLocalizacoes.Delete(userAcessosLocalizacoes) : false);
+        }
+
+        [HttpPost]
         public JsonResult CreateUserAccess([FromBody] UserAccessesViewModel data)
         {
             bool result = false;
@@ -426,7 +505,18 @@ namespace Hydra.Such.Portal.Controllers
         #region PerfisModelo
         public IActionResult PerfisModelo()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -549,7 +639,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
-        
+
         [HttpPost]
         public JsonResult DeleteAccess([FromBody] AccessProfileModelView data)
         {
@@ -586,7 +676,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Configuracoes()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -665,7 +766,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ConfiguracaoNumeracoes()
         {
-            return View();
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -1690,12 +1802,18 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateConfiguracaoTipoTrabalhoFH([FromBody] TipoTrabalhoFHViewModel data)
         {
+            int resultFinal = 0;
 
             TipoTrabalhoFh toCreate = DBTipoTrabalhoFH.ParseToDB(data);
             toCreate.CriadoPor = User.Identity.Name;
             var result = DBTipoTrabalhoFH.Create(toCreate);
 
-            return Json(data);
+            if (result == null)
+                resultFinal = 0;
+            else
+                resultFinal = 1;
+            //return Json(data);
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -1752,20 +1870,28 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetConfiguracaoPrecoVendaRecursoFH()
         {
             List<PrecoVendaRecursoFHViewModel> result = DBPrecoVendaRecursoFH.ParseListToViewModel(DBPrecoVendaRecursoFH.GetAll());
+
+            if (result != null)
+            {
+                result.ForEach(x =>
+                {
+                    x.Descricao = x.Code + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().Name;
+                    x.CodTipoTrabalhoTexto = x.CodTipoTrabalho + " - " + DBTipoTrabalhoFH.GetAll().Where(y => y.Codigo == x.CodTipoTrabalho).FirstOrDefault().Descricao;
+                    x.FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().ResourceGroup;
+                });
+            }
+
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult CreateConfiguracaoPrecoVendaRecursoFH([FromBody] PrecoVendaRecursoFHViewModel data)
         {
+            int resultFinal = 0;
 
             PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(data);
 
-
-            string NAVDatabaseName = "SUCH_NAV_DEV";
-            string NAVCompanyName = "CRONUS Portugal Ltd_";
-
-            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, data.Code, "", 0, "").FirstOrDefault();
 
             toCreate.Descricao = resource.Name;
             toCreate.FamiliaRecurso = resource.ResourceGroup;
@@ -1773,7 +1899,12 @@ namespace Hydra.Such.Portal.Controllers
             toCreate.CriadoPor = User.Identity.Name;
             var result = DBPrecoVendaRecursoFH.Create(toCreate);
 
-            return Json(data);
+            if (result == null)
+                resultFinal = 0;
+            else
+                resultFinal = 1;
+
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -1805,6 +1936,8 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.ParseToDB(x);
+                toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().Name;
+                toUpdate.FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().ResourceGroup;
                 toUpdate.AlteradoPor = User.Identity.Name;
                 DBPrecoVendaRecursoFH.Update(toUpdate);
             });
@@ -1814,10 +1947,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRecurso([FromBody] NAVResourcesViewModel data)
         {
-            string NAVDatabaseName = "SUCH_NAV_DEV";
-            string NAVCompanyName = "CRONUS Portugal Ltd_";
-
-            NAVResourcesViewModel result = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+            NAVResourcesViewModel result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, data.Code, "", 0, "").FirstOrDefault();
 
             return Json(result);
         }
@@ -1936,14 +2066,13 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
-            string NAVDatabaseName = "SUCH_NAV_DEV";
-            string NAVCompanyName = "CRONUS Portugal Ltd_";
+            int resultFinal = 0;
 
             RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(data);
 
-            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Recurso).SingleOrDefault();
-            NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.NoEmpregado, NAVDatabaseName, NAVCompanyName).SingleOrDefault();
-                 
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, data.Recurso, "", 0, "").FirstOrDefault();
+            NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.NoEmpregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault();
+
             toCreate.NomeRecurso = resource.Name;
             toCreate.FamiliaRecurso = resource.ResourceGroup;
             toCreate.NomeEmpregado = employee.Name;
@@ -1951,7 +2080,12 @@ namespace Hydra.Such.Portal.Controllers
 
             var result = DBRHRecursosFH.Create(toCreate);
 
-            return Json(data);
+            if (result == null)
+                resultFinal = 0;
+            else
+                resultFinal = 1;
+
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -1980,6 +2114,11 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 RhRecursosFh toUpdate = DBRHRecursosFH.ParseToDB(x);
+
+                NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Recurso, "", 0, "").FirstOrDefault();
+                toUpdate.NomeRecurso = resource.Name;
+                toUpdate.FamiliaRecurso = resource.ResourceGroup;
+
                 toUpdate.AlteradoPor = User.Identity.Name;
                 DBRHRecursosFH.Update(toUpdate);
             });
@@ -1992,13 +2131,26 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAutorizacaoFHRH()
         {
             List<AutorizacaoFHRHViewModel> result = DBAutorizacaoFHRH.ParseListToViewModel(DBAutorizacaoFHRH.GetAll());
+
+            result.ForEach(x =>
+            {
+                x.NomeEmpregado = DBUserConfigurations.GetById(x.NoEmpregado) == null ? "" : DBUserConfigurations.GetById(x.NoEmpregado).Nome;
+                x.NomeResponsavel1 = DBUserConfigurations.GetById(x.NoResponsavel1) == null ? "" : DBUserConfigurations.GetById(x.NoResponsavel1).Nome;
+                x.NomeResponsavel2 = DBUserConfigurations.GetById(x.NoResponsavel2) == null ? "" : DBUserConfigurations.GetById(x.NoResponsavel2).Nome;
+                x.NomeResponsavel3 = DBUserConfigurations.GetById(x.NoResponsavel3) == null ? "" : DBUserConfigurations.GetById(x.NoResponsavel3).Nome;
+                x.NomeValidadorRH1 = DBUserConfigurations.GetById(x.ValidadorRH1) == null ? "" : DBUserConfigurations.GetById(x.ValidadorRH1).Nome;
+                x.NomeValidadorRH2 = DBUserConfigurations.GetById(x.ValidadorRH2) == null ? "" : DBUserConfigurations.GetById(x.ValidadorRH2).Nome;
+                x.NomeValidadorRH3 = DBUserConfigurations.GetById(x.ValidadorRH3) == null ? "" : DBUserConfigurations.GetById(x.ValidadorRH3).Nome;
+                x.NomeValidadorRHKM1 = DBUserConfigurations.GetById(x.ValidadorRHKM1) == null ? "" : DBUserConfigurations.GetById(x.ValidadorRHKM1).Nome;
+                x.NomeValidadorRHKM2 = DBUserConfigurations.GetById(x.ValidadorRHKM2) == null ? "" : DBUserConfigurations.GetById(x.ValidadorRHKM2).Nome;
+            });
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult CreateAutorizacaoFHRH([FromBody] AutorizacaoFHRHViewModel data)
         {
-            bool result = false;
+            int resultFinal = 0;
             try
             {
                 AutorizacaoFhRh autorizacao = new AutorizacaoFhRh();
@@ -2010,19 +2162,23 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
-                //autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
-                //autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
+                autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
+                autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 
                 var dbCreateResult = DBAutorizacaoFHRH.Create(autorizacao);
-                result = dbCreateResult != null ? true : false;
+
+                if (dbCreateResult == null)
+                    resultFinal = 0;
+                else
+                    resultFinal = 1;
             }
             catch (Exception ex)
             {
                 //log
             }
-            return Json(result);
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -2090,7 +2246,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateOrigemDestinoFH([FromBody] OrigemDestinoFHViewModel data)
         {
-            bool result = false;
+            int resultFinal = 0;
             try
             {
                 OrigemDestinoFh OrigemDestinoFH = new OrigemDestinoFh();
@@ -2101,13 +2257,17 @@ namespace Hydra.Such.Portal.Controllers
                 OrigemDestinoFH.DataHoraCriação = DateTime.Now;
 
                 var dbCreateResult = DBOrigemDestinoFh.Create(OrigemDestinoFH);
-                result = dbCreateResult != null ? true : false;
+
+                if (dbCreateResult == null)
+                    resultFinal = 0;
+                else
+                    resultFinal = 1;
             }
             catch (Exception ex)
             {
                 //log
             }
-            return Json(result);
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -2158,66 +2318,70 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        //[HttpPost]
-        //public JsonResult GetDistanciaFH()
-        //{
-        //    List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
-        //    return Json(result);
-        //}
+        [HttpPost]
+        public JsonResult GetDistanciaFH()
+        {
+            List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+            return Json(result);
+        }
 
-        //[HttpPost]
-        //public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
-        //{
-        //    bool result = false;
-        //    try
-        //    {
-        //        DistanciaFh DistanciaFH = new DistanciaFh();
+        [HttpPost]
+        public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
+        {
+            int resultFinal = 0;
+            try
+            {
+                DistanciaFh DistanciaFH = new DistanciaFh();
 
-        //        DistanciaFH.CódigoOrigem = data.Origem;
-        //        DistanciaFH.CódigoDestino = data.Destino;
-        //        DistanciaFH.Distância = data.Distancia;
-        //        DistanciaFH.CriadoPor = User.Identity.Name;
-        //        DistanciaFH.DataHoraCriação = DateTime.Now;
+                DistanciaFH.CódigoOrigem = data.Origem;
+                DistanciaFH.CódigoDestino = data.Destino;
+                DistanciaFH.Distância = data.Distancia;
+                DistanciaFH.CriadoPor = User.Identity.Name;
+                DistanciaFH.DataHoraCriação = DateTime.Now;
 
-        //        var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-        //        result = dbCreateResult != null ? true : false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //log
-        //    }
-        //    return Json(result);
-        //}
+                var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
 
-        //[HttpPost]
-        //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
-        //{
-        //    var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
-        //    return Json(result);
-        //}
+                if (dbCreateResult == null)
+                    resultFinal = 0;
+                else
+                    resultFinal = 1;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(resultFinal);
+        }
 
-        //[HttpPost]
-        //public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
-        //{
-        //    List<DistanciaFh> results = DBDistanciaFh.GetAll();
+        [HttpPost]
+        public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
+        {
+            var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+            return Json(result);
+        }
 
-        //    data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
-        //        u =>
-        //            u.Origem == x.Origem &&
-        //            u.Destino == x.Destino &&
-        //            u.Distancia == x.Distancia &&
-        //            u.CriadoPor == x.CriadoPor &&
-        //            u.DataHoraCriacao == x.DataHoraCriacao
-        //    ));
+        [HttpPost]
+        public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
+        {
+            List<DistanciaFh> results = DBDistanciaFh.GetAll();
 
-        //    data.ForEach(x =>
-        //    {
-        //        DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
-        //        toUpdate.AlteradoPor = User.Identity.Name;
-        //        DBDistanciaFh.Update(toUpdate);
-        //    });
-        //    return Json(data);
-        //}
+            data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
+                u =>
+                    u.Origem == x.Origem &&
+                    u.Destino == x.Destino &&
+                    u.Distancia == x.Distancia &&
+                    u.CriadoPor == x.CriadoPor &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
+                toUpdate.AlteradoPor = User.Identity.Name;
+                DBDistanciaFh.Update(toUpdate);
+            });
+            return Json(data);
+        }
 
         #endregion
 
@@ -2242,18 +2406,34 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetConfiguracaoRecursosFolhaHoras()
         {
             List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFh.ParseListToViewModel(DBTabelaConfRecursosFh.GetAll());
+
+            if (result != null)
+            {
+                result.ForEach(x =>
+                {
+                    x.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+                    x.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
+                });
+            }
+
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult CreateConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
         {
+            int resultFinal = 0;
 
             TabelaConfRecursosFh toCreate = DBTabelaConfRecursosFh.ParseToDB(data);
             //toCreate.UtilizadorCriacao = User.Identity.Name;
             var result = DBTabelaConfRecursosFh.Create(toCreate);
 
-            return Json(data);
+            if (result == null)
+                resultFinal = 0;
+            else
+                resultFinal = 1;
+
+            return Json(resultFinal);
         }
 
         [HttpPost]
@@ -2283,6 +2463,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 TabelaConfRecursosFh toUpdate = DBTabelaConfRecursosFh.ParseToDB(x);
                 //toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+                toUpdate.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
                 DBTabelaConfRecursosFh.Update(toUpdate);
             });
             return Json(data);
@@ -2309,45 +2491,44 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitionTypes()
         {
-            List<RequesitionTypeViewModel> result = DBRequesitionType.GetAll().Select(x => new RequesitionTypeViewModel()
+            List<RequesitionTypeViewModel> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new RequesitionTypeViewModel()
             {
-                Code = x.Código,
-                Description = x.Descrição,
-                Fleet = x.Frota
+                Code = x.Code,
+                Description = x.Description
             }).ToList();
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult UpdateRequesitionTypes([FromBody] List<RequesitionTypeViewModel> data)
-        {
-            List<TiposRequisições> results = DBRequesitionType.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBRequesitionType.Delete(x));
-            data.ForEach(x =>
-            {
-                TiposRequisições TR = new TiposRequisições()
-                {
-                    Descrição = x.Description
-                };
-                if (x.Code > 0)
-                {
-                    TR.Código = x.Code;
-                    TR.Frota = x.Fleet;
-                    TR.DataHoraModificação = DateTime.Now;
-                    TR.UtilizadorModificação = User.Identity.Name;
-                    DBRequesitionType.Update(TR);
-                }
-                else
-                {
-                    TR.DataHoraCriação = DateTime.Now;
-                    TR.UtilizadorCriação = User.Identity.Name;
-                    TR.Frota = x.Fleet;
-                    DBRequesitionType.Create(TR);
-                }
-            });
-            return Json(data);
-        }
+        //[HttpPost]
+        //public JsonResult UpdateRequesitionTypes([FromBody] List<RequesitionTypeViewModel> data)
+        //{
+        //    List<NAVRequisitionTypeViewModel> results = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName);
+        //    results.RemoveAll(x => data.Any(u => u.Code == x.Code));
+        //    results.ForEach(x => DBRequesitionType.Delete(x));
+        //    data.ForEach(x =>
+        //    {
+        //        TiposRequisições TR = new TiposRequisições()
+        //        {
+        //            Descrição = x.Description
+        //        };
+        //        if (x.Code > 0)
+        //        {
+        //            TR.Código = x.Code;
+        //            TR.Frota = x.Fleet;
+        //            TR.DataHoraModificação = DateTime.Now;
+        //            TR.UtilizadorModificação = User.Identity.Name;
+        //            DBRequesitionType.Update(TR);
+        //        }
+        //        else
+        //        {
+        //            TR.DataHoraCriação = DateTime.Now;
+        //            TR.UtilizadorCriação = User.Identity.Name;
+        //            TR.Frota = x.Fleet;
+        //            DBRequesitionType.Create(TR);
+        //        }
+        //    });
+        //    return Json(data);
+        //}
         #endregion
 
         #region Configurações Aprovações
@@ -2385,7 +2566,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateApprovalConfig([FromBody] List<ApprovalConfigurationsViewModel> data)
         {
-  
+
             data.ForEach(x =>
             {
                 ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
@@ -2396,14 +2577,24 @@ namespace Hydra.Such.Portal.Controllers
                     GrupoAprovação = x.ApprovalGroup,
                     UtilizadorAprovação = x.ApprovalUser,
                     Área = x.Area,
+                    CódigoÁreaFuncional = x.FunctionalArea,
+                    CódigoCentroResponsabilidade = x.ResponsabilityCenter,
+                    CódigoRegião = x.Region,
                     DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
                     DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
                 };
+
+                if (!aprovConfig.NívelAprovação.HasValue || aprovConfig.NívelAprovação.Value <= 0)
+                    throw new Exception("O nível de aprovação tem que ser maior que zero.");
+
                 if (x.Id > 0)
                 {
                     aprovConfig.Id = x.Id;
                     aprovConfig.UtilizadorCriação = x.CreateUser;
                     aprovConfig.DataHoraCriação = x.CreateDate;
+                    aprovConfig.CódigoÁreaFuncional = x.FunctionalArea;
+                    aprovConfig.CódigoCentroResponsabilidade = x.ResponsabilityCenter;
+                    aprovConfig.CódigoRegião = x.Region;
                     aprovConfig.DataHoraModificação = DateTime.Now;
                     aprovConfig.UtilizadorModificação = User.Identity.Name;
                     DBApprovalConfigurations.Update(aprovConfig);
@@ -2438,7 +2629,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetApprovalGroup()
         {
-            List<ApprovalGroupViewModel> result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.GetAll());    
+            List<ApprovalGroupViewModel> result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.GetAll());
             return Json(result);
         }
 
@@ -2464,9 +2655,9 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult UpdateApprovalGroup([FromBody] ApprovalGroupViewModel item)
-        {       
+        {
             DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(item));
-           
+
             return Json(item);
         }
 
@@ -2516,7 +2707,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
                 ViewBag.UpdatePermissions = !UPerm.Update.Value;
                 ViewBag.DeletePermissions = !UPerm.Delete.Value;
-             
+
                 return View();
             }
             else
@@ -2525,13 +2716,13 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+
         public JsonResult GetDetailsApprovalGroup([FromBody] int id)
         {
 
             List<ApprovalUserGroupViewModel> result = DBApprovalUserGroup.ParseToViewModel(DBApprovalUserGroup.GetByGroup(id));
             return Json(result);
-          
+
         }
 
         public JsonResult CreateDetailsApprovalGroup([FromBody] ApprovalUserGroupViewModel data)
@@ -2548,7 +2739,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return Json(eReasonCode);
             }
-               
+
         }
 
         [HttpPost]
@@ -2584,13 +2775,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Code = x.Código,
                 Description = x.Descrição,
-                Address=x.Endereço,
-                Locality=x.Localidade,
+                Address = x.Endereço,
+                Locality = x.Localidade,
                 Postalcode = x.CódigoPostal,
-                Contact=x.Contacto,
-                Responsiblerecept=x.ResponsávelReceção,
+                Contact = x.Contacto,
+                Responsiblerecept = x.ResponsávelReceção,
                 CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
-                CreateUser= x.UtilizadorCriação
+                CreateUser = x.UtilizadorCriação
             }).ToList();
             return Json(result);
         }
@@ -2604,17 +2795,17 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdatePlace([FromBody] List<PlacesViewModel> data)
         {
-           
+
             data.ForEach(x =>
             {
                 Locais localval = new Locais()
                 {
                     Descrição = x.Description,
-                    CódigoPostal=x.Postalcode,
-                    Endereço=x.Address,
-                    Localidade=x.Locality,
-                    Contacto=x.Contact,
-                    ResponsávelReceção=x.Responsiblerecept
+                    CódigoPostal = x.Postalcode,
+                    Endereço = x.Address,
+                    Localidade = x.Locality,
+                    Contacto = x.Contact,
+                    ResponsávelReceção = x.Responsiblerecept
                 };
                 if (x.Code > 0)
                 {
@@ -2643,47 +2834,47 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
             if (id == "Engenharia")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
             }
             if (id == "Ambiente")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
             }
             if (id == "Nutricao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
             }
             if (id == "Vendas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 4, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
             }
             if (id == "Apoio")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
             }
             if (id == "PO")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 6, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
             }
             if (id == "NovasAreas")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
             }
             if (id == "Internacionalizacao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
             }
             if (id == "Juridico")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
             }
             if (id == "Compras")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
             }
             if (id == "Administracao")
             {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 11, 18);
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
             }
 
             return UPerm;

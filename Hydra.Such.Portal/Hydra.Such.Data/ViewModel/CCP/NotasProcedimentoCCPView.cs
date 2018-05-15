@@ -18,5 +18,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string UtilizadorModificacao { get; set; }
 
         public ProcedimentosCcp NoProcedimentoNavigation { get; set; }
+
+        public string DataHora_Show { get; set; }
     }
 }
