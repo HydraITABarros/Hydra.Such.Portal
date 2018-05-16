@@ -649,12 +649,26 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            List<AcessosLocalizacoes> result = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+
+            if (result == null || result.Count == 0)
             {
-                id = x.Code,
-                value = x.Name
-            }).ToList();
-            return Json(result);
+                List<DDMessageString> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+                return Json(result_all);
+            }
+            else
+            {
+                List<DDMessageString> result_user = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Localizacao,
+                    value = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault().Name
+                }).ToList();
+                return Json(result_user);
+            }
         }
 
         [HttpPost]
