@@ -1723,6 +1723,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetConfiguracaoAjudaCusto()
         {
             List<ConfiguracaoAjudaCustoViewModel> result = DBConfiguracaoAjudaCusto.ParseListToViewModel(DBConfiguracaoAjudaCusto.GetAll());
+
+            if (result != null)
+            {
+                result.ForEach(x =>
+                {
+                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoTipoCusto.Trim(), "", 0, "").FirstOrDefault().Name;
+                });
+            }
+
             return Json(result);
         }
 
@@ -2826,6 +2835,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+        #region Acordo de Preços
+        public IActionResult AcordoPrecos(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        #endregion
+
 
         #endregion
 

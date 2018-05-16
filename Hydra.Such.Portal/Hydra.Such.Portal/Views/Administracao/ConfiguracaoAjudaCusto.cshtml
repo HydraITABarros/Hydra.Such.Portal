@@ -181,11 +181,12 @@
         <vaadin-grid id="gridConfiguracaoAjudaCusto" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoTipoCusto" disabled>Código Tipo Custo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoTipoCusto" />
+                    <vaadin-grid-sorter path="CodigoTipoCustoTexto" disabled>Código Tipo Custo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="CodigoTipoCustoTexto" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.codigoTipoCusto}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.codigoTipoCustoTexto}}" disabled></vaadin-text-field>
+                    @*<vaadin-text-field value="{{item.codigoTipoCusto}}" disabled></vaadin-text-field>*@
                 </template>
             </vaadin-grid-column>
 
