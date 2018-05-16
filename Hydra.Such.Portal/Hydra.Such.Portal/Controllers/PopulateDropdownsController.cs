@@ -1491,8 +1491,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProductsForCurrentUser([FromBody] JObject requestParams)
         {
-            string rootAreaId = requestParams["rootAreaId"].ToString();
-            string requisitionType = requestParams["requisitionType"].ToString();
+            string rootAreaId = string.Empty;
+            string requisitionType = string.Empty;
+
+            if (requestParams != null)
+            {
+                rootAreaId = requestParams["rootAreaId"].ToString();
+                requisitionType = requestParams["requisitionType"].ToString();
+            }
             //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
             //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
             string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();

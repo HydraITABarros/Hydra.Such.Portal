@@ -81,7 +81,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
 
         public string PreRequisitionNo { get; set; }
 
-        public List<RequisitionLineViewModel> Lines { get; set; }
+        public List<RequisitionTemplateLineViewModel> Lines { get; set; }
 
         public decimal GetTotalValue()
         {

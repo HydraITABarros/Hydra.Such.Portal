@@ -273,9 +273,9 @@
 
                             <ul class="sub-menu collapse" id="Compras">
                                 @*
-                                <li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
-                                <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-                                <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
+        <li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
+        <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
+        <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                                 @* zpgm.< Procedimentos CCP menu *@
                                 <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
                                     <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
@@ -287,6 +287,7 @@
                                 </li>
                                 @* zpgm.> *@
                                 <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Compras", new { area = "" }, null)</li>
+                                <li>@Html.ActionLink("Modelos Requisição", "ModelosRequisicao", "Compras", new { area = "" }, null)</li>
                                 <li>@Html.ActionLink("Requisições a Validar", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
                                 <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
                                     <a href="#"> Gestão de Requisições <span class="arrow"></span></a>

@@ -64,6 +64,7 @@ namespace Hydra.Such.Data.Logic.Request
                     var itemToDelete = ctx.Requisição
                         .Include(x => x.LinhasRequisição)
                         .FirstOrDefault(x => x.NºRequisição == item.NºRequisição);
+                    ctx.LinhasRequisição.RemoveRange(itemToDelete.LinhasRequisição);
                     ctx.Requisição.Remove(itemToDelete);
                     ctx.SaveChanges();
                     return true;
@@ -280,7 +281,7 @@ namespace Hydra.Such.Data.Logic.Request
                     RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     //dimension = item.,
                     //Budget = item.,
-                    Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
+                    Lines = item.LinhasRequisição.ToList().ParseToTemplateViewModel(),
                 };
             }
             return null;
