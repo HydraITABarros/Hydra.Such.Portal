@@ -253,11 +253,11 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/CopyReqModelLines"
-                   last-response="{{ModelLineResult}}"
+                   last-response="{{CopyFromModelResult}}"
                    method="post"
                    handle-as="json"
                    id="grid_copyreqmodel_ajax"
-                   on-response="_clResponsePreReqModel"
+                   on-response="_copyFromTemplateResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
@@ -280,7 +280,7 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
                 <div class="subMenu">
-                    <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisições Modelo</paper-button>
+                    <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Copiar Requisição Modelo</paper-button>
                     <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>
                     <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
                 </div>
@@ -771,12 +771,12 @@
                                     </vaadin-grid-column>
                                     <vaadin-grid-column width="125px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="supplierProductCode">Cód. Produto</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="supplierProductCode" />
+                                            <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="code" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <paper-icon-item>
                                                             <paper-item-body>
@@ -787,7 +787,7 @@
                                                 </vaadin-combo-box>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.supplierProductCode}}
+                                                {{item.code}}
                                                 <!--[[ _clFormatSupplierProductCode(item.supplierProductCode) ]]-->
                                             </template>
                                         </template>
@@ -1580,18 +1580,24 @@
                     }
                 },
 
-                _clResponsePreReqModel: function (data) {
+                _copyFromTemplateResponse: function (data) {
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("CopyReqModelLines") !== -1) {
-                            this._openToast("Linhas Pré-Requisição criadas com sucesso")
-                            this.$.dialog.close();
-                            this.$.grid_prereqlines.clearCache();
-                            this.data.eMessage = "";
+                            if (this.CopyFromModelResult.eReasonCode == 1) {
 
-                            this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                            this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
-                            this.$.prereqLines_databound_ajax.generateRequest();
+                                this._openToast("Linhas Pré-Requisição criadas com sucesso");
+                                this.$.dialog.close();
+                                this.$.grid_prereqlines.clearCache();
+                                this.data.eMessage = "";
+
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                                this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
+                                this.$.prereqLines_databound_ajax.generateRequest();
+                            }
+                            else {
+                                this._openToastError(this.CopyFromModelResult.eMessage);
+                            }
                         }
                     }
                 },
@@ -1725,7 +1731,7 @@
                 _GridItemChange: function (e, _selected) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        var itemNo = e.model.item.supplierProductCode
+                        var itemNo = e.model.item.code
                         var object = this.CBItems.find(x => x.code == itemNo);
                         line.description = object.name;
 
@@ -1840,7 +1846,7 @@
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
-                        supplierProductCode: this._CBItems,
+                        code: this._CBItems,
                         description: this._Description,
                         unitMeasureCode: this._UnitMeasureCode,
                         quantityToRequire: this._QuantityToRequire,
@@ -1983,10 +1989,10 @@
                 },
 
                 _SaveLines: function (e) {
-
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
                     e.model.item.preRequisitionNo = this.data.preRequesitionsNo;
+                    e.model.item.projectNo = this.data.projectNo;
                     this.$.grid_copyreqmodel_ajax.body = JSON.stringify(e.model.item);
                     this.$.grid_copyreqmodel_ajax.generateRequest();
                 },
