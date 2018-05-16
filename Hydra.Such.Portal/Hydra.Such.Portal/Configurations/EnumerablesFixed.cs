@@ -1555,6 +1555,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "Alomço + Jantar"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Kilometros"
             }
         };
 
