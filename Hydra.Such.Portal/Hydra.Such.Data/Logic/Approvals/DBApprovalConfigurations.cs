@@ -113,7 +113,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                         .Where(x => x.Tipo == type &&
                                     //x.Área == area && 
                                     (x.CódigoÁreaFuncional == functionalArea || x.CódigoÁreaFuncional == string.Empty) &&
-                                    (x.CódigoCentroResponsabilidade == x.CódigoCentroResponsabilidade || x.CódigoCentroResponsabilidade == string.Empty) &&
+                                    (x.CódigoCentroResponsabilidade == responsabiltyCenter || x.CódigoCentroResponsabilidade == string.Empty) &&
                                     (x.CódigoRegião == region || x.CódigoRegião == string.Empty) &&
                                     (x.ValorAprovação >= value || x.ValorAprovação == 0 || !x.ValorAprovação.HasValue) &&
                                     (x.DataInicial <= fDate && x.DataFinal >= fDate))
