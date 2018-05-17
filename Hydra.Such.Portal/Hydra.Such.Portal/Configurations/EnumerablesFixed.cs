@@ -676,6 +676,20 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> LPlatesTechnicalFiles_Type = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 2,
+                Value = "LM Produção"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Produto"
+            }
+        };
+
         public static readonly List<EnumData> FeeUnits = new List<EnumData>(){
             new EnumData()
             {

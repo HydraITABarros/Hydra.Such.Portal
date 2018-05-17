@@ -1572,6 +1572,12 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.LinesRecTechnicPlastesType;
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult GetLPlatesTechnicalFilesType()
+        {
+            List<EnumData> result = EnumerablesFixed.LPlatesTechnicalFiles_Type;
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetRecTechnicPlatesType()

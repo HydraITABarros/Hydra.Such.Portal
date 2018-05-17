@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosLocalizacoes.Where(x => x.ID_Utilizador == ID_Utilizador && x.Localizacao == Localizacao).FirstOrDefault();
+                    return ctx.AcessosLocalizacoes.Where(x => x.IdUtilizador == ID_Utilizador && x.Localizacao == Localizacao).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    item.DataHora_Criacao = DateTime.Now;
+                    item.DataHoraCriacao = DateTime.Now;
                     ctx.AcessosLocalizacoes.Add(item);
                     ctx.SaveChanges();
                 }
@@ -68,7 +68,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     items.ForEach(x =>
                     {
-                        x.DataHora_Criacao = DateTime.Now;
+                        x.DataHoraCriacao = DateTime.Now;
                         ctx.AcessosLocalizacoes.Add(x);
                     });
                     ctx.SaveChanges();
@@ -90,8 +90,8 @@ namespace Hydra.Such.Data.Logic
                 {
                     items.ForEach(x =>
                     {
-                        x.ID_Utilizador = ID_Utilizador;
-                        x.DataHora_Criacao = DateTime.Now;
+                        x.IdUtilizador = ID_Utilizador;
+                        x.DataHoraCriacao = DateTime.Now;
                         ctx.AcessosLocalizacoes.Add(x);
                     });
                     ctx.SaveChanges();
@@ -111,7 +111,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    item.DataHora_Modificacao = DateTime.Now;
+                    item.DataHoraModificacao = DateTime.Now;
                     ctx.AcessosLocalizacoes.Update(item);
                     ctx.SaveChanges();
                 }
@@ -131,7 +131,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    AcessosLocalizacoes userAcessoLocalizacao = ctx.AcessosLocalizacoes.Where(x => x.ID_Utilizador == ID_Utilizador && x.Localizacao == Localizacao).FirstOrDefault();
+                    AcessosLocalizacoes userAcessoLocalizacao = ctx.AcessosLocalizacoes.Where(x => x.IdUtilizador == ID_Utilizador && x.Localizacao == Localizacao).FirstOrDefault();
                     if (userAcessoLocalizacao != null)
                     {
                         ctx.AcessosLocalizacoes.Remove(userAcessoLocalizacao);
@@ -172,7 +172,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<AcessosLocalizacoes> userAccessesToDelete = ctx.AcessosLocalizacoes.Where(x => x.ID_Utilizador == ID_Utilizador).ToList();
+                    List<AcessosLocalizacoes> userAccessesToDelete = ctx.AcessosLocalizacoes.Where(x => x.IdUtilizador == ID_Utilizador).ToList();
                     ctx.AcessosLocalizacoes.RemoveRange(userAccessesToDelete);
                     ctx.SaveChanges();
                 }
@@ -192,7 +192,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosLocalizacoes.Where(x => x.ID_Utilizador == ID_Utilizador)
+                    return ctx.AcessosLocalizacoes.Where(x => x.IdUtilizador == ID_Utilizador)
                         .ToList();
                 }
             }
@@ -209,12 +209,12 @@ namespace Hydra.Such.Data.Logic
             {
                 return new UserAcessosLocalizacoesViewModel()
                 {
-                    ID_Utilizador = item.ID_Utilizador,
+                    ID_Utilizador = item.IdUtilizador,
                     Localizacao = item.Localizacao,
-                    DataHora_Criacao = item.DataHora_Criacao.HasValue ? item.DataHora_Criacao : (DateTime?)null,
-                    DataHora_Modificacao = item.DataHora_Modificacao.HasValue ? item.DataHora_Modificacao : (DateTime?)null,
-                    Utilizador_Criacao = item.Utilizador_Criacao,
-                    Utilizador_Modificacao = item.Utilizador_Modificacao
+                    DataHora_Criacao = item.DataHoraCriacao.HasValue ? item.DataHoraCriacao : (DateTime?)null,
+                    DataHora_Modificacao = item.DataHoraModificacao.HasValue ? item.DataHoraModificacao : (DateTime?)null,
+                    Utilizador_Criacao = item.UtilizadorCriacao,
+                    Utilizador_Modificacao = item.UtilizadorModificacao
                 };
             }
             return null;
@@ -235,12 +235,12 @@ namespace Hydra.Such.Data.Logic
             {
                 return new AcessosLocalizacoes()
                 {
-                    ID_Utilizador = item.ID_Utilizador,
+                    IdUtilizador = item.IdUtilizador,
                     Localizacao = item.Localizacao,
-                    Utilizador_Criacao = item.Utilizador_Criacao,
-                    DataHora_Criacao = item.DataHora_Criacao.HasValue ? item.DataHora_Criacao : (DateTime?)null,
-                    Utilizador_Modificacao = item.Utilizador_Modificacao,
-                    DataHora_Modificacao = item.DataHora_Modificacao.HasValue ? item.DataHora_Modificacao : (DateTime?)null
+                    UtilizadorCriacao = item.UtilizadorCriacao,
+                    DataHoraCriacao = item.DataHoraCriacao.HasValue ? item.DataHoraCriacao : (DateTime?)null,
+                    UtilizadorModificacao = item.UtilizadorModificacao,
+                    DataHoraModificacao = item.DataHoraModificacao.HasValue ? item.DataHoraModificacao : (DateTime?)null
                 };
             }
             return null;
