@@ -116,14 +116,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 Quantity = x.Quantidade,
                 ProdutiveUnityNo = x.NºUnidadeProdutiva,
-                MealType = x.TipoRefeição,
+                MealType = x.TipoRefeição ?? 0,
                 MovementType = x.TipoMovimento,
                 User = x.Utilizador,
                 CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                 UpdateDateTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
-                DateToday = DateTime.Today.ToString("yyyy-MM-dd")
+                DateToday = DateTime.Today.ToString("yyyy-MM-dd"),
             };
             return result;
 

@@ -823,7 +823,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.ToTable("Configuracao Ajuda Custo");
 
-                entity.Property(e => e.CodigoTipoCusto).HasColumnType("nchar(20)");
+                entity.Property(e => e.CodigoTipoCusto).HasMaxLength(20);
 
                 entity.Property(e => e.DataHoraCriacao).HasColumnType("datetime");
 
@@ -3884,6 +3884,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(50);
 
+                entity.Property(e => e.DescriçãoTipoRefeição)
+                    .HasColumnName("Descrição Tipo Refeição")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.NºRecurso)
                     .HasColumnName("Nº Recurso")
                     .HasMaxLength(20);
@@ -3891,6 +3895,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NºUnidadeProdutiva).HasColumnName("Nº Unidade Produtiva");
 
                 entity.Property(e => e.TipoMovimento).HasColumnName("Tipo Movimento");
+
+                entity.Property(e => e.TipoRefeição).HasColumnName("Tipo Refeição");
 
                 entity.Property(e => e.Utilizador).HasMaxLength(50);
 
