@@ -415,10 +415,10 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 AcessosLocalizacoes userAcessosLocalizacoes = new AcessosLocalizacoes();
-                userAcessosLocalizacoes.ID_Utilizador = data.ID_Utilizador;
+                userAcessosLocalizacoes.IdUtilizador = data.IdUtilizador;
                 userAcessosLocalizacoes.Localizacao = data.Localizacao;
-                userAcessosLocalizacoes.Utilizador_Criacao = User.Identity.Name;
-                userAcessosLocalizacoes.DataHora_Criacao = DateTime.Now;
+                userAcessosLocalizacoes.UtilizadorCriacao = User.Identity.Name;
+                userAcessosLocalizacoes.DataHoraCriacao = DateTime.Now;
 
                 var dbCreateResult = DBAcessosLocalizacoes.Create(userAcessosLocalizacoes);
                 result = dbCreateResult != null ? true : false;
@@ -433,7 +433,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
         {
-            var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.ID_Utilizador, data.Localizacao);
+            var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.IdUtilizador, data.Localizacao);
             return Json(userAcessosLocalizacoes != null ? DBAcessosLocalizacoes.Delete(userAcessosLocalizacoes) : false);
         }
 
