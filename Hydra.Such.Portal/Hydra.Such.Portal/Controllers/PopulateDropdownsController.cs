@@ -649,7 +649,32 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            List<AcessosLocalizacoes> result = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+
+            if (result == null || result.Count == 0)
+            {
+                List<DDMessageString> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+                return Json(result_all);
+            }
+            else
+            {
+                List<DDMessageString> result_user = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Localizacao,
+                    value = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault().Name
+                }).ToList();
+                return Json(result_user);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
+        {
+            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Name == locationId).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Name
@@ -1503,8 +1528,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProductsForCurrentUser([FromBody] JObject requestParams)
         {
-            string rootAreaId = requestParams["rootAreaId"].ToString();
-            string requisitionType = requestParams["requisitionType"].ToString();
+            string rootAreaId = string.Empty;
+            string requisitionType = string.Empty;
+
+            if (requestParams != null)
+            {
+                rootAreaId = requestParams["rootAreaId"].ToString();
+                requisitionType = requestParams["requisitionType"].ToString();
+            }
             //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
             //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
             string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();

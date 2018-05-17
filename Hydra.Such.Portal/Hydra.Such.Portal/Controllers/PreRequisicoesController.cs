@@ -599,45 +599,67 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data, string id)
+        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
-            List<LinhasRequisição> RequesitionLines = new List<LinhasRequisição>();
-            RequesitionLines = DBRequestLine.GetAllByRequisiçãos(data.RequisitionNo);
-
-            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
-            RequesitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
-            
-            try
+            ErrorHandler result = new ErrorHandler()
             {
-                foreach (var line in result)
-                {
-                    LinhasPréRequisição newlines = new LinhasPréRequisição();
+                eMessage = "Linhas copiadas com sucesso.",
+                eReasonCode = 1,
+            };
+            Projetos project = null;
+            if (!string.IsNullOrEmpty(req.ProjectNo))
+            {
+                project = DBProjects.GetById(req.ProjectNo);
+            }
 
-                    newlines.NºPréRequisição = data.PreRequisitionNo;
-                    newlines.CódigoLocalização = line.LocalCode;
-                    newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
-                    newlines.Descrição = line.Description;
-                    newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
-                    newlines.QuantidadeARequerer = line.QuantityToRequire;
-                    newlines.CustoUnitário = line.UnitCost;
-                    newlines.NºProjeto = line.ProjectNo;
-                    newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
-                    newlines.Viatura = line.Vehicle;
-                    newlines.NºFornecedor = line.SupplierNo;
-                    newlines.CódigoRegião = line.RegionCode;
-                    newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
-                    newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
-                    newlines.NºEncomendaAberto = line.OpenOrderNo;
-                    newlines.NºLinhaEncomendaAberto = line.OpenOrderLineNo;
-                    DBPreRequesitionLines.Create(newlines);
+            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetAllByRequisiçãos(req.RequisitionNo).ParseToViewModel();
+            if (reqLines != null)
+            {
+                List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                reqLines.ForEach(x =>
+                {
+                    LinhasPréRequisição newline = new LinhasPréRequisição();
+
+                    newline.NºPréRequisição = req.PreRequisitionNo;
+                    newline.CódigoLocalização = x.LocalCode;
+                    newline.CódigoProdutoFornecedor = x.SupplierProductCode;
+                    newline.Código = x.Code;
+                    newline.Descrição = x.Description;
+                    newline.CódigoUnidadeMedida = x.UnitMeasureCode;
+                    newline.QuantidadeARequerer = x.QuantityToRequire;
+                    newline.CustoUnitário = x.UnitCost;
+                    newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                    newline.Viatura = x.Vehicle;
+                    newline.NºFornecedor = x.SupplierNo;
+                    newline.NºEncomendaAberto = x.OpenOrderNo;
+                    newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+                    newline.NºProjeto = x.ProjectNo;
+                    if (project != null)
+                    {
+                        newline.CódigoRegião = project.CódigoRegião;
+                        newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                        newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                    }
+                    else
+                    {
+                        newline.CódigoRegião = x.RegionCode;
+                        newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                        newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                    }                    
+                    preReqLines.Add(newline);
+                });
+
+                if (!DBPreRequesitionLines.CreateMultiple(preReqLines))
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Ocorreu um erro ao copiar as linhas";
                 }
             }
-            catch (Exception ex)
+            else
             {
-
-                throw;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao obter as linhas do modelo.";
             }
-            
             return Json(result);
         }
 
@@ -800,6 +822,12 @@ namespace Hydra.Such.Portal.Controllers
                         string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
                         if (!string.IsNullOrEmpty(RequisitionNo))
                         {
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                            ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+
                             req.RequisitionNo = RequisitionNo;
                             Requisição createReq = DBRequest.ParseToDB(req);
 
@@ -822,7 +850,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            throw;
+                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao copiar anexo " + FileName + ": " + ex.Message));
                                         }
 
                                         AttachmentsViewModel CopyFile = new AttachmentsViewModel();
@@ -832,20 +860,15 @@ namespace Hydra.Such.Portal.Controllers
                                         CopyFile.Url = NewFileName;
                                         DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                     }
-                                    catch (Exception)
+                                    catch (Exception ex)
                                     {
                                         data.eReasonCode = 0;
                                         data.eMessage = "Ocorreu um erro ao copiar os anexos.";
-                                        throw;
+                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao guardar anexo: " + ex.Message));
+                                        //throw;
                                     }
                                     
                                 }
-
-                                //Update Last Numeration Used
-                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
-                                ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                DBNumerationConfigurations.Update(ConfigNumerations);
 
                                 //count successful items for later validation
                                 totalItems++;

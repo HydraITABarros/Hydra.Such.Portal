@@ -1,0 +1,572 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--SUCH-->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<h1 class="title">Acordo de Preços</h1>
+<x-group-cont-product></x-group-cont-product>
+<dom-module id="x-group-cont-product">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LLinhasRegiao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LLinhasArea}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LLinhasCresp}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Fornecedores</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+            <!--Acordo de Preços-->
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" id="acordoPrecosNoProcedimento" value="{{data.acordoPrecosNoProcedimento}}" label="Nº Procedimento" on-blur="_validacaoAcordoPrecosNoProcedimento" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="acordoPrecosDtInicio" value="{{data.acordoPrecosDtInicio}}" label="Data Inicio" on-blur="_validacaoAcordoPrecosDtInicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="acordoPrecosDtFim" value="{{data.acordoPrecosDtFim}}" label="Data Fim" on-blur="_validacaoAcordoPrecosDtFim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Valor Total" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                        <div class="panel-body">
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="linhasNoProcedimento" value="{{data.linhasNoProcedimento}}" label="Nº Procedimento" disabled="true" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
+                                                    items="[[CBVendor]]"
+                                                    text-path="name"
+                                                    value-path="no_"
+                                                    fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                    disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
+                                </div>
+                                <div class="col-sm-2">
+                                    <such-selectbox id="_CBItems" value="{{_CBItems}}" label="Cód. Produto"
+                                                    items="[[CBItems]]"
+                                                    text-path="code"
+                                                    value-path="code"
+                                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                    disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-date-picker id="linhasDtValidadeInicio" value="{{data.linhasDtValidadeInicio}}" label="Data Validade Inicio" on-blur="_validacaoLinhasDtValidadeInicio" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-date-picker id="linhasdtValidadeFim" value="{{data.linhasdtValidadeFim}}" label="Data Validade Fim" on-blur="_validacaoLinhasdtValidadeFim" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-combo-box items="[[LLinhasRegiao]]" id="linhasRegiao" item-value-path="id" item-label-path="value" value="{{data.linhasRegiao}}" disabled="{{ _permissionsCreate }}" label="Região" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <table width="350px">
+                                                <tr>
+                                                    <td width="10%">[[item.id]]</td>
+                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-combo-box items="[[LLinhasArea]]" id="linhasArea" item-value-path="id" item-label-path="value" value="{{data.linhasArea}}" disabled="{{ _permissionsCreate }}" label="Área" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <table width="350px">
+                                                <tr>
+                                                    <td width="10%">[[item.id]]</td>
+                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-combo-box items="[[LLinhasCresp]]" id="linhasCresp" item-value-path="id" item-label-path="value" value="{{data.linhasCresp}}" disabled="{{ _permissionsCreate }}" label="Cresp" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <table width="350px">
+                                                <tr>
+                                                    <td width="10%">[[item.id]]</td>
+                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Localização" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Custo Unitário" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Nome Fornecedor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Descrição Produto" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Quantidade por UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Peso Unitário" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Código Produto Fornecedor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Descrição Produto Fornecedor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Forma Entrega" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-text-field type="text" id="acordoPrecosValorTotal" value="{{data.acordoPrecosValorTotal}}" label="Tipo Preço" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                </div>
+                            </div>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
+
+                <div class="panel-body">
+                    <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
+                        <vaadin-grid-column resizable hidden>
+                            <template class="header">
+                                <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="noLinha" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoLinhaNo" id="tabPercursoLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codOrigem" style="text-align:center;">Código Origem</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codOrigem" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="true"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="descricaoOrigem" style="text-align:center;">Descrição Origem</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricaoOrigem" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoOrigemDescricao" value="{{item.descricaoOrigem}}" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codDestino" style="text-align:center;">Código Destino</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codDestino" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="true"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="descricaoDestino" style="text-align:center;">Descrição Destino</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricaoDestino" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoDestinoDescricao" value="{{item.descricaoDestino}}" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Viagem</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="dataDespesaTexto" />
+                            </template>
+                            <template>
+                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="true" style="text-align:right;"></vaadin-date-picker>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="observacao" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoJustificacao" value="{{item.observacao}}" maxlength="200" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="distancia" style="text-align:center;">Distância Efectuada</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="distancia" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
+                                    <div slot="suffix">KM</div>
+                                </vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="distanciaPrevista" style="text-align:center;">Distância Prevista</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="distanciaPrevista" />
+                            </template>
+                            <template>
+                                <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
+                                    <div slot="suffix">KM</div>
+                                </vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="custoUnitario" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="custoTotal" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </div>
+
+
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
+                                            items="[[LFolhaDeHoraNavProjectNo]]"
+                                            text-path="no"
+                                            value-path="no"
+                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            </such-selectbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
+    </template>
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
+        document.addEventListener('WebComponentsReady',
+            function () {
+                Polymer({
+                    is: 'x-group-cont-product',
+                    properties: {
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
+                        },
+                        _permissionsCreate: {
+                            type: Boolean,
+                            value: CreateValue
+                        },
+                        _permissionsDelete: {
+                            type: Boolean,
+                            value: DeleteValue
+                        },
+                        ddgroupcontprod: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        }
+                    },
+                    ready: function () {
+                        this.$.ajax_GetAll.generateRequest();
+                    },
+                    openToast: function (message) {
+                        this.$.ToastMessage.text = message;
+                        this.$.ToastMessage.open();
+                    },
+                    _validateData: function (container) {
+
+                        var polymerDom = Polymer.dom(this.$[container]);
+                        var errors = 0;
+                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                        var formFields = polymerDom.querySelectorAll(formSelector);
+
+                        formFields.forEach(function (element) {
+                            if (!element.validate()) errors++;
+                        });
+
+                        if (errors > 0) {
+                            this._openToastError("Verifique os dados inseridos.");
+                            return false;
+                        }
+
+                        return true;
+                    },
+                    _create: function () {
+                        if (this._validateData("modelosCreate")) {
+                            this.$.ajax_create.body = JSON.stringify({ descricao: this.$.descricao.value, codigoMarca: this.$.codigoMarca.value });
+                            this.$.ajax_create.generateRequest();
+                            this.$.gridModelos.clearCache();
+                        }
+                    },
+                    _update: function () {
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridModelos.clearCache();
+                    },
+                    _delete: function (e) {
+                        this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                        this.$.ajax_delete.generateRequest();
+                        this.result = this.result.filter(function (item) {
+                            return item != e.model.item;
+                        });
+                        this.$.gridModelos.clearCache();
+                    },
+                    _cancel: function () {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.$.gridModelos.clearCache();
+                    },
+                    _updateResponse: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    },
+                    _createResponse: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.description = "";
+                            this.codigoMarca = "";
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    },
+                    _deleteResponse: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    }
+                });
+            });
+    </script>
+</dom-module>
+
+

@@ -77,6 +77,25 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
+        public static bool CreateMultiple(List<LinhasPréRequisição> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                    ctx.LinhasPréRequisição.AddRange(items);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static LinhasPréRequisição Update(LinhasPréRequisição ObjectToUpdate)
         {
             try

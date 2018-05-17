@@ -165,5 +165,27 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
+
+        public static string GetDescricaoByRecurso(string Tipo, string CodRecurso)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    TabelaConfRecursosFh recurso;
+
+                    recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
+
+                    if (recurso == null)
+                        return "";
+                    else
+                        return recurso.Descricao;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
