@@ -1,0 +1,557 @@
+﻿
+@{
+    ViewData["Title"] = "RegistoNoRefeicoes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1 class="title">Registo Nº Refeições</h1>
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+
+<x-registrymealno _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-registrymealno>
+<dom-module id="x-registrymealno">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                vaadin-combo-box {
+                    margin-top: 0px !important;
+                    width: 100% !important;
+                }
+
+                vaadin-date-picker {
+                    margin-top: 0px !important;
+                    width: 100% !important;
+                }
+
+                vaadin-text-field {
+                    margin-top: 0px !important;
+                    width: 100%;
+                }
+
+                paper-button {
+                    margin-top: 10px;
+                }
+
+                .break_clear {
+                    margin-top: 15px;
+                    margin-right: 0px !important;
+                    margin-left: 0px !important;
+                }
+
+                .break_frm {
+                    margin-top: 15px;
+                }
+
+                .label_custom {
+                    color: var(--valo-contrast-60pct) !important;
+                    font-weight: 500 !important;
+                    font-size: var(--valo-font-size-s) !important;
+                    margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                    margin-bottom: var(--valo-space-xs) !important;
+                    transition: color 0.4s !important;
+                    line-height: 1 !important;
+                    font-family: var(--valo-font-family) !important;
+                }
+
+                datetime-picker {
+                    border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                    background-color: var(--valo-contrast-5pct);
+                    color: var(--valo-contrast-60pct) !important;
+                    width: 100%;
+                }
+
+                .marginSpace {
+                    margin: 0px !important;
+                }
+
+                textarea {
+                    background-color: #f5f5f5;
+                    border: none;
+                    border-radius: 3px 4px;
+                    align-self: baseline;
+                    font-weight: 500;
+                }
+
+                    textarea:hover {
+                        background-color: #eeeeee;
+                    }
+
+                    textarea:focus {
+                        background-color: white;
+                        border: none;
+                        outline: 1px solid #eeeeee;
+                        border-radius: 3px 4px;
+                    }
+
+                datetime-picker {
+                    --datetime-selected-background: #71BCC1 !important;
+                    --datetime-background: #1f3133;
+                    --datetime-color: #eeeeee;
+                }
+
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Nutricao/GetCoffeShopDiaryDetails"
+                   last-response="{{diary}}"
+                   method="post"
+                   handle-as="json"
+                   id="diary_databound"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/CreateCoffeeShopsDiary"
+                   last-response="{{created}}"
+                   method="post"
+                   handle-as="json"
+                   id="create_databound_ajax"
+                   on-response="_responseCreated"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/GetCoffeShopDiary"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/DeleteCoffeeShopsDiaryLine"
+                   last-response="{{deleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_databound_ajax"
+                   on-response="_responseDeleted"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/UpdateCoffeeShopsDiaryLine"
+                   last-response="{{updated}}"
+                   method="post"
+                   handle-as="json"
+                   id="update_databound_ajax"
+                   on-response="_responseUpdate"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/MealRegistryLineRegister"
+                   last-response="{{registed}}"
+                   method="post"
+                   handle-as="json"
+                   id="register_databound_ajax"
+                   on-response="_responseRegister"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetTiposMovimento" last-response="{{CBMovementType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCodeByContabGr" last-response="{{CBResourceNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetTiposRefeicao" last-response="{{CBMealType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
+        <iron-form id="formRegistryMealNo">
+            <div class="row">
+                <br />
+                <div class="col-lg-2">
+                    <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="_resourceNo" value="{{_resourceNo}}" label="Nº Recurso"
+                                    items="[[CBResourceNo]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Nº Recurso"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field value="{{diary.quantity}}" id="Quantity" name="Quantity" label="Quantidade" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="_mealType" value="{{_mealType}}" label="Tipo Refeição"
+                                    items="[[CBMealType]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+
+                    <vaadin-text-field id="descriptionTypeMeal" name="descriptionTypeMeal" value="{{descriptionTypeMeal}}" label="Descrição Tipo Refeição" disabled></vaadin-text-field>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-1">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button class="btnSave" raised on-tap="_createMealRegistry"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
+                    </template>
+                </div>
+            </div>
+        </iron-form>
+        <br />
+
+        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="produtiveUnityNo">Unidade Produtiva</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="produtiveUnityNo" />
+                </template>
+                <template>
+                    <vaadin-text-field id="produtiveUnityNoGrid" name="produtiveUnityNoGrid" value="{{item.produtiveUnityNo}}" disabled></vaadin-text-field>
+
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="coffeShopCode">Código Cafetaria/Ref	</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="coffeShopCode" />
+                </template>
+                <template>
+                    <vaadin-text-field id="coffeShopCodeGrid" name="coffeShopCodeGrid" value="{{item.coffeShopCode}}" disabled></vaadin-text-field>
+
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="registryDate">Data Registo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="registryDate" />
+                </template>
+                <template>
+                    <vaadin-date-picker id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}"></vaadin-date-picker>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementTypeGrid" item-value-path="id" item-label-path="value" value="{{item.movementType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Nº Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBResourceNo]]" id="cbresourceNoGrid" item-value-path="id" item-label-path="id" value="{{item.resourceNo}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <vaadin-text-field id="descriptionGrid" name="descriptionGrid" value="{{item.description}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" />
+                </template>
+                <template>
+                    <vaadin-text-field id="quantityGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" value="{{item.quantity}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="value" />
+                </template>
+                <template>
+                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" value="{{item.value}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBMealType]]" id="cbresourceNoGrid" item-value-path="id" item-label-path="id" value="{{item.mealType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="descriptionTypeMeal">Descrição Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descriptionTypeMeal" />
+                </template>
+                <template>
+                    <vaadin-text-field id="descriptionTypeMealGrid" name="descriptionTypeMealGrid" value="{{item.descriptionTypeMeal}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <paper-button class="btnRemove" raised on-tap="_deleteDiaryLine">Eliminar</paper-button>
+                            </template>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+            </template>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            </template>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-registrymealno',
+                properties: {
+                    _resourceNo: {
+                        observer: '_setResourceData'
+                    },
+
+                    _mealType: {
+                        observer: '_setTypeMealData'
+                    },
+
+                    _permissions: {
+                        type: Array
+                    }
+                },
+
+                ready: function () {
+                    //GET CONTRACT DATA
+                    this.$.diary_databound.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.diary_databound.generateRequest();
+
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                },
+                _cancel: function (e) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                },
+
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
+
+                _createMealRegistry: function () {
+                    debugger;
+                    this.diary.ResourceNo = this._resourceNo;
+                    this.diary.MealType = this._mealType;
+                    this.$.create_databound_ajax.body = JSON.stringify(this.diary);
+                    this.$.create_databound_ajax.generateRequest();
+                },
+
+                _responseCreated: function (created) {
+                    debugger;
+                    var self = this;
+                    if (created.detail.status === 200) {
+                        if (this.created == true) {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._openToast("Registo Nº Refeições criado com sucesso.");
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
+                    }
+                },
+
+                _deleteDiaryLine: function (e) {
+
+                    this.$.delete_databound_ajax.body = JSON.stringify(e.model.item);
+                    this.$.delete_databound_ajax.generateRequest();
+                },
+
+                _updateDiaryLines: function () {
+                    this.$.update_databound_ajax.body = JSON.stringify(this.result);
+                    this.$.update_databound_ajax.generateRequest();
+                },
+
+                _responseUpdate: function (updated) {
+                    var self = this;
+                    debugger;
+                    if (updated.detail.status === 200) {
+                        if (this.updated == true) {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._openToast("Registo Nº Refeições atualizado com sucesso.");
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
+                    }
+                },
+
+                _responseDeleted: function (deleted) {
+                    var self = this;
+                    if (deleted.detail.status === 200) {
+                        if (this.deleted == true) {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._openToast("Registo Nº Refeições eliminado com sucesso.");
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
+                    }
+                },
+
+                _registerDiaryLines: function () {
+                    this.$.register_databound_ajax.body = JSON.stringify(this.result);
+                    this.$.register_databound_ajax.generateRequest();
+                },
+
+
+                _responseRegister: function (registed) {
+                    var self = this;
+                    debugger;
+                    if (registed.detail.status === 200) {
+                        if (this.registed == true) {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._openToast("Nº Refeições registadas com sucesso.");
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
+                    }
+
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _setResourceData: function (e) {
+                    debugger;
+                    var item = this.CBResourceNo.find(x => x.id == e);
+                    if (item != null) {
+                        this.$.description.value = item.value;
+                    }
+                },
+
+                _setTypeMealData: function (e) {
+                    debugger;
+                    var item = this.CBMealType.find(x => x.id == e);
+                    if (item != null) {
+                        this.$.descriptionTypeMeal.value = item.value;
+                    }
+                },
+            });
+        });
+    </script>
+</dom-module>
