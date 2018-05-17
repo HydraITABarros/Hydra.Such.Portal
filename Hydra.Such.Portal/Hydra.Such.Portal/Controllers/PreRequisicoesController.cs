@@ -748,7 +748,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.SupplierNo,//.LocalCode,
+                        x => x.LocalCode,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -834,7 +834,6 @@ namespace Hydra.Such.Portal.Controllers
                             createReq = DBRequest.Create(createReq);
                             if(createReq != null)
                             {
-                                AllRequesitionIds.Add(createReq.NºRequisição); 
                                 //copy files
                                 var preReq = data.PreRequesitionsNo;
                                 List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
