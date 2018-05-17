@@ -248,15 +248,20 @@ namespace Hydra.Such.Portal.Services
                             var result = CreateNAVPurchaseOrderFor(purchOrder);
                             if (result.CompletedSuccessfully)
                             {
+                                //Update req
+                                requisition.OrderNo = result.ResultValue;
+
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
                                     line.CreatedOrderNo = result.ResultValue;
                                     line.UpdateUser = this.changedByUserName;
                                 });
-
-                                bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
-                                if (linesUpdated)
+                                //Commit to DB
+                                var updatedReq = DBRequest.Update(requisition.ParseToDB(), true);
+                                //bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
+                                //if (linesUpdated)
+                                if (updatedReq != null)
                                 {
                                     requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                                 }
