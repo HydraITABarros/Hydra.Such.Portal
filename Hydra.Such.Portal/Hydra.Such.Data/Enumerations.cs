@@ -119,7 +119,9 @@ namespace Hydra.Such.Data
             [Description("Necessidade de Compras Direta")]
             NecessidadeComprasDireta = 44,
             [Description("Modelos de Requisição")]
-            ModelosRequisicao = 45
+            ModelosRequisicao = 45,
+            [Description("Registo Nº Refeições")]
+            RegistoRefeicoes = 46
         }
 
         public enum Areas

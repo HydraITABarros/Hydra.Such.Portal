@@ -121,9 +121,12 @@ namespace Hydra.Such.Portal.Services
 
                         contract.Lines.ForEach(x =>
                         {
-                            if (updPriceRequest.percentageToApllyInLines >= 0)
-                                x.UnitPrice = updPriceRequest.percentageToApllyInLines / 100 * x.UnitPrice;
-                            ctx.LinhasContratos.Update(DBContractLines.ParseToDB(x));
+                            if (updPriceRequest.percentageToApllyInLines > (-100))
+                            {
+                                x.UnitPrice = x.UnitPrice + ((updPriceRequest.percentageToApllyInLines * x.UnitPrice) / 100);
+                                ctx.LinhasContratos.Update(DBContractLines.ParseToDB(x));
+                            }
+                                
                         });
                         ctx.SaveChanges();
                         transaction.Commit();

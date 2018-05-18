@@ -58,6 +58,10 @@
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnitheader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLPlatesTechnicalFilesType" last-response="{{CBOType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{ProductCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+    
         <iron-ajax url="/PopulateDropdowns/GetCookingTechnique" last-response="{{CBOCookingTechnique}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -248,6 +252,59 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="ServeTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{VitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" id="VitaminAId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="VitaminAName" label="Vitamina A"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{VitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" id="VitaminDId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="VitaminDName" label="Vitamina D"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Cholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" id="CholesterolId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="CholesterolName" label="Colesterol"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Sodium}}" maxlength="20" on-value-changed="_ConvertDecimals" id="SodiumId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="SodiumName" label="Sódio (Na)"></vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Potassium}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PotassiumId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PotassiumName" label="Potássio (K)"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Calcium}}" maxlength="20" on-value-changed="_ConvertDecimals" id="CalciumId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="CalciumName" label="Cálcio (Ca)"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Iron}}" maxlength="20" on-value-changed="_ConvertDecimals" id="IronId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="IronName" label="Ferro (Fe)"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Proteins}}" maxlength="20" on-value-changed="_ConvertDecimals" id="ProteinsId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="ProteinsName" label="Proteínas"></vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Carbohydrates}}" maxlength="20" on-value-changed="_ConvertDecimals" id="CarbohydratesId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="CarbohydratesName" label="Hidratos de Carbono"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Lipids}}" maxlength="20" on-value-changed="_ConvertDecimals" id="LipidsId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="LipidsName" label="Lípidos"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{FoodFiber}}" maxlength="20" on-value-changed="_ConvertDecimals" id="FoodFiberId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="FoodFiberName" label="Fibra Alimentar"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{PriceCostExpected}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PriceCostExpectedId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PriceCostExpectedName" label="Preco Custo Esperado"><div slot="suffix">€</div> </vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{PriceCostCurrent}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PriceCostCurrentId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PriceCostCurrentName" label="Preço Custo Atual"><div slot="suffix">€</div></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Energeticvalue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="EnergeticvalueId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="EnergeticvalueName" label="Valor Energético (Kcal)"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{Energeticvalue2}}" maxlength="20" on-value-changed="_ConvertDecimals" id="Energeticvalue2Id" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="Energeticvalue2Name" label="Valor Energético (Kj)"></vaadin-text-field>
                                     </div>
                                 </div>
                             </div>
@@ -495,13 +552,32 @@
                         <paper-collapse-item class="panel-heading" header="Linhas" closed>
                             <div class="row break_clear">
                                 <div class="col-lg-3">
+                                    <such-selectbox id="Typeid" value="{{Type}}" label="Tipo"  on-value-changed="_TypeChaged"
+                                                    items="[[CBOType]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    </such-selectbox>
+                                </div>
+                                <div class="col-lg-3">
+                                    <such-selectbox id="Codeid" value="{{Code}}" label="Codigo"
+                                                    items="[[ProductCode]]"
+                                                    text-path="name"
+                                                    value-path="code"
+                                                    fields='[{"field":"code", "name":"Código"}, {"field":"name", "name":"Descrição"}]'>
+                                    </such-selectbox>
+                              </div>
+                                <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
                                 </div>
+                            </div>
+                            <div class="row break_clear">
+                               
                                 <div class="col-lg-3">
-                                    <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
+                                    <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida" 
                                                     items="[[CBOMeasureUnit]]"
                                                     text-path="value"
                                                     value-path="id"
@@ -511,38 +587,41 @@
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
                                 </div>
-                            </div>
-                            <div class="row break_clear">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
+                               
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
+                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
+                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado">
+                                        <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
                                 </div>
-                            </div>
-                            <div class="row break_clear">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
@@ -552,90 +631,96 @@
                                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                     </such-selectbox>
                                 </div>
+                            </div>
+                            <div class="row break_clear">
+                                
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade" disabled> </vaadin-text-field>
                                 </div>
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
+                               
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A" disabled> </vaadin-text-field>
                                 </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row break_clear">
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
+                               
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio" disabled> </vaadin-text-field>
+                                </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
+                               
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
+
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
                                 </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
-                                </div>
                             </div>
                             <div class="row break_clear">
+                                
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -647,7 +732,7 @@
                                 <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
                                     <paper-button class="btnSave" on-tap="_addlines"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
-                            </div><br />
+                            </div><br/>
                         </paper-collapse-item>
                     </paper-collapse-group>
                     <div class="row break_clear">
@@ -1289,6 +1374,7 @@
                     notify: true,
                     value: ""
                 },
+                
                 GroupValue: {
                     type: String,
                     notify: true,
@@ -1319,6 +1405,81 @@
                     notify: true,
                     value: ""
                 },
+                VitaminA: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                VitaminD: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Cholesterol: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Sodium: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Potassium: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Calcium: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Iron: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Proteins: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Carbohydrates: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Lipids: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                FoodFiber: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                PriceCostExpected: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                PriceCostCurrent: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Energeticvalue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
+                Energeticvalue2: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }, 
                 ClassFt1Value: {
                     type: String,
                     notify: true,
@@ -1415,12 +1576,12 @@
                     type: Boolean,
                     value: false
                 },
-                LineType: {
+                Type: {
                     type: String,
                     notify: true,
                     value: ""
                 },
-                LineCode: {
+                Code: {
                     type: String,
                     notify: true,
                     value: ""
@@ -1645,7 +1806,19 @@
                     this.Flag = true;
                 }
             },
+            _TypeChaged: function (e) {
+                debugger;
+                var typeId = e.target.value;
+                if (typeId === 1) {
+                    //Type Produto
+              
+                } else if (typeId === 2) {
+                    //Type LM Produção
+
+                } 
+            },
             _ConvertDecimals: function (e) {
+
                 e.target.value = e.target.value.replace(",", ".");
             },
             _CreateResponse: function (e) {
@@ -1783,6 +1956,8 @@
             _update() {
                 var updateRecTec = {
                     plateNo: this.RecTecPlatValue,
+                    type: this.Type,
+                    code: this.Code,
                     unitMeasureCode: this.CodMeasureUnitValue,
                     recordTechnicalName: this.recTecNameValue,
                     localizationCode: this.LocalizationsValue,
@@ -1816,7 +1991,22 @@
                     basedLupine: this.BasedLupineChecked,
                     basedMolluscs: this.BasedMolluscsChecked,
                     basedSulfurDioxeAndSulphites: this.BasedSulfSulphChecked,
-                    image: this.dataImage.image
+                    image: this.dataImage.image,
+                    vitaminA: this.VitaminA,
+                    vitaminD: this.VitaminD,
+                    cholesterol: this.Cholesterol,
+                    sodium: this.Sodium,
+                    potassium: this.Potassium,
+                    calcium: this.Calcium,
+                    iron: this.Iron,
+                    proteins: this.Proteins,
+                    carbohydrates: this.Carbohydrates,
+                    lipids: this.Lipids,
+                    foodFiber: this.FoodFiber,
+                    priceCostExpected: this.PriceCostExpected,
+                    priceCostCurrent: this.PriceCostCurrent,
+                    energeticvalue: this.Energeticvalue,
+                    energeticvalue2: this.Energeticvalue2,
                     //classFt8: this.recTecNameValue,
                     //variationPriceCost: this.recTecNameValue,
                     //centerResponsibilityCode: this.recTecNameValue,
@@ -1857,8 +2047,8 @@
             _addlines() {
                 var createRecTecLines = {
                     plateNo: this.RecTecPlatValue,
-                    type:"1",
-                    code: this.RecTecPlatValue,
+                    type: this.Type,
+                    code: this.Code,
                     description:this.LineDescription,
                     quantity:this.LineQuantity,
                     unitMeasureCode:this.LineMeasureUnit,
@@ -1938,7 +2128,22 @@
                     basedSesameSeeds: this.BasedSesameSeedsChecked,
                     basedLupine: this.BasedLupineChecked,
                     basedMolluscs: this.BasedMolluscsChecked,
-                    basedSulfurDioxeAndSulphites: this.BasedSulfSulphChecked
+                    basedSulfurDioxeAndSulphites: this.BasedSulfSulphChecked,
+                    vitaminA: this.VitaminA,
+                    vitaminD: this.VitaminD,
+                    cholesterol: this.Cholesterol,
+                    sodium: this.Sodium,
+                    potassium: this.Potassium,
+                    calcium: this.Calcium,
+                    iron: this.Iron,
+                    proteins: this.Proteins,
+                    carbohydrates: this.Carbohydrates,
+                    lipids: this.Lipids,
+                    foodFiber: this.FoodFiber,
+                    priceCostExpected: this.PriceCostExpected,
+                    priceCostCurrent: this.PriceCostCurrent,
+                    energeticvalue: this.Energeticvalue,
+                    energeticvalue2: this.Energeticvalue2,
                     //classFt8: this.recTecNameValue,
                     //image: this.recTecNameValue,
                     //variationPriceCost: this.recTecNameValue,
@@ -2090,6 +2295,21 @@
                         this.BasedLupineChecked = this.getAllRecTecPlatResult[0].basedLupine;
                         this.BasedMolluscsChecked = this.getAllRecTecPlatResult[0].basedMolluscs;
                         this.BasedSulfSulphChecked = this.getAllRecTecPlatResult[0].basedSulfurDioxeAndSulphites;
+                        this.VitaminA = this.getAllRecTecPlatResult[0].vitaminA; 
+                        this.VitaminD = this.getAllRecTecPlatResult[0].vitaminD;
+                        this.Cholesterol = this.getAllRecTecPlatResult[0].cholesterol;
+                        this.Sodium = this.getAllRecTecPlatResult[0].sodium;
+                        this.Potassium = this.getAllRecTecPlatResult[0].potassium;
+                        this.Calcium = this.getAllRecTecPlatResult[0].calcium;
+                        this.Iron = this.getAllRecTecPlatResult[0].iron;
+                        this.Proteins = this.getAllRecTecPlatResult[0].proteins;
+                        this.Carbohydrates = this.getAllRecTecPlatResult[0].carbohydrates;
+                        this.Lipids = this.getAllRecTecPlatResult[0].lipids;
+                        this.FoodFiber = this.getAllRecTecPlatResult[0].foodFiber;
+                        this.PriceCostExpected = this.getAllRecTecPlatResult[0].priceCostExpected;
+                        this.PriceCostCurrent = this.getAllRecTecPlatResult[0].priceCostCurrent;
+                        this.Energeticvalue = this.getAllRecTecPlatResult[0].energeticvalue;
+                        this.Energeticvalue2 = this.getAllRecTecPlatResult[0].energeticvalue2;
                     }
                 }
             }

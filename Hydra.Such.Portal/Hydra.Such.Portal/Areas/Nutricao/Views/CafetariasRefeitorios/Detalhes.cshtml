@@ -106,7 +106,7 @@
                         <paper-button class="" raised on-tap="_redirectToCoffeeShopDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Receitas</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.read }}">
-                        <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Nº Refeições</paper-button>
+                        <paper-button class="" raised on-tap="_redirectToMealRegistry"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Nº Refeições</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.read }}">
                         <paper-button class="" raised on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Folha de caixa</paper-button>
@@ -409,6 +409,12 @@
                 _redirectToCoffeeShopDiary: function (e) {
                     window.location.href = "/Nutricao/DiarioCafeterias/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
                 },
+
+                _redirectToMealRegistry: function (e) {
+                    window.location.href = "/Nutricao/RegistoNoRefeicoes/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+
+                },
+
                 _notImplemented: function(e) {
                     alert("Funcionalidade não implementada. A aguardar especificação.");
                 },

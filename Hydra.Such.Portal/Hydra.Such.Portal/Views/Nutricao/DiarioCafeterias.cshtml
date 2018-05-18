@@ -331,6 +331,8 @@
         _ConvertDecimals: function (e) {
             e.target.value = e.target.value.replace(",", ".");
         },
+
+
         _registerDiaryLines: function () {
             this.$.register_databound_ajax.body = JSON.stringify(this.result);
             this.$.register_databound_ajax.generateRequest();

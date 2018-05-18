@@ -796,6 +796,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetResourcesCodeByContabGr()
+        {
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "ALIMENTAÇÃ").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetResourcesCodeFH()
         {
             List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
@@ -1284,6 +1296,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTiposRefeicao()
+        {
+            List<EnumData> result = DBMealTypes.GetAll().Select(x => new EnumData() {
+                Id = x.Código,
+                Value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
@@ -1590,6 +1613,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetLinesRecTechnicPlatesType()
         {
             List<EnumData> result = EnumerablesFixed.LinesRecTechnicPlastesType;
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetLPlatesTechnicalFilesType()
+        {
+            List<EnumData> result = EnumerablesFixed.LPlatesTechnicalFiles_Type;
             return Json(result);
         }
 
