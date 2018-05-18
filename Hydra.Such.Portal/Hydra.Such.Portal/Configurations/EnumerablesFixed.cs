@@ -2030,6 +2030,35 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //ACORDO DE PREÇOS
+        public static readonly List<EnumData> AP_FormaEntrega = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Entrega pelo Fornecedor"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Entrega pelo SUCH"
+            }
+        };
+
+        //ACORDO DE PREÇOS
+        public static readonly List<EnumData> AP_TipoPreco = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Fornecedor Principal"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Fornecedor Secundário"
+            }
+        };
     }
 
     public class EnumDataString
