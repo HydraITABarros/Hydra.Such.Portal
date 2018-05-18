@@ -2853,7 +2853,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        #endregion
+        [HttpPost]
+        public JsonResult CreateAcordoPrecos([FromBody] AcordoPrecos data)
+        {
+            AcordoPrecos toCreate = DBAcordoPrecos.Create(new AcordoPrecos()
+            {
+                NoProcedimento = data.NoProcedimento,
+                DtInicio = data.DtInicio,
+                DtFim = data.DtFim,
+                ValorTotal = data.ValorTotal
+            });
+
+            if (toCreate != null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+        
+        #endregion Acordo de Preços
 
 
         #endregion

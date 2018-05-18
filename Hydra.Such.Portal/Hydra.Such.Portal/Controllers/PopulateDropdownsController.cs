@@ -1638,6 +1638,22 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(ObjContrato);
         }
+
+        //ACORDO DE PREÇOS
+        [HttpPost]
+        public JsonResult Get_AP_FormaEntrega()
+        {
+            List<EnumData> result = EnumerablesFixed.AP_FormaEntrega;
+            return Json(result);
+        }
+
+        //ACORDO DE PREÇOS
+        [HttpPost]
+        public JsonResult Get_AP_TipoPreco()
+        {
+            List<EnumData> result = EnumerablesFixed.AP_TipoPreco;
+            return Json(result);
+        }
     }
 
 
