@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Hydra.Such.Data.Database
 {
     public partial class AcessosLocalizacoes
     {
-        public string ID_Utilizador { get; set; }
+        public string IdUtilizador { get; set; }
         public string Localizacao { get; set; }
-        public DateTime? DataHora_Criacao { get; set; }
-        public string Utilizador_Criacao { get; set; }
-        public DateTime? DataHora_Modificacao { get; set; }
-        public string Utilizador_Modificacao { get; set; }
+        public DateTime? DataHoraCriacao { get; set; }
+        public string UtilizadorCriacao { get; set; }
+        public DateTime? DataHoraModificacao { get; set; }
+        public string UtilizadorModificacao { get; set; }
     }
 }

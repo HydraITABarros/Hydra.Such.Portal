@@ -676,6 +676,20 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> LPlatesTechnicalFiles_Type = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 2,
+                Value = "LM Produção"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Produto"
+            }
+        };
+
         public static readonly List<EnumData> FeeUnits = new List<EnumData>(){
             new EnumData()
             {
@@ -2016,6 +2030,35 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //ACORDO DE PREÇOS
+        public static readonly List<EnumData> AP_FormaEntrega = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Entrega pelo Fornecedor"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Entrega pelo SUCH"
+            }
+        };
+
+        //ACORDO DE PREÇOS
+        public static readonly List<EnumData> AP_TipoPreco = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Fornecedor Principal"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Fornecedor Secundário"
+            }
+        };
     }
 
     public class EnumDataString

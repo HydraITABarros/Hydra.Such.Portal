@@ -2482,12 +2482,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
                 entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
-
-                entity.HasOne(d => d.NoProcedimentoNavigation)
-                    .WithMany(p => p.FornecedoresAcordoPrecos)
-                    .HasForeignKey(d => d.NoProcedimento)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FornecedoresAcordoPrecos_AcordoPrecos");
             });
 
             modelBuilder.Entity<GruposAprovação>(entity =>
@@ -2579,18 +2573,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(30);
-
-                entity.HasOne(d => d.NoProcedimentoNavigation)
-                    .WithMany(p => p.LinhasAcordoPrecos)
-                    .HasForeignKey(d => d.NoProcedimento)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LinhasAcordoPrecos_AcordoPrecos");
-
-                entity.HasOne(d => d.No)
-                    .WithMany(p => p.LinhasAcordoPrecos)
-                    .HasForeignKey(d => new { d.NoProcedimento, d.NoFornecedor })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LinhasAcordoPrecos_FornecedoresAcordoPrecos");
             });
 
             modelBuilder.Entity<LinhasContratos>(entity =>
@@ -7218,37 +7200,6 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
-            });
-
-            modelBuilder.Entity<AcessosLocalizacoes>(entity =>
-            {
-                entity.HasKey(e => new { e.ID_Utilizador, e.Localizacao });
-
-                entity.ToTable("AcessosLocalizacoes");
-
-                entity.Property(e => e.ID_Utilizador)
-                    .HasColumnName("ID_Utilizador")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Localizacao)
-                    .HasColumnName("Localizacao")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Utilizador_Criacao)
-                    .HasColumnName("Utilizador_Criacao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataHora_Criacao)
-                    .HasColumnName("DataHora_Criacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Utilizador_Modificacao)
-                    .HasColumnName("Utilizador_Modificacao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataHora_Modificacao)
-                    .HasColumnName("DataHora_Modificacao")
-                    .HasColumnType("datetime");
             });
         }
     }

@@ -138,15 +138,14 @@
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo1}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLinesGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -237,11 +236,11 @@
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <such-selectbox id="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
-                                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                            fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
@@ -435,7 +434,6 @@
                                 <template is="dom-if" if="{{ !_isCreate }}">
                                     <template is="dom-if" if="{{ _permissions.update }}">
                                         <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                        <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
@@ -493,11 +491,11 @@
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-2">
-                                        <such-selectbox id="CBLineProjects" value="[[Requisition.projectNo]]" label="Nº Ordem/Projecto"
+                                        <such-selectbox id="CBLineProjects" value="[[Requisition.projectNo]]" label="Nº Ordem/Projeto"
                                                         items="[[CBJobNo]]"
                                                         text-path="no"
                                                         value-path="no"
-                                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                        fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
                                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         </such-selectbox>
                                     </div>
@@ -765,8 +763,8 @@
 
                                 <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="openOrderLineNo" />
+                                        <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="maintenanceOrderLineNo" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1040,7 +1038,7 @@
                     },
                     _isCreate: {
                         type: Boolean,
-                        value: true,
+                        value: false,
                     },
                     _sendPrePurchaseFilterActive: {
                         type: Boolean,
@@ -1277,7 +1275,7 @@
                     if (this._validateReqHeaderInput()) {
                         this.$.validateNumeration_ajax.body = JSON.stringify(this.Requisition);
                         this.$.validateNumeration_ajax.generateRequest();
-                    } open
+                    }
                 },
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
@@ -1295,7 +1293,7 @@
                     }
                 },
                 _delete: function () {
-                    this._sendReqRequest("/Compras/ModelosRequisicao/DeleteRequisition", this.Requisition)
+                    this._sendReqRequest("/Compras/ModelosRequisicao/DeleteRequisition", this.Requisition);
                 },
                 _validateReqHeaderInput: function () {
                     if (true) {
@@ -1424,7 +1422,6 @@
                                 this._openToastError(this.data.eMessage);
                             }
                         }
-                        
                         else if (data.detail.url.indexOf("Delete") !== -1) {
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
@@ -1464,6 +1461,10 @@
                     if (item != null) {
                         this.$.txtProductDesciption.value = item.name;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                    }
+                    else {
+                        this.$.txtProductDesciption.value = "";
+                        this.$.CBUnitsOfMmeasure.value = "";
                     }
                 },
                 _RespChange: function (e) {

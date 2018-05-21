@@ -5,16 +5,30 @@ using System.Threading.Tasks;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
     public class ModelosRequisicaoController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+
+        public ModelosRequisicaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+        }
+
         [Area("Compras")]
         public IActionResult Index()
         {
