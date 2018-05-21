@@ -2869,7 +2869,52 @@ namespace Hydra.Such.Portal.Controllers
             else
                 return Json(1);
         }
-        
+
+        [HttpPost]
+        public JsonResult CreateLinhaAcordoPrecos([FromBody] LinhasAcordoPrecos data)
+        {
+            LinhasAcordoPrecos toCreate = DBLinhasAcordoPrecos.Create(new LinhasAcordoPrecos()
+            {
+                NoProcedimento = data.NoProcedimento,
+                NoFornecedor = data.NoFornecedor,
+                CodProduto = data.CodProduto,
+                DtValidadeInicio = data.DtValidadeInicio,
+                DtValidadeFim = data.DtValidadeFim,
+                Cresp = data.Cresp,
+                Area = data.Area,
+                Regiao = data.Regiao,
+                Localizacao = data.Localizacao,
+                CustoUnitario = data.CustoUnitario,
+                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
+                DescricaoProduto = "", //DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).SingleOrDefault().Name,
+                Um = data.Um,
+                QtdPorUm = data.QtdPorUm,
+                PesoUnitario = data.PesoUnitario,
+                CodProdutoFornecedor = data.CodProdutoFornecedor,
+                DescricaoProdFornecedor = "",
+                FormaEntrega = data.FormaEntrega,
+                UserId = User.Identity.Name,
+                DataCriacao = DateTime.Now,
+                TipoPreco = data.TipoPreco
+            });
+
+            if (toCreate != null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarNoProcedimento([FromBody] AcordoPrecos data)
+        {
+            AcordoPrecos AcordoPrecos =  DBAcordoPrecos.GetById(data.NoProcedimento);
+
+            if (AcordoPrecos == null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+
         #endregion Acordo de Preços
 
 
