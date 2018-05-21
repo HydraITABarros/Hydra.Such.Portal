@@ -1402,7 +1402,7 @@
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
                             <template is="dom-if" if="{{ _permissions.update }}">
-                                <template is="dom-if" if="{{ _lockFields }}">
+                                <template is="dom-if" if="{{ !_lockFields }}">
                                     <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
                             </template>

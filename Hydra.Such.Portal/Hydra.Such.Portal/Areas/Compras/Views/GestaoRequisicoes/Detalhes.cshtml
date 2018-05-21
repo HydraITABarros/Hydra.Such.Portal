@@ -67,9 +67,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Urgente</p>
-                    <vaadin-grid-filter path="urgent" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
@@ -78,9 +75,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Compra a Dinheiro</p>
-                    <vaadin-grid-filter path="buyCash" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
@@ -89,9 +83,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Trabalho já executado</p>
-                    <vaadin-grid-filter path="alreadyPerformed" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
@@ -100,9 +91,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Requisição Nutrição</p>
-                    <vaadin-grid-filter path="requestNutrition" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
@@ -120,9 +108,6 @@
         <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Mercado Local</p>
-                    <vaadin-grid-filter path="localMarket" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
@@ -203,9 +188,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Reposição Stock</p>
-                    <vaadin-grid-filter path="stockReplacement" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
@@ -214,9 +196,6 @@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <p class="alignCenter">Reclamação</p>
-                    <vaadin-grid-filter path="reclamation" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
@@ -251,29 +230,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="approvers" />
-                </template>
-                <template>
-                    {{item.approvers}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estimatedValue" />
                 </template>
                 <template>
                     {{item.estimatedValue}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="updateUser" />
-                </template>
-                <template>
-                    {{item.updateUser}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
