@@ -152,7 +152,34 @@ namespace Hydra.Such.Data.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Acessos Dimensões_Config. Utilizadores");
             });
-            
+
+            modelBuilder.Entity<AcessosLocalizacoes>(entity =>
+            {
+                entity.HasKey(e => new { e.IdUtilizador, e.Localizacao });
+
+                entity.Property(e => e.IdUtilizador)
+                    .HasColumnName("ID_Utilizador")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Localizacao).HasMaxLength(20);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHora_Modificacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<AcessosPerfil>(entity =>
             {
                 entity.HasKey(e => new { e.IdPerfil, e.Área, e.Funcionalidade });
@@ -519,6 +546,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NºProjeto)
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.NºRefeições).HasColumnName("Nº Refeições");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -2822,13 +2851,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ÁcidosGordosSaturados).HasColumnName("Ácidos Gordos Saturados");
 
-                entity.HasOne(d => d.CódigoNavigation)
-                    .WithMany(p => p.LinhasFichasTécnicasPratosCódigoNavigation)
-                    .HasForeignKey(d => d.Código)
-                    .HasConstraintName("FK_Linhas Fichas Técnicas Pratos_Fichas Técnicas Pratos1");
-
                 entity.HasOne(d => d.NºPratoNavigation)
-                    .WithMany(p => p.LinhasFichasTécnicasPratosNºPratoNavigation)
+                    .WithMany(p => p.LinhasFichasTécnicasPratos)
                     .HasForeignKey(d => d.NºPrato)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas Fichas Técnicas Pratos_Fichas Técnicas Pratos");
