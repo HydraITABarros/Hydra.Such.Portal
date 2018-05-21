@@ -16,6 +16,7 @@ using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Hydra.Such.Portal.Controllers;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -584,6 +585,33 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisitionLines([FromBody] RequisitionViewModel item)
+        {
+            try
+            {
+                if (item != null && item.Lines != null)
+                {
+                    if (DBRequestLine.Update(item.Lines.ParseToDB()))
+                    {
+                        item.Lines.ForEach(x => x.Selected = false);
+                        item.eReasonCode = 1;
+                        item.eMessage = "Linhas atualizadas com sucesso.";
+                        return Json(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //item.eReasonCode = 2;
+                //item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            }
+            item.eReasonCode = 2;
+            item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
             return Json(item);
         }
 

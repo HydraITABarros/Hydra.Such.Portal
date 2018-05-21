@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Project
 {
@@ -148,6 +149,11 @@ namespace Hydra.Such.Data.Logic.Project
 
                 return null;
             }
+        }
+
+        public static List<NAVDimValueViewModel> GetById(string navDatabaseName, string navCompanyName, Dimensions navDimensionType, string userId, string respCenter)
+        {
+            return GetById(navDatabaseName, navCompanyName, (int)navDimensionType, userId, respCenter);
         }
     }
 }
