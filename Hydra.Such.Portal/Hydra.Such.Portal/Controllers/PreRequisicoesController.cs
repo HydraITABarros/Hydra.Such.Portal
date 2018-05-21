@@ -19,6 +19,7 @@ using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -47,6 +48,23 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        //public JsonResult GetProjectDim([FromBody] string ProjectNo)
+        //{
+
+        //    Projetos project = DBProjects.GetById(ProjectNo);
+        //    ProjectListItemViewModel result = new ProjectListItemViewModel();
+
+        //    result.RegionCode = project.CódigoRegião;
+        //    result.FunctionalAreaCode = project.CódigoÁreaFuncional;
+        //    result.ResponsabilityCenterCode = project.CódigoCentroResponsabilidade;
+
+        //    return Json(result);
+        //}
+
+
+
+
 
         public JsonResult GetPreReqList([FromBody] int Area)
         {

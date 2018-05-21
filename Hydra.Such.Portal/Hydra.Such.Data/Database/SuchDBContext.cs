@@ -113,7 +113,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        public virtual DbSet<AcessosLocalizacoes> AcessosLocalizacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -153,34 +152,7 @@ namespace Hydra.Such.Data.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Acessos Dimensões_Config. Utilizadores");
             });
-
-            modelBuilder.Entity<AcessosLocalizacoes>(entity =>
-            {
-                entity.HasKey(e => new { e.IdUtilizador, e.Localizacao });
-
-                entity.Property(e => e.IdUtilizador)
-                    .HasColumnName("ID_Utilizador")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Localizacao).HasMaxLength(20);
-
-                entity.Property(e => e.DataHoraCriacao)
-                    .HasColumnName("DataHora_Criacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataHoraModificacao)
-                    .HasColumnName("DataHora_Modificacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.UtilizadorCriacao)
-                    .HasColumnName("Utilizador_Criacao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.UtilizadorModificacao)
-                    .HasColumnName("Utilizador_Modificacao")
-                    .HasMaxLength(50);
-            });
-
+            
             modelBuilder.Entity<AcessosPerfil>(entity =>
             {
                 entity.HasKey(e => new { e.IdPerfil, e.Área, e.Funcionalidade });

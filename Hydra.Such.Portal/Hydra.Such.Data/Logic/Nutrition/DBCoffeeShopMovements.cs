@@ -58,5 +58,23 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
             return totalRevenues.HasValue ? totalRevenues.Value : 0;
         }
+
+        public static decimal GetTotalMealsFor(int productivityUnitNo, int coffeeShopCode, int coffeeShopType)
+        {
+            decimal? totalRevenues = null;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    totalRevenues = ctx.MovimentosCafetariaRefeitório.Where(mov => mov.NºUnidadeProdutiva == productivityUnitNo &&
+                                                                            mov.CódigoCafetariaRefeitório.Value == coffeeShopCode &&
+                                                                            mov.Tipo.Value == coffeeShopType)
+                                                                     .Sum(total => total.Quantidade);
+                }
+            }
+            catch { }
+
+            return totalRevenues.HasValue ? totalRevenues.Value : 0;
+        }
     }
 }

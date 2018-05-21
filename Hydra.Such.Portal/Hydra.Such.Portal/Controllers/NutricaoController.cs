@@ -625,9 +625,6 @@ namespace Hydra.Such.Portal.Controllers
                         DBCoffeeShopMovements.Create(MovementsToCreate);
                         if (MovementsToCreate.NºMovimento > 0)
                         {
-                            CafetariasRefeitórios updateQuantity = new CafetariasRefeitórios();
-                            
-
                             DiárioCafetariaRefeitório lineToRemove = new DiárioCafetariaRefeitório();
                             lineToRemove = DBCoffeeShopsDiary.GetById(linesToRegist.LineNo);
                             DBCoffeeShopsDiary.Delete(lineToRemove);
