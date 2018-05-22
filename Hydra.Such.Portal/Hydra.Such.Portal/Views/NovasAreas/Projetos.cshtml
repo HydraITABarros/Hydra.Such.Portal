@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Projetos Novas Areas</h2>
+<h1 class="title">Projetos Novas Areas</h1>
 <link rel="import" href="~/elements/projects/project_list.html">
 
 <x-projectlist _areaid="7" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectlist>

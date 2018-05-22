@@ -115,6 +115,14 @@ ul.nav li:hover {
     color: white;
     cursor: pointer;
 }
+.btnEditPending {
+    max-width: 180px !important;
+    min-width: 50px !important;
+    height: 30px !important;
+    background-color: #5A9E49;
+    color: white;
+    cursor: pointer;
+}
 .roundrect {
     border-radius: 15px;
 }
@@ -139,6 +147,11 @@ ul.nav li:hover {
     cursor: pointer;
 }
 
+.btnAddNew {
+    background-color: #71BCC1;
+    color: white;
+    cursor: pointer;
+}
 
 .btnDefault {
     max-width: 125px !important;

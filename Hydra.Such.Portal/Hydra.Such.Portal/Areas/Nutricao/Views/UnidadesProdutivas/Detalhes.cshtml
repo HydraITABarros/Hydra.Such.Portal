@@ -411,7 +411,7 @@
                                             <div class="panel-heading">Cafetarias / Refeitórios</div>
                                             <div class="panel-body">
                                                 <!-- VAADIN GRID  Projetos de Faturação -->
-                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_ClientRequisitions" items="[[data.coffeeShops]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
+                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_ClientRequisitions" items="[[data.coffeeShops]]" class="grid" active-item="{{activeItem}}" multi-sort="true" disabled="{{ !_permissions.update }}">
                                                     <vaadin-grid-column>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -515,7 +515,18 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
                 },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        var urlParams = "?code=" + item.code;
+                        window.location.href = "/Nutricao/UnidadesProdutivas/DetalhesCafetariasRefeitorios/" + urlParams;
+                    }
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();

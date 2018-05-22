@@ -43,7 +43,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
-        
+
         #region Utilizadores
         public IActionResult ConfiguracaoUtilizadores()
         {
@@ -70,9 +70,14 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.ForEach(Utilizador =>
                 {
-                    Utilizador.RegiãoPorDefeito = Utilizador.RegiãoPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault().Name;
-                    Utilizador.AreaPorDefeito = Utilizador.AreaPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault().Name;
-                    Utilizador.CentroRespPorDefeito = Utilizador.CentroRespPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault().Name;
+                    var nomeRegião = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault();
+                    Utilizador.RegiãoPorDefeito = nomeRegião == null ? "" : nomeRegião.Name;
+
+                    var nomeÁreaPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault();
+                    Utilizador.AreaPorDefeito = nomeÁreaPorDefeito == null ? "" : nomeÁreaPorDefeito.Name;
+
+                    var nomeCentroRespPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault();
+                    Utilizador.CentroRespPorDefeito = nomeCentroRespPorDefeito == null ? "" : nomeCentroRespPorDefeito.Name;
                 });
             };
 
@@ -125,6 +130,8 @@ namespace Hydra.Such.Portal.Controllers
                 }).ToList();
 
                 result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel();
+
+                result.UserAcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(data.IdUser).ParseToViewModel();
             }
 
             return Json(result);
@@ -173,6 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorCriação = User.Identity.Name
                 });
             });
+
             return Json(data);
         }
 
@@ -398,6 +406,35 @@ namespace Hydra.Such.Portal.Controllers
         {
             var userDimension = DBUserDimensions.GetById(data.UserId, data.Dimension, data.DimensionValue);
             return Json(userDimension != null ? DBUserDimensions.Delete(userDimension) : false);
+        }
+
+        [HttpPost]
+        public JsonResult CreateUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            bool result = false;
+            try
+            {
+                AcessosLocalizacoes userAcessosLocalizacoes = new AcessosLocalizacoes();
+                userAcessosLocalizacoes.IdUtilizador = data.IdUtilizador;
+                userAcessosLocalizacoes.Localizacao = data.Localizacao;
+                userAcessosLocalizacoes.UtilizadorCriacao = User.Identity.Name;
+                userAcessosLocalizacoes.DataHoraCriacao = DateTime.Now;
+
+                var dbCreateResult = DBAcessosLocalizacoes.Create(userAcessosLocalizacoes);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
+        {
+            var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.IdUtilizador, data.Localizacao);
+            return Json(userAcessosLocalizacoes != null ? DBAcessosLocalizacoes.Delete(userAcessosLocalizacoes) : false);
         }
 
         [HttpPost]
@@ -1686,6 +1723,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetConfiguracaoAjudaCusto()
         {
             List<ConfiguracaoAjudaCustoViewModel> result = DBConfiguracaoAjudaCusto.ParseListToViewModel(DBConfiguracaoAjudaCusto.GetAll());
+
+            if (result != null)
+            {
+                result.ForEach(x =>
+                {
+                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoTipoCusto.Trim(), "", 0, "").FirstOrDefault().Name;
+                });
+            }
+
             return Json(result);
         }
 
@@ -2546,6 +2592,10 @@ namespace Hydra.Such.Portal.Controllers
                     DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
                     DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
                 };
+
+                if (!aprovConfig.NívelAprovação.HasValue || aprovConfig.NívelAprovação.Value <= 0)
+                    throw new Exception("O nível de aprovação tem que ser maior que zero.");
+
                 if (x.Id > 0)
                 {
                     aprovConfig.Id = x.Id;
@@ -2785,6 +2835,43 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+        #region Acordo de Preços
+        public IActionResult AcordoPrecos(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult CreateAcordoPrecos([FromBody] AcordoPrecos data)
+        {
+            AcordoPrecos toCreate = DBAcordoPrecos.Create(new AcordoPrecos()
+            {
+                NoProcedimento = data.NoProcedimento,
+                DtInicio = data.DtInicio,
+                DtFim = data.DtFim,
+                ValorTotal = data.ValorTotal
+            });
+
+            if (toCreate != null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+        
+        #endregion Acordo de Preços
+
 
         #endregion
 

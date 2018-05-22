@@ -1417,7 +1417,7 @@
         <paper-dialog id="dlgCreateProposal" modal style="height:200px; width:300px">
             <div>
                 <vaadin-checkbox id="chkUpdateLines" on-checked-changed="_chkUpdateLinesChanged">Atualizar os valores das linhas?</vaadin-checkbox>
-                <vaadin-text-field id="txtPercentage" disabled on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="txtPercentage" label="Insira percentagem"></vaadin-text-field>
+                <vaadin-text-field id="txtPercentage" disabled on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="txtPercentage" label="Insira percentagem"></vaadin-text-field>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_createNewProposal">Guardar</paper-button>
@@ -1444,7 +1444,7 @@
                     <vaadin-date-picker label="Data Próxima Fatura" id="dpNextInvoiceDate" name="dpNextInvoiceDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-md-4 ">
-                    <vaadin-text-field id="txtContractLinesPercentage" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" name="txtContractLinesPercentage" label="Percentagem"></vaadin-text-field>
+                    <vaadin-text-field id="txtContractLinesPercentage" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" name="txtContractLinesPercentage" label="Percentagem"></vaadin-text-field>
                 </div>
             </div>
             <div class="buttons">
@@ -1873,11 +1873,11 @@
                         var contractNo = this.data.contractNo;
                         setTimeout(
                             function () {
-                                window.location.href = "../DetalhesContrato/" + contractNo;
+                                window.location.href = window.location.href + "/" + contractNo;//"DetalhesContrato/" + contractNo;
                             }, 1000);
 
                     } else {
-                        this._openToast(this.data.eMessage);
+                        this._openToastError(this.data.eMessage);
                     }
                 },
                 _responseValidatorProcessor: function (data) {

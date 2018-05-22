@@ -179,7 +179,13 @@
                    id="delete_files_ajax"
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
-
+               <iron-ajax url="/PreRequisicoes/CleanPreRequesition"
+               last-response="{{ClPreReq}}"
+               method="post"
+               handle-as="json"
+               id="CleanPreRequesition_ajax"
+               on-response="_CleanPreRequesitionResponse"
+               content-type="application/json"></iron-ajax>
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
                    method="post"
@@ -247,11 +253,11 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/CopyReqModelLines"
-                   last-response="{{ModelLineResult}}"
+                   last-response="{{CopyFromModelResult}}"
                    method="post"
                    handle-as="json"
                    id="grid_copyreqmodel_ajax"
-                   on-response="_clResponsePreReqModel"
+                   on-response="_copyFromTemplateResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
@@ -274,7 +280,7 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
                 <div class="subMenu">
-                    <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisições Modelo</paper-button>
+                    <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Copiar Requisição Modelo</paper-button>
                     <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>
                     <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
                 </div>
@@ -323,38 +329,38 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-1 alignPoga">
-                                            <vaadin-checkbox checked="{{data.urgent}}">Urgente</vaadin-checkbox>
+                                            <vaadin-checkbox id="UrgentId" checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 alignPoga">
-                                            <vaadin-checkbox checked="{{data.fittingBudget}}">Orçamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 alignPoga">
-                                            <vaadin-checkbox checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
+                                            <vaadin-checkbox  id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-1 alignPoga">
-                                            <vaadin-checkbox checked="{{data.exclusive}}">Exclusivo</vaadin-checkbox>
+                                            <vaadin-checkbox id="ExclusiveId" checked="{{data.exclusive}}">Exclusivo</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <br />
                                     <div class="row break_clear">
 
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{data.alreadyExecuted}}">Já Executado</vaadin-checkbox>
+                                            <vaadin-checkbox id="AlreadyExecutedId" checked="{{data.alreadyExecuted}}">Já Executado</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{data.sample}}">Amostra</vaadin-checkbox>
+                                            <vaadin-checkbox id="SampleId" checked="{{data.sample}}">Amostra</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{data.equipment}}">Equipamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="EquipmentId" checked="{{data.equipment}}">Equipamento</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{data.moneyBuy}}">Compras a Dinheiro</vaadin-checkbox>
+                                            <vaadin-checkbox id="MoneyBuyId" checked="{{data.moneyBuy}}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{data.stockReplacement}}">Reposição de Stock</vaadin-checkbox>
+                                            <vaadin-checkbox id="StockReplacementId" checked="{{data.stockReplacement}}">Reposição de Stock</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2">
-                                            <vaadin-checkbox checked="{{data.complaint}}">Reclamação</vaadin-checkbox>
+                                            <vaadin-checkbox id="ComplaintId" checked="{{data.complaint}}">Reclamação</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <br />
@@ -578,7 +584,6 @@
                                             <template is="dom-if" if="{{ !_isCreate }}">
                                                 <hr />
                                                 <template is="dom-if" if="{{ _permissions.update }}">
-
                                                     <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                                 </template>
                                                 <template is="dom-if" if="{{ _permissions.delete }}">
@@ -659,18 +664,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <!--<div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBVendor]]" id="_CBVendor" item-value-path="id" item-label-path="value" value="{{_CBVendor}}" label="Nº Fornecedor" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>-->
                                     <div class="col-sm-2">
                                         <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
                                                         items="[[CBVendor]]"
@@ -778,12 +771,12 @@
                                     </vaadin-grid-column>
                                     <vaadin-grid-column width="125px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="supplierProductCode">Cód. Produto</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="supplierProductCode" />
+                                            <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="code" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <paper-icon-item>
                                                             <paper-item-body>
@@ -792,16 +785,9 @@
                                                         </paper-icon-item>
                                                     </template>
                                                 </vaadin-combo-box>
-                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.supplierProductCode}}"
-                                                items="[[CBItems]]"
-                                                text-path="code"
-                                                value-path="code"
-                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>-->
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.supplierProductCode}}
+                                                {{item.code}}
                                                 <!--[[ _clFormatSupplierProductCode(item.supplierProductCode) ]]-->
                                             </template>
                                         </template>
@@ -1340,7 +1326,7 @@
                     this.$.page_createnewForUser_ajax.generateRequest();
 
 
-                    if (this._isCreate == false) {
+                    if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
                             if (e.detail.xhr.status == 200) {
                                 e.detail.xhr.requestURL;
@@ -1366,9 +1352,9 @@
                 },
 
                 //_set_CLResponsabilityCenterCode_PurchaseHeader: function (e) {
-                //    debugger;
+
                 //     if(!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                //        debugger;
+
                 //        this.$.purchaseheader_ajax.body = JSON.stringify({ "id": this.$._CLResponsabilityCenterCode.value });
                 //        this.$.purchaseheader_ajax.generateRequest();
                 //    }
@@ -1395,16 +1381,18 @@
                     }
                 },
                 _onSearchTermChanged: function (value) {
+                    debugger;
                     var id = this.$.requesitionType.value;
-                    if (id != "" && id > 0) {
+                    if (id != "" && id.length > 0) {
                         this.$.ajax_cbReqType.body = JSON.stringify(id);
                         this.$.ajax_cbReqType.generateRequest();
-
+                        
                         this._loadProductsByAreaAndType(id);
+                       
                     }
                 },
                 _responseVehicleFleetBool: function (data) {
-
+                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
 
@@ -1464,7 +1452,7 @@
 
                 _createnewreq: function (e) {
 
-                    this.data.area = this._areaid
+                    this.data.area = this._areaid;
                     this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                     this.$.page_validator_req_ajax.generateRequest();
                 },
@@ -1532,6 +1520,7 @@
                     }
                 },
                 _loadProductsByAreaAndType: function (requisitionType) {
+                    debugger;;
                     if (this._areaid != null && requisitionType != null) {
                         this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
                         this.$.filteredProducts_ajax.generateRequest();
@@ -1591,18 +1580,24 @@
                     }
                 },
 
-                _clResponsePreReqModel: function (data) {
+                _copyFromTemplateResponse: function (data) {
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("CopyReqModelLines") !== -1) {
-                            this._openToast("Linhas Pré-Requisição criadas com sucesso")
-                            this.$.dialog.close();
-                            this.$.grid_prereqlines.clearCache();
-                            this.data.eMessage = "";
+                            if (this.CopyFromModelResult.eReasonCode == 1) {
 
-                            this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                            this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
-                            this.$.prereqLines_databound_ajax.generateRequest();
+                                this._openToast("Linhas Pré-Requisição criadas com sucesso");
+                                this.$.dialog.close();
+                                this.$.grid_prereqlines.clearCache();
+                                this.data.eMessage = "";
+
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                                this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
+                                this.$.prereqLines_databound_ajax.generateRequest();
+                            }
+                            else {
+                                this._openToastError(this.CopyFromModelResult.eMessage);
+                            }
                         }
                     }
                 },
@@ -1736,7 +1731,7 @@
                 _GridItemChange: function (e, _selected) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        var itemNo = e.model.item.supplierProductCode
+                        var itemNo = e.model.item.code
                         var object = this.CBItems.find(x => x.code == itemNo);
                         line.description = object.name;
 
@@ -1851,7 +1846,7 @@
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
-                        supplierProductCode: this._CBItems,
+                        code: this._CBItems,
                         description: this._Description,
                         unitMeasureCode: this._UnitMeasureCode,
                         quantityToRequire: this._QuantityToRequire,
@@ -1860,9 +1855,9 @@
                         maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
                         vehicle: this.data.vehicle,
                         supplierNo: this._CBVendor,
-                        regionCode: this.data.regionCode,
-                        functionalAreaCode: this.data.functionalAreaCode,
-                        centerResponsibilityCode: this.data.responsabilityCenterCode,
+                        regionCode: this.$._CLRegion.value ,
+                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
                         openOrderNo: this._CBPurchaseHeader,
                         openOrderLineNo: this._CBPurchaseLine,
                         totalCost: totalCost > 0 ? totalCost : "",
@@ -1994,10 +1989,10 @@
                 },
 
                 _SaveLines: function (e) {
-
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
                     e.model.item.preRequisitionNo = this.data.preRequesitionsNo;
+                    e.model.item.projectNo = this.data.projectNo;
                     this.$.grid_copyreqmodel_ajax.body = JSON.stringify(e.model.item);
                     this.$.grid_copyreqmodel_ajax.generateRequest();
                 },
@@ -2005,19 +2000,40 @@
                 _pendingreq: function (e) {
                     window.location.href = "RequisicoesPendentes/";
                 },
+                _CleanPreRequesitionResponse: function(e) {
+                    debugger;
+                    if (this.ClPreReq.eReasonCode != null) {
+                        this._openToastError(this.ClPreReq.eMessage);
+                    }
+                    if (e.detail.status === 200) {
+                        setTimeout(
+                            function () {
+                                location.reload();
+                            }, 2000);
+                    }
+                },
                 _createRequesitionResponse: function (e) {
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
+
+                        this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                        var req = this.$.CleanPreRequesition_ajax;
+
                         if (this.CreateReqResponse.eMessages.length > 0) {
                             var errors = this.CreateReqResponse.eMessages[0].message;
                             for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
                                 errors += this.CreateReqResponse.eMessages[i].message + ";";
                             }
                             var thisCtx = this;
+
                             setTimeout(
                                 function () {
                                     thisCtx._openToastError(errors);
-                                }, 2000);
+                                    req.generateRequest();
+                                }, 4000);
+                        }
+                        else {
+                            req.generateRequest();
                         }
                     }
                     else {

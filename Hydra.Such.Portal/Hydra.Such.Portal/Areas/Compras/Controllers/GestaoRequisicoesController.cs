@@ -323,7 +323,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetAll().ParseToViewModel();//.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetAll().ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1069,10 +1069,13 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             ErrorHandler result = new ErrorHandler();
             if (!string.IsNullOrEmpty(requisitionId))
             {
-                Requisição CReq = DBRequest.GetById(requisitionId);
-                if (CReq != null)
+                Requisição reqDB = DBRequest.GetById(requisitionId);
+                var requisition = reqDB.ParseToViewModel();
+                
+                if (requisition != null)
                 {
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1,CReq.CódigoÁreaFuncional,CReq.CódigoCentroResponsabilidade,CReq.CódigoRegião, 0, requisitionId, User.Identity.Name);
+                    var totalValue = requisition.GetTotalValue();
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
                 }
             }
             else

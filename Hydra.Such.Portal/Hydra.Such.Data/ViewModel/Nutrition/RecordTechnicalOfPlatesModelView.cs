@@ -51,6 +51,21 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public bool? BasedMolluscs { get; set; }
         public bool? BasedSulfurDioxeAndSulphites { get; set; }
         public string ImageToString { get; set; }
+        public decimal? VitaminA { get; set; }
+        public decimal? VitaminD { get; set; }
+        public decimal? Cholesterol { get; set; }
+        public decimal? Sodium { get; set; }
+        public decimal?  Potassium { get; set; }
+        public decimal? Calcium { get; set; }
+        public decimal? Iron { get; set; }
+        public decimal? Proteins { get; set; }
+        public decimal? Carbohydrates { get; set; }
+        public decimal? Lipids { get; set; }
+        public decimal? FoodFiber { get; set; }
+        public decimal? PriceCostExpected { get; set; }
+        public decimal? PriceCostCurrent { get; set; }
+        public decimal? Energeticvalue { get; set; }
+        public decimal? Energeticvalue2 { get; set; }
 
     }
 }

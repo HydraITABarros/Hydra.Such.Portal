@@ -117,7 +117,11 @@ namespace Hydra.Such.Data
             [Description("Histórico de Requisições")]
             HistóricoRequisições = 43,
             [Description("Necessidade de Compras Direta")]
-            NecessidadeComprasDireta = 44
+            NecessidadeComprasDireta = 44,
+            [Description("Modelos de Requisição")]
+            ModelosRequisicao = 45,
+            [Description("Registo Nº Refeições")]
+            RegistoRefeicoes = 46
         }
 
         public enum Areas

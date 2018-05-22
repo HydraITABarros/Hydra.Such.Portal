@@ -1929,7 +1929,12 @@
                                                     codTipoCusto: this.$.codigoTipoKms.value,
                                                     codOrigem: this.$.percursoOrigem.value,
                                                     codDestino: this.$.percursoDestino.value,
-                                                    dataDespesa: this.$.percursoDataViagem.value
+                                                    dataDespesa: this.$.percursoDataViagem.value,
+                                                    funcionario: this.$.empregadoNo.value,
+                                                    codRegiao: this.$.codigoRegiao.value,
+                                                    codArea: this.$.codigoAreaFuncional.value,
+                                                    codCresp: this.$.codigoCentroResponsabilidade.value,
+                                                    matricula: this.$.matricula.value
                                                 });
                                                 this.$.page_createpercurso_ajax.generateRequest();
                                                 this.$.tabPercurso.clearCache();
@@ -2070,7 +2075,11 @@
                                                                         custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
                                                                         precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
                                                                         dataDespesa: this.$.ajudaDataDespesa.value,
-                                                                        observacao: this.$.ajudaJustificacao.value
+                                                                        observacao: this.$.ajudaJustificacao.value,
+                                                                        funcionario: this.$.empregadoNo.value,
+                                                                        codRegiao: this.$.codigoRegiao.value,
+                                                                        codArea: this.$.codigoAreaFuncional.value,
+                                                                        codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
                                                                     this.$.page_createajuda_ajax.generateRequest();
                                                                     this.$.tabAjuda.clearCache();

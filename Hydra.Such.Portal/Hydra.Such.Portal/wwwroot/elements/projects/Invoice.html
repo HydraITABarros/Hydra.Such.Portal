@@ -362,84 +362,84 @@
 
 
     <script>
-    document.addEventListener('WebComponentsReady', function () {
-        Polymer({
-            is: 'x-invoice',
-            properties: {
-                _areaid: {
-                    type: Number,
-                    notify: true,
-                    value: 0
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-invoice',
+                properties: {
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_Type: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_FailType: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    selectedItem: {
+                        type: Array,
+                    },
+
+                    selectedItems: {
+                        type: Array,
+                    }
                 },
-                _projectno: {
-                    type: String,
-                    notify: true,
-                    value: ""
+                ready: function () {
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _confirm: function (selectedItem, selectedItems) {
+                    debugger;
+                    this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
+                    this.$.page_autorizelines_ajax.generateRequest();
+                    //console.log(this.selectedItems);
                 },
 
-                ddCGTOM_Type: {
-                    type: Number,
-                    notify: true,
-                    value: ""
+                _CreateLinesResponse: function (e) {
+                    var message = this.lines.eReasonCode;
+                    switch (message) {
+
+                        case 1: this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
+                            this.$.ToastMessageSuccess.open();
+                            break;
+                        case 2: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
+                            this.$.ToastMessageError.open();
+                            break;
+                        case 3: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
+                            this.$.ToastMessageError.open();
+                            break;
+                        case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
+                            this.$.ToastMessageError.open();
+                    }
+
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.projectInvoiceAutorization.clearCache();
+                    this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
+                    this.$.ToastMessageSuccess.open();
+
+                    //window.location.href = "/AutorizacaoFaturacao";
                 },
-
-                ddCGTOM_FailType: {
-                    type: Number,
-                    notify: true,
-                    value: ""
-                },
-
-                selectedItem: {
-                    type: Array,
-                },
-
-                selectedItems: {
-                    type: Array,
-                }
-            },
-            ready: function () {
-                this.$.page_databound_ajax.generateRequest();
-            },
-            openToast: function (message) {
-                this.$.ToastMessageSuccess.text = message;
-                this.$.ToastMessageSuccess.open();
-            },
-            openToastError: function (message) {
-                this.$.ToastMessageError.text = message;
-                this.$.ToastMessageError.open();
-            },
-            _confirm: function (selectedItem, selectedItems) {
-                debugger;
-                this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
-                this.$.page_autorizelines_ajax.generateRequest();
-                //console.log(this.selectedItems);
-            },
-
-            _CreateLinesResponse: function (e) {
-                var message = this.lines.eReasonCode;
-                switch (message) {
-
-                    case 1: this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
-                        this.$.ToastMessageSuccess.open();
-                        break;
-                    case 2: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
-                        this.$.ToastMessageError.open();
-                        break;
-                    case 3: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
-                        this.$.ToastMessageError.open();
-                        break;
-                    case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
-                        this.$.ToastMessageError.open();
-                }
-                
-                this.$.page_databound_ajax.generateRequest();
-                this.$.projectInvoiceAutorization.clearCache();
-                this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
-                this.$.ToastMessageSuccess.open();
-
-                //window.location.href = "/AutorizacaoFaturacao";
-            }
+            });
         });
-    });
     </script>
 </dom-module>

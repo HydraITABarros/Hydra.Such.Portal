@@ -107,7 +107,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
                             FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : EnumerablesFixed.FolhaDeHoraCodeTypeKms.Where(y => y.Id == FH.CodigoTipoKms).FirstOrDefault().Value;
+                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
                             FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                             FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                             FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -139,7 +139,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
                                 FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : EnumerablesFixed.FolhaDeHoraCodeTypeKms.Where(y => y.Id == FH.CodigoTipoKms).FirstOrDefault().Value;
+                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -171,7 +171,7 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
                                     FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : EnumerablesFixed.FolhaDeHoraCodeTypeKms.Where(y => y.Id == FH.CodigoTipoKms).FirstOrDefault().Value;
+                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -203,7 +203,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
                                         FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : EnumerablesFixed.FolhaDeHoraCodeTypeKms.Where(y => y.Id == FH.CodigoTipoKms).FirstOrDefault().Value;
+                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
                                         FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -233,7 +233,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
                                         FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : EnumerablesFixed.FolhaDeHoraCodeTypeKms.Where(y => y.Id == FH.CodigoTipoKms).FirstOrDefault().Value;
+                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
                                         FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -1132,6 +1132,9 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
+                    Percurso1.CodTipoCusto = data.CodTipoCusto;
+                    Percurso1.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
+                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
@@ -1143,6 +1146,11 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
+                    Percurso1.Funcionario = data.Funcionario;
+                    Percurso1.CodRegiao = data.CodRegiao;
+                    Percurso1.CodArea = data.CodArea;
+                    Percurso1.CodCresp = data.CodCresp;
+                    Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -1156,17 +1164,25 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso2.NoLinha = noLinha + 1;
                     Percurso2.TipoCusto = 1; //PERCURSO
-                    Percurso2.CodOrigem = data.CodDestino;
-                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
-                    Percurso2.CodDestino = data.CodOrigem;
-                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
+                    Percurso2.CodTipoCusto = data.CodTipoCusto;
+                    Percurso2.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
+                    Percurso2.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso2.CodOrigem = data.CodOrigem;
+                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
+                    Percurso2.CodDestino = data.CodDestino;
+                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
                     Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
+                    Percurso2.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
+                    Percurso2.Funcionario = data.Funcionario;
+                    Percurso2.CodRegiao = data.CodRegiao;
+                    Percurso2.CodArea = data.CodArea;
+                    Percurso2.CodCresp = data.CodCresp;
+                    Percurso2.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
                     Percurso2.DataHoraCriacao = DateTime.Now;
                     Percurso2.UtilizadorModificacao = User.Identity.Name;
@@ -1186,6 +1202,9 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
+                    Percurso1.CodTipoCusto = data.CodTipoCusto;
+                    Percurso1.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
+                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
@@ -1197,6 +1216,11 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
+                    Percurso1.Funcionario = data.Funcionario;
+                    Percurso1.CodRegiao = data.CodRegiao;
+                    Percurso1.CodArea = data.CodArea;
+                    Percurso1.CodCresp = data.CodCresp;
+                    Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -1384,6 +1408,10 @@ namespace Hydra.Such.Portal.Controllers
                 Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
                 Ajuda.DataDespesa = data.DataDespesa;
                 Ajuda.Observacao = data.Observacao;
+                Ajuda.Funcionario = data.Funcionario;
+                Ajuda.CodRegiao = data.CodRegiao;
+                Ajuda.CodArea = data.CodArea;
+                Ajuda.CodCresp = data.CodCresp;
                 Ajuda.CalculoAutomatico = false;
                 Ajuda.UtilizadorCriacao = User.Identity.Name;
                 Ajuda.DataHoraCriacao = DateTime.Now;
@@ -2398,6 +2426,7 @@ namespace Hydra.Such.Portal.Controllers
                             Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
                             Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
                             Ajuda.CalculoAutomatico = true;
+                            Ajuda.Funcionario = data.EmpregadoNo;
                             Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
                             Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
                             Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;

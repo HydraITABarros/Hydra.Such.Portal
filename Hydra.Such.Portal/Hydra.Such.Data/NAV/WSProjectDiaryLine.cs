@@ -30,8 +30,8 @@ namespace Hydra.Such.Data.NAV
                     Job_No = y.ProjectNo,                  
                     Document_DateSpecified = true,
                     Document_Date = DateTime.Parse(y.Date),
-                    Entry_TypeSpecified = true,
-                    Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
+                    //Entry_TypeSpecified = true,
+                    //Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
                     TypeSpecified = true,
                     Type = getType(Convert.ToInt32(y.Type)),
                     Description100 = y.Description,
@@ -46,12 +46,12 @@ namespace Hydra.Such.Data.NAV
                     Quantity = Convert.ToDecimal(y.Quantity),
                     Unit_CostSpecified = true,
                     Unit_Cost = Convert.ToDecimal(y.UnitCost),
-                    Total_CostSpecified = true,
-                    Total_Cost = Convert.ToDecimal(y.TotalCost),
+                    //Total_CostSpecified = true,
+                    //Total_Cost = Convert.ToDecimal(y.TotalCost),
                     Unit_PriceSpecified = true,
                     Unit_Price = Convert.ToDecimal(y.UnitPrice),
-                    Total_PriceSpecified = true,
-                    Total_Price = Convert.ToDecimal(y.TotalPrice),
+                    //Total_PriceSpecified = true,
+                    //Total_Price = Convert.ToDecimal(y.TotalPrice),
                     Portal_Transaction_No = TransactID.ToString()
                 }).ToArray()
             };

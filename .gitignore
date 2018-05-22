@@ -261,3 +261,7 @@ __pycache__/
 *.pyc
 /Hydra.Such.Portal/Hydra.Such.Portal/NumerationService.cs
 /Hydra.Such.Portal/Hydra.Such.Portal/Services/PrePurchOrderService.cs
+/Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/elements/requisitions/requisitionmodeldetails1.html
+/Hydra.Such.Portal/Hydra.Such.Portal/Controllers/OportunidadesController.cs
+/Hydra.Such.Portal/Hydra.Such.Portal/Views/Contratos/DetalhesOportunidade.cshtml
+/Hydra.Such.Portal/Hydra.Such.Portal/Views/Contratos/Oportunidades.cshtml

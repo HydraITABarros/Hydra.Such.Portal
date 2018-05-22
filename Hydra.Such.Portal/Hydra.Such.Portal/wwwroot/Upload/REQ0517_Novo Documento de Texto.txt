@@ -1,0 +1,15 @@
+    <add name="FinlogNAVEntities" connectionString="metadata=res://*/Database.FinlogNAVModel.csdl|res://*/Database.FinlogNAVModel.ssdl|res://*/Database.FinlogNAVModel.msl;
+provider=System.Data.SqlClient;provider connection string=&quot;
+data source=10.77.1.134;initial catalog=Finlog;
+persist security info=True;user id=dynadm;password=Dynam1c$234;MultipleActiveResultSets=True;App=EntityFramework&quot;
+" providerName="System.Data.EntityClient" /></connectionStrings>
+
+
+
+
+    <add name="ChoicecarGOEntities" connectionString="metadata=res://*/Database.ChoicecarGOModel.csdl|res:
+//*/Database.ChoicecarGOModel.ssdl|res://*/Database.ChoicecarGOModel.msl;
+provider=System.Data.SqlClient;provider connection string=&quot;data source=10.92.147.232;
+initial catalog=ChoicecarGO;user id=choiceadmin_sql;password=Ch0ic3Car_SQL;
+multipleactiveresultsets=True;application name=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+

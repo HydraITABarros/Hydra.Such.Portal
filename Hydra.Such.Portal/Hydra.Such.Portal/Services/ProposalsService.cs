@@ -62,7 +62,7 @@ namespace Hydra.Such.Portal.Services
                                          * Alterar versão nas Linhas da Proposta para versão colocada em cabeçalho
                                          */
                                     updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
-                                    updatedContract.Estado = 1;
+                                    updatedContract.Estado = 3;
                                     updatedContract.DataEstadoProposta = null;
                                     contractToUpdate = ArchiveContract(DBContracts.ParseToViewModel(updatedContract, string.Empty, string.Empty));
                                     break;
@@ -250,9 +250,12 @@ namespace Hydra.Such.Portal.Services
                     x.ContractNo = proposalId;
                     x.VersionNo = 1;
                     x.LineNo = 0;
-                    if (percentageToApllyInLines > decimal.MinValue)
-                        x.UnitPrice = percentageToApllyInLines / 100 * x.UnitPrice;
-                    proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
+                   
+                      if (percentageToApllyInLines > (-100))
+                            {
+                                x.UnitPrice = x.UnitPrice + ((percentageToApllyInLines * x.UnitPrice) / 100);
+                                proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
+                            }
                 });
                 ctx.SaveChanges();
 
