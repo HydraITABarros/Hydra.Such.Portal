@@ -179,13 +179,13 @@
                    id="delete_files_ajax"
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
-               <iron-ajax url="/PreRequisicoes/CleanPreRequesition"
-               last-response="{{ClPreReq}}"
-               method="post"
-               handle-as="json"
-               id="CleanPreRequesition_ajax"
-               on-response="_CleanPreRequesitionResponse"
-               content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/CleanPreRequesition"
+                   last-response="{{ClPreReq}}"
+                   method="post"
+                   handle-as="json"
+                   id="CleanPreRequesition_ajax"
+                   on-response="_CleanPreRequesitionResponse"
+                   content-type="application/json"></iron-ajax>
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
                    method="post"
@@ -276,6 +276,14 @@
                    on-response="_createRequesitionResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject_ajax"
+                   on-response="_getProjectDims"
+                   content-type="application/json"></iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
@@ -288,10 +296,10 @@
         </template>
 
         <!--<div class="row" style="display: {{ _showPreReqLines }};">
-            <div class="col-lg-12">
-                <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </div>
-        </div>-->
+        <div class="col-lg-12">
+            <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+        </div>
+    </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -335,7 +343,7 @@
                                             <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 alignPoga">
-                                            <vaadin-checkbox  id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
+                                            <vaadin-checkbox id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-1 alignPoga">
                                             <vaadin-checkbox id="ExclusiveId" checked="{{data.exclusive}}">Exclusivo</vaadin-checkbox>
@@ -417,14 +425,14 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <!--<div class="col-lg-3">
-                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{data.projectNo}}" label="Nº Ordem/Projeto">
-                                <template>
-                                    <b>[[item.id]]</b>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>-->
+                                        <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{data.projectNo}}" label="Nº Ordem/Projeto">
+                                            <template>
+                                                <b>[[item.id]]</b>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>-->
                                         <div class="col-sm-3">
-                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-change="_setProductData" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-change="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -599,8 +607,8 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                    </div>-->
+                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>-->
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -1090,7 +1098,7 @@
                             </div>
                             <br />
                         </paper-collapse-group>
-                    </div>                    
+                    </div>
                 </iron-form>
             </div>
         </div>
@@ -1186,63 +1194,63 @@
         </paper-dialog>
         <!-- Paper Dialog Anexos-->
         <!--<paper-dialog id="dialogAttach" style="width:70%">
-            <h2>Anexos</h2>
-            <div>
-                <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+        <h2>Anexos</h2>
+        <div>
+            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-                </vaadin-upload>
-                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                    <vaadin-grid-column width="120px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docType" />
-                        </template>
-                        <template>
-                            {{item.docType}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="110px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docNumber" />
-                        </template>
-                        <template>
-                            {{item.docNumber}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="110px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docLineNo" />
-                        </template>
-                        <template>
-                            {{item.docLineNo}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="80%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="url" />
-                        </template>
-                        <template>
-                            {{item.url}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="20%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="createDateTime" />
-                        </template>
-                        <template>
-                            {{item.createDateTime}}
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-            </div>
-            <div class="buttons">
-                <paper-button dialog-dismiss>Cancelar</paper-button>
-            </div>
-        </paper-dialog>-->
+            </vaadin-upload>
+            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docType" />
+                    </template>
+                    <template>
+                        {{item.docType}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docNumber" />
+                    </template>
+                    <template>
+                        {{item.docNumber}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docLineNo" />
+                    </template>
+                    <template>
+                        {{item.docLineNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="80%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="url" />
+                    </template>
+                    <template>
+                        {{item.url}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createDateTime" />
+                    </template>
+                    <template>
+                        {{item.createDateTime}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
+        <div class="buttons">
+            <paper-button dialog-dismiss>Cancelar</paper-button>
+        </div>
+    </paper-dialog>-->
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1280,11 +1288,14 @@
                         type: Number,
                         value: 0
                     },
-
+                    
                     _CBItems: {
                         observer: '_setProductData'
                     },
 
+                    projectNo: {
+                        observer: '_setProjectDim'
+                    },
                     _CLResponsabilityCenterCode: {
                         type: String,
                         notify: true,
@@ -1359,6 +1370,14 @@
                 //        this.$.purchaseheader_ajax.generateRequest();
                 //    }
                 //},
+
+                //_setProjectDim: function (e) {
+                //    debugger;
+                //    var projectNo = this.$._ProjectNo.value;
+                //    this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                //    this.$.page_getProject_ajax.generateRequest();
+                //},
+
 
                 _deleteFiles: function (e) {
                     var index = this.dataLines.lines.indexOf(e.model.item);

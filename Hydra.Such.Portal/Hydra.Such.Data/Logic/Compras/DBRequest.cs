@@ -27,18 +27,30 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
-
         public static List<Requisição> GetByState(RequisitionStates state)
         {
             try
             {
-                int stateValue = (int)state;
+                List<RequisitionStates> states = new List<RequisitionStates>() { state };
+                return GetByState(states);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByState(List<RequisitionStates> states)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
 
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
-                        .Where(x => x.Estado == stateValue)
+                        .Where(x => stateValues.Contains(x.Estado.Value))
                         .ToList();
                 }
             }

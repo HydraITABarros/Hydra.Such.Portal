@@ -312,6 +312,28 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPurchaseHeader([FromBody] string respcenter)
+        {
+            List<DDMessageString> result = null;
+
+            var dimValue = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.ResponsabilityCenter, User.Identity.Name, respcenter)
+                .FirstOrDefault();
+
+            if (dimValue != null)
+            {
+                result = DBNAV2017EncomendaAberto.GetByDimValue(_config.NAVDatabaseName, _config.NAVCompanyName, dimValue.DimValueID)
+                    .Select(x => new DDMessageString() { id = x.Code })
+                    .GroupBy(x => new { x.id })
+                    .Select(x => new DDMessageString { id = x.Key.id })
+                    .ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
         {
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
@@ -1585,16 +1607,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(StockkeepingUnit);
         }
 
-        [HttpPost]
-        public JsonResult GetPurchaseHeader()
-        {
-            List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
-            {
-                id = x.No_
-            }).ToList();
+        //[HttpPost]
+        //public JsonResult GetPurchaseHeader()
+        //{
+        //    List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+        //    {
+        //        id = x.No_
+        //    }).ToList();
 
-            return Json(Pheader);
-        }
+        //    return Json(Pheader);
+        //}
 
         [HttpPost]
         public JsonResult GetLocalMarketRegions()

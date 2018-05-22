@@ -26,20 +26,38 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<AcordoPrecos> GetAll()
+        public static List<AcordoPrecosModelView> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcordoPrecos.ToList();
+                    return ctx.AcordoPrecos.Select(AcordoPreco => new AcordoPrecosModelView()
+                    {
+                        NoProcedimento = AcordoPreco.NoProcedimento,
+                        DtInicioTexto = AcordoPreco.DtInicio == null ? "" : Convert.ToDateTime(AcordoPreco.DtInicio).ToShortDateString(),
+                        DtFimTexto = AcordoPreco.DtFim == null ? "" : Convert.ToDateTime(AcordoPreco.DtFim).ToShortDateString(),
+                        ValorTotal = AcordoPreco.ValorTotal
+                    }).ToList();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
+
+            //try
+            //{
+            //    using (var ctx = new SuchDBContext())
+            //    {
+            //        return ctx.AcordoPrecos.ToList();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    return null;
+            //}
         }
 
         public static AcordoPrecos Create(AcordoPrecos item)
