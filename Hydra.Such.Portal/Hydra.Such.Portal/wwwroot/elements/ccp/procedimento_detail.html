@@ -5185,7 +5185,7 @@
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
-                    this.$.ajax_imobReturnToArea.body = JSON.stringify(this.data);
+                    this.$.ajax_sendEmail_ToJuriAproval.body = JSON.stringify(this.data);
                 },
                 _sendEmail_ToJuriAprovalResponse: function (e) {
                     if (this.SendEmail_ToJuriAproval.eReasonCode == 0) {
