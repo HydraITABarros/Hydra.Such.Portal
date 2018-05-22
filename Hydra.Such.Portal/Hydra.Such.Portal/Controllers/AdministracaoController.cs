@@ -2837,9 +2837,10 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Acordo de Preços
-        public IActionResult AcordoPrecos(string id)
+
+        public IActionResult AcordoPrecos_List()
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2851,6 +2852,20 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+
+        public IActionResult AcordoPrecos(string id)
+        {
+            ViewBag.NoProcedimento = id;
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetListAcordoPrecos()
+        {
+            List<AcordoPrecosModelView> result = DBAcordoPrecos.GetAll();
+
+            return Json(result);
         }
 
         [HttpPost]
@@ -2868,6 +2883,32 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(0);
             else
                 return Json(1);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAcordoPreco([FromBody] AcordoPrecosModelView data)
+        {
+            int result = 0;
+            bool dbDeleteLinhaResult = false;
+            bool dbDeleteFornecedorResult = false;
+            bool dbDeleteAcordoPrecoResult = false;
+
+            try
+            {
+                dbDeleteLinhaResult = DBLinhasAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+
+                dbDeleteFornecedorResult = DBFornecedoresAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+
+                dbDeleteAcordoPrecoResult = DBAcordoPrecos.Delete(data.NoProcedimento);
+
+                if (!dbDeleteAcordoPrecoResult)
+                    result = 1;
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
         }
 
         [HttpPost]
