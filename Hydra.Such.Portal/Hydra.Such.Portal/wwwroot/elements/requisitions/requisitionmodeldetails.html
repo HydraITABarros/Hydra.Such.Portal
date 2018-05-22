@@ -144,8 +144,8 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLinesGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -763,8 +763,8 @@
 
                                 <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="openOrderLineNo" />
+                                        <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="maintenanceOrderLineNo" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1461,6 +1461,10 @@
                     if (item != null) {
                         this.$.txtProductDesciption.value = item.name;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                    }
+                    else {
+                        this.$.txtProductDesciption.value = "";
+                        this.$.CBUnitsOfMmeasure.value = "";
                     }
                 },
                 _RespChange: function (e) {

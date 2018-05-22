@@ -223,7 +223,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             result.TotalRevenues = DBCoffeeShopMovements.GetTotalRevenuesFor(result.ProductivityUnitNo, result.Code, result.Type);
             result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
 
-            decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
+            decimal totalMeals = DBCoffeeShopMovements.GetTotalMealsFor(result.ProductivityUnitNo, result.Code, result.Type);
             result.NumberOfMeals = totalMeals;
 
             return result;

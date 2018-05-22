@@ -547,6 +547,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.NºRefeições).HasColumnName("Nº Refeições");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -2849,13 +2851,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ÁcidosGordosSaturados).HasColumnName("Ácidos Gordos Saturados");
 
-                entity.HasOne(d => d.CódigoNavigation)
-                    .WithMany(p => p.LinhasFichasTécnicasPratosCódigoNavigation)
-                    .HasForeignKey(d => d.Código)
-                    .HasConstraintName("FK_Linhas Fichas Técnicas Pratos_Fichas Técnicas Pratos1");
-
                 entity.HasOne(d => d.NºPratoNavigation)
-                    .WithMany(p => p.LinhasFichasTécnicasPratosNºPratoNavigation)
+                    .WithMany(p => p.LinhasFichasTécnicasPratos)
                     .HasForeignKey(d => d.NºPrato)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas Fichas Técnicas Pratos_Fichas Técnicas Pratos");

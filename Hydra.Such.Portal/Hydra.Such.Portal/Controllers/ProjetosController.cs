@@ -878,7 +878,11 @@ namespace Hydra.Such.Portal.Controllers
         }
         public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
+
             ProjectDiaryResponse response = new ProjectDiaryResponse();
+            string proj = dp.First().ProjectNo;
+            Projetos projecto = DBProjects.GetById(proj);
+
             response.eReasonCode = 1;
             response.eMessage = "Diário de Projeto atualizado.";
             if(dp != null)
@@ -901,9 +905,9 @@ namespace Hydra.Such.Portal.Controllers
                         CódUnidadeMedida = x.MeasurementUnitCode,
                         CódLocalização = x.LocationCode,
                         GrupoContabProjeto = x.ProjectContabGroup,
-                        CódigoRegião = x.RegionCode,
-                        CódigoÁreaFuncional = x.FunctionalAreaCode,
-                        CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                        CódigoRegião = projecto.CódigoRegião,
+                        CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
+                        CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                         Utilizador = User.Identity.Name,
                         CustoUnitário = x.UnitCost,
                         CustoTotal = x.TotalCost,
@@ -911,7 +915,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreçoTotal = x.TotalPrice,
                         Faturável = x.Billable,
                         Registado = false,
-                        FaturaANºCliente = x.InvoiceToClientNo,
+                        FaturaANºCliente = projecto.NºCliente,
                         Moeda = x.Currency,
                         ValorUnitárioAFaturar = x.UnitValueToInvoice,
                         TipoRefeição = x.MealType,
