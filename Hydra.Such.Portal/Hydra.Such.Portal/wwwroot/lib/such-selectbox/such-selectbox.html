@@ -542,6 +542,13 @@
                         });
                     }
                 }
+
+                _clearSelection() {
+                    var _this = this;
+                    _this.value = "";
+                    _this.valueText = "";
+                    _this.activeItem = null;
+                }
             }
 
             window.customElements.define(SuchSelectbox.is, SuchSelectbox);

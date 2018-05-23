@@ -273,7 +273,7 @@
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -488,7 +488,7 @@
                                 </template>
                                 <template is="dom-if" if="{{ !_isCreate }}">
                                     <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <paper-button raised id="btnUpdate" id="btnSaveHeader" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                         <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
@@ -1369,9 +1369,7 @@
                     }
                 },
                 ready: function () {
-                    //this._permissions.create = false;
-                    //this._permissions.update = false;
-                    //this._permissions.delete = false;
+
                 },
                 isReadOnly: function () {
                     return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
@@ -1468,8 +1466,7 @@
                     return true;
                 },
                 _resetUserInputForLine() {
-                    this.$.CBProducts.value = "";
-                    this.$.CBProducts.valueText = "";
+                    this.$.CBProducts._clearSelection();
                     this.$.txtProductDesciption.value = "";
                     this.$.CBUnitsOfMmeasure.value = "";
                     this.$.CBLocations.value = "";
@@ -1487,8 +1484,7 @@
                     this.$.createMarketSearchId.checked = false;
                     this.$.submitPrePurchaseId.checked = false;
                     this.$.sendPrePurchaseId.checked = false;
-                    this.$.CBSuppliers.value = "";
-                    this.$.CBSuppliers.valueText = "";
+                    this.$.CBSuppliers._clearSelection();
                     this.$.CBPurchaseHeader.value = "";
                     this.$.CBPurchaseLine.value = "";
                     this.$.queryCreatedMarketNoId.value = "";
@@ -1750,6 +1746,11 @@
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
                                 this._isCreate = this.Requisition.requisitionNo == null;
+
+                                this._permissions.create = false;
+                    this._permissions.update = false;
+                    this._permissions.delete = false;
+
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
                             }

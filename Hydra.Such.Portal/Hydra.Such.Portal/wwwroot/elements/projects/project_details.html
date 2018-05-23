@@ -678,8 +678,7 @@
                             this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
                             this.$.shippinhAddress_ajax.generateRequest();
                             this.data.shippingAddressCode = "";
-                            this.$.sbClientShippingAddresses.value = "";
-                            this.$.sbClientShippingAddresses.valueText = "";
+                            this.$.sbClientShippingAddresses._clearSelection();
                         }
                     },
                 });

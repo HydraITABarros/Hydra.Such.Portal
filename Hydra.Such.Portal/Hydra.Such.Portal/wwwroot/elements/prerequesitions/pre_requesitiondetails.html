@@ -1962,12 +1962,10 @@
                                 this.$._MaintenanceOrderLineNo.value = "";
                                 this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
-                                this.$._CBItems.value = "";
-                                this.$._CBItems.valueText = "";
+                                this.$._CBItems._clearSelection();
                                 this.$._ProjectNo.value = this.data.projectNo;
                                 this.$._ProjectNo.valueText = this.data.projectNo;
-                                this.$._CBVendor.value = "";
-                                this.$._CBVendor.valueText = "";
+                                this.$._CBVendor._clearSelection();
                                 if (this.data != null) {
                                     this.$._CLRegion.value = this.data.regionCode;
                                     this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
