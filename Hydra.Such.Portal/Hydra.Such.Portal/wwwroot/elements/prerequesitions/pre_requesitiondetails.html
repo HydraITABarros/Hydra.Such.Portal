@@ -284,6 +284,13 @@
                    on-response="_getProjectDimsResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims2}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject2_ajax"
+                   on-response="_getProjectDimsResponse2"
+                   content-type="application/json"></iron-ajax>
         <!--//-------------------------------------------------------------//-->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
@@ -607,10 +614,10 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </div>-->
+        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+    </div>-->
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBLocations]]" on-value-changed="_getCDirect" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -621,6 +628,11 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
+
+                                    <div class="col-lg-2" hidden>
+                                        <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
+
                                     <div class="col-sm-2">
                                         <such-selectbox id="_CBItems" value="{{_CBItems}}" label="Cód. Produto"
                                                         items="[[CBItems]]"
@@ -630,6 +642,7 @@
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
+
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_Description}}" id="_Description" name="_Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
@@ -654,7 +667,7 @@
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-sm-2">
-                                        <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto"
+                                        <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto" on-value-changed="_setProjectDim2"
                                                         items="[[CBJobNo]]"
                                                         text-path="no"
                                                         value-path="no"
@@ -777,6 +790,18 @@
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
+
+
+                                    <vaadin-grid-column width="200px" hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="armazemCDireta">Compra Direta</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="armazemCDireta" />
+                                        </template>
+                                        <template>
+                                                <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
                                     <vaadin-grid-column width="125px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
@@ -1371,11 +1396,27 @@
                 //    }
                 //},
 
+                _getCDirect: function (e) {
+                    debugger;
+                    if (e.detail.value != "") {
+                        var locationId = e.detail.value;
+                        var sel = this.CBLocations.find(x => x.id == locationId);
+                        this.$._CBItemsCDirect.value = sel.extra;
+                    }
+                },
+
                 _setProjectDim: function (e) {
                     debugger;
-                    var projectNo = this.$._ProjectNo.value;
+                    var projectNo = this.$.projectNo.value;
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
+                },
+
+                _setProjectDim2: function (e) {
+                    debugger;
+                    var projectNo = this.$._ProjectNo.value;
+                    this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
+                    this.$.page_getProject2_ajax.generateRequest();
                 },
 
                 _getProjectDimsResponse: function (e) {
@@ -1389,6 +1430,18 @@
                             this.$.RegionCode.value = this.ProjectDims.regionCode;
                             this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
                             this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                    }
+                },
+
+                _getProjectDimsResponse2: function (e) {
+                    debugger;
+                    if (e.detail.status === 200) {
+                        if (this.ProjectDims2 != null) {
+
+                            this.$.RegionCode.value = this.ProjectDims2.regionCode;
+                            this.$.FunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
+                            this.$.ResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
                         }
                     }
                 },
@@ -1751,7 +1804,7 @@
                     line.totalCost = line.quantityToRequire * line.unitCost;
                     this.$.grid_prereqlines.clearCache();
                 },
-
+                
                 _setProductData: function (e) {
                     var item = this.CBItems.find(x => x.code == e);
                     if (item != null) {
@@ -1894,6 +1947,7 @@
                         openOrderNo: this._CBPurchaseHeader,
                         openOrderLineNo: this._CBPurchaseLine,
                         totalCost: totalCost > 0 ? totalCost : "",
+                        armazemCDireta: this._CBItemsCDirect
                     });
                     this.$.grid_prereqlines.clearCache();
 
