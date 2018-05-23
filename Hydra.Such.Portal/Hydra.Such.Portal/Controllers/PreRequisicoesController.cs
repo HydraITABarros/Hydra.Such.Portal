@@ -49,30 +49,28 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        //public JsonResult GetProjectDim([FromBody] string ProjectNo)
-        //{
+        public JsonResult GetProjectDim([FromBody] string ProjectNo)
+        {
+            
+            ProjectListItemViewModel result = new ProjectListItemViewModel();
 
-        //    Projetos project = DBProjects.GetById(ProjectNo);
-        //    ProjectListItemViewModel result = new ProjectListItemViewModel();
+            List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
+            NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
 
-        //    result.RegionCode = project.CódigoRegião;
-        //    result.FunctionalAreaCode = project.CódigoÁreaFuncional;
-        //    result.ResponsabilityCenterCode = project.CódigoCentroResponsabilidade;
+            result.RegionCode = Project.RegionCode;
+            result.FunctionalAreaCode = Project.AreaCode;
+            result.ResponsabilityCenterCode = Project.CenterResponsibilityCode;
 
-        //    return Json(result);
-        //}
-
-
-
-
+            return Json(result);
+        }
 
         public JsonResult GetPreReqList([FromBody] int Area)
         {
-
             List<PréRequisição> PreRequisition = null;
             PreRequisition = DBPreRequesition.GetAll(User.Identity.Name, Area);
             
             List<PreRequesitionsViewModel> result = new List<PreRequesitionsViewModel>();
+
 
             PreRequisition.ForEach(x => result.Add(DBPreRequesition.ParseToViewModel(x)));
             return Json(result);
@@ -179,6 +177,7 @@ namespace Hydra.Such.Portal.Controllers
             
             
         }
+
         #region Pre Requesition Details
         [HttpPost]
         public JsonResult GetPreRequesitionDetails([FromBody] PreRequesitionsViewModel data)
@@ -768,6 +767,8 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+
+
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
