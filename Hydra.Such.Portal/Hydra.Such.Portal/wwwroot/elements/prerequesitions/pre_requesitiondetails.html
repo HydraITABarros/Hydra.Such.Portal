@@ -281,7 +281,7 @@
                    method="post"
                    handle-as="json"
                    id="page_getProject_ajax"
-                   on-response="_getProjectDims"
+                   on-response="_getProjectDimsResponse"
                    content-type="application/json"></iron-ajax>
 
         <!--//-------------------------------------------------------------//-->
@@ -432,7 +432,7 @@
                                         </vaadin-combo-box>
                                     </div>-->
                                         <div class="col-sm-3">
-                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-change="_setProjectDim" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -610,7 +610,7 @@
                                     <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </div>-->
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -761,7 +761,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -1371,13 +1371,27 @@
                 //    }
                 //},
 
-                //_setProjectDim: function (e) {
-                //    debugger;
-                //    var projectNo = this.$._ProjectNo.value;
-                //    this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
-                //    this.$.page_getProject_ajax.generateRequest();
-                //},
+                _setProjectDim: function (e) {
+                    debugger;
+                    var projectNo = this.$._ProjectNo.value;
+                    this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                    this.$.page_getProject_ajax.generateRequest();
+                },
 
+                _getProjectDimsResponse: function (e) {
+                    debugger;
+                    if (e.detail.status === 200) {
+                        if (this.ProjectDims != null) {
+                            this.$._CLRegion.value = this.ProjectDims.regionCode;
+                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+
+                            this.$.RegionCode.value = this.ProjectDims.regionCode;
+                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                    }
+                },
 
                 _deleteFiles: function (e) {
                     var index = this.dataLines.lines.indexOf(e.model.item);
@@ -1735,7 +1749,6 @@
                 _CalculateTotalCostLine: function (e) {
                     var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                     line.totalCost = line.quantityToRequire * line.unitCost;
-
                     this.$.grid_prereqlines.clearCache();
                 },
 
@@ -1744,6 +1757,7 @@
                     if (item != null) {
                         this.$._Description.value = item.name;
                         this.$._UnitMeasureCode.value = item.measureUnit;
+                        this.$._UnitCost.value = item.unitCost;
                     }
                 },
 
@@ -1962,12 +1976,10 @@
                                 this.$._MaintenanceOrderLineNo.value = "";
                                 this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
-                                this.$._CBItems.value = "";
-                                this.$._CBItems.valueText = "";
+                                this.$._CBItems._clearSelection();
                                 this.$._ProjectNo.value = this.data.projectNo;
                                 this.$._ProjectNo.valueText = this.data.projectNo;
-                                this.$._CBVendor.value = "";
-                                this.$._CBVendor.valueText = "";
+                                this.$._CBVendor._clearSelection();
                                 if (this.data != null) {
                                     this.$._CLRegion.value = this.data.regionCode;
                                     this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;

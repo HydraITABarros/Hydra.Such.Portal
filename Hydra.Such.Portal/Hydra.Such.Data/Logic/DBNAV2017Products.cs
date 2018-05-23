@@ -77,8 +77,8 @@ namespace Hydra.Such.Data.Logic
                             ProductGroupCode = (string)temp.Product_Group_Code,
                             VendorProductNo = (string)temp.Vendor_Item_No_,
                             LastCostDirect = (decimal)temp.Last_Direct_Cost,
-                            VendorNo = (string)temp.Vendor_No_
-
+                            VendorNo = (string)temp.Vendor_No_,
+                            UnitCost = (decimal)temp.UnitCost
                         });
                     }
                 }
