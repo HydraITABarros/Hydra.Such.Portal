@@ -190,7 +190,7 @@
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Classificação</paper-tab>
                             <paper-tab>Observações</paper-tab>
-                            <paper-tab>Confeção</paper-tab>
+                            <paper-tab hidden="{{ _NotCreateOnly }}">Confeção</paper-tab>
                             <paper-tab>Alergénios</paper-tab>
                             <paper-tab hidden="{{ _NotCreateOnly }}">Imagem</paper-tab>
                         </paper-tabs>
@@ -355,7 +355,7 @@
                                 </div>
                             </div>
                             <!--Confeção-->
-                            <div>
+                            <div hidden="{{ _NotCreateOnly }}">
                                 <paper-collapse-group>
                                     <paper-collapse-item class="panel-heading" header="Criar" closed>
                                         <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
@@ -368,7 +368,7 @@
                                                 </such-selectbox>
                                             </div>
                                             <div class="col-lg-4">
-                                                <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{decValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
                                             </div>
                                             <div class="col-lg-4">
                                                 <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
@@ -548,7 +548,7 @@
                             </div>
                         </div>
                     </div>
-                    <paper-collapse-group style="display: {{ _NotCreateOnly }};">
+                    <paper-collapse-group style="display: {{ _NotCreateOnly }};" hidden="{{ _NotCreateOnly }}">
                         <paper-collapse-item class="panel-heading" header="Linhas" closed>
                             <div class="row break_clear">
                                 <div class="col-lg-3">
@@ -739,7 +739,7 @@
                             </div><br />
                         </paper-collapse-item>
                     </paper-collapse-group>
-                    <div class="row break_clear">
+                    <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
                         <div class="col-lg-12">
                             <vaadin-grid id="GridRecTecOfPlatesLines" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}">
                                 <vaadin-grid-column width="160px" resizable>
@@ -1383,8 +1383,8 @@
                         </div>
                     </div>
                     <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
-                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateLines" hidden="{{ _NotCreateOnly }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" hidden="{{ _NotCreateOnly }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
                     </div>
                 </div>
             </div>
@@ -1820,6 +1820,11 @@
                     notify: true,
                     value: ""
                 },
+                decValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
                 LineSodiumByQuantity: {
                     type: String,
                     notify: true,
@@ -1904,7 +1909,6 @@
                     if (this.data != null) {
                         var res = this.data.find(x => x == this._SelectedLine);
                         if (res != null) {
-                            debugger;
                             res.energeticValue = this.Energeticvalue2;
                             res.proteins = this.Proteins;
                             res.hydratesOfCarbon = this.Carbohydrates;
@@ -1954,9 +1958,13 @@
                 e.target.value = e.target.value.replace(",", ".");
             },
             _CreateResponse: function (e) {
+                debugger;
                 if (e.detail.status === 200) {
                     if (this.CreateResult.eReasonCode === 1) {
                         this._openToast(this.CreateResult.eMessage);
+                        if (this.CreateResult.plateNo != "" && this.CreateResult.plateNo != null) {
+                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica/" + this.CreateResult.plateNo;
+                        }
                     } else {
                         this._openToastError(this.CreateResult.eMessage);
                     }
@@ -2835,7 +2843,10 @@
                         this.$.ajax_GridProcedConfec.body = JSON.stringify(this.RecTecPlatValue);
                         this.$.ajax_GridProcedConfec.generateRequest();
                         this.$.gridConfection_request.clearCache();
-                       
+                        this.$._CboAction.value = "";
+                        this.$._CboAction.valueText = "";
+                        this.$.descconfid.value = "";
+                        this.$.OrderNoid.value = "";
 
                     } else {
                         this._openToastError(this.createConf.eMessage);
