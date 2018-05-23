@@ -84,22 +84,22 @@ namespace Hydra.Such.Portal.Extensions
                             NºMovimento = ApprovalMovement.MovementNo,
                             EmailDestinatário = e,
                             NomeDestinatário = e,
-                            Assunto = "Plataforma Such - Aprovação Pendente",
+                            Assunto = "eSUCH - Aprovação Pendente",
                             DataHoraEmail = DateTime.Now,
-                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação na Plataforma!",
+                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
                             Enviado = false
                         };
 
 
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
-                            Subject = "Plataforma Such - Aprovação Pendente",
+                            Subject = "eSUCH - Aprovação Pendente",
                             From = "plataforma@such.pt"
                         };
 
                         Email.To.Add(e);
 
-                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação na Plataforma!");
+                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
 
                         Email.IsBodyHtml = true;
                         Email.EmailApproval = EmailApproval;
@@ -191,22 +191,22 @@ namespace Hydra.Such.Portal.Extensions
                             NºMovimento = ApprovalMovement.MovementNo,
                             EmailDestinatário = e,
                             NomeDestinatário = e,
-                            Assunto = "Plataforma Such - Aprovação Pendente",
+                            Assunto = "eSUCH - Aprovação Pendente",
                             DataHoraEmail = DateTime.Now,
-                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação na Plataforma!",
+                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
                             Enviado = false
                         };
 
 
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
-                            Subject = "Plataforma Such - Aprovação Pendente",
+                            Subject = "eSUCH - Aprovação Pendente",
                             From = "plataforma@such.pt"
                         };
 
                         Email.To.Add(e);
 
-                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação na Plataforma!");
+                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
 
                         Email.IsBodyHtml = true;
                         Email.EmailApproval = EmailApproval;
@@ -226,7 +226,7 @@ namespace Hydra.Such.Portal.Extensions
                         NºMovimento = ApprovalMovement.MovementNo,
                         EmailDestinatário = ApprovalMovement.RequestUser,
                         NomeDestinatário = ApprovalMovement.RequestUser,
-                        Assunto = "Plataforma Such - Tarefa aprovada",
+                        Assunto = "eSUCH - Tarefa aprovada",
                         DataHoraEmail = DateTime.Now,
                         TextoEmail = "A sua tarefa com o Nº "+ ApprovalMovement .Number+ " foi aprovada com sucesso!",
                         Enviado = false
@@ -235,7 +235,7 @@ namespace Hydra.Such.Portal.Extensions
 
                     SendEmailApprovals Email = new SendEmailApprovals
                     {
-                        Subject = "Plataforma Such - Tarefa aprovada",
+                        Subject = "eSUCH - Tarefa aprovada",
                         From = "plataforma@such.pt"
                     };
 
@@ -291,7 +291,7 @@ namespace Hydra.Such.Portal.Extensions
                     NºMovimento = ApprovalMovement.MovementNo,
                     EmailDestinatário = ApprovalMovement.RequestUser,
                     NomeDestinatário = ApprovalMovement.RequestUser,
-                    Assunto = "Plataforma Such - Tarefa rejeitada",
+                    Assunto = "eSUCH - Tarefa rejeitada",
                     DataHoraEmail = DateTime.Now,
                     TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \""+ ApprovalMovement.ReproveReason + "\"!",
                     Enviado = false
@@ -300,7 +300,7 @@ namespace Hydra.Such.Portal.Extensions
 
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
-                    Subject = "Plataforma Such - Tarefa rejeitada",
+                    Subject = "eSUCH - Tarefa rejeitada",
                     From = "plataforma@such.pt"
                 };
 
