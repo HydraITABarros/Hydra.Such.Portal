@@ -124,6 +124,21 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+            vaadin-grid.disabled:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                cursor: not-allowed;
+            }
+
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+            }
         </style>
 
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -347,34 +362,34 @@
                                     <br />
                                     <div class="row break_clear">
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkUrgent" checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkRelatedSearches" checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkImmobilized" checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkexclusive" checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkboxid="chk>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
+                                            <vaadin-checkbox id="chksample" checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkequipment" checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkbuyCash" checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkstockReplacement" checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2">
-                                            <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <br />
@@ -394,7 +409,6 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-
                                             <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
                                         </div>
                                     </div>
@@ -402,10 +416,10 @@
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
+                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
+                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
                                     </div>
                                     <div class="col-md-3 ">
                                         <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -488,7 +502,7 @@
                                 </template>
                                 <template is="dom-if" if="{{ !_isCreate }}">
                                     <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised id="btnUpdate" id="btnSaveHeader" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                         <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
@@ -1372,7 +1386,10 @@
 
                 },
                 isReadOnly: function () {
-                    return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
+                    //return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
+                    if (this.Requisition != null)
+                        return (this.Requisition.state == this._requisitionstatesenum.Pending | this.Requisition.state == this._requisitionstatesenum.Archived);
+                    return false;
                 },
                 _isError: function (type) {
                     //Used to show or hide close button
@@ -1636,6 +1653,8 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _lineSelected: function (item) {
+                    if (this.isReadOnly())
+                        return;
                     if (item != null) {
                         var oSel = this.Requisition.lines.find(x => x.selected);
                         if (oSel != undefined) {
@@ -1741,16 +1760,52 @@
                         }
                     });
                 },
+                _setControlsForState: function (state) {
+                    //Approved; Archived; Available; Pending; Received; Rejected; Treated; Validated
+                    if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
+                        this.$.requesitionType.disabled = true;
+
+                        var elems = Polymer.dom(this.root).querySelectorAll('vaadin-checkbox'); 
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('such-textarea');
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('vaadin-combo-box');
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('such-selectbox');
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('vaadin-text-field');
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('vaadin-date-picker');
+                        elems.forEach(function (elem) {
+                            elem.disabled = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('paper-button');
+                        elems.forEach(function (elem) {
+                            elem.hidden = true;
+                        });
+                        elems = Polymer.dom(this.root).querySelectorAll('such-dropdown-menu');
+                        elems.forEach(function (elem) {
+                            elem.hidden = true;
+                        });
+                        this._isArchived = true;
+                    }
+                },
                 _reqDataSourceResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
+                                this._setControlsForState(this.Requisition.state);
                                 this._isCreate = this.Requisition.requisitionNo == null;
-
-                                this._permissions.create = false;
-                    this._permissions.update = false;
-                    this._permissions.delete = false;
-
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
                             }

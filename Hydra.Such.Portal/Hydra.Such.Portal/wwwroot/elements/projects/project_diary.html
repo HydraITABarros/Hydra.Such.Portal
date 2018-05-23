@@ -1479,7 +1479,7 @@
                 _createmovprojResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        debugger;
+                        
                         //this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                         this.$.ajax_getall.generateRequest();
                         this.selectedItems.clearCache();
@@ -1500,7 +1500,7 @@
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                         if (this.result.eReasonCode === 1) {
-                            debugger;
+                            
                             this.openToastSuccess(this.result.eMessage);
                             if (this.disabledProjectNo == false) {
                                 this.projectNumber = "";
@@ -1571,7 +1571,7 @@
                             selItms[i].lineNo = 0;
                             selItms[i].projectNo = destinationProject;
                         }
-                        debugger;
+                        
                         this.$.dialogGetProjetStart.close();
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
@@ -1586,7 +1586,7 @@
                 },
 
                 _projectChange: function (e) {
-                    debugger;;
+                    
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1654,7 +1654,7 @@
                     if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
-                        debugger;
+                        
                         if (e.detail.status === 200) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
