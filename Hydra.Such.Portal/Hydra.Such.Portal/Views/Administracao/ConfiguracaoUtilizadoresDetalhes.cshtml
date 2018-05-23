@@ -754,7 +754,7 @@
                         callback: function (deleteAcessoLocalizacao) {
                             if (deleteAcessoLocalizacao) {
                                 ajax_request.body = JSON.stringify({
-                                    iD_Utilizador: id_Utilizador,
+                                    idUtilizador: id_Utilizador,
                                     localizacao: localizacao
                                 });
                                 ajax_request.generateRequest();
@@ -786,7 +786,7 @@
                     if (this.$.AcessoLocalizacao.value == "") {
                         this._showErrorMessage("É obrigatório preencher a localização.");
                     } else {
-                        this.$.page_createuserAcessosLocalizacoes_ajax.body = JSON.stringify({ ID_Utilizador: this.data.idUser, Localizacao: this.$.AcessoLocalizacao.value });
+                        this.$.page_createuserAcessosLocalizacoes_ajax.body = JSON.stringify({ IdUtilizador: this.data.idUser, Localizacao: this.$.AcessoLocalizacao.value });
                         this.$.page_createuserAcessosLocalizacoes_ajax.generateRequest();
                         this.$.gridAllowedUserAcessosLocalizacoes.clearCache();
                     }
