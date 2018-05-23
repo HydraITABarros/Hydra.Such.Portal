@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel
         public string VendorProductNo { get; set; }
         public string VendorNo { get; set; }
         public decimal LastCostDirect { get; set; }
+        public decimal? UnitCost { get; set; }
 
     }
 }

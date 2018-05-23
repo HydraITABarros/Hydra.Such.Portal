@@ -68,6 +68,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string DeliveryContact { get; set; }
         public string ReceptionReceptionResponsible { get; set; }
         public string InvoiceNo { get; set; }
+        public string ArmazemCDireta { get; set; }
         //public int eReasonCode { get; set; }
         //public string eMessage { get; set; }
     }

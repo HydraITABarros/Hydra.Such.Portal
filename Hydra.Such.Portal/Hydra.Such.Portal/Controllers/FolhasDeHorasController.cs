@@ -969,7 +969,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (data.ProjetoNo != "")
                 {
-                    NAVProjectsViewModel navProject = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No.ToLower() == data.ProjetoNo.ToLower()).FirstOrDefault();
+                    NAVProjectsViewModel navProject = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.No.ToLower() == data.ProjetoNo.ToLower()).FirstOrDefault();
                     if (navProject != null)
                     {
                         ProjetoDescricao = navProject.Description;
