@@ -174,13 +174,20 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, int Status)
+        public static List<Requisição> GetReqByUserAreaStatus(string userName, int areaId, RequisitionStates status)
+        {
+            return GetReqByUserAreaStatus(userName, areaId, new List<RequisitionStates> { status });
+        }
+
+        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, List<RequisitionStates> status)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Estado == Status).ToList();
+                    var statusValues = status.Cast<int>().ToList();
+
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value)).ToList();
                 }
             }
             catch (Exception ex)
@@ -188,6 +195,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {

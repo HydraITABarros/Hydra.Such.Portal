@@ -2989,8 +2989,8 @@
                                                     Dias gastos no prazo - [ {{data.temposPaCcp.estado3Tg}} ]
                                                 </paper-tooltip>
                                                 <vaadin-progress-bar id="CBDefault3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar class="in-range" id="CBVerde3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="out-of-range" id="CBVermelho3" value="{{data.temposPaCcp.estado3Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar class="in-range" id="CBVerde3" value="{{data.temposPaCcp.estado3Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -5185,7 +5185,7 @@
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
-                    this.$.ajax_imobReturnToArea.body = JSON.stringify(this.data);
+                    this.$.ajax_sendEmail_ToJuriAproval.body = JSON.stringify(this.data);
                 },
                 _sendEmail_ToJuriAprovalResponse: function (e) {
                     if (this.SendEmail_ToJuriAproval.eReasonCode == 0) {
