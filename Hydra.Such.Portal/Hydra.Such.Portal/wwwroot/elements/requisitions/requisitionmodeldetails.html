@@ -1129,8 +1129,7 @@
                     return true;
                 },
                 _resetUserInputForLine() {
-                    this.$.CBProducts.value = "";
-                    this.$.CBProducts.valueText = "";
+                    this.$.CBProducts._clearSelection();
                     this.$.txtProductDesciption.value = "";
                     this.$.CBUnitsOfMmeasure.value = "";
                     this.$.CBLocations.value = "";
@@ -1151,8 +1150,7 @@
                     //this.$.createMarketSearchId.checked = false;
                     //this.$.submitPrePurchaseId.checked = false;
                     //this.$.sendPrePurchaseId.checked = false;
-                    this.$.CBSuppliers.value = "";
-                    this.$.CBSuppliers.valueText = "";
+                    this.$.CBSuppliers._clearSelection();
                     this.$.CBPurchaseHeader.value = "";
                     this.$.CBPurchaseHeader.value = "";
                     this.$.queryCreatedMarketNoId.value = "";
@@ -1475,8 +1473,7 @@
                 },
                 _PopulatePurchaseLines: function (data) {
                     var PurchaseNo = this.$.CBPurchaseHeader.value;
-                    this.$.CBPurchaseLine.value = "";
-                    this.$.CBPurchaseLine.valueText = "";
+                    this.$.CBPurchaseLine._clearSelection();
                     this.$.purchaselines_ajax.body = JSON.stringify(PurchaseNo);
                     this.$.purchaselines_ajax.generateRequest();
                 },
@@ -1488,10 +1485,8 @@
                 },
                 _purchaseheaderresponse: function (e) {
                     if (this.PurchaseHeaders.length == 0) {
-                        this.$.CBPurchaseHeader.value = "";
-                        this.$.CBPurchaseHeader.valueText = "";
-                        this.$.CBPurchaseLine.value = "";
-                        this.$.CBPurchaseLine.valueText = "";
+                        this.$.CBPurchaseHeader._clearSelection();
+                        this.$.CBPurchaseLine._clearSelection();
                     }
                 },
                 _ConvertDecimals: function (e) {
