@@ -7,18 +7,16 @@ using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic
 {
-    public static class DBLinhasAcordoPrecos
+    public static class DBFornecedoresAcordoPrecos
     {
         #region CRUD
-        public static LinhasAcordoPrecos GetById(string NoProcedimento, string NoFornecedor, string CodProduto, DateTime DtValidadeInicio, string Cresp, string Localizacao)
+        public static FornecedoresAcordoPrecos GetById(string NoProcedimento, string NoFornecedor)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor &&
-                                                        x.CodProduto == CodProduto && x.DtValidadeInicio == DtValidadeInicio &&
-                                                        x.Cresp == Cresp && x.Localizacao == Localizacao).FirstOrDefault();
+                    return ctx.FornecedoresAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -28,13 +26,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<LinhasAcordoPrecos> GetAll()
+        public static List<FornecedoresAcordoPrecos> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasAcordoPrecos.ToList();
+                    return ctx.FornecedoresAcordoPrecos.ToList();
                 }
             }
             catch (Exception ex)
@@ -44,14 +42,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static LinhasAcordoPrecos Create(LinhasAcordoPrecos item)
+        public static FornecedoresAcordoPrecos Create(FornecedoresAcordoPrecos item)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    item.DataCriacao = DateTime.Now;
-                    ctx.LinhasAcordoPrecos.Add(item);
+                    ctx.FornecedoresAcordoPrecos.Add(item);
                     ctx.SaveChanges();
                 }
                 return item;
@@ -62,13 +59,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static LinhasAcordoPrecos Update(LinhasAcordoPrecos item)
+        public static FornecedoresAcordoPrecos Update(FornecedoresAcordoPrecos item)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.LinhasAcordoPrecos.Update(item);
+                    ctx.FornecedoresAcordoPrecos.Update(item);
                     ctx.SaveChanges();
                 }
 
@@ -81,18 +78,16 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool Delete(string NoProcedimento, string NoFornecedor, string CodProduto, DateTime DtValidadeInicio, string Cresp, string Localizacao)
+        public static bool Delete(string NoProcedimento, string NoFornecedor)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    LinhasAcordoPrecos userLinhasAcordoPrecos = ctx.LinhasAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor &&
-                                                        x.CodProduto == CodProduto && x.DtValidadeInicio == DtValidadeInicio &&
-                                                        x.Cresp == Cresp && x.Localizacao == Localizacao).FirstOrDefault();
-                    if (userLinhasAcordoPrecos != null)
+                    FornecedoresAcordoPrecos userFornecedorAcordoPrecos = ctx.FornecedoresAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor).FirstOrDefault();
+                    if (userFornecedorAcordoPrecos != null)
                     {
-                        ctx.LinhasAcordoPrecos.Remove(userLinhasAcordoPrecos);
+                        ctx.FornecedoresAcordoPrecos.Remove(userFornecedorAcordoPrecos);
                         ctx.SaveChanges();
                         return true;
                     }
@@ -108,11 +103,10 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    LinhasAcordoPrecos userLinhasAcordoPrecos = ctx.LinhasAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).FirstOrDefault();
-
-                    if (userLinhasAcordoPrecos != null)
+                    FornecedoresAcordoPrecos userFornecedorAcordoPrecos = ctx.FornecedoresAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).FirstOrDefault();
+                    if (userFornecedorAcordoPrecos != null)
                     {
-                        ctx.LinhasAcordoPrecos.Remove(userLinhasAcordoPrecos);
+                        ctx.FornecedoresAcordoPrecos.Remove(userFornecedorAcordoPrecos);
                         ctx.SaveChanges();
                         return true;
                     }

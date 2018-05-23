@@ -1,4 +1,9 @@
 ﻿
+@{
+    ViewData["Title"] = "Detalhes Acordo de Preços - Administração - eSuch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
@@ -39,7 +44,9 @@
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <h1 class="title">Acordo de Preços</h1>
+
 <x-group-cont-product></x-group-cont-product>
+
 <dom-module id="x-group-cont-product">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -208,9 +215,12 @@
                             </vaadin-text-field>
                         </div>
 
-                        <div class="col-sm-2">
-                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-                        </div>
+                        @if (ViewBag.NoProcedimento == "0")
+                        {
+                            <div class="col-sm-2">
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            </div>
+                        }
                     </div>
                 </div>
 
@@ -237,12 +247,12 @@
                                         <vaadin-text-field id="linhasCodProduto" label="Cód. Produto" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
 
                                         @*<such-selectbox id="linhasCodProduto" value="{{_CBItems}}" label="Cód. Produto"
-                                                        items="[[CBItems]]"
-                                                        text-path="code"
-                                                        value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                        disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
-                                        </such-selectbox>*@
+                                                            items="[[CBItems]]"
+                                                            text-path="code"
+                                                            value-path="code"
+                                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                            disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                            </such-selectbox>*@
                                     </div>
 
                                     <div class="col-sm-2">
