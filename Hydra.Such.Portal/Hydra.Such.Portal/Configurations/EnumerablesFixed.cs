@@ -680,6 +680,11 @@ namespace Hydra.Such.Portal.Configurations
         {
             new EnumData()
             {
+                Id = 3,
+                Value = "Prato"
+            },
+            new EnumData()
+            {
                 Id = 2,
                 Value = "LM Produção"
             },

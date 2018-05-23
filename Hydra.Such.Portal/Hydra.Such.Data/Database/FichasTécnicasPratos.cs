@@ -7,8 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public FichasTécnicasPratos()
         {
-            LinhasFichasTécnicasPratosCódigoNavigation = new HashSet<LinhasFichasTécnicasPratos>();
-            LinhasFichasTécnicasPratosNºPratoNavigation = new HashSet<LinhasFichasTécnicasPratos>();
+            LinhasFichasTécnicasPratos = new HashSet<LinhasFichasTécnicasPratos>();
             ProcedimentosDeConfeção = new HashSet<ProcedimentosDeConfeção>();
         }
 
@@ -74,8 +73,7 @@ namespace Hydra.Such.Data.Database
 
         public ClassificaçãoFichasTécnicas ClassFt1Navigation { get; set; }
         public ClassificaçãoFichasTécnicas ClassFt2Navigation { get; set; }
-        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratosCódigoNavigation { get; set; }
-        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratosNºPratoNavigation { get; set; }
+        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
         public ICollection<ProcedimentosDeConfeção> ProcedimentosDeConfeção { get; set; }
     }
 }
