@@ -2837,9 +2837,10 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Acordo de Preços
-        public IActionResult AcordoPrecos(string id)
+
+        public IActionResult AcordoPrecos_List()
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2853,7 +2854,109 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        #endregion
+        public IActionResult AcordoPrecos(string id)
+        {
+            ViewBag.NoProcedimento = id;
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetListAcordoPrecos()
+        {
+            List<AcordoPrecosModelView> result = DBAcordoPrecos.GetAll();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateAcordoPrecos([FromBody] AcordoPrecos data)
+        {
+            AcordoPrecos toCreate = DBAcordoPrecos.Create(new AcordoPrecos()
+            {
+                NoProcedimento = data.NoProcedimento,
+                DtInicio = data.DtInicio,
+                DtFim = data.DtFim,
+                ValorTotal = data.ValorTotal
+            });
+
+            if (toCreate != null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAcordoPreco([FromBody] AcordoPrecosModelView data)
+        {
+            int result = 0;
+            bool dbDeleteLinhaResult = false;
+            bool dbDeleteFornecedorResult = false;
+            bool dbDeleteAcordoPrecoResult = false;
+
+            try
+            {
+                dbDeleteLinhaResult = DBLinhasAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+
+                dbDeleteFornecedorResult = DBFornecedoresAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+
+                dbDeleteAcordoPrecoResult = DBAcordoPrecos.Delete(data.NoProcedimento);
+
+                if (!dbDeleteAcordoPrecoResult)
+                    result = 1;
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateLinhaAcordoPrecos([FromBody] LinhasAcordoPrecos data)
+        {
+            LinhasAcordoPrecos toCreate = DBLinhasAcordoPrecos.Create(new LinhasAcordoPrecos()
+            {
+                NoProcedimento = data.NoProcedimento,
+                NoFornecedor = data.NoFornecedor,
+                CodProduto = data.CodProduto,
+                DtValidadeInicio = data.DtValidadeInicio,
+                DtValidadeFim = data.DtValidadeFim,
+                Cresp = data.Cresp,
+                Area = data.Area,
+                Regiao = data.Regiao,
+                Localizacao = data.Localizacao,
+                CustoUnitario = data.CustoUnitario,
+                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
+                DescricaoProduto = "", //DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).SingleOrDefault().Name,
+                Um = data.Um,
+                QtdPorUm = data.QtdPorUm,
+                PesoUnitario = data.PesoUnitario,
+                CodProdutoFornecedor = data.CodProdutoFornecedor,
+                DescricaoProdFornecedor = "",
+                FormaEntrega = data.FormaEntrega,
+                UserId = User.Identity.Name,
+                DataCriacao = DateTime.Now,
+                TipoPreco = data.TipoPreco
+            });
+
+            if (toCreate != null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarNoProcedimento([FromBody] AcordoPrecos data)
+        {
+            AcordoPrecos AcordoPrecos =  DBAcordoPrecos.GetById(data.NoProcedimento);
+
+            if (AcordoPrecos == null)
+                return Json(0);
+            else
+                return Json(1);
+        }
+
+        #endregion Acordo de Preços
 
 
         #endregion

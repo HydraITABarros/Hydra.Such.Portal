@@ -8,5 +8,7 @@ namespace Hydra.Such.Data.ViewModel
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public byte ArmazemCDireta { get; set; }
+        
     }
 }

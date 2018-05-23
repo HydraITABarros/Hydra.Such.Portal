@@ -778,10 +778,8 @@
                         this.data.lines.push(this.AddReqTemplateLineResponse);
                         this.$.gridTemplateLines.clearCache();
 
-                        this.$.lineProductId.value = "";
-                        this.$.lineProductId.valueText = "";
-                        this.$.lineProjectId.value = "";
-                        this.$.lineProjectId.valueText = "";
+                        this.$.lineProductId._clearSelection();
+                        this.$.lineProjectId._clearSelection();
                         this.$.lineProductDescription.value = "";
                         this.$.lineUnitOfMeasure.value = "";
                         this.$.lineQuantity.value = "";

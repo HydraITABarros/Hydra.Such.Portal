@@ -224,7 +224,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
                                     items="[[ContabGroupData]]"
                                     text-path="value"
                                     value-path="id"
@@ -1095,8 +1095,8 @@
 
 
             <div class="buttons">
-                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_confirm" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <paper-button class="btnSave" dialog-dismiss disabled="{{ !_permissions.create }}" raised on-tap="_confirm" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" on-tap="_closedialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
 
         </paper-dialog>
@@ -1479,9 +1479,15 @@
                 _createmovprojResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-
+                        debugger;
+                        //this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                         this.$.ajax_getall.generateRequest();
-                        this.$.projectDiaryProject.clearCache();
+                        this.selectedItems.clearCache();
+                        //this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        //this.$.grid_databound_ajax.params = { "allProjs": false };
+                        //this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
                         this.openToastSuccess("Diário de Projeto atualizado.");
                     } else {
                         this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
@@ -1498,8 +1504,7 @@
                             this.openToastSuccess(this.result.eMessage);
                             if (this.disabledProjectNo == false) {
                                 this.projectNumber = "";
-                                this.$.projectList.value = "";
-                                this.$.projectList.valueText = "";
+                                this.$.projectList._clearSelection();
                             }
 
                             //this.codeRegion = "";
@@ -1513,7 +1518,7 @@
                             this.quantity = "";
                             this.codeMeasurementUnit = "";
                             this.codeLocation = "";
-                            this.codeProjectContabGroup = "";
+                            //this.codeProjectContabGroup = "";
                             this.unitCost = "";
                             this.totalCost = "";
                             this.unitPrice = "";
@@ -1528,19 +1533,12 @@
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
 
-
-
-                            //this.$.piCodeRegion.value = "";
-                            //this.$.piCodeRegion.valueText = "";
-                            //this.$.piFuncArea.value = "";
-                            //this.$.piFuncArea.valueText = "";
-                            //this.$.piCodeResponsabilityCenter.value = "";
-                            //this.$.piCodeResponsabilityCenter.valueText = "";
-                            this.$.piCode.value = "";
-                            this.$.piCode.valueText = "";
+                            this.$.piCodeRegion._clearSelection();
+                            this.$.piFuncArea._clearSelection();
+                            this.$.piCodeResponsabilityCenter._clearSelection();
+                            this.$.piCode._clearSelection();
                             this.$.piDescription.value = "";
-                            this.$.piCodeLocation.value = "";
-                            this.$.piCodeLocation.valueText = "";
+                            this.$.piCodeLocation._clearSelection();
                             this.$.piUnitCost.value = "";
                             this.$.piTotalCost.value = "";
                             this.$.piUnitPrice.value = "";
@@ -1548,22 +1546,15 @@
                             this.$.piUnitValueToInvoice.value = "";
                             this.$.piCoin.value = "";
                             this.$.pcInvoice.value = true;
-                            this.$.MealTypesCode.value = "";
-                            this.$.MealTypesCode.valueText = "";
-                            this.$.ServiceGroupCod.value = "";
-                            this.$.ServiceGroupCod.valueText = "";
+                            this.$.MealTypesCode._clearSelection();
+                            this.$.ServiceGroupCod._clearSelection();
                             this.$.piResidueGuideNo.value = "";
                             this.$.piExternalGuideNo.value = "";
                             this.$.dpcompDate.value = "";
-                            this.$.piContabGroup.value = "";
-                            this.$.piContabGroup.valueText = "";
-                            this.$.piCodeMeasurementUnit.value = "";
-                            this.$.piCodeMeasurementUnit.valueText = "";
-                            
-                            this.$.projectMovementList.value = "";
-                            this.$.projectMovementList.valueText = "";
-                            this.$.projectTypeList.value = "";
-                            this.$.projectTypeList.valueText = "";
+                            //this.$.piContabGroup._clearSelection();
+                            this.$.piCodeMeasurementUnit._clearSelection();
+                            this.$.projectMovementList._clearSelection();
+                            this.$.projectTypeList._clearSelection();
                         }
                         else {
                             this.openToastError(this.result.eMessage);
@@ -1580,13 +1571,18 @@
                             selItms[i].lineNo = 0;
                             selItms[i].projectNo = destinationProject;
                         }
+                        debugger;
+                        this.$.dialogGetProjetStart.close();
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
-                        this.$.projectDiaryProject.clearCache();
                     } else {
                         this.openToastError("Não foi selecionada nenhuma linha.");
                     }
 
+                },
+
+                _closedialog: function (e) {
+                    this.$.grid_databound_ajax.generateRequest();
                 },
 
                 _projectChange: function (e) {

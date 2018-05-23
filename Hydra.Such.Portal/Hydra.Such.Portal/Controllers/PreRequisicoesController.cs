@@ -19,6 +19,7 @@ using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -48,13 +49,28 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public JsonResult GetProjectDim([FromBody] string ProjectNo)
+        {
+            
+            ProjectListItemViewModel result = new ProjectListItemViewModel();
+
+            List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
+            NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
+
+            result.RegionCode = Project.RegionCode;
+            result.FunctionalAreaCode = Project.AreaCode;
+            result.ResponsabilityCenterCode = Project.CenterResponsibilityCode;
+
+            return Json(result);
+        }
+
         public JsonResult GetPreReqList([FromBody] int Area)
         {
-
             List<PréRequisição> PreRequisition = null;
             PreRequisition = DBPreRequesition.GetAll(User.Identity.Name, Area);
             
             List<PreRequesitionsViewModel> result = new List<PreRequesitionsViewModel>();
+
 
             PreRequisition.ForEach(x => result.Add(DBPreRequesition.ParseToViewModel(x)));
             return Json(result);
@@ -161,6 +177,7 @@ namespace Hydra.Such.Portal.Controllers
             
             
         }
+
         #region Pre Requesition Details
         [HttpPost]
         public JsonResult GetPreRequesitionDetails([FromBody] PreRequesitionsViewModel data)
@@ -665,16 +682,21 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetPendingReq([FromBody] JObject requestParams)
         {
-            int AreaNo = int.Parse(requestParams["AreaNo"].ToString());
+            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
 
-            List<Requisição> RequisitionModel = null;
-            RequisitionModel = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, AreaNo, (int)RequisitionStates.Pending);
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Pending,
+                RequisitionStates.Rejected
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
-            RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
-            return Json(result);
+            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
 
+            return Json(result);
         }
 
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
@@ -745,10 +767,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+
+
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.SupplierNo,//.LocalCode,
+                        x => x.LocalCode,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -834,7 +858,6 @@ namespace Hydra.Such.Portal.Controllers
                             createReq = DBRequest.Create(createReq);
                             if(createReq != null)
                             {
-                                AllRequesitionIds.Add(createReq.NºRequisição); 
                                 //copy files
                                 var preReq = data.PreRequesitionsNo;
                                 List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);

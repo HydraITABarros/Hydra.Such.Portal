@@ -312,6 +312,28 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPurchaseHeader([FromBody] string respcenter)
+        {
+            List<DDMessageString> result = null;
+
+            var dimValue = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.ResponsabilityCenter, User.Identity.Name, respcenter)
+                .FirstOrDefault();
+
+            if (dimValue != null)
+            {
+                result = DBNAV2017EncomendaAberto.GetByDimValue(_config.NAVDatabaseName, _config.NAVCompanyName, dimValue.DimValueID)
+                    .Select(x => new DDMessageString() { id = x.Code })
+                    .GroupBy(x => new { x.id })
+                    .Select(x => new DDMessageString { id = x.Key.id })
+                    .ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
         {
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
@@ -929,7 +951,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectNavList()
         {
-            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && (y.ValorDimensão == x.RegionCode || string.IsNullOrEmpty(x.RegionCode))));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.AreaCode || string.IsNullOrEmpty(x.AreaCode))));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CenterResponsibilityCode || string.IsNullOrEmpty(x.CenterResponsibilityCode))));
             return Json(result);
         }
 
@@ -1540,6 +1569,7 @@ namespace Hydra.Such.Portal.Controllers
             //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
             string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
             List<NAVProductsViewModel> products = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType).ToList();
+
             return Json(products);
         }
 
@@ -1585,16 +1615,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(StockkeepingUnit);
         }
 
-        [HttpPost]
-        public JsonResult GetPurchaseHeader()
-        {
-            List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
-            {
-                id = x.No_
-            }).ToList();
+        //[HttpPost]
+        //public JsonResult GetPurchaseHeader()
+        //{
+        //    List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+        //    {
+        //        id = x.No_
+        //    }).ToList();
 
-            return Json(Pheader);
-        }
+        //    return Json(Pheader);
+        //}
 
         [HttpPost]
         public JsonResult GetLocalMarketRegions()
@@ -1667,6 +1697,22 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(ObjContrato);
         }
+
+        //ACORDO DE PREÇOS
+        [HttpPost]
+        public JsonResult Get_AP_FormaEntrega()
+        {
+            List<EnumData> result = EnumerablesFixed.AP_FormaEntrega;
+            return Json(result);
+        }
+
+        //ACORDO DE PREÇOS
+        [HttpPost]
+        public JsonResult Get_AP_TipoPreco()
+        {
+            List<EnumData> result = EnumerablesFixed.AP_TipoPreco;
+            return Json(result);
+        }
     }
 
 
@@ -1689,6 +1735,4 @@ namespace Hydra.Such.Portal.Controllers
         public string extra { get; set; }
         public string extra2 { get; set; }
     }
-
-
 }

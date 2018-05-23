@@ -19,6 +19,8 @@ namespace Hydra.Such.Data
             Validated,
             [Description("Aprovado")]
             Approved,
+            [Description("Rejeitado")]
+            Rejected,
             [Description("Disponibilizado")]
             Available,
             [Description("Arquivado")]

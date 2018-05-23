@@ -139,7 +139,15 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <vaadin-grid aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
+                   last-response="{{CloseRequisition}}"
+                   id="closereq_ajax"
+                   on-response="_closeRequisitionResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -228,6 +236,15 @@
                 <template>
                     <center>
                         <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -361,6 +378,27 @@
                     if (e != null) {
                         this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo });
                         this.$.SendReq_databound.generateRequest();
+                    }
+                },
+                _closeRequisition: function (e) {
+                    if (e.model.item.state == 5 | e.model.item.state == 5) {
+                        this.$.closereq_ajax.body = JSON.stringify(e.model.item);
+                        this.$.closereq_ajax.params = { "registType": "Fechar Requisicao" };
+                        this.$.closereq_ajax.generateRequest();
+                    } else {
+                        this._openToastError("O estado da requisição não permite o fecho.");
+                    }
+                },
+                _closeRequisitionResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.CloseRequisition.eReasonCode == "1") {
+                            this._openToast(this.CloseRequisition.eMessage);
+                            this.$.grid_databound_ajax.generateRequest();
+                            this.$.grdPendingReqGrid.clearCache();
+                        }
+                        else {
+                            this._openToastError(this.CloseRequisition.eMessage);
+                        }
                     }
                 },
                 _openToast: function (message) {

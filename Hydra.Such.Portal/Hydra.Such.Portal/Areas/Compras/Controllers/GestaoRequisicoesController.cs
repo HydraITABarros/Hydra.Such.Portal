@@ -16,6 +16,7 @@ using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Hydra.Such.Portal.Controllers;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -321,9 +322,157 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         [HttpPost]
         [Area("Compras")]
+        public JsonResult CreateRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                //Get Numeration
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoRequisições.Value;
+
+                if (item.RequisitionNo == "" || item.RequisitionNo == null)
+                {
+                    autoGenId = true;
+                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                }
+                if (item.RequisitionNo != null)
+                {
+                    item.CreateUser = User.Identity.Name;
+                    item.State = RequisitionStates.Validated;
+                    var createdItem = DBRequest.Create(item.ParseToDB());
+                    if (createdItem != null)
+                    {
+                        item = createdItem.ParseToViewModel();
+                        if (autoGenId)
+                        {
+                            ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            configNum.ÚltimoNºUsado = item.RequisitionNo;
+                            configNum.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(configNum);
+                        }
+                        item.eReasonCode = 1;
+                        item.eMessage = "Registo criado com sucesso.";
+                    }
+                    else
+                    {
+                        item = new RequisitionViewModel();
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro ao criar o registo.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 5;
+                    item.eMessage = "A numeração configurada não é compativel com a inserida.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                item.CreateUser = User.Identity.Name;
+                var updatedItem = DBRequest.Update(item.ParseToDB());
+                if (updatedItem != null)
+                {
+                    item = updatedItem.ParseToViewModel();
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo atualizado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult DeleteRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                if (DBRequest.Delete(item.ParseToDB()))
+                {
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        public JsonResult GetPlaces([FromBody] int placeId)
+        {
+            PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
+            return Json(PlacesData);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult ValidateNumeration([FromBody] RequisitionViewModel item)
+        {
+            //Get Project Numeration
+            Configuração conf = DBConfigurations.GetById(1);
+            if (conf != null)
+            {
+                int numConfigId = conf.NumeraçãoRequisições.Value;
+
+                ConfiguraçãoNumerações numConf = DBNumerationConfigurations.GetById(numConfigId);
+
+                //Validate if id is valid
+                if (!(item.RequisitionNo == "" || item.RequisitionNo == null) && !numConf.Manual.Value)
+                {
+                    return Json("A numeração configurada para as requisições não permite inserção manual.");
+                }
+                else if (item.RequisitionNo == "" && !numConf.Automático.Value)
+                {
+                    return Json("É obrigatório inserir o Nº Requisição.");
+                }
+            }
+            else
+            {
+                return Json("Não foi possivel obter as configurações base de numeração.");
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        [Area("Compras")]
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetAll().ParseToViewModel();//.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -342,7 +491,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult GetValidatedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Validated).ParseToViewModel();
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -428,6 +584,33 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisitionLines([FromBody] RequisitionViewModel item)
+        {
+            try
+            {
+                if (item != null && item.Lines != null)
+                {
+                    if (DBRequestLine.Update(item.Lines.ParseToDB()))
+                    {
+                        item.Lines.ForEach(x => x.Selected = false);
+                        item.eReasonCode = 1;
+                        item.eMessage = "Linhas atualizadas com sucesso.";
+                        return Json(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //item.eReasonCode = 2;
+                //item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            }
+            item.eReasonCode = 2;
+            item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
             return Json(item);
         }
 
@@ -735,11 +918,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 11;
-                            item.eMessage = "Esta requisição não está Disponível.";
+                            item.eMessage = "A requisição não está disponível.";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Requisição recebida";
+                            item.eMessage = "A Requisição foi recebida.";
                         }
                         break;
                     case "Anular Aprovacao":
@@ -776,7 +959,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 2;
-                            item.eMessage = "Esta requisição não está aprovada";
+                            item.eMessage = "A requisição não está aprovada";
                         }
                         if (item.eReasonCode == 1)
                         {
@@ -832,16 +1015,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         if (reqArchived == null)
                         {
                             item.eReasonCode = 14;
-                        item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                        item.eMessage = "Ocorreu Um erro ao fechar";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "Requisição foi para histórico";
+                            item.eMessage = "Requisição foi fechada";
                         }
                         break;
                     default:
                         item.eReasonCode = 10;
-                        item.eMessage = "Ocorreu um erro: Existe algum problemas com esta requisição";
+                        item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
                         break;
                 }
             }

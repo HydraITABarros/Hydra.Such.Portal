@@ -114,8 +114,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-      
-
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -2513,12 +2512,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
                 entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
-
-                entity.HasOne(d => d.NoProcedimentoNavigation)
-                    .WithMany(p => p.FornecedoresAcordoPrecos)
-                    .HasForeignKey(d => d.NoProcedimento)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FornecedoresAcordoPrecos_AcordoPrecos");
             });
 
             modelBuilder.Entity<GruposAprovação>(entity =>
@@ -2610,18 +2603,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(30);
-
-                entity.HasOne(d => d.NoProcedimentoNavigation)
-                    .WithMany(p => p.LinhasAcordoPrecos)
-                    .HasForeignKey(d => d.NoProcedimento)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LinhasAcordoPrecos_AcordoPrecos");
-
-                entity.HasOne(d => d.No)
-                    .WithMany(p => p.LinhasAcordoPrecos)
-                    .HasForeignKey(d => new { d.NoProcedimento, d.NoFornecedor })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LinhasAcordoPrecos_FornecedoresAcordoPrecos");
             });
 
             modelBuilder.Entity<LinhasContratos>(entity =>
