@@ -1393,7 +1393,7 @@
                     if (!this.Flag) {
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                         if (this._requisitionstatus === 6) {
-                            this._isArchived = true;
+                            this._isArchived = true; 
                         }
                         this.$.requisition_datasource.generateRequest();
                     }

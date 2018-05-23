@@ -497,7 +497,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 RequisitionStates.Available,
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
-                RequisitionStates.Archived
             };
             List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
 
@@ -919,11 +918,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 11;
-                            item.eMessage = "Esta requisição não está Disponível.";
+                            item.eMessage = "A requisição não está disponível.";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Requisição recebida";
+                            item.eMessage = "A Requisição foi recebida.";
                         }
                         break;
                     case "Anular Aprovacao":
@@ -960,7 +959,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 2;
-                            item.eMessage = "Esta requisição não está aprovada";
+                            item.eMessage = "A requisição não está aprovada";
                         }
                         if (item.eReasonCode == 1)
                         {
@@ -1016,16 +1015,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         if (reqArchived == null)
                         {
                             item.eReasonCode = 14;
-                        item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                        item.eMessage = "Ocorreu Um erro ao fechar";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "Requisição foi para histórico";
+                            item.eMessage = "Requisição foi fechada";
                         }
                         break;
                     default:
                         item.eReasonCode = 10;
-                        item.eMessage = "Ocorreu um erro: Existe algum problemas com esta requisição";
+                        item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
                         break;
                 }
             }

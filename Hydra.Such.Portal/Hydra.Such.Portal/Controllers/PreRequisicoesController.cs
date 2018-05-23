@@ -683,16 +683,21 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetPendingReq([FromBody] JObject requestParams)
         {
-            int AreaNo = int.Parse(requestParams["AreaNo"].ToString());
+            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
 
-            List<Requisição> RequisitionModel = null;
-            RequisitionModel = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, AreaNo, (int)RequisitionStates.Pending);
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Pending,
+                RequisitionStates.Rejected
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
-            RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
-            return Json(result);
+            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
 
+            return Json(result);
         }
 
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
