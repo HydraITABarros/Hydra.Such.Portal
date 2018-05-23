@@ -1749,7 +1749,6 @@
                 _CalculateTotalCostLine: function (e) {
                     var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                     line.totalCost = line.quantityToRequire * line.unitCost;
-
                     this.$.grid_prereqlines.clearCache();
                 },
 

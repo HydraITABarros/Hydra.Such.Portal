@@ -44,6 +44,22 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<LinhasAcordoPrecos> GetAllByNoProcedimento(string NoProcedimento)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static LinhasAcordoPrecos Create(LinhasAcordoPrecos item)
         {
             try
