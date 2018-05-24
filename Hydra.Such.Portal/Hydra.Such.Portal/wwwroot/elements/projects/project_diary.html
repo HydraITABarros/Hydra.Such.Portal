@@ -1491,7 +1491,8 @@
 
                         //this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                         this.$.ajax_getall.generateRequest();
-                        this.selectedItems.clearCache();
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
                         //this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
                         //this.$.grid_databound_ajax.params = { "allProjs": false };
                         //this.$.grid_databound_ajax.generateRequest();
@@ -1621,6 +1622,7 @@
                 },
 
                 _projectTypeChange: function (e) {
+                    debugger;
                     var type = e.detail.value;
                     if (type == "1") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";

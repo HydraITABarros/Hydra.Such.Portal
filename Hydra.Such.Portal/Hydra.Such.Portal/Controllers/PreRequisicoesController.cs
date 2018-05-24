@@ -83,12 +83,13 @@ namespace Hydra.Such.Portal.Controllers
                 string PreRequesitionsNo = requestParams["PreRequesitionsNo"].ToString();
                 PréRequisição PR = DBPreRequesition.GetByNo(PreRequesitionsNo);
                 if (PR != null && !String.IsNullOrEmpty(PreRequesitionsNo))
-                { 
+                {
+                    ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
                     
                     PR.Área = PR.Área;
-                    PR.CódigoRegião = PR.CódigoRegião;
-                    PR.CódigoÁreaFuncional = PR.CódigoÁreaFuncional;
-                    PR.CódigoCentroResponsabilidade = PR.CódigoCentroResponsabilidade;
+                    PR.CódigoRegião = CU.RegiãoPorDefeito ?? null;
+                    PR.CódigoÁreaFuncional = CU.AreaPorDefeito ?? null;
+                    PR.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito ?? null;
                     PR.TipoRequisição = null;
                     PR.NºProjeto = null;
                     PR.Urgente = false;
@@ -284,7 +285,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            
+                            CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -315,6 +316,7 @@ namespace Hydra.Such.Portal.Controllers
         
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
+
         {
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
             string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
@@ -326,7 +328,12 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+
                 PréRequisição createNew = new PréRequisição();
+                createNew.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito;
+                createNew.CódigoRegião = CU.RegiãoPorDefeito;
+                createNew.CódigoÁreaFuncional = CU.AreaPorDefeito;
                 createNew.NºPréRequisição = User.Identity.Name;
                 createNew.Área = AreaNo;
                 createNew.UtilizadorCriação = User.Identity.Name;
@@ -335,7 +342,9 @@ namespace Hydra.Such.Portal.Controllers
 
                 PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = createNew.NºPréRequisição;
-
+                reqID.RegionCode = createNew.CódigoRegião;
+                reqID.FunctionalAreaCode = createNew.CódigoÁreaFuncional;
+                reqID.ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade;
                 return Json(reqID);
             } 
             
@@ -772,7 +781,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.LocalCode,
+                        x => x.ArmazemCDireta,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -816,6 +825,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 
                                 LocalCode = line.LocalCode,
+                                
                                 SupplierProductCode = line.SupplierProductCode,
                                 Description = line.Description,
                                 UnitMeasureCode = line.UnitMeasureCode,
