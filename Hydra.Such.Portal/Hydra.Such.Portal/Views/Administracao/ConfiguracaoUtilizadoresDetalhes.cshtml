@@ -135,8 +135,7 @@
         <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocationsValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/CreateUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesCreated}}" method="post" handle-as="json" id="page_createuserAcessosLocalizacoes_ajax" on-response="_createUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
+         <iron-ajax url="/Administracao/CreateUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesCreated}}" method="post" handle-as="json" id="page_createuserAcessosLocalizacoes_ajax" on-response="_createUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/DeleteUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesDeleted}}" method="post" handle-as="json" id="page_deleteuserAcessosLocalizacoes_ajax" on-response="_deleteUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
 
         @if (ViewBag.UserId != "0")
