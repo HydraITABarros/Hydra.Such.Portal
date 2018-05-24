@@ -782,7 +782,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.LocalCode,
+                        x => x.ArmazemCDireta,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -826,6 +826,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 
                                 LocalCode = line.LocalCode,
+                                
                                 SupplierProductCode = line.SupplierProductCode,
                                 Description = line.Description,
                                 UnitMeasureCode = line.UnitMeasureCode,
