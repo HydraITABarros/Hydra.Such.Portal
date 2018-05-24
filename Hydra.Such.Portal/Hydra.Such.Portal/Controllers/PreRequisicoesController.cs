@@ -825,6 +825,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 
                                 LocalCode = line.LocalCode,
+                                
                                 SupplierProductCode = line.SupplierProductCode,
                                 Description = line.Description,
                                 UnitMeasureCode = line.UnitMeasureCode,
