@@ -307,6 +307,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.eReasonCode = 2;
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
+                data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
             return Json(data);
         }
