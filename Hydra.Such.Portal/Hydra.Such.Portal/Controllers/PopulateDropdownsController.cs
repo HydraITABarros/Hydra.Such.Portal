@@ -675,10 +675,11 @@ namespace Hydra.Such.Portal.Controllers
 
             if (result == null || result.Count == 0)
             {
-                List<DDMessageString> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+                List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
                 {
                     id = x.Code,
-                    value = x.Name
+                    value = x.Name,
+                    extra = Convert.ToString(x.ArmazemCDireta)
                 }).ToList();
                 return Json(result_all);
             }
@@ -983,6 +984,13 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Descrição
             }).ToList();
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjDiary_Price()
+        {
+            List<EnumData> result = EnumerablesFixed.project_diaryPrice;
             return Json(result);
         }
 
@@ -1734,5 +1742,12 @@ namespace Hydra.Such.Portal.Controllers
         public string value { get; set; }
         public string extra { get; set; }
         public string extra2 { get; set; }
+    }
+
+    public class DDMessageRelatedBool
+    {
+        public string id { get; set; }
+        public string value { get; set; }
+        public byte extra { get; set; }
     }
 }

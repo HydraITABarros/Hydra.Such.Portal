@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Database
         public string NºCliente { get; set; }
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }
+        public string LocalCompraDireta { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public PréRequisição NºPréRequisiçãoNavigation { get; set; }

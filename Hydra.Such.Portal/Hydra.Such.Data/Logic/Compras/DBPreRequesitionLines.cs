@@ -192,7 +192,9 @@ namespace Hydra.Such.Data.Logic.Compras
                 OpenOrderNo = x.NºEncomendaAberto,
                 OpenOrderLineNo = x.NºLinhaEncomendaAberto,
                 Selected = false,
-                TotalCost = x.CustoUnitário * x.QuantidadeARequerer
+                TotalCost = x.CustoUnitário * x.QuantidadeARequerer,
+                ArmazemCDireta = x.LocalCompraDireta
+
             };
         }
 
@@ -232,7 +234,9 @@ namespace Hydra.Such.Data.Logic.Compras
                 UnidadeProdutivaNutrição = x.UnitNutritionProduction,
                 NºCliente = x.CustomerNo,
                 NºEncomendaAberto = x.OpenOrderNo,
-                NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                NºLinhaEncomendaAberto = x.OpenOrderLineNo,
+                LocalCompraDireta = x.ArmazemCDireta
+                
             };
         }
     }

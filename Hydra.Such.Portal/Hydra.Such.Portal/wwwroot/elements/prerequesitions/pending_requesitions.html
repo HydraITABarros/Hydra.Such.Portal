@@ -221,21 +221,21 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
                         <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>

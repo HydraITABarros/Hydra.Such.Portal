@@ -26,6 +26,22 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static FornecedoresAcordoPrecos GetByNoProcedimento(string NoProcedimento)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.FornecedoresAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<FornecedoresAcordoPrecos> GetAll()
         {
             try
@@ -33,6 +49,22 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FornecedoresAcordoPrecos.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<FornecedoresAcordoPrecos> GetAllByNoProdimento(string NoProcedimento)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.FornecedoresAcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).ToList();
                 }
             }
             catch (Exception ex)
