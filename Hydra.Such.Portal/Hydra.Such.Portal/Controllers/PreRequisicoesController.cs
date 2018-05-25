@@ -307,6 +307,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.eReasonCode = 2;
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
+                data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
             return Json(data);
         }
@@ -320,15 +321,21 @@ namespace Hydra.Such.Portal.Controllers
         {
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
             string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
-            if(pPreRequisicao != null)
+            ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (pPreRequisicao != null)
             {
                 PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = pPreRequisicao;
+                reqID.RegionCode = CU.RegiãoPorDefeito;
+                reqID.FunctionalAreaCode = CU.AreaPorDefeito;
+                reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
+
                 return Json(reqID);
             }
             else
             {
-                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                
 
                 PréRequisição createNew = new PréRequisição();
                 createNew.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito;
@@ -781,7 +788,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.LocalCode,
+                        x => x.ArmazemCDireta,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -825,7 +832,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 
                                 LocalCode = line.LocalCode,
-                                SupplierProductCode = line.SupplierProductCode,
+                                Code = line.Code,
                                 Description = line.Description,
                                 UnitMeasureCode = line.UnitMeasureCode,
                                 QuantityToRequire = line.QuantityToRequire,
