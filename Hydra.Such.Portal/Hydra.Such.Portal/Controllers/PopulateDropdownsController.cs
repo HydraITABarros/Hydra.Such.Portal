@@ -988,6 +988,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjDiary_Price()
+        {
+            List<EnumData> result = EnumerablesFixed.project_diaryPrice;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContabGroupTypesOM_Type()
         {
             List<EnumData> result = EnumerablesFixed.ContabGroupTypesOM_Type;

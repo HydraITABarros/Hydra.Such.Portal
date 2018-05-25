@@ -391,6 +391,19 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> project_diaryPrice = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Contrato"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Projeto"
+            }
+        };
+
         public static readonly List<EnumData> RequestOrigin = new List<EnumData>(){
             new EnumData()
             {
