@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Office.Interop.Excel;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
@@ -25,6 +26,7 @@ using Hydra.Such.Data.ViewModel.Approvals;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data;
 using System.IO;
+using OfficeOpenXml;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3045,7 +3047,7 @@ namespace Hydra.Such.Portal.Controllers
                 Localizacao = data.Localizacao,
                 CustoUnitario = data.CustoUnitario,
                 NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
-                DescricaoProduto = "", //DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).SingleOrDefault().Name,
+                DescricaoProduto = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).SingleOrDefault().Name,
                 Um = data.Um,
                 QtdPorUm = data.QtdPorUm,
                 PesoUnitario = data.PesoUnitario,
@@ -3094,50 +3096,199 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         [Route("Administracao/FileUpload")]
-        [Route("Administracao/FileUpload/{id}/{linha}")]
         public JsonResult FileUpload(string id, int linha)
         {
-            try
+            //TESTE COM DLL EPPlus
+            var files = Request.Form.Files;
+            foreach (var file in files)
             {
-                var files = Request.Form.Files;
-                string full_filename;
-                foreach (var file in files)
+                try
                 {
-                    try
+                    string filename = Path.GetFileName(file.FileName);
+                    string full_path = "C:\\Users\\ARomao\\Desktop\\" + filename;
+                    var existingFile = new FileInfo(full_path);
+
+                    using (var excel = new ExcelPackage(existingFile))
                     {
-                        string filename = Path.GetFileName(file.FileName);
-                        full_filename = id + "_" + filename;
-                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
-                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        ExcelWorkbook workBook = excel.Workbook;
+                        if (workBook != null)
                         {
-                            file.CopyTo(dd);
-                            dd.Dispose();
-
-                            Anexos newfile = new Anexos();
-                            newfile.NºOrigem = id;
-                            newfile.UrlAnexo = full_filename;
-                            newfile.TipoOrigem = 1;
-                            newfile.DataHoraCriação = DateTime.Now;
-                            newfile.UtilizadorCriação = User.Identity.Name;
-
-                            DBAttachments.Create(newfile);
-                            if (newfile.NºLinha == 0)
+                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
                             {
-                                System.IO.File.Delete(path);
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];// .First();
+
+                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 16) &&
+                                    (currentWorksheet.Cells[1, 1].Value.ToString() == "NoProcedimento") &&
+                                    (currentWorksheet.Cells[1, 2].Value.ToString() == "NoFornecedor") &&
+                                    (currentWorksheet.Cells[1, 3].Value.ToString() == "CodProduto") &&
+                                    (currentWorksheet.Cells[1, 4].Value.ToString() == "DtValidadeInicio") &&
+                                    (currentWorksheet.Cells[1, 5].Value.ToString() == "DtValidadeFim") &&
+                                    (currentWorksheet.Cells[1, 6].Value.ToString() == "Regiao") &&
+                                    (currentWorksheet.Cells[1, 7].Value.ToString() == "Area") &&
+                                    (currentWorksheet.Cells[1, 8].Value.ToString() == "Cresp") &&
+                                    (currentWorksheet.Cells[1, 9].Value.ToString() == "Localizacao") &&
+                                    (currentWorksheet.Cells[1, 10].Value.ToString() == "CustoUnitario") &&
+                                    (currentWorksheet.Cells[1, 11].Value.ToString() == "UM") &&
+                                    (currentWorksheet.Cells[1, 12].Value.ToString() == "QtdPorUM") &&
+                                    (currentWorksheet.Cells[1, 13].Value.ToString() == "PesoUnitario") &&
+                                    (currentWorksheet.Cells[1, 14].Value.ToString() == "CodProdutoFornecedor") &&
+                                    (currentWorksheet.Cells[1, 15].Value.ToString() == "FormaEntrega") &&
+                                    (currentWorksheet.Cells[1, 16].Value.ToString() == "TipoPreco"))
+                                {
+                                    int resultadoValidacao = 0;
+                                    int resultadoInserir = 0;
+                                    string NoProcedimento = "";
+                                    string NoFornecedor = "";
+                                    string CodProduto = "";
+                                    string DtValidadeInicio = "";
+                                    string DtValidadeFim = "";
+                                    string Regiao = "";
+                                    string Area = "";
+                                    string Cresp = "";
+                                    string Localizacao = "";
+                                    string CustoUnitario = "";
+                                    string UM = "";
+                                    string QtdPorUM = "";
+                                    string PesoUnitario = "";
+                                    string CodProdutoFornecedor = "";
+                                    string FormaEntrega = "";
+                                    string TipoPreco = "";
+
+                                    //VALIDAÇÃO DE TODOS OS CAMPOS
+                                    for (int rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
+                                    {
+                                        NoProcedimento = currentWorksheet.Cells[rowNumber, 1].Value.ToString();
+                                        NoFornecedor = currentWorksheet.Cells[rowNumber, 2].Value.ToString();
+                                        CodProduto = currentWorksheet.Cells[rowNumber, 3].Value.ToString();
+                                        DtValidadeInicio = currentWorksheet.Cells[rowNumber, 4].Value.ToString();
+                                        DtValidadeFim = currentWorksheet.Cells[rowNumber, 5].Value.ToString();
+                                        Regiao = currentWorksheet.Cells[rowNumber, 6].Value.ToString();
+                                        Area = currentWorksheet.Cells[rowNumber, 7].Value.ToString();
+                                        Cresp = currentWorksheet.Cells[rowNumber, 8].Value.ToString();
+                                        Localizacao = currentWorksheet.Cells[rowNumber, 9].Value.ToString();
+                                        CustoUnitario = currentWorksheet.Cells[rowNumber, 10].Value.ToString();
+                                        UM = currentWorksheet.Cells[rowNumber, 11].Value.ToString();
+                                        QtdPorUM = currentWorksheet.Cells[rowNumber, 12].Value.ToString();
+                                        PesoUnitario = currentWorksheet.Cells[rowNumber, 13].Value.ToString();
+                                        CodProdutoFornecedor = currentWorksheet.Cells[rowNumber, 14].Value.ToString();
+                                        FormaEntrega = currentWorksheet.Cells[rowNumber, 15].Value.ToString();
+                                        TipoPreco = currentWorksheet.Cells[rowNumber, 16].Value.ToString();
+
+                                        resultadoValidacao = Validar_LinhaExcel(NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco);
+
+                                        if (resultadoValidacao == 0)
+                                        {
+                                            LinhasAcordoPrecos toCreate = DBLinhasAcordoPrecos.Create(new LinhasAcordoPrecos()
+                                            {
+                                                NoProcedimento = NoProcedimento,
+                                                NoFornecedor = NoFornecedor,
+                                                CodProduto = CodProduto,
+                                                DtValidadeInicio = Convert.ToDateTime(DtValidadeInicio),
+                                                DtValidadeFim = Convert.ToDateTime(DtValidadeFim),
+                                                Cresp = Cresp,
+                                                Area = Area,
+                                                Regiao = Regiao,
+                                                Localizacao = Localizacao,
+                                                CustoUnitario = Convert.ToDecimal(CustoUnitario),
+                                                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).SingleOrDefault().Name,
+                                                DescricaoProduto = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).SingleOrDefault().Name,
+                                                Um = UM,
+                                                QtdPorUm = Convert.ToDecimal(QtdPorUM),
+                                                PesoUnitario = Convert.ToDecimal(PesoUnitario),
+                                                CodProdutoFornecedor = CodProdutoFornecedor,
+                                                DescricaoProdFornecedor = "",
+                                                FormaEntrega = Convert.ToInt32(FormaEntrega),
+                                                UserId = User.Identity.Name,
+                                                DataCriacao = DateTime.Now,
+                                                TipoPreco = Convert.ToInt32(TipoPreco)
+                                            });
+
+                                            if (toCreate == null)
+                                                resultadoInserir = 1;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
             return Json("");
+        }
+
+        public int Validar_LinhaExcel(string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
+            string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario,
+            string FormaEntrega, string TipoPreco)
+        {
+            int result = 0;
+            DateTime currectDate;
+            decimal currectDecimal;
+            int currectInt;
+
+            if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0)
+                result = 1;
+
+            if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
+                result = 2;
+
+            if (DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).Count() == 0)
+                result = 3;
+
+            if (!DateTime.TryParse(DtValidadeInicio, out currectDate))
+                result = 4;
+
+            if (!DateTime.TryParse(DtValidadeFim, out currectDate))
+                result = 5;
+
+            if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
+                result = 6;
+
+            if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
+                result = 7;
+
+            if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(x => x.Code == Cresp).Count() == 0)
+                result = 8;
+
+            if (DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Where(x => x.Localizacao == Localizacao).Count() == 0)
+                result = 9;
+
+            if (!decimal.TryParse(CustoUnitario, out currectDecimal))
+                result = 10;
+
+            if (!decimal.TryParse(QtdPorUM, out currectDecimal))
+                result = 11;
+
+            if (!decimal.TryParse(PesoUnitario, out currectDecimal))
+                result = 12;
+
+            if (int.TryParse(FormaEntrega, out currectInt))
+            {
+                if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
+                    result = 13;
+            }
+            else
+                result = 13;
+
+            if (int.TryParse(TipoPreco, out currectInt))
+            {
+                if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
+                    result = 14;
+            }
+            else
+                result = 14;
+
+            if (result == 0)
+                if (DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
+                        x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).Count() > 0)
+                    result = 15;
+
+
+            return result;
         }
 
         #endregion Acordo de Preços

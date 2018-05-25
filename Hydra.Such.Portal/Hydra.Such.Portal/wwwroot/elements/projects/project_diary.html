@@ -167,6 +167,7 @@
         <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjDiary_Price" last-response="{{ProjDiary_Price}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Projetos/GetProjectDetails"
                    last-response="{{projdata}}"
@@ -1125,13 +1126,25 @@
                     </such-selectbox>
                 </div>
                 <!--<div class="col-lg-2">
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
                     <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
                                     items="[[CBResourceCode]]"
                                     text-path="id"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ProjDiaryPriceDlg" name="ResourcesDlg" value="{{_ProjDiaryPriceDlg}}" label="Preço" disabled="{{disabledProjectNo}}"
+                                    items="[[ProjDiary_Price]]"
+                                    text-path="id"
+                                    value-path="value"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>-->
+                
             </div>
 
             <div class="buttons">
@@ -1622,7 +1635,7 @@
                 },
 
                 _projectTypeChange: function (e) {
-                    debugger;
+
                     var type = e.detail.value;
                     if (type == "1") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
