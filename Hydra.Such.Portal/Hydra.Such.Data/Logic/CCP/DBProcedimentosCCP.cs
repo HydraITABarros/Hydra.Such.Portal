@@ -42,6 +42,20 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+        //NR20180525
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoEstadoToList(int estado)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ProcedimentosCcp.Where(p => p.Estado == estado).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static List<ProcedimentosCcp> GetAllProcedimentosToList()
         {
             SuchDBContext _context = new SuchDBContext();
@@ -1216,6 +1230,31 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+        
+        //NR20180525
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoEstadoToList(int estado)
+        {
+            List<ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoEstadoToList(estado);
+            List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
+
+            if (ProcList == null)
+                return null;
+
+            try
+            {
+                foreach (var x in ProcList)
+                {
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
+                }
+
+                return ProcViewList;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static List<ProcedimentoCCPView> GetAllProcedimentosByViewToList()
         {
             List<ProcedimentosCcp> ProcList = GetAllProcedimentosToList();
