@@ -116,8 +116,8 @@ namespace Hydra.Such.Data.NAV
                     FunctionAreaCode20 = ProjectToUpdate.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = ProjectToUpdate.ResponsabilityCenterCode,
                     Job_Posting_Group = "",
-                    Project_Manager = ProjectToUpdate.ProjectLeader,
-                    Person_Responsible = ProjectToUpdate.ProjectResponsible
+                    //Project_Manager = ProjectToUpdate.ProjectLeader,
+                    //Person_Responsible = ProjectToUpdate.ProjectResponsible
                 }
             };
 
