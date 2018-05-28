@@ -1125,26 +1125,32 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <!--<div class="col-lg-2">
+                <div class="col-lg-2">
                     <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
                                     items="[[CBResourceCode]]"
+                                      on-value-changed="_projectChange"
                                     text-path="id"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
+
                 <div class="col-lg-2">
-                    <such-selectbox id="ProjDiaryPriceDlg" name="ResourcesDlg" value="{{_ProjDiaryPriceDlg}}" label="Preço" disabled="{{disabledProjectNo}}"
+                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ProjDiaryPriceDlg" name="ProjDiaryPriceDlg" value="{{_ProjDiaryPriceDlg}}" label="Preço" disabled="{{disabledProjectNo}}"
                                     items="[[ProjDiary_Price]]"
-                                    text-path="id"
-                                    value-path="value"
+                                    on-value-changed="_projectChange"
+                                    text-path="value"
+                                    value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
-                </div>-->
-                
+                </div>
+
             </div>
 
             <div class="buttons">
@@ -1609,7 +1615,7 @@
                 },
 
                 _projectChange: function (e) {
-
+                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1617,7 +1623,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
 
                         this.$.grid_databound_ajax.generateRequest();
@@ -1716,7 +1722,29 @@
 
                 },
                 _dlgNext: function () {
+                    debugger;
+                    var textnull = false;
+                    if (this.$.ResourcesDlg.value != null && (this.$.ResourcesDlg.valueText == "" || this.$.ResourcesDlg.valueText == null)) {
+                        this.$.ResourcesDlg.value = null;
+                        textnull = true;
+                    }
+                    if (this.$.ProjDiaryPriceDlg.value != null && (this.$.ProjDiaryPriceDlg.valueText == "" || this.$.ProjDiaryPriceDlg.valueText == null)) {
+                        this.$.ProjDiaryPriceDlg.value = null;
+                        textnull = true;
+                    }
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                        if (textnull == true) {
+
+                            //Request Project Data
+                            this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                            this.$.ajax_related.generateRequest();
+
+                            //Request Project Data
+                            this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                            this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();
                     } else {
