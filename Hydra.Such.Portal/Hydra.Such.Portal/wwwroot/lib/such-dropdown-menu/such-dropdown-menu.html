@@ -79,6 +79,9 @@
             }
 
             _showItems(e) {
+                if (this.value != null)
+                    this.value = null;
+
                 var dropDownContainer = this.$.itemsDropDownContent;
                 if (dropDownContainer != null) {
                     dropDownContainer.classList.toggle("showMenuItems");
@@ -94,7 +97,9 @@
                 this.value = e.model.item;
             }
             _valueChanged(newVal, oldVal) {
-                this._hideItems();
+                if (oldVal == null)
+                    this._hideItems();
+                
             }
         }
         customElements.define(SuchDropdownMenu.is, SuchDropdownMenu);
