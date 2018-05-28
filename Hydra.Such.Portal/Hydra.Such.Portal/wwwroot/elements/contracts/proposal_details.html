@@ -479,12 +479,18 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[LFetchUnits]]" id="mFetchUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <b>[[item.value]]</b>
+                                                    <table width="300px">
+                                                        <tr>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
+                                    </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
@@ -506,19 +512,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[LFetchUnits]]" id="mFetchUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <table width="300px">
-                                                        <tr>
-                                                            <td width="30%">[[item.id]]</td>
-                                                            <td width="70%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                    </div>
+                                     
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>

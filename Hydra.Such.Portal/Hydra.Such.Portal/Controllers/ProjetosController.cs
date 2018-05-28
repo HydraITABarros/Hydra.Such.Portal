@@ -1279,14 +1279,17 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
-                FolhaHoras = x.NºDocumento
+                FolhaHoras = x.NºDocumento,
+                InvoiceToClientNo = x.FaturaANºCliente,
+                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+
             }).ToList();
 
             return Json(dp);
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs,string NoDocument,string Resources,string Date,string ProjDiaryPrice)
         {
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
@@ -1313,7 +1316,18 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
-
+            if (!string.IsNullOrEmpty(NoDocument))
+            {
+                dp = dp.Where(x => x.DocumentNo == NoDocument).ToList();
+            }
+            if (!string.IsNullOrEmpty(Resources))
+            {
+                dp = dp.Where(x => x.Code == Resources).ToList();
+            }
+            if (!string.IsNullOrEmpty(Date))
+            {
+                dp = dp.Where(x => x.Date == Date).ToList();
+            }
             return Json(dp);
         }
         

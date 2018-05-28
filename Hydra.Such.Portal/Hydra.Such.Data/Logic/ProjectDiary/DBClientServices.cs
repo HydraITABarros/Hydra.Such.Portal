@@ -178,6 +178,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                 {
                     if (AllProjs)
                     {
+                        
                         return ctx.ServiçosCliente.Where(x => x.GrupoServiços == false).Select(x => new ClientServicesViewModel()
                         {
                             ServiceCode = x.CódServiço,

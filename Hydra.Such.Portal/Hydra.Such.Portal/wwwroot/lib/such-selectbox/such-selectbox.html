@@ -320,7 +320,7 @@
         <div class="such-selectbox-container">
             <label part="label" on-click="_handleClick" id="[[_labelId]]">[[label]]</label>
 
-            <div on-click="_handleClick" part="input-field" >
+            <div on-click="_handleClick" part="input-field">
                 <slot name="prefix"></slot>
                 <input part="value"
                        id="input"
@@ -331,9 +331,11 @@
                        required$="[[required]]"
                        aria-required$="[[required]]"
                        disabled$="[[disabled]]" />
+                <i class="fa fa-times" aria-hidden="true" on-click="_clearElement" style="padding-right: 20px;"></i>
                 <i class="fa fa-angle-double-up" aria-hidden="true"></i>
                 <slot name="suffix"></slot>
             </div>
+            
 
             <div id="[[_errorId]]" aria-live="assertive" part="error-message" hidden$="[[!_getActiveErrorId(invalid, errorMessage, _errorId)]]">[[errorMessage]]</div>
 
@@ -436,7 +438,11 @@
                         _labelId: {
                             type: String
                         },
-                        modalTitle: String
+                        modalTitle: String,
+                        clearFlag: {
+                            type: Boolean,
+                            value: false,
+                        }
                     };
                 }
 
@@ -483,6 +489,11 @@
 
                 _handleClick() {
                     var _this = this;
+                    if (_this.clearFlag) {
+                        _this.clearFlag = false;
+                        return false;
+                    }
+
                     if (!!this.disabled) {
                         return false;
                     }
@@ -548,6 +559,11 @@
                     _this.value = "";
                     _this.valueText = "";
                     _this.activeItem = null;
+                }
+                _clearElement() {
+                    var _this = this;
+                    _this._clearSelection();
+                    _this.clearFlag = true;
                 }
             }
 
