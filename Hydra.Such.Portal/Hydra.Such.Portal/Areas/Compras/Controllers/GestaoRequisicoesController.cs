@@ -14,7 +14,9 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
-
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
+using Hydra.Such.Portal.Controllers;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -32,14 +34,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult Index()
         {
-            return View();
-        }
-
-        [Area("Compras")]
-        public IActionResult Detalhes()
-        {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -47,20 +43,46 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
+        [Area("Compras")]
+        public IActionResult Detalhes()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult RequisicoesAprovadas()
         {
-            return View();
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
         }
 
         [Area("Compras")]
         public IActionResult DetalhesReqAprovada(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -73,14 +95,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult LinhasRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -95,14 +117,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult HistóricoCabeçalhoRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -117,7 +139,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
         [HttpPost]
@@ -129,14 +151,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
 
@@ -300,6 +322,154 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         [HttpPost]
         [Area("Compras")]
+        public JsonResult CreateRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                //Get Numeration
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoRequisições.Value;
+
+                if (item.RequisitionNo == "" || item.RequisitionNo == null)
+                {
+                    autoGenId = true;
+                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                }
+                if (item.RequisitionNo != null)
+                {
+                    item.CreateUser = User.Identity.Name;
+                    item.State = RequisitionStates.Validated;
+                    var createdItem = DBRequest.Create(item.ParseToDB());
+                    if (createdItem != null)
+                    {
+                        item = createdItem.ParseToViewModel();
+                        if (autoGenId)
+                        {
+                            ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            configNum.ÚltimoNºUsado = item.RequisitionNo;
+                            configNum.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(configNum);
+                        }
+                        item.eReasonCode = 1;
+                        item.eMessage = "Registo criado com sucesso.";
+                    }
+                    else
+                    {
+                        item = new RequisitionViewModel();
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro ao criar o registo.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 5;
+                    item.eMessage = "A numeração configurada não é compativel com a inserida.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                item.CreateUser = User.Identity.Name;
+                var updatedItem = DBRequest.Update(item.ParseToDB());
+                if (updatedItem != null)
+                {
+                    item = updatedItem.ParseToViewModel();
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo atualizado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult DeleteRequisition([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                if (DBRequest.Delete(item.ParseToDB()))
+                {
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        public JsonResult GetPlaces([FromBody] int placeId)
+        {
+            PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
+            return Json(PlacesData);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult ValidateNumeration([FromBody] RequisitionViewModel item)
+        {
+            //Get Project Numeration
+            Configuração conf = DBConfigurations.GetById(1);
+            if (conf != null)
+            {
+                int numConfigId = conf.NumeraçãoRequisições.Value;
+
+                ConfiguraçãoNumerações numConf = DBNumerationConfigurations.GetById(numConfigId);
+
+                //Validate if id is valid
+                if (!(item.RequisitionNo == "" || item.RequisitionNo == null) && !numConf.Manual.Value)
+                {
+                    return Json("A numeração configurada para as requisições não permite inserção manual.");
+                }
+                else if (item.RequisitionNo == "" && !numConf.Automático.Value)
+                {
+                    return Json("É obrigatório inserir o Nº Requisição.");
+                }
+            }
+            else
+            {
+                return Json("Não foi possivel obter as configurações base de numeração.");
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        [Area("Compras")]
         public JsonResult GetApprovedRequisitions()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
@@ -307,33 +477,40 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
         [HttpPost]
         [Area("Compras")]
         public JsonResult GetValidatedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Validated).ParseToViewModel();
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
         [HttpPost]
@@ -344,15 +521,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
-            //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
-            //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result);
         }
         [HttpPost]
@@ -408,6 +584,33 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult UpdateRequisitionLines([FromBody] RequisitionViewModel item)
+        {
+            try
+            {
+                if (item != null && item.Lines != null)
+                {
+                    if (DBRequestLine.Update(item.Lines.ParseToDB()))
+                    {
+                        item.Lines.ForEach(x => x.Selected = false);
+                        item.eReasonCode = 1;
+                        item.eMessage = "Linhas atualizadas com sucesso.";
+                        return Json(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //item.eReasonCode = 2;
+                //item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            }
+            item.eReasonCode = 2;
+            item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
             return Json(item);
         }
 
@@ -520,18 +723,18 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 6;
-                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav" +
-                                " e o(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                                item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
+                                ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                             else if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
                             {
                                 item.eReasonCode = 7;
-                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav";
+                                item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
                             }
                             else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
-                                item.eMessage = "O(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                                item.eMessage = " Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                         }
                         else
@@ -624,16 +827,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             if (quantityInvalid != "")
                             {
                                 item.eReasonCode = 12;
-                                item.eMessage = "O(s) produto(s)" + quantityInvalid +
-                                                "tem ou têm Quantidade a Receber a 0";
+                                item.eMessage = "Os produtos" + quantityInvalid +
+                                                "têm a quantidade a Receber a 0";
                             }
                             else
                             {
                                 if (prodNotStockkeepUnit != "")
                                 {
                                     item.eReasonCode = 7;
-                                    item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit +
-                                                    " não existe ou existem no Stockkeeping Unit do Nav";
+                                    item.eMessage = " O produtos " + prodNotStockkeepUnit +
+                                                    " não existem nas unidades de armazenamento do NAV";
                                 }
                                 else
                                 {
@@ -705,7 +908,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                             if (reqtoArchived == null)
                                             {
                                                 item.eReasonCode = 14;
-                                                item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                                                item.eMessage = "Ocorreu um erro ao mandar para o histórico";
                                             }
                                         }
                                     }
@@ -715,11 +918,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 11;
-                            item.eMessage = "Esta requisição não está Disponível.";
+                            item.eMessage = "A requisição não está disponível.";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Requisição recebida";
+                            item.eMessage = "A Requisição foi recebida.";
                         }
                         break;
                     case "Anular Aprovacao":
@@ -756,7 +959,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         else
                         {
                             item.eReasonCode = 2;
-                            item.eMessage = "Esta requisição não está aprovada";
+                            item.eMessage = "A requisição não está aprovada";
                         }
                         if (item.eReasonCode == 1)
                         {
@@ -812,16 +1015,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         if (reqArchived == null)
                         {
                             item.eReasonCode = 14;
-                        item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                        item.eMessage = "Ocorreu Um erro ao fechar";
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "Requisição foi para histórico";
+                            item.eMessage = "Requisição foi fechada";
                         }
                         break;
                     default:
                         item.eReasonCode = 10;
-                        item.eMessage = "Ocorreu um erro: Existe algum problemas com esta requisição";
+                        item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
                         break;
                 }
             }
@@ -996,6 +1199,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         createTransferShipResult.Base64FileContent = result.ResultValue;
                         createTransferShipResult.eReasonCode = 1;
                     }
+                    else
+                    {
+                        createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                    }
                 }
             }
             catch { }
@@ -1041,10 +1248,18 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 requisitionId = requestParams["requisitionId"].ToString();
             }
+            
             ErrorHandler result = new ErrorHandler();
             if (!string.IsNullOrEmpty(requisitionId))
             {
-                result = ApprovalMovementsManager.StartApprovalMovement(1, 1, 1000, requisitionId, User.Identity.Name);
+                Requisição reqDB = DBRequest.GetById(requisitionId);
+                var requisition = reqDB.ParseToViewModel();
+                
+                if (requisition != null)
+                {
+                    var totalValue = requisition.GetTotalValue();
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
+                }
             }
             else
             {
@@ -1062,7 +1277,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult PontosSituacao()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -1072,14 +1287,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
         [Area("Compras")]
         public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId,[FromQuery] string lineId)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1090,7 +1305,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
 
@@ -1213,7 +1428,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         public IActionResult HistoricoRequisicoes()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1221,8 +1436,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+                return Redirect(Url.Content("~/Error/AccessDenied"));
             }
+        }
+
+        [Area("Compras")]
+        public JsonResult GetStateDescription([FromBody] int id)
+        {
+            string stateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), id);
+            return Json(stateDescription);
         }
     }
 }

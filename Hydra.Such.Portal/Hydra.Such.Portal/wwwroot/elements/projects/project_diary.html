@@ -1,8 +1,5 @@
-﻿
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+﻿<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -18,8 +15,6 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
@@ -31,121 +26,131 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
 <dom-module id="x-projectdiary">
     <template>
 
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-    <style>
-        vaadin-combo-box {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-        vaadin-date-picker {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-        vaadin-text-field {
-            margin-top: 0px !important;
-            width: 100%;
-        }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-        paper-button {
-            margin-top: 10px;
-        }
+            paper-button {
+                margin-top: 10px;
+            }
 
-        .break_clear {
-            margin-top: 15px;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
 
-        .break_frm {
-            margin-top: 15px;
-        }
+            .break_frm {
+                margin-top: 15px;
+            }
 
-        .label_custom {
-            color: var(--valo-contrast-60pct) !important;
-            font-weight: 500 !important;
-            font-size: var(--valo-font-size-s) !important;
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-            margin-bottom: var(--valo-space-xs) !important;
-            transition: color 0.4s !important;
-            line-height: 1 !important;
-            font-family: var(--valo-font-family) !important;
-        }
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
 
-        datetime-picker {
-            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-            background-color: var(--valo-contrast-5pct);
-            color: var(--valo-contrast-60pct) !important;
-            width: 100%;
-        }
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
 
-        .marginSpace {
-            margin: 0px !important;
-        }
+            .marginSpace {
+                margin: 0px !important;
+            }
 
-        textarea {
-            background-color: #f5f5f5;
-            border: none;
-            border-radius: 3px 4px;
-            align-self: baseline;
-            font-weight: 500;
-        }
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
 
-        textarea:hover {
-            background-color: #eeeeee;
-        }
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-        textarea:focus {
-            background-color: white;
-            border: none;
-            outline: 1px solid #eeeeee;
-            border-radius: 3px 4px;
-        }
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
 
-        datetime-picker {
-            --datetime-selected-background: #71BCC1 !important;
-            --datetime-background: #1f3133;
-            --datetime-color: #eeeeee;
-        }
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
 
-        paper-collapse-item {
-        --paper-item: {
-            padding: 0 0;
-        };
-         --paper-collapse-item-header: {
-             padding: 0 15px;
-             color: #333;
-             background-color: #f5f5f5;
-             border-bottom: solid #ddd 1px;
-             border-top-left-radius: 3px;
-             border-top-right-radius: 3px;
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
 
-         };
-          }
+             };
+            }
 
-          .panel-body {
-              padding-top: 0px !important;
-          }
-        input[readonly] {
-            border: 2px solid transparent;
-        }
-        input {
-            font: inherit;
-        }
-    </style>
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+        </style>
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
-            <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}"  auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -162,6 +167,7 @@
         <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjDiary_Price" last-response="{{ProjDiary_Price}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Projetos/GetProjectDetails"
                    last-response="{{projdata}}"
@@ -174,15 +180,16 @@
         <div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" on-value-changed="_projectChange" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
+                                    on-value-changed="_projectChange"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
@@ -219,7 +226,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
                                     items="[[ContabGroupData]]"
                                     text-path="value"
                                     value-path="id"
@@ -303,7 +310,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -319,7 +326,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
@@ -340,13 +347,13 @@
 
         <h2 class="separator">Linhas de Diário</h2>
         <iron-ajax url="/Projetos/CreatePDByMovProj" last-response="{{result}}" id="ajax_createmovproj" method="post" on-response="_createmovprojResponse" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Projetos/GetAllProjectDiary" last-response="{{result}}" id="ajax_getall" method="post" on-response="_getAllResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllProjectDiary" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/UpdateProjectDiary" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/RegisterDiaryLines" last-response="{{data}}" id="ajax_register" method="post" on-response="_updateRegisterResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post" dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetRelatedProjectInfo" last-response="{{related}}" id="ajax_related" method="post" on-response="_updateRelatedResponse" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" active-item="{{_SelectedLine}}">
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result.items]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -447,7 +454,7 @@
                         </vaadin-combo-box>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseCode(item.code, item.type) ]]
+                        [[ item.code ]]
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -580,10 +587,10 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[FunctionalAreaCodeData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                             <template>
-                                <table width="200px">
+                                <table width="500px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -603,10 +610,10 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                             <template>
-                                <table width="200px">
+                                <table width="550px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -816,13 +823,15 @@
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="100px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
-                </template>
-            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
         <div class="marginSpace" hidden="{{ disabledFields }}">
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
@@ -837,7 +846,6 @@
         <!-- Paper Dialog -->
         <paper-dialog id="dialog" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
-
             <vaadin-grid aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
@@ -975,11 +983,12 @@
                     <template>
                         <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -992,11 +1001,12 @@
                     <template>
                         <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -1009,11 +1019,12 @@
                     <template>
                         <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="550px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -1086,12 +1097,68 @@
 
 
             <div class="buttons">
-                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_confirm" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <paper-button class="btnSave" dialog-dismiss disabled="{{ !_permissions.create }}" raised on-tap="_confirm" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" on-tap="_closedialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
 
         </paper-dialog>
 
+
+        <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
+            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
+                                    items="[[CBResourceCode]]"
+                                      on-value-changed="_projectChange"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ProjDiaryPriceDlg" name="ProjDiaryPriceDlg" value="{{_ProjDiaryPriceDlg}}" label="Preço" disabled="{{disabledProjectNo}}"
+                                    items="[[ProjDiary_Price]]"
+                                    on-value-changed="_projectChange"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
     </template>
 
     <script>
@@ -1275,22 +1342,22 @@
                     '_onCacheLoaded( CBResourceCode,CBCodeProducts,CBCGAccountCode,response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
                 ],
 
-                _onCacheLoaded: function ( cBResourceCode,
-                        cBCodeProducts,
-                        cBcgAccountCode,
-                        typemovement,
-                        type,
-                        code,
-                        contabgroup,
-                        unitcode,
-                        localcode,
-                        regioncode,
-                        funcareacode,
-                        respcentercode,
-                        mealtypescode,
-                        serviceGroupCod,
-                        serviceClientCode
-                   ) {
+                _onCacheLoaded: function (cBResourceCode,
+                    cBCodeProducts,
+                    cBcgAccountCode,
+                    typemovement,
+                    type,
+                    code,
+                    contabgroup,
+                    unitcode,
+                    localcode,
+                    regioncode,
+                    funcareacode,
+                    respcentercode,
+                    mealtypescode,
+                    serviceGroupCod,
+                    serviceClientCode
+                ) {
 
                     if (!this.Flag) {
                         if (this.paramprojno != "") {
@@ -1304,7 +1371,6 @@
                         this.Flag = true;
                     }
                 },
-
                 ready: function () {
                     if (this.paramprojno != "") {
 
@@ -1380,7 +1446,7 @@
                     if (true)
                     //Validações
                     {
-                        this.result.unshift({
+                        this.result.items.unshift({
                             projectNo: this.projectNumber,
                             date: this.date,
                             movementType: this.projectMovementNumber,
@@ -1411,7 +1477,7 @@
                         });
 
                         // Save to DB
-                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                     } else {
@@ -1420,15 +1486,15 @@
                 },
 
                 _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
                     this.$.ajax_update.generateRequest();
                 },
 
                 _delete: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
+                    var index = this.result.items.indexOf(e.model.item);
+                    this.result.items.splice(index, 1);
                     // Save to DB
-                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
                     this.$.ajax_update.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
@@ -1442,8 +1508,15 @@
                     var self = this;
                     if (e.detail.status === 200) {
 
+                        //this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                         this.$.ajax_getall.generateRequest();
-                        this.$.projectDiaryProject.clearCache();
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
+                        //this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        //this.$.grid_databound_ajax.params = { "allProjs": false };
+                        //this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
                         this.openToastSuccess("Diário de Projeto atualizado.");
                     } else {
                         this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
@@ -1451,57 +1524,70 @@
                 },
                 _updateResponse: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
 
+                    if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
+                        if (this.result.eReasonCode === 1) {
 
-                        if (!this.disabledProjectNo) {
-                            this.projectNumber = "";
-                            this.codeRegion = "";
-                            this.codeFuncArea = "";
-                            this.codeResponsabilityCenter = "";
+                            this.openToastSuccess(this.result.eMessage);
+                            if (this.disabledProjectNo == false) {
+                                this.projectNumber = "";
+                                this.$.projectList._clearSelection();
+                            }
+
+                            //this.codeRegion = "";
+                            //this.codeFuncArea = "";
+                            //this.codeResponsabilityCenter = "";
+                            this.date = "";
+                            this.projectMovementNumber = "";
+                            this.projectTypeNumber = "";
+                            this.codeNumber = "";
+                            this.description = "";
+                            this.quantity = "";
+                            this.codeMeasurementUnit = "";
+                            this.codeLocation = "";
+                            //this.codeProjectContabGroup = "";
+                            this.unitCost = "";
+                            this.totalCost = "";
+                            this.unitPrice = "";
+                            this.totalPrice = "";
+                            this.billable = true;
+                            this.invoiceClientNo = "";
+                            this.ddMealTypes = "";
+                            this.ddServiceGroupCode = "";
+                            this.residueguide = "";
+                            this.externalguide = "";
+                            this.consumptionDate = "";
+                            this.ddServiceClientCode = "";
+                            this.unitValueToInvoice = "";
+
+                            this.$.piCodeRegion._clearSelection();
+                            this.$.piFuncArea._clearSelection();
+                            this.$.piCodeResponsabilityCenter._clearSelection();
+                            this.$.piCode._clearSelection();
+                            this.$.piDescription.value = "";
+                            this.$.piCodeLocation._clearSelection();
+                            this.$.piUnitCost.value = "";
+                            this.$.piTotalCost.value = "";
+                            this.$.piUnitPrice.value = "";
+                            this.$.piTotalPrice.value = "";
+                            this.$.piUnitValueToInvoice.value = "";
+                            this.$.piCoin.value = "";
+                            this.$.pcInvoice.value = true;
+                            this.$.MealTypesCode._clearSelection();
+                            this.$.ServiceGroupCod._clearSelection();
+                            this.$.piResidueGuideNo.value = "";
+                            this.$.piExternalGuideNo.value = "";
+                            this.$.dpcompDate.value = "";
+                            //this.$.piContabGroup._clearSelection();
+                            this.$.piCodeMeasurementUnit._clearSelection();
+                            this.$.projectMovementList._clearSelection();
+                            this.$.projectTypeList._clearSelection();
                         }
-                        this.date = "";
-                        this.projectMovementNumber = "";
-                        this.projectTypeNumber = "";
-                        this.codeNumber = "";
-                        this.description = "";
-                        this.quantity = "";
-                        this.codeMeasurementUnit = "";
-                        this.codeLocation = "";
-                        this.codeProjectContabGroup = "";
-                        this.unitCost = "";
-                        this.totalCost = "";
-                        this.unitPrice = "";
-                        this.totalPrice = "";
-                        this.billable = true;
-                        this.invoiceClientNo = "";
-                        this.ddMealTypes = "";
-                        this.ddServiceGroupCode = "";
-                        this.residueguide = "";
-                        this.externalguide = "";
-                        this.consumptionDate = "";
-                        this.ddServiceClientCode = "";
-                        this.unitValueToInvoice = "";
-                        this.openToastSuccess("Diário de Projeto atualizado.");
-
-                        this.$.piCodeLocation.value = "";
-                        this.$.piCodeRegion.value = "";
-                        this.$.piFuncArea.value = "";
-                        this.$.piCodeResponsabilityCenter.value = "";
-                        this.$.piUnitCost.value = "";
-                        this.$.piTotalCost.value = "";
-                        this.$.piUnitPrice.value = "";
-                        this.$.piTotalPrice.value = "";
-                        this.$.piUnitValueToInvoice.value = "";
-                        this.$.piCoin.value = "";
-                        this.$.pcInvoice.value = true;
-                        this.$.MealTypesCode.value = "";
-                        this.$.ServiceGroupCod.value = "";
-                        this.$.piResidueGuideNo.value = "";
-                        this.$.piExternalGuideNo.value = "";
-                        this.$.dpcompDate.value = "";
+                        else {
+                            this.openToastError(this.result.eMessage);
+                        }
                     } else {
                         this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
                     }
@@ -1509,21 +1595,41 @@
                 _confirm: function (selectedItem, selectedItems) {
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
+                        var destinationProject = this.$.projectTargetDlg.value;
                         for (var i = 0; i < selItms.length; i++) {
                             selItms[i].lineNo = 0;
+                            selItms[i].projectNo = destinationProject;
                         }
+
+                        this.$.dialogGetProjetStart.close();
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
-                        this.$.projectDiaryProject.clearCache();
                     } else {
                         this.openToastError("Não foi selecionada nenhuma linha.");
                     }
 
                 },
 
+                _closedialog: function (e) {
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
                 _projectChange: function (e) {
-                    if (e.detail.value) {
-                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
+                    debugger;
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+
+                        //Request Project Data
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                        this.$.ajax_related.generateRequest();
+
+                        //Request Project Data
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+
+                        this.$.grid_databound_ajax.generateRequest();
+
+                    } else if (this.$.projectList.value != undefined && this.$.projectList.value != "") {
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_related.generateRequest();
                     } else {
                         this.$.piDescription = "";
@@ -1531,9 +1637,11 @@
                         this.$.piFuncArea = "";
                         this.$.piCodeResponsabilityCenter = "";
                     }
+
                 },
 
                 _projectTypeChange: function (e) {
+
                     var type = e.detail.value;
                     if (type == "1") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
@@ -1555,10 +1663,11 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
+
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
-                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                        this.codeProjectContabGroup = this.related.contabGroup;
                         this.invoiceClientNo = this.related.invoiceClientNo;
                     }
                     if (this.invoiceClientNo != null) {
@@ -1569,11 +1678,10 @@
                         this.$.ajax_SServiceClient.body = JSON.stringify(this.invoiceClientNo);
                         this.$.ajax_SServiceClient.params = { "allProjs": false };
                         this.$.ajax_SServiceClient.generateRequest();
-
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    if (this.data == null || this.data.length == 0) {
+                    if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
 
@@ -1586,11 +1694,10 @@
                             this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                         }
                     }
-
                 },
 
                 _registerDiary: function () {
-                    this.$.ajax_register.body = JSON.stringify(this.result);
+                    this.$.ajax_register.body = JSON.stringify(this.result.items);
                     this.$.ajax_register.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
@@ -1600,7 +1707,6 @@
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
-                        //Update List
                     }
                     else {
                         this.openToastError("Precisa de selecionar um projeto.");
@@ -1608,58 +1714,56 @@
 
                 },
                 _getMovementsProject: function () {
-                    this.$.dialog.open();
-                    if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
+                    this.$.dialogGetProjetStart.open();
+
+                    /*if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
                         this.openToastError("Não existem movimentos associados a este projeto.");
+                    }*/
+
+                },
+                _dlgNext: function () {
+                    debugger;
+                    var textnull = false;
+                    if (this.$.ResourcesDlg.value != null && (this.$.ResourcesDlg.valueText == "" || this.$.ResourcesDlg.valueText == null)) {
+                        this.$.ResourcesDlg.value = null;
+                        textnull = true;
+                    }
+                    if (this.$.ProjDiaryPriceDlg.value != null && (this.$.ProjDiaryPriceDlg.valueText == "" || this.$.ProjDiaryPriceDlg.valueText == null)) {
+                        this.$.ProjDiaryPriceDlg.value = null;
+                        textnull = true;
+                    }
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                        if (textnull == true) {
+
+                            //Request Project Data
+                            this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                            this.$.ajax_related.generateRequest();
+
+                            //Request Project Data
+                            this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                            this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
+                        this.$.dialogGetProjetStart.close();
+                        this.$.dialog.open();
+                    } else {
+                        this.openToastError("É obrigatório escolher o projeto de origem e destino.");
                     }
 
                 },
                 _movementLinesResponse: function (e) {
-                    if (this.movementLines.length > 0) {
-                        //this.movementLines.forEach(function(e) {
-                        if (e.detail.status === 200) {
+                    if (e.detail.status === 200) {
+                        if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess(this.movementLines.eMessage);
+                        } else {
+                            this.openToastError(this.movementLines.eMessage);
                         }
-                        else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
-                        }
-                        //this.openToastSuccess("Linhas do Diário registadas com sucesso.");
-
-                        //this.result.unshift({
-                        //    projectNo: e.projectNumber,
-                        //    date: e.date,
-                        //    movementType: e.projectMovementNumber,
-                        //    type: e.projectTypeNumber,
-                        //    code: e.codeNumber,
-                        //    description: e.description,
-                        //    quantity: 0,
-                        //    measurementUnitCode: e.codeMeasurementUnit,
-                        //    locationCode: e.codeLocation,
-                        //    projectContabGroup: e.codeProjectContabGroup,
-                        //    regionCode: e.codeRegion,
-                        //    functionalAreaCode: e.codeFuncArea,
-                        //    responsabilityCenterCode: e.codeResponsabilityCenter,
-                        //    unitCost: e.unitCost,
-                        //    totalCost: e.totalCost,
-                        //    unitPrice: e.unitPrice,
-                        //    totalPrice: e.totalPrice,
-                        //    unitValueToInvoice: e.unitValueToInvoice,
-                        //    billable: e.billable,
-                        //    invoiceToClientNo: e.invoiceClientNo,
-                        //    mealType: e.ddMealTypes,
-                        //    serviceGroupCode: e.ddServiceGroupCode,
-                        //    residueGuideNo: e.residueguide,
-                        //    ExternalGuideNo: e.externalguide,
-                        //    consumptionDate: e.consumptionDate,
-                        //    serviceClientCode: e.ddServiceClientCode
-                        //});
-                        //});
-                        //this.$.projectDiaryProject.clearCache();
-                        //this.openToastSuccess("Movimentos adicionados com sucesso.");
-                    } else {
-                        this.openToastError("O projeto selecionado não tem movimentos.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 
@@ -1702,22 +1806,23 @@
                     this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
                     this.$.contractlinecodesgrid_ajax.generateRequest();
 
-                    this.result.find(x => x == this._SelectedLine).code = "";
-                    this.result.find(x => x == this._SelectedLine).type = e.detail.value;
+                    this.result.items.find(x => x == this._SelectedLine).code = "";
+                    this.result.items.find(x => x == this._SelectedLine).type = e.detail.value;
                     this.$.projectDiaryProject.clearCache();
                 },
 
                 _lineCodeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
-                        this.result.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.result.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.result.items.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.result.items.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.result.items.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
                         this.$.projectDiaryProject.clearCache();
                     }
                 },
 
                 _codeChange: function (e) {
+
                     if (e.detail.value != null && e.detail.value != "") {
                         var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
                         this.code = this.codeOptions[index].id;
@@ -1875,7 +1980,7 @@
                                 } else {
                                     return "";
                                 }
-                                
+
                             }
                         }
                     }
@@ -1883,28 +1988,27 @@
                 },
 
                 _lineCalcTotals: function (param) {
-                    debugger;
                     if (this.result != null) {
-                        var res = this.result.find(x => x == this._SelectedLine);
+                        var res = this.result.items.find(x => x == this._SelectedLine);
                         if (res != null) {
                             var qnt = res.quantity;
                             var unitCost = res.unitCost;
                             var unitPrice = res.unitPrice;
                             switch (param.target.id) {
-                            case "lineQuantity":
-                                qnt = param.target.value.replace(",", ".");
-                                res.quantity = qnt;
-                                break;
-                            case "lineUnitCost":
-                                unitCost = param.target.value.replace(",", ".");
-                                res.unitCost = unitCost;
-                                break;
-                            case "lineUnitPrice":
-                                unitPrice = param.target.value.replace(",", ".");
-                                res.unitPrice = unitPrice;
-                                break;
-                            default:
-                                break;
+                                case "lineQuantity":
+                                    qnt = param.target.value.replace(",", ".");
+                                    res.quantity = qnt;
+                                    break;
+                                case "lineUnitCost":
+                                    unitCost = param.target.value.replace(",", ".");
+                                    res.unitCost = unitCost;
+                                    break;
+                                case "lineUnitPrice":
+                                    unitPrice = param.target.value.replace(",", ".");
+                                    res.unitPrice = unitPrice;
+                                    break;
+                                default:
+                                    break;
                             }
 
                             if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
@@ -1913,22 +2017,20 @@
                             if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
                                 res.totalPrice = qnt * unitPrice;
                             }
-                            this.$.projectDiaryProject.clearCache(); 
+                            this.$.projectDiaryProject.clearCache();
                         }
                     }
                 },
 
                 _lineSelected: function (item) {
-
                     if (item != null) {
-                        var oSel = this.result.find(x => x.selected);
+                        var oSel = this.result.items.find(x => x.selected);
                         if (oSel != undefined) {
                             oSel.selected = false;
                         }
-                        var sel = this.result.find(x => x == item);
+                        var sel = this.result.items.find(x => x == item);
                         if (sel != undefined) {
-                            this.result.find(x => x == item).selected = true;
-
+                            this.result.items.find(x => x == item).selected = true;
                             this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             this.$.contractlinecodesgrid_ajax.generateRequest();
                             this.$.projectDiaryProject.clearCache();
@@ -1942,6 +2044,7 @@
                     }
                 }
             });
+
         });
     </script>
 </dom-module>

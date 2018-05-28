@@ -10,8 +10,6 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
-
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -22,8 +20,12 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
-
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <dom-module id="x-proposalsdetails">
     <template>
@@ -75,15 +77,31 @@
                 line-height: 1 !important;
                 font-family: var(--valo-font-family) !important;
             }
-        </style>
 
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+        </style>
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractStatus" last-response="{{CBStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractChangeStatus" last-response="{{CBChangeStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -100,19 +118,15 @@
         <iron-ajax url="/PopulateDropdowns/GetContractLineCodes" last-response="{{CBContractLineCodes}}" id="contractlinecodes_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-        
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
@@ -129,6 +143,14 @@
                    handle-as="json"
                    id="ajax_delete_contract"
                    on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLines_databound_ajax"
+                   on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <!-- PROJECT Valitador -->
@@ -162,10 +184,16 @@
                    id="grid_databound_ajax_proposals_details"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/SetProposalStatus"
+                   last-response="{{StateChangedProposal}}"
+                   method="post"
+                   handle-as="json"
+                   id="setProposalStatus_ajax"
+                   on-response="_proposalStateChangeResponse"
+                   content-type="application/json"></iron-ajax>
         <!-- Paper Dialog -->
         <paper-dialog id="dialog_proposals" class="dialgoBox" modal>
             <h2 class="dialogTitle">Propostas</h2>
-
             <vaadin-grid aria-label="ContractsGrid" items="[[result_proposals]]" class="grid" active-item="{{_activeProposal}}" multi-sort="true">
                 <vaadin-grid-column width="120px">
                     <template class="header">
@@ -281,18 +309,23 @@
             </div>
         </paper-dialog>
 
-
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-            <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-            <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-            <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-
-        </div>
-
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="subMenu">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                    <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="parseParcialContract" disabled="[[ !_permissions.update ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                    <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
+                    <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                </template>
+            </div>
+        </template>
         <div class="row">
             <div class="col-lg-12">
-                <paper-button raised id="btnContractAdd" hidden="{{ _showContractLines }}" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button raised id="btnContractAdd" hidden="{{ _showContractLines }}" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
                 <paper-button raised id="btnContractArchive" hidden="{{ _showContractLines }}" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
         </div>
@@ -308,15 +341,12 @@
             </div>
         </template>
 
-
-
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
                     <div class="panel panel-default">
                         <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
-
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
                                 <!--<paper-tab>Faturação</paper-tab>-->
@@ -334,31 +364,26 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBContacts]]" id="contactNo" item-value-path="id" item-label-path="value" value="{{data.contactNo}}" label="Nº Contato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
+                                                            items="[[CBContacts]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
+
                                         </div>
-                                        <!--<div class="col-lg-3">
-            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-        </div>-->
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
+                                                            items="[[CBClients]]"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_clientChanged">
+                                            </such-selectbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -377,7 +402,7 @@
                                             <vaadin-text-field value="{{data.ordOrderSource}}" id="mOrdOrderSource" name="mOrdOrderSource" label="Origem do Pedido Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.relatedContract}}" id="mProposalNo" name="proposalNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
@@ -391,7 +416,7 @@
                                             <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProposalsStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProposalsStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -432,10 +457,10 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="400px">
+                                                    <table width="500px">
                                                         <tr>
-                                                            <td width="20%">[[item.id]]</td>
-                                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                                            <td width="10%">[[item.id]]</td>
+                                                            <td width="90%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -444,10 +469,10 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="550px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -498,76 +523,99 @@
                                         <div class="col-md-6 ">
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">Datas Limite Fases do Processo</div>
-                                            <div class="panel-body">
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Limite Esclarecimentos</label>
-                                                        <br />
-                                                        <div class="row">
-                                                            <div class="col-md-8" style="padding-right: 5px;">
-                                                                <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                            </div>
-                                                            <div class="col-md-4" style="padding-left: 0px;">
-                                                                <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Erros e Omissões</label>
-                                                        <br />
-                                                        <div class="row">
-                                                            <div class="col-md-8" style="padding-right: 5px;">
-                                                                <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                            </div>
-                                                            <div class="col-md-4" style="padding-left: 0px;">
-                                                                <vaadin-text-field value="{{data.errorsOmissionsTime}}" id="mErrorsOmissionsTime" name="mErrorsOmissionsTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Entrega Proposta" id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
-                                                        <br />
-                                                        <div class="row">
-                                                            <div class="col-md-8" style="padding-right: 5px;">
-                                                                <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                            </div>
-                                                            <div class="col-md-4" style="padding-left: 0px;">
-                                                                <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Habilitação Documental" id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Audiência Prévia</label>
-                                                        <br />
-                                                        <div class="row">
-                                                            <div class="col-md-8" style="padding-right: 5px;">
-                                                                <vaadin-date-picker id="mPreviousHearing" name="mPreviousHearing" value="{{data.previousHearing}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                            </div>
-                                                            <div class="col-md-4" style="padding-left: 0px;">
-                                                                <vaadin-text-field value="{{data.previousHearingTime}}" id="mPreviousHearingTime" name="mPreviousHearingTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
                                         </div>
                                     </div>
+                                    <div class="row break_clear">
+
+                                        <paper-collapse-group>
+                                            <paper-collapse-item class="panel-heading" header="Datas Limite Fases do Processo" closed>
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body">
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Limite Esclarecimentos</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Erros e Omissões</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.errorsOmissionsTime}}" id="mErrorsOmissionsTime" name="mErrorsOmissionsTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Entrega Proposta</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.proposalDeliveryTime}}" id="proposalDeliveryTime" name="proposalDeliveryTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Habilitação Documental</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.documentationHabilitationTime}}" id="mDocumentationHabilitationTime" name="mDocumentationHabilitationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Audiência Prévia</label>
+                                                                <br />
+                                                                <div class="row">
+                                                                    <div class="col-md-8" style="padding-right: 5px;">
+                                                                        <vaadin-date-picker id="mPreviousHearing" name="mPreviousHearing" value="{{data.previousHearing}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                    </div>
+                                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                                        <vaadin-text-field value="{{data.previousHearingTime}}" id="mPreviousHearingTime" name="mPreviousHearingTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </paper-collapse-item>
+                                        </paper-collapse-group>
+                                    </div>
                                 </div>
-
-
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
@@ -583,26 +631,25 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
 
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" label="Nº Requisição Cliente" name="mClientRequisitionNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
-
                                 <!--Detalhes Fatura-->
                                 <div>
                                     <div class="row break_clear">
@@ -656,213 +703,193 @@
                                 </div>
                             </iron-pages>
                             <div class="marginSpace">
-                                <template is="dom-if" if="{{ _permissions.update }}">
+                                <template is="dom-if" if="{{ _permissions.create }}">
                                     <template is="dom-if" if="{{ _isCreate }}">
                                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
-                                    <template is="dom-if" if="{{ !_isCreate }}">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                            <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
-                                        </template>
+                                </template>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                     </template>
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                    </template>
+                                </template>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
                             </div>
                         </div>
-                    </div>
-                </iron-form>
-            </div>
-        </div>
-        <hr />
 
-        <!-- Contract Lines -->
-        <iron-ajax url="/Contratos/GetContractLines"
-                   last-response="{{dataLines}}"
-                   method="post"
-                   handle-as="json"
-                   id="contractLines_databound_ajax"
-                   on-response="_clResponseProcessor"
-                   content-type="application/json"></iron-ajax>
+                        <!-- Contract Lines -->
+                        <paper-collapse-group style="display: {{ _showContractLines }};">
+                            <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
 
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Linhas</div>
-                    <div class="panel-body">
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
+                                                        items="[[CBContractLineCodes]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                        required error-message="Este campo é obrigatório"
+                                                        disabled="{{ !_permissions.update }}"
+                                                        on-value-changed="_clContractLineCodeChange">
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
 
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                    </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBContractLineCodes]]" id="_CLCode" name="_CLCode" item-value-path="id" item-label-path="id" value="{{_CLCode}}" label="Código" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeChange">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.id]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnit" name="_CLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-2 alignPoga">
+                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ !_permissions.update }}">Fáturavel</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBRegions]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="300px">
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="500px">
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="550px">
+                                                    <tr>
+                                                        <td width="20%">[[item.id]]</td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </div>
+                                    <div class="col-lg-2 alignPoga">
+                                        <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ !_permissions.update }}">Criar Contrato</vaadin-checkbox>
+                                    </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                            </div>
+                                    <div class="col-lg-2">
+                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
 
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnit" name="_CLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
-                            </div>
-                        </div>
-
-
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                            </div>
-
-                            <div class="col-lg-2 alignPoga">
-                                <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ !_permissions.update }}">Fáturavel</vaadin-checkbox>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBRegions]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                        </div>
-
-
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2 alignPoga">
-                                <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ !_permissions.update }}">Cria Contrato</vaadin-checkbox>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                            </div>
-                        </div>
-
-                        <div class="row">
+                        <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="130px">
+                                <vaadin-grid-column width="100px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="createContract">Incluir em Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="createContract" />
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
@@ -884,7 +911,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="code" />
@@ -906,7 +933,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="description" />
@@ -920,7 +947,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="120px">
+                                <vaadin-grid-column width="120px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="quantity" />
@@ -935,7 +962,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="170px">
+                                <vaadin-grid-column width="170px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeMeasureUnit">Cód. Uni. Medida</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeMeasureUnit" />
@@ -957,7 +984,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="unitPrice" />
@@ -971,7 +998,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="lineDiscount">% Desconto Linha</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="lineDiscount" />
@@ -985,7 +1012,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="120px">
+                                <vaadin-grid-column width="120px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
@@ -996,7 +1023,7 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeRegion" />
@@ -1006,11 +1033,12 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBRegions]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.codeRegion}}" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="300px">
+                                                        <tr>
+                                                            <td width="10%">[[item.id]]</td>
+                                                            <td width="90%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1019,7 +1047,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="190px">
+                                <vaadin-grid-column width="190px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeFunctionalArea" />
@@ -1028,11 +1056,12 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.codeFunctionalArea}}" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="500px">
+                                                        <tr>
+                                                            <td width="10%">[[item.id]]</td>
+                                                            <td width="90%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1041,7 +1070,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -1050,11 +1079,12 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.codeResponsabilityCenter}}" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="550px">
+                                                        <tr>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1063,7 +1093,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
+                                <vaadin-grid-column width="100px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="frequency">Periocidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="frequency" />
@@ -1077,7 +1107,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="160px">
+                                <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="interventionHours">Nº Horas Intervenção</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="interventionHours" />
@@ -1091,7 +1121,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="totalTechinicians">Nº Técnicos</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="totalTechinicians" />
@@ -1105,7 +1135,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionStartDate">Data Inicio Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionStartDate" />
@@ -1113,32 +1143,30 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
-
-                                            <!--<vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
                                         </template>
-                                        <!--<f =-->
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="versionEndDate">
+                                            Data Fim Versão
+                                        </vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
-
-                                            <!--<vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
                                         </template>
+
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionEndDate}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="responsibleNo">Nº Responsável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="responsibleNo" />
@@ -1160,7 +1188,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeServiceCliente">Cód. Serviço Cliente</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeServiceCliente" />
@@ -1182,7 +1210,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="invoiceGroup" />
@@ -1204,17 +1232,6 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="createContract">Cria Contrato</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="createContract" />
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
                                 <vaadin-grid-column>
                                     <template class="header">
                                     </template>
@@ -1229,35 +1246,68 @@
                                 </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
-                        <div class="marginSpace">
+                        <div class="marginSpace" style="display: {{ _showContractLines }};">
                             <template is="dom-if" if="{{ _permissions.update }}">
                                 <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                         </div>
                     </div>
-                </div>
+                </iron-form>
             </div>
         </div>
 
+        <paper-dialog id="dlgCustomerShipmentDate" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCustomerShipDateDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
+        <paper-dialog id="dlgArchiveReason" modal style="height:300px; width:500px">
+            <div>
+                <such-textarea rows="5" id="archiveReason" name="archiveReason" label="Razão Arquivo" required error-message="Este campo é obrigatório" maxlength="2000"> </such-textarea>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeArchiveReasonDialog">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgUpdateContract" modal style="height:300px; width:500px">
+            <div style="height: 180px;">
+                Tem a certeza que pretende atualizar o contrato [[ data.relatedContract ]]?
+                <vaadin-combo-box items="[[ _contractUpdateType ]]" id="cmbContractUpdateType" item-value-path="value" item-label-path="description" label="Selecione o tipo de atualização" required error-message="Este campo é obrigatório">
+                    <template>
+                        <span><b>[[ item.description ]]</b></span>
+                    </template>
+                </vaadin-combo-box>
+                <template is="dom-if" if="[[ _mustSelectStatus ]]">
+                    <vaadin-combo-box items="[[ _statusForContractUpdate ]]" id="cmbStatusForContractUpdate" item-value-path="value" item-label-path="description" label="Selecione o estado da proposta" required error-message="Este campo é obrigatório">
+                        <template>
+                            <span><b>[[ item.description ]]</b></span>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_updateRelatedContract">Sim</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeUpdateContractDlg">Não</paper-button>
+            </div>
+        </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
-
-
     </template>
-
-
     <script>
-
-
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-proposalsdetails',
                 properties: {
                     _permissions: {
-                        type: Array
+                        type: Array,
                     },
                     _areaid: {
                         type: Number,
@@ -1449,9 +1499,9 @@
                         type: Number,
                         value: -1
                     },
-                    _reviseStatus: {
-                        type: Boolean,
-                        value: true
+                    _newStatus: {
+                        type: Number,
+                        value: -1
                     },
                     _revised: {
                         type: Boolean,
@@ -1464,7 +1514,129 @@
                         type: Boolean,
                         value: false
                     },
+                    _hasRelatedContract: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _statusMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Aberta" }, { value: 2, description: "Enviada" }, { value: 3, description: "Revista" }, { value: 4, description: "Perdida" }, { value: 5, description: "Cancelada" }],
+                    },
+                    _statusForContractUpdate: {
+                        type: Array,
+                        value: [{ value: 2, description: "Enviada" }, { value: 3, description: "Revista" }],
+                    },
+                    _contractUpdateType: {
+                        type: Array,
+                        value: [{ value: 1, description: "Atualização Parcial" }, { value: 2, description: "Atualização Integral" }],
+                    },
+                    _mustSelectStatus: {
+                        type: Boolean,
+                        value: true,
+                    }
                 },
+                observers: [
+                    'relatedContractChanged(data.relatedContract)'
+                ],
+                relatedContractChanged: function (relatedContract) {
+                    this._hasRelatedContract = (relatedContract != null && relatedContract != "") ? true : false;
+                },
+
+                _statusMenuItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    this._setProposalStatus();
+                },
+
+                _proposalStateChangeResponse: function () {
+                    if (this.StateChangedProposal.eReasonCode == 1) {
+                        this._openToast("Proposta atualizada com sucesso.");
+                        var contractNo = this.StateChangedProposal.contractNo;
+                        var versionNo = this.StateChangedProposal.versionNo;
+
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
+                            }, 1500);
+                    } else {
+                        this._openToastError(this.StateChangedProposal.eMessage);
+                    }
+                },
+
+                _setProposalStatus: function () {
+                    if (this._newStatus < 1) {
+                        this._openToastError("Não é possivel alterar o estado. Atualize a página e tente novemante.");
+                        return;
+                    }
+                    var custShipDate = '';
+                    var archiveReason = '';
+                    if (this._oldStatus != this._newStatus) {
+                        switch (this._newStatus) {
+                            case 2: //Alterada para enviada
+                                /*
+                                    O Campo Origem do Pedido Descrição tem que estar preenchido
+                                    Tem que existir pelo menos uma linha preenchida
+                                    Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                */
+                                if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
+                                    this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
+                                    return false;
+                                }
+                                if (this.dataLines.lines.length == 0) {
+                                    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
+                                    return false;
+                                }
+                                if (this.$.dtpCustomerShipmentDate.validate()) {
+                                    custShipDate = this.$.dtpCustomerShipmentDate.value;
+                                    this.$.dlgCustomerShipmentDate.close();
+                                }
+                                else {
+                                    this.$.dlgCustomerShipmentDate.open();
+                                    return false;
+                                }
+                                break;
+                            case 3: //Alterada para revista
+                                /*
+                                    Se a proposta não estiver com o estado ‘Enviada’, não permite prosseguir. Informar o utilizador que a proposta tem que estar com o estado ‘Enviada’
+                                */
+                                if (this._oldStatus != 2) {
+                                    this._openToastError("Apenas propostas com o estado Enviada podem ser alteradas para o estado Revista.");
+                                    return false;
+                                }
+                                break;
+                            case 4: //Alterada para Perdida
+                            case 5: //Alterada para Cancelada
+                            case 10://Alterada para Não Respondida
+                                /*
+                                    Preencher a razão do Arquivo
+                                */
+                                if (this.$.archiveReason.validate()) {
+                                    archiveReason = this.$.archiveReason.value;
+                                    this.$.dlgArchiveReason.close();
+                                }
+                                else {
+                                    this.$.dlgArchiveReason.open();
+                                    return false;
+                                }
+                                break;
+                        }
+                        this.data.customerShipmentDate = custShipDate;
+                        this.data.archiveReason = archiveReason;
+                        this.data.status = this._newStatus;
+                        this.$.setProposalStatus_ajax.body = JSON.stringify(this.data);
+                        this.$.setProposalStatus_ajax.generateRequest();
+
+                        //this._executeRequest("/Contratos/UpdateContract", this.data);
+                    }
+                    else {
+                        this._openToastError("A proposta já está no estado selecionado.");
+                    }
+                },                
                 ready: function () {
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
@@ -1477,7 +1649,6 @@
                     }
 
                     this._showAreas = this._areaid == 4;
-
                 },
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
@@ -1491,15 +1662,16 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
-                    if (this.$.contractNo.validate() &
-                        this.$.Description.validate() &
-                        this.$.mClients.validate() &
+                    if (this.$.Description.validate() &
+                        //this.$.mClients.validate() &
+                        //this.$.contactNo.validate() &
+                        this.$.contractNo.validate() &
                         this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
                         this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
-                        this.$.mProposalNo.validate() &
+                        this.$.txtRelatedContractNo.validate() &
                         this.$.mPaymentTerms.validate() &
                         //this.$.mStartDateFirstContract.validate() &
                         //this.$.mFirstContractReference.validate() &
@@ -1516,7 +1688,6 @@
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
-                        this.$.contactNo.validate() &
                         this.$.mBillingTypes.validate() &
                         this.$.mMaintenanceTypes.validate() &
                         this.$.mProvisioningFee.validate() &
@@ -1524,57 +1695,98 @@
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate() &
                         this.$.mTotalProposalValue.validate()) {
+
+                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
+                            (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                            this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
+                            return false;
+                        }
+                        if ((this.$.mClients.value == "" && this.$.mClients.value == undefined) &&
+                            (this.$.contactNo.value == "" && this.$.contactNo.value == undefined)) {
+                            this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                            return false;
+                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
                 _createNewContract: function () {
-                    window.location.href = "../DetalhesProposta";
+                    window.location.href = "../DetalhesProposta/";
                 },
-
+                _closeCustomerShipDateDlg: function () {
+                    this.$.dtpCustomerShipmentDate.value = "";
+                    this.$.dlgCustomerShipmentDate.close();
+                },
+                _closeArchiveReasonDialog: function () {
+                    this.$.archiveReason.value = "";
+                    this.$.dlgArchiveReason.close();
+                },
+                _showArchiveReason: function () {
+                    var items = [4, 5, 10];//Perdida, Cancelada, Não Respondida
+                    var hidden = true;
+                    if (this.data != null)
+                        hidden = items.indexOf(this.data.status) > -1 ? false : true;
+                    this.$.txtArchiveReason.hidden = hidden;
+                },
 
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
                         this.data.contractType = 2;
+                        this.data.status = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _update: function () {
                     if (this._validateData()) {
-                        if (this._oldStatus != this.data.status && this.data.status == 2) {
-                            if (this._oldStatus != 1) {
-                                this._openToastError("Apenas pode alterar uma proposta para o estado aberto quando esta se encontrava no estado aberta.");
-                            } else if (this.dataLines.lines.length == 0) {
-                                this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para aberta.");
-                            } else if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
-                                this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
-                            } else {
-                                this._executeRequest("/Contratos/UpdateContract", this.data)
+                        /*
+                        //Status Changed
+                        if (this._oldStatus != this.data.status) {
+                            switch (this.data.status) {
+                                case 2: //Alterada para enviada
+                                    
+                                        //O Campo Origem do Pedido Descrição tem que estar preenchido
+                                        //Tem que existir pelo menos uma linha preenchida
+                                        //Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                    
+                                    if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
+                                        this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
+                                        return false;
+                                    }
+                                    if (this.dataLines.lines.length == 0) {
+                                        this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
+                                        return false;
+                                    }
+                                    if (this.$.dtpCustomerShipmentDate.validate()) {
+                                        this.data.customerShipmentDate = this.$.dtpCustomerShipmentDate.value;
+                                        this.$.dlgCustomerShipmentDate.close();
+                                    }
+                                    else {
+                                        this.$.dlgCustomerShipmentDate.open();
+                                        return false;
+                                    }
+                                    break;
+                                case 4: //Alterada para Perdida
+                                case 5: //Alterada para Cancelada
+                                case 10://Alterada para Não Respondida
+                                    
+                                        //Preencher a razão do Arquivo
+                                    
+                                    if (this.$.archiveReason.validate()) {
+                                        this.data.archiveReason = this.$.archiveReason.value;
+                                        this.$.dlgArchiveReason.close();
+                                    }
+                                    else {
+                                        this.$.dlgArchiveReason.open();
+                                        return false;
+                                    }
+                                    break;
                             }
-                        } if (this._oldStatus != this.data.status && this.data.status == 3) {
-                            this._executeRequest("/Contratos/UpdateContract", this.data)
-
-
-
-                            this.data.actionCode = 2;
-                            var databound = this.$.page_databound_ajax;
-                            var data = this.data;
-                            setTimeout(
-                                function () {
-                                    databound.url = "/Contratos/ArchiveContract";
-                                    databound.body = JSON.stringify(data);
-                                    databound.generateRequest();
-                                }, 2000);
-
-
-                            this._reviseStatus = true;
-
-                        } else {
-                            this._executeRequest("/Contratos/UpdateContract", this.data)
                         }
+                        */
+                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
                 _delete: function () {
@@ -1625,7 +1837,7 @@
                         }
                     });
                 },
-                _clientChange: function (e) {
+                _clientChanged: function (e) {
                     if (e.detail.value != "") {
                         this.$.codeShippingAddress.value = "";
                         this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
@@ -1634,6 +1846,7 @@
                 },
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    this._showArchiveReason();
                     var self = this;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
@@ -1657,7 +1870,7 @@
                         this._isCreate = false;
                         this._oldStatus = this.data.status;
                     }
-
+                    
                     if (this.data.filed) {
                         this._permissions.update = false;
                     }
@@ -1680,12 +1893,13 @@
                                 this._openToast("Proposta atualizada com sucesso.");
                                 var contractNo = this.data.contractNo;
                                 var versionNo = this.data.versionNo;
-                                //setTimeout(
-                                //    function () {
-                                //        window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
-                                //    }, 1000);
+
+                                setTimeout(
+                                    function () {
+                                        window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
+                                    }, 1500);
                             } else {
-                                this._openToast(this.data.eMessage);
+                                this._openToastError(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
@@ -1722,7 +1936,6 @@
                         this._openToast(this.data.eMessage);
                     }
                 },
-
 
 
                 _responseValidatorProcessor: function (data) {
@@ -1869,6 +2082,7 @@
                             this._CLFrequency = "";
                             this._CLServiceClient = "";
                             this._CLCode = "";
+                            this.$._CLCode._clearSelection();
                             this._CLUnitPrice = "";
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup = "";
@@ -2042,7 +2256,7 @@
                 //Parse To Contract
                 _parseToContract: function (param) {
                     if (param != null) {
-                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
+                        if (this.data.relatedContract == null || this.data.relatedContract == "") {
                             if (param.currentTarget.id == "parseContract") {
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
                                 this.$.parseToContract_ajax.generateRequest();
@@ -2050,11 +2264,13 @@
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
                                 this.$.parseToContract_ajax.generateRequest();
                             }
-                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
-                            this.$.parseToContract_ajax.generateRequest();
-                        } else {
-                            this._openToastError("Esta versão de proposta já tem contrato associado");
+                        }
+                        //else if (this.data.contractNo == null && this.data.contractNo != "") {
+                        //    this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
+                        //    this.$.parseToContract_ajax.generateRequest();
+                        //}
+                        else {
+                            this._openToastError("Esta proposta já tem um contrato associado.");
                         }
 
                     }
@@ -2063,49 +2279,70 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
-                        this.$.mProposalNo.value = this.numeration;
+                        this.$.txtRelatedContractNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da contrato.");
                     }
                 },
 
+
+                _closeUpdateContractDlg: function (e) {
+                    var cmbStatus = this.$$('#cmbStatusForContractUpdate');
+                    if (cmbStatus != null)
+                        cmbStatus.value = "";
+
+                    var cmbType = this.$$('#cmbContractUpdateType');
+                    if (cmbType != null)
+                        cmbType.value = "";
+
+                    this.$.dlgUpdateContract.close();
+                },
+                _confirmContractUpdate: function () {
+                    if (this.data.relatedContract == null || this.data.relatedContract == "") {
+                        this._openToastError("Esta proposta ainda não foi convertida para contrato.");
+                        return false;
+                    }
+                    if (this.data.dueDate == null || this.data.dueDate == "") {
+                        this._openToastError("Selecione a Data de Expiração Prevista.");
+                        return false;
+                    }
+                    this._mustSelectStatus = this.data.status == 1;
+                    this.$.dlgUpdateContract.open();
+                },
+
                 //Update Contract
-                _updateToContract: function (param) {
-                    if (param != null) {
-                        if (this.data.contractNo != "" && this.data.contractNo != undefined) {
-                            var _dataContract = this.data;
-                            var ajax_request = this.$.page_databound_ajax;
-                            bootbox.confirm({
-                                message: "Tem a certeza que pretende atualizar o contrato " + this.data.contractNo + "?",
-                                buttons: {
-                                    confirm: {
-                                        label: 'Sim',
-                                        className: 'btn-success'
-                                    },
-                                    cancel: {
-                                        label: 'Não',
-                                        className: 'btn-danger'
-                                    }
-                                },
-                                callback: function (result) {
-                                    if (result) {
-                                        ajax_request.url = "/Contratos/UpdateProposalContract";
-                                        ajax_request.body = JSON.stringify(_dataContract);
-                                        ajax_request.generateRequest();
-                                    }
-                                }
-                            });
-                        } else {
-                            this._openToastError("Esta proposta ainda não foi convertida para contrato.");
+                _updateRelatedContract: function (param) {
+                    var cmbStatus = this.$$('#cmbStatusForContractUpdate');
+                    if (this._mustSelectStatus) {
+                        if (cmbStatus != null) {
+                            this.data.status = cmbStatus.value;
                         }
+                    }                    
+                    var cmbType = this.$$('#cmbContractUpdateType');
+                    if (cmbType != null) {
+                        var isPartialUpdate = cmbType.value == 1;
+
+                        this.$.dlgUpdateContract.close();
+
+                        cmbType.value = "";
+                        if (this._mustSelectStatus) {
+                            cmbStatus.value = "";
+                        }
+                        
+                        this.$.page_databound_ajax.url = "/Contratos/UpdateProposalContract";
+                        this.$.page_databound_ajax.body = JSON.stringify({ "proposal": this.data, "partialUpdate": isPartialUpdate});
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Não foi possivel atualizar o contrato.");
                     }
                 },
                 _responseUpdateToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
-                        this.$.mProposalNo.value = this.numeration;
+                        this.$.txtRelatedContractNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da contrato.");
@@ -2134,7 +2371,7 @@
                             },
                             callback: function (result) {
                                 if (result) {
-                                    copy_request.body = JSON.stringify({ "ContractNo": item.contractNo, "Version": item.versionNo } );
+                                    copy_request.body = JSON.stringify({ "ContractNo": item.contractNo, "Version": item.versionNo });
                                     copy_request.generateRequest();
                                     dialogObj.close();
 
@@ -2145,6 +2382,7 @@
                 },
             });
         });
+
     </script>
 
 </dom-module>

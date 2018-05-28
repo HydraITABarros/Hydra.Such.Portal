@@ -25,18 +25,42 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <h1 class="title">Fichas Técnicas de Pratos</h1>
 <x-rectecplates></x-rectecplates>
 <dom-module id="x-rectecplates">
     <template>
+        <style>
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+        </style>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <div class="subMenu"  hidden="{{ _permissionssubMenu }}">
-            <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
+        <div class="subMenu" hidden="{{ _permissionssubMenu }}">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
+            </template> 
         </div><!--on-response="_gridListResponse"-->
+        <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlates" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -64,7 +88,7 @@
                     <vaadin-grid-filter path="classFt1" />
                 </template>
                 <template>
-                    {{item.classFt1}}
+                    [[_parseclassFt(item.classFt1)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -73,7 +97,7 @@
                     <vaadin-grid-filter path="classFt2" />
                 </template>
                 <template>
-                    {{item.classFt2}}
+                    [[_parseclassFt(item.classFt2)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -133,25 +157,38 @@
         </vaadin-grid>
     </template>
     <script>
-        document.addEventListener('WebComponentsReady', function() {
-                Polymer({
-                    is: 'x-rectecplates',
-                    properties: {
-                        _SelectedLine: {
-                            observer: '_rowSelected'
-                        }
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-rectecplates',
+                properties: {
+                    _SelectedLine: {
+                        observer: '_rowSelected'
                     },
-                    _openCreate: function (item) {
-                        if (item != null) {
-                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica";
-                        }
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
-                    _rowSelected: function (item) {
-                        if (item != null) {
-                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica/" + item.plateNo;
+                },
+                _openCreate: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica";
+                    }
+                },
+                _parseclassFt: function (param) {
+                    if (param != undefined && this.CboClassificationFilesTechniques != undefined) {
+                        var sel = this.CboClassificationFilesTechniques.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
                         }
                     }
-                });
+                    return "";
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica/" + item.plateNo;
+                    }
+                }
             });
+        });
     </script>
 </dom-module>

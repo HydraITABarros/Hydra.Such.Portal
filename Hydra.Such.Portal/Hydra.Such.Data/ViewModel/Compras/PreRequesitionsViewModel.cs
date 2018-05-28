@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class PreRequesitionsViewModel
+    public class PreRequesitionsViewModel : ErrorHandler
     {
         public string PreRequesitionsNo { get; set; }
         public int? Area { get; set; }
-        public int? RequesitionType { get; set; }
+        public string RequesitionType { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
@@ -68,7 +68,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string DeliveryContact { get; set; }
         public string ReceptionReceptionResponsible { get; set; }
         public string InvoiceNo { get; set; }
-        public int eReasonCode { get; set; }
-        public string eMessage { get; set; }
+        public string ArmazemCDireta { get; set; }
+        //public int eReasonCode { get; set; }
+        //public string eMessage { get; set; }
     }
 }

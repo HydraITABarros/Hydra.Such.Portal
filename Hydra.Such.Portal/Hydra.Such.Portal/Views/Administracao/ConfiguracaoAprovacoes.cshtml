@@ -23,13 +23,12 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 @*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html">
-
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
 
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 
 <h1 class="title">@ViewData["Title"]</h1>
 
@@ -116,6 +115,11 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ddResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ddRegionsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ddFunctionalAreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <div class="row">
             <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
@@ -125,34 +129,60 @@
             <div class="col-lg-3">
                 <vaadin-combo-box items="[[TypeRequisition]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Tipo" disabled="{{ _permissionsCreate }}">
                     <template>
-                        <table width="200px">
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            @*<div class="col-lg-3">
+                <vaadin-combo-box items="[[AdminArea]]" id="ddArea" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>*@
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="value" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <table width="500px">
                             <tr>
+                                <td width="10%">[[item.id]]</td>
                                 <td width="80%"> <b>[[item.value]]</b></td>
-                                <td width="20%">[[item.id]]</td>
                             </tr>
                         </table>
                     </template>
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-3">
-                <vaadin-combo-box items="[[AdminArea]]" id="ddArea" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
+                <vaadin-combo-box items="[[ddResponsabilityCenterData]]" id="ddResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Centro Responsabilidade" disabled="{{ _permissionsCreate }}">
                     <template>
-                        <table width="200px">
+                        <table width="500px">
                             <tr>
-                                <td width="80%"> <b>[[item.value]]</b></td>
                                 <td width="20%">[[item.id]]</td>
+                                <td width="80%"> <b>[[item.value]]</b></td>
                             </tr>
                         </table>
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[ddRegionsData]]" id="ddRegion" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Região" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <table width="300px">
+                            <tr>
+                                <td width="10%">[[item.id]]</td>
+                                <td width="80%"> <b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-3">
                 <vaadin-text-field id="ddLevelApproval" type="number" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <vaadin-text-field id="ddValueApproval" type="number" label="Valor Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <vaadin-combo-box items="[[UserApprovalList]]" id="ddUserApproval" on-change="_onChangeUser" item-value-path="id" item-label-path="value" value="{{item.approvalUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
                     <template>
                         <table width="200px">
@@ -165,7 +195,7 @@
                 </vaadin-combo-box>
 
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <vaadin-combo-box items="[[GroupApprovalList]]" id="ddGroupApproval" on-change="_onChangeGroup" item-value-path="id" item-label-path="value" value="{{ddGroupDescription}}" label="Grupo Aprovação" disabled="{{ _permissionsCreate }}">
                     <template>
                         <table width="140px">
@@ -178,10 +208,10 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <vaadin-date-picker id="ddDataStart" label="Data de Inicial" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <vaadin-date-picker id="ddDataEnd" label="Data Final" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
             </div>
             <div class="col-lg-2 alignPoga">
@@ -219,7 +249,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="150px">
+            @*<vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="area" />
@@ -231,6 +261,62 @@
                                 <tr>
                                     <td width="70%"> <b>[[item.value]]</b></td>
                                     <td width="30%">[[item.id]]</td>
+
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>*@
+            <vaadin-grid-column resizable width="300px">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalArea">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalArea" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ddFunctionalAreasData]]" item-value-path="id" item-label-path="value" value="{{item.functionalArea}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="10%">[[item.id]]</td>
+                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="300px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenter">Centro de Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenter" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ddResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="15%">[[item.id]]</td>
+                                    <td width="85%"> <b>[[item.value]]</b></td>
+
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="300px">
+                <template class="header">
+                    <vaadin-grid-sorter path="region">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="region" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ddRegionsData]]" item-value-path="id" item-label-path="value" value="{{item.region}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="15%">[[item.id]]</td>
+                                    <td width="85%"> <b>[[item.value]]</b></td>
 
                                 </tr>
                             </table>
@@ -300,7 +386,8 @@
                     <vaadin-grid-filter path="startDate" />
                 </template>
                 <template>
-                    <input type="date" id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{  _permissionsUpdate  }}">
+                    <!--input type="date" id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{  _permissionsUpdate  }}"-->
+                    <vaadin-date-picker id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="115px">
@@ -309,7 +396,8 @@
                     <vaadin-grid-filter path="endDate" />
                 </template>
                 <template>
-                    <input type="date" id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{  _permissionsUpdate  }}">
+                    <!--input type="date" id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{  _permissionsUpdate  }}"-->
+                    <vaadin-date-picker id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -372,6 +460,13 @@
                 },
 
                 _update: function () {
+                    if (this.result != null) {
+                        var hasInvalid = this.result.some(x => x.level == null || x.level < 1);
+                        if (hasInvalid) {
+                            this.openToastError("O nivel de aprovação tem que ser superior a Zero");
+                            return;
+                        }
+                    }
                     this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
@@ -380,7 +475,10 @@
                     if (this.$.ddLevelApproval.value != null && this.$.ddLevelApproval.value != "") {
                         var line = {
                             Type: this.$.ddType.value,
-                            Area: this.$.ddArea.value,
+                            Area: 0,//this.$.ddArea.value,
+                            Region: this.$.ddRegion.value,
+                            FunctionalArea: this.$.ddFunctionalArea.value,
+                            ResponsabilityCenter : this.$.ddResponsabilityCenter.value,
                             Level: this.$.ddLevelApproval.value,
                             ApprovalUser: this.$.ddUserApproval.value,
                             ApprovalGroup: this.$.ddGroupApproval.value,
@@ -388,6 +486,7 @@
                             StartDate: this.$.ddDataStart.value,
                             EndDate: this.$.ddDataEnd.value
                         }
+                        debugger;;
                         if (this.result == null) {
                             this.result = line;
                         }
@@ -399,7 +498,7 @@
                         this.$.ajax_update.generateRequest();
                     }
                     else {
-                        this.openToastError("O nivel de avaliação não pode ser Zero");
+                        this.openToastError("O nivel de aprovação tem que ser superior a Zero");
 
                     }
                 },
@@ -409,7 +508,7 @@
                         data.model.item.approvalGroup = "";
                         this.$.gridApprovals.clearCache();
                     }
-                     
+
 
                 },
                 _onChangeGroup: function (data) {
@@ -429,7 +528,7 @@
                         this.$.gridApprovals.clearCache();
 
                         this.$.ddType.value = "";
-                        this.$.ddArea.value = "";
+                        //this.$.ddArea.value = "";
                         this.$.ddLevelApproval.value = "";
                         this.$.ddUserApproval.value = "";
                         this.$.ddGroupApproval.value = "";

@@ -1,42 +1,46 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Autorização RH Folha de Horas";
+    ViewData["Title"] = "Configuração Autorização Empregado Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*grid*@
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*textfield*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
-@*combobox*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
-@*toast*@
-<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
-@*layout*@
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-@*mixin*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*button*@
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*ironform*@
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/neon-animation/web-animations.html">
 
-<h1 class="title">Configuração Autorização RH Folha de Horas</h1>
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<h1 class="title">Configuração Autorização Empregado Folha de Horas</h1>
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -56,6 +60,21 @@
 
             paper-input {
                 max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
             }
         </style>
 
@@ -104,137 +123,139 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
 
-        <div class="row break_clear">
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="empregado" name="empregado" item-value-path="id" item-label-path="value" label="Empregado" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="empregado" name="empregado" item-value-path="id" item-label-path="value" label="Empregado" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel1" name="responsavel1" item-value-path="id" item-label-path="value" label="Responsável Nº 1" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="responsavel1" name="responsavel1" item-value-path="id" item-label-path="value" label="Responsável Nº 1" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel2" name="responsavel2" item-value-path="id" item-label-path="value" label="Responsável Nº 2" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="responsavel2" name="responsavel2" item-value-path="id" item-label-path="value" label="Responsável Nº 2" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel3" name="responsavel3" item-value-path="id" item-label-path="value" label="Responsável Nº 3" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-        </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="responsavel3" name="responsavel3" item-value-path="id" item-label-path="value" label="Responsável Nº 3" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                    </div>
 
-        <div class="row break_clear">
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="validador1" name="validador1" item-value-path="id" item-label-path="value" label="Validador RH Nº 1" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="validador1" name="validador1" item-value-path="id" item-label-path="value" label="Validador RH Nº 1" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="validador2" name="validador2" item-value-path="id" item-label-path="value" label="Validador RH Nº 2" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="validador2" name="validador2" item-value-path="id" item-label-path="value" label="Validador RH Nº 2" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="validador3" name="validador3" item-value-path="id" item-label-path="value" label="Validador RH Nº 3" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-        </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="validador3" name="validador3" item-value-path="id" item-label-path="value" label="Validador RH Nº 3" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                    </div>
 
-        <div class="row break_clear">
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm1" name="validadorkm1" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 1" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm1" name="validadorkm1" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 1" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3">
-                <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm2" name="validadorkm2" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 2" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm2" name="validadorkm2" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 2" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-3 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-        </div>
+                        <div class="col-sm-3 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <br />
 
         <vaadin-grid id="gridAutorizacaoFHRH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noEmpregado">Empregado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noEmpregado" />
+                    <vaadin-grid-sorter path="nomeEmpregado">Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeEmpregado" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noEmpregado}}" disabled="true">
@@ -251,8 +272,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel1">Responsável Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel1" />
+                    <vaadin-grid-sorter path="nomeResponsavel1">Responsável Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel1}}" disabled="{{ _permissionsUpdate }}">
@@ -269,8 +290,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel2">Responsável Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel2" />
+                    <vaadin-grid-sorter path="nomeResponsavel2">Responsável Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel2}}" disabled="{{ _permissionsUpdate }}">
@@ -287,8 +308,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel3">Responsável Nº 3</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel3" />
+                    <vaadin-grid-sorter path="nomeResponsavel3">Responsável Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel3" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel3}}" disabled="{{ _permissionsUpdate }}">
@@ -305,8 +326,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH1">Validador RH Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH1" />
+                    <vaadin-grid-sorter path="nomeValidadorRH1">Validador RH Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH1}}" disabled="{{ _permissionsUpdate }}">
@@ -323,8 +344,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH2">Validador RH Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH2" />
+                    <vaadin-grid-sorter path="nomeValidadorRH2">Validador RH Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH2}}" disabled="{{ _permissionsUpdate }}">
@@ -341,8 +362,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH3">Validador RH Nº 3</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH3" />
+                    <vaadin-grid-sorter path="nomeValidadorRH3">Validador RH Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH3" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH3}}" disabled="{{ _permissionsUpdate }}">
@@ -359,8 +380,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH1">Validador RH KM Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH1" />
+                    <vaadin-grid-sorter path="nomeValidadorRHKM1">Validador RH KM Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRHKM1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM1}}" disabled="{{ _permissionsUpdate }}">
@@ -377,8 +398,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH2">Validador RH KM Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH2" />
+                    <vaadin-grid-sorter path="nomeValidadorRHKM2">Validador RH KM Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRHKM2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM2}}" disabled="{{ _permissionsUpdate }}">
@@ -393,61 +414,61 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="utilizadorCriacao">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorCriacao" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorCriacao}}" disabled="true">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="utilizadorCriacao">Criado Por</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="utilizadorCriacao" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorCriacao}}" disabled="true">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraCriacao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataHoraCriacao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="utilizadorModificacao">Alterado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorModificacao" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorModificacao}}" disabled="true">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="utilizadorModificacao">Alterado Por</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="utilizadorModificacao" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorModificacao}}" disabled="true">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraModificacao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Última Alteração</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataHoraModificacao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="150px">
                 <template class="header">
@@ -623,23 +644,29 @@
 
                 _createResponse: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.empregado.value = "";
-                        this.$.responsavel1.value = "";
-                        this.$.responsavel2.value = "";
-                        this.$.responsavel3.value = "";
-                        this.$.validador1.value = "";
-                        this.$.validador2.value = "";
-                        this.$.validador3.value = "";
-                        this.$.validadorkm1.value = "";
-                        this.$.validadorkm2.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.empregado.value = "";
+                            this.$.responsavel1.value = "";
+                            this.$.responsavel2.value = "";
+                            this.$.responsavel3.value = "";
+                            this.$.validador1.value = "";
+                            this.$.validador2.value = "";
+                            this.$.validador3.value = "";
+                            this.$.validadorkm1.value = "";
+                            this.$.validadorkm2.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 
@@ -655,7 +682,8 @@
                 },
 
                 _goBack: function (e) {
-                    window.location = "../";
+                    //window.location = "../";
+                    window.history.back();
                 }
             });
         });

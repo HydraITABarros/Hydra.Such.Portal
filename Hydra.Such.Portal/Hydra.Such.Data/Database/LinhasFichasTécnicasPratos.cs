@@ -53,7 +53,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        public FichasTécnicasPratos CódigoNavigation { get; set; }
         public FichasTécnicasPratos NºPratoNavigation { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿<link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -112,6 +114,10 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+
+            /*vaadin-text-field.disabled:after {
+                background: #ff0000;
+            }*/
         </style>
 
         <!-- DROPDOWNS POPULATE -->
@@ -145,6 +151,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/ValidarDataHoraInicio_DataHoraFim"
+                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehorasvalidacao_ajax"
+                   on-response="_updatefolhadehorasvalidacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--<iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
+                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehorasvalidacao_ajax"
+                   on-response="_updatefolhadehorasvalidacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
+
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
                    method="post"
@@ -163,42 +187,23 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/ValidarFolhaDeHoras"
-                   last-response="{{validarFolhaDeHoras}}"
+        <iron-ajax url="/FolhasDeHoras/ValidarDataHoraInicio_DataHoraFim"
+                   last-response="{{validarDataHoraInicio_DataHoraFim}}"
                    method="post"
                    handle-as="json"
-                   id="validarfolhadehoras_ajax"
-                   on-response="_validarfolhadehorasResponse"
+                   id="validarDataHoraInicio_DataHoraFim_ajax"
+                   on-response="_validarDataHoraInicio_DataHoraFimResponse"
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHoras"
-                   last-response="{{integrarEmRHFolhaDeHoras}}"
-                   method="post"
-                   handle-as="json"
-                   id="integraremrhfolhadehoras_ajax"
-                   on-response="_integraremrhfolhadehorasResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHKMFolhaDeHoras"
-                   last-response="{{integrarEmRHKMFolhaDeHoras}}"
-                   method="post"
-                   handle-as="json"
-                   id="integraremrhkmfolhadehoras_ajax"
-                   on-response="_integraremrhkmfolhadehorasResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
+        <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
                    last-response="{{validateResponse}}"
                    method="post"
                    handle-as="json"
                    id="page_validator_ajax"
                    on-response="_responseValidatorProcessor"
                    content-type="application/json">
-        </iron-ajax>
-
+        </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -218,14 +223,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/UpdatePercurso"
+        <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
                    last-response="{{PercursoUpdated}}"
                    method="post"
                    handle-as="json"
                    id="page_updatepercurso_ajax"
                    on-response="_updatePercursoResponse"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -256,14 +261,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/UpdateAjuda"
+        <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
                    last-response="{{AjudaUpdated}}"
                    method="post"
                    handle-as="json"
                    id="page_updateajuda_ajax"
                    on-response="_updateAjudaResponse"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
@@ -271,15 +276,6 @@
                    handle-as="json"
                    id="page_updatelinhaajuda_ajax"
                    on-response="_updateLinhaAjudaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/FolhasDeHoras/CalcularAjudasCusto"
-                   last-response="{{CalcularAjudasCustoUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_calcularajudascusto_ajax"
-                   on-response="_updateCalcularAjudasCustoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -302,14 +298,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
+        <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
                    last-response="{{MaoDeObraUpdated}}"
                    method="post"
                    handle-as="json"
                    id="page_updatemaodeobra_ajax"
                    on-response="_updateMaoDeObraResponse"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -348,14 +344,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/UpdatePresenca"
+        <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
                    last-response="{{PresencaUpdated}}"
                    method="post"
                    handle-as="json"
                    id="page_updatepresenca_ajax"
                    on-response="_updatePresencaResponse"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -366,14 +362,50 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--BOTÕES-->
+        <iron-ajax url="/FolhasDeHoras/CalcularAjudasCusto"
+                   last-response="{{CalcularAjudasCustoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_calcularajudascusto_ajax"
+                   on-response="_updateCalcularAjudasCustoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/ValidarFolhaDeHoras"
+                   last-response="{{validarFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="validarfolhadehoras_ajax"
+                   on-response="_validarfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHoras"
+                   last-response="{{integrarEmRHFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="integraremrhfolhadehoras_ajax"
+                   on-response="_integraremrhfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHKMFolhaDeHoras"
+                   last-response="{{integrarEmRHKMFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="integraremrhkmfolhadehoras_ajax"
+                   on-response="_integraremrhkmfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<template is="dom-if" if="{{ _permissions.create }}">-->
             <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
-            <!--</template>-->
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -382,15 +414,17 @@
             <paper-tab>Presenças</paper-tab>
             <paper-tab>Detalhe</paper-tab>
         </paper-tabs>
+
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
                                             items="[[LFolhaDeHoraNavProjectNo]]"
@@ -400,8 +434,9 @@
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+
+                        <div class="col-sm-6">
+                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado - Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -410,28 +445,31 @@
                                     </paper-icon-item>
                                 </template>
                             </vaadin-combo-box>
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
                         </div>
                     </div>
+
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                            <!--<vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            <!--<vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                            <!--<vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            <!--<vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>-->
                         </div>
                     </div>
+
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
+                            <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -441,8 +479,9 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Cód. Tipo Kms">
+                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo Kms">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -452,8 +491,9 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" label="Matricula" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-value-changed="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -463,6 +503,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
                             <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
@@ -470,11 +511,9 @@
                         </div>
                     </div>
 
-                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                    <div class="col-sm-1 alignPoga">
-                        <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
+                    <div class="marginSpace">
+                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>
-                    <!--</template>-->
                 </div>
 
 
@@ -488,7 +527,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-4">
-                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Origem" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -498,8 +537,9 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+
                                 <div class="col-sm-4">
-                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Destino" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Destino" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -509,23 +549,22 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker id="percursoDataViagem" label="Data Despesa" name="PercursoDataViagemTexto" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="percursoDataViagem" label="Data Viagem" on-blur="_PercursoDataValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
                                 </div>
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
-                                <!--</template>-->
                             </div>
                         </div>
                     </paper-collapse-item>
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <!--<div class="row">-->
                     <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
-                        <vaadin-grid-column width="0px" hidden>
+                        <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noLinha" />
@@ -535,25 +574,17 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codOrigem" style="text-align:center;">Código Origem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codOrigem" />
                             </template>
                             <template>
-                                <vaadin-combo-box id="tabPercursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{item.codOrigem}}" on-change="_updateLinhaPercurso" disabled="true" style="text-align:left;">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
+                                <vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="true"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoOrigem" style="text-align:center;">Descrição Origem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoOrigem" />
@@ -563,25 +594,17 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codDestino" style="text-align:center;">Código Destino</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codDestino" />
                             </template>
                             <template>
-                                <vaadin-combo-box id="tabPercursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{item.codDestino}}" on-change="_updateLinhaPercurso" disabled="true" style="text-align:left;">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
+                                <vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="true"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoDestino" style="text-align:center;">Descrição Destino</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoDestino" />
@@ -591,17 +614,17 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="150px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Despesa</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Viagem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataDespesaTexto" />
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="true" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacao" />
@@ -611,63 +634,61 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="170px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distancia" style="text-align:center;">Distância Efectuada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="distancia" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]*" style="text-align:right;">
+                                <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
                                     <div slot="suffix">KM</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="150px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distanciaPrevista" style="text-align:center;">Distância Prevista</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="distanciaPrevista" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" maxlength="18" pattern="[0-9]*" style="text-align:right;" disabled="true">
+                                <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
                                     <div slot="suffix">KM</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="130px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="120px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
-                        <vaadin-grid-column width="100px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                             </template>
                         </vaadin-grid-column>
-                        <!--</template>-->
                     </vaadin-grid>
                 </div>
 
@@ -678,7 +699,7 @@
 
 
                 <paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Ajudas De Custo / Despesas" closed>
+                    <paper-collapse-item class="panel-heading" header="Ajudas de Custo / Despesas" closed>
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
@@ -692,6 +713,7 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+
                                 <div class="col-sm-2">
                                     <vaadin-combo-box id="ajudaCodigoTipoCusto" items="[[LFolhaDeHoraAjudaCodTipoCusto]]" item-value-path="id" item-label-path="value" label="Cód Tipo Custo" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
@@ -703,30 +725,34 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaQuantidade" label="Quantidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                    <vaadin-text-field id="ajudaQuantidade" label="Quantidade" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                 </div>
+
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
+
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
+
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" name="ajudaDataDespesa" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
                                 </div>
+
                                 <div class="col-sm-2" style="text-align:right">
-                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="200" style="text-align:left;"></vaadin-text-field>
+                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
-                                <!--</template>-->
                             </div>
                         </div>
                     </paper-collapse-item>
@@ -734,7 +760,7 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
-                        <vaadin-grid-column width="0px" hidden>
+                        <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noLinha" />
@@ -744,65 +770,49 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="tipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="tipoCusto" />
+                                <vaadin-grid-sorter path="descricaoTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricaoTipoCusto" />
                             </template>
                             <template>
-                                <vaadin-combo-box id="tabAjudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto_TAB]]" item-value-path="id" item-label-path="value" value="{{item.tipoCusto}}" on-change="_updateLinhaAjuda" disabled="true" style="text-align:left;">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
+                                <vaadin-text-field id="tabAjudaTipoCusto" value="{{item.descricaoTipoCusto}}" maxlength="200" disabled="true"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="codTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codTipoCusto" />
+                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricaoCodTipoCusto" />
                             </template>
                             <template>
-                                <vaadin-combo-box id="tabAjudaCodigoTipoCusto" items="[[LFolhaDeHoraAjudaCodTipoCusto_ALL]]" item-value-path="id" item-label-path="value" value="{{item.codTipoCusto}}" on-change="_updateLinhaAjuda" disabled="true" style="text-align:left;">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
+                                <vaadin-text-field id="tabAjudaCodigoTipoCusto" value="{{item.descricaoCodTipoCusto}}" maxlength="200" disabled="true"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="120px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="quantidade" style="text-align:center;">Quantidade</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="quantidade" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaQuantidade" value="{{item.quantidade}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field name="tabAjudaQuantidade" value="{{item.quantidade}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="130px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" maxlength="12" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="120px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoTotal" />
@@ -814,7 +824,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="130px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoUnitario" style="text-align:center;">Preço Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoUnitario" />
@@ -826,7 +836,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="120px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoVenda" style="text-align:center;">Preço Venda</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoVenda" />
@@ -838,17 +848,17 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="150px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Despesa</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataDespesaTexto" />
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="true" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacao" />
@@ -858,15 +868,13 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
-                        <vaadin-grid-column width="100px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                             </template>
                         </vaadin-grid-column>
-                        <!--</template>-->
                 </div>
             </div>
 
@@ -877,15 +885,17 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.projetoNo}}" id="maodeobraprojetoNo" name="maodeobraprojetoNo" disabled="true" label="Nº Obra"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.projetoDescricao}}" disabled="true" id="maodeobraprojetoDescricao" name="projetoDescricao" label="Descrição"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.empregadoNo}}" id="maodeobraempregadoNo" name="maodeobraempregadoNo" disabled="true" label="Nº Empregado"></vaadin-text-field>
                         </div>
@@ -901,7 +911,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraData" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2">
                                     <such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
@@ -912,6 +922,7 @@
                                                     on-change="_MaoDeObraProjecto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                     </such-selectbox>
                                 </div>
+
                                 <div class="col-sm-3">
                                     <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="maoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" label="Tipo Trabalho" on-change="_MaoDeObraTipoTrabalho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
@@ -923,23 +934,26 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
+
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioAlmoco" checked="{{chkAlmoco}}" disabled="{{ !_permissions.update }}">Almoço</vaadin-checkbox>
                                 </div>
+
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
+
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
-                                <!--</template>-->
                             </div>
                         </div>
                     </paper-collapse-item>
@@ -947,7 +961,7 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
-                        <vaadin-grid-column width="0px" hidden>
+                        <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="linhaNo" />
@@ -957,7 +971,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="150px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dateTexto">Data</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dateTexto" />
@@ -967,13 +981,13 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="projetoNo" style="text-align:center;">Nº Obra</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="projetoNo" />
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="id" item-label-path="value" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <vaadin-combo-box items="[[LFolhaDeHoraNavProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="no" item-label-path="no" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -985,7 +999,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Cód. Tipo Trabalho</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoTipoTrabalho" />
@@ -1003,7 +1017,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="130px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Hora de Início</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaInicioTexto" />
@@ -1013,17 +1027,16 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="140px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">Horário Almoço</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="horarioAlmoco" />
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioAlmoco}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="130px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Hora de Fim</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaFimTexto" />
@@ -1033,17 +1046,16 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="140px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">Horário Jantar</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="horarioJantar" />
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioJantar}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Nº Família Recurso</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoFamiliaRecurso" />
@@ -1061,7 +1073,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="100px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horasNoTexto" style="text-align:center;">Nº Horas</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horasNoTexto" />
@@ -1071,25 +1083,25 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitarioDireto" style="text-align:center;">Custo Unit. Directo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitarioDireto" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoCentroResponsabilidade" style="text-align:center;">Centro Responsabilidade</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoCentroResponsabilidade" />
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:left;">
+                                <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1101,29 +1113,25 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="120px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoTotal" style="text-align:center;">Preço Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
-                        
-
-                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
-                        <vaadin-grid-column width="100px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                             </template>
                         </vaadin-grid-column>
-                        <!--</template>-->
                     </vaadin-grid>
                 </div>
             </div>
@@ -1135,7 +1143,7 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-6">
@@ -1153,29 +1161,32 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_PresencaData" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                                </div>
-                                <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-5" style="text-align:right;">
-                                    <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
+                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_PresencaDataValidar" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
 
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+                                <div class="col-sm-1">
+                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-1">
+                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-1">
+                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-1">
+                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-5" style="text-align:right;">
+                                    <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
+                                </div>
+
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
-                                <!--</template>-->
                             </div>
                         </div>
                     </paper-collapse-item>
@@ -1183,7 +1194,7 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
-                        <vaadin-grid-column width="0px" hidden>
+                        <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="folhaDeHorasNo" style="text-align:center;">Nº Folha de Horas</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="folhaDeHorasNo" />
@@ -1193,7 +1204,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="150px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataTexto" style="text-align:center;">Data</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataTexto" />
@@ -1203,7 +1214,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="110px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Entrada" style="text-align:center;">1ª Entrada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora1Entrada" />
@@ -1213,7 +1224,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="110px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Saida" style="text-align:center;">1ª Saída</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora1Saida" />
@@ -1223,7 +1234,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="110px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Entrada" style="text-align:center;">2ª Entrada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora2Entrada" />
@@ -1233,7 +1244,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="110px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Saida" style="text-align:center;">2ª Saída</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora2Saida" />
@@ -1243,7 +1254,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="250px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacoes" style="text-align:center;">Observações</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacoes" />
@@ -1253,21 +1264,13 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
-                        <vaadin-grid-column width="100px">
+                        <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                             </template>
                         </vaadin-grid-column>
-
-                        <!--</template>-->
-                        <!--<template is="dom-if" if="{{ _permissions.update }}">
-                            <div class="col-sm-1 alignPoga">
-                                <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
-                            </div>
-                        </template>-->
                 </div>
             </div>
 
@@ -1291,61 +1294,75 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.dataCriacaoTexto}}" id="dataCriacaoTexto" name="dataCriacaoTexto" disabled="true" label="Data Criação"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.horaCriacaoTexto}}" id="horaCriacaoTexto" name="horaCriacaoTexto" disabled="true" label="Hora Criação"></vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Código Região" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <table width="300px">
+                                        <tr>
+                                            <td width="15%">[[item.id]]</td>
+                                            <td width="85%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
+
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <table width="400px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
+
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <table width="350px">
+                                        <tr>
+                                            <td width="10%">[[item.id]]</td>
+                                            <td width="90%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
                             </vaadin-combo-box>
                         </div>
                     </div>
+
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.terminadoPor}}" id="terminadoPor" name="terminadoPor" disabled="true" label="Terminado por"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.dataTerminadoTexto}}" id="dataTerminadoTexto" name="dataTerminadoTexto" disabled="true" label="Data Terminado"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.validado}}" disabled="true">Validado</vaadin-checkbox>
                         </div>
@@ -1354,12 +1371,15 @@
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.validadores}}" id="validadores" name="validadores" disabled="true" label="Validadores"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.validador}}" id="validador" name="validador" disabled="true" label="Validador"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.dataValidacaoTexto}}" id="dataValidacaoTexto" name="dataValidacaoTexto" disabled="true" label="Data Validação"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.horaValidacaoTexto}}" id="horaValidacaoTexto" name="horaValidacaoTexto" disabled="true" label="Hora Validação"></vaadin-text-field>
                         </div>
@@ -1368,12 +1388,15 @@
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradoresEmRH}}" id="integradoresEmRH" name="integradoresEmRH" disabled="true" label="Integradores Aj Custo"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integrador Aj. Custo RH"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHTexto}}" id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" disabled="true" label="Data Integ. Aj. Custo RH"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHTexto}}" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" disabled="true" label="Hora Integ. Aj. Custo RH"></vaadin-text-field>
                         </div>
@@ -1382,12 +1405,15 @@
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. KMs RH"></vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. KMs RH"></vaadin-text-field>
                         </div>
@@ -1398,18 +1424,23 @@
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
+
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Nº Total KM">
+                                <div slot="suffix">KM</div>
+                            </vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1418,19 +1449,22 @@
                         </div>
                     </div>
 
-
-
-                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                    <div class="col-sm-1 alignPoga">
-                        <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
+                    <div class="marginSpace">
+                        <paper-button raised id="btn_updateFH2" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>
-                    <!--</template>-->
                 </div>
             </div>
         </iron-pages>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -1476,7 +1510,7 @@
                         type: Number,
                         value: 0
                     },
-                    employeeName: {
+                    _userlogin: {
                         type: String,
                         notify: true,
                         value: ""
@@ -1500,6 +1534,9 @@
                         type: Boolean,
                         value: false
                     },
+                    _reportserverurl: {
+                        type: String,
+                    },
                 },
 
                 ready: function () {
@@ -1509,21 +1546,26 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
 
+                //Mostra Mensagens
                 _showMessage: function (message) {
                     //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
+
+                //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
                     //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
+                //Troca o caracter , por .
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                //FOLHA DE HORAS
-                _updateFH: function () {
+
+                _validateFolhaHoras: function () {
                     //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
@@ -1531,43 +1573,216 @@
                                 if (this.$.horaPartidaTexto.validate() & this.$.horaPartidaTexto.value != "") {
                                     if (this.$.dataChegadaTexto.validate() & this.$.dataChegadaTexto.value != "") {
                                         if (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "") {
-                                            if (this.$.tipoDeslocacao.value == 1) {
-                                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
-                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                            if (this.$.tipoDeslocacao.validate() & this.$.tipoDeslocacao.value != "") {
+                                                if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                                                    if (this.$.codigoRegiao.validate() & this.$.codigoRegiao.value != "") {
+                                                        if (this.$.codigoAreaFuncional.validate() & this.$.codigoAreaFuncional.value != "") {
+                                                            if (this.$.codigoCentroResponsabilidade.validate() & this.$.codigoCentroResponsabilidade.value != "") {
+                                                                if (this._validacaoDataPartidaChegada()) {
+                                                                    if (this._validacaoHoraPartidaChegada()) {
+                                                                        return true;
+                                                                    }
+                                                                    else {
+                                                                        this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                                                        return false;
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    this._showErrorMessage('A data Início ou a data Fim no cabeçalho não está correta.');
+                                                                    return false;
+                                                                }
+                                                            }
+                                                            else {
+                                                                this._showErrorMessage("Falta preencher o campo Código Centro Respon..");
+                                                                return false;
+                                                            }
+                                                        }
+                                                        else {
+                                                            this._showErrorMessage("Falta preencher o campo Código Área Funcional.");
+                                                            return false;
+                                                        }
+                                                    }
+                                                    else {
+                                                        this._showErrorMessage("Falta preencher o campo Código Região.");
+                                                        return false;
+                                                    }
                                                 }
                                                 else {
-                                                    this._showErrorMessage('É obrigatório preencher o campo Matrícula.');
+                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo Kms.");
+                                                    return false;
                                                 }
                                             }
                                             else {
-                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                this._showErrorMessage("Falta preencher o campo Tipo Deslocação.");
+                                                return false;
                                             }
                                         }
                                         else {
-                                            this._showErrorMessage('É obrigatório preencher o campo Hora Fim.');
+                                            this._showErrorMessage("Falta preencher o campo Hora Fim.");
+                                            return false;
                                         }
                                     }
                                     else {
-                                        this._showErrorMessage('É obrigatório preencher o campo Data Fim.');
+                                        this._showErrorMessage("Falta preencher o campo Data Fim.");
+                                        return false;
                                     }
                                 }
                                 else {
-                                    this._showErrorMessage('É obrigatório preencher o campo Hora Início.');
+                                    this._showErrorMessage("Falta preencher o campo Hora Inicio.");
+                                    return false;
                                 }
                             }
                             else {
-                                this._showErrorMessage('É obrigatório preencher o campo Data Início.');
+                                this._showErrorMessage("Falta preencher o campo Data Inicio.");
+                                return false;
                             }
                         }
                         else {
-                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                            this._showErrorMessage("Falta preencher o campo Nº Empregado.");
+                            return false;
                         }
                     }
                     else {
-                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/projecto.');
+                        this._showErrorMessage("Falta preencher o campo Nº Ordem/Projecto.");
+                        return false;
                     }
+                },
+
+                _validatePercurso: function () {
+                    if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
+                        if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
+                            if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
+                                return true;
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Data Despesa.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Código Destino.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Código Origem.");
+                        return false;
+                    }
+                },
+
+                _validateAjuda: function () {
+                    if (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") {
+                        if (this.$.ajudaCodigoTipoCusto.validate() & this.$.ajudaCodigoTipoCusto.value != "") {
+                            if (this.$.ajudaQuantidade.validate() & this.$.ajudaQuantidade.value != "") {
+                                if (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") {
+                                    if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
+                                        if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
+                                            return true;
+                                        }
+                                        else {
+                                            this._showErrorMessage("Falta preencher o campo Data Despesa.");
+                                            return false;
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo Preço Unitário.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Custo Unitário.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Quantidade.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Cód Tipo Custo.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Tipo Custo.");
+                        return false;
+                    }
+                },
+
+                _validateMaoDeObra: function () {
+                    if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
+                        if (this.$.maoDeObraProjetoNo.value != "") {
+                            if (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") {
+                                if (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") {
+                                    if (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "") {
+                                        return true;
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo Hora de Fim.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Hora de Início.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Tipo Trabalho.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Nº Obra.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Data.");
+                        return false;
+                    }
+                },
+
+                _validatePresenca: function () {
+                    if (this.$.presencaDataTexto.validate() & this.$.presencaDataTexto.value != "") {
+                        if (this.$.presencaHora1Entrada.validate() & this.$.presencaHora1Entrada.value != "") {
+                            if (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") {
+                                if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
+                                    if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
+                                        return true;
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo 2ª Saída.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo 2ª Entrada.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo 1ª Saída.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo 1ª Entrada.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Data.");
+                        return false;
+                    }
+                },
+
+                //FOLHA DE HORAS
+                _updateFH: function () {
+                    //debugger;
+                    this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
                 },
 
                 _validacaoDataPartidaChegada: function () {
@@ -1591,57 +1806,110 @@
                             this._showErrorMessage('O campo Data Fim tem que ser inferior ou igual á data hoje.');
                             return false;
                         }
+
                         return true;
                     }
                     return false;
                 },
 
-                _validarFolhaDeHoras: function () {
+                _validacaoHoraPartidaChegada: function () {
                     //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.validarfolhadehoras_ajax.generateRequest();
-                        }
-                        else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                    if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
+                        this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
+
+                        if (this.$.horaPartidaTexto.value != "" & this.$.horaPartidaTexto.validate() &
+                            this.$.horaChegadaTexto.value != "" & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value).toDateString();
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value).toDateString();
+
+                            var myDataHoraPartida = new Date(myDataPartida + ' ' + this.$.horaPartidaTexto.value);
+                            var myDataHoraChegada = new Date(myDataChegada + ' ' + this.$.horaChegadaTexto.value);
+
+                            if (myDataHoraPartida > myDataHoraChegada) {
+                                this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                return false;
+                            }
+                            return true;
                         }
                     }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
+                    return false;
+                },
+
+                _validacaoTipoDeslocacao: function () {
+                    //debugger;
+                    if (this.$.tipoDeslocacao.value != "" & this.$.tipoDeslocacao.value != "1") {
+
+                        if (this.$.matricula.value != "") {
+                            this.$.matricula.value = "";
+                        }
                     }
                 },
 
+                _validarFolhaDeHoras: function () {
+                    //debugger;
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.validarfolhadehoras_ajax.generateRequest();
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
+                            }
+                        }
+                        else {
+                            this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.validarfolhadehoras_ajax.generateRequest();
+                        }
+                    }
+                },
 
                 _integrarEmRH: function () {
                     //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.integradorEmRH.value == null) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                    this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                            }
                         }
                         else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                            this._showErrorMessage("A Integração da Ajuda de Custo já foi feita.");
                         }
-                    }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
                 _integrarEmRHKM: function () {
                     //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.integradorEmRHKM.value == null) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                    this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                            }
                         }
                         else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                            this._showErrorMessage("A Integração dos KMs já foi feita.");
                         }
-                    }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
@@ -1656,15 +1924,25 @@
                                 if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
                                     if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
                                         if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
-                                            this.$.page_createpercurso_ajax.body = JSON.stringify({
-                                                noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                codTipoCusto: this.$.codigoTipoKms.value,
-                                                codOrigem: this.$.percursoOrigem.value,
-                                                codDestino: this.$.percursoDestino.value,
-                                                dataDespesa: this.$.percursoDataViagem.value
-                                            });
-                                            this.$.page_createpercurso_ajax.generateRequest();
-                                            this.$.tabPercurso.clearCache();
+                                            if (this._PercursoDataValidar()) {
+                                                this.$.page_createpercurso_ajax.body = JSON.stringify({
+                                                    noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                    codTipoCusto: this.$.codigoTipoKms.value,
+                                                    codOrigem: this.$.percursoOrigem.value,
+                                                    codDestino: this.$.percursoDestino.value,
+                                                    dataDespesa: this.$.percursoDataViagem.value,
+                                                    funcionario: this.$.empregadoNo.value,
+                                                    codRegiao: this.$.codigoRegiao.value,
+                                                    codArea: this.$.codigoAreaFuncional.value,
+                                                    codCresp: this.$.codigoCentroResponsabilidade.value,
+                                                    matricula: this.$.matricula.value
+                                                });
+                                                this.$.page_createpercurso_ajax.generateRequest();
+                                                this.$.tabPercurso.clearCache();
+                                            }
+                                            else {
+                                                this._showErrorMessage('O campo Data Viagem tem que estar contido no período de tempo do Cabeçalho.');
+                                            }
                                         }
                                         else {
                                             this._showErrorMessage('É obrigatório preencher o campo Data Despesa.');
@@ -1724,12 +2002,12 @@
                     });
                 },
 
-                _updatePercurso: function () {
-                    //debugger;
-                    this.$.page_updatepercurso_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatepercurso_ajax.generateRequest();
-                    this.$.tabPercurso.clearCache();
-                },
+                //_updatePercurso: function () {
+                //    //debugger;
+                //    this.$.page_updatepercurso_ajax.body = JSON.stringify(this.data);
+                //    this.$.page_updatepercurso_ajax.generateRequest();
+                //    this.$.tabPercurso.clearCache();
+                //},
 
                 _updateLinhaPercurso: function (e) {
                     //debugger;
@@ -1749,6 +2027,31 @@
                     this.$.tabAjuda.clearCache();
                 },
 
+                _PercursoDataValidar: function () {
+                    //debugger;
+                    if (this.$.percursoDataViagem.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.percursoDataViagem.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataPercurso = new Date(this.$.percursoDataViagem.value);
+
+                            if (myDataPercurso < myDataPartida) {
+                                this._showErrorMessage('O campo Data Viagem tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataPercurso > myDataChegada) {
+                                this._showErrorMessage('O campo Data Viagem tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+
 
                 //AJUDA
                 _createAjuda: function () {
@@ -1761,22 +2064,41 @@
                                         if (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") {
                                             if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
                                                 if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
-                                                    if (this.$.ajudaJustificacao.validate() & this.$.ajudaJustificacao.value != "") {
-                                                        this.$.page_createajuda_ajax.body = JSON.stringify({
-                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                                                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
-                                                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
-                                                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
-                                                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
-                                                            dataDespesa: this.$.ajudaDataDespesa.value,
-                                                            observacao: this.$.ajudaJustificacao.value
-                                                        });
-                                                        this.$.page_createajuda_ajax.generateRequest();
-                                                        this.$.tabAjuda.clearCache();
+                                                    if (this._AjudaDataValidar()) {
+                                                        if (this._AjudaQuantidadeValidar()) {
+                                                            if (this._AjudaCustoUnitarioValidar()) {
+                                                                if (this._AjudaPrecoUnitarioValidar()) {
+                                                                    this.$.page_createajuda_ajax.body = JSON.stringify({
+                                                                        noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                                        tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
+                                                                        codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
+                                                                        quantidade: parseFloat(this.$.ajudaQuantidade.value),
+                                                                        custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
+                                                                        precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
+                                                                        dataDespesa: this.$.ajudaDataDespesa.value,
+                                                                        observacao: this.$.ajudaJustificacao.value,
+                                                                        funcionario: this.$.empregadoNo.value,
+                                                                        codRegiao: this.$.codigoRegiao.value,
+                                                                        codArea: this.$.codigoAreaFuncional.value,
+                                                                        codCresp: this.$.codigoCentroResponsabilidade.value
+                                                                    });
+                                                                    this.$.page_createajuda_ajax.generateRequest();
+                                                                    this.$.tabAjuda.clearCache();
+                                                                }
+                                                                else {
+                                                                    this._showErrorMessage('O campo Preço Unitário tem que ser superior ou igual a zero.');
+                                                                }
+                                                            }
+                                                            else {
+                                                                this._showErrorMessage('O campo Custo Unitário tem que ser superior ou igual a zero.');
+                                                            }
+                                                        }
+                                                        else {
+                                                            this._showErrorMessage('O campo Quantidade tem que ser superior ou igual a zero.');
+                                                        }
                                                     }
                                                     else {
-                                                        this._showErrorMessage('É obrigatório preencher o campo Justificação.');
+                                                        this._showErrorMessage('O campo Data Despesa tem que estar contido no período de tempo do Cabeçalho.');
                                                     }
                                                 }
                                                 else {
@@ -1845,12 +2167,12 @@
                     });
                 },
 
-                _updateAjuda: function () {
-                    //debugger;
-                    this.$.page_updateajuda_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updateajuda_ajax.generateRequest();
-                    this.$.tabAjuda.clearCache();
-                },
+                //_updateAjuda: function () {
+                //    //debugger;
+                //    this.$.page_updateajuda_ajax.body = JSON.stringify(this.data);
+                //    this.$.page_updateajuda_ajax.generateRequest();
+                //    this.$.tabAjuda.clearCache();
+                //},
 
                 _updateLinhaAjuda: function (e) {
                     //debugger;
@@ -1873,31 +2195,88 @@
                     this.$.tabAjuda.clearCache();
                 },
 
+                _AjudaDataValidar: function () {
+                    //debugger;
+                    if (this.$.ajudaDataDespesa.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.ajudaDataDespesa.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataAjuda = new Date(this.$.ajudaDataDespesa.value);
+
+                            if (myDataAjuda < myDataPartida) {
+                                this._showErrorMessage('O campo Data Despesa tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataAjuda > myDataChegada) {
+                                this._showErrorMessage('O campo Data Despesa tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _AjudaQuantidadeValidar: function () {
+                    debugger;
+                    if (this.$.ajudaQuantidade.value != "") {
+                        var quant = parseInt(this.$.ajudaQuantidade.value);
+                        if (quant < 0) {
+                            this._showErrorMessage('O campo Quantidade tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
+
+                _AjudaCustoUnitarioValidar: function () {
+                    debugger;
+                    if (this.$.ajudaCustoUnitario.value != "") {
+                        var custo = parseInt(this.$.ajudaCustoUnitario.value);
+                        if (custo < 0) {
+                            this._showErrorMessage('O campo Custo Unitário tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
+
+                _AjudaPrecoUnitarioValidar: function () {
+                    debugger;
+                    if (this.$.ajudaPrecoUnitario.value != "") {
+                        var preco = parseInt(this.$.ajudaPrecoUnitario.value);
+                        if (preco < 0) {
+                            this._showErrorMessage('O campo Preço Unitário tem que ser superior ou igual a zero.');
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                },
+
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
                     //debugger;
-                    if (this.$.dataPartidaTexto.value == "" | this.$.dataPartidaTexto.validate() == false) {
-                        _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Inicio.');
-                    }
-                    else {
-                        if (this.$.horaPartidaTexto.value == "" | this.$.horaPartidaTexto.validate() == false) {
-                            _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Inicio.');
-                        }
-                        else {
-                            if (this.$.dataChegadaTexto.value == "" | this.$.dataChegadaTexto.validate() == false) {
-                                _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Fim.');
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
+                                this.$.page_calcularajudascusto_ajax.generateRequest();
+                                this.$.tabAjuda.clearCache();
                             }
                             else {
-                                if (this.$.horaChegadaTexto.value == "" | this.$.horaChegadaTexto.validate() == false) {
-                                    _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Fim.');
-                                }
-                                else {
-                                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
-                                    this.$.page_calcularajudascusto_ajax.generateRequest();
-                                    this.$.tabAjuda.clearCache();
-                                }
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
                             }
+                        }
+                        else {
+                            this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
+                            this.$.page_calcularajudascusto_ajax.generateRequest();
+                            this.$.tabAjuda.clearCache();
                         }
                     }
                 },
@@ -1912,19 +2291,27 @@
                                 if (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") {
                                     if (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") {
                                         if (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "") {
-                                            this.$.page_createmaodeobra_ajax.body = JSON.stringify({
-                                                folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                                                date: this.$.maoDeObraDate.value,
-                                                projetoNo: this.$.maoDeObraProjetoNo.value,
-                                                empregadoNo: this.$.empregadoNo.value,
-                                                codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
-                                                horaInicio: this.$.maoDeObraHoraInicio.value,
-                                                horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
-                                                horaFim: this.$.maoDeObraHoraFim.value,
-                                                horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
-                                            });
-                                            this.$.page_createmaodeobra_ajax.generateRequest();
-                                            this.$.tabMaoDeObra.clearCache();
+                                            if (this._MaoDeObraDataValidar() & this._MaoDeObraHoraInicioValidar() & this._MaoDeObraHoraFimValidar()) {
+                                                this.$.page_createmaodeobra_ajax.body = JSON.stringify({
+                                                    folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                    date: this.$.maoDeObraDate.value,
+                                                    projetoNo: this.$.maoDeObraProjetoNo.value,
+                                                    empregadoNo: this.$.empregadoNo.value,
+                                                    codigoRegiao: this.$.codigoRegiao.value,
+                                                    codigoArea: this.$.codigoAreaFuncional.value,
+                                                    codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
+                                                    codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
+                                                    horaInicio: this.$.maoDeObraHoraInicio.value,
+                                                    horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                                                    horaFim: this.$.maoDeObraHoraFim.value,
+                                                    horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
+                                                });
+                                                this.$.page_createmaodeobra_ajax.generateRequest();
+                                                this.$.tabMaoDeObra.clearCache();
+                                            }
+                                            else {
+                                                this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
+                                            }
                                         }
                                         else {
                                             this._showErrorMessage('É obrigatório preencher o campo Hora de Fim.');
@@ -1984,12 +2371,12 @@
                     });
                 },
 
-                _updateMaoDeObra: function () {
-                    //debugger;
-                    this.$.page_updatemaodeobra_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatemaodeobra_ajax.generateRequest();
-                    this.$.tabMaoDeObra.clearCache();
-                },
+                //_updateMaoDeObra: function () {
+                //    //debugger;
+                //    this.$.page_updatemaodeobra_ajax.body = JSON.stringify(this.data);
+                //    this.$.page_updatemaodeobra_ajax.generateRequest();
+                //    this.$.tabMaoDeObra.clearCache();
+                //},
 
                 _updateLinhaMaoDeObra: function (e) {
                     //debugger;
@@ -2009,7 +2396,9 @@
                         codigoFamiliaRecurso: e.model.item.codigoFamiliaRecurso,
                         noDeHoras: e.model.item.horasNoTexto,
                         custoUnitárioDireto: e.model.item.custoUnitarioDireto,
-                        codigoCentroResponsabilidade: e.model.item.codigoCentroResponsabilidade,
+                        codigoRegiao: this.$.codigoRegiao.value,
+                        codigoAreaFuncional: this.$.codigoAreaFuncional.value,
+                        codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
                         precoTotal: e.model.item.precoTotal,
                         descricao: e.model.item.descricao
                     });
@@ -2037,12 +2426,102 @@
                     }
                 },
 
-                _MaoDeObraProjecto: function () {
+                _MaoDeObraDataValidar: function () {
                     //debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataMaoDeObra = new Date(this.$.maoDeObraDate.value);
+
+                            if (myDataMaoDeObra < myDataPartida) {
+                                this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataMaoDeObra > myDataChegada) {
+                                this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            if (this.$.maoDeObraProjetoNo.value == undefined) {
+                                this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
+                            }
+                            if (this.$.maoDeObraCodigoTipoTrabalho.value == "") {
+                                this.$.maoDeObraCodigoTipoTrabalho.value = "";
+                            }
+                            if (this.$.maoDeObraHoraInicio.value == "") {
+                                this.$.maoDeObraHoraInicio.value = this.$.horaPartidaTexto.value;;
+                            }
+                            if (this.$.maoDeObraHorarioAlmoco.value == undefined) {
+                                this.$.maoDeObraHorarioAlmoco.value = "on";
+                            }
+                            if (this.$.maoDeObraHoraFim.value == "") {
+                                this.$.maoDeObraHoraFim.value = this.$.horaChegadaTexto.value;;
+                            }
+                            if (this.$.maoDeObraHorarioJantar.value == undefined) {
+                                this.$.maoDeObraHorarioJantar.value = "on"
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
                 },
 
-                _MaoDeObraTipoTrabalho: function () {
+                _MaoDeObraHoraInicioValidar: function () {
                     //debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.maoDeObraHoraInicio.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.maoDeObraHoraInicio.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+
+                            if (myDataTimeMaoDeObra < myDataTimePartida) {
+                                this._showErrorMessage('O campo Hora de Início tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimeMaoDeObra > myDataTimeChegada) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _MaoDeObraHoraFimValidar: function () {
+                    //debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.maoDeObraHoraFim.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.maoDeObraHoraFim.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+
+                            if (myDataTimeMaoDeObra < myDataTimePartida) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimeMaoDeObra > myDataTimeChegada) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
                 },
 
                 _MaoDeObraHoraInicioFim: function () {
@@ -2077,10 +2556,11 @@
                                     if (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") {
                                         if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
                                             if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
-                                                if (this.$.presencaObservacoes.validate() & this.$.presencaObservacoes.value != "") {
+                                                if (this._PresencaDataValidar() & this._presencaHora1EntradaValidar() & this._presencaHora1SaidaValidar() & this._presencaHora2EntradaValidar() & this._presencaHora2SaidaValidar()) {
                                                     this.$.page_createpresenca_ajax.body = JSON.stringify({
                                                         folhaDeHorasNo: this.$.folhaDeHorasNo.value,
                                                         data: this.$.presencaDataTexto.value,
+                                                        noEmpregado: this.$.empregadoNo.value,
                                                         hora1Entrada: this.$.presencaHora1Entrada.value,
                                                         hora1Saida: this.$.presencaHora1Saida.value,
                                                         hora2Entrada: this.$.presencaHora2Entrada.value,
@@ -2091,7 +2571,7 @@
                                                     this.$.tabPresenca.clearCache();
                                                 }
                                                 else {
-                                                    this._showErrorMessage('É obrigatório preencher o campo Observações.');
+                                                    this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
                                                 }
                                             }
                                             else {
@@ -2156,12 +2636,12 @@
                     });
                 },
 
-                _updatePresenca: function () {
-                    //debugger;
-                    this.$.page_updatepresenca_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatepresenca_ajax.generateRequest();
-                    this.$.tabPresenca.clearCache();
-                },
+                //_updatePresenca: function () {
+                //    //debugger;
+                //    this.$.page_updatepresenca_ajax.body = JSON.stringify(this.data);
+                //    this.$.page_updatepresenca_ajax.generateRequest();
+                //    this.$.tabPresenca.clearCache();
+                //},
 
                 _updateLinhaPresenca: function (e) {
                     //debugger;
@@ -2170,6 +2650,7 @@
                     this.$.page_updatelinhapresenca_ajax.body = JSON.stringify({
                         folhaDeHorasNo: this.$.folhaDeHorasNo.value,
                         data: e.model.item.dataTexto,
+                        noEmpregado: this.$.empregadoNo.value,
                         hora1Entrada: e.model.item.hora1Entrada,
                         hora1Saida: e.model.item.hora1Saida,
                         hora2Entrada: e.model.item.hora2Entrada,
@@ -2211,18 +2692,167 @@
                         var Hora2Saida = Date.parseExact(new Date(), this.$.presencaHora2Saida.value);
 
                         if ((Hora1Entrada > Hora1Saida) | (Hora1Entrada > Hora2Entrada) | (Hora1Entrada > Hora2Saida)) {
-                            this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.');
+                            this._showErrorMessage('Ocorreu um erro ao criar a Folha de Horas.');
                         }
 
                     }
                 },
 
+                _PresencaDataValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataPresenca = new Date(this.$.presencaDataTexto.value);
 
+                            if (myDataPresenca < myDataPartida) {
+                                this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataPresenca > myDataChegada) {
+                                this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            if (this.$.presencaHora1Entrada.value == "") {
+                                this.$.presencaHora1Entrada.value = this.$.horaPartidaTexto.value; //"00:00";
+                            }
+                            if (this.$.presencaHora1Saida.value == "") {
+                                this.$.presencaHora1Saida.value = "00:00";
+                            }
+                            if (this.$.presencaHora2Entrada.value == "") {
+                                this.$.presencaHora2Entrada.value = "00:00";
+                            }
+                            if (this.$.presencaHora2Saida.value == "") {
+                                this.$.presencaHora2Saida.value = this.$.horaChegadaTexto.value; //"00:00";
+                            }
+                            if (this.$.presencaObservacoes.value == "") {
+                                this.$.presencaObservacoes.value = "";
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora1EntradaValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora1Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora1Entrada.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora1Entrada.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 1ª Entrada tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 1ª Entrada tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora1SaidaValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora1Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora1Saida.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora1Saida.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 1ª Saída tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 1ª Saída tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora2EntradaValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora2Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora2Entrada.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora2Entrada.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 2ª Entrada tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 2ª Entrada tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora2SaidaValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora2Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora2Saida.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora2Saida.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 2ª Saída tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 2ª Saída tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
 
                 //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
-                    debugger;
-                    //NÃO ESTÁ A CHEGAR AQUI
+                    //debugger;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -2231,17 +2861,14 @@
                                 this._isCreate = true;
                             }
 
-                            //debugger;
                             self._setFieldsEditability(self.data);
-                            //debugger;
-
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             this._showMessage('Folha de Horas atualizada com sucesso.')
                         }
                     } else {
-                        this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
+                        this._showErrorMessage('Ocorreu um erro ao criar a Folha de Horas.')
                     }
                 },
 
@@ -2249,7 +2876,7 @@
                     //debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._showMessage('Folha de Hora criado com sucesso.');
+                        this._showMessage('Folha de Horas criada com sucesso.');
                     } else {
                         this._showErrorMessage(this.data.eMessage);
                     }
@@ -2284,19 +2911,163 @@
                 },
 
                 //FOLHA DE HORAS
+                _updatefolhadehorasvalidacaoResponse: function (e) {
+                    //debugger;
+                    var ajax_request = this.$.page_updatefolhadehoras_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    if (this.FolhaDeHorasUpdatedValidacao == 0) {
+                        ajax_request.generateRequest();
+                    }
+                    else {
+                        if (this.FolhaDeHorasUpdatedValidacao == 1) {
+                            this._showErrorMessage('O campo Data-Hora Fim não pode ser inferior ao campo Data-Hora Inicio no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 2) {
+                            this._showErrorMessage('O campo Data-Hora Inicio não pode ser superior á Data-Hora atual na cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 3) {
+                            this._showErrorMessage('O campo Data-Hora Fim não pode ser superior á Data-Hora atual no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 4) {
+                            this._showErrorMessage('Existe uma Data Viagem nos Percursos que é inferior á Data Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 5) {
+                            this._showErrorMessage('Existe uma Data Viagem nos Percursos que é superior á Data Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 6) {
+                            this._showErrorMessage('Existe uma Data Despesa nas Ajudas de Custo que é inferior á Data Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 7) {
+                            this._showErrorMessage('Existe uma Data Despesa nas Ajudas de Custo que é superior á Data Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 8) {
+                            this._showErrorMessage('Existe uma Data-Hora Início na Mão de Obra que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 9) {
+                            this._showErrorMessage('Existe uma Data-Hora Início na Mão de Obra que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 10) {
+                            this._showErrorMessage('Existe uma Data-Hora Fim na Mão de Obra que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 11) {
+                            this._showErrorMessage('Existe uma Data-Hora Fim na Mão de Obra que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 12) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Entrada nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 13) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Entrada nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 14) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Saída nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 15) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Saída nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 16) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Entrada nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 17) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Entrada nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 18) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Saída nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 19) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Saída nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 20) {
+                            this._showErrorMessage('Falta preencher o campo Nº Folha Horas.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 21) {
+                            this._showErrorMessage('Falta preencher o campo Nº Ordem/Projecto.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 22) {
+                            this._showErrorMessage('Falta preencher o campo Nº Empregado - Nome.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 23) {
+                            this._showErrorMessage('Falta preencher o campo Data Inicio.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 24) {
+                            this._showErrorMessage('Falta preencher o campo Hora Início.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 25) {
+                            this._showErrorMessage('Falta preencher o campo Data Fim.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 26) {
+                            this._showErrorMessage('Falta preencher o campo Hora Fim.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 27) {
+                            this._showErrorMessage('Falta preencher o campo Tipo Deslocação.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 28) {
+                            this._showErrorMessage('Falta preencher o campo Tipo Kms.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 29) {
+                            this._showErrorMessage('Falta preencher o campo Matrícula.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 30) {
+                            this._showErrorMessage('Falta preencher o campo Região.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 31) {
+                            this._showErrorMessage('Falta preencher o campo Área Funcional.');
+                        }
+                        if (this.FolhaDeHorasUpdatedValidacao == 32) {
+                            this._showErrorMessage('Falta preencher o campo Centro Respon.');
+                        }
+
+                        if (this.FolhaDeHorasUpdatedValidacao == 88) {
+                            bootbox.confirm({
+                                message: "Já existe uma Folha de Horas para este Empregado neste período de tempo, deseja continuar (Sim/Não)?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        }
+
+                        if (this.FolhaDeHorasUpdatedValidacao == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+                    }
+                },
+
                 _updatefolhadehorasResponse: function (e) {
                     //debugger;
                     var self = this;
 
-                    if (this.FolhaDeHorasUpdated) {
+                    if (this.FolhaDeHorasUpdated == 0) {
                         this._showMessage('Folha de Horas actualizada com sucesso.');
 
                     } else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
-                        setTimeout(
-                            function () {
-                                window.location.replace("/");
-                            }, 2500);
+                        if (this.FolhaDeHorasUpdated == 1) {
+                            this._showErrorMessage('Já existe uma Folha de Horas nesse período de tempo para empregado em questão.');
+                        }
+
+                        if (this.FolhaDeHorasUpdated == 2) {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar a Folha de Horas.');
+                        }
+
+                        if (this.FolhaDeHorasUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+
+                        //setTimeout(
+                        //    function () {
+                        //        window.location.replace("/");
+                        //    }, 2500);
                     }
                 },
 
@@ -2327,7 +3098,7 @@
                                             this._showErrorMessage('Não pode validar esta Folha de Horas pois a mesma já se encontra Validada.');
                                         }
                                         else {
-                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
+                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha de Horas.');
                                         }
                                     }
                                 }
@@ -2356,7 +3127,7 @@
                                 }
                                 else {
                                     if (this.integrarEmRHFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
                                     }
                                     else {
                                         if (this.integrarEmRHFolhaDeHoras == 7) {
@@ -2364,10 +3135,10 @@
                                         }
                                         else {
                                             if (this.integrarEmRHFolhaDeHoras == 8) {
-                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
+                                                this._showErrorMessage('A Folha de Horas tem que estar no estado Validado');
                                             }
                                             else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha de Horas.');
                                             }
                                         }
                                     }
@@ -2397,7 +3168,7 @@
                                 }
                                 else {
                                     if (this.integrarEmRHKMFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.');
                                     }
                                     else {
                                         if (this.integrarEmRHKMFolhaDeHoras == 7) {
@@ -2408,7 +3179,7 @@
                                                 this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
                                             }
                                             else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha De Horas.');
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha de Horas.');
                                             }
                                         }
                                     }
@@ -2464,13 +3235,18 @@
 
                 _updateLinhaPercursoResponse: function (e) {
                     //debugger;
-                    if (this.LinhaPercursoUpdated) {
+                    if (this.LinhaPercursoUpdated == 0) {
                         this._showMessage('Percurso(s) actualizado(s) com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar o(s) Percurso(s).');
+                        if (this.LinhaPercursoUpdated == 1) {
+                            this._showErrorMessage('O valor da Distância Efectuada tem que ser superior ou igual a 0 e inferior a 10 000.');
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar o Percurso.');
+                        }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 //AJUDA
@@ -2522,13 +3298,33 @@
 
                 _updateLinhaAjudaResponse: function (e) {
                     //debugger;
-                    if (this.LinhaAjudaUpdated) {
+                    if (this.LinhaAjudaUpdated == 0) {
                         this._showMessage('Ajuda actualizada com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                        if (this.LinhaAjudaUpdated == 1) {
+                            this._showErrorMessage('O valor da quantidade tem que ser superior ou igual a 0 e inferior a 10 000.');
+                        }
+                        else {
+                            if (this.LinhaAjudaUpdated == 2) {
+                                this._showErrorMessage('O valor do Custo Unitário tem que ser superior ou igual a 0.');
+                            }
+                            else {
+                                if (this.LinhaAjudaUpdated == 3) {
+                                    this._showErrorMessage('O valor do Preço Unitário tem que ser superior ou igual a 0.');
+                                }
+                                else {
+                                    if (this.LinhaAjudaUpdated == 4) {
+                                        this._showErrorMessage('O valor do Preço de Venda tem que ser superior ou igual a 0.');
+                                    }
+                                    else {
+                                        this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                                    }
+                                }
+                            }
+                        }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 //AJUDA DE CUSTOS
@@ -2570,6 +3366,9 @@
                         if (this.MaoDeObraHoraInicioFim == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
                         }
+                        if (this.MaoDeObraCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro na criação da Mão de Obra.');
+                        }
                     }
                 },
 
@@ -2592,12 +3391,25 @@
 
                 _updateMaoDeObraResponse: function (e) {
                     //debugger;
-                    if (this.MaoDeObraUpdated) {
+                    if (this.MaoDeObraUpdated == 0) {
                         this._showMessage('Mão de Obra(s) actualizada(s) com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Mão de Obra(s).');
+                        if (this.MaoDeObraUpdated == 1 | this.MaoDeObraUpdated == 2) {
+                            this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Almoço.');
+                        }
+
+                        if (this.MaoDeObraUpdated == 3 | this.MaoDeObraUpdated == 4) {
+                            this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Jantar.');
+                        }
+
+                        if (this.MaoDeObraUpdated == 5) {
+                            this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
+                        }
+                        if (this.MaoDeObraUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Mão de Obra(s).');
+                        }
                     }
                 },
 
@@ -2607,27 +3419,34 @@
                         this._showMessage('Mão de Obra atualizada com sucesso.');
                     }
                     else {
-                        if (this.MaoDeObraHoraInicioFim == 1 | this.MaoDeObraHoraInicioFim == 2) {
+                        if (this.LinhaMaoDeObraUpdated == 1 | this.LinhaMaoDeObraUpdated == 2) {
                             this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Almoço.');
                         }
 
-                        if (this.MaoDeObraHoraInicioFim == 3 | this.MaoDeObraHoraInicioFim == 4) {
+                        if (this.LinhaMaoDeObraUpdated == 3 | this.LinhaMaoDeObraUpdated == 4) {
                             this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Jantar.');
                         }
 
-                        if (this.MaoDeObraHoraInicioFim == 5) {
+                        if (this.LinhaMaoDeObraUpdated == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 6) {
+                            this._showErrorMessage('A Data-Hora de Início tem que ser superior ou igual á Data-Hora de Início do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 7) {
+                            this._showErrorMessage('A Data-Hora de Início tem que ser inferior ou igual á Data-Hora de Fim do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 8) {
+                            this._showErrorMessage('A Data-Hora de Fim tem que ser superior á Data-Hora de Início do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 9) {
+                            this._showErrorMessage('A Data-Hora de Fim tem que ser inferior ou igual á Data-Hora de Fim do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Mão de Obra(s).');
                         }
                     }
                     this.$.page_databound_ajax.generateRequest();
-                },
-
-                _MaoDeObraProjectoResponse: function (e) {
-                    //debugger;
-                },
-
-                _MaoDeObraTipoTrabalhoResponse: function (e) {
-                    //debugger;
                 },
 
                 _MaoDeObraHoraInicioFimResponse: function (e) {
@@ -2649,9 +3468,8 @@
                 //PRESENCA
                 _createPresencaResponse: function (e) {
                     //debugger;
-                    if (this.PresencaCreated) {
-                        this._showMessage('Adicionada Presença com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
+                    if (this.PresencaCreated == 0) {
+                        this._showMessage('Presença adicionada Presença com sucesso.');
 
                         this.$.presencaDataTexto.value = "";
                         this.$.presencaHora1Entrada.value = "";
@@ -2661,8 +3479,38 @@
                         this.$.presencaObservacoes.value = "";
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                        if (this.PresencaCreated == 1) {
+                            this._showErrorMessage('Não pode ter mais que uma presença para o mesmo dia.');
+                        }
+                        if (this.PresencaCreated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _deletePresencaResponse: function (e) {
@@ -2695,11 +3543,40 @@
 
                 _updateLinhaPresencaResponse: function (e) {
                     //debugger;
-                    if (this.LinhaPresencaUpdated) {
+                    if (this.LinhaPresencaUpdated == 0) {
                         this._showMessage('Presença atualizada com sucesso.');
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        if (this.LinhaPresencaUpdated == 1) {
+                            this._showErrorMessage('Não foi possivel atualizar a Presença.');
+                        }
+                        if (this.LinhaPresencaUpdated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        }
                     }
                     this.$.page_databound_ajax.generateRequest();
                 },
@@ -2713,8 +3590,14 @@
 
                 _getEmpoyeeNAVResponse: function (e) {
                     //debugger;
+
+                    this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
+                    this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;
+                    this.$.codigoCentroResponsabilidade.value = this.getEmpoyeeNAV.codigoCentroResponsabilidade;
+
                     if (this.getEmpoyeeNAV.empregadoNome != null) {
                         this.$.empregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
+
 
                         if (this.getEmpoyeeNAV.validadores == null | this.getEmpoyeeNAV.validadores == "") {
                             this.$.validadores.value = "";
@@ -2753,6 +3636,7 @@
 
                 _getAjudaCodTipoCusto: function (e) {
                     //debugger;
+                    this.$.ajudaDataDespesa.value = this.$.dataPartidaTexto.value;
                     this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
                     this.$.get_codtipocusto.generateRequest();
                     if (typeof e != 'undefined') {
@@ -2789,7 +3673,8 @@
 
                 _goBack: function (e) {
                     //debugger;
-                    window.location = "../";
+                    //window.location = "../";
+                    window.history.back();
                 },
 
 
@@ -2803,6 +3688,12 @@
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_createPercurso).addClass('disabled');
                         $(_self.$.btn_createAjuda).addClass('disabled');
+                        if (_self.$.integradorEmRH.value != null) {
+                            $(_self.$.btn_integrarEmRH).addClass('disabled');
+                        }
+                        if (_self.$.integradorEmRHKM.value != null) {
+                            $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                        }
                     };
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
@@ -2819,6 +3710,45 @@
 
                     //CAMPOS
                     if (data.estado == 1) { //VALIDADO
+                        _self.$.projetoNo.disabled = true;
+                        _self.$.empregadoNo.disabled = true;
+                        _self.$.dataPartidaTexto.disabled = true;
+                        _self.$.horaPartidaTexto.disabled = true;
+                        _self.$.dataChegadaTexto.disabled = true;
+                        _self.$.horaChegadaTexto.disabled = true;
+                        _self.$.tipoDeslocacao.disabled = true;
+                        _self.$.codigoTipoKms.disabled = true;
+                        _self.$.matricula.disabled = true;
+                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        _self.$.terminada.disabled = true;
+                        _self.$.percursoOrigem.disabled = true;
+                        _self.$.percursoDestino.disabled = true;
+                        _self.$.percursoDataViagem.disabled = true;
+                        _self.$.ajudaTipoCusto.disabled = true;
+                        _self.$.ajudaCodigoTipoCusto.disabled = true;
+                        _self.$.ajudaQuantidade.disabled = true;
+                        _self.$.ajudaCustoUnitario.disabled = true;
+                        _self.$.ajudaPrecoUnitario.disabled = true;
+                        _self.$.ajudaDataDespesa.disabled = true;
+                        _self.$.ajudaJustificacao.disabled = true;
+                        _self.$.maoDeObraDate.disabled = true;
+                        _self.$.maoDeObraProjetoNo.disabled = true;
+                        _self.$.maoDeObraCodigoTipoTrabalho.disabled = true;
+                        _self.$.maoDeObraHoraInicio.disabled = true;
+                        _self.$.maoDeObraHorarioAlmoco.disabled = true;
+                        _self.$.maoDeObraHoraFim.disabled = true;
+                        _self.$.maoDeObraHorarioJantar.disabled = true;
+                        _self.$.presencaDataTexto.disabled = true;
+                        _self.$.presencaHora1Entrada.disabled = true;
+                        _self.$.presencaHora1Saida.disabled = true;
+                        _self.$.presencaHora2Entrada.disabled = true;
+                        _self.$.presencaHora2Saida.disabled = true;
+                        _self.$.presencaObservacoes.disabled = true;
+                        _self.$.codigoRegiao.disabled = true;
+                        _self.$.codigoAreaFuncional.disabled = true;
+                        _self.$.codigoCentroResponsabilidade.disabled = true;
+                        _self.$.observacoes.disabled = true;
+
                         _self.$.percursoOrigem.disabled = true;
                         _self.$.percursoDestino.disabled = true;
                         _self.$.percursoDataViagem.disabled = true;
@@ -2872,16 +3802,33 @@
                     };
 
                     //TABELAS
-                    if (data.estado == 1) { //VALIDADO
-                        $(_self.$.tabPercurso).addClass('disabled');
-                        $(_self.$.tabAjuda).addClass('disabled');
-                    };
+                    //if (data.estado == 1) { //VALIDADO
+                    //    $(_self.$.tabPercurso).addClass('disabled');
+                    //    $(_self.$.tabAjuda).addClass('disabled');
+                    //};
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.tabPercurso).addClass('disabled');
                         $(_self.$.tabAjuda).addClass('disabled');
                         $(_self.$.tabMaoDeObra).addClass('disabled');
                         $(_self.$.tabPresenca).addClass('disabled');
                     };
+                },
+
+                _printFH: function () {
+                    //debugger;
+
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "FolhaHora&FH=" + this._folhadehoraid + "&Utilizador=" + this._userlogin;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
                 },
 
                 //Helpers

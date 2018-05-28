@@ -12,6 +12,7 @@ using Hydra.Such.Portal.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -80,59 +81,60 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
 
-            int PMovementNo = int.Parse(requestParams["movementNo"].ToString());
-            int PMovementStatus = int.Parse(requestParams["status"].ToString());
-            string PRejectReason = requestParams["rejectReason"].ToString();
+            int movementNo = int.Parse(requestParams["movementNo"].ToString());
+            int movementStatus = int.Parse(requestParams["status"].ToString());
+            string rejectionComments = requestParams["rejectReason"].ToString();
 
             //Get Approval Movement
-            ApprovalMovementsViewModel CAMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(PMovementNo));
+            ApprovalMovementsViewModel approvalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
 
-            if (CAMovement.Status == 1)
+            if (approvalMovement.Status == 1)
             {
                 //Check Approval Type
-                if (CAMovement.Type == 1)
+                if (approvalMovement.Type == 1)
                 {
                     //Get Requistion and verify if exists
-                    RequisitionViewModel CRequesition = DBRequest.ParseToViewModel(DBRequest.GetById(CAMovement.Number));
-                    if (CRequesition != null)
+                    RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
+                    if (requisition != null)
                     {
                         //Check if is to approve or reject
-                        if (PMovementStatus == 1)
+                        if (movementStatus == 1)
                         {
                             //Get Requistion Lines
-                            List<RequisitionLineViewModel> CRequesitionLines = DBRequestLine.ParseToViewModel(DBRequestLine.GetAllByRequisiçãos(CRequesition.RequisitionNo));
-                            if (CRequesitionLines != null && CRequesitionLines.Count > 0)
+                            //List<RequisitionLineViewModel> requesitionLines = DBRequestLine.ParseToViewModel(DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo));
+                            //if (requesitionLines != null && requesitionLines.Count > 0)
+                            if(requisition.Lines.Count > 0)
                             {
                                 //Check if requisition have Request Nutrition a false and all lines have ProjectNo
-                                if ((!CRequesitionLines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (CRequesition.RequestNutrition.HasValue && CRequesition.RequestNutrition.Value)) || !CRequesition.RequestNutrition.HasValue || !CRequesition.RequestNutrition.Value)
+                                if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
                                 {
                                     //Approve Movement
-                                    ErrorHandler ApproveResult = ApprovalMovementsManager.ApproveMovement(CAMovement.MovementNo, User.Identity.Name);
+                                    ErrorHandler approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
-                                    if (ApproveResult.eReasonCode == 103)
+                                    if (approvalResult.eReasonCode == 103)
                                     {
                                         //Update Requisiton Data
-                                        CRequesition.State = RequisitionStates.Approved;
-                                        CRequesition.ResponsibleApproval = User.Identity.Name;
-                                        CRequesition.ApprovalDate = DateTime.Now;
-                                        CRequesition.UpdateDate = DateTime.Now;
-                                        CRequesition.UpdateUser = User.Identity.Name;
-                                        DBRequest.Update(DBRequest.ParseToDB(CRequesition));
+                                        requisition.State = RequisitionStates.Approved;
+                                        requisition.ResponsibleApproval = User.Identity.Name;
+                                        requisition.ApprovalDate = DateTime.Now;
+                                        requisition.UpdateDate = DateTime.Now;
+                                        requisition.UpdateUser = User.Identity.Name;
+                                        DBRequest.Update(requisition.ParseToDB());
 
                                         //Update Requisition Lines Data
-                                        CRequesitionLines.ForEach(line => {
+                                        requisition.Lines.ForEach(line => {
                                             if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
                                             {
                                                 line.QuantityRequired = line.QuantityToRequire;
-                                                DBRequestLine.Update(DBRequestLine.ParseToDB(line));
+                                                DBRequestLine.Update(line.ParseToDB());
                                             }
                                         });
 
                                         result.eReasonCode = 100;
                                         result.eMessage = "A requisição foi aprovada com sucesso.";
                                     }
-                                    else if (ApproveResult.eReasonCode == 100)
+                                    else if (approvalResult.eReasonCode == 100)
                                     {
                                         result.eReasonCode = 100;
                                         result.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
@@ -152,34 +154,52 @@ namespace Hydra.Such.Portal.Controllers
                             else
                             {
                                 result.eReasonCode = 201;
-                                result.eMessage = "A requisição que tentou não possui linhas.";
+                                result.eMessage = "A requisição não possui linhas.";
                             }
                         }
-                        else if (PMovementStatus == 2)
+                        else if (movementStatus == 2)
                         {
-                            //????????????????????????????????????
-                            //????????????????????????????????????
-                            // A AGUARDAR INFORMAÇÃO DO CLIENTE
-                            //????????????????????????????????????
-                            //????????????????????????????????????
+                            //Reject Movement
+                            ErrorHandler approveResult = ApprovalMovementsManager.RejectMovement(approvalMovement.MovementNo, User.Identity.Name, rejectionComments);
+
+                            //Check Approve Status
+                            if (approveResult.eReasonCode == 100)
+                            {
+                                //Update Requisiton Data
+                                requisition.State = RequisitionStates.Rejected;
+                                requisition.ResponsibleApproval = User.Identity.Name;
+                                requisition.ApprovalDate = DateTime.Now;
+                                requisition.UpdateDate = DateTime.Now;
+                                requisition.UpdateUser = User.Identity.Name;
+                                requisition.Comments += rejectionComments;
+                                DBRequest.Update(requisition.ParseToDB());
+
+                                result.eReasonCode = 100;
+                                result.eMessage = "A requisição foi rejeitada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 199;
+                                result.eMessage = "Ocorreu um erro desconhecido ao rejeitar a requisição.";
+                            }
                         }
                     }
                     else
                     {
                         result.eReasonCode = 200;
-                        result.eMessage = "A requisição que tentou aprovar já não existe.";
+                        result.eMessage = "A requisição já não existe.";
                     }
                 }
             }
-            else if (CAMovement.Status == 1)
+            else if (approvalMovement.Status == 1)
             {
                 result.eReasonCode = 101;
-                result.eMessage = "Esta linha já foi aprovada pelo utilizador " + CAMovement.UserUpdate + ".";
+                result.eMessage = "Esta linha já foi aprovada pelo utilizador " + approvalMovement.UserUpdate + ".";
             }
-            else if (CAMovement.Status == 2)
+            else if (approvalMovement.Status == 2)
             {
                 result.eReasonCode = 102;
-                result.eMessage = "Esta linha foi rejeitada pelo utilizador " + CAMovement.UserUpdate + ".";
+                result.eMessage = "Esta linha foi rejeitada pelo utilizador " + approvalMovement.UserUpdate + ".";
             }
             return Json(result);
         }

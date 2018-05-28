@@ -150,7 +150,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
-        
+
         #endregion
 
         public static List<FolhaDeHorasViewModel> GetAllByAreaToList(int AreaId)
@@ -246,26 +246,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             string regiao = "";
 
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(user);
-
-            CUserDimensions.ForEach(X =>
+            if (CUserDimensions != null)
             {
-                if (X.Dimensão == 1)
-                    if (regiao == "")
-                        regiao = X.ValorDimensão;
-                    else
-                        regiao = regiao + "," + X.ValorDimensão;
-            });
+                CUserDimensions.ForEach(X =>
+                {
+                    if (X.Dimensão == 1)
+                        if (regiao == "")
+                            regiao = X.ValorDimensão;
+                        else
+                            regiao = regiao + "," + X.ValorDimensão;
+                });
+            }
 
             if (regiao == "")
             {
                 List<NAVDimValueViewModel> list_regiao = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 1);
-                list_regiao.ForEach(x =>
+                if (list_regiao != null)
                 {
-                    if (regiao == "")
-                        regiao = x.Code;
-                    else
-                        regiao = regiao + "," + x.Code;
-                });
+                    list_regiao.ForEach(x =>
+                    {
+                        if (regiao == "")
+                            regiao = x.Code;
+                        else
+                            regiao = regiao + "," + x.Code;
+                    });
+                }
             }
 
             return regiao;
@@ -277,25 +282,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(user);
 
-            CUserDimensions.ForEach(X =>
+            if (CUserDimensions != null)
             {
-                if (X.Dimensão == 2)
-                    if (area == "")
-                        area = X.ValorDimensão;
-                    else
-                        area = area + "," + X.ValorDimensão;
-            });
+                CUserDimensions.ForEach(X =>
+                {
+                    if (X.Dimensão == 2)
+                        if (area == "")
+                            area = X.ValorDimensão;
+                        else
+                            area = area + "," + X.ValorDimensão;
+                });
+            }
 
             if (area == "")
             {
                 List<NAVDimValueViewModel> list_area = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 2);
-                list_area.ForEach(x =>
+                if (list_area != null)
                 {
-                    if (area == "")
-                        area = x.Code;
-                    else
-                        area = area + "," + x.Code;
-                });
+                    list_area.ForEach(x =>
+                    {
+                        if (area == "")
+                            area = x.Code;
+                        else
+                            area = area + "," + x.Code;
+                    });
+                }
             }
 
             return area;
@@ -307,25 +318,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(user);
 
-            CUserDimensions.ForEach(X =>
+            if (CUserDimensions != null)
             {
-                if (X.Dimensão == 3)
-                    if (cresp == "")
-                        cresp = X.ValorDimensão;
-                    else
-                        cresp = cresp + "," + X.ValorDimensão;
-            });
+                CUserDimensions.ForEach(X =>
+                {
+                    if (X.Dimensão == 3)
+                        if (cresp == "")
+                            cresp = X.ValorDimensão;
+                        else
+                            cresp = cresp + "," + X.ValorDimensão;
+                });
+            }
 
             if (cresp == "")
             {
                 List<NAVDimValueViewModel> list_cresp = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 3);
-                list_cresp.ForEach(x =>
+                if (list_cresp != null)
                 {
-                    if (cresp == "")
-                        cresp = x.Code;
-                    else
-                        cresp = cresp + "," + x.Code;
-                });
+                    list_cresp.ForEach(x =>
+                    {
+                        if (cresp == "")
+                            cresp = x.Code;
+                        else
+                            cresp = cresp + "," + x.Code;
+                    });
+                }
             }
 
             return cresp;
@@ -347,9 +364,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x => 
+                    return ctx.FolhasDeHoras.Where(x =>
                         (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) && 
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.Estado == Estado
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -559,7 +576,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRh.ToLower().Contains(user.ToLower()) &&
-                        x.IntegradoEmRh == false &&
+                        (x.IntegradoEmRh == false || x.IntegradoEmRh == null) &&
                         x.Estado == Estado //1 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -664,7 +681,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
-                        x.IntegradoEmRhkm == false &&
+                        (x.IntegradoEmRhkm == false || x.IntegradoEmRhkm == null) &&
                         x.Estado == Estado && // 1 == VALIDADO
                         x.TipoDeslocação == 2 // 2 == "Viatura Própria"
                     ).Select(FH => new FolhaDeHorasViewModel()

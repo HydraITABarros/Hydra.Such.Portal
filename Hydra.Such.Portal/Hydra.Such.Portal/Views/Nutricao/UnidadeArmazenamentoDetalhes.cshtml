@@ -167,7 +167,9 @@
         </iron-ajax>
 
         <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
+            </template>
             <paper-button class="btnCreate" raised on-tap="_redirectToList">Exibir Lista</paper-button>
 
         </div>
@@ -290,11 +292,17 @@
                     </div>
                 </iron-form>
                 <div class="marginSpace" id="ddmarginSpace">
-                    <paper-button raised id="btnSaveLine" class="btnEdit" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button raised id="btnSaveLine" class="btnEdit" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
                 </div>
                 <div class="marginSpace2" id="ddmarginSpace2">
-                    <paper-button raised id="btnSaveLine" class="btnEdit" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    <paper-button raised id="btnSaveLine" class="btnRemove" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <paper-button raised id="btnSaveLine" class="btnEdit" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ _permissions.delete }}">
+                        <paper-button raised id="btnSaveLine" class="btnRemove" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
                     <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_goProductMovement">&nbsp; Movimento</paper-button>
                 </div>
             </div>
@@ -314,6 +322,10 @@
                     selected: {
                         type: Number,
                         value: 0
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
                 },
                 ready: function () {

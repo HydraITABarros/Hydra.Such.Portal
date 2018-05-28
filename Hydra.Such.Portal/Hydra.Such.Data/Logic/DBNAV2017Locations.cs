@@ -29,7 +29,8 @@ namespace Hydra.Such.Data.Logic
                         result.Add(new NAVLocationsViewModel()
                         {
                             Code = (string)temp.Code,
-                            Name = (string)temp.Name
+                            Name = (string)temp.Name,
+                            ArmazemCDireta = (byte)temp.ArmazemCDireta,
                         });
                     }
                 }
@@ -43,3 +44,4 @@ namespace Hydra.Such.Data.Logic
         }
     }
 }
+

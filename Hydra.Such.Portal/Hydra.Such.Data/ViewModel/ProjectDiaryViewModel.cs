@@ -10,7 +10,7 @@ namespace Hydra.Such.Data.ViewModel
         public string ProjectNo { get; set; }
         public string Date { get; set; }
         public int? MovementType { get; set; }
-        //public string DocumentNo { get; set; }
+        public string DocumentNo { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
@@ -36,6 +36,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitValueToInvoice { get; set; }
         public string Currency { get; set; }
         public bool Billed { get; set; }
+        public string FolhaHoras { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
@@ -88,8 +89,9 @@ namespace Hydra.Such.Data.ViewModel
         public string EmployeeNo { get; set; }
         public decimal QuantityReturned { get; set; }
         public string Coin { get; set; }
-        
 
+        public int eReasonCode { get; set; }
+        public string eMessage { get; set; }
 
 
     }

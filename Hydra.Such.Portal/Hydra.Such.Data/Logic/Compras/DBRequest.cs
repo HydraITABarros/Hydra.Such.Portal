@@ -5,6 +5,7 @@ using System.Text;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.Compras;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Request
 {
@@ -26,18 +27,30 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
-
         public static List<Requisição> GetByState(RequisitionStates state)
         {
             try
             {
-                int stateValue = (int)state;
+                List<RequisitionStates> states = new List<RequisitionStates>() { state };
+                return GetByState(states);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByState(List<RequisitionStates> states)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
 
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
-                        .Where(x => x.Estado == stateValue)
+                        .Where(x => stateValues.Contains(x.Estado.Value))
                         .ToList();
                 }
             }
@@ -161,13 +174,20 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, int Status)
+        public static List<Requisição> GetReqByUserAreaStatus(string userName, int areaId, RequisitionStates status)
+        {
+            return GetReqByUserAreaStatus(userName, areaId, new List<RequisitionStates> { status });
+        }
+
+        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, List<RequisitionStates> status)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Área == AreaId && x.Estado == Status).ToList();
+                    var statusValues = status.Cast<int>().ToList();
+
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value)).ToList();
                 }
             }
             catch (Exception ex)
@@ -175,6 +195,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {

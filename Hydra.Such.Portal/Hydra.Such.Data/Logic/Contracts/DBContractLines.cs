@@ -64,11 +64,35 @@ namespace Hydra.Such.Data.Logic.Contracts
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ObjectToCreate.NºLinha = 0;
                     ctx.LinhasContratos.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
                 return ObjectToCreate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<LinhasContratos> Create(List<LinhasContratos> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(item =>
+                    {
+                        item.DataHoraCriação = DateTime.Now;
+                        item.NºLinha = 0;
+                        ctx.LinhasContratos.Add(item);
+                    });
+                    ctx.SaveChanges();
+                }
+                return items;
             }
             catch (Exception ex)
             {
@@ -188,7 +212,19 @@ namespace Hydra.Such.Data.Logic.Contracts
             };
         }
 
-        public static LinhasContratos ParseToDB(ContractLineViewModel x)
+        public static List<ContractLineViewModel> ParseToViewModel(List<LinhasContratos> items)
+        {
+            List<ContractLineViewModel> parsedItems = new List<ContractLineViewModel>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x => 
+                    parsedItems.Add(ParseToViewModel(x))
+                );
+            }
+            return parsedItems;
+        }
+
+            public static LinhasContratos ParseToDB(ContractLineViewModel x)
         {
             return new LinhasContratos()
             {

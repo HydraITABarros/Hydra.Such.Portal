@@ -20,9 +20,9 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@NoProduto", resourceNo),
-                        new SqlParameter("@FiltroArea", resourceNo),
-                        new SqlParameter("@TipoRecurso", resourceNo),
-                        new SqlParameter("@GrupoContabProd", resourceNo)
+                        new SqlParameter("@FiltroArea", filterArea),
+                        new SqlParameter("@TipoRecurso", resourceType),
+                        new SqlParameter("@GrupoContabProd", contabGroup)
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Recursos @DBName, @CompanyName, @NoProduto, @FiltroArea, @TipoRecurso, @GrupoContabProd", parameters);

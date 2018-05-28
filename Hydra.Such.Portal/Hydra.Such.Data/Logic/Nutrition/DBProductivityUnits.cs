@@ -52,6 +52,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     //Add Profile User
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.UnidadesProdutivas.Add(ObjectToCreate);
+                    ctx.SaveChanges();
                 }
                 return ObjectToCreate;
             }
@@ -119,8 +120,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 CódigoRegião = x.CodeRegion,
                 CódigoCentroResponsabilidade = x.CodeResponsabilityCenter,
                 CódigoÁreaFuncional = x.CodeFunctionalArea,
-                DataInícioExploração = x.StartDateExploration != "" ? DateTime.Parse(x.StartDateExploration) : (DateTime?)null,
-                DataFimExploração = x.EndDateExploration != "" ? DateTime.Parse(x.EndDateExploration) : (DateTime?)null,
+                DataInícioExploração = x.StartDateExploration != "" && x.StartDateExploration != null? DateTime.Parse(x.StartDateExploration) : (DateTime?)null,
+                DataFimExploração = x.EndDateExploration != "" && x.EndDateExploration != null ? DateTime.Parse(x.EndDateExploration) : (DateTime?)null,
                 Armazém = x.Warehouse,
                 ArmazémFornecedor = x.WarehouseSupplier,
                 ProjetoCozinha = x.ProjectKitchen,

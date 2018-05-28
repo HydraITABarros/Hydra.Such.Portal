@@ -7,8 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public FichasTécnicasPratos()
         {
-            LinhasFichasTécnicasPratosCódigoNavigation = new HashSet<LinhasFichasTécnicasPratos>();
-            LinhasFichasTécnicasPratosNºPratoNavigation = new HashSet<LinhasFichasTécnicasPratos>();
+            LinhasFichasTécnicasPratos = new HashSet<LinhasFichasTécnicasPratos>();
             ProcedimentosDeConfeção = new HashSet<ProcedimentosDeConfeção>();
         }
 
@@ -56,11 +55,25 @@ namespace Hydra.Such.Data.Database
         public bool? ÁBaseEnxofreESulfitos { get; set; }
         public bool? ÁBaseTremoço { get; set; }
         public bool? ÁBaseMoluscos { get; set; }
+        public decimal? VitaminaA { get; set; }
+        public decimal? VitaminaD { get; set; }
+        public decimal? Colesterol { get; set; }
+        public decimal? Sódio { get; set; }
+        public decimal? Potássio { get; set; }
+        public decimal? Cálcio { get; set; }
+        public decimal? Ferro { get; set; }
+        public decimal? Proteínas { get; set; }
+        public decimal? HidratosDeCarbono { get; set; }
+        public decimal? Lípidos { get; set; }
+        public decimal? FibraAlimentar { get; set; }
+        public decimal? PreçoCustoEsperado { get; set; }
+        public decimal? PreçoCustoActual { get; set; }
+        public decimal? ValorEnergético { get; set; }
+        public decimal? ValorEnergético2 { get; set; }
 
         public ClassificaçãoFichasTécnicas ClassFt1Navigation { get; set; }
         public ClassificaçãoFichasTécnicas ClassFt2Navigation { get; set; }
-        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratosCódigoNavigation { get; set; }
-        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratosNºPratoNavigation { get; set; }
+        public ICollection<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
         public ICollection<ProcedimentosDeConfeção> ProcedimentosDeConfeção { get; set; }
     }
 }

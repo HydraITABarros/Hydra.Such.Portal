@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
@@ -17,23 +18,23 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             [Area("Nutricao")]
             public IActionResult Detalhes()
             {
-                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
-                if (userPermissions != null && userPermissions.Read.Value)
+                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            if (userPermissions != null && userPermissions.Read.Value)
                 {
                     ViewBag.UPermissions = userPermissions;
                     return View();
                 }
                 else
                 {
-                    return RedirectToAction("AccessDenied", "Error");
-                }
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
             }
             // Record Technical Of Plates form by id
             [Area("Nutricao")]
             public IActionResult FichaTecnica(string id)
             {
-                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
-                if (userPermissions != null && userPermissions.Read.Value)
+                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            if (userPermissions != null && userPermissions.Read.Value)
                 {
                     if (!string.IsNullOrEmpty(id))
                     {
@@ -49,8 +50,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("AccessDenied", "Error");
-                }
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
             }
         #endregion
 
@@ -203,31 +204,49 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             if (data != null)
             {
-                Configuração Configs = DBConfigurations.GetById(1);
-                int NumerationConfigurationId = 0;
-                NumerationConfigurationId = Configs.NumeraçãoFichasTécnicasDePratos.Value;
-                data.PlateNo = DBNumerationConfigurations.GetNextNumeration(NumerationConfigurationId,
-                    (data.PlateNo == "" || data.PlateNo == null));
-                data.CreateUser = User.Identity.Name;
-                var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
-                if (createdItem != null)
-                {
+                //Get Numeration
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoFichasTécnicasDePratos.Value;
 
-                    data = createdItem.ParseToViewModel();
-                    //Update Last Numeration Used
-                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(NumerationConfigurationId);
-                    ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
-                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                    DBNumerationConfigurations.Update(ConfigNumerations);
-                    data.eReasonCode = 1;
-                    data.eMessage = "Registo criado com sucesso.";
+                if (data.PlateNo == "" || data.PlateNo == null)
+                {
+                    autoGenId = true;
+                    data.PlateNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                }
+                if (data.PlateNo != null)
+                {
+                    data.CreateUser = User.Identity.Name;
+                    var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
+                    if (createdItem != null)
+                    {
+
+                        data = createdItem.ParseToViewModel();
+
+                        //Update Last Numeration Used
+                        if (autoGenId)
+                        {
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "Registo criado com sucesso.";
+                    }
+                    else
+                    {
+
+                        data = new RecordTechnicalOfPlatesModelView();
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao editar o registo.";
+                    }
                 }
                 else
                 {
-
-                    data = new RecordTechnicalOfPlatesModelView();
                     data.eReasonCode = 2;
-                    data.eMessage = "Ocorreu um erro ao editar o registo.";
+                    data.eMessage = "A numeração configurada não é compativel com a inserida.";
                 }
             }
             else

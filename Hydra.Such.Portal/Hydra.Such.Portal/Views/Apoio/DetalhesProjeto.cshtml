@@ -5,14 +5,14 @@
 }
 @if (ViewBag.ProjectNo == "")
 {
-    <h2>Criar novo projeto</h2>
+    <h1 class="title">Criar Projeto</h1>
 }
 else
 {
-    <h2>Projeto @ViewBag.ProjectNo</h2>
+    <h1 class="title">Projeto @ViewBag.ProjectNo</h1>
 }
 
 
 <link rel="import" href="/elements/projects/project_details.html">
 
-<x-projectdetails _projectid="@ViewBag.ProjectNo" _areaid="5" ></x-projectdetails>
+<x-projectdetails _projectid="@ViewBag.ProjectNo" _areaid="5"></x-projectdetails>

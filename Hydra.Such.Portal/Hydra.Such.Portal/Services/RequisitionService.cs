@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -247,23 +248,29 @@ namespace Hydra.Such.Portal.Services
                             var result = CreateNAVPurchaseOrderFor(purchOrder);
                             if (result.CompletedSuccessfully)
                             {
+                                //Update req
+                                requisition.OrderNo = result.ResultValue;
+
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
                                     line.CreatedOrderNo = result.ResultValue;
                                     line.UpdateUser = this.changedByUserName;
                                 });
-
-                                bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
-                                if (linesUpdated)
+                                //Commit to DB
+                                var updatedReq = DBRequest.Update(requisition.ParseToDB(), true);
+                                //bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
+                                //if (linesUpdated)
+                                if (updatedReq != null)
                                 {
                                     requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                                 }
                             }
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                            requisition.eMessages.Add(new TraceInformation(TraceType.Exception, purchOrder.SupplierId + " " + ex.Message));
                         }
                     });
 
@@ -463,7 +470,7 @@ namespace Hydra.Such.Portal.Services
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
                 createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
-
+                
                 Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
                 createPurchaseLinesTask.Wait();
                 if (createPurchaseLinesTask.IsCompletedSuccessfully)

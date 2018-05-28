@@ -109,6 +109,8 @@ namespace Hydra.Such.Data.Logic.Project
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    if (!ObjectToCreate.Faturável.HasValue)
+                        ObjectToCreate.Faturável = false;
                     ctx.DiárioDeProjeto.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }

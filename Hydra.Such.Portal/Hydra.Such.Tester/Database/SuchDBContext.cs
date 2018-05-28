@@ -1020,6 +1020,18 @@ namespace Hydra.Such.Tester.Database
                     .HasColumnName("ProcedimentosEmailEnvioParaCA")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.RegiaoPorDefeito)
+                    .HasColumnName("Região por defeito")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.AreaPorDefeito)
+                    .HasColumnName("Area por defeito")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CentroRespPorDefeito)
+                    .HasColumnName("Centro Resp por defeito")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);

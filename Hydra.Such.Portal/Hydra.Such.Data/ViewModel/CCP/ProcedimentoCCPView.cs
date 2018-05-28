@@ -130,7 +130,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         ///public ElementosChecklist ElementosChecklist { get; set; }
         //public ElementosChecklistArea ChecklistArea { get; set; }
 
-        
+        public string Nome_Utilizador_Logado { get; set; }
+        public string Nome_Utilizador { get; set; }
 
         public TemposPACCPView TemposPaCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
@@ -140,6 +141,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ICollection<LinhasParaEncomendaCCPView> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<NotasProcedimentoCCPView> NotasProcedimentosCcp { get; set; }
         public ICollection<WorkflowProcedimentosCCPView> WorkflowProcedimentosCcp { get; set; }
+        public ICollection<FluxoTrabalhoListaControloCCPView> FluxoTrabalhoListaControlo_Show { get; set; }
 
         #region used to map flow control checklist
         #region AreaChecklist
@@ -263,5 +265,24 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public DateTime? DataAdjudicacao16 { get; set; }
         #endregion
         #endregion
+
+        #region Used to map Send Email To Juri Aproval
+        public string EmailToJuriAproval_From { get; set; }
+        public string EmailToJuriAproval_To { get; set; }
+        public string EmailToJuriAproval_Subject { get; set; }
+        public string EmailToJuriAproval_Comment { get; set; }
+
+
+        #endregion
+
+        public string DataPublicacao_Show { get; set; }
+        public string DataRecolha_Show { get; set; }
+        public string DataValidRelatorioPreliminar_Show { get; set; }
+        public string DataAudienciaPrevia_Show { get; set; }
+        public string DataRelatorioFinal_Show { get; set; }
+        public string DataNotificacao_Show { get; set; }
+
+        public int? NovoEstado { get; set; }
+        public string NovoEstadoComentario { get; set; }
     }
 }

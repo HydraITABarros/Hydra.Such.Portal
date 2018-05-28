@@ -12,6 +12,12 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public string TypeText { get; set; }
         public int? Area { get; set; }
         public string AreaText { get; set; }
+        public string FunctionalArea { get; set; }
+        public string FunctionalAreaText { get; set; }
+        public string ResponsabilityCenter { get; set; }
+        public string ResponsabilityCenterText { get; set; }
+        public string Region { get; set; }
+        public string RegionText { get; set; }
         public string Number { get; set; }
         public string NumberLink { get; set; }
         public string RequestUser { get; set; }

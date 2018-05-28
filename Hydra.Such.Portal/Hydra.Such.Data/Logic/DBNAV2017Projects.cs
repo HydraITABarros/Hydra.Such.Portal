@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
     public static class DBNAV2017Projects
     {
-        public static List<NAVProjectsViewModel> GetAll(string NAVDatabaseName, string NAVCompanyName)
+        public static List<NAVProjectsViewModel> GetAll(string NAVDatabaseName, string NAVCompanyName, string ProjectNo)
         {
             try
             {
@@ -18,10 +18,11 @@ namespace Hydra.Such.Data.Logic
                 {
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
-                        new SqlParameter("@CompanyName", NAVCompanyName)
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@ProjectNo", ProjectNo)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Projetos @DBName, @CompanyName", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Projetos @DBName, @CompanyName, @ProjectNo", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -31,7 +32,10 @@ namespace Hydra.Such.Data.Logic
                             Description = (string)temp.Description,
                             CustomerNo = (string)temp.BillToCustomerNo_,
                             GlobalDimension1 = (string)temp.GlobalDimension1Code,
-                            GlobalDimension2 = (string)temp.GlobalDimension2Code
+                            GlobalDimension2 = (string)temp.GlobalDimension2Code,
+                            AreaCode = (string)temp.AreaCode,
+                            RegionCode = (string)temp.RegionCode,
+                            CenterResponsibilityCode = (string)temp.CenterResponsibilityCode
                         });
                     }
                 }

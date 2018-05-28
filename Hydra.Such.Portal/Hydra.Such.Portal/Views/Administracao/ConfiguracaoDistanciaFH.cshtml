@@ -3,38 +3,42 @@
     ViewData["Title"] = "Configuração Distância Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*grid*@
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*textfield*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
-@*combobox*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
-@*toast*@
-<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
-@*layout*@
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-@*mixin*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*button*@
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*ironform*@
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <h1 class="title">Configuração Distância Folha de Horas</h1>
 
@@ -56,6 +60,21 @@
 
             paper-input {
                 max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
             }
         </style>
 
@@ -112,45 +131,47 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
 
-        <div class="row break_clear">
-            <div class="col-sm-4">
-                <vaadin-combo-box items="[[LOrigemDestino]]" id="origem" name="origem" item-value-path="id" item-label-path="value" label="Origen" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-4">
+                            <vaadin-combo-box items="[[LOrigemDestino]]" id="origem" name="origem" item-value-path="id" item-label-path="value" label="Origen" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-4">
-                <vaadin-combo-box items="[[LOrigemDestino]]" id="destino" name="destino" item-value-path="id" item-label-path="value" label="Destino" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-sm-4">
+                            <vaadin-combo-box items="[[LOrigemDestino]]" id="destino" name="destino" item-value-path="id" item-label-path="value" label="Destino" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-sm-2">
-                <vaadin-text-field id="distancia" label="Distância" disabled="{{ _permissionsCreate }}" maxlength="6"></vaadin-text-field>
-            </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="distancia" label="Distância" disabled="{{ _permissionsCreate }}" maxlength="6"></vaadin-text-field>
+                        </div>
 
-            <div class="col-sm-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-        </div>
+                        <div class="col-sm-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <br />
 
@@ -201,61 +222,61 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            @*<vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="criadoPor" />
+                <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
+                <vaadin-grid-filter path="criadoPor" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.criadoPor}}" disabled="true">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.criadoPor}}" disabled="true">
+                <template>
+                <paper-icon-item>
+                <paper-item-body two-line>
+                <div>[[item.value]]</div>
+                </paper-item-body>
+                </paper-icon-item>
                 </template>
-            </vaadin-grid-column>
+                </vaadin-combo-box>
+                </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+                <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraCriacao" />
+                <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
+                <vaadin-grid-filter path="dataHoraCriacao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
+                <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
                 </template>
-            </vaadin-grid-column>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+                <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="alteradoPor" />
+                <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
+                <vaadin-grid-filter path="alteradoPor" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.alteradoPor}}" disabled="true">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.alteradoPor}}" disabled="true">
+                <template>
+                <paper-icon-item>
+                <paper-item-body two-line>
+                <div>[[item.value]]</div>
+                </paper-item-body>
+                </paper-icon-item>
                 </template>
-            </vaadin-grid-column>
+                </vaadin-combo-box>
+                </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+                <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
+                <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
+                <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraUltimaAlteracao}}" disabled="true"></vaadin-text-field>
+                <vaadin-text-field value="{{item.dataHoraUltimaAlteracao}}" disabled="true"></vaadin-text-field>
                 </template>
-            </vaadin-grid-column>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="150px">
                 <template class="header">
@@ -434,17 +455,25 @@
                 },
 
                 _createResponse: function (e) {
+                    debugger;
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.codigo.value = "";
-                        this.$.descricao.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.origem.value = "";
+                            this.$.destino.value = "";
+                            this.$.distancia.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 
@@ -460,7 +489,8 @@
                 },
 
                 _goBack: function (e) {
-                    window.location = "../";
+                    //window.location = "../";
+                    window.history.back();
                 }
             });
         });

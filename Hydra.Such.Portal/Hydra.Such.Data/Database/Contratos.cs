@@ -80,6 +80,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraErrosEOmissões { get; set; }
         public DateTime? DataHoraRelatórioFinal { get; set; }
         public DateTime? DataHoraHabilitaçãoDocumental { get; set; }
+        public DateTime? DataHoraEntregaProposta { get; set; }
         public bool? NºComprimissoObrigatório { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
@@ -88,6 +89,7 @@ namespace Hydra.Such.Data.Database
         public bool? Arquivado { get; set; }
         public decimal? ValorBaseProcedimento { get; set; }
         public DateTime? AudiênciaPrévia { get; set; }
+        public string RazãoArquivo { get; set; }
 
         public ObjetosDeServiço ObjetoServiçoNavigation { get; set; }
         public ICollection<LinhasContratos> LinhasContratos { get; set; }

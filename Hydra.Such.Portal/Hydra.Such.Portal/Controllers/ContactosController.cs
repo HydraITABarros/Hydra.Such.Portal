@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -31,7 +32,7 @@ namespace Hydra.Such.Portal.Controllers
         // GET: Contactos
         public ActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 99, 24);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Genérica, Enumerations.Features.Contactos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UserPermissions = userPermissions;
@@ -102,18 +103,15 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                string entityId = "";
-                bool autoGenId = false;
-
                 //Get Numeration
+                bool autoGenId = false;
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
                 
                 if (item.Id == "" || item.Id == null)
                 {
                     autoGenId = true;
-                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
-                    item.Id = entityId;
+                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                 }
 
                 if (item.Id != null)
@@ -130,7 +128,6 @@ namespace Hydra.Such.Portal.Controllers
                             //Inserted, update item to return
                             item = newItem;
                             
-
                             Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
                             try
                             {
@@ -140,6 +137,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 item.eReasonCode = 3;
                                 item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                                item.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
                             }
 
 
@@ -158,6 +156,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (configNumerations != null && autoGenId)
                                 {
                                     configNumerations.ÚltimoNºUsado = item.Id;
+                                    configNumerations.UtilizadorModificação = User.Identity.Name;
                                     DBNumerationConfigurations.Update(configNumerations);
                                 }
                                 item.eReasonCode = 1;
@@ -202,6 +201,18 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     item.eReasonCode = 2;
                     item.eMessage = "Ocorreu um erro ao atualizar o contacto.";
+                }
+
+                Task<WSContacts.Update_Result> updateContactTask = NAVContactsService.UpdateAsync(item, _configws);
+
+                try
+                {
+                    updateContactTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 4;
+                    item.eMessage = "Ocorreu um erro ao atualizar o contacto no NAV.";
                 }
             }
             else

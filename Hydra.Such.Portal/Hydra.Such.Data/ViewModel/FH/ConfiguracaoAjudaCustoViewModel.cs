@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.ViewModel.FH
     public partial class ConfiguracaoAjudaCustoViewModel
     {
         public string CodigoTipoCusto { get; set; }
+        public string CodigoTipoCustoTexto { get; set; }
         public int CodigoRefCusto { get; set; }
         public bool DataChegadaDataPartida { get; set; }
         public decimal? DistanciaMinima { get; set; }

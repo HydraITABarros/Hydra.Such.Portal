@@ -61,7 +61,23 @@ namespace Hydra.Such.Data.Logic.Nutrition
                         ÁBaseSementesDeSésamo = x.ÁBaseSementesDeSésamo,
                         ÁBaseEnxofreESulfitos = x.ÁBaseEnxofreESulfitos,
                         ÁBaseTremoço = x.ÁBaseTremoço,
-                        ÁBaseMoluscos = x.ÁBaseMoluscos
+                        ÁBaseMoluscos = x.ÁBaseMoluscos,
+                        VitaminaA = x.VitaminaA,
+                        VitaminaD = x.VitaminaD,
+                        Colesterol = x.Colesterol,
+                        Sódio = x.Sódio,
+                        Potássio = x.Potássio,
+                        Cálcio = x.Cálcio,
+                        Ferro = x.Ferro,
+                        Proteínas = x.Proteínas,
+                        HidratosDeCarbono = x.HidratosDeCarbono,
+                        Lípidos = x.Lípidos,
+                        FibraAlimentar = x.FibraAlimentar,
+                        PreçoCustoEsperado = x.PreçoCustoEsperado,
+                        PreçoCustoActual = x.PreçoCustoActual,
+                        ValorEnergético = x.ValorEnergético,
+                        ValorEnergético2 = x.ValorEnergético2,
+                        
                     }).ToList();
                     return result;
                 }
@@ -122,7 +138,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
                         ÁBaseSementesDeSésamo = x.ÁBaseSementesDeSésamo,
                         ÁBaseEnxofreESulfitos = x.ÁBaseEnxofreESulfitos,
                         ÁBaseTremoço = x.ÁBaseTremoço,
-                        ÁBaseMoluscos = x.ÁBaseMoluscos
+                        ÁBaseMoluscos = x.ÁBaseMoluscos,
+                        VitaminaA = x.VitaminaA,
+                        VitaminaD = x.VitaminaD,
+                        Colesterol = x.Colesterol,
+                        Sódio = x.Sódio,
+                        Potássio = x.Potássio,
+                        Cálcio = x.Cálcio,
+                        Ferro = x.Ferro,
+                        Proteínas = x.Proteínas,
+                        HidratosDeCarbono = x.HidratosDeCarbono,
+                        Lípidos = x.Lípidos,
+                        FibraAlimentar = x.FibraAlimentar,
+                        PreçoCustoEsperado = x.PreçoCustoEsperado,
+                        PreçoCustoActual = x.PreçoCustoActual,
+                        ValorEnergético = x.ValorEnergético,
+                        ValorEnergético2 = x.ValorEnergético2
                     }).ToList();
                     return result;
                 }
@@ -274,7 +305,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     BasedSesameSeeds = item.ÁBaseSementesDeSésamo,
                     BasedSulfurDioxeAndSulphites = item.ÁBaseEnxofreESulfitos,
                     BasedLupine = item.ÁBaseTremoço,
-                    BasedMolluscs = item.ÁBaseMoluscos
+                    BasedMolluscs = item.ÁBaseMoluscos,
+                    VitaminA = item.VitaminaA,
+                    VitaminD = item.VitaminaD,
+                    Cholesterol = item.Colesterol,
+                    Sodium = item.Sódio,
+                    Potassium = item.Potássio,
+                    Calcium = item.Cálcio,
+                    Iron = item.Ferro,
+                    Proteins = item.Proteínas,
+                    Carbohydrates = item.HidratosDeCarbono,
+                    Lipids = item.Lípidos,
+                    FoodFiber = item.FibraAlimentar,
+                    PriceCostExpected = item.PreçoCustoEsperado,
+                    PriceCostCurrent = item.PreçoCustoActual,
+                    Energeticvalue = item.ValorEnergético,
+                    Energeticvalue2 = item.ValorEnergético2,
                 };
             }
             return null;
@@ -335,6 +381,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     ÁBaseEnxofreESulfitos = item.BasedSulfurDioxeAndSulphites,
                     ÁBaseTremoço = item.BasedLupine,
                     ÁBaseMoluscos = item.BasedMolluscs,
+                    VitaminaA = item.VitaminA,
+                    VitaminaD = item.VitaminD,
+                    Colesterol= item.Cholesterol,
+                    Sódio= item.Sodium,
+                    Potássio= item.Potassium,
+                    Cálcio= item.Calcium,
+                    Ferro= item.Iron,
+                    Proteínas= item.Proteins,
+                    HidratosDeCarbono = item.Carbohydrates,
+                    Lípidos = item.Lipids,
+                    FibraAlimentar = item.FoodFiber,
+                    PreçoCustoEsperado = item.PriceCostExpected,
+                    PreçoCustoActual = item.PriceCostCurrent,
+                    ValorEnergético = item.Energeticvalue,
+                    ValorEnergético2 = item.Energeticvalue2,
                 };
             }
             return null;

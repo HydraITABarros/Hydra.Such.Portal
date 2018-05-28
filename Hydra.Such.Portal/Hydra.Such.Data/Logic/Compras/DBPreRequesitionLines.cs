@@ -77,6 +77,25 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
+        public static bool CreateMultiple(List<LinhasPréRequisição> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                    ctx.LinhasPréRequisição.AddRange(items);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static LinhasPréRequisição Update(LinhasPréRequisição ObjectToUpdate)
         {
             try
@@ -173,7 +192,9 @@ namespace Hydra.Such.Data.Logic.Compras
                 OpenOrderNo = x.NºEncomendaAberto,
                 OpenOrderLineNo = x.NºLinhaEncomendaAberto,
                 Selected = false,
-                TotalCost = x.CustoUnitário * x.QuantidadeARequerer
+                TotalCost = x.CustoUnitário * x.QuantidadeARequerer,
+                ArmazemCDireta = x.LocalCompraDireta
+
             };
         }
 
@@ -213,7 +234,9 @@ namespace Hydra.Such.Data.Logic.Compras
                 UnidadeProdutivaNutrição = x.UnitNutritionProduction,
                 NºCliente = x.CustomerNo,
                 NºEncomendaAberto = x.OpenOrderNo,
-                NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                NºLinhaEncomendaAberto = x.OpenOrderLineNo,
+                LocalCompraDireta = x.ArmazemCDireta
+                
             };
         }
     }

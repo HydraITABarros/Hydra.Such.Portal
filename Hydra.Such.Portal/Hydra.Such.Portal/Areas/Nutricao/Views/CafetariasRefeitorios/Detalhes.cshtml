@@ -106,7 +106,7 @@
                         <paper-button class="" raised on-tap="_redirectToCoffeeShopDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Receitas</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.read }}">
-                        <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Nº Refeições</paper-button>
+                        <paper-button class="" raised on-tap="_redirectToMealRegistry"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Nº Refeições</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.read }}">
                         <paper-button class="" raised on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Folha de caixa</paper-button>
@@ -207,10 +207,10 @@
                                     <div class="col-md-3 ">
                                         <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
                                             <template>
-                                                <table width="180px">
+                                                <table width="500px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -219,10 +219,10 @@
                                     <div class="col-md-3 ">
                                         <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                             <template>
-                                                <table width="180px">
+                                                <table width="550px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="20%">[[item.id]]</td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -249,7 +249,7 @@
                                         <vaadin-text-field value="{{data.totalConsumption}}" id="totalConsumption" name="totalConsumption" label="Total Consumos" disabled> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.totalMeals}}" id="totalMeals" name="totalMeals" label="Nº Refeições" disabled> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.numberOfMeals}}" id="numberOfMeals" name="numberOfMeals" label="Nº Refeições" disabled> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
 
@@ -409,6 +409,12 @@
                 _redirectToCoffeeShopDiary: function (e) {
                     window.location.href = "/Nutricao/DiarioCafeterias/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
                 },
+
+                _redirectToMealRegistry: function (e) {
+                    window.location.href = "/Nutricao/RegistoNoRefeicoes/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+
+                },
+
                 _notImplemented: function(e) {
                     alert("Funcionalidade não implementada. A aguardar especificação.");
                 },

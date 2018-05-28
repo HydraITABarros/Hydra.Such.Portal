@@ -271,10 +271,10 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <table width="200px">
+                                <table width="500px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -283,10 +283,10 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <table width="200px">
+                                <table width="550px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -421,7 +421,7 @@
 
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar-teste</paper-button>
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.update }}">
@@ -498,9 +498,8 @@
                         this.$.ToastMessageError.open();
                     },
                     _validateData: function () {
-                        debugger;
+                        this.$.ProjectClient.validate();
                         if (this.$.Description.validate() &
-                            this.$.ProjectClient.validate() &
                             this.$.ProjectLeader.validate() &
                             this.$.ProjectResponsible.validate() &
                             this.$.ContractNo.validate() &
@@ -508,7 +507,10 @@
                             this.$.RegionCode.validate() &
                             this.$.FunctionalAreaCode.validate() &
                             this.$.ResponsabilityCenterCode.validate()) {
-                            return true;
+
+                            if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
+                                return true;
+                            } 
                         }
                         this._openToastError("Verifique os dados inseridos.");
                         return false;
@@ -516,6 +518,7 @@
                     _createNewProject: function () {
                         window.location.href = "../DetalhesProjeto";
                     },
+
                     //CRUDS
                     _create: function () {
                         if (this._validateData()) {
@@ -524,6 +527,7 @@
                         }
                     },
                     _update: function () {
+                        debugger;
                         if (this._validateData()) {
                             this._executeRequest("/Projetos/UpdateProject", this.data)
                         }
@@ -551,6 +555,7 @@
                             }
                         });
                     },
+
                     //Responses Processors
                     _responseProcessor: function (data) {
                         var self = this;
@@ -581,7 +586,7 @@
                             } else if (data.detail.url.indexOf("Create") !== -1) {
                                 this._createResponseProcessor();
                             } else if (data.detail.url.indexOf("Update") !== -1) {
-                                if (this.data.eReasonCode != 0) {
+                                if (this.data.eReasonCode != 1) {
                                     this._openToastError(this.data.eMessage);
                                 } else {
                                     this._openToast("Projeto atualizado com sucesso.")
@@ -657,7 +662,7 @@
                     },
                     //BUTTONS
                     _OpenProjectMovements: function (url, data) {
-                        window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
+                        window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo + "?areaid=" + this._areaid;
                     },
                     _OpenProjectDiary: function (url, data) {
                         window.location.href = "../DiarioProjeto/" + this.data.projectNo;
@@ -674,8 +679,7 @@
                             this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
                             this.$.shippinhAddress_ajax.generateRequest();
                             this.data.shippingAddressCode = "";
-                            this.$.sbClientShippingAddresses.value = "";
-                            this.$.sbClientShippingAddresses.valueText = "";
+                            this.$.sbClientShippingAddresses._clearSelection();
                         }
                     },
                 });

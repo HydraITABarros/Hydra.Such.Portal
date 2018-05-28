@@ -1,0 +1,1060 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Acordo de Preços - Administração - eSuch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--SUCH-->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<h1 class="title">Acordo de Preços</h1>
+
+<x-group-cont-product></x-group-cont-product>
+
+<dom-module id="x-group-cont-product">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LLinhasRegiao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LLinhasArea}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LLinhasCresp}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_AP_FormaEntrega" last-response="{{LLinhasFormaEntrega}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_AP_TipoPreco" last-response="{{LLinhasTipoPreco}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Administracao/GetAcordoPrecosConfigData"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateAcordoPrecos"
+                   last-response="{{_createResult}}"
+                   method="post"
+                   on-response="_createAcordoPrecos_Response"
+                   handle-as="json"
+                   id="ajax_acordoPrecos_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateLinhaAcordoPrecos"
+                   last-response="{{_createResult}}"
+                   method="post"
+                   on-response="_createLinhaAcordoPrecos_Response"
+                   handle-as="json"
+                   id="ajax_linhaAcordoPrecos_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateFornecedorAcordoPrecos"
+                   last-response="{{_createResult}}"
+                   method="post"
+                   on-response="_createFornecedorResponse"
+                   handle-as="json"
+                   id="ajax_fornecedor_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/VerificarNoProcedimento"
+                   last-response="{{_verificarNoProcedimento_Result}}"
+                   method="post"
+                   on-response="_validarNoProcedimento_Response"
+                   handle-as="json"
+                   id="ajax_verificarNoProcedimento"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteLinha"
+                   last-response="{{LinhaDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteLinha_ajax"
+                   on-response="_deleteLinhaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteFornecedor"
+                   last-response="{{FornecedorDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteFornecedor_ajax"
+                   on-response="_deleteFornecedorResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        </div>
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Fornecedores</paper-tab>
+        </paper-tabs>
+
+        <iron-pages selected="{{selected}}">
+            <!--Acordo de Preços-->
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+                <div class="panel-body">
+                    <div class="row break_clear" id="acordoPrecosCreate">
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="acordoPrecosNoProcedimento" value="{{data.noProcedimento}}" label="Nº Procedimento" on-blur="_validarNoProcedimento" disabled="{{ _permissionsCreate }}" maxlength="10" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="acordoPrecosDtInicio" value="{{data.dtInicioTexto}}" label="Data Inicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="acordoPrecosDtFim" value="{{data.dtFim}}" label="Data Fim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="acordoPrecosValorTotal" value="{{data.valorTotal}}" label="Valor Total" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <div slot="suffix">€</div>
+                            </vaadin-text-field>
+                        </div>
+
+                        @if (ViewBag.NoProcedimento == "0")
+                        {
+                            <div class="col-sm-2">
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                        <div class="panel-body">
+                            <div class="row break_clear" id="linhaAcordoPrecosCreate">
+                                <div class="row break_clear">
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasNoProcedimento" value="{{data.noProcedimento}}" label="Nº Procedimento" disabled required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="linhasNoFornecedor"
+                                                        label="Nº Fornecedor"
+                                                        items="[[CBVendor]]"
+                                                        text-path="name"
+                                                        value-path="no_"
+                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ _permissionsCreate }}"
+                                                        required error-message="Este campo é obrigatório">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="linhasCodProduto" value="{{_CBItems}}" label="Cód. Produto"
+                                                        items="[[CBItems]]"
+                                                        text-path="name"
+                                                        value-path="code"
+                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                        disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-date-picker id="linhasDtValidadeInicio" label="Data Validade Inicio" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-date-picker id="linhasdtValidadeFim" label="Data Validade Fim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[LLinhasRegiao]]" id="linhasRegiao" item-value-path="id" item-label-path="value" disabled="{{ _permissionsCreate }}" label="Região">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[LLinhasArea]]" id="linhasArea" item-value-path="id" item-label-path="value" label="Área" disabled="{{ _permissionsCreate }}">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[LLinhasCresp]]" id="linhasCresp" item-value-path="id" item-label-path="value" label="Cresp" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[CBLocations]]" id="linhasLocalizacao" item-value-path="id" item-label-path="value" label="Cód. Localização" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasCustoUnitario" label="Custo Unitário" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasUM" label="UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasQuantidadeUM" label="Quantidade por UM" type="number" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasPesoUnitario" label="Peso Unitário" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasCodProdutoFornecedor" label="Código Produto Fornecedor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[LLinhasFormaEntrega]]" id="linhasFormaEntrega" item-value-path="id" item-label-path="value" label="Forma Entrega" disabled="{{ _permissionsCreate }}">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <vaadin-combo-box items="[[LLinhasTipoPreco]]" id="linhasTipoPreco" item-value-path="id" item-label-path="value" label="Tipo Preco" disabled="{{ _permissionsCreate }}">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                                    </div>
+                                </div>
+
+
+                                <div class="row break_clear">
+                                    <vaadin-upload id="UploadRequest"
+                                                   target="/Administracao/FileUpload/"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   max-files="1"
+                                                   accept=".xlsx"
+                                                   timeout=15000
+                                                   max-file-size="3000000">
+                                        <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
+                                    </vaadin-upload>
+                                </div>
+
+                            </div>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
+
+                <div class="panel-body">
+                    <vaadin-grid id="tabLinhas" aria-label="TabelaLinhas" items="{{ data.linhasAcordoPrecos }}" class="editGrid" multi-sort="true">
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="noProcedimento" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Fornecedor</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="nomeFornecedor" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codProduto" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codProduto" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhascodProduto" value="{{item.codProduto}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="dtValidadeInicioTexto" style="text-align:center;">Data Validade Início</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="dtValidadeInicioTexto" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasdtValidadeInicioTexto" value="{{item.dtValidadeInicioTexto}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="dtValidadeFimTexto" style="text-align:center;">Data Validade Fim</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="dtValidadeFimTexto" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasdtValidadeFimTexto" value="{{item.dtValidadeFimTexto}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="regiaoNome" style="text-align:center;">Região</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="regiaoNome" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasregiaoNome" value="{{item.regiaoNome}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="areaNome" style="text-align:center;">Área</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="areaNome" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasareaNome" value="{{item.areaNome}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="crespNome" style="text-align:center;">Cresp</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="crespNome" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhascrespNome" value="{{item.crespNome}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Localização</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="localizacaoNome" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhaslocalizacaoNome" value="{{item.localizacaoNome}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="custoUnitario" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhascustoUnitario" value="{{item.custoUnitario}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="um" style="text-align:center;">UM</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="um" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasum" value="{{item.um}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="qtdPorUm" style="text-align:center;">Quantidade por UM</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="qtdPorUm" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasqtdPorUm" value="{{item.qtdPorUm}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="pesoUnitario" style="text-align:center;">Peso Unitário</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="pesoUnitario" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhaspesoUnitario" value="{{item.pesoUnitario}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codProdutoFornecedor" style="text-align:center;">Cód. Produto Fornecedor</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codProdutoFornecedor" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhascodProdutoFornecedor" value="{{item.codProdutoFornecedor}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="formaEntregaTexto" style="text-align:center;">Forma Entrega</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="formaEntregaTexto" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhasformaEntregaTexto" value="{{item.formaEntregaTexto}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="tipoPrecoTexto" style="text-align:center;">Tipo Preço</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="tipoPrecoTexto" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabLinhastipoPrecoTexto" value="{{item.tipoPrecoTexto}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </div>
+            </div>
+
+            <!--Fornecedores-->
+            <div class="panel panel-default">
+
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Fornecedores" closed>
+                        <div class="panel-body">
+                            <div class="row break_clear" id="fornecedorAcordoPrecosCreate">
+                                <div class="col-sm-2">
+                                    <vaadin-text-field id="fornecedorNoProcedimento" value="{{data.noProcedimento}}" label="Nº Procedimento" disabled required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <such-selectbox id="fornecedorNoFornecedor"
+                                                    label="Nº Fornecedor"
+                                                    items="[[CBVendor]]"
+                                                    text-path="name"
+                                                    value-path="no_"
+                                                    fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                    disabled="{{ _permissionsCreate }}"
+                                                    required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <vaadin-text-field id="fornecedorValor" label="Valor" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <vaadin-text-field id="fornecedorValorConsumido" label="Valor Consumido" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <paper-button id="btnAddNew" class="btnSave" on-tap="_createFornecedor" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                                </div>
+                            </div>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
+
+                <div class="panel-body">
+                    <vaadin-grid id="tabFornecedores" aria-label="TabelaFornecedores" items="{{ data.fornecedoresAcordoPrecos }}" class="editGrid" multi-sort="true">
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="noProcedimento" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabFornecedoresnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Fornecedor</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="nomeFornecedor" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabFornecedoresnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="valor" style="text-align:center;">Valor</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="valor" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabFornecedoresvalor" value="{{item.valor}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="valorConsumido" style="text-align:center;">Valor Consumido</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="valorConsumido" />
+                            </template>
+                            <template>
+                                <vaadin-text-field id="tabFornecedoresvalorConsumido" value="{{item.valorConsumido}}" disabled></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button class="btnRemove" raised on-tap="_deleteFornecedor" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+
+                </div>
+            </div>
+        </iron-pages>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            /**/
+            CreateValue = false;
+        }
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            /**/
+            UpdateValue = false;
+        }
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            /**/
+            DeleteValue = false;
+        }
+
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('file-reject', function (event) {
+                window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
+
+        document.addEventListener('WebComponentsReady',
+            function () {
+                Polymer({
+                    is: 'x-group-cont-product',
+                    properties: {
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
+                        },
+                        _permissionsCreate: {
+                            type: Boolean,
+                            value: CreateValue
+                        },
+                        _permissionsDelete: {
+                            type: Boolean,
+                            value: DeleteValue
+                        },
+                        selected: {
+                            type: Number,
+                            value: 0
+                        },
+                        ddgroupcontprod: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        }
+                    },
+
+                    ready: function () {
+                        //debugger;
+                        this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
+                        this.$.page_databound_ajax.generateRequest();
+                    },
+
+                    //Mostra Mensagens
+                    _showMessage: function (message) {
+                        //debugger;
+                        this.$.ToastMessageSuccess.text = message;
+                        this.$.ToastMessageSuccess.open();
+                    },
+
+                    //Mostra Mensagens de Erro
+                    _showErrorMessage: function (message) {
+                        //debugger;
+                        this.$.ToastMessageError.text = message;
+                        this.$.ToastMessageError.open();
+                    },
+
+                    _validateData: function (container) {
+                        //debugger;
+                        var polymerDom = Polymer.dom(this.$[container]);
+                        var errors = 0;
+                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box, such-selectbox";
+                        var formFields = polymerDom.querySelectorAll(formSelector);
+
+                        formFields.forEach(function (element) {
+                            if (!element.validate()) errors++;
+                        });
+
+                        if (errors > 0) {
+                            this._showErrorMessage('Verifique os dados inseridos.');
+                            return false;
+                        }
+
+                        return true;
+                    },
+
+                    _createAcordoPrecos: function () {
+                        //debugger;
+                        if (this._validateData("acordoPrecosCreate")) {
+                            this.$.ajax_acordoPrecos_create.body = JSON.stringify({
+                                noProcedimento: this.$.acordoPrecosNoProcedimento.value,
+                                dtInicio: this.$.acordoPrecosDtInicio.value,
+                                dtFim: this.$.acordoPrecosDtFim.value,
+                                valorTotal: this.$.acordoPrecosValorTotal.value,
+                            });
+                            this.$.ajax_acordoPrecos_create.generateRequest();
+                        }
+                    },
+
+                    _createAcordoPrecos_Response: function (e) {
+                        //debugger;
+                        if (this._createResult == 0) {
+                            this.$.linhasNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
+                            this.$.fornecedorNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
+                            this._showMessage('Acordo de Preços criado com sucesso.');
+                        }
+
+                        if (this._createResult == 1) {
+                            this.$.linhasNoProcedimento.value = "";
+                            this._showErrorMessage('Ocorreu um erro ao criar o Acordo de Preços.');
+                        }
+                    },
+
+                    _createLinhaAcordoPrecos: function () {
+                        //debugger;
+                        if (this._validateData("linhaAcordoPrecosCreate")) {
+                            this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
+                                noProcedimento: this.$.linhasNoProcedimento.value,
+                                noFornecedor: this.$.linhasNoFornecedor.value,
+                                codProduto: this.$.linhasCodProduto.value,
+                                dtValidadeInicio: this.$.linhasDtValidadeInicio.value,
+                                dtValidadeFim: this.$.linhasdtValidadeFim.value,
+                                cresp: this.$.linhasCresp.value,
+                                area: this.$.linhasArea.value,
+                                regiao: this.$.linhasRegiao.value,
+                                localizacao: this.$.linhasLocalizacao.value,
+                                custoUnitario: this.$.linhasCustoUnitario.value,
+                                uM: this.$.linhasUM.value,
+                                qtdPorUM: this.$.linhasQuantidadeUM.value,
+                                pesoUnitario: this.$.linhasPesoUnitario.value,
+                                codProdutoFornecedor: this.$.linhasCodProdutoFornecedor.value,
+                                formaEntrega: this.$.linhasFormaEntrega.value,
+                                tipoPreco: this.$.linhasTipoPreco.value
+                            });
+                            this.$.ajax_linhaAcordoPrecos_create.generateRequest();
+                        }
+                    },
+
+                    _createLinhaAcordoPrecos_Response: function (e) {
+                        //debugger;
+                        if (this._createResult == 0) {
+                            this.$.linhasNoFornecedor.value = "";
+                            this.$.linhasCodProduto.value = "";
+                            this.$.linhasDtValidadeInicio.value = "";
+                            this.$.linhasdtValidadeFim.value = "";
+                            this.$.linhasCresp.value = "";
+                            this.$.linhasArea.value = "";
+                            this.$.linhasRegiao.value = "";
+                            this.$.linhasLocalizacao.value = "";
+                            this.$.linhasCustoUnitario.value = "";
+                            this.$.linhasUM.value = "";
+                            this.$.linhasQuantidadeUM.value = "";
+                            this.$.linhasPesoUnitario.value = "";
+                            this.$.linhasCodProdutoFornecedor.value = "";
+                            this.$.linhasFormaEntrega.value = "";
+                            this.$.linhasTipoPreco.value = "";
+
+                            this._showMessage('Linha do Acordo de Preços criada com sucesso.');
+
+                            this.$.page_databound_ajax.generateRequest();
+                        }
+
+                        if (this._createResult == 1) {
+                            this.$.linhasNoProcedimento.value = "";
+                            this._showErrorMessage('Ocorreu um erro ao criar a Linha do Acordo de Preços.');
+                        }
+                    },
+
+                    _createFornecedor: function () {
+                        debugger;
+                        if (this._validateData("fornecedorAcordoPrecosCreate")) {
+                            this.$.ajax_fornecedor_create.body = JSON.stringify({
+                                noProcedimento: this.$.fornecedorNoProcedimento.value,
+                                noFornecedor: this.$.fornecedorNoFornecedor.value,
+                                valor: this.$.fornecedorValor.value,
+                                valorConsumido: this.$.fornecedorValorConsumido.value
+                            });
+                            this.$.ajax_fornecedor_create.generateRequest();
+                        }
+                    },
+
+                    _createFornecedorResponse: function (e) {
+                        //debugger;
+                        if (this._createResult == 0) {
+                            this.$.fornecedorNoFornecedor.value = "";
+                            this.$.fornecedorValor.value = "";
+                            this.$.fornecedorValorConsumido.value = "";
+
+                            this._showMessage('O Fornecedor foi criado com sucesso.');
+
+                            this.$.page_databound_ajax.generateRequest();
+                        }
+
+                        if (this._createResult == 1) {
+                            this.$.linhasNoProcedimento.value = "";
+                            this._showErrorMessage('Ocorreu um erro ao criar o Fornecedor.');
+                        }
+                    },
+
+                    _validarNoProcedimento: function () {
+                        //debugger;
+                        if (this.$.acordoPrecosNoProcedimento.value != "") {
+                            this.$.ajax_verificarNoProcedimento.body = JSON.stringify({
+                                noProcedimento: this.$.acordoPrecosNoProcedimento.value,
+                            });
+                            this.$.ajax_verificarNoProcedimento.generateRequest();
+                        }
+                    },
+
+                    _validarNoProcedimento_Response: function (e) {
+                        //debugger;
+                        if (this._verificarNoProcedimento_Result == 1) {
+                            this._showErrorMessage('O Nº de Procedimento já existe na Base de Dados.');
+                        }
+                    },
+
+                    _deleteLinha: function (e) {
+                        //debugger;
+                        var noProcedimento = e.model.item.noProcedimento;
+                        var noFornecedor = e.model.item.noFornecedor;
+                        var codProduto = e.model.item.codProduto;
+                        var dtValidadeInicio = e.model.item.dtValidadeInicio;
+                        var cresp = e.model.item.cresp;
+                        var localizacao = e.model.item.localizacao;
+
+                        var ajax_request = this.$.page_deleteLinha_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Linha do Acordo de Preço?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteLinha) {
+                                if (deleteLinha) {
+                                    ajax_request.body = JSON.stringify({
+                                        noProcedimento: noProcedimento,
+                                        noFornecedor: noFornecedor,
+                                        codProduto: codProduto,
+                                        dtValidadeInicio: dtValidadeInicio,
+                                        cresp: cresp,
+                                        localizacao: localizacao
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabLinhas.clearCache();
+                                }
+                            }
+                        });
+                    },
+
+                    _deleteLinhaResponse: function (e) {
+                        //debugger;
+                        var self = this;
+
+                        setTimeout(function () {
+                            bootbox.hideAll();
+                        }, 0);
+
+                        if (this.LinhaDeleted == 0) {
+                            this.$.page_databound_ajax.generateRequest();
+                            this._showMessage('A Linha do Acordo de Preço foi removida com sucesso.');
+                        } else {
+                            if (this.LinhaDeleted == 1) {
+                                this._showErrorMessage('Ocorreu um erro ao eliminar a Liha do Acordo de Preços.');
+                            } else {
+                                if (this.LinhaDeleted == 99) {
+                                    this._showErrorMessage('Ocorreu um erro!!!');
+                                }
+                            }
+                        };
+                    },
+
+                    _deleteFornecedor: function (e) {
+                        //debugger;
+                        var noProcedimento = e.model.item.noProcedimento;
+                        var noFornecedor = e.model.item.noFornecedor;
+
+                        var ajax_request = this.$.page_deleteFornecedor_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Fornecedor?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteFornecedor) {
+                                if (deleteFornecedor) {
+                                    ajax_request.body = JSON.stringify({
+                                        noProcedimento: noProcedimento,
+                                        noFornecedor: noFornecedor
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabFornecedores.clearCache();
+                                }
+                            }
+                        });
+                    },
+
+                    _deleteFornecedorResponse: function (e) {
+                        //debugger;
+                        var self = this;
+
+                        setTimeout(function () {
+                            bootbox.hideAll();
+                        }, 0);
+
+                        if (this.FornecedorDeleted == 0) {
+                            this.$.page_databound_ajax.generateRequest();
+                            this._showMessage('O Fornecedor foi removido com sucesso.');
+                        } else {
+                            if (this.FornecedorDeleted == 1) {
+                                this._showErrorMessage('Ocorreu um erro ao eliminar o Fornecedor.');
+                            } else {
+                                if (this.FornecedorDeleted == 99) {
+                                    this._showErrorMessage('Ocorreu um erro!!!');
+                                }
+                            }
+                        };
+                    },
+
+                    _goBack: function(e) {
+                        //debugger;
+                        window.history.back();
+                    },
+
+                });
+            });
+    </script>
+</dom-module>
+
+

@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => !x.RequisiçãoModelo.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ObjectToCreate.RequisiçãoModelo = false;
                     ctx.RequisiçõesSimplificadas.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -53,6 +54,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraModificação = DateTime.Now;
+                    ObjectToUpdate.RequisiçãoModelo = false;
                     ctx.RequisiçõesSimplificadas.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
@@ -92,7 +94,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.RequisiçõesSimplificadas
-                        .FirstOrDefault(x => x.NºRequisição == Code);
+                        .FirstOrDefault(x => x.NºRequisição == Code && !x.RequisiçãoModelo.Value);
                 }
             }
             catch (Exception ex)
@@ -109,7 +111,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && !x.RequisiçãoModelo.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -123,7 +125,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado == 1).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado == 1 && !x.RequisiçãoModelo.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -137,7 +139,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.Estado == approvalTrue).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.Estado == approvalTrue && !x.RequisiçãoModelo.Value).ToList();
                 }
             }
             catch (Exception ex)

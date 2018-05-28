@@ -12,21 +12,31 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Portal.Extensions;
+using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
+using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
         private readonly GeneralConfigurations _config;
+        private readonly NAVConfigurations _configNAV;
 
-        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings)
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV)
         {
             _config = appSettings.Value;
+            _configNAV = appSettingsNAV.Value;
         }
         
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
 
@@ -39,16 +49,134 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public JsonResult GetProjectDim([FromBody] string ProjectNo)
+        {
+            
+            ProjectListItemViewModel result = new ProjectListItemViewModel();
+
+            List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
+            NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
+
+            result.RegionCode = Project.RegionCode;
+            result.FunctionalAreaCode = Project.AreaCode;
+            result.ResponsabilityCenterCode = Project.CenterResponsibilityCode;
+
+            return Json(result);
+        }
+
         public JsonResult GetPreReqList([FromBody] int Area)
         {
-
             List<PréRequisição> PreRequisition = null;
             PreRequisition = DBPreRequesition.GetAll(User.Identity.Name, Area);
             
             List<PreRequesitionsViewModel> result = new List<PreRequesitionsViewModel>();
 
+
             PreRequisition.ForEach(x => result.Add(DBPreRequesition.ParseToViewModel(x)));
             return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CleanPreRequesition([FromBody] JObject requestParams)
+        {
+            try
+            {
+                string PreRequesitionsNo = requestParams["PreRequesitionsNo"].ToString();
+                PréRequisição PR = DBPreRequesition.GetByNo(PreRequesitionsNo);
+                if (PR != null && !String.IsNullOrEmpty(PreRequesitionsNo))
+                {
+                    ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                    
+                    PR.Área = PR.Área;
+                    PR.CódigoRegião = CU.RegiãoPorDefeito ?? null;
+                    PR.CódigoÁreaFuncional = CU.AreaPorDefeito ?? null;
+                    PR.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito ?? null;
+                    PR.TipoRequisição = null;
+                    PR.NºProjeto = null;
+                    PR.Urgente = false;
+                    PR.Amostra = false;
+                    PR.Anexo = null;
+                    PR.Imobilizado = false;
+                    PR.CompraADinheiro = false;
+                    PR.CódigoLocalRecolha = null;
+                    PR.CódigoLocalEntrega = null;
+                    PR.Observações = null;
+                    PR.ModeloDePréRequisição = null;
+                    PR.DataHoraModificação = DateTime.Now;
+                    PR.UtilizadorModificação = User.Identity.Name;
+                    PR.Exclusivo = false;
+                    PR.JáExecutado = false;
+                    PR.Equipamento = false;
+                    PR.ReposiçãoDeStock = false;
+                    PR.Reclamação = false;
+                    PR.CódigoLocalização = null;
+                    PR.CabimentoOrçamental = false;
+                    PR.NºFuncionário = null;
+                    PR.Viatura = null;
+                    PR.NºRequesiçãoReclamada = null;
+                    PR.ResponsávelCriação = null;
+                    PR.ResponsávelAprovação = null;
+                    PR.ResponsávelValidação = null;
+                    PR.ResponsávelReceção = null;
+                    PR.DataAprovação = null;
+                    PR.DataValidação = null;
+                    PR.DataReceção = null;
+                    PR.UnidadeProdutivaAlimentação = null;
+                    PR.RequisiçãoNutrição = null;
+                    PR.RequisiçãoDetergentes = null;
+                    PR.NºProcedimentoCcp = null;
+                    PR.Aprovadores = null;
+                    PR.MercadoLocal = null;
+                    PR.RegiãoMercadoLocal = null;
+                    PR.ReparaçãoComGarantia = null;
+                    PR.Emm = null;
+                    PR.DataEntregaArmazém = null;
+                    PR.LocalDeRecolha = null;
+                    PR.MoradaRecolha = null;
+                    PR.Morada2Recolha = null;
+                    PR.CodigoPostalRecolha = null;
+                    PR.LocalidadeRecolha = null;
+                    PR.ContatoRecolha = null;
+                    PR.ResponsávelReceçãoRecolha = null;
+                    PR.LocalEntrega = null;
+                    PR.MoradaEntrega = null;
+                    PR.Morada2Entrega = null;
+                    PR.CódigoPostalEntrega = null;
+                    PR.LocalidadeEntrega = null;
+                    PR.ContatoEntrega = null;
+                    PR.ResponsávelReceçãoReceção = null;
+                    PR.NºFatura = null;
+                    DBPreRequesition.Update(PR);
+
+
+                    List <Anexos> AllAttachments = DBAttachments.GetById(PreRequesitionsNo);
+                    if (AllAttachments.Count > 0)
+                    {
+                        foreach (Anexos Attach in AllAttachments)
+                        {
+                            DBAttachments.Delete(Attach);
+                        } 
+                    }
+                    return Json(PR);
+                }
+                else
+                {
+                    ErrorHandler data = new ErrorHandler();
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
+                    return Json(data);
+                }
+                
+               
+            }
+            catch (Exception e)
+            {
+                ErrorHandler data = new ErrorHandler();
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
+                return Json(data);
+            }
+            
+            
         }
 
         #region Pre Requesition Details
@@ -72,7 +200,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 
@@ -115,7 +243,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if (data != null)
+                if (data != null && data.Lines != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
                     List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
@@ -157,7 +285,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            
+                            CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -179,6 +307,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.eReasonCode = 2;
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
+                data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
             return Json(data);
         }
@@ -188,18 +317,30 @@ namespace Hydra.Such.Portal.Controllers
         
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
+
         {
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
             string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
-            if(pPreRequisicao != null)
+            ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (pPreRequisicao != null)
             {
                 PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = pPreRequisicao;
+                reqID.RegionCode = CU.RegiãoPorDefeito;
+                reqID.FunctionalAreaCode = CU.AreaPorDefeito;
+                reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
+
                 return Json(reqID);
             }
             else
             {
+                
+
                 PréRequisição createNew = new PréRequisição();
+                createNew.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito;
+                createNew.CódigoRegião = CU.RegiãoPorDefeito;
+                createNew.CódigoÁreaFuncional = CU.AreaPorDefeito;
                 createNew.NºPréRequisição = User.Identity.Name;
                 createNew.Área = AreaNo;
                 createNew.UtilizadorCriação = User.Identity.Name;
@@ -208,7 +349,9 @@ namespace Hydra.Such.Portal.Controllers
 
                 PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = createNew.NºPréRequisição;
-
+                reqID.RegionCode = createNew.CódigoRegião;
+                reqID.FunctionalAreaCode = createNew.CódigoÁreaFuncional;
+                reqID.ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade;
                 return Json(reqID);
             } 
             
@@ -222,14 +365,16 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    //Get Contract Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = 0;
-                    ProjectNumerationConfigurationId = Configs.NumeraçãoPréRequisições.Value;
+                    //Get Numeration
+                    bool autoGenId = false;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeraçãoPréRequisições.Value;
 
-
-                    data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null));
-
+                    if (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null)
+                    {
+                        autoGenId = true;
+                        data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    }
                     if (data.PreRequesitionsNo != null)
                     {
                         PréRequisição pPreRequisicao = DBPreRequesition.ParseToDB(data);
@@ -247,12 +392,13 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
+                            ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            if (configNumerations != null && autoGenId)
+                            {
+                                configNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
+                                configNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNumerations);
+                            }
                             data.eReasonCode = 1;
                         }
                     }
@@ -402,8 +548,11 @@ namespace Hydra.Such.Portal.Controllers
         #region Populate CB
         public JsonResult CBVehicleFleetBool([FromBody] int id)
         {
-            bool? FleetBool = DBRequesitionType.GetById(id).Frota;
-            return Json(FleetBool);
+            //bool FleetBool = false;
+            //var item = DBRequesitionType.GetById(id);
+            //if (item != null)
+            //    FleetBool = item.Frota.HasValue ? item.Frota.Value : false;
+            return Json(true);
         }
 
         public JsonResult GetPlaceData([FromBody] int placeId)
@@ -411,6 +560,22 @@ namespace Hydra.Such.Portal.Controllers
             PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
             return Json(PlacesData);
         }
+
+        public JsonResult GetPurchaseHeader([FromBody] string respcenter)
+        {
+            int DimValueID = DBNAV2017DimensionValues.GetById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 3, User.Identity.Name, respcenter).FirstOrDefault().DimValueID;
+            List<DDMessageString> result = DBNAV2017EncomendaAberto.GetByDimValue(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, DimValueID).Select(x => new DDMessageString()
+            {
+                id = x.Code
+            }).GroupBy(x => new {
+                x.id
+            }).Select(x => new DDMessageString {
+               id = x.Key.id
+            }).ToList();
+
+            return Json(result);
+        }
+        
         #endregion
 
         #region Numeração Pré-Requisição
@@ -442,7 +607,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult RequisiçõesModeloLista(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreReqNo = id;
@@ -467,60 +632,87 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data, string id)
+        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
-            List<LinhasRequisição> RequesitionLines = new List<LinhasRequisição>();
-            RequesitionLines = DBRequestLine.GetAllByRequisiçãos(data.RequisitionNo);
-
-            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
-            RequesitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
-            
-            try
+            ErrorHandler result = new ErrorHandler()
             {
-                foreach (var line in result)
-                {
-                    LinhasPréRequisição newlines = new LinhasPréRequisição();
+                eMessage = "Linhas copiadas com sucesso.",
+                eReasonCode = 1,
+            };
+            Projetos project = null;
+            if (!string.IsNullOrEmpty(req.ProjectNo))
+            {
+                project = DBProjects.GetById(req.ProjectNo);
+            }
 
-                    newlines.NºPréRequisição = data.PreRequisitionNo;
-                    newlines.CódigoLocalização = line.LocalCode;
-                    newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
-                    newlines.Descrição = line.Description;
-                    newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
-                    newlines.QuantidadeARequerer = line.QuantityToRequire;
-                    newlines.CustoUnitário = line.UnitCost;
-                    newlines.NºProjeto = line.ProjectNo;
-                    newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
-                    newlines.Viatura = line.Vehicle;
-                    newlines.NºFornecedor = line.SupplierNo;
-                    newlines.CódigoRegião = line.RegionCode;
-                    newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
-                    newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
-                    newlines.NºEncomendaAberto = line.OpenOrderNo;
-                    newlines.NºLinhaEncomendaAberto = line.OpenOrderLineNo;
-                    DBPreRequesitionLines.Create(newlines);
+            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetAllByRequisiçãos(req.RequisitionNo).ParseToViewModel();
+            if (reqLines != null)
+            {
+                List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                reqLines.ForEach(x =>
+                {
+                    LinhasPréRequisição newline = new LinhasPréRequisição();
+
+                    newline.NºPréRequisição = req.PreRequisitionNo;
+                    newline.CódigoLocalização = x.LocalCode;
+                    newline.CódigoProdutoFornecedor = x.SupplierProductCode;
+                    newline.Código = x.Code;
+                    newline.Descrição = x.Description;
+                    newline.CódigoUnidadeMedida = x.UnitMeasureCode;
+                    newline.QuantidadeARequerer = x.QuantityToRequire;
+                    newline.CustoUnitário = x.UnitCost;
+                    newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                    newline.Viatura = x.Vehicle;
+                    newline.NºFornecedor = x.SupplierNo;
+                    newline.NºEncomendaAberto = x.OpenOrderNo;
+                    newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+                    newline.NºProjeto = x.ProjectNo;
+                    if (project != null)
+                    {
+                        newline.CódigoRegião = project.CódigoRegião;
+                        newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                        newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                    }
+                    else
+                    {
+                        newline.CódigoRegião = x.RegionCode;
+                        newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                        newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                    }                    
+                    preReqLines.Add(newline);
+                });
+
+                if (!DBPreRequesitionLines.CreateMultiple(preReqLines))
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Ocorreu um erro ao copiar as linhas";
                 }
             }
-            catch (Exception ex)
+            else
             {
-
-                throw;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao obter as linhas do modelo.";
             }
-            
             return Json(result);
         }
 
         public JsonResult GetPendingReq([FromBody] JObject requestParams)
         {
-            int AreaNo = int.Parse(requestParams["AreaNo"].ToString());
+            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
 
-            List<Requisição> RequisitionModel = null;
-            RequisitionModel = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, AreaNo, (int)RequisitionStates.Pending);
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Pending,
+                RequisitionStates.Rejected
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
-            RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
-            return Json(result);
+            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
 
+            return Json(result);
         }
 
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
@@ -545,6 +737,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
+                List<string> AllRequesitionIds = new List<string>();
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
@@ -590,10 +783,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+
+
                     PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.LocalCode,
+                        x => x.ArmazemCDireta,
                         x => x,
                         (key, items) => new RequisitionViewModel
                         {
@@ -637,7 +832,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 
                                 LocalCode = line.LocalCode,
-                                SupplierProductCode = line.SupplierProductCode,
+                                Code = line.Code,
                                 Description = line.Description,
                                 UnitMeasureCode = line.UnitMeasureCode,
                                 QuantityToRequire = line.QuantityToRequire,
@@ -653,8 +848,11 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-                    
-                    foreach(var req in newlist)
+
+                    int totalItems = 0;
+                    string createdReqIds = ": ";
+
+                    foreach (var req in newlist)
                     {
                         //Get Contract Numeration
                         Configuração Configs = DBConfigurations.GetById(1);
@@ -662,13 +860,19 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
 
                         string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
-                        if (RequisitionNo != null)
+                        if (!string.IsNullOrEmpty(RequisitionNo))
                         {
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                            ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+
                             req.RequisitionNo = RequisitionNo;
                             Requisição createReq = DBRequest.ParseToDB(req);
 
-                            DBRequest.Create(createReq);
-                            if(createReq.NºRequisição != null)
+                            createReq = DBRequest.Create(createReq);
+                            if(createReq != null)
                             {
                                 //copy files
                                 var preReq = data.PreRequesitionsNo;
@@ -685,7 +889,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            throw;
+                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao copiar anexo " + FileName + ": " + ex.Message));
                                         }
 
                                         AttachmentsViewModel CopyFile = new AttachmentsViewModel();
@@ -695,20 +899,26 @@ namespace Hydra.Such.Portal.Controllers
                                         CopyFile.Url = NewFileName;
                                         DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                     }
-                                    catch (Exception)
+                                    catch (Exception ex)
                                     {
                                         data.eReasonCode = 0;
                                         data.eMessage = "Ocorreu um erro ao copiar os anexos.";
-                                        throw;
+                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao guardar anexo: " + ex.Message));
+                                        //throw;
                                     }
                                     
                                 }
 
-                                //Update Last Numeration Used
-                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
-                                ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                DBNumerationConfigurations.Update(ConfigNumerations);
+                                //count successful items for later validation
+                                totalItems++;
+                                createdReqIds += RequisitionNo + "; ";
+                                var totalValue = req.GetTotalValue();
+                                //Start Approval
+                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                                if (result.eReasonCode != 100)
+                                {
+                                    data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
+                                }
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
@@ -716,9 +926,8 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                DBRequest.Delete(createReq);
                                 data.eReasonCode = 0;
-                                data.eMessage = "Ocorreu um erro ao criar o requisição.";
+                                data.eMessage = "Ocorreu um erro ao criar a requisição.";
                             }
                         }
                         else
@@ -727,17 +936,83 @@ namespace Hydra.Such.Portal.Controllers
                             data.eMessage = "A numeração configurada não é compativel com a inserida.";
                         }
                     }
+                    if (totalItems == newlist.Count)
+                    {
+                        //if all items have been created delete pre-requisition lines
+                        DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                        data.eMessage += createdReqIds;
+                        if (data.eMessages.Count > 0)
+                        {
+                            data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                    }
                 }
             }
             catch (Exception ex)
             {
                 data.eReasonCode = 0;
-                data.eMessage = "Ocorreu um erro ao criar o requisição.";
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
             }
 
             return Json(data);
         }
 
+        [HttpPost]
+        public JsonResult SendReqForApproval([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["requisitionNo"].ToString();
+            Requisição createReq = DBRequest.GetById(ReqNo);
+            ErrorHandler ApprovalMovResult = new ErrorHandler();
+            string Error = "";
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+            if (result != null && result.Count >0)
+            {
+                foreach (ApprovalMovementsViewModel req in result)
+                {
+                    if (req.Number == ReqNo)
+                    {
+                        Error = "Esta Requisição já está à espera de Aprovação.";
+                    }
+                }
+
+                if (String.IsNullOrEmpty(Error))
+                {
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    if (ApprovalMovResult.eReasonCode != 100)
+                    {
+                        ApprovalMovResult.eReasonCode = 2;
+                        ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    }
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 3;
+                    ApprovalMovResult.eMessage = Error;
+                }
+            }
+            else
+            {
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                if (ApprovalMovResult.eReasonCode != 100)
+                {
+                    ApprovalMovResult.eReasonCode = 2;
+                    ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                }
+            }
+
+            if (ApprovalMovResult.eReasonCode !=3 && ApprovalMovResult.eReasonCode != 2)
+            {
+                ApprovalMovResult.eReasonCode = 1;
+                ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+            }
+            return Json(ApprovalMovResult);
+        }
+        
         #endregion
 
         #region Numeração Requisição
