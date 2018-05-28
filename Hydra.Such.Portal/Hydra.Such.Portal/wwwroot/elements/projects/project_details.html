@@ -586,7 +586,7 @@
                             } else if (data.detail.url.indexOf("Create") !== -1) {
                                 this._createResponseProcessor();
                             } else if (data.detail.url.indexOf("Update") !== -1) {
-                                if (this.data.eReasonCode != 0) {
+                                if (this.data.eReasonCode != 1) {
                                     this._openToastError(this.data.eMessage);
                                 } else {
                                     this._openToast("Projeto atualizado com sucesso.")

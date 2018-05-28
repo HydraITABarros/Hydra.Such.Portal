@@ -86,6 +86,32 @@ namespace Hydra.Such.Portal.Controllers
 
     }
 
+    //Nuno Rato - 20180525 --> Criação de uma class que seja constituida por uma coleção de listas de ProcedimentosCcp, por estados, para apresentar num quadro de bordo
+    public class CCP_QuadroBordo
+    {
+        public List<ProcedimentoCCPView> estado_0 { get; set; }
+        public List<ProcedimentoCCPView> estado_1 { get; set; }
+        public List<ProcedimentoCCPView> estado_2 { get; set; }
+        public List<ProcedimentoCCPView> estado_3 { get; set; }
+        public List<ProcedimentoCCPView> estado_4 { get; set; }
+        public List<ProcedimentoCCPView> estado_5 { get; set; }
+        public List<ProcedimentoCCPView> estado_6 { get; set; }
+        public List<ProcedimentoCCPView> estado_7 { get; set; }
+        public List<ProcedimentoCCPView> estado_8 { get; set; }
+        public List<ProcedimentoCCPView> estado_9 { get; set; }
+        public List<ProcedimentoCCPView> estado_10 { get; set; }
+        public List<ProcedimentoCCPView> estado_11 { get; set; }
+        public List<ProcedimentoCCPView> estado_12 { get; set; }
+        public List<ProcedimentoCCPView> estado_13 { get; set; }
+        public List<ProcedimentoCCPView> estado_14 { get; set; }
+        public List<ProcedimentoCCPView> estado_15 { get; set; }
+        public List<ProcedimentoCCPView> estado_16 { get; set; }
+        public List<ProcedimentoCCPView> estado_17 { get; set; }
+        public List<ProcedimentoCCPView> estado_18 { get; set; }
+        public List<ProcedimentoCCPView> estado_19 { get; set; }
+        public List<ProcedimentoCCPView> estado_20 { get; set; }
+    }
+
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
@@ -135,6 +161,11 @@ namespace Hydra.Such.Portal.Controllers
             ViewBag.TipoProcedimento = 2;
             return View();
         }
+
+        public IActionResult QuadroBordo()
+        {
+            return View();
+        }
         #endregion
 
         [HttpPost]
@@ -152,6 +183,36 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentos_Estados()
+        {
+            var model = new CCP_QuadroBordo();
+            model.estado_0 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(0);
+            model.estado_1 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(1);
+            model.estado_2 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(2);
+            model.estado_3 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(3);
+            model.estado_4 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(4);
+            model.estado_5 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(5);
+            model.estado_6 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(6);
+            model.estado_7 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(7);
+            model.estado_8 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(8);
+            model.estado_9 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(9);
+            model.estado_10 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(10);
+            model.estado_11 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(11);
+            model.estado_12 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(12);
+            model.estado_13 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(13);
+            model.estado_14 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(14);
+            model.estado_15 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(15);
+            model.estado_16 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(16);
+            model.estado_17 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(17);
+            model.estado_18 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(18);
+            model.estado_19 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(19);
+            model.estado_10 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(20);
+
+            return Json(model);
+        }
+
         [HttpPost]
         public JsonResult GetProcedimentoDetails([FromBody] ProcedimentoCCPView data)
         {

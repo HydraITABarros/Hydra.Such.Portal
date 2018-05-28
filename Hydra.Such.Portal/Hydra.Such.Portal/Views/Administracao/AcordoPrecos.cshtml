@@ -244,11 +244,11 @@
                         </div>
 
                         <div class="col-sm-2">
-                            <vaadin-date-picker id="acordoPrecosDtInicio" value="{{data.dtInicio}}" label="Data Inicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                            <vaadin-date-picker id="acordoPrecosDtInicio" value="{{data.dtInicioTexto}}" label="Data Inicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
                         </div>
 
                         <div class="col-sm-2">
-                            <vaadin-date-picker id="acordoPrecosDtFim" value="{{data.dtFimTexto}}" label="Data Fim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                            <vaadin-date-picker id="acordoPrecosDtFim" value="{{data.dtFim}}" label="Data Fim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
                         </div>
 
                         <div class="col-sm-2">
@@ -414,12 +414,17 @@
                                     </div>
                                 </div>
 
+
                                 <div class="row break_clear">
                                     <vaadin-upload id="UploadRequest"
-                                                   target="/Administracao/FileUpload/{{_noProcedimento}}/{{_lineno}}"
+                                                   target="/Administracao/FileUpload/"
                                                    method="POST"
                                                    headers="{'Accept': 'application/json'}"
-                                                   timeout=15000>
+                                                   max-files="1"
+                                                   accept=".xlsx"
+                                                   timeout=15000
+                                                   max-file-size="3000000">
+                                        <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
                                     </vaadin-upload>
                                 </div>
 
@@ -720,6 +725,14 @@
             /**/
             DeleteValue = false;
         }
+
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('file-reject', function (event) {
+                window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady',
             function () {
@@ -1034,7 +1047,7 @@
                         };
                     },
 
-                    _goBack: function (e) {
+                    _goBack: function(e) {
                         //debugger;
                         window.history.back();
                     },

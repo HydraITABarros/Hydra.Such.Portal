@@ -774,7 +774,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -786,7 +786,8 @@
                                                 </vaadin-combo-box>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatLocation(item.localCode) ]]
+                                                [[item.localCode]]
+                                                <!--[[ _clFormatLocation(item.localCode) ]]-->
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -809,7 +810,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_GridItemChange" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <paper-icon-item>
                                                             <paper-item-body>
