@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using WSClientNAV;
 
 namespace Hydra.Such.Data.ViewModel.Clients
 {
@@ -34,7 +35,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         // Endereços de envio ???
     }
 
-    public enum Tipo_Cliente
+    /*public enum Tipo_Cliente
     {
         [Display(Name = " ")]
         NotSet = 0,
@@ -57,5 +58,5 @@ namespace Hydra.Such.Data.ViewModel.Clients
         Cliente_Externo_ao_Estado = 3,
         [Display(Name = "Cliente_Interno")]
         Cliente_Interno = 4
-    }
+    }*/
 }
