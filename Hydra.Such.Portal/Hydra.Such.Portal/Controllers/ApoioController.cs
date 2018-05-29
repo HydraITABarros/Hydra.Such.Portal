@@ -443,5 +443,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
+        
+        #region history Requesitions
+        public IActionResult RequisicoesHistorico()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, (int)Enumerations.Areas.Apoio, 0);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 4;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        #endregion
     }
 }
