@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.ViewModel
     public class AnexosErrosViewModel
     {
         public int ID { get; set; }
+        public string CodeTexto { get; set; }
         public int Origem { get; set; }
         public string OrigemTexto { get; set; }
         public int Tipo { get; set; }

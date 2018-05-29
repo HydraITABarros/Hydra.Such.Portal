@@ -2077,6 +2077,41 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Fornecedor Secundário"
             }
         };
+
+        //ANEXOS ERROS
+        public static readonly List<EnumData> AE_Origem = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Acordo de Preços"
+            }
+        };
+
+        //ANEXOS ERROS
+        public static readonly List<EnumData> AE_Tipo = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Sucesso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Insucesso"
+            }
+        };
     }
 
     public class EnumDataString

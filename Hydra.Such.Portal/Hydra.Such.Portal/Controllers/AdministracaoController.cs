@@ -2938,6 +2938,29 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPreco = x.TipoPreco,
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault().Value
                 }).ToList();
+
+                //ORIGEM = 1 » Acordo Preços
+                //TIPO = 2 » ERRO
+                result.AnexosErros = DBAnexosErros.GetByOrigemAndCodigo(1, data.NoProcedimento).Select(x => new AnexosErrosViewModel()
+                {
+                    ID = x.ID,
+                    CodeTexto = x.ID.ToString(),
+                    Origem = x.Origem,
+                    OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
+                    Tipo = x.Tipo,
+                    TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
+                    Codigo = x.Codigo,
+                    NomeAnexo = x.NomeAnexo,
+                    Anexo = x.Anexo,
+                    CriadoPor = x.CriadoPor,
+                    CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
+                    DataHora_Criacao = x.DataHora_Criacao,
+                    DataHora_CriacaoTexto = x.DataHora_Criacao == null ? "" : x.DataHora_Criacao.Value.ToString("yyyy-MM-dd"),
+                    AlteradoPor = x.AlteradoPor,
+                    AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
+                    DataHora_Alteracao = x.DataHora_Alteracao,
+                    DataHora_AlteracaoTexto = x.DataHora_Alteracao == null ? "" : x.DataHora_Alteracao.Value.ToString("yyyy-MM-dd")
+                }).ToList();
             }
 
             return Json(result);
@@ -3097,17 +3120,19 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(1);
         }
 
-        //[HttpPost]
+        [HttpPost]
         [Route("Administracao/FileUpload")]
-        //[HttpGet]
-        public FileStreamResult FileUpload(string id, int linha)
+        [Route("Administracao/FileUpload/{FormularioNoProcedimento}")]
+        public JsonResult FileUpload(string FormularioNoProcedimento)
         {
             //TESTE COM DLL EPPlus
             var files = Request.Form.Files;
+            bool global_result = true;
             foreach (var file in files)
             {
                 try
                 {
+                    string name = Path.GetFileNameWithoutExtension(file.FileName);
                     string filename = Path.GetFileName(file.FileName);
                     //LOCAL TEST
                     //string full_path = "C:\\Users\\ARomao\\Desktop\\" + filename;
@@ -3120,7 +3145,7 @@ namespace Hydra.Such.Portal.Controllers
                     dd.Dispose();
                     var existingFile = new FileInfo(full_path);
 
-                    string filename_result = "AcordoPrecos_Result.xlsx";
+                    string filename_result = name + "_Resultado.xlsx";
                     //LOCAL TEST
                     //string full_path_result = "C:\\Users\\ARomao\\Desktop\\" + "AcordoPrecos_Result.xlsx";
                     //WEB TEST
@@ -3139,13 +3164,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
                             {
-                                workBook_result = Criar_Excel_SUCESSO(workBook_result);
-                                workBook_result = Criar_Excel_ERRO(workBook_result);
-                                //workBook.Worksheets.Add("SUCESSO");
-                                //workBook.Worksheets.Add("ERRO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
 
                                 ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
-
                                 ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
                                 ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
@@ -3212,7 +3234,7 @@ namespace Hydra.Such.Portal.Controllers
                                         FormaEntrega = currentWorksheet.Cells[rowNumber, 15].Value.ToString();
                                         TipoPreco = currentWorksheet.Cells[rowNumber, 16].Value.ToString();
 
-                                        result_list = Validar_LinhaExcel(NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list);
+                                        result_list = Validar_LinhaExcel(FormularioNoProcedimento, NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list);
 
                                         if (result_list.All(c => c == false))
                                         {
@@ -3237,6 +3259,8 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         else
                                         {
+                                            global_result = false;
+
                                             currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Value = NoProcedimento;
                                             if (result_list[1] == true)
                                                 currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Red);
@@ -3341,13 +3365,26 @@ namespace Hydra.Such.Portal.Controllers
 
                                     excel_result.Save();
 
+                                    byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
+
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 1; //ACORDO DE PREÇOS
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = FormularioNoProcedimento;
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHora_Criacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
+
                                     excel.Dispose();
                                     excel_result.Dispose();
-                                    DownloadFile(full_path_result);
-                                    //return new FileStreamResult(new FileStream(full_path_result, FileMode.Open), "application/xlsx");
-                                    //System.IO.File.Delete(full_path_result);
-                                    //System.IO.File.Delete(full_path);
 
+                                    System.IO.File.Delete(full_path_result);
+                                    System.IO.File.Delete(full_path);
                                 }
                             }
                         }
@@ -3359,23 +3396,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            return null;
+            return Json("");
         }
 
-        [HttpGet]
-        public FileStreamResult DownloadFile(string FileName)
-        {
-            try
-            {
-                return new FileStreamResult(new FileStream(FileName, FileMode.Open), "application/xlsx");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public List<bool> Validar_LinhaExcel(string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
+        public List<bool> Validar_LinhaExcel(string FormularioNoProcedimento, string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
             string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario,
             string FormaEntrega, string TipoPreco, List<bool> result_list)
         {
@@ -3388,7 +3412,7 @@ namespace Hydra.Such.Portal.Controllers
                 result_list[i] = false;
             }
 
-            if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0)
+            if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0 || FormularioNoProcedimento != NoProcedimento)
                 result_list[1] = true;
 
             if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
@@ -3448,10 +3472,10 @@ namespace Hydra.Such.Portal.Controllers
             return result_list;
         }
 
-        public ExcelWorkbook Criar_Excel_SUCESSO(ExcelWorkbook workBook)
+        public ExcelWorkbook Criar_Excel_Worksheet(ExcelWorkbook workBook, string Nome)
         {
-            workBook.Worksheets.Add("SUCESSO");
-            ExcelWorksheet currentWorksheet = workBook.Worksheets["SUCESSO"];
+            workBook.Worksheets.Add(Nome);
+            ExcelWorksheet currentWorksheet = workBook.Worksheets[Nome];
 
             currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
             currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
@@ -3473,31 +3497,43 @@ namespace Hydra.Such.Portal.Controllers
             return workBook;
         }
 
-        public ExcelWorkbook Criar_Excel_ERRO(ExcelWorkbook workBook)
+        [HttpGet]
+        public FileResult DownloadFileAnexosErros(string iD)
         {
-            workBook.Worksheets.Add("ERRO");
-            ExcelWorksheet currentWorksheet = workBook.Worksheets["ERRO"];
+            AnexosErros AnexoErro = DBAnexosErros.GetById(Convert.ToInt32(iD));
 
-            currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
-            currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
-            currentWorksheet.Cells[1, 3].Value = "CodProduto";
-            currentWorksheet.Cells[1, 4].Value = "DtValidadeInicio";
-            currentWorksheet.Cells[1, 5].Value = "DtValidadeFim";
-            currentWorksheet.Cells[1, 6].Value = "Regiao";
-            currentWorksheet.Cells[1, 7].Value = "Area";
-            currentWorksheet.Cells[1, 8].Value = "Cresp";
-            currentWorksheet.Cells[1, 9].Value = "Localizacao";
-            currentWorksheet.Cells[1, 10].Value = "CustoUnitario";
-            currentWorksheet.Cells[1, 11].Value = "UM";
-            currentWorksheet.Cells[1, 12].Value = "QtdPorUM";
-            currentWorksheet.Cells[1, 13].Value = "PesoUnitario";
-            currentWorksheet.Cells[1, 14].Value = "CodProdutoFornecedor";
-            currentWorksheet.Cells[1, 15].Value = "FormaEntrega";
-            currentWorksheet.Cells[1, 16].Value = "TipoPreco";
-
-            return workBook;
+            return File(AnexoErro.Anexo, System.Net.Mime.MediaTypeNames.Application.Octet, AnexoErro.NomeAnexo);
         }
 
+        [HttpGet]
+        [Route("Administracao/DownloadAcordoPrecosTemplate")]
+        [Route("Administracao/DownloadAcordoPrecosTemplate/{FileName}")]
+        public FileStreamResult DownloadAcordoPrecosTemplate(string FileName)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+        }
+        
+
+        [HttpPost]
+        public JsonResult DeleteAnexosErros([FromBody] AnexosErrosViewModel AnexoErro)
+        {
+            int result = 0;
+            bool dbDeleteAnexosErrosResult = false;
+
+            try
+            {
+                dbDeleteAnexosErrosResult = DBAnexosErros.Delete(Convert.ToInt32(AnexoErro.CodeTexto));
+
+                if (!dbDeleteAnexosErrosResult)
+                    result = 1;
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
+        
         #endregion Acordo de Preços
 
 
