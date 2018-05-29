@@ -22,7 +22,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
     public class RequisicoesSimplificadasController : Controller
     {
-        ClientesController register;
+        ProjetosController register;
         private readonly NAVWSConfigurations configws;
         private ErrorHandler mensage = new ErrorHandler();
 
@@ -30,7 +30,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
             this.configws = NAVWSConfigs.Value;
-            register = new ClientesController(appSettings, NAVWSConfigs);
+            register = new ProjetosController(appSettings, NAVWSConfigs);
         }
 
 
