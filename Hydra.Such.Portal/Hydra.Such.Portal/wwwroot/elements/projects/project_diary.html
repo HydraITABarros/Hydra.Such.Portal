@@ -1141,14 +1141,18 @@
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
                 </div>
+
                 <div class="col-lg-2">
-                    <such-selectbox id="ProjDiaryPriceDlg" name="ProjDiaryPriceDlg" value="{{_ProjDiaryPriceDlg}}" label="Preço" disabled="{{disabledProjectNo}}"
-                                    items="[[ProjDiary_Price]]"
-                                    on-value-changed="_projectChange"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" disabled="{{disabledProjectNo}}" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                        <template>
+                            <table width="550px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
 
             </div>
@@ -1380,15 +1384,15 @@
                         this.$.projectList.value = this.paramprojno;
                         this.disabledProjectNo = true;
 
-                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
-                        this.$.grid_databound_ajax.params = { "allProjs": false };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
 
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
                         this.$.grid_databound_ajax.body = JSON.stringify("");
-                        this.$.grid_databound_ajax.params = { "allProjs": true };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                     }
@@ -1505,22 +1509,23 @@
                 },
 
                 _createmovprojResponse: function (e) {
+                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
-
-                        //this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                         this.$.ajax_getall.generateRequest();
                         this.$.projectMovementTable.selectedItems = [];
                         this.$.projectMovementTable.selectedItem = [];
-                        //this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
-                        //this.$.grid_databound_ajax.params = { "allProjs": false };
-                        //this.$.grid_databound_ajax.generateRequest();
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
-                        this.openToastSuccess("Diário de Projeto atualizado.");
-                    } else {
-                        this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
-                    }
+                        if (this.result.eReasonCode === 1)
+                        {
+                            this.openToastSuccess(this.result.eMessage);
+                        } 
+                        else
+                        {
+                            this.openToastError(this.result.eMessage);
+                        }
+                    }                   
                 },
                 _updateResponse: function (e) {
                     var self = this;
@@ -1602,6 +1607,7 @@
                         }
 
                         this.$.dialogGetProjetStart.close();
+                        this.$.ajax_createmovproj.params = { "projectNo": "","Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
                     } else {
@@ -1623,7 +1629,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
 
                         this.$.grid_databound_ajax.generateRequest();
@@ -1723,28 +1729,9 @@
                 },
                 _dlgNext: function () {
                     debugger;
-                    var textnull = false;
-                    if (this.$.ResourcesDlg.value != null && (this.$.ResourcesDlg.valueText == "" || this.$.ResourcesDlg.valueText == null)) {
-                        this.$.ResourcesDlg.value = null;
-                        textnull = true;
-                    }
-                    if (this.$.ProjDiaryPriceDlg.value != null && (this.$.ProjDiaryPriceDlg.valueText == "" || this.$.ProjDiaryPriceDlg.valueText == null)) {
-                        this.$.ProjDiaryPriceDlg.value = null;
-                        textnull = true;
-                    }
+                    
+                    
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
-                        if (textnull == true) {
-
-                            //Request Project Data
-                            this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
-                            this.$.ajax_related.generateRequest();
-
-                            //Request Project Data
-                            this.$.grid_databound_ajax.params = { "allProjs": false, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                            this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-
-                            this.$.grid_databound_ajax.generateRequest();
-                        }
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();
                     } else {
