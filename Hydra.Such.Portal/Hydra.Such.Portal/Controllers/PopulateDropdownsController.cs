@@ -964,6 +964,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjectById([FromBody] string ProjectNo)
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo).ToList();
+            return Json(result);
+        }
+
+
+        [HttpPost]
         public JsonResult GetTipoTrabalhoList()
         {
             List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()

@@ -284,5 +284,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
         public int? NovoEstado { get; set; }
         public string NovoEstadoComentario { get; set; }
+
+        public string Tipo_Show { get; set; }
+        public string PrecoBase_Show { get; set; }
+        public string Cor_Folder { get; set; }
     }
 }
