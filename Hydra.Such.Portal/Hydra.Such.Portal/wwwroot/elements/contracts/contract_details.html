@@ -190,6 +190,8 @@
                 </template>
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
                 <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
+                <paper-button raised id="btnContractProposals" class="" on-tap="_redirectToContractProposals"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Propostas</paper-button>
+
             </div>
         </div>
         <template is="dom-if" if="{{ _showAreas }}">
@@ -1996,8 +1998,10 @@
                 _redirectToContractProjects: function () {
                     window.location.href = "../ProjetosContrato/" + this.data.contractNo;
                 },
-
-
+                
+                _redirectToContractProposals: function() {
+                    window.location.href = "../PropostasContrato/" + this.data.contractNo;
+                },
                 //#################################
                 //        CONTRACT LINES
                 //#################################
