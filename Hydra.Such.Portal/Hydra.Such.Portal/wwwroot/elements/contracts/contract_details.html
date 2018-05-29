@@ -178,6 +178,7 @@
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
+                    <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                 </template>
             </div>
@@ -190,6 +191,8 @@
                 </template>
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
                 <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
+                <paper-button raised id="btnContractProposals" class="" on-tap="_redirectToContractProposals"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Propostas</paper-button>
+
             </div>
         </div>
         <template is="dom-if" if="{{ _showAreas }}">
@@ -1424,6 +1427,7 @@
                 <paper-button raised class="btnRemove" on-tap="_closeCreateProposalDlg">Cancelar</paper-button>
             </div>
         </paper-dialog>
+
         <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
             <div class="row break_clear">
                 <div class="col-md-4 ">
@@ -1996,8 +2000,10 @@
                 _redirectToContractProjects: function () {
                     window.location.href = "../ProjetosContrato/" + this.data.contractNo;
                 },
-
-
+                
+                _redirectToContractProposals: function() {
+                    window.location.href = "../PropostasContrato/" + this.data.contractNo;
+                },
                 //#################################
                 //        CONTRACT LINES
                 //#################################
@@ -2222,7 +2228,7 @@
 
                 _createNewProposal: function (param) {
                     if (this.$.chkUpdateLines.checked) {
-                        if (this.$.txtPercentage.validate() && this.$.txtPercentage.value != "") {
+                        if (this.$.txtPercentage.validate()) {
                             this._createProposal();
                         }
                         else {
@@ -2234,6 +2240,7 @@
                         this._createProposal();
                     }
                 },
+           
                 _createProposal: function () {
                     var contractId = this.data.contractNo;
                     var version = this.data.versionNo;

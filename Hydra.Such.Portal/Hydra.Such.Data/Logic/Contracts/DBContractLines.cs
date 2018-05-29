@@ -100,6 +100,21 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+         public static List<LinhasContratos> GetbyContractId( string ContractId, string ResourceCod)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == ContractId &&  x.Código == ResourceCod).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static LinhasContratos Update(LinhasContratos ObjectToUpdate)
         {

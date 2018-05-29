@@ -728,10 +728,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
 
         }
+
+        public JsonResult GetHistoryReq([FromBody] JObject requestParams)
+        {
+            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
+
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived,
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+
+            return Json(result);
+        }
+
+        public JsonResult GetHistoryReqLines([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["ReqNo"].ToString();
+
+            List<LinhasRequisição> RequisitionLines = null;
+            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+
+            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+
+            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            return Json(result);
+
+        }
         #endregion
 
         #region Requisition
-        
+
         [HttpPost]
         public JsonResult CreateRequesition([FromBody] PreRequesitionsViewModel data)
         {
