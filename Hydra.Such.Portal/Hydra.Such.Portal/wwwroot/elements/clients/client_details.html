@@ -1,0 +1,440 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<dom-module id="x-clientdetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+            }
+
+            .panel-heading {
+                font-size: 16px;
+            }
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                    border-top:  solid #ddd 1px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetProjectStatus" last-response="{{LProjectStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectCategories" last-response="{{LProjectCategories}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/DeleteProject"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_project"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
+        </div>
+
+
+        <div class="panel panel-default break_clear">
+
+            <!--Geral-->
+            <div class="panel-heading">
+                Geral
+            </div>
+            <div class="panel-body">
+                <div>
+                    <div class="row break_clear">
+                        <div class="col-lg-4">
+                            <vaadin-text-field value="{{data.No}}" maxlength="20" id="ProjectNo" name="ProjectNo" label="Nº" disabled> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-4">
+                            <vaadin-text-field value="{{data.Name}}" maxlength="100" id="Name" name="Name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!------------ Endereço & Contacto ------------>
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Endereço & Contacto" opened>
+                    <div class="panel-body">
+                        <div class="break_clear">
+
+                            <div class="row break_clear">
+                                <div class="col-lg-6">
+                                    <vaadin-text-field value="{{data.Address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="Address" name="Address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <vaadin-text-field value="{{data.Address_2}}" maxlength="255" id="Address_2" name="Address_2" label="Endereço 2" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                            </div>
+
+                            <div class="row break_clear">
+
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.Post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="Post_Code" name="Post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.City}}" maxlength="100" id="City" name="City" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.Phone_No}}" type="number" maxlength="9" pattern="[0-9]*" disabled="{{ !_permissions.update }}" id="Phone_No" name="Phone_No" label="Telefone" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.E_Mail}}" pattern='/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/' maxlength="255" id="E_Mail" name="E_Mail" label="Email" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+
+                            </div>
+
+                            <div class="row break_clear">
+
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.Fax_No}}" maxlength="9" disabled="{{ !_permissions.update }}" id="Fax_No" name="Fax_No" label="Nº Fax" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.Home_Page}}" maxlength="255" id="Home_Page" name="Home_Page" label="Home Page" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{data.County}}" maxlength="255" id="County" name="County" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
+
+            <!------------ Faturação ------------>
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Faturação" opened>
+                    <div class="panel-body">
+                        <div class="row break_clear">
+                            <div class="col-lg-4">
+                                <vaadin-text-field value="{{data.VAT_Registration_No}}" maxlength="20" disabled="{{ !_permissions.update }}" id="VAT_Registration_No" name="VAT_Registration_No" label="Nº Contribuinte" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
+
+            <!------------ Especificação ------------>
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Especificação" opened>
+                    <div class="panel-body">
+                        <div class="row break_clear">
+
+                            <div class="col-lg-3">
+                                <vaadin-text-field value="{{data.Cliente_Associado}}" maxlength="255" disabled="{{ !_permissions.update }}" id="Cliente_Associado" name="Cliente_Associado" label="Cliente Associado" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="Associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.Associado_A_N}}" label="Associado (A/N)" required error-message="Este campo é obrigatório">
+                                    <template>
+                                        <b>[[item.value]]</b>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items='[CBTipo_Cliente]' id="Tipo_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Tipo_Cliente}}" label="Tipo de Cliente" required error-message="Este campo é obrigatório">
+                                    <template>
+                                        <b>[[item.value]]</b>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items='[CBNatureza_Cliente]' id="Natureza_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Natureza_Cliente}}" label="Natureza do Cliente" required error-message="Este campo é obrigatório">
+                                    <template>
+                                        <b>[[item.value]]</b>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                        </div>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
+
+
+            <div class="marginSpace">
+                <template is="dom-if" if="{{ _isCreate }}">
+                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
+                </template>
+            </div>
+
+            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-clientdetails',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _no: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _showAreas: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _projectClosed: {
+                        type: Boolean,
+                        value: false
+                    },
+                },
+                ready: function () {
+                    //GET Client DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._no });
+                    this.$.page_databound_ajax.generateRequest();
+
+
+                    //this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
+                    //this.$.contracts_ajax.generateRequest();
+
+                    if (this._no == "") {
+                        this._isCreate = true;
+                        //this.data.area = this._areaid;
+                    }
+
+                    this._showAreas = this._areaid == 4 /* vendas */;
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function () {
+                    // TODO: cliente details _validateData [abastos]
+                    this.$.ProjectClient.validate();
+                    if (this.$.Description.validate() &
+                        this.$.ProjectLeader.validate() &
+                        this.$.ProjectResponsible.validate() &
+                        this.$.ContractNo.validate() &
+                        this.$.ProjectType.validate() &
+                        this.$.RegionCode.validate() &
+                        this.$.FunctionalAreaCode.validate() &
+                        this.$.ResponsabilityCenterCode.validate()) {
+
+                        if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
+                            return true;
+                        }
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _goBack: function (e) {
+                    window.history.back();
+                },
+                _createNewProject: function () {
+                    window.location.href = "../DetalhesCliente";
+                },
+
+                //CRUDS
+                _create: function () {
+                    if (this._validateData()) {
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Clientes/Update", this.data)
+                    }
+                },
+                _delete: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_delete_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                //Responses Processors
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    //Set AreaId
+                    this.data.area = this._areaid;
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetCliente") !== -1) {
+                            if (this.data.No == "") {
+                                this._isCreate = true;
+                            } else {
+                                return;
+                                this.$.projects_ajax.body = JSON.stringify(this.data.No);
+                                this.$.projects_ajax.generateRequest();
+
+                                this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.No);
+                                this.$.shippinhAddress_ajax.generateRequest();                                
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._createResponseProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Projeto atualizado com sucesso.")
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Projeto criado com sucesso.");
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            this._executeRequest("/Clientes/Create", this.data)
+                        } else {
+                            this._openToastError(this.validateResponse);
+                        }
+                    }
+                },
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode != 0) {
+                            this._openToastError(this.deletedData.eMessage);
+                        } else {
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        }
+                    }
+                },
+                
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                }
+            });
+        });
+    </script>
+
+</dom-module>
+
+
