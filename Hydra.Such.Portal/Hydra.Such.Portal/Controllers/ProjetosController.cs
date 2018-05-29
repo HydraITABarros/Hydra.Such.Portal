@@ -906,8 +906,16 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         OrderLine ++;
                                         bool newUnitCost = false;
+                                    if (pjD.ServiceClientCode == null|| pjD.ServiceClientCode == 0)
+                                    {
+                                        pjD.ServiceClientCode = 0;
+                                    }
                                         foreach (LinhasContratos lc in listContractLines)
                                         {
+                                            if (lc.CódServiçoCliente == null|| lc.CódServiçoCliente == 0)
+                                            {
+                                                lc.CódServiçoCliente = 0;
+                                            }
                                             if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                             {
                                                 pjD.UnitCost = lc.PreçoUnitário;
@@ -917,46 +925,42 @@ namespace Hydra.Such.Portal.Controllers
                                         if (newUnitCost)
                                         {
                                             //Create
-                                            dp.ForEach(x =>
-                                            {
                                                 DiárioDeProjeto newdp = new DiárioDeProjeto()
                                                 {
-                                                    NºLinha = x.LineNo,
-                                                    NºProjeto = x.ProjectNo,
-                                                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
-                                                    TipoMovimento = x.MovementType,
-                                                    Tipo = x.Type,
-                                                    Código = x.Code,
-                                                    Descrição = x.Description,
-                                                    Quantidade = x.Quantity,
-                                                    CódUnidadeMedida = x.MeasurementUnitCode,
-                                                    CódLocalização = x.LocationCode,
-                                                    GrupoContabProjeto = x.ProjectContabGroup,
+                                                    NºLinha = pjD.LineNo,
+                                                    NºProjeto = pjD.ProjectNo,
+                                                    Data = pjD.Date == "" || pjD.Date == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.Date),
+                                                    TipoMovimento = pjD.MovementType,
+                                                    Tipo = pjD.Type,
+                                                    Código = pjD.Code,
+                                                    Descrição = pjD.Description,
+                                                    Quantidade = pjD.Quantity,
+                                                    CódUnidadeMedida = pjD.MeasurementUnitCode,
+                                                    CódLocalização = pjD.LocationCode,
+                                                    GrupoContabProjeto = pjD.ProjectContabGroup,
                                                     CódigoRegião = projecto.CódigoRegião,
                                                     CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
                                                     CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                                                     Utilizador = User.Identity.Name,
-                                                    CustoUnitário = x.UnitCost,
-                                                    CustoTotal = x.TotalCost,
-                                                    PreçoUnitário = x.UnitPrice,
-                                                    PreçoTotal = x.TotalPrice,
-                                                    Faturável = x.Billable,
+                                                    CustoUnitário = pjD.UnitCost,
+                                                    CustoTotal = pjD.TotalCost,
+                                                    PreçoUnitário = pjD.UnitPrice,
+                                                    PreçoTotal = pjD.TotalPrice,
+                                                    Faturável = pjD.Billable,
                                                     Registado = false,
                                                     FaturaANºCliente = projecto.NºCliente,
-                                                    Moeda = x.Currency,
-                                                    ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                                                    TipoRefeição = x.MealType,
-                                                    CódGrupoServiço = x.ServiceGroupCode,
-                                                    NºGuiaResíduos = x.ResidueGuideNo,
-                                                    NºGuiaExterna = x.ExternalGuideNo,
-                                                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                                                    CódServiçoCliente = x.ServiceClientCode
-
+                                                    Moeda = pjD.Currency,
+                                                    ValorUnitárioAFaturar = pjD.UnitValueToInvoice,
+                                                    TipoRefeição = pjD.MealType,
+                                                    CódGrupoServiço = pjD.ServiceGroupCode,
+                                                    NºGuiaResíduos = pjD.ResidueGuideNo,
+                                                    NºGuiaExterna = pjD.ExternalGuideNo,
+                                                    DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
+                                                    CódServiçoCliente = pjD.ServiceClientCode
                                                 };
-
-                                                if (x.LineNo > 0)
+                                                if (pjD.LineNo > 0)
                                                 {
-                                                    newdp.Faturada = x.Billed;
+                                                    newdp.Faturada = pjD.Billed;
                                                     newdp.DataHoraModificação = DateTime.Now;
                                                     newdp.UtilizadorModificação = User.Identity.Name;
                                                     DBProjectDiary.Update(newdp);
@@ -968,7 +972,6 @@ namespace Hydra.Such.Portal.Controllers
                                                     newdp.UtilizadorCriação = User.Identity.Name;
                                                     DBProjectDiary.Create(newdp);
                                                 }
-                                            });
                                         }
                                         else
                                         {
