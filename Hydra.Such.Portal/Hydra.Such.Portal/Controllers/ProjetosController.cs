@@ -1407,7 +1407,10 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
-                FolhaHoras = x.NºDocumento
+                FolhaHoras = x.NºDocumento,
+                InvoiceToClientNo = x.FaturaANºCliente,
+                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+
             }).ToList();
 
             return Json(dp);

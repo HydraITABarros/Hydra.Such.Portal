@@ -278,10 +278,20 @@ namespace Hydra.Such.Data.ViewModel.CCP
         // this function receives an ProcedimentosCcp objet and maps it to a ProcedimentosCccpView object
         public static ProcedimentoCCPView CastProcedimentoCcpToProcedimentoCcpView(ProcedimentosCcp Procedimento)
         {
+            string temp = string.Empty;
+
+            temp = Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent";
+
+
             ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView()
             {
                 No = Procedimento.Nº,
                 Tipo = Procedimento.Tipo,
+                
+                Tipo_Show = Procedimento.Tipo == 0 ? "" : Procedimento.Tipo == 1 ? "AD" : Procedimento.Tipo == 2 ? "CP" : Procedimento.Tipo == 3 ? "CLPQ" : Procedimento.Tipo == 4 ? "PN" : Procedimento.Tipo == 5 ? "DC" : Procedimento.Tipo == 6 ? "CPI" : "",
+
+                Cor_Folder = Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent",
+
                 Ano = Procedimento.Ano,
                 Referencia = Procedimento.Referência,
                 CodigoRegiao = Procedimento.CódigoRegião,
@@ -301,6 +311,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 InformacaoTecnica = Procedimento.InformaçãoTécnica,
                 FundamentacaoAquisicao = Procedimento.FundamentaçãoAquisição,
                 PrecoBase = Procedimento.PreçoBase,
+
+                PrecoBase_Show = Procedimento.PreçoBase == null ? "Não" : Procedimento.PreçoBase == false ? "Não" : "Sim",
+
                 ValorPrecoBase = Procedimento.ValorPreçoBase,
                 Negociacao = Procedimento.Negociação,
                 CriteriosAdjudicacao = Procedimento.CritériosAdjudicação,
@@ -394,7 +407,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataSistemaRelatorioFinal = Procedimento.DataSistemaRelatórioFinal,
                 ComentarioNotificacao = Procedimento.ComentárioNotificação,
                 DataNotificacao = Procedimento.DataNotificação,
-
+                
                 //NR 20180327
                 DataNotificacao_Show = Procedimento.DataNotificação.ToString(),
 
@@ -422,7 +435,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Procedimento.DataHoraCriação,
                 UtilizadorCriacao = Procedimento.UtilizadorCriação,
                 DataHoraModificacao = Procedimento.DataHoraModificação,
-                UtilizadorModificacao = Procedimento.UtilizadorModificação
+                UtilizadorModificacao = Procedimento.UtilizadorModificação                
             };
 
             if (Procedimento.TemposPaCcp != null)

@@ -156,6 +156,7 @@
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
@@ -614,8 +615,8 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-    </div>-->
+                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>-->
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBLocations]]" on-value-changed="_getCDirect" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -799,7 +800,7 @@
                                             <vaadin-grid-filter path="armazemCDireta" />
                                         </template>
                                         <template>
-                                                <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -913,7 +914,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" on-change="_GridOrderChange" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <paper-icon-item>
                                                             <paper-item-body two-line>
@@ -1829,6 +1830,29 @@
                     //this.$._CLGridUnitMeasureCode.value = object.measureUnit;
                 },
 
+                _GridOrderChange: function (e, _selected) {
+                    debugger;
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.projectNo;
+
+                        this.$.get_project_dims.body = JSON.stringify(itemNo);
+                        this.$.get_project_dims.generateRequest();
+                    }
+                },
+
+
+                _getprojectdimsResponse: function (e) {
+                    if (this.ProjectDims != null) {
+                        debugger;
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        line.regionCode = this.ProjectDims[0].regionCode;
+                        line.functionalAreaCode = this.ProjectDims[0].areaCode;
+                        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
+                    }
+                    this.$.grid_prereqlines.clearCache();
+                },
+
                 _GridRespCenterChange: function (e) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
@@ -2086,7 +2110,7 @@
                 _pendingreq: function (e) {
                     window.location.href = "RequisicoesPendentes/";
                 },
-                _CleanPreRequesitionResponse: function(e) {
+               _CleanPreRequesitionResponse: function(e) {
                     debugger;
                     if (this.ClPreReq.eReasonCode != null) {
                         this._openToastError(this.ClPreReq.eMessage);

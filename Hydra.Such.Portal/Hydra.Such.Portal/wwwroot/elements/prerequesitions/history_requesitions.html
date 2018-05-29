@@ -7,7 +7,7 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
-<dom-module id="x-pendingreq">
+<dom-module id="x-historyreq">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -113,15 +113,14 @@
 
 
 
-        <iron-ajax url="/PreRequisicoes/GetPendingReq"
+        <iron-ajax url="/PreRequisicoes/GetHistoryReq"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   auto
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
+        <iron-ajax url="/PreRequisicoes/GetHistoryReqLines"
                    last-response="{{resultlines}}"
                    method="post"
                    handle-as="json"
@@ -129,27 +128,12 @@
                    on-response="_responseLines"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/SendReqForApproval"
-                   last-response="{{actionResult}}"
-                   method="post"
-                   handle-as="json"
-                   on-response="_SendReqResponse"
-                   id="SendReq_databound"
-                   content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
-                   last-response="{{CloseRequisition}}"
-                   id="closereq_ajax"
-                   on-response="_closeRequisitionResponse"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <paper-button class="btn-default" on-tap="_goHistory"> Histórico</paper-button>
-        <br></br>
-        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>
+        <br> <br/>
+        <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -223,7 +207,7 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+           <!-- <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                 </template>
                 <template>
@@ -231,30 +215,12 @@
                         <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
                     </center>
                 </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
         </vaadin-grid>
 
         <paper-dialog id="dialog" class="dialgoBox">
             <h2>Linhas Requisição</h2>
-            <vaadin-grid aria-label="PendingReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
+            <vaadin-grid aria-label="HistoryReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
                 <vaadin-grid-column width="120px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
@@ -331,7 +297,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-pendingreq',
+                is: 'x-historyreq',
                 properties: {
                     _permissions: {
                         type: Array
@@ -352,9 +318,6 @@
                         this.$.grid_datareqlines_ajax.generateRequest();
                     }
                 },
-                ready: function () {
-
-                },
                 _responsehead: function (data) {
 
                     _clFormatState(this.result.state);
@@ -370,41 +333,13 @@
                     }
                     return "";
                 },
-
+                _pendingreq: function (e) {
+                    window.location.href = "../RequisicoesPendentes/";
+                },
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
                     window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
-                },
-                _ToApproved: function (e) {
-                    if (e != null) {
-                        this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo });
-                        this.$.SendReq_databound.generateRequest();
-                    }
-                },
-                _goHistory: function(e) {
-                    window.location.href = "../RequisicoesHistorico/";
-                },
-                _closeRequisition: function (e) {
-                    if (e.model.item.state == 5 | e.model.item.state == 5) {
-                        this.$.closereq_ajax.body = JSON.stringify(e.model.item);
-                        this.$.closereq_ajax.params = { "registType": "Fechar Requisicao" };
-                        this.$.closereq_ajax.generateRequest();
-                    } else {
-                        this._openToastError("O estado da requisição não permite o fecho.");
-                    }
-                },
-                _closeRequisitionResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        if (this.CloseRequisition.eReasonCode == "1") {
-                            this._openToast(this.CloseRequisition.eMessage);
-                            this.$.grid_databound_ajax.generateRequest();
-                            this.$.grdPendingReqGrid.clearCache();
-                        }
-                        else {
-                            this._openToastError(this.CloseRequisition.eMessage);
-                        }
-                    }
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -413,17 +348,6 @@
                 _openToastError: function (message) {
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
-                },
-                _SendReqResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        if (this.actionResult.eReasonCode === 1) {
-                            this._openToast(this.actionResult.eMessage);
-                        } else {
-                            this._openToastError(this.actionResult.eMessage);
-                        }
-                    } else {
-                        this._openToastError("Occorreu um erro ao atualizar.");
-                    }
                 },
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
