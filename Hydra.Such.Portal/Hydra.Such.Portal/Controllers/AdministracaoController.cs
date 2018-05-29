@@ -27,6 +27,9 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data;
 using System.IO;
 using OfficeOpenXml;
+using Microsoft.AspNetCore.Http;
+using System.Drawing;
+using System.Globalization;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2888,9 +2891,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.NoProcedimento = AP.NoProcedimento;
                 result.DtInicio = AP.DtInicio;
-                result.DtInicioTexto = AP.DtInicio == null ? "" : Convert.ToDateTime(AP.DtInicio).ToShortDateString();
+                result.DtInicioTexto = AP.DtInicio == null ? "" : AP.DtInicio.Value.ToString("yyyy-MM-dd");
                 result.DtFim = AP.DtFim;
-                result.DtFimTexto = AP.DtFim == null ? "" : Convert.ToDateTime(AP.DtFim).ToShortDateString();
+                result.DtFimTexto = AP.DtFim == null ? "" : AP.DtFim.Value.ToString("yyyy-MM-dd");
                 result.ValorTotal = AP.ValorTotal;
 
                 result.FornecedoresAcordoPrecos = DBFornecedoresAcordoPrecos.GetAllByNoProdimento(data.NoProcedimento).Select(x => new FornecedoresAcordoPrecosViewModel()
@@ -3094,9 +3097,10 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(1);
         }
 
-        [HttpPost]
+        //[HttpPost]
         [Route("Administracao/FileUpload")]
-        public JsonResult FileUpload(string id, int linha)
+        //[HttpGet]
+        public FileStreamResult FileUpload(string id, int linha)
         {
             //TESTE COM DLL EPPlus
             var files = Request.Form.Files;
@@ -3105,17 +3109,45 @@ namespace Hydra.Such.Portal.Controllers
                 try
                 {
                     string filename = Path.GetFileName(file.FileName);
-                    string full_path = "C:\\Users\\ARomao\\Desktop\\" + filename;
+                    //LOCAL TEST
+                    //string full_path = "C:\\Users\\ARomao\\Desktop\\" + filename;
+                    //WEB TEST
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    if (System.IO.File.Exists(full_path))
+                        System.IO.File.Delete(full_path);
+                    FileStream dd = new FileStream(full_path, FileMode.CreateNew);
+                    file.CopyTo(dd);
+                    dd.Dispose();
                     var existingFile = new FileInfo(full_path);
+
+                    string filename_result = "AcordoPrecos_Result.xlsx";
+                    //LOCAL TEST
+                    //string full_path_result = "C:\\Users\\ARomao\\Desktop\\" + "AcordoPrecos_Result.xlsx";
+                    //WEB TEST
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    if (System.IO.File.Exists(full_path_result))
+                        System.IO.File.Delete(full_path_result);
+                    var existingFile_result = new FileInfo(full_path_result);
 
                     using (var excel = new ExcelPackage(existingFile))
                     {
+                        var excel_result = new ExcelPackage(existingFile_result);
+                        ExcelWorkbook workBook_result = excel_result.Workbook;
+
                         ExcelWorkbook workBook = excel.Workbook;
                         if (workBook != null)
                         {
                             if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
                             {
-                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];// .First();
+                                workBook_result = Criar_Excel_SUCESSO(workBook_result);
+                                workBook_result = Criar_Excel_ERRO(workBook_result);
+                                //workBook.Worksheets.Add("SUCESSO");
+                                //workBook.Worksheets.Add("ERRO");
+
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+
+                                ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
+                                ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
                                 if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 16) &&
                                     (currentWorksheet.Cells[1, 1].Value.ToString() == "NoProcedimento") &&
@@ -3135,8 +3167,14 @@ namespace Hydra.Such.Portal.Controllers
                                     (currentWorksheet.Cells[1, 15].Value.ToString() == "FormaEntrega") &&
                                     (currentWorksheet.Cells[1, 16].Value.ToString() == "TipoPreco"))
                                 {
-                                    int resultadoValidacao = 0;
-                                    int resultadoInserir = 0;
+                                    int Linha_SUCESSO = 2;
+                                    int Linha_ERRO = 2;
+                                    var result_list = new List<bool>();
+                                    for (int i = 1; i <= 16; i++)
+                                    {
+                                        result_list.Add(false);
+                                    }
+
                                     string NoProcedimento = "";
                                     string NoFornecedor = "";
                                     string CodProduto = "";
@@ -3174,9 +3212,105 @@ namespace Hydra.Such.Portal.Controllers
                                         FormaEntrega = currentWorksheet.Cells[rowNumber, 15].Value.ToString();
                                         TipoPreco = currentWorksheet.Cells[rowNumber, 16].Value.ToString();
 
-                                        resultadoValidacao = Validar_LinhaExcel(NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco);
+                                        result_list = Validar_LinhaExcel(NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list);
 
-                                        if (resultadoValidacao == 0)
+                                        if (result_list.All(c => c == false))
+                                        {
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 1].Value = NoProcedimento;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 2].Value = NoFornecedor;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 3].Value = CodProduto;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 4].Value = DtValidadeInicio;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 5].Value = DtValidadeFim;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 6].Value = Regiao;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 7].Value = Area;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 8].Value = Cresp;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 9].Value = Localizacao;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 10].Value = CustoUnitario;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 11].Value = UM;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 12].Value = QtdPorUM;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 13].Value = PesoUnitario;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 14].Value = CodProdutoFornecedor;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 15].Value = FormaEntrega;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 16].Value = TipoPreco;
+
+                                            Linha_SUCESSO = Linha_SUCESSO + 1;
+                                        }
+                                        else
+                                        {
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Value = NoProcedimento;
+                                            if (result_list[1] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Value = NoFornecedor;
+                                            if (result_list[2] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Value = CodProduto;
+                                            if (result_list[3] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Value = DtValidadeInicio;
+                                            if (result_list[4] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 5].Value = DtValidadeFim;
+                                            if (result_list[5] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 5].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 6].Value = Regiao;
+                                            if (result_list[6] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 6].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 7].Value = Area;
+                                            if (result_list[7] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 7].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 8].Value = Cresp;
+                                            if (result_list[8] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 8].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 9].Value = Localizacao;
+                                            if (result_list[9] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 9].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 10].Value = CustoUnitario;
+                                            if (result_list[10] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 10].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 11].Value = UM;
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 12].Value = QtdPorUM;
+                                            if (result_list[11] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 12].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 13].Value = PesoUnitario;
+                                            if (result_list[12] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 13].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 14].Value = CodProdutoFornecedor;
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 15].Value = FormaEntrega;
+                                            if (result_list[13] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 15].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 16].Value = TipoPreco;
+                                            if (result_list[14] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 16].Style.Font.Color.SetColor(Color.Red);
+
+                                            if (result_list[15] == true)
+                                            {
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 8].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 9].Style.Font.Color.SetColor(Color.Orange);
+                                            }
+
+                                            Linha_ERRO = Linha_ERRO + 1;
+                                        }
+
+                                        if (result_list.All(c => c == false))
                                         {
                                             LinhasAcordoPrecos toCreate = DBLinhasAcordoPrecos.Create(new LinhasAcordoPrecos()
                                             {
@@ -3202,11 +3336,18 @@ namespace Hydra.Such.Portal.Controllers
                                                 DataCriacao = DateTime.Now,
                                                 TipoPreco = Convert.ToInt32(TipoPreco)
                                             });
-
-                                            if (toCreate == null)
-                                                resultadoInserir = 1;
                                         }
                                     }
+
+                                    excel_result.Save();
+
+                                    excel.Dispose();
+                                    excel_result.Dispose();
+                                    DownloadFile(full_path_result);
+                                    //return new FileStreamResult(new FileStream(full_path_result, FileMode.Open), "application/xlsx");
+                                    //System.IO.File.Delete(full_path_result);
+                                    //System.IO.File.Delete(full_path);
+
                                 }
                             }
                         }
@@ -3218,77 +3359,143 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            return Json("");
+            return null;
         }
 
-        public int Validar_LinhaExcel(string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
-            string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario,
-            string FormaEntrega, string TipoPreco)
+        [HttpGet]
+        public FileStreamResult DownloadFile(string FileName)
         {
-            int result = 0;
+            try
+            {
+                return new FileStreamResult(new FileStream(FileName, FileMode.Open), "application/xlsx");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public List<bool> Validar_LinhaExcel(string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
+            string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario,
+            string FormaEntrega, string TipoPreco, List<bool> result_list)
+        {
             DateTime currectDate;
             decimal currectDecimal;
             int currectInt;
 
+            for (int i = 1; i <= 15; i++)
+            {
+                result_list[i] = false;
+            }
+
             if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0)
-                result = 1;
+                result_list[1] = true;
 
             if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
-                result = 2;
+                result_list[2] = true;
 
             if (DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).Count() == 0)
-                result = 3;
+                result_list[3] = true;
 
             if (!DateTime.TryParse(DtValidadeInicio, out currectDate))
-                result = 4;
+                result_list[4] = true;
 
             if (!DateTime.TryParse(DtValidadeFim, out currectDate))
-                result = 5;
+                result_list[5] = true;
 
             if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
-                result = 6;
+                result_list[6] = true;
 
             if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
-                result = 7;
+                result_list[7] = true;
 
             if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(x => x.Code == Cresp).Count() == 0)
-                result = 8;
+                result_list[8] = true;
 
             if (DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Where(x => x.Localizacao == Localizacao).Count() == 0)
-                result = 9;
+                result_list[9] = true;
 
             if (!decimal.TryParse(CustoUnitario, out currectDecimal))
-                result = 10;
+                result_list[10] = true;
 
             if (!decimal.TryParse(QtdPorUM, out currectDecimal))
-                result = 11;
+                result_list[11] = true;
 
             if (!decimal.TryParse(PesoUnitario, out currectDecimal))
-                result = 12;
+                result_list[12] = true;
 
             if (int.TryParse(FormaEntrega, out currectInt))
             {
                 if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
-                    result = 13;
+                    result_list[13] = true;
             }
             else
-                result = 13;
+                result_list[13] = true;
 
             if (int.TryParse(TipoPreco, out currectInt))
             {
                 if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
-                    result = 14;
+                    result_list[14] = true;
             }
             else
-                result = 14;
+                result_list[14] = true;
 
-            if (result == 0)
-                if (DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
-                        x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).Count() > 0)
-                    result = 15;
+            if (DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
+                    x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).Count() > 0)
+                result_list[15] = true;
 
 
-            return result;
+            return result_list;
+        }
+
+        public ExcelWorkbook Criar_Excel_SUCESSO(ExcelWorkbook workBook)
+        {
+            workBook.Worksheets.Add("SUCESSO");
+            ExcelWorksheet currentWorksheet = workBook.Worksheets["SUCESSO"];
+
+            currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
+            currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
+            currentWorksheet.Cells[1, 3].Value = "CodProduto";
+            currentWorksheet.Cells[1, 4].Value = "DtValidadeInicio";
+            currentWorksheet.Cells[1, 5].Value = "DtValidadeFim";
+            currentWorksheet.Cells[1, 6].Value = "Regiao";
+            currentWorksheet.Cells[1, 7].Value = "Area";
+            currentWorksheet.Cells[1, 8].Value = "Cresp";
+            currentWorksheet.Cells[1, 9].Value = "Localizacao";
+            currentWorksheet.Cells[1, 10].Value = "CustoUnitario";
+            currentWorksheet.Cells[1, 11].Value = "UM";
+            currentWorksheet.Cells[1, 12].Value = "QtdPorUM";
+            currentWorksheet.Cells[1, 13].Value = "PesoUnitario";
+            currentWorksheet.Cells[1, 14].Value = "CodProdutoFornecedor";
+            currentWorksheet.Cells[1, 15].Value = "FormaEntrega";
+            currentWorksheet.Cells[1, 16].Value = "TipoPreco";
+
+            return workBook;
+        }
+
+        public ExcelWorkbook Criar_Excel_ERRO(ExcelWorkbook workBook)
+        {
+            workBook.Worksheets.Add("ERRO");
+            ExcelWorksheet currentWorksheet = workBook.Worksheets["ERRO"];
+
+            currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
+            currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
+            currentWorksheet.Cells[1, 3].Value = "CodProduto";
+            currentWorksheet.Cells[1, 4].Value = "DtValidadeInicio";
+            currentWorksheet.Cells[1, 5].Value = "DtValidadeFim";
+            currentWorksheet.Cells[1, 6].Value = "Regiao";
+            currentWorksheet.Cells[1, 7].Value = "Area";
+            currentWorksheet.Cells[1, 8].Value = "Cresp";
+            currentWorksheet.Cells[1, 9].Value = "Localizacao";
+            currentWorksheet.Cells[1, 10].Value = "CustoUnitario";
+            currentWorksheet.Cells[1, 11].Value = "UM";
+            currentWorksheet.Cells[1, 12].Value = "QtdPorUM";
+            currentWorksheet.Cells[1, 13].Value = "PesoUnitario";
+            currentWorksheet.Cells[1, 14].Value = "CodProdutoFornecedor";
+            currentWorksheet.Cells[1, 15].Value = "FormaEntrega";
+            currentWorksheet.Cells[1, 16].Value = "TipoPreco";
+
+            return workBook;
         }
 
         #endregion Acordo de Preços

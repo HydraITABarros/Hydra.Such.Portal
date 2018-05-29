@@ -167,15 +167,6 @@
             {{item.description}}
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column width="110px" resizable>
-        <template class="header" width="200px" resizable>
-            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-            <vaadin-grid-filter path="quantity" />
-        </template>
-        <template>
-            {{item.quantity}}
-        </template>
-    </vaadin-grid-column>
 
     <vaadin-grid-column width="160px" resizable>
         <template class="header">
@@ -192,6 +183,72 @@
                     </paper-icon-item>
                 </template>
             </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header" width="200px" resizable>
+            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+            <vaadin-grid-filter path="quantity" />
+        </template>
+        <template>
+            {{item.quantity}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+            <vaadin-grid-filter path="unitPrice" />
+        </template>
+        <template>
+            {{item.unitPrice}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
+            <vaadin-grid-filter path="TotalPrice" />
+        </template>
+        <template>
+            {{item.totalPrice}}€
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+            <vaadin-grid-filter path="unitCost" />
+        </template>
+        <template>
+            {{item.unitCost}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="110px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+            <vaadin-grid-filter path="totalCost" />
+        </template>
+        <template>
+            {{item.totalCost}}€
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="15%">
+        <template class="header">
+            <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
+            <vaadin-grid-filter path="invoiceToClientNo" />
+        </template>
+        <template>
+            {{item.invoiceToClientNo}}
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="15%">
+        <template class="header">
+            <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+            <vaadin-grid-filter path="clientName" />
+        </template>
+        <template>
+            {{item.clientName}}
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="160px" resizable>
@@ -280,42 +337,9 @@
             {{item.user}}
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column width="110px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-            <vaadin-grid-filter path="unitCost" />
-        </template>
-        <template>
-            {{item.unitCost}}€
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="110px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
-            <vaadin-grid-filter path="totalCost" />
-        </template>
-        <template>
-            {{item.totalCost}}€
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="110px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-            <vaadin-grid-filter path="unitPrice" />
-        </template>
-        <template>
-            {{item.unitPrice}}€
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="110px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
-            <vaadin-grid-filter path="TotalPrice" />
-        </template>
-        <template>
-            {{item.totalPrice}}€
-        </template>
-    </vaadin-grid-column>
+
+
+
     <vaadin-grid-column width="100px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
