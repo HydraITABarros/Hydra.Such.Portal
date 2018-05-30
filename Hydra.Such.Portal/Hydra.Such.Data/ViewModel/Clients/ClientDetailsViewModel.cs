@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using WSClientNAV;
 
 namespace Hydra.Such.Data.ViewModel.Clients
 {
@@ -28,9 +27,13 @@ namespace Hydra.Such.Data.ViewModel.Clients
 
         public string Associado_A_N { get; set; }
 
-        public Tipo_Cliente Tipo_Cliente { get; set; }
+        public WSCustomerNAV.Tipo_Cliente Tipo_Cliente { get; set; }
 
-        public Natureza_Cliente Natureza_Cliente { get; set; }
+        public WSCustomerNAV.Natureza_Cliente Natureza_Cliente { get; set; }
+
+        public string No_Series { get; set; }
+
+        public string Regiao_Cliente { get; set; }
 
         // Endereços de envio ???
     }
