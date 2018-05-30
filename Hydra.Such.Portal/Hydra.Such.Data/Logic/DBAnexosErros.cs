@@ -10,31 +10,13 @@ namespace Hydra.Such.Data.Logic
     public static class DBAnexosErros
     {
         #region CRUD
-        public static AnexosErrosViewModel GetById(int ID)
+        public static AnexosErros GetById(int ID)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AnexosErros.Select(AnexosErros => new AnexosErrosViewModel()
-                    {
-                        ID = AnexosErros.ID,
-                        Origem = AnexosErros.Origem,
-                        OrigemTexto = AnexosErros.Origem.ToString(),
-                        Tipo = AnexosErros.Tipo,
-                        TipoTexto = AnexosErros.Tipo.ToString(),
-                        Codigo = AnexosErros.Codigo,
-                        NomeAnexo = AnexosErros.NomeAnexo,
-                        Anexo = AnexosErros.Anexo,
-                        CriadoPor = AnexosErros.CriadoPor,
-                        CriadoPorNome = AnexosErros.CriadoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.CriadoPor).Nome,
-                        DataHora_Criacao = AnexosErros.DataHora_Criacao,
-                        DataHora_CriacaoTexto = AnexosErros.DataHora_Criacao.HasValue ? AnexosErros.DataHora_Criacao.Value.ToString("yyyy-MM-dd") : "",
-                        AlteradoPor = AnexosErros.AlteradoPor,
-                        AlteradoPorNome = AnexosErros.AlteradoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.AlteradoPor).Nome,
-                        DataHora_Alteracao = AnexosErros.DataHora_Alteracao,
-                        DataHora_AlteracaoTexto = AnexosErros.DataHora_Alteracao.HasValue ? AnexosErros.DataHora_Alteracao.Value.ToString("yyyy-MM-dd") : ""
-                    }).Where(x => x.ID == ID).FirstOrDefault();
+                    return ctx.AnexosErros.Where(x => x.ID == ID).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -44,31 +26,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static AnexosErrosViewModel GetByOrigemAndTipoAndCodigo(int Origem, int Tipo, string Codigo)
+        public static List<AnexosErros> GetByOrigemAndCodigo(int Origem, string Codigo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AnexosErros.Select(AnexosErros => new AnexosErrosViewModel()
-                    {
-                        ID = AnexosErros.ID,
-                        Origem = AnexosErros.Origem,
-                        OrigemTexto = AnexosErros.Origem.ToString(),
-                        Tipo = AnexosErros.Tipo,
-                        TipoTexto = AnexosErros.Tipo.ToString(),
-                        Codigo = AnexosErros.Codigo,
-                        NomeAnexo = AnexosErros.NomeAnexo,
-                        Anexo = AnexosErros.Anexo,
-                        CriadoPor = AnexosErros.CriadoPor,
-                        CriadoPorNome = AnexosErros.CriadoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.CriadoPor).Nome,
-                        DataHora_Criacao = AnexosErros.DataHora_Criacao,
-                        DataHora_CriacaoTexto = AnexosErros.DataHora_Criacao.HasValue ? AnexosErros.DataHora_Criacao.Value.ToString("yyyy-MM-dd") : "",
-                        AlteradoPor = AnexosErros.AlteradoPor,
-                        AlteradoPorNome = AnexosErros.AlteradoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.AlteradoPor).Nome,
-                        DataHora_Alteracao = AnexosErros.DataHora_Alteracao,
-                        DataHora_AlteracaoTexto = AnexosErros.DataHora_Alteracao.HasValue ? AnexosErros.DataHora_Alteracao.Value.ToString("yyyy-MM-dd") : ""
-                    }).Where(x => x.Origem == Origem && x.Tipo == Tipo && x.Codigo == Codigo).FirstOrDefault();
+                    return ctx.AnexosErros.Where(x => x.Origem == Origem && x.Codigo == Codigo).OrderByDescending(y => y.DataHora_Criacao).ToList();
                 }
             }
             catch (Exception ex)
@@ -78,35 +42,18 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<AnexosErrosViewModel> GetAll()
+        public static List<AnexosErros> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AnexosErros.Select(AnexosErros => new AnexosErrosViewModel()
-                    {
-                        ID = AnexosErros.ID,
-                        Origem = AnexosErros.Origem,
-                        OrigemTexto = AnexosErros.Origem.ToString(),
-                        Tipo = AnexosErros.Tipo,
-                        TipoTexto = AnexosErros.Tipo.ToString(),
-                        Codigo = AnexosErros.Codigo,
-                        NomeAnexo = AnexosErros.NomeAnexo,
-                        Anexo = AnexosErros.Anexo,
-                        CriadoPor = AnexosErros.CriadoPor,
-                        CriadoPorNome = AnexosErros.CriadoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.CriadoPor).Nome,
-                        DataHora_Criacao = AnexosErros.DataHora_Criacao,
-                        DataHora_CriacaoTexto = AnexosErros.DataHora_Criacao.HasValue ? AnexosErros.DataHora_Criacao.Value.ToString("yyyy-MM-dd") : "",
-                        AlteradoPor = AnexosErros.AlteradoPor,
-                        AlteradoPorNome = AnexosErros.AlteradoPor == null ? "" : DBUserConfigurations.GetById(AnexosErros.AlteradoPor).Nome,
-                        DataHora_Alteracao = AnexosErros.DataHora_Alteracao,
-                        DataHora_AlteracaoTexto = AnexosErros.DataHora_Alteracao.HasValue ? AnexosErros.DataHora_Alteracao.Value.ToString("yyyy-MM-dd") : ""
-                    }).ToList();
+                    return ctx.AnexosErros.ToList();
                 }
             }
             catch (Exception ex)
             {
+
                 return null;
             }
         }

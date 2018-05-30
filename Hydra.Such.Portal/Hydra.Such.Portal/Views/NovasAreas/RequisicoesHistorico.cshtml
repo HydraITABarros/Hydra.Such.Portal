@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "RequisicoesHistorico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/prerequesitions/history_requesitions.html">
+<h1 class="title">Histórico Requisições - Novas Áreas</h1>
+
+<x-historyreq _areaid="7" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-historyreq>
