@@ -1,4 +1,5 @@
-﻿using Hydra.Such.Data.ViewModel;
+﻿using AutoMapper;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Clients;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,14 @@ namespace Hydra.Such.Data.NAV
             if (client == null)
                 throw new ArgumentNullException("client");
 
+            var mapper = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<ClientDetailsViewModel, WSClientNAV.teste>()
+                ).CreateMapper();
+
             WSClientNAV.Create navCreate = new WSClientNAV.Create()
             {
-                teste = new WSClientNAV.teste 
+                teste = mapper.Map<ClientDetailsViewModel, WSClientNAV.teste>(client)
+                /*teste = new WSClientNAV.teste 
                 {
                     //No = client.No,
                     Name = client.Name,
@@ -53,7 +59,7 @@ namespace Hydra.Such.Data.NAV
                     Associado_A_N = client.Associado_A_N,
                     Tipo_Cliente = client.Tipo_Cliente,
                     Natureza_Cliente = client.Natureza_Cliente
-                }
+                }*/
             };
 
             //Configure NAV Client
@@ -176,10 +182,10 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSClientNAV.Read_Result> GetByNoAsync(string ClientNo, NAVWSConfigurations WSConfigurations)
+        public static async Task<ClientDetailsViewModel> GetByNoAsync(string ClientNo, NAVWSConfigurations WSConfigurations)
         {
             if (ClientNo == null)
-                throw new ArgumentNullException("client");
+                throw new ArgumentNullException("ClientNo");
 
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Client_URL.Replace("Company", WSConfigurations.WS_User_Company));
@@ -190,7 +196,16 @@ namespace Hydra.Such.Data.NAV
             try
             {
                 WSClientNAV.Read_Result result = await WS_Client.ReadAsync(ClientNo);
-                return result;
+
+                var origin = result.teste;
+
+                var mapper = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<WSClientNAV.teste, ClientDetailsViewModel>()
+                ).CreateMapper();
+
+                var dest = mapper.Map<WSClientNAV.teste, ClientDetailsViewModel>(origin);
+
+                return dest;
             }
             catch (Exception ex)
             {
@@ -224,5 +239,8 @@ namespace Hydra.Such.Data.NAV
             }
 
         }
+
+
+
     }
 }
