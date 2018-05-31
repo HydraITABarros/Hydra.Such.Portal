@@ -132,8 +132,8 @@ namespace Hydra.Such.Data.NAV
                     VAT_Registration_No = client.VAT_Registration_No,
                     Cliente_Associado = client.Cliente_Associado,
                     Associado_A_N = client.Associado_A_N,
-                    Tipo_Cliente = client.Tipo_Cliente,
-                    Natureza_Cliente = client.Natureza_Cliente
+                    //Tipo_Cliente = client.Tipo_Cliente,
+                    //Natureza_Cliente = client.Natureza_Cliente
                 }
             };
 
