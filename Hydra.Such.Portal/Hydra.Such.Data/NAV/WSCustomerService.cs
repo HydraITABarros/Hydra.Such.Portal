@@ -39,16 +39,10 @@ namespace Hydra.Such.Data.NAV
             try
             {
                 WSCustomerNAV.Read_Result result = await WS_Client.ReadAsync(CustomerNo);
+                var WSCustomer = result.WSCustomer;
 
-                var origin = result.WSCustomer;
-
-                var mapper = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>()
-                ).CreateMapper();
-
-                var dest = mapper.Map<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>(origin);
-
-                return dest;
+                var client = MapCustomerNAVToCustomerModel(WSCustomer);
+                return client;
             }
             catch (Exception ex)
             {
@@ -68,7 +62,7 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            var filter = new WSCustomerNAV.WSCustomer_Filter { Field = WSCustomerNAV.WSCustomer_Fields.No, Criteria = "20066*" };
+            var filter = new WSCustomerNAV.WSCustomer_Filter { Field = WSCustomerNAV.WSCustomer_Fields.No, Criteria = "200*" };
             var filterArray = new WSCustomerNAV.WSCustomer_Filter[] { filter };
 
             try
@@ -88,13 +82,9 @@ namespace Hydra.Such.Data.NAV
             if (client == null)
                 throw new ArgumentNullException("client");
 
-            var mapper = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>()
-                ).CreateMapper();
-
             WSCustomerNAV.Create navCreate = new WSCustomerNAV.Create()
             {
-                WSCustomer = mapper.Map<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>(client)
+                WSCustomer = MapCustomerModelToCustomerNAV(client)
             };
 
             //Configure NAV Client
@@ -144,6 +134,37 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static async Task<WSCustomerNAV.Update_Result> UpdateAsync(ClientDetailsViewModel client, NAVWSConfigurations WSConfigurations)
+        {
+            if (client == null)
+                throw new ArgumentNullException("client");
+
+            WSCustomerNAV.Update navUpdate = new WSCustomerNAV.Update()
+            {
+                WSCustomer = MapCustomerModelToCustomerNAV(client)
+            };
+
+            //Configure NAV Client
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_Customer_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCustomerNAV.WSCustomer_PortClient ws_Client = new WSCustomerNAV.WSCustomer_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            WSCustomerNAV.Read_Result resultRead = await ws_Client.ReadAsync(navUpdate.WSCustomer.No);
+            navUpdate.WSCustomer.Key = resultRead.WSCustomer.Key;
+
+            try
+            {
+                WSCustomerNAV.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
         public static async Task<WSCustomerNAV.Delete_Result> DeleteAsync(string CustomerNo, NAVWSConfigurations WSConfigurations)
         {
             if (CustomerNo == null)
@@ -167,6 +188,32 @@ namespace Hydra.Such.Data.NAV
             }
 
         }
+
+        #region Mappers
+
+        private static ClientDetailsViewModel MapCustomerNAVToCustomerModel(WSCustomerNAV.WSCustomer CustomerNAV)
+        {
+            var mapper = new MapperConfiguration(cfg =>
+                cfg.CreateMap<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>()
+            ).CreateMapper();
+
+            var CustomerModel = mapper.Map<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>(CustomerNAV);
+
+            return CustomerModel;
+        }
+
+        private static WSCustomerNAV.WSCustomer MapCustomerModelToCustomerNAV(ClientDetailsViewModel CustomerModel)
+        {
+            var mapper = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>()
+            ).CreateMapper();
+
+            var CustomerNAV = mapper.Map<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>(CustomerModel);
+
+            return CustomerNAV;
+        }
+
+        #endregion
 
     }
 }
