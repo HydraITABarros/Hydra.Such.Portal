@@ -60,14 +60,26 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Details
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult Get([FromBody] ClientDetailsViewModel data)
         {
-
-            if (data != null)
+            if (data != null && data.No != null)
             {
-                ClientDetailsViewModel client = new ClientDetailsViewModel(); // WSClient.GetByNoAsync(data.No);
+                var getClientTask = WSCustomerService.GetByNoAsync(data.No, _configws);
+                try
+                {
+                    getClientTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro a obter o cliente no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
 
+                ClientDetailsViewModel client = getClientTask.Result;
                 if (client != null)
                 {
                     return Json(client);
@@ -83,93 +95,104 @@ namespace Hydra.Such.Portal.Controllers
         //eReason = 3 -> Error creating Project on NAV 
         //eReason = 4 -> Unknow Error 
         //eReason = 5 -> Error getting Numeration 
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult Create([FromBody] ClientDetailsViewModel data)
         {
-            try
-            {
-                if (data != null)
-                {
-                    //TODO abastos: Get Client Numeration
-                    data.No = "todo";
-
-                    if (data.No != null)
-                    {
-
-                        //TODO abastos: Create Client
-                        var client = "todo";
-
-                        if (client == null)
-                        {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao criar o cliente no NAV.";
-                        }
-                        else
-                        {
-                            data.eReasonCode = 1;
-                        }
-                    }
-                    else
-                    {
-                        data.eReasonCode = 5;
-                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
-                    }
-                    if (data.eReasonCode != 1)
-                    {
-                        data.No = "";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                data.eReasonCode = 4;
-                data.eMessage = "Ocorreu um erro ao criar o cliente";
-            }
-            return Json(data);
-
-        }
-
-        [HttpPost]
-        public JsonResult Update([FromBody] ClientDetailsViewModel data)
-        {
-
             if (data != null)
             {
+                var createClientTask = WSCustomerService.CreateAsync(data, _configws);
                 try
                 {
-                    if (data != null)
-                    {
-                        //TODO abastos: Update Client
-                        var client = "todo";
-
-                        if (client == null)
-                        {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o cliente no NAV.";
-                        }
-                        else
-                        {
-                            data.eReasonCode = 1;
-                        }
-
-                    }
+                    createClientTask.Wait();
                 }
                 catch (Exception ex)
                 {
-                    data.eReasonCode = 4;
-                    data.eMessage = "Ocorreu um erro ao atualizar o cliente";
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao criar o cliente no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
                 }
-                return Json(data);                
+
+                var result = createClientTask.Result;
+                if (result == null)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao criar o cliente no NAV.";
+                    return Json(data);
+                }
+
+                data.eReasonCode = 1;
+
+                var client = result.WSCustomer;
+                if (client != null)
+                    return Json(client);
+
             }
             return Json(false);
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        public JsonResult Update([FromBody] ClientDetailsViewModel data)
+        {
+            if (data != null)
+            {
+                var updateClientTask = WSCustomerService.UpdateAsync(data, _configws);
+                try
+                {
+                    updateClientTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao atualizar o cliente no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
 
+                var result = updateClientTask.Result;
+                if (result == null)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao atualizar o cliente no NAV.";
+                    return Json(data);
+                }
 
+                data.eReasonCode = 1;
+
+                var client = result.WSCustomer;
+                if (client != null)
+                    return Json(client);
+
+            }
+            return Json(false);
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public JsonResult Delete([FromBody] ClientDetailsViewModel data)
         {
-            // TODO abastos:            
+            if (data != null && data.No != null)
+            {
+                var deleteClientTask = WSCustomerService.DeleteAsync(data.No, _configws);
+                try
+                {
+                    deleteClientTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro a apagar o cliente no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
+
+                var result = deleteClientTask.Result;
+                if (result != null)
+                    return Json(result);
+
+            }
             return Json(false);
         }
         #endregion

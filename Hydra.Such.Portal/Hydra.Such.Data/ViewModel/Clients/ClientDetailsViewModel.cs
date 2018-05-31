@@ -13,25 +13,19 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string Address { get; set; }
         public string Address_2 { get; set; }
         public string Post_Code { get; set; }
-
         public string City { get; set; }
         public string Phone_No { get; set; }
-
         public string E_Mail { get; set; }
         public string Fax_No { get; set; }
-
         public string Home_Page { get; set; }
         public string County { get; set; }
-
         public string VAT_Registration_No { get; set; }
         public bool Cliente_Associado { get; set; }
-
         public string Associado_A_N { get; set; }
-
-        public WSClientNAV.Tipo_Cliente Tipo_Cliente { get; set; }
-
-        public WSClientNAV.Natureza_Cliente Natureza_Cliente { get; set; }
-
+        public WSCustomerNAV.Tipo_Cliente Tipo_Cliente { get; set; }
+        public WSCustomerNAV.Natureza_Cliente Natureza_Cliente { get; set; }
+        public string No_Series { get; set; }
+        public string Regiao_Cliente { get; set; }
         // Endereços de envio ???
     }
 

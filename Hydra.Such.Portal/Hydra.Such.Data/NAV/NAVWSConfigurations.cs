@@ -23,5 +23,6 @@ namespace Hydra.Such.Data.NAV
         public string WS_TransferShipmentHeader_URL { get; set; }
         public string WS_TransferShipmentLine_URL { get; set; }
         public string WS_Client_URL { get; set; }
+        public string WS_Customer_URL { get; set; }
     }
 }
