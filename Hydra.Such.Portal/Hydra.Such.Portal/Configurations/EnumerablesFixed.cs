@@ -2077,6 +2077,33 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Fornecedor Secundário"
             }
         };
+
+        //CLIENTE
+        public static List<EnumData> Tipo_Cliente
+        {
+            get
+            {
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Tipo_Cliente));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
+            }
+        }
+
+        public static List<EnumData> Natureza_Cliente
+        {
+            get
+            {
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Natureza_Cliente));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
+            }
+        }
     }
 
     public class EnumDataString

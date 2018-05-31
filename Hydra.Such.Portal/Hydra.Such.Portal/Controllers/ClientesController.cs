@@ -15,7 +15,7 @@ using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
-using static Hydra.Such.Data.Enumerations;
+//using static Hydra.Such.Data.Enumerations;
 using System.Net;
 using Hydra.Such.Data.ViewModel.Clients;
 

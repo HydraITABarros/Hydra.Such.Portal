@@ -74,8 +74,8 @@
 
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetProjectStatus" last-response="{{LProjectStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectCategories" last-response="{{LProjectCategories}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetClientTypes" last-response="{{LClientTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetClientNatures" last-response="{{LClientNatures}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Projetos/GetProjectDetails"
@@ -143,10 +143,10 @@
                                     <vaadin-text-field value="{{data.City}}" maxlength="100" id="City" name="City" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{data.Phone_No}}" type="number" maxlength="9" pattern="[0-9]*" disabled="{{ !_permissions.update }}" id="Phone_No" name="Phone_No" label="Telefone" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                    <vaadin-text-field pattern="[0-9]{9}" value="{{data.Phone_No}}" onKeyDown="if ((['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].indexOf(event.key) < 0 && this.value && this.value.length > 8) || typeof (event.key * 1) != 'number') return false;/*console.log(event.key);*/" disabled="{{ !_permissions.update }}" id="Phone_No" name="Phone_No" label="Telefone" required> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{data.E_Mail}}" pattern='/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/' maxlength="255" id="E_Mail" name="E_Mail" label="Email" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{data.E_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="E_Mail" name="E_Mail" label="Email" disabled="{{ !_permissions.update }}" required error-message-required="Este campo é obrigatório"> </vaadin-text-field>
                                 </div>
 
                             </div>
@@ -154,7 +154,7 @@
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{data.Fax_No}}" maxlength="9" disabled="{{ !_permissions.update }}" id="Fax_No" name="Fax_No" label="Nº Fax" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{data.Fax_No}}" pattern="[0-9]{9}" onKeyDown="if ((['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].indexOf(event.key) < 0 && this.value && this.value.length > 8) || typeof (event.key * 1) != 'number') return false;/*console.log(event.key);*/" disabled="{{ !_permissions.update }}" id="Fax_No" name="Fax_No" label="Nº Fax" required > </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{data.Home_Page}}" maxlength="255" id="Home_Page" name="Home_Page" label="Home Page" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
@@ -174,7 +174,7 @@
                     <div class="panel-body">
                         <div class="row break_clear">
                             <div class="col-lg-4">
-                                <vaadin-text-field value="{{data.VAT_Registration_No}}" maxlength="20" disabled="{{ !_permissions.update }}" id="VAT_Registration_No" name="VAT_Registration_No" label="Nº Contribuinte" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                <vaadin-text-field value="{{data.VAT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="if((['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].indexOf(event.key) < 0 && this.value && this.value.length > 8) || typeof (event.key * 1) != number) return false;/*console.log(event.key);*/" disabled="{{ !_permissions.update }}" id="VAT_Registration_No" name="VAT_Registration_No" label="Nº Contribuinte" required > </vaadin-text-field>
                             </div>
 
                         </div>
@@ -187,30 +187,29 @@
                 <paper-collapse-item class="panel-heading" header="Especificação" opened>
                     <div class="panel-body">
                         <div class="row break_clear">
-
-                            <div class="col-lg-3">
-                                <vaadin-text-field value="{{data.Cliente_Associado}}" maxlength="255" disabled="{{ !_permissions.update }}" id="Cliente_Associado" name="Cliente_Associado" label="Cliente Associado" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                            <div class="col-lg-3 alignPoga">
+                                <vaadin-checkbox checked="{{data.Cliente_Associado}}" id="Cliente_Associado" name="Cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
                             </div>
-                            <div class="col-md-3 ">
+                            <div class="col-md-3">
                                 <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="Associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.Associado_A_N}}" label="Associado (A/N)" required error-message="Este campo é obrigatório">
                                     <template>
-                                        <b>[[item.value]]</b>
+                                       [[item.value]]
                                     </template>
                                 </vaadin-combo-box>
                             </div>
 
                             <div class="col-lg-3">
-                                <vaadin-combo-box items='[CBTipo_Cliente]' id="Tipo_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Tipo_Cliente}}" label="Tipo de Cliente" required error-message="Este campo é obrigatório">
+                                <vaadin-combo-box items='[[LClientTypes]]' id="Tipo_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Tipo_Cliente}}" label="Tipo de Cliente">
                                     <template>
-                                        <b>[[item.value]]</b>
+                                       [[item.value]]
                                     </template>
                                 </vaadin-combo-box>
                             </div>
 
                             <div class="col-lg-3">
-                                <vaadin-combo-box items='[CBNatureza_Cliente]' id="Natureza_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Natureza_Cliente}}" label="Natureza do Cliente" required error-message="Este campo é obrigatório">
+                                <vaadin-combo-box items='[[LClientNatures]]' id="Natureza_Cliente" item-value-path="value" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.Natureza_Cliente}}" label="Natureza do Cliente">
                                     <template>
-                                        <b>[[item.value]]</b>
+                                       [[item.value]]
                                     </template>
                                 </vaadin-combo-box>
                             </div>
@@ -300,22 +299,30 @@
                 },
                 _validateData: function () {
                     // TODO: cliente details _validateData [abastos]
-                    this.$.ProjectClient.validate();
-                    if (this.$.Description.validate() &
-                        this.$.ProjectLeader.validate() &
-                        this.$.ProjectResponsible.validate() &
-                        this.$.ContractNo.validate() &
-                        this.$.ProjectType.validate() &
-                        this.$.RegionCode.validate() &
-                        this.$.FunctionalAreaCode.validate() &
-                        this.$.ResponsabilityCenterCode.validate()) {
+                    var polymerDom = Polymer.dom(this.root);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
 
-                        if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
-                            return true;
-                        }
+                    formFields.forEach(function (element) {
+                        if (!element.validate()) {
+                            if (!element.hasValue && element.getAttribute('error-message-required')) {
+                                element.errorMessage = element.getAttribute('error-message-required');
+                            } else if (element.getAttribute('error-message-required')) {
+                                element.errorMessage = "";
+                            }
+                            console.log(element);
+                            window.cenas = element;
+                            errors++
+                        };
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
                     }
-                    this._openToastError("Verifique os dados inseridos.");
-                    return false;
+
+                    return true;
                 },
                 _goBack: function (e) {
                     window.history.back();
@@ -340,7 +347,7 @@
                     var Project = this.data;
                     var ajax_request = this.$.ajax_delete_project;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
+                        message: "Tem a certeza que pretende remover o Cliente " + this.data.projectNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -385,7 +392,7 @@
                             if (this.data.eReasonCode != 1) {
                                 this._openToastError(this.data.eMessage);
                             } else {
-                                this._openToast("Projeto atualizado com sucesso.")
+                                this._openToast("Cliente atualizado com sucesso.")
                             }
                         }
                     } else {
@@ -395,7 +402,7 @@
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("Projeto criado com sucesso.");
+                        this._openToast("Cliente criado com sucesso.");
                     } else {
                         this._openToastError(this.data.eMessage);
                     }

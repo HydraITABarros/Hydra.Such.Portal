@@ -3,15 +3,14 @@
     ViewData["Title"] = "Detalhes Cliente - Vendas - Such";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (ViewBag.No == "")
+@if (ViewBag.No == "" || ViewBag.No == null)
 {
-    <h1 class="title">Criar Cliente</h1>
+    <h1 class="title">Criar novo Cliente</h1>
 }
 else
 {
     <h1 class="title">Cliente @ViewBag.No</h1>
 }
-
 
 <link rel="import" href="/elements/clients/client_details.html">
 
