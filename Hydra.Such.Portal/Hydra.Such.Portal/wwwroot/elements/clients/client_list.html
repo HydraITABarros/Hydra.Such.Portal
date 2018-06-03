@@ -54,11 +54,11 @@
             </template>
 
         </div>
-        <vaadin-grid aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="CustomersGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="projectNo">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectNo" />
+                    <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" />
                 </template>
                 <template>
                     {{item.no}}

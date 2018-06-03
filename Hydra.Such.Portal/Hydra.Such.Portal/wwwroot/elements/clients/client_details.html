@@ -104,7 +104,7 @@
             <div class="row break_clear">
                 <div class="col-lg-12">
                     <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button raised id="btnProjectAdd" class="" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                        <paper-button raised id="btnClientAdd" class="" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     </template>
                 </div>
             </div>
@@ -348,7 +348,7 @@
                     }
                 },
                 _delete: function () {
-                    var Project = this.data;
+                    var Client = this.data;
                     var ajax_request = this.$.ajax_delete_customer;
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o Cliente " + this.data.no + "?",
@@ -363,11 +363,8 @@
                             }
                         },
                         callback: function (result) {
-
-                            console.log(result);
-
                             if (result) {
-                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.body = JSON.stringify(Client);
                                 ajax_request.generateRequest();
                             }
                         }
