@@ -235,7 +235,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Clientes); //4, 47);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.ProjectNo = id == null ? "" : id;
+                ViewBag.No = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
             }

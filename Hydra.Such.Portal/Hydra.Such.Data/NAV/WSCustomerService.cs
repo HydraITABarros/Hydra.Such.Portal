@@ -191,7 +191,7 @@ namespace Hydra.Such.Data.NAV
 
         #region Mappers
 
-        private static ClientDetailsViewModel MapCustomerNAVToCustomerModel(WSCustomerNAV.WSCustomer CustomerNAV)
+        public static ClientDetailsViewModel MapCustomerNAVToCustomerModel(WSCustomerNAV.WSCustomer CustomerNAV)
         {
             var mapper = new MapperConfiguration(cfg =>
                 cfg.CreateMap<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>()
@@ -202,10 +202,10 @@ namespace Hydra.Such.Data.NAV
             return CustomerModel;
         }
 
-        private static WSCustomerNAV.WSCustomer MapCustomerModelToCustomerNAV(ClientDetailsViewModel CustomerModel)
+        public static WSCustomerNAV.WSCustomer MapCustomerModelToCustomerNAV(ClientDetailsViewModel CustomerModel)
         {
             var mapper = new MapperConfiguration(cfg =>
-                cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>()
+                cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>().ForMember(x => x.No, opt => opt.Ignore())
             ).CreateMapper();
 
             var CustomerNAV = mapper.Map<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>(CustomerModel);

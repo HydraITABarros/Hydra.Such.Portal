@@ -1732,7 +1732,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //CLIENTE
         [HttpPost]
-        public JsonResult GetClientTypes()
+        public JsonResult GetCustomerTypes()
         {
             List<EnumData> result = EnumerablesFixed.Tipo_Cliente;
 
@@ -1740,7 +1740,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetClientNatures()
+        public JsonResult GetCustomerNatures()
         {
             List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
             return Json(result);

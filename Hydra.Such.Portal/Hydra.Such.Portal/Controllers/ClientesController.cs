@@ -62,7 +62,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Details
         [AllowAnonymous]
         [HttpPost]
-        public JsonResult Get([FromBody] ClientDetailsViewModel data)
+        public JsonResult GetDetails([FromBody] ClientDetailsViewModel data)
         {
             if (data != null && data.No != null)
             {
@@ -158,12 +158,12 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "Ocorreu um erro ao atualizar o cliente no NAV.";
                     return Json(data);
                 }
-
-                data.eReasonCode = 1;
-
-                var client = result.WSCustomer;
-                if (client != null)
+                
+                ClientDetailsViewModel client = WSCustomerService.MapCustomerNAVToCustomerModel(result.WSCustomer);
+                if (client != null) { 
+                    client.eReasonCode = 1;
                     return Json(client);
+                }
 
             }
             return Json(false);
