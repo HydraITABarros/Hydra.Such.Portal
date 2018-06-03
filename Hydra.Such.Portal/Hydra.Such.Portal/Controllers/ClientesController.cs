@@ -15,7 +15,7 @@ using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
-//using static Hydra.Such.Data.Enumerations;
+using static Hydra.Such.Data.Enumerations;
 using System.Net;
 using Hydra.Such.Data.ViewModel.Clients;
 
@@ -38,7 +38,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get([FromBody] JObject requestParams)
         {
             //int AreaId = int.Parse(requestParams["areaid"].ToString());
-
             List<ClientDetailsViewModel> result = new List<ClientDetailsViewModel>();// TODO abastos: get client list;
             result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(c => new ClientDetailsViewModel()
             {
@@ -50,7 +49,6 @@ namespace Hydra.Such.Portal.Controllers
                 Regiao_Cliente = c.Country_RegionCode
 
             }).ToList();
-            return Json(result);
             /*
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -207,7 +205,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 var result = deleteClientTask.Result;
                 if (result != null)
-                    return Json(result);
+                {
+                    return Json(new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = "Projeto removido com sucesso."
+                    });
+                }
 
             }
             return Json(false);
