@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Clients
@@ -26,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public WSCustomerNAV.Natureza_Cliente? Natureza_Cliente { get; set; }
         public string No_Series { get; set; }
         public string Regiao_Cliente { get; set; }
+        public string Country_RegionCode { get; set; }
         // Endereços de envio ???
     }
 
@@ -51,6 +53,6 @@ namespace Hydra.Such.Data.ViewModel.Clients
         [Description("Externo ao Estado")]
         Cliente_Externo_ao_Estado = 3,
         [Description("Interno")]
-        Cliente_Interno = 4            
+        Cliente_Interno = 4
     }
 }

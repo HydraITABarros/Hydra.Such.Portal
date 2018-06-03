@@ -41,7 +41,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Projetos/GetListProjectsByArea"
+        <iron-ajax url="/Clientes/Get"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -55,113 +55,58 @@
 
         </div>
         <vaadin-grid aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="projectNo">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
                 </template>
                 <template>
-                    {{item.projectNo}}
+                    {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="220px">
                 <template class="header">
-                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="date" />
+                    <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="name" />
                 </template>
                 <template >
-                    {{item.dateText}}
+                    {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="220px">
                 <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" />
+                    <vaadin-grid-sorter path="address">Morada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="address" />
                 </template>
                 <template>
-                    {{item.statusDescription}}
+                    {{item.address}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="90px">
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
+                    <vaadin-grid-sorter path="post_Code">Cód. Postal</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="post_Code" />
                 </template>
                 <template>
-                    {{item.description}}
+                    {{item.post_Code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="90px">
                 <template class="header">
-                    <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientNo" />
+                    <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="city" />
                 </template>
                 <template>
-                    {{item.clientNo}}
+                    {{item.city}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="90px">
                 <template class="header">
-                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientName" />
+                    <vaadin-grid-sorter path="regiao_Cliente">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao_Cliente" />
                 </template>
                 <template>
-                    {{item.clientName}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode" />
-                </template>
-                <template>
-                    {{item.regionCode}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode" />
-                </template>
-                <template>
-                    {{item.functionalAreaCode}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenterCode" />
-                </template>
-                <template>
-                    {{item.responsabilityCenterCode}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="170px">
-                <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-
-                    {{item.contractoNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="projectTypeCode">Cód. Tipo Projeto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectTypeCode" />
-                </template>
-                <template>
-                    {{item.projectTypeCode}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="projectTypeDescription">Tipo Projeto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectTypeDescription" />
-                </template>
-                <template>
-                    {{item.projectTypeDescription}}
+                    {{item.regiao_Cliente}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -188,7 +133,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesCliente/" + item.projectNo;
+                        window.location.href = "DetalhesCliente/" + item.no;
                     }
                 },
                 _create: function (item) {

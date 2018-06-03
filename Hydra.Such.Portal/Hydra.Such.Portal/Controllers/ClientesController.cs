@@ -35,12 +35,22 @@ namespace Hydra.Such.Portal.Controllers
 
         #region List
         [HttpPost]
-        public JsonResult GetList([FromBody] JObject requestParams)
+        public JsonResult Get([FromBody] JObject requestParams)
         {
             //int AreaId = int.Parse(requestParams["areaid"].ToString());
 
             List<ClientDetailsViewModel> result = new List<ClientDetailsViewModel>();// TODO abastos: get client list;
+            result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(c => new ClientDetailsViewModel()
+            {
+                No = c.No_,
+                Name = c.Name,
+                Address = c.Address,
+                Post_Code = c.PostCode,
+                City = c.City,
+                Regiao_Cliente = c.Country_RegionCode
 
+            }).ToList();
+            return Json(result);
             /*
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -99,6 +109,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult Create([FromBody] ClientDetailsViewModel data)
         {
+
+            var cenas = ModelState;
+
             if (data != null)
             {
                 var createClientTask = WSCustomerService.CreateAsync(data, _configws);
@@ -124,12 +137,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 data.eReasonCode = 1;
 
-                var client = result.WSCustomer;
+                var client = WSCustomerService.MapCustomerNAVToCustomerModel(result.WSCustomer);
                 if (client != null)
+                {
+                    client.eReasonCode = 1;
                     return Json(client);
+                }
 
             }
-            return Json(false);
+            return Json(data);
         }
 
         [AllowAnonymous]
@@ -158,9 +174,10 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "Ocorreu um erro ao atualizar o cliente no NAV.";
                     return Json(data);
                 }
-                
-                ClientDetailsViewModel client = WSCustomerService.MapCustomerNAVToCustomerModel(result.WSCustomer);
-                if (client != null) { 
+
+                var client = WSCustomerService.MapCustomerNAVToCustomerModel(result.WSCustomer);
+                if (client != null)
+                {
                     client.eReasonCode = 1;
                     return Json(client);
                 }
@@ -196,6 +213,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
         #endregion
-        
+
     }
 }

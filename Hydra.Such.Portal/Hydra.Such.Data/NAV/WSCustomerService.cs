@@ -86,6 +86,7 @@ namespace Hydra.Such.Data.NAV
             {
                 WSCustomer = MapCustomerModelToCustomerNAV(client)
             };
+            navCreate.WSCustomer.No = null;
 
             //Configure NAV Client
             EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_Customer_URL.Replace("Company", WSConfigurations.WS_User_Company));
@@ -205,7 +206,7 @@ namespace Hydra.Such.Data.NAV
         public static WSCustomerNAV.WSCustomer MapCustomerModelToCustomerNAV(ClientDetailsViewModel CustomerModel)
         {
             var mapper = new MapperConfiguration(cfg =>
-                cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>().ForMember(x => x.No, opt => opt.Ignore())
+                cfg.CreateMap<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>()/*.ForMember(x => x.No, opt => opt.Ignore())*/
             ).CreateMapper();
 
             var CustomerNAV = mapper.Map<ClientDetailsViewModel, WSCustomerNAV.WSCustomer>(CustomerModel);
