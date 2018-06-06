@@ -253,7 +253,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"  
                                     items="[[RegionData]]"
                                     text-path="value"
                                     value-path="id"
@@ -261,7 +261,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" 
                                     items="[[FunctionalAreaCodeData]]"
                                     text-path="value"
                                     value-path="id"
@@ -271,7 +271,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}" 
                                     items="[[ResponsabilityCenterData]]"
                                     text-path="value"
                                     value-path="id"
@@ -1509,7 +1509,6 @@
                 },
 
                 _createmovprojResponse: function (e) {
-                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
@@ -1619,9 +1618,7 @@
                 _closedialog: function (e) {
                     this.$.grid_databound_ajax.generateRequest();
                 },
-
                 _projectChange: function (e) {
-                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1669,7 +1666,6 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
-
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
@@ -1728,9 +1724,6 @@
 
                 },
                 _dlgNext: function () {
-                    debugger;
-                    
-                    
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();
