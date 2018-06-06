@@ -12,10 +12,9 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
-<dom-module id="x-contractlist">
+<dom-module id="x-contracthistory">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
@@ -48,15 +47,6 @@
                    handle-as="json"
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
-
-        <div class="marginSpace">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <template is="dom-if" if="{{ !_disabledCreate }}">
-                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-                </template>
-            </template>
-            <paper-button raised id="btnContractHistory" class="btnCreate" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Histórico</paper-button>
-        </div>
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
@@ -166,7 +156,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-contractlist',
+                is: 'x-contracthistory',
                 properties: {
                     _permissions: {
                         type: Array
@@ -207,13 +197,7 @@
                         this._disabledCreate = true;
                     }
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 0 });
-                    this.$.grid_databound_ajax.generateRequest();
-                },
-
-                _redirectToContractHistory: function () {
-                    debugger;
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 1 });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
             });

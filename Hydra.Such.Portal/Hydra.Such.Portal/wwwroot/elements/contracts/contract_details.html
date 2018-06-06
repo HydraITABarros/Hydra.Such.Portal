@@ -194,6 +194,7 @@
                 <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
                 <paper-button raised id="btnContractProposals" class="" on-tap="_redirectToContractProposals"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Propostas</paper-button>
 
+
             </div>
         </div>
         <template is="dom-if" if="{{ _showAreas }}">
@@ -2005,6 +2006,7 @@
                 _redirectToContractProposals: function () {
                     window.location.href = "../PropostasContrato/" + this.data.contractNo;
                 },
+                
                 //#################################
                 //        CONTRACT LINES
                 //#################################
@@ -2283,6 +2285,33 @@
                 _openUpdatePricesDlg: function () {
                     this.$.dlgUpdatePrices.open();
                 },
+
+                _sendToHistory: function () {
+                    debugger;
+                    var _dataContract = this.data;
+                    var ajax_request = this.$.page_databound_ajax;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende enviar para histórico o contrato " + this.data.contractNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.url = "/Contratos/SendContractToHistory";
+                                ajax_request.body = JSON.stringify(_dataContract);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _validateUpdatePricesDlgInput: function () {
                     if (this.$.dpStartDate.validate() &
                         this.$.dpDueDate.validate() &

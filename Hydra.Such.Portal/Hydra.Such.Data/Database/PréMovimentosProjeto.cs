@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class DiárioDeProjeto
+    public partial class PréMovimentosProjeto
     {
         public int NºLinha { get; set; }
         public string NºProjeto { get; set; }
@@ -56,7 +56,6 @@ namespace Hydra.Such.Data.Database
         public string Moeda { get; set; }
         public decimal? ValorUnitárioAFaturar { get; set; }
         public int? CódServiçoCliente { get; set; }
-        public bool? PréRegisto { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

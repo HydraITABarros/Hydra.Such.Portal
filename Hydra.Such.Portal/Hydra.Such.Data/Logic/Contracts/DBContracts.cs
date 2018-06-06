@@ -231,6 +231,23 @@ namespace Hydra.Such.Data.Logic.Contracts
         }
 
 
+        public static List<Contratos> GetAllHistoric(int ContractType)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+
+                    return ctx.Contratos.Where(x => x.TipoContrato == ContractType && x.Historico == true).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<Contratos> GetAllAvencaFixa()
         {
             try
@@ -288,7 +305,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 TipoFaturação = x.BillingType,
                 TipoContratoManut = x.MaintenanceContractType,
                 NºRequisiçãoDoCliente = x.ClientRequisitionNo,
-                DataReceçãoRequisição = string.IsNullOrEmpty(x.ReceiptDateRequisition) ? (DateTime?)null :  DateTime.Parse(x.ReceiptDateRequisition),
+                DataReceçãoRequisição = string.IsNullOrEmpty(x.ReceiptDateRequisition) ? (DateTime?)null : DateTime.Parse(x.ReceiptDateRequisition),
                 NºCompromisso = x.PromiseNo,
                 TaxaAprovisionamento = x.ProvisioningFee,
                 Mc = x.Mc,
@@ -338,7 +355,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 RazãoArquivo = x.ArchiveReason,
                 ValorBaseProcedimento = x.BaseValueProcedure,
                 AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
-
+                Historico = x.History
             };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
@@ -493,6 +510,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
                 ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
                 ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
+                History = x.Historico
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

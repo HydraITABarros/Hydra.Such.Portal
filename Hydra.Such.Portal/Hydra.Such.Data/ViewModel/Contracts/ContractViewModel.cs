@@ -105,6 +105,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string PreviousHearing { get; set; }
         public string PreviousHearingTime { get; set; }
         public int? ActionCode { get; set; }
+        public bool? History { get; set; }
 
         public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
         public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }

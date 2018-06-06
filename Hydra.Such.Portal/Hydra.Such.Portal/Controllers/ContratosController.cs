@@ -75,10 +75,11 @@ namespace Hydra.Such.Portal.Controllers
             int AreaId = int.Parse(requestParams["AreaId"].ToString());
             int Archived = int.Parse(requestParams["Archived"].ToString());
             string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = int.Parse(requestParams["Historic"].ToString());
 
             List<Contratos> ContractsList = null;
 
-            if (Archived == 0 || ContractNo == "")
+            if ((Archived == 0  || ContractNo == "") && (Historic == 0))
             {
                 if (AreaId == 4)
                 {
@@ -90,6 +91,10 @@ namespace Hydra.Such.Portal.Controllers
                     ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Contract);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
+            }
+            else if(Historic == 1)
+            {
+                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
             }
             else
             {
@@ -246,6 +251,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ContractNo != null)
                     {
                         data.Filed = false;
+                        data.History = false;
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
@@ -523,6 +529,44 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        public JsonResult SendContractToHistory([FromBody] ContractViewModel data)
+        {
+
+            if (data != null)
+            {
+                ContractsService serv = new ContractsService(User.Identity.Name);
+                data = serv.ArchiveContract(data);
+                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+
+                if (cContract != null)
+                {
+                    try
+                    {
+                        //Create new contract and update old
+                        cContract.UtilizadorModificação = User.Identity.Name;
+                        cContract.Arquivado = true;
+                        cContract.Historico = true;
+                        DBContracts.Update(cContract);
+                        
+                        data.eReasonCode = 1;
+                        data.eMessage = "Arquivado com sucesso.";
+                        return Json(data);
+                    }
+                    catch (Exception)
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao arquivar.";
+                    }
+                }
+            }
+            else
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao arquivar.";
+            }
+            return Json(data);
+        }
         //[HttpPost]
         //public JsonResult UpdateProposalContract([FromBody] ContractViewModel data)
         //{
