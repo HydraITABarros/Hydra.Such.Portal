@@ -180,6 +180,7 @@
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
+                    <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
             </div>
         </template>
@@ -2000,8 +2001,8 @@
                 _redirectToContractProjects: function () {
                     window.location.href = "../ProjetosContrato/" + this.data.contractNo;
                 },
-                
-                _redirectToContractProposals: function() {
+
+                _redirectToContractProposals: function () {
                     window.location.href = "../PropostasContrato/" + this.data.contractNo;
                 },
                 //#################################
@@ -2240,7 +2241,7 @@
                         this._createProposal();
                     }
                 },
-           
+
                 _createProposal: function () {
                     var contractId = this.data.contractNo;
                     var version = this.data.versionNo;
