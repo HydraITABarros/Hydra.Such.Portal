@@ -218,13 +218,12 @@
                                                headers="{'Accept': 'application/json'}"
                                                max-files="1"
                                                accept=".xlsx"
-                                               timeout=30000
-                                               max-file-size="3000000">
-                                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
+                                               timeout=30000>
+                                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (O nome do ficheiro tem que ser diferente de FH_PrecoVendaRecursos_Template.xlsx)</span>
                                 </vaadin-upload>
                             </div>
                             <div class="col-sm-1">
-                                <a href="/Administracao/DownloadRHRecursosFHTemplate/FH_PrecoVendaRecursoFH_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                <a href="/Administracao/DownloadRHRecursosFHTemplate/FH_PrecoVendaRecursos_Template.xlsx" target="_blank">Descarregar Modelo</a>
                                 <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshgridFHPrecoVendaRecursos" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
                             </div>
                         </div>
@@ -482,7 +481,7 @@
                     },
 
                     _create: function () {
-                        debugger;
+                        //debugger;
                         if (this._validateData("configuracaoPrecoVendaRecurso")) {
 
                             this.$.ajax_create.body = JSON.stringify(
@@ -522,7 +521,7 @@
                     },
 
                     _recursoChange: function (e) {
-                        debugger;
+                        //debugger;
                         this.$.page_recursoChange_ajax.body = JSON.stringify({
                             code: this.$.code.value
                         });
@@ -552,7 +551,7 @@
                     },
 
                     _createResponse: function (e) {
-                        debugger;
+                        //debugger;
                         var self = this;
 
                         if (this.createResult == 0) {
@@ -589,7 +588,7 @@
                     },
 
                     _recursoChangeResponse: function (e) {
-                        debugger;;
+                        //debugger;;
                         if (this.recursoChange != null) {
                             this.$.descricao.value = this.recursoChange.name;
                             this.$.familiaRecurso.value = this.recursoChange.resourceGroup;
@@ -601,7 +600,7 @@
 
 
                     _deleteFileAnexosErros: function (e) {
-                        debugger;
+                        //debugger;
                         var code = e.model.item.codeTexto;
 
                         var ajax_request = this.$.page_deleteAnexosErros_ajax;
@@ -631,7 +630,7 @@
                     },
 
                     _deleteFileAnexosErrosResponse: function (e) {
-                        debugger;
+                        //debugger;
                         var self = this;
 
                         setTimeout(function () {

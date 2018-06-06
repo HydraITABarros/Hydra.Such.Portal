@@ -433,13 +433,12 @@
                                                        headers="{'Accept': 'application/json'}"
                                                        max-files="1"
                                                        accept=".xlsx"
-                                                       timeout=30000
-                                                       max-file-size="3000000">
-                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
+                                                       timeout=30000>
+                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (O nome do ficheiro tem que ser diferente de AcordoPrecos_Template.xlsx)</span>
                                         </vaadin-upload>
                                     </div>
                                     <div class="col-sm-2">
-                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Linhas_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>
                                         <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
                                     </div>
                                 </div>
@@ -452,7 +451,7 @@
                                                 <vaadin-grid-filter path="codeTexto" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}" ></vaadin-text-field>
+                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
