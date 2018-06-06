@@ -1325,6 +1325,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
 
                     }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                    result.eMessage = "O Cliente " +proj.NºCliente+" do projeto selecinado não existe no Contrato " +proj.NºContrato;
+                    }
                 }
                 else
                 {

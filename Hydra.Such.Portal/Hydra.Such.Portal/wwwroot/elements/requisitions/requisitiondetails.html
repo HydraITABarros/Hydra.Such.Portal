@@ -729,7 +729,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[_getLocalCodeDescription(item.localCode)]]
+                                            <!--[[_getLocalCodeDescription(item.localCode)]]-->
+                                            {{item.localCode}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
