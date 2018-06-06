@@ -34,6 +34,11 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 
 <!--ACORDEÃO-->
@@ -87,6 +92,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/GetRHRecursosFH_AnexosErros"
+                   last-response="{{anexosErros}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="ajax_GetAll_AnexosErros"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Administracao/UpdateRHRecursosFH"
                    last-response="{{result}}"
                    method="post"
@@ -130,6 +144,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/DeleteAnexosErros"
+                   last-response="{{AnexosErrosDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteAnexosErros_ajax"
+                   on-response="_deleteFileAnexosErrosResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
@@ -137,8 +159,6 @@
 
                     <div class="row" id="configuracaoRHRecursos">
                         <div class="col-sm-4">
-                            @*<vaadin-text-field id="noEmpregado" value="{{noEmpregado}}" label="Nº Empregado" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>*@
-
                             <vaadin-combo-box items="[[LEmployeeNo]]" id="noEmpregado" item-value-path="id" item-label-path="value" label="Empregado " value="{{noEmpregado}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
@@ -151,8 +171,6 @@
                         </div>
 
                         <div class="col-sm-4">
-                            @*<vaadin-text-field id="recurso" value="{{recurso}}" label="Recurso" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>*@
-
                             <vaadin-combo-box items="[[LResourceCode]]" id="recurso" item-value-path="id" item-label-path="value" label="Recurso" value="{{recurso}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
@@ -164,21 +182,93 @@
                             </vaadin-combo-box>
                         </div>
 
-                        @*<div class="col-sm-2">
-                                <vaadin-text-field id="nomeRecurso" value="{{nomeRecurso}}" label="Recurso Nome" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
-                            </div>*@
-
-                        @*<div class="col-sm-2">
-                                <vaadin-text-field id="familiaRecurso" value="{{familiaRecurso}}" label="recurso Família" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
-                            </div>*@
-
-                        @*<div class="col-sm-3">
-                                <vaadin-text-field id="nomeEmpregado" value="{{nomeEmpregado}}" label="Empregado Nome" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
-                            </div>*@
-
                         <div class="col-sm-1 alignPoga">
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
+
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <vaadin-upload id="UploadRequest"
+                                               target="/Administracao/FileUpload_FHEmpregadoRecursos"
+                                               method="POST"
+                                               headers="{'Accept': 'application/json'}"
+                                               max-files="1"
+                                               accept=".xlsx"
+                                               timeout=30000
+                                               max-file-size="3000000">
+                                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
+                                </vaadin-upload>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="/Administracao/DownloadRHRecursosFHTemplate/FH_EmpregadoRecursos_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshgridFHEmpregadoRecursos" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-12">
+                                <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ anexosErros }}" class="editGrid" multi-sort="true">
+                                    <vaadin-grid-column hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="codeTexto" style="text-align:center;">Identificador</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="codeTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="tipoTexto" style="text-align:center;">Resultado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="tipoTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.tipoTexto}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeAnexo" style="text-align:center;">Anexo</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeAnexo" />
+                                        </template>
+                                        <template>
+                                            <a href="/Administracao/DownloadFileAnexosErros/{{item.codeTexto}}" target="_blank">{{item.nomeAnexo}}</a>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="criadoPorNome" style="text-align:center;">Criador</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="criadoPorNome" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.criadoPorNome}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataHora_CriacaoTexto" style="text-align:center;">Data Criação</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataHora_CriacaoTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErrosdataHora_CriacaoTexto" value="{{item.dataHora_CriacaoTexto}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -187,7 +277,7 @@
 
         <br />
 
-        <vaadin-grid id="gridPrecoVendaRecursoFH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid id="gridFHEmpregadoRecursos" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noEmpregado">Nº Empregado</vaadin-grid-sorter>
@@ -238,46 +328,6 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="criadoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraCriacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="alteradoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
-
             <vaadin-grid-column>
                 <template class="header">
                 </template>
@@ -291,8 +341,6 @@
 
         <div class="marginSpace">
             <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            @*<paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>*@
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -313,6 +361,15 @@
         if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
             DeleteValue = false;
         }
+
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('file-reject', function (event) {
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+                //window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady',
         function () {
@@ -343,6 +400,7 @@
 
                 ready: function () {
                     this.$.ajax_GetAll.generateRequest();
+                    this.$.ajax_GetAll_AnexosErros.generateRequest();
                 },
 
                 openToast: function (message) {
@@ -384,14 +442,14 @@
                             }
                         );
                         this.$.ajax_create.generateRequest();
-                        this.$.gridPrecoVendaRecursoFH.clearCache();
+                        this.$.gridFHEmpregadoRecursos.clearCache();
                     }
                 },
 
                 _update: function () {
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
+                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _delete: function (e) {
@@ -401,23 +459,22 @@
                     this.result = this.result.filter(function (item) {
                         return item != e.model.item;
                     });
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
+                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _cancel: function () {
                     this.$.ajax_GetAll.generateRequest();
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
+                    this.$.ajax_GetAll_AnexosErros.generateRequest();
+
+                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
-                _updateResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
-                    }
-                    else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
-                    }
+                _refreshgridFHEmpregadoRecursos: function (e) {
+                    //debugger;
+                    this.$.ajax_GetAll.generateRequest();
+                    this.$.ajax_GetAll_AnexosErros.generateRequest();
+
+                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _createResponse: function (e) {
@@ -433,6 +490,8 @@
                             this.$.recurso.value = "";
 
                             this.$.ajax_GetAll.generateRequest();
+                            this.$.ajax_GetAll_AnexosErros.generateRequest();
+
                             this.openToast("Tabela atualizada.");
                         }
                         else {
@@ -445,11 +504,67 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         this.$.ajax_GetAll.generateRequest();
+                        this.$.ajax_GetAll_AnexosErros.generateRequest();
+
                         this.openToast("Tabela atualizada.");
                     }
                     else {
                         this.openToast("Occorreu um erro ao atualizar a Tabela.");
                     }
+                },
+
+                _deleteFileAnexosErros: function (e) {
+                    //debugger;
+                    var code = e.model.item.codeTexto;
+
+                    var ajax_request = this.$.page_deleteAnexosErros_ajax;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Anexo?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteAnexosErros) {
+                            if (deleteAnexosErros) {
+                                ajax_request.body = JSON.stringify({
+                                    codeTexto: code
+                                });
+                                ajax_request.generateRequest();
+                                this.$.tabAnexosErros.clearCache();
+                            }
+                        }
+                    });
+                },
+
+                _deleteFileAnexosErrosResponse: function (e) {
+                    //debugger;
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.AnexosErrosDeleted == 0) {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.$.ajax_GetAll_AnexosErros.generateRequest();
+
+                        this._showMessage('O Anexo foi removido com sucesso.');
+                    } else {
+                        if (this.AnexosErrosDeleted == 1) {
+                            this._showErrorMessage('Ocorreu um erro ao eliminar o Anexo.');
+                        } else {
+                            if (this.AnexosErrosDeleted == 99) {
+                                this._showErrorMessage('Ocorreu um erro!!!');
+                            }
+                        }
+                    };
                 },
 
                 _goBack: function (e) {
