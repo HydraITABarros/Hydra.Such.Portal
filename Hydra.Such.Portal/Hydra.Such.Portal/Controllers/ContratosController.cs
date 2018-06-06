@@ -1195,6 +1195,20 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        public JsonResult GetListContractsProposalsById([FromBody] JObject requestParams)
+        {
+            string ContractNo = requestParams["ContractNo"].ToString();
+
+            List<Contratos> ContractsList = null;
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList = DBContracts.GetAllByContractProposalsNo(ContractNo);
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+            return Json(result);
+        }
+
+
         public JsonResult GetListContractsAllProposals([FromBody] JObject requestParams)
         {
             int AreaId = int.Parse(requestParams["AreaId"].ToString());

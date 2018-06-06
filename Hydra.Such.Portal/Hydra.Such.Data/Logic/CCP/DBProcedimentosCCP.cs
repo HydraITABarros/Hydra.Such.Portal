@@ -56,6 +56,49 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+        //NR20180529
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoRatificarCAToList()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ProcedimentosCcp.Where(p => p.CaRatificar == true).Where(p => p.TipoProcedimento == 1).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        //NR20180529
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoProcessosSuspensosToList()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ProcedimentosCcp.Where(p => p.CaSuspenso == true).Where(p => p.Arquivado == false).Where(p => p.TipoProcedimento == 1).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        //NR20180529
+        public static List<ProcedimentosCcp> GetAllProcedimentos_QuadroBordo_ToList()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ProcedimentosCcp.Where(p => p.TipoProcedimento == 1).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         public static List<ProcedimentosCcp> GetAllProcedimentosToList()
         {
             SuchDBContext _context = new SuchDBContext();
@@ -1255,6 +1298,80 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+        //NR20180529
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoRatificarCAToList()
+        {
+            List<ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoRatificarCAToList();
+            List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
+
+            if (ProcList == null)
+                return null;
+
+            try
+            {
+                foreach (var x in ProcList)
+                {
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
+                }
+
+                return ProcViewList;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        //NR20180529
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoProcessosSuspensosToList()
+        {
+            List<ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoProcessosSuspensosToList();
+            List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
+
+            if (ProcList == null)
+                return null;
+
+            try
+            {
+                foreach (var x in ProcList)
+                {
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
+                }
+
+                return ProcViewList;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        
+        public static List<ProcedimentoCCPView> GetAllProcedimentosByView_QuadroBordo_ToList()
+        {
+            List<ProcedimentosCcp> ProcList = GetAllProcedimentos_QuadroBordo_ToList();
+            List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
+
+            if (ProcList == null)
+                return null;
+
+            try
+            {
+                foreach (var x in ProcList)
+                {
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
+                }
+
+                return ProcViewList;
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        
+
         public static List<ProcedimentoCCPView> GetAllProcedimentosByViewToList()
         {
             List<ProcedimentosCcp> ProcList = GetAllProcedimentosToList();
@@ -1278,6 +1395,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+
         public static ProcedimentoCCPView GetProcedimentoCCPViewById(string id)
         {
             return CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(GetProcedimentoById(id));
