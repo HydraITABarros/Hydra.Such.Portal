@@ -2199,7 +2199,7 @@ namespace Hydra.Such.Portal.Controllers
                                         newAnexo.NomeAnexo = filename_result;
                                         newAnexo.Anexo = Anexo_Result;
                                         newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        newAnexo.DataHoraCriacao = DateTime.Now;
                                         DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
@@ -2636,7 +2636,7 @@ namespace Hydra.Such.Portal.Controllers
                                         newAnexo.NomeAnexo = filename_result;
                                         newAnexo.Anexo = Anexo_Result;
                                         newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        newAnexo.DataHoraCriacao = DateTime.Now;
                                         DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
@@ -3971,7 +3971,7 @@ namespace Hydra.Such.Portal.Controllers
                                         newAnexo.NomeAnexo = filename_result;
                                         newAnexo.Anexo = Anexo_Result;
                                         newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        newAnexo.DataHoraCriacao = DateTime.Now;
                                         DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
