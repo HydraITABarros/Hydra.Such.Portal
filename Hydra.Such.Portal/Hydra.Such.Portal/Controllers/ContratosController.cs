@@ -855,6 +855,38 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedContract);
         }
+
+        [HttpPost]
+        public JsonResult RemoveFromHistoric([FromBody] ContractViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (data.ContractNo != null)
+                    {
+                        //Contratos cContract = DBContracts.ParseToDB(data);
+                        Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+
+
+                        if (ContratoDB != null)
+                        {
+                            ContratoDB.Historico = false;
+                            ContratoDB.Arquivado = false;
+                            ContratoDB = DBContracts.Update(ContratoDB);
+                        }
+                        data.eReasonCode = 1;
+                        data.eMessage = "Contrato atualizado com sucesso.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+            }
+            return Json(data);
+        }
         #endregion
 
         #region Oportunidades

@@ -1779,28 +1779,37 @@
                     });
                 },
                 _archive: function () {
+                    debugger;
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende arquivar o contrato " + this.data.contractNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                    var currentTime = new Date();
+                    var date = new Date(this.data.dueDate);
+
+                    if ( date < currentTime || date == "Invalid Date") {
+                        this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
+                    }
+                    else {
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende arquivar o contrato " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.url = "/Contratos/ArchiveContract";
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
                             }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.url = "/Contratos/ArchiveContract";
-                                ajax_request.body = JSON.stringify(_dataContract);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //Responses Processors
@@ -1836,7 +1845,7 @@
                         this._permissions.update = false;
                     }
 
-
+                    debugger;
                     if (data.detail.status === 200) {
 
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
@@ -1867,8 +1876,15 @@
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             this._openToast(this.data.eMessage);
                         }
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.");
+                        else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
+                            if (this.data.eReasonCode == 1) {
+                                this._openToast("Enviado para Histórico com sucesso.");
+                                location.reload();
+                            }
+                        }
+                        else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
                     }
                 },
                 _createResponseProcessor: function () {
@@ -2290,26 +2306,35 @@
                     debugger;
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende enviar para histórico o contrato " + this.data.contractNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                    var currentTime = new Date();
+                    var date = new Date(this.data.dueDate);
+
+                    if (date < currentTime || date == "Invalid Date") {
+                        this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
+                    }
+                    else {
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende enviar para histórico o contrato " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.url = "/Contratos/SendContractToHistory";
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
                             }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.url = "/Contratos/SendContractToHistory";
-                                ajax_request.body = JSON.stringify(_dataContract);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
+                        });
+                    }
+                    
                 },
 
                 _validateUpdatePricesDlgInput: function () {
