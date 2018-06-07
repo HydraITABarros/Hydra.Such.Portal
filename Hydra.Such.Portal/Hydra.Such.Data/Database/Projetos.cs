@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.Database
             LinhasRequisiçõesSimplificadas = new HashSet<LinhasRequisiçõesSimplificadas>();
             MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
             ProjetosFaturação = new HashSet<ProjetosFaturação>();
+            PréMovimentosProjeto = new HashSet<PréMovimentosProjeto>();
             PréRequisição = new HashSet<PréRequisição>();
             Requisição = new HashSet<Requisição>();
             RequisiçõesSimplificadas = new HashSet<RequisiçõesSimplificadas>();
@@ -75,6 +76,7 @@ namespace Hydra.Such.Data.Database
         public ICollection<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }
         public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
         public ICollection<ProjetosFaturação> ProjetosFaturação { get; set; }
+        public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
         public ICollection<PréRequisição> PréRequisição { get; set; }
         public ICollection<Requisição> Requisição { get; set; }
         public ICollection<RequisiçõesSimplificadas> RequisiçõesSimplificadas { get; set; }

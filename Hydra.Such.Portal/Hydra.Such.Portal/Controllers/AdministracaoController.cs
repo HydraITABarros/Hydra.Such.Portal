@@ -1976,23 +1976,23 @@ namespace Hydra.Such.Portal.Controllers
             //TIPO = 2 » ERRO
             List<AnexosErrosViewModel> result = DBAnexosErros.GetByOrigemAndCodigo(3, "").Select(x => new AnexosErrosViewModel()
             {
-                ID = x.ID,
-                CodeTexto = x.ID.ToString(),
-                Origem = x.Origem,
+                ID = x.Id,
+                CodeTexto = x.Id.ToString(),
+                Origem = (int)x.Origem,
                 OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
-                Tipo = x.Tipo,
+                Tipo = (int)x.Tipo,
                 TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
                 Codigo = x.Codigo,
                 NomeAnexo = x.NomeAnexo,
                 Anexo = x.Anexo,
                 CriadoPor = x.CriadoPor,
                 CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
-                DataHora_Criacao = x.DataHora_Criacao,
-                DataHora_CriacaoTexto = x.DataHora_Criacao == null ? "" : x.DataHora_Criacao.Value.ToString("yyyy-MM-dd"),
+                DataHora_Criacao = x.DataHoraCriacao,
+                DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
                 AlteradoPor = x.AlteradoPor,
                 AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
-                DataHora_Alteracao = x.DataHora_Alteracao,
-                DataHora_AlteracaoTexto = x.DataHora_Alteracao == null ? "" : x.DataHora_Alteracao.Value.ToString("yyyy-MM-dd")
+                DataHora_Alteracao = x.DataHoraAlteracao,
+                DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
             }).ToList();
 
             return Json(result);
@@ -2189,18 +2189,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                    AnexosErros newAnexo = new AnexosErros();
-                                    newAnexo.Origem = 3; //Preco Venda Recurso FH
-                                    if (global_result)
-                                        newAnexo.Tipo = 1; //SUCESSO
-                                    else
-                                        newAnexo.Tipo = 2; //INSUCESSO
-                                    newAnexo.Codigo = "";
-                                    newAnexo.NomeAnexo = filename_result;
-                                    newAnexo.Anexo = Anexo_Result;
-                                    newAnexo.CriadoPor = User.Identity.Name;
-                                    newAnexo.DataHora_Criacao = DateTime.Now;
-                                    DBAnexosErros.Create(newAnexo);
+                                        AnexosErros newAnexo = new AnexosErros();
+                                        newAnexo.Origem = 3; //Preco Venda Recurso FH
+                                        if (global_result)
+                                            newAnexo.Tipo = 1; //SUCESSO
+                                        else
+                                            newAnexo.Tipo = 2; //INSUCESSO
+                                        newAnexo.Codigo = "";
+                                        newAnexo.NomeAnexo = filename_result;
+                                        newAnexo.Anexo = Anexo_Result;
+                                        newAnexo.CriadoPor = User.Identity.Name;
+                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
@@ -2396,23 +2396,23 @@ namespace Hydra.Such.Portal.Controllers
             //TIPO = 2 » ERRO
             List<AnexosErrosViewModel> result = DBAnexosErros.GetByOrigemAndCodigo(2, "").Select(x => new AnexosErrosViewModel()
             {
-                ID = x.ID,
-                CodeTexto = x.ID.ToString(),
-                Origem = x.Origem,
+                ID = x.Id,
+                CodeTexto = x.Id.ToString(),
+                Origem = (int)x.Origem,
                 OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
-                Tipo = x.Tipo,
+                Tipo = (int)x.Tipo,
                 TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
                 Codigo = x.Codigo,
                 NomeAnexo = x.NomeAnexo,
                 Anexo = x.Anexo,
                 CriadoPor = x.CriadoPor,
                 CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
-                DataHora_Criacao = x.DataHora_Criacao,
-                DataHora_CriacaoTexto = x.DataHora_Criacao == null ? "" : x.DataHora_Criacao.Value.ToString("yyyy-MM-dd"),
+                DataHora_Criacao = x.DataHoraCriacao,
+                DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
                 AlteradoPor = x.AlteradoPor,
                 AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
-                DataHora_Alteracao = x.DataHora_Alteracao,
-                DataHora_AlteracaoTexto = x.DataHora_Alteracao == null ? "" : x.DataHora_Alteracao.Value.ToString("yyyy-MM-dd")
+                DataHora_Alteracao = x.DataHoraAlteracao,
+                DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
             }).ToList();
 
             return Json(result);
@@ -2626,18 +2626,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                    AnexosErros newAnexo = new AnexosErros();
-                                    newAnexo.Origem = 2; //RH RECURSOS FH
-                                    if (global_result)
-                                        newAnexo.Tipo = 1; //SUCESSO
-                                    else
-                                        newAnexo.Tipo = 2; //INSUCESSO
-                                    newAnexo.Codigo = "";
-                                    newAnexo.NomeAnexo = filename_result;
-                                    newAnexo.Anexo = Anexo_Result;
-                                    newAnexo.CriadoPor = User.Identity.Name;
-                                    newAnexo.DataHora_Criacao = DateTime.Now;
-                                    DBAnexosErros.Create(newAnexo);
+                                        AnexosErros newAnexo = new AnexosErros();
+                                        newAnexo.Origem = 2; //RH RECURSOS FH
+                                        if (global_result)
+                                            newAnexo.Tipo = 1; //SUCESSO
+                                        else
+                                            newAnexo.Tipo = 2; //INSUCESSO
+                                        newAnexo.Codigo = "";
+                                        newAnexo.NomeAnexo = filename_result;
+                                        newAnexo.Anexo = Anexo_Result;
+                                        newAnexo.CriadoPor = User.Identity.Name;
+                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
@@ -3490,23 +3490,23 @@ namespace Hydra.Such.Portal.Controllers
                 //TIPO = 2 » ERRO
                 result.AnexosErros = DBAnexosErros.GetByOrigemAndCodigo(1, data.NoProcedimento).Select(x => new AnexosErrosViewModel()
                 {
-                    ID = x.ID,
-                    CodeTexto = x.ID.ToString(),
-                    Origem = x.Origem,
+                    ID = x.Id,
+                    CodeTexto = x.Id.ToString(),
+                    Origem = (int)x.Origem,
                     OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
-                    Tipo = x.Tipo,
+                    Tipo = (int)x.Tipo,
                     TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
                     Codigo = x.Codigo,
                     NomeAnexo = x.NomeAnexo,
                     Anexo = x.Anexo,
                     CriadoPor = x.CriadoPor,
                     CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
-                    DataHora_Criacao = x.DataHora_Criacao,
-                    DataHora_CriacaoTexto = x.DataHora_Criacao == null ? "" : x.DataHora_Criacao.Value.ToString("yyyy-MM-dd"),
+                    DataHora_Criacao = x.DataHoraCriacao,
+                    DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
                     AlteradoPor = x.AlteradoPor,
                     AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
-                    DataHora_Alteracao = x.DataHora_Alteracao,
-                    DataHora_AlteracaoTexto = x.DataHora_Alteracao == null ? "" : x.DataHora_Alteracao.Value.ToString("yyyy-MM-dd")
+                    DataHora_Alteracao = x.DataHoraAlteracao,
+                    DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
                 }).ToList();
             }
 
@@ -3961,18 +3961,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                    AnexosErros newAnexo = new AnexosErros();
-                                    newAnexo.Origem = 1; //ACORDO DE PREÇOS
-                                    if (global_result)
-                                        newAnexo.Tipo = 1; //SUCESSO
-                                    else
-                                        newAnexo.Tipo = 2; //INSUCESSO
-                                    newAnexo.Codigo = FormularioNoProcedimento;
-                                    newAnexo.NomeAnexo = filename_result;
-                                    newAnexo.Anexo = Anexo_Result;
-                                    newAnexo.CriadoPor = User.Identity.Name;
-                                    newAnexo.DataHora_Criacao = DateTime.Now;
-                                    DBAnexosErros.Create(newAnexo);
+                                        AnexosErros newAnexo = new AnexosErros();
+                                        newAnexo.Origem = 1; //ACORDO DE PREÇOS
+                                        if (global_result)
+                                            newAnexo.Tipo = 1; //SUCESSO
+                                        else
+                                            newAnexo.Tipo = 2; //INSUCESSO
+                                        newAnexo.Codigo = FormularioNoProcedimento;
+                                        newAnexo.NomeAnexo = filename_result;
+                                        newAnexo.Anexo = Anexo_Result;
+                                        newAnexo.CriadoPor = User.Identity.Name;
+                                        newAnexo.DataHora_Criacao = DateTime.Now;
+                                        DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
