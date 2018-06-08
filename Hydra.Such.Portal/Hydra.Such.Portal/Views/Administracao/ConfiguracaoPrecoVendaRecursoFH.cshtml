@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Configuração Preço Venda Recursos Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -33,6 +32,11 @@
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 
@@ -84,6 +88,15 @@
                    auto
                    handle-as="json"
                    id="ajax_GetAll"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/GetPrecoVendaRecursoFH_AnexosErros"
+                   last-response="{{anexosErros}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="ajax_GetAll_AnexosErros"
                    content-type="application/json">
         </iron-ajax>
 
@@ -139,6 +152,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/DeleteAnexosErros"
+                   last-response="{{AnexosErrosDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteAnexosErros_ajax"
+                   on-response="_deleteFileAnexosErrosResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
@@ -156,10 +177,6 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-
-                        @*<div class="col-sm-1">
-                                <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" disabled="true" maxlength="10"></vaadin-text-field>
-                            </div>*@
 
                         <div class="col-sm-2">
                             <vaadin-combo-box items="[[LCodeTipoTrabalho]]" id="codTipoTrabalho" item-value-path="id" item-label-path="value" label="Código - Tipo Trabalho" value="{{codTipoTrabalho}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
@@ -189,13 +206,92 @@
                             <vaadin-date-picker id="endingDate" value="{{endingDate}}" label="Data Fim" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-date-picker>
                         </div>
 
-                        @*<div class="col-sm-1">
-                                <vaadin-text-field id="familiaRecurso" value="{{familiaRecurso}}" label="Fam Recurso" disabled="true" maxlength="10"></vaadin-text-field>
-                            </div>*@
-
                         <div class="col-sm-1 alignPoga">
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
+
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <vaadin-upload id="UploadRequest"
+                                               target="/Administracao/FileUpload_PrecoVendaRecursoFH"
+                                               method="POST"
+                                               headers="{'Accept': 'application/json'}"
+                                               max-files="1"
+                                               accept=".xlsx"
+                                               timeout=30000>
+                                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                                </vaadin-upload>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="/Administracao/DownloadRHRecursosFHTemplate/FH_PrecoVendaRecursos_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshgridFHPrecoVendaRecursos" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ anexosErros }}" class="editGrid" multi-sort="true">
+                                    <vaadin-grid-column hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="codeTexto" style="text-align:center;">Identificador</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="codeTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="tipoTexto" style="text-align:center;">Resultado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="tipoTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.tipoTexto}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeAnexo" style="text-align:center;">Anexo</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeAnexo" />
+                                        </template>
+                                        <template>
+                                            <a href="/Administracao/DownloadFileAnexosErros/{{item.codeTexto}}" target="_blank">{{item.nomeAnexo}}</a>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="criadoPorNome" style="text-align:center;">Criador</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="criadoPorNome" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.criadoPorNome}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataHora_CriacaoTexto" style="text-align:center;">Data Criação</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataHora_CriacaoTexto" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field id="tabAnexosErrosdataHora_CriacaoTexto" value="{{item.dataHora_CriacaoTexto}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -212,15 +308,6 @@
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.descricao}}" disabled="true"></vaadin-text-field>
-                    @*<vaadin-combo-box items="[[LResourceCode]]" item-value-path="id" item-label-path="value" value="{{item.code}}" disabled>
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
@@ -231,15 +318,6 @@
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.codTipoTrabalhoTexto}}" disabled="true"></vaadin-text-field>
-                    @*<vaadin-combo-box items="[[LCodeTipoTrabalho]]" item-value-path="id" item-label-path="value" value="{{item.codTipoTrabalho}}" disabled>
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
@@ -269,72 +347,19 @@
                     <vaadin-grid-filter path="startingDate" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.startingDate}}" disabled="true"></vaadin-text-field>*@
                     <vaadin-date-picker value="{{item.startingDateTexto}}" disabled></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable>
-                @*width="200px">*@
                 <template class="header">
                     <vaadin-grid-sorter path="endingDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="endingDate" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.endingDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
                     <vaadin-date-picker value="{{item.endingDateTexto}}" disabled="true"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
-
-            @*<vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="familiaRecurso">Família recurso</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="familiaRecurso" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.familiaRecurso}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
-
-            @*<vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="criadoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraCriacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="alteradoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
 
             <vaadin-grid-column>
                 <template class="header">
@@ -361,194 +386,278 @@
     <script>
         var CreateValue = true, UpdateValue = true, DeleteValue = true;
 
+        /**/
         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            /**/
             CreateValue = false;
         }
 
+        /**/
         if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            /**/
             UpdateValue = false;
         }
 
+        /**/
         if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            /**/
             DeleteValue = false;
         }
 
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
+            upload.addEventListener('file-reject', function (event) {
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+                //window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
+
         document.addEventListener('WebComponentsReady',
-        function () {
-            Polymer({
-                is: 'x-group-cont-product',
-                properties: {
-                    _permissionsUpdate: {
-                        type: Boolean,
-                        value: UpdateValue
+            function () {
+                Polymer({
+                    is: 'x-group-cont-product',
+                    properties: {
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
+                        },
+
+                        _permissionsCreate: {
+                            type: Boolean,
+                            value: CreateValue
+                        },
+
+                        _permissionsDelete: {
+                            type: Boolean,
+                            value: DeleteValue
+                        },
+
+                        ddgroupcontprod: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        }
                     },
 
-                    _permissionsCreate: {
-                        type: Boolean,
-                        value: CreateValue
-                    },
-
-                    _permissionsDelete: {
-                        type: Boolean,
-                        value: DeleteValue
-                    },
-
-                    ddgroupcontprod: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    }
-                },
-
-                ready: function () {
-                    this.$.ajax_GetAll.generateRequest();
-                },
-
-                openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
-                },
-
-                _openToastError: function (message) {
-                    this.$.ToastError.text = message;
-                    this.$.ToastError.open();
-                },
-
-                _validateData: function (container) {
-
-                    var polymerDom = Polymer.dom(this.$[container]);
-                    var errors = 0;
-                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                    var formFields = polymerDom.querySelectorAll(formSelector);
-
-                    formFields.forEach(function (element) {
-                        if (!element.validate()) errors++;
-                    });
-
-                    if (errors > 0) {
-                        this._openToastError("Verifique os dados inseridos.");
-                        return false;
-                    }
-
-                    return true;
-                },
-
-                _create: function () {
-                    debugger;
-                    if (this._validateData("configuracaoPrecoVendaRecurso")) {
-
-                        this.$.ajax_create.body = JSON.stringify(
-                            {
-                                code: this.$.code.value,
-                                codTipoTrabalho: this.$.codTipoTrabalho.value,
-                                precoUnitario: parseFloat(this.$.precoUnitario.value),
-                                custoUnitario: parseFloat(this.$.custoUnitario.value),
-                                startingDate: this.$.startingDate.value,
-                                endingDate: this.$.endingDate.value,
-                            }
-                        );
-                        this.$.ajax_create.generateRequest();
-                        this.$.gridPrecoVendaRecursoFH.clearCache();
-                    }
-                },
-
-                _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
-                },
-
-                _delete: function (e) {
-
-                    this.$.ajax_delete.body = JSON.stringify(e.model.item);
-                    this.$.ajax_delete.generateRequest();
-                    this.result = this.result.filter(function (item) {
-                        return item != e.model.item;
-                    });
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
-                },
-
-                _cancel: function () {
-                    this.$.ajax_GetAll.generateRequest();
-                    this.$.gridPrecoVendaRecursoFH.clearCache();
-                },
-
-                _recursoChange: function (e) {
-                    debugger;
-                    this.$.page_recursoChange_ajax.body = JSON.stringify({
-                        code: this.$.code.value
-                    });
-                    this.$.page_recursoChange_ajax.generateRequest();
-                    //this.$.tabAjuda.clearCache();
-                },
-
-
-
-                _updateResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
+                    ready: function () {
                         this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
-                    }
-                    else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
-                    }
-                },
+                        this.$.ajax_GetAll_AnexosErros.generateRequest();
+                    },
 
-                _createResponse: function (e) {
-                    debugger;
-                    var self = this;
+                    openToast: function (message) {
+                        this.$.ToastMessage.text = message;
+                        this.$.ToastMessage.open();
+                    },
 
-                    if (this.createResult == 0) {
-                        this.openToast("Já existe este tipo de Registo na Tabela.");
-                    }
-                    else {
+                    _openToastError: function (message) {
+                        this.$.ToastError.text = message;
+                        this.$.ToastError.open();
+                    },
+
+                    _validateData: function (container) {
+
+                        var polymerDom = Polymer.dom(this.$[container]);
+                        var errors = 0;
+                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                        var formFields = polymerDom.querySelectorAll(formSelector);
+
+                        formFields.forEach(function (element) {
+                            if (!element.validate()) errors++;
+                        });
+
+                        if (errors > 0) {
+                            this._openToastError("Verifique os dados inseridos.");
+                            return false;
+                        }
+
+                        return true;
+                    },
+
+                    _create: function () {
+                        //debugger;
+                        if (this._validateData("configuracaoPrecoVendaRecurso")) {
+
+                            this.$.ajax_create.body = JSON.stringify(
+                                {
+                                    code: this.$.code.value,
+                                    codTipoTrabalho: this.$.codTipoTrabalho.value,
+                                    precoUnitario: parseFloat(this.$.precoUnitario.value),
+                                    custoUnitario: parseFloat(this.$.custoUnitario.value),
+                                    startingDate: this.$.startingDate.value,
+                                    endingDate: this.$.endingDate.value,
+                                }
+                            );
+                            this.$.ajax_create.generateRequest();
+                            this.$.gridPrecoVendaRecursoFH.clearCache();
+                        }
+                    },
+
+                    _update: function () {
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridPrecoVendaRecursoFH.clearCache();
+                    },
+
+                    _delete: function (e) {
+
+                        this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                        this.$.ajax_delete.generateRequest();
+                        this.result = this.result.filter(function (item) {
+                            return item != e.model.item;
+                        });
+                        this.$.gridPrecoVendaRecursoFH.clearCache();
+                    },
+
+                    _cancel: function () {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.$.gridPrecoVendaRecursoFH.clearCache();
+                    },
+
+                    _recursoChange: function (e) {
+                        //debugger;
+                        this.$.page_recursoChange_ajax.body = JSON.stringify({
+                            code: this.$.code.value
+                        });
+                        this.$.page_recursoChange_ajax.generateRequest();
+                        //this.$.tabAjuda.clearCache();
+                    },
+
+
+
+                    _refreshgridFHPrecoVendaRecursos: function (e) {
+                        //debugger;
+                        this.$.ajax_GetAll.generateRequest();
+                        this.$.ajax_GetAll_AnexosErros.generateRequest();
+                        this.$.tabAnexosErros.clearCache();
+                        this.$.gridPrecoVendaRecursoFH.clearCache();
+                    },
+
+                    _updateResponse: function (e) {
+                        var self = this;
                         if (e.detail.status === 200) {
-
-                            this.$.code.value = "";
-                            this.$.codTipoTrabalho.value = "";
-                            this.$.precoUnitario.value = "";
-                            this.$.custoUnitario.value = "";
-                            this.$.startingDate.value = "";
-                            this.$.endingDate.value = "";
-
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
                         }
                         else {
                             this.openToast("Occorreu um erro ao atualizar a Tabela.");
                         }
-                    }
-                },
+                    },
 
-                _deleteResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
-                    }
-                    else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
-                    }
-                },
+                    _createResponse: function (e) {
+                        //debugger;
+                        var self = this;
 
-                _recursoChangeResponse: function (e) {
-                    debugger;;
-                    if (this.recursoChange != null) {
-                        this.$.descricao.value = this.recursoChange.name;
-                        this.$.familiaRecurso.value = this.recursoChange.resourceGroup;
-                    }
-                    else {
-                        this._showErrorMessage('Ocorreu um erro ao pesquissar o Recurso.');
-                    }
-                },
+                        if (this.createResult == 0) {
+                            this.openToast("Já existe este tipo de Registo na Tabela.");
+                        }
+                        else {
+                            if (e.detail.status === 200) {
+
+                                this.$.code.value = "";
+                                this.$.codTipoTrabalho.value = "";
+                                this.$.precoUnitario.value = "";
+                                this.$.custoUnitario.value = "";
+                                this.$.startingDate.value = "";
+                                this.$.endingDate.value = "";
+
+                                this.$.ajax_GetAll.generateRequest();
+                                this.openToast("Tabela atualizada.");
+                            }
+                            else {
+                                this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                            }
+                        }
+                    },
+
+                    _deleteResponse: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    },
+
+                    _recursoChangeResponse: function (e) {
+                        //debugger;;
+                        if (this.recursoChange != null) {
+                            this.$.descricao.value = this.recursoChange.name;
+                            this.$.familiaRecurso.value = this.recursoChange.resourceGroup;
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao pesquissar o Recurso.');
+                        }
+                    },
 
 
-                _goBack: function (e) {
-                    //window.location = "../";
-                    window.history.back();
-                }
+                    _deleteFileAnexosErros: function (e) {
+                        //debugger;
+                        var code = e.model.item.codeTexto;
+
+                        var ajax_request = this.$.page_deleteAnexosErros_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Anexo?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAnexosErros) {
+                                if (deleteAnexosErros) {
+                                    ajax_request.body = JSON.stringify({
+                                        codeTexto: code
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabAnexosErros.clearCache();
+                                }
+                            }
+                        });
+                    },
+
+                    _deleteFileAnexosErrosResponse: function (e) {
+                        //debugger;
+                        var self = this;
+
+                        setTimeout(function () {
+                            bootbox.hideAll();
+                        }, 0);
+
+                        if (this.AnexosErrosDeleted == 0) {
+                            this.$.ajax_GetAll.generateRequest();
+                            this.$.ajax_GetAll_AnexosErros.generateRequest();
+
+                            this._showMessage('O Anexo foi removido com sucesso.');
+                        } else {
+                            if (this.AnexosErrosDeleted == 1) {
+                                this._showErrorMessage('Ocorreu um erro ao eliminar o Anexo.');
+                            } else {
+                                if (this.AnexosErrosDeleted == 99) {
+                                    this._showErrorMessage('Ocorreu um erro!!!');
+                                }
+                            }
+                        };
+                    },
+
+                    _goBack: function (e) {
+                        //window.location = "../";
+                        window.history.back();
+                    }
+                });
             });
-        });
     </script>
 </dom-module>

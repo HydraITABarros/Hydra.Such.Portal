@@ -2090,6 +2090,16 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "Acordo de Preços"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "FH Empregado Recursos"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "FH Preço Venda Recursos"
             }
         };
 
