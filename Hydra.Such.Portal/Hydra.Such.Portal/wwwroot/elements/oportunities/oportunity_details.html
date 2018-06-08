@@ -28,7 +28,7 @@
 
 <dom-module id="x-oportunitydetails">
     <template>
-        
+
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -165,8 +165,8 @@
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        
-          <!-- PROJECT CRUDS -->
+
+        <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
                    last-response="{{data}}"
                    method="post"
@@ -209,31 +209,27 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <template is="dom-if" if="{{ _permissions.update }}">
-            <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Proposta</paper-button>
-                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
-            </div>
-        </template>
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-lg-12">
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>
-                <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-            </div>
+        
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
+            <paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
+                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+            </template>
         </div>
-        <template is="dom-if" if="{{ _showAreas }}">
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
-                        <template>
-                            <b>[[item.value]]</b>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
+
+
+        <!--<div class="row" style="display: {{ _showContractLines }};">
+            <div class="col-lg-12">-->
+                <!--<template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>-->
+                <!--<paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
-        </template>
+        </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -812,10 +808,10 @@
                                                         </tr>
                                                     </table>
                                                     <!--<paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.id]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>-->
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.id]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1354,10 +1350,6 @@
                         notify: true,
                         value: ""
                     },
-                    _showAreas: {
-                        type: Boolean,
-                        value: false
-                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1368,8 +1360,6 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
-
-                    this._showAreas = this._areaid == 4;
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1525,7 +1515,7 @@
                     var self = this;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        this.data.area = this._areaid;
+                        //this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
@@ -1698,7 +1688,7 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openContractArchive: function () {
-                    window.location.href = "../Contratos?archived=1&contractno=" + this.data.contractNo;
+                    window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
                 },
 
 

@@ -30,6 +30,8 @@ using OfficeOpenXml;
 using Microsoft.AspNetCore.Http;
 using System.Drawing;
 using System.Globalization;
+using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -123,7 +125,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    //Area = x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -168,7 +170,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserAccesses.Create(new AcessosUtilizador()
                 {
                     IdUtilizador = ObjectCreated.IdUtilizador,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -223,8 +225,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Get items to delete (for changed keys delete old, create new)
                 var userAccessesToDelete = userAccesses
                     .Where(x => !data.UserAccesses
-                        .Any(y => y.Area == x.Área &&
-                            y.Feature == x.Funcionalidade))
+                        .Any(y => y.Feature == x.Funcionalidade))
                     .ToList();
                 //Delete 
                 if (userAccessesToDelete.Count > 0)
@@ -239,8 +240,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Create (for changed keys) or Update existing
                 data.UserAccesses.ForEach(userAccess =>
                     {
-                        var updatedUA = userAccesses.SingleOrDefault(x => x.Área == userAccess.Area &&
-                            x.Funcionalidade == userAccess.Feature);
+                        var updatedUA = userAccesses.SingleOrDefault(x => x.Funcionalidade == userAccess.Feature);
 
                         if (updatedUA == null)
                         {
@@ -248,7 +248,7 @@ namespace Hydra.Such.Portal.Controllers
                             updatedUA = new AcessosUtilizador()
                             {
                                 IdUtilizador = data.IdUser,
-                                Área = userAccess.Area,
+                                //Área = userAccess.Area,
                                 Funcionalidade = userAccess.Feature,
                                 UtilizadorCriação = User.Identity.Name,
                                 DataHoraCriação = DateTime.Now
@@ -453,7 +453,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 AcessosUtilizador userAccess = new AcessosUtilizador();
                 userAccess.IdUtilizador = data.IdUser;
-                userAccess.Área = data.Area;
+                //userAccess.Área = data.Area;
                 userAccess.Funcionalidade = data.Feature;
                 userAccess.Eliminação = data.Delete;
                 userAccess.Inserção = data.Create;
@@ -565,7 +565,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProfileModelAccesses = DBAccessProfiles.GetByProfileModelId(data.Id).Select(x => new AccessProfileModelView()
                 {
                     IdProfile = x.IdPerfil,
-                    Area = x.Área,
+                    //Area = x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -593,7 +593,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBAccessProfiles.Create(new AcessosPerfil()
                 {
                     IdPerfil = ObjectCreated.Id,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -621,7 +621,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBAccessProfiles.Create(new AcessosPerfil()
                 {
                     IdPerfil = data.Id,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -2189,18 +2189,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                        AnexosErros newAnexo = new AnexosErros();
-                                        newAnexo.Origem = 3; //Preco Venda Recurso FH
-                                        if (global_result)
-                                            newAnexo.Tipo = 1; //SUCESSO
-                                        else
-                                            newAnexo.Tipo = 2; //INSUCESSO
-                                        newAnexo.Codigo = "";
-                                        newAnexo.NomeAnexo = filename_result;
-                                        newAnexo.Anexo = Anexo_Result;
-                                        newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHoraCriacao = DateTime.Now;
-                                        DBAnexosErros.Create(newAnexo);
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 3; //Preco Venda Recurso FH
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = "";
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
@@ -2385,7 +2385,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetRHRecursosFH()
         {
             List<RHRecursosViewModel> result = DBRHRecursosFH.ParseListToViewModel(DBRHRecursosFH.GetAll());
-
             return Json(result);
         }
 
@@ -2626,18 +2625,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                        AnexosErros newAnexo = new AnexosErros();
-                                        newAnexo.Origem = 2; //RH RECURSOS FH
-                                        if (global_result)
-                                            newAnexo.Tipo = 1; //SUCESSO
-                                        else
-                                            newAnexo.Tipo = 2; //INSUCESSO
-                                        newAnexo.Codigo = "";
-                                        newAnexo.NomeAnexo = filename_result;
-                                        newAnexo.Anexo = Anexo_Result;
-                                        newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHoraCriacao = DateTime.Now;
-                                        DBAnexosErros.Create(newAnexo);
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 2; //RH RECURSOS FH
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = "";
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
@@ -3140,7 +3139,7 @@ namespace Hydra.Such.Portal.Controllers
                     ValorAprovação = x.ApprovalValue,
                     GrupoAprovação = x.ApprovalGroup,
                     UtilizadorAprovação = x.ApprovalUser,
-                    Área = x.Area,
+                    //Área = x.Area,
                     CódigoÁreaFuncional = x.FunctionalArea,
                     CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                     CódigoRegião = x.Region,
@@ -3433,7 +3432,7 @@ namespace Hydra.Such.Portal.Controllers
             AcordoPrecos AP = DBAcordoPrecos.GetById(data.NoProcedimento);
 
             AcordoPrecosModelView result = new AcordoPrecosModelView();
-
+     
             if (AP != null)
             {
                 result.NoProcedimento = AP.NoProcedimento;
@@ -3962,18 +3961,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                     byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
 
-                                        AnexosErros newAnexo = new AnexosErros();
-                                        newAnexo.Origem = 1; //ACORDO DE PREÇOS
-                                        if (global_result)
-                                            newAnexo.Tipo = 1; //SUCESSO
-                                        else
-                                            newAnexo.Tipo = 2; //INSUCESSO
-                                        newAnexo.Codigo = FormularioNoProcedimento;
-                                        newAnexo.NomeAnexo = filename_result;
-                                        newAnexo.Anexo = Anexo_Result;
-                                        newAnexo.CriadoPor = User.Identity.Name;
-                                        newAnexo.DataHoraCriacao = DateTime.Now;
-                                        DBAnexosErros.Create(newAnexo);
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 1; //ACORDO DE PREÇOS
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = FormularioNoProcedimento;
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
 
                                     excel.Dispose();
                                     excel_result.Dispose();
@@ -4119,7 +4118,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
         }
-
+        
 
         [HttpPost]
         public JsonResult DeleteAnexosErros([FromBody] AnexosErrosViewModel AnexoErro)
@@ -4140,61 +4139,267 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-
+        
         #endregion Acordo de Preços
 
 
         #endregion
 
+        
+
+        #region Projetos
+
+
+
+        #endregion
+
+        #region Classificação Fichas Técnicas
+
+        public IActionResult ClassificacaoFichasTecnicas(string id, string option)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                if (option == "Grupos")
+                {
+                    @ViewBag.Option = "Grupos";
+                    @ViewBag.Groups = "hidden";
+                }
+                else
+                {
+                    @ViewBag.Option = "linhas";
+                    @ViewBag.Groups = "";
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        //O : Lines of Groups
+        //1 : Group
+        public JsonResult GetClassificationFilesTechniques([FromBody] string option)
+        {
+            List<ClassificationFilesTechniquesViewModel> result;
+            if (option == "Grupos")
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(1));
+            else
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(0));
+
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CreateClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            data.CreateUser = User.Identity.Name;
+            if (DBClassificationFilesTechniques.Create(DBClassificationFilesTechniques.ParseToDatabase(data)) != null)
+                return Json(data);
+            else
+                return null;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            //Delete lines of Groups
+            if (data.Type == 1)
+            {
+                if (DBClassificationFilesTechniques.GetTypeFiles(0).Exists(x => x.Grupo == data.Code))
+                {
+                    return Json(null);
+                }
+            }
+            // Delete Group
+            var result = DBClassificationFilesTechniques.Delete(DBClassificationFilesTechniques.ParseToDatabase(data));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Procedimento Confeção
+
+        public IActionResult ProcedimentoConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetConfectionProcedure()
+        {
+            List<ProceduresConfectionViewModel> result = ProceduresConfection.ParseToViewModel(ProceduresConfection.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = ProceduresConfection.Create(ProceduresConfection.ParseToDatabase(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            var result = ProceduresConfection.Delete(ProceduresConfection.ParseToDatabase(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfectionProcedure([FromBody] List<ProceduresConfectionViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                ProceduresConfection.Update(ProceduresConfection.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Acções Confeção
+
+        public IActionResult AccoesConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetActionsConfection()
+        {
+            List<ActionsConfectionViewModel> result = DBActionsConfection.ParseToViewModel(DBActionsConfection.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            DBActionsConfection.Create(DBActionsConfection.ParseToDb(data));
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+
+            if (ProceduresConfection.GetAllbyActionNo(data.Code).Count() == 0)
+            {
+                var result = DBActionsConfection.Delete(DBActionsConfection.ParseToDb(data));
+                return Json(result);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateActionsConfection([FromBody] List<ActionsConfectionViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                DBActionsConfection.Update(DBActionsConfection.ParseToDb(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
         public UserAccessesViewModel GetPermissions(string id)
         {
-            UserAccessesViewModel UPerm = new UserAccessesViewModel();
-            if (id == "Engenharia")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
-            }
-            if (id == "Ambiente")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
-            }
-            if (id == "Nutricao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
-            }
-            if (id == "Vendas")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
-            }
-            if (id == "Apoio")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
-            }
-            if (id == "PO")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
-            }
-            if (id == "NovasAreas")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
-            }
-            if (id == "Internacionalizacao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
-            }
-            if (id == "Juridico")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
-            }
-            if (id == "Compras")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
-            }
-            if (id == "Administracao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
-            }
+            return DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
+            //UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            //if (id == "Engenharia")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
+            //}
+            //if (id == "Ambiente")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
+            //}
+            //if (id == "Nutricao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
+            //}
+            //if (id == "Vendas")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
+            //}
+            //if (id == "Apoio")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
+            //}
+            //if (id == "PO")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
+            //}
+            //if (id == "NovasAreas")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
+            //}
+            //if (id == "Internacionalizacao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
+            //}
+            //if (id == "Juridico")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
+            //}
+            //if (id == "Compras")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
+            //}
+            //if (id == "Administracao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
+            //}
 
-            return UPerm;
+            //return UPerm;
         }
     }
 }

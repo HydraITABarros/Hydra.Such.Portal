@@ -14,7 +14,6 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <dom-module id="x-contractlist">
-
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -102,17 +101,17 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
+        <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
-                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
             </template>
             <template is="dom-if" if="{{ !_contractno }}">
-                <paper-button raised id="btnContractHistory" class="btnCreate" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
+                <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Histórico</paper-button>
             </template>
         </div>
-
+        
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -252,7 +251,7 @@
                     },
                     _contractno: {
                         type: String,
-                        value: ""
+                        value: false
                     },
                     _disabledCreate: {
                         type: Boolean,
@@ -269,20 +268,20 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/" + item.contractNo + "?version=" + item.versionNo;
+                        window.location.href = "Contratos/DetalhesContrato/" + item.contractNo + "?version=" + item.versionNo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato";
+                        window.location.href = "Contratos/DetalhesContrato";
                     }
                 },
                 ready: function () {
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 0 });
+                    
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
 

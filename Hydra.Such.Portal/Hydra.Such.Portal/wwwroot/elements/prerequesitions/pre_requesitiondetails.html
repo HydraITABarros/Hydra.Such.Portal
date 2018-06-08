@@ -1714,7 +1714,7 @@
                         if (this.deletedData.eReasonCode == 1) {
                             setTimeout(
                                 function () {
-                                    window.location.href = "../../Compras/PreRequisicoesLista";
+                                    window.location.reload();
                                 }, 2500);
                         } else if (this.deletedData.eReasonCode == 2) {
                             this._openToastError(this.deletedData.eMessage);
@@ -2108,7 +2108,7 @@
                 },
 
                 _pendingreq: function (e) {
-                    window.location.href = "RequisicoesPendentes/";
+                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
                 },
                _CleanPreRequesitionResponse: function(e) {
                     debugger;

@@ -3,381 +3,332 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home - eSuch</title>
-    <link rel="icon" href="~/images/favicon.ico">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <link rel="shortcut icon" sizes="196x196" href="~/Infinity/assets/images/logo1.png">
+    <title>e-SUCH</title>
 
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />*@
+    <link rel="stylesheet" href="~/css/main.css" />
+    @*<link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" asp-append-version="true" />*@
+
+    <link rel="stylesheet" href="~/Infinity/libs/bower/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Infinity/libs/bower/material-design-iconic-font/dist/css/material-design-iconic-font.css">
+    <!-- build:css ../assets/css/app.min.css -->
+    <link rel="stylesheet" href="~/Infinity/libs/bower/animate.css/animate.min.css">
+    <link rel="stylesheet" href="~/Infinity/libs/bower/fullcalendar/dist/fullcalendar.min.css">
+    <link rel="stylesheet" href="~/Infinity/libs/bower/perfect-scrollbar/css/perfect-scrollbar.css">
+    <link rel="stylesheet" href="~/Infinity/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="~/Infinity/assets/css/core.css">
+    <link rel="stylesheet" href="~/Infinity/assets/css/app.css">
+    <!-- endbuild -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800,900,300">
+    <script src="~/Infinity/libs/bower/breakpoints.js/dist/breakpoints.min.js"></script>
+    <script>
+        Breakpoints();
+    </script>
 
     <!-- POLYMER IMPORTS -->
     <link rel="import" href="/lib/polymer/polymer-element.html" />
     <link rel="import" href="/lib/iron-ajax/iron-ajax.html" />
 
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/main.css" />
-    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" asp-append-version="true" />
-
-
-
-    @*<environment exclude="Development">
-            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        </environment>*@
-
+    <style type="text/css">
+        .navbar-toolbar > li {
+            background-color: #FFF0 !important;
+        }
+    </style>
 </head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="nav-side-menu col-lg-2">
-                <div class="brand"><a href="/"><img src="~/images/suchlogo.jpg" alt="Such Logotipo" /></a></div>
-                <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+<body class="menubar-left menubar-unfold menubar-light theme-primary">
+    <!--============= start main area -->
+    <!-- APP NAVBAR ==========-->
+    <nav id="app-navbar" class="navbar navbar-inverse navbar-fixed-top primary">
 
-                <div class="menu-list">
-                    <ul id="menu-content" class="menu-content collapse out">
-                        <li data-toggle="Aprovações pendentes" class="active" id="approvalPendingShow">
-                            <center style="color:red;"><a href="/Approvals" id="pendingApprovalsLink"> Aprovações Pendentes</a></center>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Engenharia" class="collapsed active">
-                            <a href="#"> Engenharia <span class="arrow"></span></a>
+        <!-- navbar header -->
+        <div class="navbar-header">
+            <button type="button" id="menubar-toggle-btn" class="navbar-toggle visible-xs-inline-block navbar-toggle-left hamburger hamburger--collapse js-hamburger">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+            </button>
+            <button type="button" class="navbar-toggle navbar-toggle-right collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="zmdi zmdi-hc-lg zmdi-more"></span>
+            </button>
+            @*<button type="button" class="navbar-toggle navbar-toggle-right collapsed" data-toggle="collapse" data-target="#navbar-search" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="zmdi zmdi-hc-lg zmdi-search"></span>
+            </button>*@
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">
+                <img src="~/Infinity/assets/images/logo1.png" width="40px" height="30px" alt="">
+                </span>
 
-                            <ul class="sub-menu collapse" id="Engenharia">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Engenharia", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Engenharia", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Engenharia", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Engenharia", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Engenharia", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasEngenharia" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasEngenharia">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "Engenharia", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "Engenharia", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Engenharia", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Engenharia", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Engenharia", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
+                <span class="brand-name" style="color: black;">SUCH</span>
+            </a>
+        </div><!-- .navbar-header -->
 
-                        <li data-toggle="collapse" data-target="#Ambiente" class="collapsed active">
-                            <a href="#"> Ambiente <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Ambiente">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Ambiente", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Ambiente", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Ambiente", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Ambiente", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Ambiente", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Ambiente", new { area = "" }, null)</li>
-
-
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasAmbiente" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasAmbiente">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "Ambiente", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "Ambiente", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Ambiente", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "Ambiente", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Ambiente", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Ambiente", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-
-                        <li data-toggle="collapse" data-target="#Nutricao" class="collapsed active">
-                            <a href="#"> Nutricao <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Nutricao">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Mod. Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Req. Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Req. Simpli. para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
-                                <li>@Html.ActionLink("Hist. Req.  Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 2 }, null)</li>
-                                <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Unidade Armazem", "UnidadeArmazenamento", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasNutricao">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "Nutricao", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "Nutricao", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Nutricao", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "Nutricao", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Nutricao", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Fichas Tecnicas de Pratos", "FichasTecnicasPratos/Detalhes", "Nutricao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-
-                        <li data-toggle="collapse" data-target="#Vendas" class="collapsed active">
-                            <a href="#"> Vendas <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Vendas">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Vendas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Vendas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Vendas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Vendas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Vendas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Vendas", new { area = "" }, null)</li>
-
-                                <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                @*<li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas", new { area = "" }, null)</li>*@
-                                @*<li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Vendas", new { area = "" }, null)</li>*@
-                                <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Vendas", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Apoio" class="collapsed active">
-                            <a href="#"> Apoio <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Apoio">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Apoio", new { area = "" }, null)</li>
-                                @*<li>@Html.ActionLink("Requisições", "Resquisicoes", "Apoio", new { area = "" }, null)</li>*@
-                                @*<li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Apoio", new { area = "" }, null)</li>*@
-                                <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", new { area = "" }, null)</li>
-
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasApoio" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasApoio">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "Apoio", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "Apoio", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Apoio", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "Apoio", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Apoio", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Viaturas", "Viaturas", "Apoio", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Apoio", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#PO" class="collapsed active">
-                            <a href="#"> P&O <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="PO">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "PO", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "PO", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "PO", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "PO", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "PO", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "PO", new { area = "" }, null)</li>
-
-                                <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasPO" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasPO">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "PO", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "PO", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "PO", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "PO", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "PO", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "PO", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#NovasAreas" class="collapsed active">
-                            <a href="#"> Novas Áreas <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="NovasAreas">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "NovasAreas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "NovasAreas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "NovasAreas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "NovasAreas", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "NovasAreas", new { area = "" }, null)</li>
-
-                                <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasNovasAreas" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasNovasAreas">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "NovasAreas", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "NovasAreas", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "NovasAreas", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "NovasAreas", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "NovasAreas", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Internacionalizacoes" class="collapsed active">
-                            <a href="#"> Internacional <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Internacionalizacoes">
-                                <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Propostas", "Propostas", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Internacionalizacoes", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#FolhasDeHorasInternacionalizacoes" class="collapsed active">
-                                    <a href="#"> Folha de Horas <span class="arrow"></span></a>
-                                    <ul class="sub-menu collapse" id="FolhasDeHorasInternacionalizacoes">
-                                        <li>@Html.ActionLink("Nova / Criadas", "FolhaDeHoras", "Internacionalizacoes", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "Internacionalizacoes", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Internacionalizacoes", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "Internacionalizacoes", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Internacionalizacoes", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Juridico" class="collapsed active">
-                            <a href="#"> Jurídico <span class="arrow"></span></a>
-                        
-                            <ul class="sub-menu collapse" id="Juridico">
-                                @*
-                                <li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
-                                <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
-                                <li>@Html.ActionLink("Administração", "Administracao", "Juridico", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
-                            <a href="#"> Compras <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Compras">
-                                @*
-        <li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
-        <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-        <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
-                                @* zpgm.< Procedimentos CCP menu *@
-                                <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
-                                    <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
-                                    <ul>
-                                        <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Quadro de Bordo", "QuadroBordo", "ProcedimentosCcps", new { area = "" }, null)</li>
-
-                                    </ul>
-                                </li>
-                                @* zpgm.> *@
-                                <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesDetalhes", "Compras", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Modelos Requisição", "ModelosRequisicao", "Compras", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Requisições a Validar", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
-                                <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
-                                    <a href="#"> Gestão de Requisições <span class="arrow"></span></a>
-                                    <ul>
-                                        <li>@Html.ActionLink("Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
-                                        <li>@Html.ActionLink("Pontos de Situação", "GestaoRequisicoes/PontosSituacao", "Compras", new { area = "" }, null)</li>
-                                    </ul>
-                                </li>
-                                <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Administração", "Administracao", "Compras", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                        <li data-toggle="collapse" data-target="#Administracao" class="collapsed active">
-                            <a href="#"> Administração <span class="arrow"></span></a>
-
-                            <ul class="sub-menu collapse" id="Administracao">
-                                <li>@Html.ActionLink("Configurações", "Configuracoes", "Administracao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao", new { area = "" }, null)</li>
-                                <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Autorização Empregado", "ConfiguracaoAutorizacaoFHRH", "Administracao", new { area = "", id = "Administracao" })</li>
-                                <li>@Html.ActionLink("Config. FH Distância", "ConfiguracaoDistanciaFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Empregado Recursos", "ConfiguracaoRHRecursosFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Origem Destino", "ConfiguracaoOrigemDestinoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Config. Aprovações", "ConfiguracaoAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Grupo Aprovações", "GruposAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                <li>@Html.ActionLink("Acordo de Preços", "AcordoPrecos_List", "Administracao", new { area = "" }, null)</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+        <div class="navbar-container container-fluid">
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <ul class="nav navbar-toolbar navbar-toolbar-left navbar-left">
+                    <li class="hidden-float hidden-menubar-top">
+                        <a href="javascript:void(0)" role="button" id="menubar-fold-btn" class="hamburger hamburger--arrowalt is-active js-hamburger">
+                            <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+                        </a>
+                    </li>
+                    <li>
+                        <h5 class="page-title hidden-menubar-top hidden-float">@ViewData["Title"]</h5>
+                    </li>
+                </ul>
 
             </div>
+        </div><!-- navbar-container -->
+    </nav>
+    <!--========== END app navbar -->
+    <!-- APP ASIDE ==========-->
+    <aside id="menubar" class="menubar light">
+        
+        <div class="menubar-scroll">
+            <div class="menubar-scroll-inner">
+                <ul class="app-menu">
+                    <li id="approvalPendingShow">
+                        <a href="/Approvals">
+                            <i class="menu-icon zmdi zmdi-check zmdi-hc-lg"></i>
+                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes</span>
+                        </a>
+                    </li>
 
-            <div class="body-content  col-lg-10 col-md-12 col-sm-12 col-xs-12">
+                    <li class="has-submenu">
+                        <a href="javascript:void(0)" class="submenu-toggle">
+                            <i class="menu-icon zmdi zmdi-view-dashboard zmdi-hc-lg"></i>
+                            <span class="menu-text">Processos DR's</span>
+                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", null, null)</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Contratos", null, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Contratos", null, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Index", "Contratos", null, null)</li>
+                            <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", null, null)</li>
+                        </ul>
+                    </li><!-- .menu-item -->
 
-                @RenderBody()
-                <hr />
+                    <li class="has-submenu">
+                        <a href="javascript:void(0)" class="submenu-toggle">
+                            <i class="menu-icon zmdi zmdi-pages zmdi-hc-lg"></i>
+                            <span class="menu-text">Processos UP's e UAS</span>
+                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>@Html.ActionLink("Projetos", "Index", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Orçamentos", "", "", null, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Unidades Produtivas", "Index", "UnidadesProdutivas", null, null)</li>
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Gestão Localizações</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Unidades Armazenamento", "Index", "UnidadeArmazenamento", null, null)</li>
+                                    <li>@Html.ActionLink("Artigos - Produtos", "", "", null, null)</li>
+                                    <li>@Html.ActionLink("Diários Artigos-Produtos", "", "", null, null)</li>
+                                    <li>@Html.ActionLink("Requisições Simplificadas", "Index", "RequisicoesSimplificadas", null, null)</li>
+                                    <li>@Html.ActionLink("Fichas Técnicas", "Index", "FichasTecnicasPratos", null, null)</li>
+                                    <li>@Html.ActionLink("Histórico Requisições Simplificadas", "Index", "RequisicoesSimplificadas", new { area = "", option = 2 }, null)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li><!-- .menu-item -->
 
-                @*<footer>
-                        <p>&copy; @DateTime.Now.Year - Such</p>
-                    </footer>*@
-            </div>
-        </div>
+                    <li class="has-submenu">
+                        <a href="javascript:void(0)" class="submenu-toggle">
+                            <i class="menu-icon zmdi zmdi-layers zmdi-hc-lg"></i>
+                            <span class="menu-text">Compras</span>
+                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>@Html.ActionLink("Receção e Conferência Faturas", "RececaoFaturas", "Faturacao", null, null)</li>
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Requisições</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Pré-Requisição", "Index", "PreRequisicoes", null, null)</li>
+                                    <li>@Html.ActionLink("Validação Requisições", "RequisicoesAprovadas", "GestaoRequisicoes", null, null)</li>
+                                    <li>@Html.ActionLink("Gestão de Requisições", "Index", "GestaoRequisicoes", null, null)</li>
+                                    <li>@Html.ActionLink("Pontos de Situação", "PontosSituacao", "GestaoRequisicoes", null, null)</li>
+                                    <li>@Html.ActionLink("Arquivo Requisições", "Arquivadas", "GestaoRequisicoes", null, null)</li>
+                                    <li>@Html.ActionLink("Modelos Requisição", "Index", "ModelosRequisicao", null, null)</li>
+                                    <li>@Html.ActionLink("Mod. Req. Simplificadas", "Index", "ModelosReqSimplificada", new { area = "" }, null)</li>
+                                </ul>
+                            </li>
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Procedimentos CCP</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Pedido de Aquisição", "PedidoAquisicao", "ProcedimentosCcps", null, null)</li>
+                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", null, null)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li><!-- .menu-item -->
 
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="/lib/webcomponentsjs/webcomponents-loader.js"></script>
-        <script src="/lib/sweetalert.min.js"></script>
-        <script src="/lib/bootbox.min.js"></script>
+                    <li class="has-submenu">
+                        <a href="javascript:void(0)" class="submenu-toggle">
+                            <i class="menu-icon zmdi zmdi-puzzle-piece zmdi-hc-lg"></i>
+                            <span class="menu-text">Folhas de Horas</span>
+                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>@Html.ActionLink("Criação", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Validação - Aprovação", "FolhaDeHoras_Validacao", "Engenharia", null, null)</li>
+                            <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", null, null)</li>
+                        </ul>
+                    </li><!-- .menu-item -->
 
-        <script>
-            var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
-            if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
+                    <li class="has-submenu">
+                        <a href="javascript:void(0)" class="submenu-toggle">
+                            <i class="menu-icon zmdi zmdi-settings zmdi-hc-lg"></i>
+                            <span class="menu-text">Administração</span>
+                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                        </a>
+                        <ul class="submenu">
+                            <!--Diversos-->
+                            <li>@Html.ActionLink("Configurações", "Configuracoes", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Config. Aprovações", "ConfiguracaoAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Grupo Aprovações", "GruposAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+
+                            <li>@Html.ActionLink("Objetos De Serviço", "ObjetosDeServico", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Tipos de Refeição", "TiposRefeicao", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Serviços", "Servicos", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Serviços Cliente", "ServicosCliente", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Destinos Finais Residuos", "DestinosFinaisResiduos", "Administracao", null, null)</li>
+
+                            <li>@Html.ActionLink("Grupos Classif. Fichas Técnicas", "ClassificacaoFichasTecnicas", "Administracao", new { option = "Grupos" }, null)</li>
+                            <li>@Html.ActionLink("Classif. Fichas Técnicas", "ClassificacaoFichasTecnicas", "Administracao", new { id = "" }, null)</li>
+                            <li>@Html.ActionLink("Acções Confeção", "AccoesConfecao", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Procedimento Confeção", "ProcedimentoConfecao", "Administracao", null, null)</li>
+
+                            <li>@Html.ActionLink("Tipos Viaturas", "TiposViaturas", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Marcas", "Marcas", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Modelos", "Modelos", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Cartões e Apólices", "CartoesEApolices", "Administracao", null, null)</li>
+
+                            <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
+
+                            <!--FH-->
+                            <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Autorização Empregado", "ConfiguracaoAutorizacaoFHRH", "Administracao", new { area = "", id = "Administracao" })</li>
+                            <li>@Html.ActionLink("Config. FH Distância", "ConfiguracaoDistanciaFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Empregado Recursos", "ConfiguracaoRHRecursosFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Origem Destino", "ConfiguracaoOrigemDestinoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li>@Html.ActionLink("Config. FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <!--Projetos-->
+                            <li>@Html.ActionLink("Tipos Projeto", "TiposProjetoDetalhes", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Tipos Grupo Contab. Projeto", "TiposGrupoContabProjeto", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Tipos Grupo Contab OM Projet", "TiposGrupoContabOMProjeto", "Administracao", null, null)</li>
+                        </ul>
+                    </li><!-- .menu-item -->
+
+                </ul><!-- .app-menu -->
+            </div><!-- .menubar-scroll-inner -->
+        </div><!-- .menubar-scroll -->
+    </aside>
+    <!--========== END app aside -->
+    <!-- navbar search -->
+    
+    <!-- .navbar-search -->
+    <!-- APP MAIN ==========-->
+    <main id="app-main" class="app-main">
+        <div class="wrap">
+            <section class="app-content">
+
+                <div class="row">
+                    @RenderBody()
+                </div><!-- .row -->
+            </section><!-- #dash-content -->
+        </div><!-- .wrap -->
+        <!-- APP FOOTER -->
+
+        <!-- /#app-footer -->
+    </main>
+    <!--========== END app main -->
+    <!-- APP CUSTOMIZER -->
+    
+    <!-- SIDE PANEL -->
+    <!-- /#side-panel -->
+    <!-- build:js ~/Infinity/assets/js/core.min.js -->
+    <script src="~/Infinity/libs/bower/jquery/dist/jquery.js"></script>
+    <script src="~/Infinity/libs/bower/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/Infinity/libs/bower/jQuery-Storage-API/jquery.storageapi.min.js"></script>
+    <script src="~/Infinity/libs/bower/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
+    <script src="~/Infinity/libs/bower/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/Infinity/libs/bower/perfect-scrollbar/js/perfect-scrollbar.jquery.js"></script>
+    <script src="~/Infinity/libs/bower/PACE/pace.min.js"></script>
+    <!-- endbuild -->
+    <!-- build:js ~/Infinity/assets/js/app.min.js -->
+    <script src="~/Infinity/assets/js/library.js"></script>
+    <script src="~/Infinity/assets/js/plugins.js"></script>
+    <script src="~/Infinity/assets/js/app.js"></script>
+    <!-- endbuild -->
+    <script src="~/Infinity/libs/bower/moment/moment.js"></script>
+    <script src="~/Infinity/libs/bower/fullcalendar/dist/fullcalendar.min.js"></script>
+    <script src="~/Infinity/assets/js/fullcalendar.js"></script>
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="/lib/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/lib/sweetalert.min.js"></script>
+    <script src="/lib/bootbox.min.js"></script>
+
+    <script>
+        var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
+        if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
+            //$('#approvalPendingShow').hide();
                 $('#pendingApprovalsLink').text('Aprovações Pendentes (' + TotalPendingApprovals + ')');
             } else {
                 $('#approvalPendingShow').hide();
             }
 
-            $(".menu-content > li").click(function () {
-                $(".menu-content").find(".sub-menu").not($(this).next('.sub-menu')).removeClass("in");
-            });
-            
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+            //$(".menu-content > li").click(function () {
+            //    $(".menu-content").find(".sub-menu").not($(this).next('.sub-menu')).removeClass("in");
+            //});
+
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous"
+            integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+            crossorigin="anonymous"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+    </script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
 
 
 
 
 
-        @RenderSection("Scripts", required: false)
-    </div>
+    @RenderSection("Scripts", required: false)
 </body>
 
 

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Perfis Modelo - Administração - eSuch";
+    ViewData["Title"] = "Detalhes de Perfil Modelo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -28,8 +28,6 @@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<h1 class="title">Perfis Modelo</h1>
-
 <x-profile-models></x-profile-models>
 <dom-module id="x-profile-models">
     <template>
@@ -46,8 +44,8 @@
                    id="page_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_createNew">Criar Novo</paper-button>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
         </div>
 
         <h2 class="separator">Geral</h2>
@@ -91,17 +89,6 @@
         <h2 class="separator">Acessos Perfil</h2>
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Área">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
                 <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
                     <template>
                         <paper-icon-item>
@@ -120,23 +107,6 @@
         </div>
 
         <vaadin-grid id="gridAccesses" aria-label="ProfileModelsTabel" items="{{ data.profileModelAccesses }}" class="grid">
-            <vaadin-grid-column width="20%">
-                <template class="header">
-                    Área
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{item.area}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-
-                </template>
-            </vaadin-grid-column>
             <vaadin-grid-column width="20%">
                 <template class="header">
                     Funcionalidade
@@ -221,7 +191,7 @@
     {
         <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
         <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-    }
+}
         </div>
 
 
@@ -237,11 +207,6 @@
                 properties: {
                     _description: {
                         type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ddArea: {
-                        type: Number,
                         notify: true,
                         value: ""
                     },
@@ -341,15 +306,12 @@
                     }
                 },
                 _createAccessProfile: function () {
-                    if (this.ddArea == "") {
-                        this.openToastError('É obrigatório preencher a area.');
-                    } else if (this.ddFeature == null) {
+                    if (this.ddFeature == null) {
                         this.openToastError('É obrigatório preencher a Funcionalidade.');
                     } else {
 
                         this.data.profileModelAccesses.unshift({
                             idProfile: @ViewBag.ProfileModelId,
-                            area: this.ddArea,
                             feature: this.ddFeature,
                             read: this.chkRead,
                             create: this.chkCreate,
@@ -357,7 +319,6 @@
                             delete: this.chkDelete
                         });
                         
-                        this.ddArea = null;
                         this.ddFeature = null;
                         this.chkRead = true;
                         this.chkCreate = true;

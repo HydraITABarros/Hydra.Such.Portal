@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Grupos Aprovacões - eSuch";
+    ViewData["Title"] = "Grupos de Aprovação";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -30,9 +30,6 @@
 
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
-
-
-<h1 class="title">@ViewData["Title"]</h1>
 
 <x-groupapprovals></x-groupapprovals>
 
@@ -68,12 +65,9 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-        <div class="row">                
-            <div class="col-lg-2 alignPoga">
-                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>            </div>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
         </div>
-        <br />
 
         <vaadin-grid id="gridDescriptionApprovals" aria-label="gridDescriptionApprovals" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>

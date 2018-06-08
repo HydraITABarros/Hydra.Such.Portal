@@ -24,6 +24,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ShippingLocality { get; set; }
         public string ShippingContact { get; set; }
         public int? ProjectTypeCode { get; set; }
+        public string ProjectTypeDescription { get; set; }
         public string OurProposal { get; set; }
         public int? ServiceObjectCode { get; set; }
         public string CommitmentCode { get; set; }
@@ -39,5 +40,9 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public bool? InternalProject { get; set; }
         public string ProjectLeader { get; set; }
         public string ProjectResponsible { get; set; }
+        public string CreateUser { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string UpdateUser { get; set; }
+        public DateTime? UpdateDate { get; set; }
     }
 }

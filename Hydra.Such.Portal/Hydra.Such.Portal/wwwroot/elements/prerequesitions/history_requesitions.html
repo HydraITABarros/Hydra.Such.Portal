@@ -131,7 +131,7 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>
+        <!--<paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>-->
         <br> <br/>
         <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
@@ -339,7 +339,7 @@
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                    window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;

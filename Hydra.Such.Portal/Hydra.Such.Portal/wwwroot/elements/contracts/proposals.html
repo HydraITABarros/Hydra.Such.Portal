@@ -15,6 +15,7 @@
 <dom-module id="x-proposals">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
         <custom-style>
@@ -58,11 +59,11 @@
 
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
-                <div class="marginSpace">
-                    <paper-button class="btnAddNew" raised on-tap="_create">Criar Novo</paper-button>
-                    <paper-button class="btnCreate" id="showLost" raised on-tap="_showLosts">{{_showLostMessage}}</paper-button>
-                    <paper-button class="btnCreate" id="showAborted" raised on-tap="_showAborted">{{_showAbortedMessage}}</paper-button>
-                    <paper-button class="btnCreate" id="showHistory" raised on-tap="_showHistory">{{_showHistoryMessage}}</paper-button>
+                <div class="subMenu">
+                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" id="showLost" on-tap="_showLosts"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showLostMessage}}</paper-button>
+                    <paper-button class="tablinks" id="showAborted" on-tap="_showAborted"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showAbortedMessage}}</paper-button>
+                    <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
                 </div>
             </template>
         </template>
@@ -259,7 +260,7 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
@@ -302,7 +303,7 @@
                             this._archived = 1;
                             this._showLevel = 2;
                         }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                         this.$.grid_databound_ajax.generateRequest();
                         this._setButtonTexts();
                     }
@@ -316,7 +317,7 @@
                             this._archived = 1;
                             this._showLevel =3;
                         }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                         this.$.grid_databound_ajax.generateRequest();
                         this._setButtonTexts();
                     }
@@ -330,7 +331,7 @@
                             this._archived = 1;
                             this._showLevel = 4;
                         }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                         this.$.grid_databound_ajax.generateRequest();
                         this._setButtonTexts();
                     }

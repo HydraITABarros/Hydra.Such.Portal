@@ -1,0 +1,1214 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<h1 class="title">Produtos p/ Criação de Encomendas</h1>
+
+<x-needshopping></x-needshopping>
+<dom-module id="x-needshopping">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <div class="subMenu"  hidden="{{ _permissionssubMenu }}">
+            <paper-button class="tablinks" on-tap="_requestModels" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
+            <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
+        </div><!--on-response="_gridListResponse"-->
+        <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines"  last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderGridLines"  last-response="{{cbopenorderlinesGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+       
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result" last-response="{{result}}" on-response="_resultResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result2" last-response="{{result2}}" on-response="_GridprodChangeResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierresult" last-response="{{supplierresult}}" on-response="_supplierResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierGridresult" last-response="{{supplierGridresult}}" on-response="_supplierGridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>       
+        <iron-ajax url="/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"  last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+       <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}"  on-response="_benbyreqResponse"  method="post" handle-as="json" content-type="application/json"></iron-ajax>
+   
+      <style>
+        vaadin-combo-box {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
+
+        vaadin-date-picker {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
+
+        vaadin-text-field {
+            margin-top: 0px !important;
+            width: 100%;
+        }
+
+        paper-button {
+            margin-top: 10px;
+        }
+
+        .break_clear {
+            margin-top: 15px;
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+
+        .break_frm {
+            margin-top: 15px;
+        }
+
+        .label_custom {
+            color: var(--valo-contrast-60pct) !important;
+            font-weight: 500 !important;
+            font-size: var(--valo-font-size-s) !important;
+            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+            margin-bottom: var(--valo-space-xs) !important;
+            transition: color 0.4s !important;
+            line-height: 1 !important;
+            font-family: var(--valo-font-family) !important;
+        }
+
+        datetime-picker {
+            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+            background-color: var(--valo-contrast-5pct);
+            color: var(--valo-contrast-60pct) !important;
+            width: 100%;
+        }
+
+        .marginSpace {
+            margin: 0px !important;
+        }
+
+        textarea {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 3px 4px;
+            align-self: baseline;
+            font-weight: 500;
+        }
+
+        textarea:hover {
+            background-color: #eeeeee;
+        }
+
+        textarea:focus {
+            background-color: white;
+            border: none;
+            outline: 1px solid #eeeeee;
+            border-radius: 3px 4px;
+        }
+
+        datetime-picker {
+            --datetime-selected-background: #71BCC1 !important;
+            --datetime-background: #1f3133;
+            --datetime-color: #eeeeee;
+        }
+
+        paper-collapse-item {
+        --paper-item: {
+            padding: 0 0;
+        };
+         --paper-collapse-item-header: {
+             padding: 0 15px;
+             color: #333;
+             background-color: #f5f5f5;
+             border-bottom: solid #ddd 1px;
+             border-top-left-radius: 3px;
+             border-top-right-radius: 3px;
+
+         };
+          }
+
+          .panel-body {
+              padding-top: 0px !important;
+          }
+    </style>
+    
+        <div class="row"  hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3">
+                <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden="{{ _NotSelectedprodUnit }}">
+                </vaadin-text-field>
+                <vaadin-combo-box items="[[prodUnitValresult]]" id="prodUnitId" on-value-changed="_prodUnitChange" item-value-path="id" item-label-path="id" value="" label="Nº Unidade Produtiva"  hidden="{{ !_NotSelectedprodUnit }}">
+                    <template>
+                        <table width="350px">
+                            <tr>
+                                <td width="30%">[[item.id]]</td>
+                                <td width="70%"><b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="descriptionUnitId" name="descriptionUnitName" label="Descrição" value="{{descriptionUnit}}" disabled></vaadin-text-field>
+            </div>
+            <div class="col-md-3">
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{dpExpectedReceipt}}"></vaadin-date-picker>
+            </div>
+            <div class="col-md-3 ">
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+        </div>
+        <div class="row"  hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3">
+                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" on-value-changed="_localCodeOnChange"
+                                items="[[locationsresult]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-md-3">
+                <such-selectbox id="mOpenOrderLinesId" value="{{codStockUnit}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange" 
+                                items="[[cbopenorderlines]]"
+                                text-path="numb"
+                                value-path="id"
+                                fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
+            </div>
+            <div class="col-md-3 ">
+                <vaadin-text-field id="prodCodId" name="prodCodName" label="Descrição Produto" value="{{prodCod}}" disabled></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row"  hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3">
+                <such-selectbox id="unitofMeasureCodeId" value="" label="Unidade Medida" disabled
+                                items="[[unitmeasureresult]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="qtyID" name="qtyName"  pattern="^[0-9]\d*(\.\d+)?$"   label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
+            </div>
+            <div class="col-md-3 ">
+                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row"  hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3">
+                <vaadin-text-field id="amountId" name="amountName" class="alignRight" label="Valor total" value="{{amount}}" on-value-changed="_calcTotals" disabled> <div slot="suffix">€</div></vaadin-text-field>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
+            </div>
+            <div class="col-md-3 ">
+                <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row"  hidden="{{ !_permissionsVal.create }}">
+            <div class="col-lg-2 alignPoga">
+                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <br />
+        @* Grid *@
+
+    <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="productionUnitNo">Nº Unidade Produtiva </vaadin-grid-sorter>
+            <vaadin-grid-filter path="productionUnitNo" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.productionUnitNo}}" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.productionUnitNo}}
+            </template>
+        </template>
+
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="productUnitDescription">Descrição</vaadin-grid-sorter>
+            <vaadin-grid-filter path="productUnitDescription" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.productUnitDescription}}" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.productUnitDescription}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="expectedReceptionDate">Data Receção Esperada</vaadin-grid-sorter>
+            <vaadin-grid-filter path="expectedReceptionDate" />
+        </template>
+        <template>
+
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-date-picker  value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                [[ _parseExpectedReception(item.expectedReceptionDate) ]]
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="dateByPriceSupplier">Data p/ Preço Fornecedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="dateByPriceSupplier" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
+            </template>
+
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+            <vaadin-grid-filter path="localCode" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-combo-box items="[[locationsresult]]" disabled="{{ !_permissionsVal.update }}" id="codStockUnitId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
+                    <template>
+                        <table width="350px">
+                            <tr>
+                                <td width="30%">[[item.id]]</td>
+                                <td width="70%"><b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                [[_parseLocalCode(item.localCode)]]
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
+            <vaadin-grid-filter path="productNo" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesId" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.id}}">
+                    <template>
+                        <table width="300px">
+                            <tr>
+                                <td width="20%"><b>[[item.numb]]</b></td>
+                                <td width="80%">[[item.description]]</td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.productNo}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="supplierNo">Nº Forncedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="supplierNo" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.supplierNo}}" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.supplierNo}}
+            </template>
+
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="description">Descrição Produto</vaadin-grid-sorter>
+            <vaadin-grid-filter path="description" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.description}}
+            </template>
+
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="unitMeasureCode">Unidade Medida</vaadin-grid-sorter>
+            <vaadin-grid-filter path="unitMeasureCode" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}" disabled>
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="20%">[[item.id]]</td>
+                                <td width="80%"><b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.unitMeasureCode}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
+            <vaadin-grid-filter path="quantity" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.quantity}}" id="lineQuantity" disabled="{{ !_permissionsVal.update }}"  pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.quantity}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="quantitybyUnitMeasure">Quantidade por Unid. Medida</vaadin-grid-sorter>
+            <vaadin-grid-filter path="quantitybyUnitMeasure" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.quantitybyUnitMeasure}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="directUnitCost">Custo Unitário</vaadin-grid-sorter>
+            <vaadin-grid-filter path="directUnitCost" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.directUnitCost}}" id="lineUnitCost" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.directUnitCost}}€
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="totalValue">Valor Total</vaadin-grid-sorter>
+            <vaadin-grid-filter path="totalValue" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.totalValue}}€
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="supplierProductCode">Codigo Produto Fornecedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="supplierProductCode" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.supplierProductCode}}" disabled="{{ !_permissionsVal.update }}"></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.supplierProductCode}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="supplierProductDescription">Descrição Produto Fornecedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="supplierProductDescription" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.supplierProductDescription}}" disabled="{{ !_permissionsVal.update }}"></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.supplierProductDescription}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="supplierName">Nome Fornecedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="supplierName" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.supplierName}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column with="10%"  hidden="{{ !_permissionsVal.delete }}">
+        <template class="header">
+        </template>
+        <template>
+            <center>
+                <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+            </center>
+        </template>
+    </vaadin-grid-column>
+    </vaadin-grid>
+        
+    <!-- Paper Dialog Movimentos de Projeto-->
+    <paper-dialog id="dialog" class="dialgoBox">
+    <h2 class="dialogTitle">Movimentos de Projeto</h2>
+    <vaadin-grid aria-label="Modelos de Requisições" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="ModelRequisitionTable" items="[[resultModelRequisition]]">
+        <vaadin-grid-selection-column auto-select>
+        </vaadin-grid-selection-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="requisitionNo"> Nº Requisição</vaadin-grid-sorter>
+                <vaadin-grid-filter path="requisitionNo" />
+            </template>
+            <template>
+                {{item.requisitionNo}}
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localCode" />
+            </template>
+            <template>
+                [[_parseLocalCode(item.localCode)]]
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
+                <vaadin-grid-filter path="unitFoodProduction" />
+            </template>
+            <template>
+                [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+                <vaadin-grid-filter path="receivedDate" />
+            </template>
+            <template>
+                [[ _parseDateFormat(item.receivedDate) ]]
+            </template>
+        </vaadin-grid-column>
+    </vaadin-grid>
+    <div class="buttons">
+        <paper-button class="btnSave"  raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+    </div>
+    </paper-dialog>
+
+
+    <div class="marginSpace"  hidden="{{ !_permissionsVal.update }}">
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    </div>
+        
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+    </template>
+    <script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-needshopping',
+            properties: {
+                _SelectedLine: {
+                    observer: '_lineSelected'
+                },
+                selectedItems: {
+                    type: Array
+                },
+                selectedItem: {
+                    type: Array
+                },
+                prodUnitNo: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                descriptionUnit: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                dpExpectedReceipt: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codStockUnit: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                supplierNo: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                prodCod: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                unitofMeasureCode: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                qty: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                QtyforMeas: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                unitCost: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                amount: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                SupplierName: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _permissionsVal: {
+                    type: Array
+                },
+                _permissionssubMenu: {
+                    type: Boolean,
+                    value: false
+                },
+                _NotSelectedprodUnit: {
+                    type: Boolean,
+                    value: false
+                },
+                _documentNo: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _lineNo: {
+                type: Number,
+                notify: true,
+                value: ""
+                },
+                _numb: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _documentNOGrid: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _lineNoGrid: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                _numbGrid: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                }
+            },
+            observers: [
+                '_onCacheLoaded(locationsresult)'
+            ],
+
+            _parseExpectedReception: function(date) {
+                if (date != null && date != "") {
+                    var x = date.split("-");
+                    return x[2] + "-" + x[1] + "-" + x[0];
+                }
+                return "";
+            },
+            _parseSupplierDateReception: function (date) {
+                if (date != null && date != "") {
+                    var x = date.split("-");
+                    return x[2] + "-" + x[1] + "-" + x[0];
+                }
+                return "";
+            },
+
+            _onCacheLoaded: function (locationsresult) {
+                if (!this.Flag) {
+                    var prodUnitId = @ViewBag.ProductivityUnitId;
+                    var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                    //get premissions to CRUD
+                    this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
+                    if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
+                        this._permissionssubMenu = true;
+                    }
+                    if (prodUnitId != null && prodUnitDesc != "") {
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this.$.ajax_getgrid.body = JSON.stringify(null);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                            this.Flag = true;
+                        }
+                    },
+            ready: function () {
+                        var prodUnitId = @ViewBag.ProductivityUnitId;
+                        var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                        //get premissions to CRUD
+                        this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
+                         if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
+                             this._permissionssubMenu = true;
+                        }
+                         if (prodUnitId != null && prodUnitDesc != "") {
+                             this.prodUnitNo = prodUnitId;
+                             this.descriptionUnit = prodUnitDesc;
+                             
+                         } else {
+                             this.prodUnitNo = "";
+                             this.descriptionUnit = "";
+                             this._NotSelectedprodUnit = true;
+                             this.$.ajax_prodUnit.generateRequest();
+                             
+                         }
+            },
+            _DatePriceGridChange:function (e) {
+                if (e.detail.value != null && e.detail.value != "" &&
+                    this._numbGrid != null && this._numbGrid != "" &&
+                    this._lineNoGrid != null && this._lineNoGrid != "" &&
+                    this._documentNOGrid != null && this._documentNOGrid != "")
+                    {
+                        this.$.ajax_result.body = JSON.stringify(this._numbGrid);
+                        this.$.ajax_result.params = {
+                            "documentNO": this._documentNOGrid,
+                            "LineNo": this._lineNoGrid,
+                            "date": e.detail.value
+                        };
+                    this.$.ajax_result.generateRequest();
+                } else {
+                    if (e.detail.value != null &&
+                        e.detail.value != "") {
+                        this.$.ajax_nOrderGridLines.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_nOrderGridLines.generateRequest();
+                    }
+                }
+            },
+            _DatePriceChange: function (e) {
+                        if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
+                            this.$.ajax_result.body = JSON.stringify(this._numb);
+                            this.$.ajax_result.params = {
+                                "documentNO": this._documentNO,
+                                "LineNo": this._lineNo,
+                                "date": e.detail.value
+                            };
+                            this.$.ajax_result.generateRequest();
+                        } else {
+                            if (e.detail.value != null &&
+                                e.detail.value != "") {
+                                this.$.ajax_nOrderLines.body = JSON.stringify(e.detail.value);
+                                this.$.ajax_nOrderLines.generateRequest();
+                            }
+                        }
+                    },
+            _getgridResponse: function (data) {
+                        if (data != null) {
+                            if (data.detail.status === 200) {
+                                
+                            } else {
+                                this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
+                            }
+                        }
+                    },
+            _openOrderLinesOnChange: function (e) {
+                if (e.detail.value) {
+                    var res = e.detail.value.split(" ");
+                    this._documentNo = res[0];
+                    this._lineNo = res[1];
+                    this._numb = res[2];
+                    this.$.ajax_result.body = JSON.stringify(this._numb);
+                            var dateVPrice = this.$.dpVendedorPriceId.value;
+                            if (dateVPrice == "") { dateVPrice = "01-01-1753";}
+                            this.$.ajax_result.params = {
+                                "documentNO": this._documentNo,
+                                "LineNo": this._lineNo,
+                                "date": dateVPrice
+                            };
+                            this.$.ajax_result.generateRequest();
+                        }
+                    },
+
+            //Get all values from the product selected in the grid
+            //Works with functions _GridprodChangeResult and _supplierGridResponse
+            _openOrderGridLinesOnChange: function (e) {
+                if (e.detail.value) {
+                            var res = e.detail.value.split(" ");
+                            this._documentNOGrid = res[0];
+                            this._lineNoGrid = res[1];
+                            this._numbGrid = res[2];
+                            var datePS = "";
+                            var oSel = this.data.find(x => x.selected);
+
+                            if (oSel != undefined && e.detail.value != undefined) {
+                                if (oSel.dateByPriceSupplier != "" && oSel.dateByPriceSupplier != null) {
+                                    datePS = oSel.dateByPriceSupplier.split("-");
+                                    datePS = datePS[2] + "-" + datePS[1] + "-" + datePS[0];
+                                }
+                                if (datePS != "") {
+                                    this.$.ajax_result2.body = JSON.stringify(this._numbGrid);
+                                    this.$.ajax_result2.params = {
+                                        "documentNO": this._documentNOGrid,
+                                        "LineNo": this._lineNoGrid,
+                                        "date": datePS
+                                    };
+                                    this.$.ajax_result2.generateRequest();
+                                }
+                            }
+                        }
+                    },
+            _resultResponse: function (result) {
+                if (result != null) {
+               
+                            this.$.supplierNoId.value = this.result.buyFromVendorNo;
+                            this.$.prodCodId.value = this.result.description;
+                            this.$.qtyID.value = 0;
+                            this.$.QtyforMeasId.value = this.result.qtyperUnitofMeasure;
+                            this.$.unitCostId.value = this.result.unitCost;
+                            this.$.amountId.value = this.result.amount;
+                            this.$.unitofMeasureCodeId.value = this.result.unitofMeasureCode;
+                            if (this.result.locationCode != "") {
+                                this.$.codStockUnitId.value = this.result.locationCode;
+                            }
+                        }
+                        this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
+                        this.$.ajax_supplierresult.generateRequest();
+                    },
+            // Get supplier name to the header
+            _supplierResponse: function (supplierresult) {
+                        if (supplierresult != null) {
+                            this.$.SupplierNameId.value = this.supplierresult[0].value;
+                        }
+                    },
+            // Get supplier name to the grid
+            _supplierGridResponse: function (supplierGridresult) {
+                        if (supplierGridresult != null) {
+                            var oSel = this.data.find(x => x.selected);
+                            if (oSel != undefined) {
+                                oSel.supplierName = this.supplierGridresult[0].value;
+                                this.$.gridneedshopping.clearCache();
+                            }
+                        }
+                    },
+            _addRequesition() {
+                if (this._NotSelectedprodUnit == true) {
+
+                        // Save to DB
+                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
+                        this.$.ajax_requesitionupdate.generateRequest();
+                }
+                else {
+          
+                        // Save to DB
+                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
+                        this.$.ajax_requesitionupdate.generateRequest();
+                    } 
+                },
+            _add() {
+                if (this._NotSelectedprodUnit == true) {
+                    if (this.$.dpExpectedReceiptId.value != null &&
+                        this.$.dpVendedorPriceId.value != null &&
+                        this.$.dpExpectedReceiptId.value != "" &&
+                        this.$.dpVendedorPriceId.value != "" &&
+                        this.$.prodUnitNoId.value != "" &&
+                        this.$.descriptionUnitId.value != "")
+                    //Validações
+                    {
+                        this.data.unshift({
+                            productionUnitNo: this.$.prodUnitNoId.value,
+                            productUnitDescription: this.$.descriptionUnitId.value,
+                            expectedReceptionDate: this.$.dpExpectedReceiptId.value,
+                            dateByPriceSupplier: this.$.dpVendedorPriceId.value,
+                            localCode: this.$.codStockUnitId.value,
+                            productNo: this._numb,
+                            supplierNo: this.$.supplierNoId.value,
+                            description: this.$.prodCodId.value,
+                            unitMeasureCode: this.$.unitofMeasureCodeId.value,
+                            quantity: this.$.qtyID.value,
+                            quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                            directUnitCost: this.$.unitCostId.value,
+                            totalValue: this.$.amountId.value,
+                            supplierProductCode: this.$.supplierProdCodeId.value,
+                            supplierProductDescription: this.$.supplierProdDescriptionId.value,
+                            supplierName: this.$.SupplierNameId.value,
+                            documentNo: this.$._documentNo,
+                            openOrderNo: this.$._documentNo,
+                            orderLineOpenNo: this._lineNo
+                        });
+
+
+                        // Save to DB
+                        if (this._NotSelectedprodUnit == false) {
+                            this.$.ajax_update.body = JSON.stringify(this.data);
+                            this.$.ajax_update.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                        } else {
+                            this.$.ajax_Create.body = JSON.stringify(this.data);
+                            this.$.ajax_Create.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                        }
+                           
+                    } else {
+                        this._openToastError("Os campos Data Receção Esperada, Data p/ Preço Fornecedor, Nº Unidade Produtiva e Descrição são obrigatorios.");
+                    }
+                }
+                else {
+                    if (this.$.dpExpectedReceiptId.value != null &&
+                        this.$.dpVendedorPriceId.value != null &&
+                        this.$.dpExpectedReceiptId.value != "" &&
+                        this.$.dpVendedorPriceId.value != "")
+                    //Validações
+                    {
+                        this.data.unshift({
+                            productionUnitNo: this.$.prodUnitNoId.value,
+                            productUnitDescription: this.$.descriptionUnitId.value,
+                            expectedReceptionDate: this.$.dpExpectedReceiptId.value,
+                            dateByPriceSupplier: this.$.dpVendedorPriceId.value,
+                            localCode: this.$.codStockUnitId.value,
+                            productNo: this._numb,
+                            supplierNo: this.$.supplierNoId.value,
+                            description: this.$.prodCodId.value,
+                            unitMeasureCode: this.$.unitofMeasureCodeId.value,
+                            quantity: this.$.qtyID.value,
+                            quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                            directUnitCost: this.$.unitCostId.value,
+                            totalValue: this.$.amountId.value,
+                            supplierProductCode: this.$.supplierProdCodeId.value,
+                            supplierProductDescription: this.$.supplierProdDescriptionId.value,
+                            supplierName: this.$.SupplierNameId.value,
+                            documentNo: this._documentNo,
+                            openOrderNo: this._documentNo,
+                            orderLineOpenNo: this._lineNo 
+                        });
+
+
+                        // Save to DB
+                        if (this._NotSelectedprodUnit == false) {
+                            this.$.ajax_update.body = JSON.stringify(this.data);
+                            this.$.ajax_update.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                        } else {
+                            this.$.ajax_Create.body = JSON.stringify(this.data);
+                            this.$.ajax_Create.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                        }
+                           
+                    }
+                    else {
+                        this._openToastError( "Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
+                    }      
+                }
+                       
+                    },
+            _update: function() {
+                        this.$.ajax_update.body = JSON.stringify(this.data);
+                        this.$.ajax_update.generateRequest();
+                    },
+            _cancel: function () {
+                        var prodUnitId = @ViewBag.ProductivityUnitId;
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridneedshopping.clearCache();
+                    },
+            _delete: function(e) {
+                        var index = this.data.indexOf(e.model.item);
+                        this.data.splice(index, 1);
+                        // Save to DB
+                        this.$.ajax_update.body = JSON.stringify(this.data);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridneedshopping.clearCache();
+                    },
+            _updateResponse: function(e) {
+                        if (e.detail.status === 200) {
+                            if (this.updatedata.eReasonCode === 1) {
+                                this._openToast(this.updatedata.eMessage);
+                                var prodUnitId = @ViewBag.ProductivityUnitId;
+                                this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                                this.$.ajax_getgrid.generateRequest();
+                                this.$.gridneedshopping.clearCache();
+                                this.$.dialog.close();
+                            } else {
+                                this._openToastError(this.updatedata.eMessage);
+                            }
+                        } else {
+                            this._openToastError("Occorreu um erro ao atualizar.");
+                        }
+                    },
+            _lineSelected: function (item) {
+                        if (item != null) {
+                            var oSel = this.data.find(x => x.selected);
+                            if (oSel != undefined) {
+                                oSel.selected = false;
+                            }
+                            var sel = this.data.find(x => x == item);
+                            if (sel != undefined) {
+                                this.data.find(x => x == item).selected = true;
+                                if (item.dateByPriceSupplier != "" && item.dateByPriceSupplier != null) {
+                                    var dataprice = item.dateByPriceSupplier.split("-");
+                                    var datapriceSupp = dataprice[2] + "-" + dataprice[1] + "-" + dataprice[0];
+                                    this.$.ajax_nOrderGridLines.body = JSON.stringify(datapriceSupp);
+                                    this.$.ajax_nOrderGridLines.generateRequest();
+                                }
+                                this.$.gridneedshopping.clearCache();
+                            }
+                        }
+                    },
+
+            //this function is the response, is only used when a different product is selected in the grid
+            //get the result from getOpenOrderLine and add necessary values to the line selected in the grid
+            //Works like a Cascading from kendo
+            _GridprodChangeResult: function (result2) {
+                        if (result2 != null) {
+                            var oSel = this.data.find(x => x.selected);
+                            if (oSel != undefined) {
+                                oSel.supplierNo = this.result2.buyFromVendorNo;
+                                oSel.description = this.result2.description;
+                                oSel.quantitybyUnitMeasure = this.result2.qtyperUnitofMeasure;
+                                oSel.unitMeasureCode = this.result2.unitofMeasureCode;
+                                oSel.directUnitCost = this.result2.unitCost;
+                                oSel.documentNo = this.result2.documentNO;
+                                oSel.totalValue = this.result2.amount;
+                                this.$.amountId.value = this.result2.amount;
+                                if (this.result2.locationCode != "") {
+                                    oSel.localCode  = this.result2.locationCode;
+                                }
+                                this.$.gridneedshopping.clearCache();
+                                //get supplier name
+                                this.$.ajax_supplierGridresult.body = JSON.stringify(oSel.supplierNo);
+                                this.$.ajax_supplierGridresult.generateRequest();
+                    }
+                }
+            },
+            _openToast: function(message) {
+                this.$.ToastMessage.text = message;
+                this.$.ToastMessage.open();
+            },
+            _openToastError: function(message) {
+                this.$.ToastError.text = message;
+                this.$.ToastError.open();
+            },
+            _requestModels: function() {
+                this.$.dialog.open();
+                if (this.resultModelRequisition == null ||
+                    this.resultModelRequisition == undefined ||
+                    this.resultModelRequisition.length == 0) {
+                    this._openToastError("Não existem Modelos de Requisições.");
+                }
+
+            },
+            _parseDateFormat: function(date) {
+                if (date != null && date != "") {
+                    var x = date.split("-");
+                    return x[2] + "-" + x[1] + "-" + x[0];
+                }
+            },
+            _parseLocalCode: function (param) {
+                if (param != undefined) {
+
+                    var sel = this.locationsresult.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseUnitFoodProd: function (param) {
+                if (param != undefined) {
+                    var sel = this.produnitresult.find(x => x.productivityUnitNo == param);
+                    if (sel != undefined) {
+                        return sel.description;
+                    }
+                }
+                return "";
+            },
+            _confirm: function (selectedItem, selectedItems) {
+                if (this.selectedItems != null && this.selectedItems != "") {
+                    var selItms = this.selectedItems;
+                    this.$.grid_generatebyreq_ajax.body = JSON.stringify(selItms);
+                    this.$.grid_generatebyreq_ajax.generateRequest();
+                } else {
+                    this._openToastError("Não foi selecionada nenhuma linha.");
+                }
+
+            },
+            _benbyreqResponse: function (e) {
+                var self = this;
+                if (e.detail.status === 200) {
+                    if (this.genbyreqresult.eReasonCode === 1) {
+                        var prodUnitId = @ViewBag.ProductivityUnitId;
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridneedshopping.clearCache();
+                        this._openToast(this.genbyreqresult.eMessage);
+                    }
+                    else
+                    {
+                        this._openToastError(this.genbyreqresult.eMessage);
+                    }
+                }
+                else
+                {
+                    this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
+                }
+            },
+            //calculate the total value form the hader 
+            _calcTotals: function (e) {
+                switch (e.target.id) {
+                case "qtyID":
+                        this.qty = e.detail.value.replace(",", ".");
+                    break;
+                case "unitCostId":
+                        this.unitCost = e.detail.value.replace(",", ".");
+                    break;
+                case "amountId":
+                        this.amount = e.detail.value.replace(",", ".");
+                    break;
+                    default:
+                        break;
+               }
+                
+                if (this.qty != null && this.qty != "" &&
+                    this.unitCost != null && this.unitCost != "") {
+                    this.amount = this.unitCost * this.qty;
+                    this.amount = this.amount.toFixed(2);
+                }
+            },
+            //calculate the total value form the grid
+            _lineCalcTotals: function (param) {
+                if (this.data != null) {
+                    var res = this.data.find(x => x == this._SelectedLine);
+                    if (res != null) {
+                        var qnt = res.quantity;
+                        var unitCost = res.directUnitCost;
+                        switch (param.target.id) {
+                        case "lineQuantity":
+                            qnt = param.target.value.replace(",", ".");
+                            res.quantity = qnt;
+                            break;
+                        case "lineUnitCost":
+                            unitCost = param.target.value.replace(",", ".");
+                            res.unitCost = unitCost;
+                            break;
+                        default:
+                            break;
+                        }
+                        if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
+                            res.totalValue = qnt * unitCost;
+                        }
+                        this.$.gridneedshopping.clearCache();
+                    }
+                }
+            },
+            _prodUnitChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var sel = this.prodUnitValresult.find(x => x.id == e.detail.value);
+                    if (sel != undefined) {
+                        this.$.prodUnitNoId.value = e.detail.value;
+                        this.$.descriptionUnitId.value = sel.value;
+                    }
+                } 
+            },
+            _requesitionResponse: function (e) {
+                if (e.detail.status === 200) {
+                    if (this.datarequesition.eReasonCode === 1) {
+                        this._openToast(this.datarequesition.eMessage);
+                    } else {
+                        this._openToastError(this.datarequesition.eMessage);
+                    }
+                } else {
+                    this._openToastError("Occorreu um erro na geração de requisições.");
+                }
+            }
+         });
+    });
+    </script>
+
+</dom-module>

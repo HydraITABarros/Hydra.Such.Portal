@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Perfis Modelo - Administraçao - eSuch";
+    ViewData["Title"] = "Perfis Modelo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -17,26 +17,26 @@
 <link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 
-<h1 class="title">Perfis Modelo</h1>
-
 <x-profile-models></x-profile-models>
 <dom-module id="x-profile-models">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-            @*POPULATE GRID*@
-            <iron-ajax url="/Administracao/GetListProfileModels"
-                       last-response="{{result}}"
-                       auto
-                       method="post"
-                       handle-as="json"
-                       id="grid_databound"
-                       content-type="application/json"></iron-ajax>
+        @*POPULATE GRID*@
+        <iron-ajax url="/Administracao/GetListProfileModels"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
         </div>
+
         <vaadin-grid aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
                 <template class="header">
@@ -50,15 +50,15 @@
             <vaadin-grid-column width="90%">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description"/>
+                    <vaadin-grid-filter path="description" />
                 </template>
                 <template>
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        
-</template>
+
+    </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
