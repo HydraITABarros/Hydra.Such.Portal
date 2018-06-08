@@ -887,6 +887,39 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult CreateProjectContract([FromBody] ContractViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (data.ContractNo != null)
+                    {
+                        //Contratos cContract = DBContracts.ParseToDB(data);
+                        Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+
+
+                        if (ContratoDB != null)
+                        {
+                            
+                            ContratoDB.Historico = false;
+                            ContratoDB.Arquivado = false;
+                            ContratoDB = DBContracts.Update(ContratoDB);
+                        }
+                        data.eReasonCode = 1;
+                        data.eMessage = "Contrato atualizado com sucesso.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+            }
+            return Json(data);
+        }
         #endregion
 
         #region Oportunidades
@@ -1285,7 +1318,24 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        public JsonResult GetListContractsAllProposals([FromBody] JObject requestParams)
+        public JsonResult GetContractsProposalById([FromBody] string ContractNo)
+        {
+            Contratos ContractsList = null;
+            bool haveProposals = false;
+
+            ContractsList = DBContracts.GetContractProposalsNo(ContractNo);
+
+            if (ContractsList != null)
+            {
+                haveProposals = true;
+            }
+
+            return Json(haveProposals);
+        }
+        
+
+
+    public JsonResult GetListContractsAllProposals([FromBody] JObject requestParams)
         {
             int AreaId = int.Parse(requestParams["AreaId"].ToString());
 

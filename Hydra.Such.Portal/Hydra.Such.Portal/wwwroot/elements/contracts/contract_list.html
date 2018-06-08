@@ -108,7 +108,9 @@
                     <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
                 </template>
             </template>
-            <paper-button raised id="btnContractHistory" class="btnCreate" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
+            <template is="dom-if" if="{{ !_contractno }}">
+                <paper-button raised id="btnContractHistory" class="btnCreate" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
+            </template>
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -250,7 +252,7 @@
                     },
                     _contractno: {
                         type: String,
-                        value: false
+                        value: ""
                     },
                     _disabledCreate: {
                         type: Boolean,
