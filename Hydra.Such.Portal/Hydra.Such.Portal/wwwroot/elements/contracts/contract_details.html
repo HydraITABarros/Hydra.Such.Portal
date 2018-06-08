@@ -1866,16 +1866,18 @@
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             this._openToast(this.data.eMessage);
                         }
-                    else if(data.detail.url.indexOf("SendContractToHistory") !== -1) {
-                        if (this.data.eReasonCode == 1) {
-                            this._openToast("Enviado para Histórico com sucesso.");
-                            location.reload();
+                        else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
+                            if (this.data.eReasonCode == 1) {
+                                this._openToast("Enviado para Histórico com sucesso.");
+                                location.reload();
+                            }
+                        }
+                        else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
                         }
                     }
-                    else {
-                        this._openToastError("Ocorreu um erro desconhecido.");
-                    }
                 },
+                
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -2301,13 +2303,13 @@
                 },
 
                 _sendToHistory: function () {
-                    
+                    debugger;
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     var currentTime = new Date();
                     var date = new Date(this.data.dueDate);
 
-                    if (date < currentTime || date == "Invalid Date") {
+                    if (date > currentTime || date == "Invalid Date") {
                         this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
                     }
                     else {
@@ -2383,7 +2385,8 @@
                 _createProject: function () {
                     this.$.createProject_ajax.body = JSON.stringify(this.data);
                     this.$.createProject_ajax.generateRequest();
-                }
+                },
+
                 _viewMenuItemSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
