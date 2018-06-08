@@ -3931,6 +3931,7 @@ namespace Hydra.Such.Portal.Controllers
                                         {
                                             LinhasAcordoPrecos toUpdate = DBLinhasAcordoPrecos.Update(new LinhasAcordoPrecos()
                                             {
+
                                                 NoProcedimento = NoProcedimento,
                                                 NoFornecedor = NoFornecedor,
                                                 CodProduto = CodProduto,
