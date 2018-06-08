@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewData["Title"] = "Pontos Situação de Requisições";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib\datetime-picker-master/time-element.html" />
+
+<x-stateofplaydetails></x-stateofplaydetails>
+
+<dom-module id="x-stateofplaydetails">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay" id="getStatesOfPlay_ajax" last-response="{{_statesOfPlay1}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="frmRequisition">
+                    <div class="panel panel-default">
+                        <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{_selectedItem}}">
+                            <vaadin-grid-column width="60px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="requisitionNo" direction="desc">Requisição</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="requisitionNo" />
+                                </template>
+                                <template>
+                                    {{item.requisitionNo}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="60px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="readStringValue" />
+                                </template>
+                                <template>
+                                    {{ item.readStringValue }}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="question">Pergunta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="question" />
+                                </template>
+                                <template>
+                                    {{item.question}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answer">Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answer" />
+                                </template>
+                                <template>
+                                    {{item.answer}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="60px" resizable>
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <center>
+                                        <paper-button raised class="btnRemove" on-tap="_redirectToRequisitionDetails"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Requisição</paper-button>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-stateofplaydetails',
+                properties: {
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _selectedItem: {
+                        observer: '_onItemSelected'
+                    },
+                },
+                _onItemSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqid=" + item.requisitionNo + "&lineid=" + item.stateOfPlayId;
+                    }
+                },
+                _redirectToRequisitionDetails: function (e) {
+                    window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                },
+            });
+        });
+    </script>
+</dom-module>

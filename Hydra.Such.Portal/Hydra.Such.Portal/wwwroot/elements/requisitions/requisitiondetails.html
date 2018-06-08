@@ -163,35 +163,35 @@
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLinesGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
+        <iron-ajax url="/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/DeleteRequisitionLine"
+        <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateRequisitionLine"
+        <iron-ajax url="/GestaoRequisicoes/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateLocalMarketForRequisition"
+        <iron-ajax url="/GestaoRequisicoes/ValidateLocalMarketForRequisition"
                    last-response="{{Requisition}}"
                    id="validateLocalMarket_datasource"
                    on-response="_validateLocalMarketResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateRequisition"
+        <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    id="validaterequisition_datasource"
                    on-response="_validateRequisitionResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
+        <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{regist}}"
                    id="regist_datasource"
                    on-response="_registTypeResponse"
@@ -199,42 +199,42 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateMarketConsult"
+        <iron-ajax url="/GestaoRequisicoes/CreateMarketConsult"
                    last-response="{{Requisition}}"
                    id="createMarketConsult_ajax"
                    on-response="_createMarketConsultResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreatePurchaseOrder"
+        <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrder"
                    last-response="{{Requisition}}"
                    id="createPurchOrder_ajax"
                    on-response="_createPurchaseOrderResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/SendPrePurchase"
+        <iron-ajax url="/GestaoRequisicoes/SendPrePurchase"
                    last-response="{{Requisition}}"
                    id="sendPrePurchase_ajax"
                    on-response="_sendPrePurchaseResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransferShipment"
+        <iron-ajax url="/GestaoRequisicoes/CreateTransferShipment"
                    last-response="{{TransferShipmentResponse}}"
                    id="createTransferShipment_ajax"
                    on-response="_createTransferShipmentResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/SubmitForApproval"
+        <iron-ajax url="/GestaoRequisicoes/SubmitForApproval"
                    last-response="{{SubmitForApprovalResponse}}"
                    id="submitForApproval_ajax"
                    on-response="_submitForApprovalResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/GetStateDescription"
+        <iron-ajax url="/GestaoRequisicoes/GetStateDescription"
                    last-response="{{stateDescription}}"
                    id="stateDescription_ajax"
                    method="post"
@@ -1524,14 +1524,14 @@
                 },
                 _update: function () {
                     if (this._validateReqHeaderInput()) {
-                        this._sendReqRequest("/Compras/GestaoRequisicoes/UpdateRequisition", this.Requisition)
+                        this._sendReqRequest("/GestaoRequisicoes/UpdateRequisition", this.Requisition)
                     }
                 },
                 _delete: function () {
-                    this._sendReqRequest("/Compras/GestaoRequisicoes/DeleteRequisition", this.Requisition);
+                    this._sendReqRequest("/GestaoRequisicoes/DeleteRequisition", this.Requisition);
                 },
                 _updateRequisitionLines: function () {
-                    this._sendReqRequest("/Compras/GestaoRequisicoes/UpdateRequisitionLines", this.Requisition);
+                    this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLines", this.Requisition);
                 },
                 _validateReqHeaderInput: function () {
                     if (true) {
@@ -1830,7 +1830,7 @@
                         else if (data.detail.url.indexOf("UpdateRequisition") !== -1) {
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
-                                this.$.requisition_datasource.url = "/Compras/GestaoRequisicoes/GetRequisition";
+                                this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
@@ -1840,7 +1840,7 @@
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
                                 this.$.grdRequisitionLines.clearCache();
-                                this.$.requisition_datasource.url = "/Compras/GestaoRequisicoes/GetRequisition";
+                                this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
@@ -1850,7 +1850,7 @@
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
                                 setTimeout(function () {
-                                    window.location.href = "/Compras/GestaoRequisicoes/Detalhes";
+                                    window.location.href = "/GestaoRequisicoes";
                                 }, 2500);
                             }
                             else {
@@ -1952,7 +1952,7 @@
                     this.$.rptDialog.close();
                 },
                 _createTransferShipment: function () {
-                    //window.open("/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
+                    //window.open("/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
                     this.$.createTransferShipment_ajax.body = JSON.stringify({ "requisitionId": this.Requisition.requisitionNo });
                     this.$.createTransferShipment_ajax.generateRequest();
                 },
@@ -2042,7 +2042,7 @@
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         if (this.regist.state === 6) {
-                            window.location.href = "/Compras/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            window.location.href = "/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + this._requisitionid;
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();
@@ -2068,7 +2068,7 @@
                     }
                 },
                 _redirectToStatOfPlay: function () {
-                    window.location.href = "/Compras/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
+                    window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 }
             });
         });

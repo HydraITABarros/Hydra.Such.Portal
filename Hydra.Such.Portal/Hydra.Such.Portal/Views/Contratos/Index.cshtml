@@ -1,12 +1,11 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Contratos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
-<h2>Contratos</h2>
 <link rel="import" href="~/elements/contracts/contract_list.html">
 
-<x-contractlist _areaid="2" _archived="@ViewBag.Archived" _contractno="@ViewBag.ContractNo"></x-contractlist>
+<x-contractlist _areaid="1" _archived="@ViewBag.Archived" _contractno="@ViewBag.ContractNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractlist>
 

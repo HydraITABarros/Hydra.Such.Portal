@@ -16,7 +16,7 @@ using Hydra.Such.Data;
 //using Hydra.Such.Portal.Configurations;
 //using Microsoft.Extensions.Options;
 
-namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
+namespace Hydra.Such.Portal.Controllers
 {
     public class ModelosReqSimplificadaController : Controller
     {

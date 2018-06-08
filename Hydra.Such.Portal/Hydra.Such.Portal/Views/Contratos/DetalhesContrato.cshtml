@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes do Contrato";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/contracts/contract_details.html">
+
+@if (ViewBag.ContractNo == "")
+{
+    @*<h1 class="title">Criar novo contrato</h1>*@
+}
+else
+{
+    @*<h1 class="title">Contrato @ViewBag.ContractNo</h1>*@
+}
+
+
+<x-contractdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractdetails>
+
+

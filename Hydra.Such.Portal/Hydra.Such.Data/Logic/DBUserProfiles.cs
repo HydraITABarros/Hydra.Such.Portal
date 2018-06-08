@@ -66,7 +66,7 @@ namespace Hydra.Such.Data.Logic
                         AU = new AcessosUtilizador()
                         {
                             IdUtilizador = ObjectToCreate.IdUtilizador,
-                            Área = pa.Área,
+                            //Área = pa.Área,
                             Funcionalidade = pa.Funcionalidade,
                             Leitura = pa.Leitura,
                             Inserção = pa.Inserção,

@@ -17,7 +17,21 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                        return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true).ToList();
+                        return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.PréRegisto ==false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+            public static List<DiárioDeProjeto> GetAllPreRegist(string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                        return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.PréRegisto ==true).ToList();
                 }
             }
             catch (Exception ex)
@@ -32,7 +46,21 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+         public static List<DiárioDeProjeto> GetAllOpenPreRegist(string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == true).ToList();
                 }
             }
             catch (Exception ex)
@@ -47,7 +75,21 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Código == code && x.Registado != true).FirstOrDefault();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Código == code && x.Registado != true  && x.PréRegisto == false).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+         public static DiárioDeProjeto GetAllPreRegByCode(string user, string code)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Código == code && x.Registado != true && x.PréRegisto == true).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -185,7 +227,21 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado != true).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado != true && x.PréRegisto == false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+         public static List<DiárioDeProjeto> GetPreRegistByProjectNo(string ProjectNo, string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado != true && x.PréRegisto == true).ToList();
                 }
             }
             catch (Exception ex)
@@ -202,10 +258,28 @@ namespace Hydra.Such.Data.Logic.Project
                 using (var ctx = new SuchDBContext())
                 {
                     if (user == "")
-                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo).ToList();
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.PréRegisto ==false).ToList();
 
                     else
-                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.Utilizador == user).ToList();
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.Utilizador == user && x.PréRegisto ==false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static List<DiárioDeProjeto> GetPreRegistByLineNo(int LineNo, string user = "")
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (user == "")
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.PréRegisto ==true).ToList();
+
+                    else
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.Utilizador == user && x.PréRegisto ==true).ToList();
                 }
             }
             catch (Exception ex)

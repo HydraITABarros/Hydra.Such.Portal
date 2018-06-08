@@ -1,12 +1,7 @@
-﻿
-@{
-    ViewData["Title"] = "Detalhes";
+﻿@{
+    ViewData["Title"] = ViewBag.ProjectNo == "" ? "Criar Projeto" : "Detalhes de Projeto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Projeto PROJ0001</h2>
-
-
 <link rel="import" href="/elements/projects/project_details.html">
 
-<x-projectdetails _projectid="" _areaid="1"></x-projectdetails>
+<x-projectdetails _projectid="@ViewBag.ProjectNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectdetails>

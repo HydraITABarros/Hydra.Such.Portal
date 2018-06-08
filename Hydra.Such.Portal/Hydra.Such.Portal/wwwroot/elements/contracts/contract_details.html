@@ -24,6 +24,7 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <dom-module id="x-contractdetails">
     <template>
         <!-- STYLES -->
@@ -192,6 +193,7 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
@@ -199,32 +201,11 @@
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
                     <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
+                <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
             </div>
         </template>
 
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-lg-12">
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>
-                <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-                <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
-                <paper-button raised id="btnContractProposals" class="" on-tap="_redirectToContractProposals"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Propostas</paper-button>
 
-
-            </div>
-        </div>
-        <template is="dom-if" if="{{ _showAreas }}">
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
-                        <template>
-                            <b>[[item.value]]</b>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-            </div>
-        </template>
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
@@ -1485,17 +1466,16 @@
                         type: Boolean,
                         value: true
                     },
+                    _viewMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Arquivos" }, { value: 2, description: "Projetos" }, { value: 3, description: "Propostas" }],
+                    },
                     _lockFields: {
                         type: Boolean,
                         value: false
                     },
                     _permissions: {
                         type: Array
-                    },
-                    _areaid: {
-                        type: Number,
-                        notify: true,
-                        value: 0
                     },
                     _contractno: {
                         type: String,
@@ -1683,10 +1663,6 @@
                         type: Boolean,
                         value: false
                     },
-                    _showAreas: {
-                        type: Boolean,
-                        value: false
-                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1698,8 +1674,6 @@
                         this._lockFields = true;
                         this._contractStatusLocked = true;
                     }
-
-                    this._showAreas = this._areaid == 4;
 
                 },
                 _ConvertDecimals: function (e) {
@@ -1796,13 +1770,13 @@
                     });
                 },
                 _archive: function () {
-                    debugger;
+                    
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     var currentTime = new Date();
                     var date = new Date(this.data.dueDate);
 
-                    if ( date < currentTime || date == "Invalid Date") {
+                    if (date < currentTime || date == "Invalid Date") {
                         this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
                     }
                     else {
@@ -1835,7 +1809,6 @@
 
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                         this.data.filed = 0
                     } else {
@@ -1862,7 +1835,7 @@
                         this._permissions.update = false;
                     }
 
-                    debugger;
+
                     if (data.detail.status === 200) {
 
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
@@ -1893,15 +1866,14 @@
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             this._openToast(this.data.eMessage);
                         }
-                        else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
-                            if (this.data.eReasonCode == 1) {
-                                this._openToast("Enviado para Histórico com sucesso.");
-                                location.reload();
-                            }
+                    else if(data.detail.url.indexOf("SendContractToHistory") !== -1) {
+                        if (this.data.eReasonCode == 1) {
+                            this._openToast("Enviado para Histórico com sucesso.");
+                            location.reload();
                         }
-                        else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
-                        }
+                    }
+                    else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
                     }
                 },
                 _createResponseProcessor: function () {
@@ -2030,27 +2002,24 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openContractArchive: function () {
-                    window.location.href = "../Contratos?archived=1&contractno=" + this.data.contractNo;
+                    window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
                 },
                 _redirectToContractProjects: function () {
                     window.location.href = "../ProjetosContrato/" + this.data.contractNo;
                 },
-
                 _redirectToContractProposals: function () {
                     this.$.get_proposalscontract_ajax.body = JSON.stringify(this.data.contractNo);
                     this.$.get_proposalscontract_ajax.generateRequest();
                 },
-
-
+                
                 _getProposalResponse: function (e) {
                     if (this.propContract == true) {
                         window.location.href = "../PropostasContrato/" + this.data.contractNo;
                     } else {
                         this._openToastError("Este contrato não contém Propostas.");
                     }
-                    
-                },
 
+                },
 
                 //#################################
                 //        CONTRACT LINES
@@ -2288,7 +2257,7 @@
                         this._createProposal();
                     }
                 },
-
+           
                 _createProposal: function () {
                     var contractId = this.data.contractNo;
                     var version = this.data.versionNo;
@@ -2332,7 +2301,7 @@
                 },
 
                 _sendToHistory: function () {
-                    debugger;
+                    
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     var currentTime = new Date();
@@ -2363,7 +2332,7 @@
                             }
                         });
                     }
-                    
+
                 },
 
                 _validateUpdatePricesDlgInput: function () {
@@ -2411,11 +2380,29 @@
                         this._openToastError(this.UpdatePricesResponse.eMessage);
                     }
                 },
-
                 _createProject: function () {
                     this.$.createProject_ajax.body = JSON.stringify(this.data);
                     this.$.createProject_ajax.generateRequest();
                 }
+                _viewMenuItemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this._openContractArchive();
+                            break;
+                        case 2:
+                            this._redirectToContractProjects();
+                            break;
+                        case 3:
+                            this._redirectToContractProposals();
+                            break;
+                    }
+                },
             });
         });
     </script>

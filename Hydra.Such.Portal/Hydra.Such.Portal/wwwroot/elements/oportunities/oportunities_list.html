@@ -16,6 +16,7 @@
 <dom-module id="x-oportunitieslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
@@ -42,7 +43,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Contratos/GetListOportunitiesByArea"
+        <iron-ajax url="/Contratos/GetListOportunities"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -57,16 +58,15 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
+        <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
-                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
             </template>
-            <paper-button class="" raised on-tap="_showHistoryButton">{{_showHistory}}</paper-button>
+            <paper-button class="tablinks" on-tap="_showHistoryButton"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{_showHistory}}</paper-button>
             <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
         </div>
-
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable>
@@ -178,7 +178,7 @@
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column width="10%" >
+                <vaadin-grid-column width="10%">
                     <template class="header">
                     </template>
                     <template>

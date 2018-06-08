@@ -79,7 +79,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true && 
+                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true &&
                     x.NºContrato == ContractNo && x.NºCliente == ClientNo).
                     OrderByDescending(x => x.NºVersão).
                     FirstOrDefault();
@@ -151,20 +151,20 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static Contratos GetActiveContractById(string ContractNo)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.TipoContrato == 2 && x.Arquivado == false).FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //public static Contratos GetActiveContractById(string ContractNo)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public static List<Contratos> GetAllByContractNo(string ContractNo)
         {
@@ -187,7 +187,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.TipoContrato == 2).ToList();
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo).ToList();
                 }
             }
             catch (Exception ex)
@@ -195,7 +195,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
         public static Contratos GetContractProposalsNo(string ContractNo)
         {
             try
@@ -212,13 +211,14 @@ namespace Hydra.Such.Data.Logic.Contracts
         }
         #endregion
 
-        public static List<Contratos> GetAllByAreaIdAndType(int AreaId, int ContractType)
+        public static List<Contratos> GetAllByContractType(ContractType contractType)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.Área == AreaId && x.TipoContrato == ContractType).ToList();
+
+                    return ctx.Contratos.Where(x => x.TipoContrato == (int)contractType).ToList();
                 }
             }
             catch (Exception ex)
@@ -227,24 +227,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
-        public static List<Contratos> GetAllByContractType(int ContractType)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    
-                    return ctx.Contratos.Where(x => x.TipoContrato == ContractType).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
 
         public static List<Contratos> GetAllHistoric(int ContractType)
         {
@@ -270,8 +252,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Contratos.Where(x =>
-                    x.ContratoAvençaFixa == true && 
-                    x.Arquivado == false && 
+                    x.ContratoAvençaFixa == true &&
+                    x.Arquivado == false &&
                     x.Estado == 4 && // Assinado 
                     x.EstadoAlteração == 2 && // Bloqueado
                     (x.TipoFaturação == 1 || x.TipoFaturação == 4)).ToList(); // Mensal / Mensal + Consumo
@@ -372,7 +354,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
                 Historico = x.History
             };
-            
+
             if (result.DataHoraLimiteEsclarecimentos != null)
             {
                 result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Date;

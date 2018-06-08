@@ -124,7 +124,6 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -311,6 +310,10 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+                <paper-button id="btnContractArchive" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
                     <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
@@ -319,25 +322,6 @@
                     <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
                     <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                 </template>
-            </div>
-        </template>
-        <div class="row">
-            <div class="col-lg-12">
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnContractAdd" hidden="{{ _showContractLines }}" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>
-                <paper-button raised id="btnContractArchive" hidden="{{ _showContractLines }}" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-            </div>
-        </div>
-        <template is="dom-if" if="{{ _showAreas }}">
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
-                        <template>
-                            <b>[[item.value]]</b>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
             </div>
         </template>
 
@@ -1504,13 +1488,9 @@
                     _activeProposal: {
                         observer: '_proposalSelected'
                     },
-                    _showAreas: {
-                        type: Boolean,
-                        value: false
-                    },
                     _hasRelatedContract: {
                         type: Boolean,
-                        value: false,
+                        value: true,
                     },
                     _statusMenuItems: {
                         type: Array,
@@ -1641,8 +1621,6 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
-
-                    this._showAreas = this._areaid == 4;
                 },
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
@@ -1844,10 +1822,11 @@
                     var self = this;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        this.data.area = this._areaid;
+                        //this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
 
-                        this.$.grid_databound_ajax_proposals.body = JSON.stringify({ "AreaId": this._areaid });
+                        //this.$.grid_databound_ajax_proposals.body = JSON.stringify({ "AreaId": this._areaid });
+                        this.$.grid_databound_ajax_proposals.body = JSON.stringify();
                         this.$.grid_databound_ajax_proposals.generateRequest();
 
 
@@ -2024,7 +2003,7 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openContractArchive: function () {
-                    window.location.href = "../Contratos?archived=1&contractno=" + this.data.contractNo;
+                    window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
                 },
 
 

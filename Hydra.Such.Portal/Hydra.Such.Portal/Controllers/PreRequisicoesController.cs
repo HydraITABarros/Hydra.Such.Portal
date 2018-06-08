@@ -36,10 +36,39 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+
+            //    ViewBag.UPermissions = UPerm;
+            //    return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = User.Identity.Name;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Requisições);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }

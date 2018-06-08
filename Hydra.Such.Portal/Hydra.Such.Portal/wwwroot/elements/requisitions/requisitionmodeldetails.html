@@ -149,22 +149,25 @@
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLinesGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Compras/ModelosRequisicao/GetRequisition"
+        <iron-ajax url="/ModelosRequisicao/GetRequisition"
                    id="requisition_datasource"
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
-        <iron-ajax url="/Compras/ModelosRequisicao/ValidateNumeration"
+
+        <iron-ajax url="/ModelosRequisicao/ValidateNumeration"
                    id="validateNumeration_ajax"
                    last-response="{{numValidationResponse}}"
                    on-response="_onNumValidationResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/ModelosRequisicao/DeleteRequisitionLine"
+
+        <iron-ajax url="/ModelosRequisicao/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/ModelosRequisicao/CreateRequisitionLine"
+
+        <iron-ajax url="/ModelosRequisicao/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1278,7 +1281,7 @@
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
-                            this._sendReqRequest("/Compras/ModelosRequisicao/CreateRequisition", this.Requisition)
+                            this._sendReqRequest("/ModelosRequisicao/CreateRequisition", this.Requisition)
                         }
                         else {
                             this._showErrorMessage(this.numValidationResponse);
@@ -1287,11 +1290,11 @@
                 },
                 _update: function () {
                     if (this._validateReqHeaderInput()) {
-                        this._sendReqRequest("/Compras/ModelosRequisicao/UpdateRequisition", this.Requisition)
+                        this._sendReqRequest("/ModelosRequisicao/UpdateRequisition", this.Requisition)
                     }
                 },
                 _delete: function () {
-                    this._sendReqRequest("/Compras/ModelosRequisicao/DeleteRequisition", this.Requisition);
+                    this._sendReqRequest("/ModelosRequisicao/DeleteRequisition", this.Requisition);
                 },
                 _validateReqHeaderInput: function () {
                     if (true) {
@@ -1337,7 +1340,7 @@
                     }
                 },
                 _updateRequisitionLines: function () {
-                    this._sendReqRequest("/Compras/ModelosRequisicao/UpdateRequisitionLines", this.Requisition);
+                    this._sendReqRequest("/ModelosRequisicao/UpdateRequisitionLines", this.Requisition);
                 },
                 _createReqLineResponse: function (e) {
                     if (this.AddReqLineResponse.eReasonCode == "1") {
@@ -1389,7 +1392,7 @@
                         else if (data.detail.url.indexOf("Create") !== -1) {
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
-                                //this.$.requisition_datasource.url = "/Compras/ModelosRequisicao/GetRequisition";
+                                //this.$.requisition_datasource.url = "/ModelosRequisicao/GetRequisition";
                                 var reqNo = this.Requisition.requisitionNo;
                                 setTimeout(
                                     function () {
@@ -1404,7 +1407,7 @@
                         else if (data.detail.url.indexOf("UpdateRequisition") !== -1) {
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
-                                this.$.requisition_datasource.url = "/Compras/ModelosRequisicao/GetRequisition";
+                                this.$.requisition_datasource.url = "/ModelosRequisicao/GetRequisition";
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
@@ -1414,7 +1417,7 @@
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
                                 this.$.grdRequisitionLines.clearCache();
-                                this.$.requisition_datasource.url = "/Compras/ModelosRequisicao/GetRequisition";
+                                this.$.requisition_datasource.url = "/ModelosRequisicao/GetRequisition";
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
@@ -1424,7 +1427,7 @@
                             if (this.Requisition.eReasonCode == "1") {
                                 this._openToast(this.Requisition.eMessage);
                                 setTimeout(function () {
-                                    window.location.href = "/Compras/ModelosRequisicao";
+                                    window.location.href = "/ModelosRequisicao";
                                 }, 2500);
                             }
                             else {

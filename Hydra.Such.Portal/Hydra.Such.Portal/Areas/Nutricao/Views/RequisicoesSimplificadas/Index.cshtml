@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Requisições Simplifcadas - Nutrição - Such";
+    ViewData["Title"] = "Requisições Simplifcadas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
@@ -15,7 +15,7 @@
 
 @{ if (ViewBag.Option == "historico") { <h1 class="title">Histórico Requisições Simplificadas</h1>
     }
-    else if (ViewBag.Option == "resgitar")
+    else if (ViewBag.Option == "registar")
     {
     <h1 class="title"> Requisições Simplificadas para Registar</h1>
     }
@@ -150,7 +150,7 @@
 
                 ready: function () {
                     var option="@ViewBag.Option";
-                    if (option =="resgitar") {
+                    if (option =="registar") {
                         this.$.ddmarginSpace.style.display = 'none';
                         this.$.grid_datasource.body = JSON.stringify(option);
                     }
