@@ -104,8 +104,11 @@
                         <paper-button raised id="btnProjectAdd" class="" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     </template>
                     <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <paper-button raised id="btnPreProjectMovements" class="" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
+
                     <template is="dom-if" if="{{ !_projectClosed }}">
                         <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                        <paper-button raised id="btnProjectPreRegistration" class="" on-tap="_OpenProjectPreRegistration"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Registo Projetos</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.create }}">
                         <paper-button raised id="btnInvoiceAut" class="" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
@@ -663,6 +666,12 @@
                     //BUTTONS
                     _OpenProjectMovements: function (url, data) {
                         window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo + "?areaid=" + this._areaid;
+                    },
+                    _OpenPreProjectMovements: function (url, data) {
+                        window.location.href = "/Projetos/PreMovimentosProjetos/" + this.data.projectNo + "?areaid=" + this._areaid;
+                    },
+                    _OpenProjectPreRegistration: function (url, data) {
+                        window.location.href = "/Projetos/PreregistoProjetos/" + this.data.projectNo;
                     },
                     _OpenProjectDiary: function (url, data) {
                         window.location.href = "../DiarioProjeto/" + this.data.projectNo;

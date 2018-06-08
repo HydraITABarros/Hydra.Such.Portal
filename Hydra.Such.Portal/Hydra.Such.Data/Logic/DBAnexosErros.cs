@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AnexosErros.Where(x => x.ID == ID).FirstOrDefault();
+                    return ctx.AnexosErros.Where(x => x.Id == ID).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AnexosErros.Where(x => x.Origem == Origem && x.Codigo == Codigo).OrderByDescending(y => y.DataHora_Criacao).ToList();
+                    return ctx.AnexosErros.Where(x => x.Origem == Origem && x.Codigo == Codigo).OrderByDescending(y => y.DataHoraCriacao).ToList();
                 }
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    item.DataHora_Criacao = DateTime.Now;
+                    item.DataHoraCriacao = DateTime.Now;
                     ctx.AnexosErros.Add(item);
                     ctx.SaveChanges();
                 }
@@ -82,7 +82,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    item.DataHora_Alteracao = DateTime.Now;
+                    item.DataHoraAlteracao = DateTime.Now;
                     ctx.AnexosErros.Update(item);
                     ctx.SaveChanges();
                 }
@@ -102,7 +102,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    AnexosErros userAnexosErros = ctx.AnexosErros.Where(x => x.ID == ID).FirstOrDefault();
+                    AnexosErros userAnexosErros = ctx.AnexosErros.Where(x => x.Id == ID).FirstOrDefault();
                     if (userAnexosErros != null)
                     {
                         ctx.AnexosErros.Remove(userAnexosErros);
