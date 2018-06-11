@@ -1,11 +1,11 @@
 ﻿@{
     @if (ViewBag.FolhaDeHorasNo == "")
     {
-        ViewData["Title"] = "Folha de Horas > Por Integrar KMs";
+        ViewData["Title"] = "Folha de Horas > Por Integrar Aj. Custo RH";
     }
     else
     {
-        ViewData["Title"] = "Folha de Horas > Por Integrar KMs RH Nº " + ViewBag.FolhaDeHorasNo;
+        ViewData["Title"] = "Folha de Horas > Por Integrar Aj. Custo RH Nº " + ViewBag.FolhaDeHorasNo;
     }
 
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,6 +18,6 @@
                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
                    _estado="1"
                    _validacao="0"
-                   _integracaoajuda="0"
-                   _integracaokms="1">
+                   _integracaoajuda="1"
+                   _integracaokms="0">
 </x-folhadehoralist>
