@@ -134,13 +134,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<ProjectListItemViewModel> GetAllByAreaToList(int AreaId)
+        public static List<ProjectListItemViewModel> GetAllByAreaToList()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId).Select(x => new ProjectListItemViewModel()
+                    return ctx.Projetos.Select(x => new ProjectListItemViewModel()
                     {
                         ProjectNo = x.NºProjeto,
                         Date = x.Data,
@@ -193,5 +193,122 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        #region Parse Utilities
+        public static ProjectDetailsViewModel ParseToViewModel(this Projetos item)
+        {
+            if (item != null)
+            {
+                return new ProjectDetailsViewModel()
+                {
+                    ProjectNo = item.NºProjeto,
+                    Area = item.Área,
+                    Description = item.Descrição,
+                    ClientNo = item.NºCliente,
+                    Date = item.Data.HasValue ? item.Data.Value.ToString("yyyy-MM-dd") : "",
+                    Status = item.Estado,
+                    RegionCode = item.CódigoRegião,
+                    FunctionalAreaCode = item.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                    Billable = item.Faturável,
+                    ContractNo = item.NºContrato,
+                    ShippingAddressCode = item.CódEndereçoEnvio,
+                    ShippingName = item.EnvioANome,
+                    ShippingAddress = item.EnvioAEndereço,
+                    ShippingPostalCode = item.EnvioACódPostal,
+                    ShippingLocality = item.EnvioALocalidade,
+                    ShippingContact = item.EnvioAContato,
+                    ProjectTypeCode = item.CódTipoProjeto,
+                    ProjectTypeDescription = item.CódTipoProjetoNavigation.Descrição,
+                    OurProposal = item.NossaProposta,
+                    ServiceObjectCode = item.CódObjetoServiço,
+                    CommitmentCode = item.NºCompromisso,
+                    AccountWorkGroup = item.GrupoContabObra,
+                    GroupContabProjectType = item.TipoGrupoContabProjeto,
+                    GroupContabOMProjectType = item.TipoGrupoContabOmProjeto,
+                    ClientRequest = item.PedidoDoCliente,
+                    RequestDate = item.DataDoPedido.HasValue ? item.DataDoPedido.Value.ToString("yyyy-MM-dd") : "",
+                    RequestValidity = item.ValidadeDoPedido,
+                    DetailedDescription = item.DescriçãoDetalhada,
+                    ProjectCategory = item.CategoriaProjeto,
+                    BudgetContractNo = item.NºContratoOrçamento,
+                    InternalProject = item.ProjetoInterno,
+                    ProjectLeader = item.ChefeProjeto,
+                    ProjectResponsible = item.ResponsávelProjeto,
+                    CreateUser = item.UtilizadorCriação,
+                    CreateDate = item.DataHoraCriação,
+                    UpdateUser = item.UtilizadorModificação,
+                    UpdateDate = item.DataHoraModificação,
+                };
+            }
+            return null;
+        }
+
+        public static List<ProjectDetailsViewModel> ParseToViewModel(this List<Projetos> items)
+        {
+            List<ProjectDetailsViewModel> parsedItems = new List<ProjectDetailsViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
+        }
+
+        public static Projetos ParseToDB(this ProjectDetailsViewModel item)
+        {
+            if (item != null)
+            {
+                return new Projetos()
+                {
+                    NºProjeto = item.ProjectNo,
+                    Área = item.Area,
+                    Descrição = item.Description,
+                    NºCliente = item.ClientNo,
+                    Data = item.Date != "" && item.Date != null ? DateTime.Parse(item.Date) : (DateTime?)null,
+                    Estado = item.Status,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.ResponsabilityCenterCode,
+                    Faturável = item.Billable,
+                    NºContrato = item.ContractNo,
+                    CódEndereçoEnvio = item.ShippingAddressCode,
+                    EnvioANome = item.ShippingName,
+                    EnvioAEndereço = item.ShippingAddress,
+                    EnvioACódPostal = item.ShippingPostalCode,
+                    EnvioALocalidade = item.ShippingLocality,
+                    EnvioAContato = item.ShippingContact,
+                    CódTipoProjeto = item.ProjectTypeCode,
+                    NossaProposta = item.OurProposal,
+                    CódObjetoServiço = item.ServiceObjectCode,
+                    NºCompromisso = item.CommitmentCode,
+                    GrupoContabObra = item.AccountWorkGroup,
+                    TipoGrupoContabProjeto = item.GroupContabProjectType,
+                    TipoGrupoContabOmProjeto = item.GroupContabOMProjectType,
+                    PedidoDoCliente = item.ClientRequest,
+                    DataDoPedido = item.RequestDate != "" && item.RequestDate != null ? DateTime.Parse(item.RequestDate) : (DateTime?)null,
+                    ValidadeDoPedido = item.RequestValidity,
+                    DescriçãoDetalhada = item.DetailedDescription,
+                    CategoriaProjeto = item.ProjectCategory,
+                    NºContratoOrçamento = item.BudgetContractNo,
+                    ProjetoInterno = item.InternalProject,
+                    ChefeProjeto = item.ProjectLeader,
+                    ResponsávelProjeto = item.ProjectResponsible,
+                    UtilizadorCriação = item.CreateUser,
+                    DataHoraCriação = item.CreateDate,
+                    UtilizadorModificação = item.UpdateUser,
+                    DataHoraModificação = item.UpdateDate,
+                };
+            }
+            return null;
+        }
+
+        public static List<Projetos> ParseToDB(this List<ProjectDetailsViewModel> items)
+        {
+            List<Projetos> parsedItems = new List<Projetos>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+        #endregion
     }
 }

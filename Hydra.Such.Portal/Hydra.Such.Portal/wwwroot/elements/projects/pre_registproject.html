@@ -1,0 +1,2030 @@
+﻿<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<dom-module id="x-pre_registproject">
+    <template>
+
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
+
+             };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+        </style>
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas Pré-Registo</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            </template>
+        </div><!--on-response="_gridListResponse"-->
+        <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectListDiary" last-response="{{response}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements" last-response="{{response2}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes" last-response="{{response3}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{MeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContabGroup" last-response="{{ContabGroupData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjDiary_Price" last-response="{{ProjDiary_Price}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{projdata}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
+                                    required error-message="Este campo é obrigatório"
+                                    items="[[response2]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="projectTypeList" name="projectTypeList" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}"
+                                    on-value-changed="_projectTypeChange"
+                                    items="[[response3]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCode" name="piCode" value="{{codeNumber}}" label="Código" disabled="{{ !_permissions.create }}"
+                                    required
+                                    error-message="Este campo é obrigatório"
+                                    on-value-changed="_codeChange"
+                                    items="[[codeOptions]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
+                                    items="[[ContabGroupData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" value="{{codeMeasurementUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}"
+                                    items="[[MeasureUnit]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeLocation" name="piCodeLocation" value="{{codeLocation}}" label="Cód. Localização" disabled="{{ !_permissions.create }}"
+                                    items="[[Locations]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"  
+                                    items="[[RegionData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" 
+                                    items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}" 
+                                    items="[[ResponsabilityCenterData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitPrice" label="Preço Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="MealTypesCode" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}"
+                                    items="[[MealTypesData]]"
+                                    text-path="description"
+                                    value-path="code"
+                                    fields='[{"field":"code", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"grupoContabProduto", "name":"Grupo Contab. Produto"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceDescription"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2" disabled="{{ !_permissions.create }}">
+                    <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" value="{{residueguide}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceDescription"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+            </div>
+            <div class="row" hidden="{{ !_permissions.create }}">
+                <div class="col-lg-2">
+                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </div>
+            </div>
+            <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
+        </div>
+
+        <h2 class="separator">Linhas Pré-Registo</h2>
+        <iron-ajax url="/Projetos/CreatePDByMovPreProj" last-response="{{result}}" id="ajax_createmovproj" method="post" on-response="_createmovprojResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllPreRegistProject" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/UpdatePreRegistProject" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/RegisterPreRegistLines" last-response="{{data}}" id="ajax_register" method="post" on-response="_updateRegisterResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetPreMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post" dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetRelatedProjectInfo" last-response="{{related}}" id="ajax_related" method="post" on-response="_updateRelatedResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result.items]]" class="editGrid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" disabled value="{{item.projectNo}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.projectNo}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="date"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-date-picker id="dpDate" name="dpDate" disabled="{{ !_permissions.update }}" value="{{item.date}}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseDateFormat(item.date) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{item.movementType}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseMovementType(item.movementType) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box id="type[[index]]" items="[[response3]]" disabled="{{ !_permissions.update }}" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseType(item.type) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box id="_CLGridContractLineType" name="_CLGridContractLineType" disabled="{{ !_permissions.update }}" items="[[CBContractLineCodesGrid]]" on-value-changed="_lineCodeChange" item-value-path="id" item-label-path="id" value="{{item.code}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%"><b>[[item.id]]</b></td>
+                                        <td width="60%"> [[item.value]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ item.code ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" value="{{item.description}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.description}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ContabGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseContabGroup(item.projectContabGroup) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.quantity}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[MeasureUnit]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseMeasurementUnit(item.measurementUnitCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[Locations]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseLocation(item.locationCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[RegionData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseRegion(item.regionCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
+                            <template>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseFuncArea(item.functionalAreaCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                            <template>
+                                <table width="550px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseResponsabilityCenter(item.responsabilityCenterCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitCost}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalCost}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitPrice}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalPrice}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário a Faturar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitValueToInvoice}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="75px" resizable>
+                <template class="header">
+                    <p class="alignCenter">Faturável</p>
+                    <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                    </vaadin-grid-filter>-->
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="MealType"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[MealTypesData]]" disabled="{{ !_permissions.update }}" item-value-path="code" item-label-path="description" value="{{item.mealType}}">
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.code]]</td>
+                                        <td width="40%"> <b>[[item.description]]</b></td>
+                                        <td width="40%"> [[item.grupoContabProduto]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseMealType(item.mealType) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceGroupCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ServiceGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{item.serviceGroupCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.serviceCode]]</td>
+                                        <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseServiceGroup(item.serviceGroupCode, item.invoiceToClientNo )]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="residueGuideNo">Nº Guia Resíduo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="residueGuideNo"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="residueGuideNo" disabled="{{ !_permissions.update }}" value="{{item.residueGuideNo}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.residueGuideNo}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="externalGuideNo">Nº Guia Externa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="externalGuideNo"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="externalGuideNo" disabled="{{ !_permissions.update }}" value="{{item.externalGuideNo}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.externalGuideNo}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="consumptionDate"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+
+                        <vaadin-date-picker id="dpcompDate" name="dpcompDate" disabled="{{ !_permissions.update }}" value="{{item.consumptionDate}}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseDateFormat(item.consumptionDate) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceClientCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ServiceClientData]]" disabled="{{ !_permissions.update }}" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{item.serviceClientCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.serviceCode]]</td>
+                                        <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseServiceClient(item.serviceClientCode, item.invoiceToClientNo )]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column hidden>
+                <template>
+                    <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+        <div class="marginSpace" hidden="{{ disabledFields }}">
+            <div class="marginSpace" hidden="{{ !_permissions.update }}">
+                <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <!--<paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>-->
+            </div>
+        </div>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <!-- Paper Dialog -->
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <vaadin-grid aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
+                <vaadin-grid-selection-column auto-select>
+                </vaadin-grid-selection-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="projectNo" />
+                    </template>
+                    <template>
+                        {{item.projectNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="date" />
+                    </template>
+                    <template>
+                        {{item.date}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="moveType" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="type" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="code" />
+                    </template>
+                    <template>
+                        {{item.code}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header" width="200px" resizable>
+                        <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantity" />
+                    </template>
+                    <template>
+                        {{item.quantity}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="measurementUnitCode" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="locationCode" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="serviceObject" />
+                    </template>
+                    <template>
+                        {{item.serviceObject}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
+                            <template>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
+                            <template>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsabilityCenterCode" />
+                    </template>
+                    <template>
+                        <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                            <template>
+                                <table width="550px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="user" />
+                    </template>
+                    <template>
+                        {{item.user}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitCost" />
+                    </template>
+                    <template>
+                        {{item.unitCost}}€
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="totalCost" />
+                    </template>
+                    <template>
+                        {{item.totalCost}}€
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitPrice" />
+                    </template>
+                    <template>
+                        {{item.unitPrice}}€
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="TotalPrice" />
+                    </template>
+                    <template>
+                        {{item.totalPrice}}€
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" hidden>
+                    <template class="header">
+                        <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="consumptionDate"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseDateFormat(item.consumptionDate) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="billable" />
+                    </template>
+                    <template>
+                        <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
+                    </template>
+                </vaadin-grid-column>
+
+            </vaadin-grid>
+
+
+            <div class="buttons">
+                <paper-button class="btnSave" dialog-dismiss disabled="{{ !_permissions.create }}" raised on-tap="_confirm" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" on-tap="_closedialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
+
+
+        <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
+            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
+                                    items="[[CBResourceCode]]"
+                                      on-value-changed="_projectChange"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" disabled="{{disabledProjectNo}}" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                        <template>
+                            <table width="550px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pre_registproject',
+                properties: {
+                    disabledFields: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    ddMealTypes: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ddServiceGroupCode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ddServiceClientCode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    paramprojno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    projectNo: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
+                    disabledProjectNo: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    date: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    consumptionDate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    movementType: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
+                    type: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
+                    code: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    description: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    residueguide: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    externalguide: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeProjectContabGroup: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    quantity: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    codeMeasurementUnit: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeLocation: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeRegion: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeFuncArea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selectedItem: {
+                        type: Array,
+                    },
+
+                    selectedItems: {
+                        type: Array,
+                    },
+                    codeResponsabilityCenter: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    unitCost: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    totalCost: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    unitPrice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    totalPrice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    unitValueToInvoice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    billable: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    invoiceClientNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    Flag: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+
+                observers: [
+                    '_onCacheLoaded( CBResourceCode,CBCodeProducts,CBCGAccountCode,response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
+                ],
+
+                _onCacheLoaded: function (cBResourceCode,
+                    cBCodeProducts,
+                    cBcgAccountCode,
+                    typemovement,
+                    type,
+                    code,
+                    contabgroup,
+                    unitcode,
+                    localcode,
+                    regioncode,
+                    funcareacode,
+                    respcentercode,
+                    mealtypescode,
+                    serviceGroupCod,
+                    serviceClientCode
+                ) {
+
+                    if (!this.Flag) {
+                        if (this.paramprojno != "") {
+                            this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
+                            this.$.ajax_getall.generateRequest();
+
+                        } else {
+                            this.$.ajax_getall.generateRequest();
+                        }
+
+                        this.Flag = true;
+                    }
+                },
+                ready: function () {
+                    if (this.paramprojno != "") {
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this.paramprojno });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this.$.projectList.value = this.paramprojno;
+                        this.disabledProjectNo = true;
+
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
+
+                    } else {
+                        this.disabledProjectNo = !this._permissions.create;
+                        this.$.grid_databound_ajax.body = JSON.stringify("");
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
+                    }
+                    this.$.ajax_ServiceGroup.body = JSON.stringify("");
+                    this.$.ajax_ServiceGroup.params = { "allProjs": true };
+                    this.$.ajax_ServiceGroup.generateRequest();
+
+                    this.$.ajax_SServiceClient.body = JSON.stringify("");
+                    this.$.ajax_SServiceClient.params = { "allProjs": true };
+                    this.$.ajax_SServiceClient.generateRequest();
+
+                },
+                _responseProcessor: function () {
+                    if (this.projdata.status >= 4) {
+                        this.$.dpDate.disabled = true;
+                        this.$.projectMovementList.disabled = true;
+                        this.$.projectTypeList.disabled = true;
+                        this.$.piCode.disabled = true;
+                        this.$.piDescription.disabled = true;
+                        this.$.piContabGroup.disabled = true;
+                        this.$.piQuantity.disabled = true;
+                        this.$.piCodeMeasurementUnit.disabled = true;
+                        this.$.piCodeLocation.disabled = true;
+                        this.$.piCodeRegion.disabled = true;
+                        this.$.piFuncArea.disabled = true;
+                        this.$.piCodeResponsabilityCenter.disabled = true;
+                        this.$.piUnitCost.disabled = true;
+                        this.$.piTotalCost.disabled = true;
+                        this.$.piUnitPrice.disabled = true;
+                        this.$.piTotalPrice.disabled = true;
+                        this.$.piUnitValueToInvoice.disabled = true;
+                        this.$.piCoin.disabled = true;
+                        this.$.pcInvoice.disabled = true;
+                        this.$.MealTypesCode.disabled = true;
+                        this.$.ServiceGroupCod.disabled = true;
+                        this.$.piResidueGuideNo.disabled = true;
+                        this.$.piExternalGuideNo.disabled = true;
+                        this.$.dpcompDate.disabled = true;
+                        this.$.ServiceClientCode.disabled = true;
+                        //this.$.type
+                        this.disabledFields = true;
+                        this._permissions.create = false;
+                        this._permissions.update = false;
+                    }
+                },
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _add() {
+                    if (true)
+                    //Validações
+                    {
+                        this.result.items.unshift({
+                            projectNo: this.projectNumber,
+                            date: this.date,
+                            movementType: this.projectMovementNumber,
+                            type: this.projectTypeNumber,
+                            code: this.codeNumber,
+                            description: this.description,
+                            quantity: this.quantity,
+                            measurementUnitCode: this.codeMeasurementUnit,
+                            locationCode: this.codeLocation,
+                            projectContabGroup: this.codeProjectContabGroup,
+                            regionCode: this.codeRegion,
+                            functionalAreaCode: this.codeFuncArea,
+                            responsabilityCenterCode: this.codeResponsabilityCenter,
+                            user: "", //set logged user
+                            unitCost: this.unitCost,
+                            totalCost: this.totalCost,
+                            unitPrice: this.unitPrice,
+                            totalPrice: this.totalPrice,
+                            unitValueToInvoice: this.unitValueToInvoice,
+                            billable: this.billable,
+                            invoiceToClientNo: this.invoiceClientNo,
+                            mealType: this.ddMealTypes,
+                            serviceGroupCode: this.ddServiceGroupCode,
+                            residueGuideNo: this.residueguide,
+                            externalGuideNo: this.externalguide,
+                            consumptionDate: this.consumptionDate,
+                            serviceClientCode: this.ddServiceClientCode
+                        });
+
+                        // Save to DB
+                        this.$.ajax_update.body = JSON.stringify(this.result.items);
+                        this.$.ajax_update.generateRequest();
+                        this.$.projectDiaryProject.clearCache();
+                    } else {
+                        alert("Tem de preencher todos os campos.");
+                    }
+                },
+
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
+                    this.$.ajax_update.generateRequest();
+                },
+
+                _delete: function (e) {
+                    var index = this.result.items.indexOf(e.model.item);
+                    this.result.items.splice(index, 1);
+                    // Save to DB
+                    this.$.ajax_update.body = JSON.stringify(this.result.items);
+                    this.$.ajax_update.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_getall.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _createmovprojResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.ajax_getall.generateRequest();
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
+                        if (this.result.eReasonCode === 1)
+                        {
+                            this.openToastSuccess(this.result.eMessage);
+                        } 
+                        else
+                        {
+                            this.openToastError(this.result.eMessage);
+                        }
+                    }                   
+                },
+                _updateResponse: function (e) {
+                    var self = this;
+
+                    if (e.detail.status === 200) {
+                        this.$.ajax_getall.generateRequest();
+                        this.$.projectDiaryProject.clearCache();
+                        if (this.result.eReasonCode === 1) {
+
+                            this.openToastSuccess(this.result.eMessage);
+                            if (this.disabledProjectNo == false) {
+                                this.projectNumber = "";
+                                this.$.projectList._clearSelection();
+                            }
+
+                            //this.codeRegion = "";
+                            //this.codeFuncArea = "";
+                            //this.codeResponsabilityCenter = "";
+                            this.date = "";
+                            this.projectMovementNumber = "";
+                            this.projectTypeNumber = "";
+                            this.codeNumber = "";
+                            this.description = "";
+                            this.quantity = "";
+                            this.codeMeasurementUnit = "";
+                            this.codeLocation = "";
+                            //this.codeProjectContabGroup = "";
+                            this.unitCost = "";
+                            this.totalCost = "";
+                            this.unitPrice = "";
+                            this.totalPrice = "";
+                            this.billable = true;
+                            this.invoiceClientNo = "";
+                            this.ddMealTypes = "";
+                            this.ddServiceGroupCode = "";
+                            this.residueguide = "";
+                            this.externalguide = "";
+                            this.consumptionDate = "";
+                            this.ddServiceClientCode = "";
+                            this.unitValueToInvoice = "";
+
+                            //this.$.piCodeRegion._clearSelection();
+                            //this.$.piFuncArea._clearSelection();
+                            //this.$.piCodeResponsabilityCenter._clearSelection();
+                            this.$.piCode._clearSelection();
+                            this.$.piDescription.value = "";
+                            this.$.piCodeLocation._clearSelection();
+                            this.$.piUnitCost.value = "";
+                            this.$.piTotalCost.value = "";
+                            this.$.piUnitPrice.value = "";
+                            this.$.piTotalPrice.value = "";
+                            this.$.piUnitValueToInvoice.value = "";
+                            this.$.piCoin.value = "";
+                            this.$.pcInvoice.value = true;
+                            this.$.MealTypesCode._clearSelection();
+                            this.$.ServiceGroupCod._clearSelection();
+                            this.$.piResidueGuideNo.value = "";
+                            this.$.piExternalGuideNo.value = "";
+                            this.$.dpcompDate.value = "";
+                            //this.$.piContabGroup._clearSelection();
+                            this.$.piCodeMeasurementUnit._clearSelection();
+                            this.$.projectMovementList._clearSelection();
+                            this.$.projectTypeList._clearSelection();
+                        }
+                        else {
+                            this.openToastError(this.result.eMessage);
+                        }
+                    } else {
+                        this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                    }
+                },
+                _confirm: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        var destinationProject = this.$.projectTargetDlg.value;
+                        for (var i = 0; i < selItms.length; i++) {
+                            selItms[i].lineNo = 0;
+                            selItms[i].projectNo = destinationProject;
+                        }
+
+                        this.$.dialogGetProjetStart.close();
+                        this.$.ajax_createmovproj.params = { "projectNo": "","Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.ajax_createmovproj.body = JSON.stringify(selItms);
+                        this.$.ajax_createmovproj.generateRequest();
+                    } else {
+                        this.openToastError("Não foi selecionada nenhuma linha.");
+                    }
+
+                },
+
+                _closedialog: function (e) {
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+                _projectChange: function (e) {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+
+                        //Request Project Data
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                        this.$.ajax_related.generateRequest();
+
+                        //Request Project Data
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+
+                        this.$.grid_databound_ajax.generateRequest();
+
+                    } else if (this.$.projectList.value != undefined && this.$.projectList.value != "") {
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectList.value);
+                        this.$.ajax_related.generateRequest();
+                    } else {
+                        this.$.piDescription = "";
+                        this.$.piCodeRegion = "";
+                        this.$.piFuncArea = "";
+                        this.$.piCodeResponsabilityCenter = "";
+                    }
+
+                },
+
+                _projectTypeChange: function (e) {
+
+                    var type = e.detail.value;
+                    if (type == "1") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else if (type == "2") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else if (type == "3") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetCGAccountCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else {
+                        this.description = "";
+                        this.codeMeasurementUnit = "";
+                    }
+                },
+
+                _updateRelatedResponse: function (related) {
+                    if (related != null) {
+                        this.codeRegion = this.related.regionCode;
+                        this.codeFuncArea = this.related.funcAreaCode;
+                        this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                        this.codeProjectContabGroup = this.related.contabGroup;
+                        this.invoiceClientNo = this.related.invoiceClientNo;
+                    }
+                    if (this.invoiceClientNo != null) {
+                        this.$.ajax_ServiceGroup.body = JSON.stringify(this.invoiceClientNo);
+                        this.$.ajax_ServiceGroup.params = { "allProjs": false };
+                        this.$.ajax_ServiceGroup.generateRequest();
+
+                        this.$.ajax_SServiceClient.body = JSON.stringify(this.invoiceClientNo);
+                        this.$.ajax_SServiceClient.params = { "allProjs": false };
+                        this.$.ajax_SServiceClient.generateRequest();
+                    }
+                },
+                _updateRegisterResponse: function (e) {
+                    if (this.data == null || this.data.length <= 0) {
+                        this.openToastError("Não existe linhas de Diário para Registar.");
+                    } else {
+
+                        if (e.detail.status === 200) {
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                        }
+                        else {
+                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                        }
+                    }
+                },
+
+                _registerPreRegist: function () {
+                    this.$.ajax_register.body = JSON.stringify(this.result.items);
+                    this.$.ajax_register.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _getMovements: function () {
+                    //Request
+                    if (this.$.projectList.value != null && this.$.projectList.value != "") {
+                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
+                        this.$.ajax_movementLines.generateRequest();
+                    }
+                    else {
+                        this.openToastError("Precisa de selecionar um projeto.");
+                    }
+
+                },
+                _getMovementsProject: function () {
+                    this.$.dialogGetProjetStart.open();
+
+                    /*if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
+                        this.openToastError("Não existem movimentos associados a este projeto.");
+                    }*/
+
+                },
+                _dlgNext: function () {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                        this.$.dialogGetProjetStart.close();
+                        this.$.dialog.open();
+                    } else {
+                        this.openToastError("É obrigatório escolher o projeto de origem e destino.");
+                    }
+
+                },
+                _movementLinesResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.movementLines.eReasonCode === 1) {
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.openToastSuccess(this.movementLines.eMessage);
+                        } else {
+                            this.openToastError(this.movementLines.eMessage);
+                        }
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                    }
+                },
+
+                _calcTotals: function (e) {
+                    switch (e.target.id) {
+                        case "piQuantity":
+                            this.quantity = e.detail.value.replace(",", ".");
+                            break;
+                        case "piUnitCost":
+                            this.unitCost = e.detail.value.replace(",", ".");
+                            break;
+                        case "piUnitPrice":
+                            this.unitPrice = e.detail.value.replace(",", ".");
+                            break;
+                        case "piTotalCost":
+                            this.totalCost = e.detail.value.replace(",", ".");
+                            break;
+                        case "piTotalPrice":
+                            this.totalPrice = e.detail.value.replace(",", ".");
+                            break;
+                        case "piUnitValueToInvoice":
+                            this.unitValueToInvoice = e.detail.value.replace(",", ".");
+                            break;
+                        default:
+                            break;
+                    }
+                    if (this.quantity != null && this.quantity != "" &&
+                        this.unitPrice != null && this.unitPrice != "") {
+                        this.totalPrice = this.unitPrice * this.quantity;
+                        this.totalPrice = this.totalPrice.toFixed(2);
+                    }
+                    if (this.quantity != null && this.quantity != "" &&
+                        this.unitCost != null && this.unitCost != "") {
+                        this.totalCost = this.unitCost * this.quantity;
+                        this.totalCost = this.totalCost.toFixed(2);
+                    }
+                },
+
+                _lineProjectTypeChange: function (e) {
+                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.contractlinecodesgrid_ajax.generateRequest();
+
+                    this.result.items.find(x => x == this._SelectedLine).code = "";
+                    this.result.items.find(x => x == this._SelectedLine).type = e.detail.value;
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _lineCodeChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        this.result.items.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.result.items.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.result.items.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.$.projectDiaryProject.clearCache();
+                    }
+                },
+
+                _codeChange: function (e) {
+
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                        this.code = this.codeOptions[index].id;
+                        this.description = this.codeOptions[index].value;
+                        this.codeMeasurementUnit = this.codeOptions[index].extra;
+                    }
+                },
+
+                // PARSING FUNCTIONS -> GRID LINES
+                _parseMovementType: function (param) {
+                    if (param != undefined && this.response2 != undefined) {
+                        var sel = this.response2.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseType: function (param) {
+                    if (param != undefined && this.response3 != undefined) {
+                        var sel = this.response3.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseCode: function (param1, param2) {
+                    if (param1 != undefined && param2 != undefined) {
+                        var sel;
+                        if (param2 == 1 && this.CBResourceCode != undefined) {
+                            sel = this.CBResourceCode.find(x => x.id == param1);
+                        } else if (param2 == 2 && this.CBCodeProducts != undefined) {
+                            sel = this.CBCodeProducts.find(x => x.id == param1);
+                        } else {
+                            if (this.CBCGAccountCode != undefined) {
+                                sel = this.CBCGAccountCode.find(x => x.id == param1);
+                            }
+                        }
+                        if (sel != undefined) {
+                            return sel.id;
+                        }
+                    }
+                    return "";
+                },
+                _parseContabGroup: function (param) {
+                    if (param != undefined && this.ContabGroupData != undefined) {
+                        var sel = this.ContabGroupData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseMeasurementUnit: function (param) {
+                    if (param != undefined && this.MeasureUnit != undefined) {
+                        var sel = this.MeasureUnit.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseLocation: function (param) {
+                    if (param != undefined && this.Locations != undefined) {
+                        var sel = this.Locations.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseRegion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseFuncArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseResponsabilityCenter: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseMealType: function (param) {
+                    if (param != undefined && this.MealTypesData != undefined) {
+                        var sel = this.MealTypesData.find(x => x.code == param);
+                        if (sel != undefined) {
+                            return sel.description;
+                        }
+                    }
+                    return "";
+                },
+
+                _parseServiceClient: function (param1, param2) {
+                    //refinar array c/ param2
+                    //retornar valor c/ param1
+                    if (param2 != undefined) {
+
+                        if (this.ServiceClientData != null) {
+                            var array = this.ServiceClientData;
+
+                            array = array.filter(function (obj) {
+                                return obj.clientNumber == param2;
+                            });
+                            this.$.ajax_SServiceClient.body = JSON.stringify(param2);
+                            this.$.ajax_SServiceClient.params = { "allProjs": false };
+                            this.$.ajax_SServiceClient.generateRequest();
+                            if (param1 != undefined) {
+                                var arrayfindcode = array.find(x => x.serviceCode == param1);
+                                if (arrayfindcode != undefined) {
+                                    return arrayfindcode.serviceDescription;
+                                } else {
+                                    return "";
+                                }
+                            }
+                        }
+                    }
+                    return "";
+
+                },
+                _parseServiceGroup: function (param1, param2) {
+                    //refinar array c/ param2
+                    //retornar valor c/ param1
+                    if (param2 != undefined && this.ServiceGroupData != undefined) {
+
+                        if (this.ServiceGroupData != null) {
+                            var array = this.ServiceGroupData;
+
+                            array = array.filter(function (obj) {
+                                return obj.clientNumber == param2;
+                            });
+                            this.$.ajax_ServiceGroup.body = JSON.stringify(param2);
+                            this.$.ajax_ServiceGroup.params = { "allProjs": false };
+                            this.$.ajax_ServiceGroup.generateRequest();
+                            if (param1 != undefined) {
+                                var arrayfindcode = array.find(x => x.serviceCode == param1);
+                                if (arrayfindcode != undefined) {
+                                    return arrayfindcode.serviceDescription;
+                                } else {
+                                    return "";
+                                }
+
+                            }
+                        }
+                    }
+                    return "";
+                },
+
+                _lineCalcTotals: function (param) {
+                    if (this.result != null) {
+                        var res = this.result.items.find(x => x == this._SelectedLine);
+                        if (res != null) {
+                            var qnt = res.quantity;
+                            var unitCost = res.unitCost;
+                            var unitPrice = res.unitPrice;
+                            switch (param.target.id) {
+                                case "lineQuantity":
+                                    qnt = param.target.value.replace(",", ".");
+                                    res.quantity = qnt;
+                                    break;
+                                case "lineUnitCost":
+                                    unitCost = param.target.value.replace(",", ".");
+                                    res.unitCost = unitCost;
+                                    break;
+                                case "lineUnitPrice":
+                                    unitPrice = param.target.value.replace(",", ".");
+                                    res.unitPrice = unitPrice;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
+                                res.totalCost = qnt * unitCost;
+                            }
+                            if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
+                                res.totalPrice = qnt * unitPrice;
+                            }
+                            this.$.projectDiaryProject.clearCache();
+                        }
+                    }
+                },
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.result.items.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+                        var sel = this.result.items.find(x => x == item);
+                        if (sel != undefined) {
+                            this.result.items.find(x => x == item).selected = true;
+                            this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            this.$.contractlinecodesgrid_ajax.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                        }
+                    }
+                },
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var x = date.split("-");
+                        return x[2] + "-" + x[1] + "-" + x[0];
+                    }
+                }
+            });
+
+        });
+    </script>
+</dom-module>

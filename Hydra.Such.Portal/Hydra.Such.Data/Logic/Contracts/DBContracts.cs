@@ -79,7 +79,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true && 
+                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true &&
                     x.NºContrato == ContractNo && x.NºCliente == ClientNo).
                     OrderByDescending(x => x.NºVersão).
                     FirstOrDefault();
@@ -151,20 +151,20 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static Contratos GetActiveContractById(string ContractNo)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //public static Contratos GetActiveContractById(string ContractNo)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public static List<Contratos> GetAllByContractNo(string ContractNo)
         {
@@ -180,15 +180,45 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+
+        public static List<Contratos> GetAllByContractProposalsNo(string ContractNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static Contratos GetContractProposalsNo(string ContractNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.TipoContrato == 2).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
-        public static List<Contratos> GetAllByAreaIdAndType(int AreaId, int ContractType)
+        public static List<Contratos> GetAllByContractType(ContractType contractType)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.Área == AreaId && x.TipoContrato == ContractType).ToList();
+
+                    return ctx.Contratos.Where(x => x.TipoContrato == (int)contractType).ToList();
                 }
             }
             catch (Exception ex)
@@ -198,14 +228,14 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static List<Contratos> GetAllByContractType(int ContractType)
+        public static List<Contratos> GetAllHistoric(int ContractType)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    
-                    return ctx.Contratos.Where(x => x.TipoContrato == ContractType).ToList();
+
+                    return ctx.Contratos.Where(x => x.TipoContrato == ContractType && x.Historico == true).ToList();
                 }
             }
             catch (Exception ex)
@@ -214,7 +244,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
 
         public static List<Contratos> GetAllAvencaFixa()
         {
@@ -223,8 +252,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Contratos.Where(x =>
-                    x.ContratoAvençaFixa == true && 
-                    x.Arquivado == false && 
+                    x.ContratoAvençaFixa == true &&
+                    x.Arquivado == false &&
                     x.Estado == 4 && // Assinado 
                     x.EstadoAlteração == 2 && // Bloqueado
                     (x.TipoFaturação == 1 || x.TipoFaturação == 4)).ToList(); // Mensal / Mensal + Consumo
@@ -273,7 +302,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 TipoFaturação = x.BillingType,
                 TipoContratoManut = x.MaintenanceContractType,
                 NºRequisiçãoDoCliente = x.ClientRequisitionNo,
-                DataReceçãoRequisição = string.IsNullOrEmpty(x.ReceiptDateRequisition) ? (DateTime?)null :  DateTime.Parse(x.ReceiptDateRequisition),
+                DataReceçãoRequisição = string.IsNullOrEmpty(x.ReceiptDateRequisition) ? (DateTime?)null : DateTime.Parse(x.ReceiptDateRequisition),
                 NºCompromisso = x.PromiseNo,
                 TaxaAprovisionamento = x.ProvisioningFee,
                 Mc = x.Mc,
@@ -323,9 +352,9 @@ namespace Hydra.Such.Data.Logic.Contracts
                 RazãoArquivo = x.ArchiveReason,
                 ValorBaseProcedimento = x.BaseValueProcedure,
                 AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
-
+                Historico = x.History
             };
-            
+
             if (result.DataHoraLimiteEsclarecimentos != null)
             {
                 result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Date;
@@ -478,6 +507,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
                 ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
                 ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
+                History = x.Historico
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

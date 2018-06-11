@@ -2077,7 +2077,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Fornecedor Secundário"
             }
         };
-
+        
         //CLIENTE
         public static List<EnumData> Tipo_Cliente
         {
@@ -2104,6 +2104,51 @@ namespace Hydra.Such.Portal.Configurations
                 return enumData;
             }
         }
+
+        //ANEXOS ERROS
+        public static readonly List<EnumData> AE_Origem = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Acordo de Preços"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "FH Empregado Recursos"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "FH Preço Venda Recursos"
+            }
+        };
+
+        //ANEXOS ERROS
+        public static readonly List<EnumData> AE_Tipo = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Sucesso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Insucesso"
+            }
+        };
     }
 
     public class EnumDataString

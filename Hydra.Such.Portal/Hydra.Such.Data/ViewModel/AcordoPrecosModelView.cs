@@ -15,5 +15,6 @@ namespace Hydra.Such.Data.ViewModel
 
         public List<FornecedoresAcordoPrecosViewModel> FornecedoresAcordoPrecos { get; set; }
         public List<LinhasAcordoPrecosViewModel> LinhasAcordoPrecos { get; set; }
+        public List<AnexosErrosViewModel> AnexosErros { get; set; }
     }
 }

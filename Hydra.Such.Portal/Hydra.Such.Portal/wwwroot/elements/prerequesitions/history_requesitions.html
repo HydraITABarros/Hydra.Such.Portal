@@ -1,0 +1,360 @@
+﻿<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<dom-module id="x-historyreq">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                padding: 0 15px;
+                color: #333;
+                background-color: #f5f5f5;
+                border-bottom: solid #ddd 1px;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+
+            };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+
+
+
+        <iron-ajax url="/PreRequisicoes/GetHistoryReq"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetHistoryReqLines"
+                   last-response="{{resultlines}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_datareqlines_ajax"
+                   on-response="_responseLines"
+                   content-type="application/json"></iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!--<paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>-->
+        <br> <br/>
+        <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="state" />
+                </template>
+                <template>
+                    [[ _clFormatState(item.state) ]]
+
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="RequisitionDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionDate" />
+                </template>
+                <template>
+                    {{item.requisitionDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsibleApproval">Responsável Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsibleApproval" />
+                </template>
+                <template>
+                    {{item.responsibleApproval}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="approvalDate">Data/Hora Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvalDate" />
+                </template>
+                <template>
+                    {{item.approvalDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+           <!-- <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>-->
+        </vaadin-grid>
+
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2>Linhas Requisição</h2>
+            <vaadin-grid aria-label="HistoryReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requestNo" />
+                    </template>
+                    <template>
+                        {{item.requestNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="supplierProductCode">Cód. Produto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="supplierProductCode" />
+                    </template>
+                    <template>
+                        {{item.supplierProductCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="quantityRequired">Quantidade Requerida</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantityRequired" />
+                    </template>
+                    <template>
+                        {{item.quantityRequired}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="queryCreatedMarketNo" />
+                    </template>
+                    <template>
+                        {{item.queryCreatedMarketNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createdOrderNo" />
+                    </template>
+                    <template>
+                        {{item.createdOrderNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="150px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="projectNo" />
+                    </template>
+                    <template>
+                        {{item.projectNo}}
+                    </template>
+                </vaadin-grid-column>
+
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-historyreq',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        this.$.dialog.open();
+                        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
+                        this.$.grid_datareqlines_ajax.generateRequest();
+                    }
+                },
+                _responsehead: function (data) {
+
+                    _clFormatState(this.result.state);
+
+                    debugger;;
+                },
+                _clFormatState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _pendingreq: function (e) {
+                    window.location.href = "../RequisicoesPendentes/";
+                },
+                _GoToReq: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
+                    this.$.grid_databound_ajax.generateRequest();
+                }
+            });
+        });
+    </script>
+
+</dom-module>

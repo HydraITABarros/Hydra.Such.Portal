@@ -90,6 +90,7 @@ namespace Hydra.Such.Data.Database
         public decimal? ValorBaseProcedimento { get; set; }
         public DateTime? AudiênciaPrévia { get; set; }
         public string RazãoArquivo { get; set; }
+        public bool? Historico { get; set; }
 
         public ObjetosDeServiço ObjetoServiçoNavigation { get; set; }
         public ICollection<LinhasContratos> LinhasContratos { get; set; }

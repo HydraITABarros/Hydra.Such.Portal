@@ -36,10 +36,39 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+
+            //    ViewBag.UPermissions = UPerm;
+            //    return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = User.Identity.Name;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Requisições);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -728,10 +757,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
 
         }
+
+        public JsonResult GetHistoryReq([FromBody] JObject requestParams)
+        {
+            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
+
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived,
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+
+            return Json(result);
+        }
+
+        public JsonResult GetHistoryReqLines([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["ReqNo"].ToString();
+
+            List<LinhasRequisição> RequisitionLines = null;
+            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+
+            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+
+            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            return Json(result);
+
+        }
         #endregion
 
         #region Requisition
-        
+
         [HttpPost]
         public JsonResult CreateRequesition([FromBody] PreRequesitionsViewModel data)
         {

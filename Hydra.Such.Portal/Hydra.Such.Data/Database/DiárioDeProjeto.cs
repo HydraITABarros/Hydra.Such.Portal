@@ -56,6 +56,7 @@ namespace Hydra.Such.Data.Database
         public string Moeda { get; set; }
         public decimal? ValorUnitárioAFaturar { get; set; }
         public int? CódServiçoCliente { get; set; }
+        public bool? PréRegisto { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

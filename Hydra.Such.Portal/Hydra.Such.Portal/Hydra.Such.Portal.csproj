@@ -5,12 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Database\**" />
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
     <Compile Remove="__Notes\**" />
+    <Content Remove="Database\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
     <Content Remove="__Notes\**" />
+    <EmbeddedResource Remove="Database\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
     <EmbeddedResource Remove="__Notes\**" />
+    <None Remove="Database\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
     <None Remove="__Notes\**" />
   </ItemGroup>
@@ -44,7 +48,7 @@
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
     <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\Upload\" />
+    <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\reports\" />
   </ItemGroup>
 

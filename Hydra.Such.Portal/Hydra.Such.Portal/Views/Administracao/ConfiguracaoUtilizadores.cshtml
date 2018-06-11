@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Utilizadores - Administração - eSuch";
+    ViewData["Title"] = "Configuração de Utilizadores";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,8 +14,6 @@
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-
-<h1 class="title">Configuração de Utilizadores</h1>
 
 <x-users></x-users>
 <dom-module id="x-users">
@@ -33,10 +31,10 @@
                    id="grid_databound"
                    content-type="application/json"></iron-ajax>
 
-
-        <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
         </div>
+
         <vaadin-grid aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="15%">
                 <template class="header">

@@ -142,7 +142,6 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Id,
                 value = x.Descrição
             }).ToList();
-
             return Json(result);
         }
 
