@@ -1728,6 +1728,22 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.AP_TipoPreco;
             return Json(result);
         }
+
+        //CLIENTE
+        [HttpPost]
+        public JsonResult GetCustomerTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.Tipo_Cliente;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCustomerNatures()
+        {
+            List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
+            return Json(result);
+        }
     }
 
 

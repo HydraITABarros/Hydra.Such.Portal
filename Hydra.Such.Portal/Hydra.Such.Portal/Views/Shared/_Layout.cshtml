@@ -55,12 +55,12 @@
                 <span class="zmdi zmdi-hc-lg zmdi-more"></span>
             </button>
             @*<button type="button" class="navbar-toggle navbar-toggle-right collapsed" data-toggle="collapse" data-target="#navbar-search" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="zmdi zmdi-hc-lg zmdi-search"></span>
-            </button>*@
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="zmdi zmdi-hc-lg zmdi-search"></span>
+                </button>*@
             <a href="/" class="navbar-brand">
                 <span class="brand-icon">
-                <img src="~/Infinity/assets/images/logo1.png" width="40px" height="30px" alt="">
+                    <img src="~/Infinity/assets/images/logo1.png" width="40px" height="30px" alt="">
                 </span>
 
                 <span class="brand-name" style="color: black;">SUCH</span>
@@ -86,7 +86,7 @@
     <!--========== END app navbar -->
     <!-- APP ASIDE ==========-->
     <aside id="menubar" class="menubar light">
-        
+
         <div class="menubar-scroll">
             <div class="menubar-scroll-inner">
                 <ul class="app-menu">
@@ -122,6 +122,7 @@
                             <li>@Html.ActionLink("Projetos", "Index", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Orçamentos", "", "", null, null)</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Pré-Registos", "PreregistoProjetos", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Unidades Produtivas", "Index", "UnidadesProdutivas", null, null)</li>
@@ -188,9 +189,11 @@
                             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                         </a>
                         <ul class="submenu">
-                            <li>@Html.ActionLink("Criação", "Index", "FolhasDeHoras", null, null)</li>
-                            <li>@Html.ActionLink("Validação - Aprovação", "FolhaDeHoras_Validacao", "Engenharia", null, null)</li>
-                            <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", null, null)</li>
+                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -249,7 +252,6 @@
     </aside>
     <!--========== END app aside -->
     <!-- navbar search -->
-    
     <!-- .navbar-search -->
     <!-- APP MAIN ==========-->
     <main id="app-main" class="app-main">
@@ -262,12 +264,10 @@
             </section><!-- #dash-content -->
         </div><!-- .wrap -->
         <!-- APP FOOTER -->
-
         <!-- /#app-footer -->
     </main>
     <!--========== END app main -->
     <!-- APP CUSTOMIZER -->
-    
     <!-- SIDE PANEL -->
     <!-- /#side-panel -->
     <!-- build:js ~/Infinity/assets/js/core.min.js -->
