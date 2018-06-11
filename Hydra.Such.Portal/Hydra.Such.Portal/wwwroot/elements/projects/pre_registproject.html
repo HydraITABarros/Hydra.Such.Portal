@@ -1593,7 +1593,7 @@
                             this.openToastError(this.result.eMessage);
                         }
                     } else {
-                        this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                        this.openToastError("Occorreu um erro ao atualizar.");
                     }
                 },
                 _confirm: function (selectedItem, selectedItems) {
@@ -1684,16 +1684,16 @@
                 },
                 _updateRegisterResponse: function (e) {
                     if (this.data == null || this.data.length <= 0) {
-                        this.openToastError("Não existe linhas de Diário para Registar.");
+                        this.openToastError("Não existem linhas de Pré-Registos.");
                     } else {
 
                         if (e.detail.status === 200) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess("Registado com sucesso.");
                         }
                         else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                            this.openToastError("Occorreu um erro ao registar.");
                         }
                     }
                 },
@@ -1743,7 +1743,7 @@
                         }
                     }
                     else {
-                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                        this.openToastError("Occorreu um erro ao registar.");
                     }
                 },
 
