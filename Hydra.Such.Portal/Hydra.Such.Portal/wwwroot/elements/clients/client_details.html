@@ -137,21 +137,14 @@
 
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
+            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>            
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+            </template>
+                <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
         </div>
-
-        <template is="dom-if" if="{{ !_isCreate }}">
-            <div class="row break_clear">
-
-                <div class="col-lg-12">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button raised id="btnClientAdd" class="" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    </template>
-                </div>
-            </div>
-        </template>
-
 
         <div class="panel panel-default break_clear">
 
@@ -305,7 +298,7 @@
                     </div>
                 </div>
                 <!------------ Endereços de envio ------------>
-                <div is="dom-if" if="{{ !_isCreate }}">
+                <div style="display: {{ _listDisplay }};">
                     <paper-collapse-group>
                         <paper-collapse-item class="panel-heading" header="Endereços de envio" opened>
                             <div is="dom-if" if="{{ _permissions.update }}">
@@ -617,10 +610,18 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _showCreateNew: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _listDisplay: {
+                        type: String,
+                        value: 'none;'
+                    },
                     shippingData: {
                         type: Object,
                         value: {}
-                    },
+                    }
                 },
                 ready: function () {
 
@@ -633,11 +634,18 @@
 
                     if (this._no == "") {
                         this._isCreate = true;
-
                         //this.data.area = this._areaid;
+                    }
+                    this._listDisplay = this._getListDisplay();
+                    
+                    if (this._permissions.create && !this._isCreate) {
+                        this._showCreateNew = true;
                     }
 
                     this._showAreas = this._areaid == 4 /* vendas */;
+                },
+                _getListDisplay: function () {
+                    return this._isCreate ? 'none;' : 'block;';
                 },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -749,7 +757,7 @@
                 _deleteShippingLine: function (e) {
                     var index = this.shippingList.indexOf(e.model.item);
                     var data = this.shippingList[index];
-                    
+
                     this.$.shipping_delete.body = JSON.stringify(data);
                     this.$.shipping_delete.generateRequest();
                 },
@@ -764,6 +772,7 @@
                         if (data.detail.url.indexOf("GetDetails") !== -1) {
                             if (this.data.No == "") {
                                 this._isCreate = true;
+                                this._listDisplay = this._getListDisplay();
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
@@ -782,6 +791,7 @@
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
+                        this._listDisplay = this._getListDisplay();
                         this._openToast("Cliente criado com sucesso.");
                     } else {
                         this._openToastError(this.data.eMessage);
@@ -812,7 +822,7 @@
                     }
                 },
                 _shippingResponseProcessor: function (data) {
-                    
+
                     if (data.detail.url.indexOf("Update") >= 0) {
                         if (data.eReasonCode != 3) {
                             this._openToast("Linhas actualizadas com sucesso..");
@@ -820,7 +830,7 @@
                             this._openToastError(this.data.eMessage);
                         }
                     } else if (data.detail.url.indexOf("Create") >= 0) {
-                        
+
                         if (this.shippingData.eReasonCode == 1) {
                             this.$.shipping_list.body = JSON.stringify({ "No": this._no });
                             this.$.shipping_list.generateRequest();
@@ -850,11 +860,13 @@
                             this._openToastError(this.shippingDeletedData.eMessage);
                         }
                     } else {
-                        this.shippingList = this.shippingList.map(function (item) {
-                            item.selected = false;
-                            return item;
-                        });
-                        this.$.grid_shippinglines.clearCache();
+                        if (this.shippingList.length) {
+                            this.shippingList = this.shippingList.map(function (item) {
+                                item.selected = false;
+                                return item;
+                            });
+                            this.$.grid_shippinglines.clearCache();
+                        }
                     }
                 },
 
