@@ -2041,18 +2041,18 @@ namespace Hydra.Such.Portal.Controllers
                         ExcelWorkbook workBook = excel.Workbook;
                         if (workBook != null)
                         {
-                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
+                            if (workBook.Worksheets.Count > 0)
                             {
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
+                                workBook_result = Criar_Excel_Worksheet_PrecoVendaRecursoFH(workBook_result, "ORIGINAL");
+                                workBook_result = Criar_Excel_Worksheet_PrecoVendaRecursoFH(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet_PrecoVendaRecursoFH(workBook_result, "ERRO");
 
-                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets[0];
                                 ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
                                 ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
                                 ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
-                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 6) &&
+                                if ((currentWorksheet.Dimension.End.Row > 1) &&
                                     (currentWorksheet.Cells[1, 1].Value.ToString() == "Cod Familia Recurso") &&
                                     (currentWorksheet.Cells[1, 2].Value.ToString() == "Cod Tipo Trabalho") &&
                                     (currentWorksheet.Cells[1, 3].Value.ToString() == "Preco Unitario") &&
@@ -2522,18 +2522,18 @@ namespace Hydra.Such.Portal.Controllers
                         ExcelWorkbook workBook = excel.Workbook;
                         if (workBook != null)
                         {
-                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
+                            if (workBook.Worksheets.Count > 0)
                             {
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
-                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
+                                workBook_result = Criar_Excel_Worksheet_FHEmpregadoRecursos(workBook_result, "ORIGINAL");
+                                workBook_result = Criar_Excel_Worksheet_FHEmpregadoRecursos(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet_FHEmpregadoRecursos(workBook_result, "ERRO");
 
-                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets[0];
                                 ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
                                 ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
                                 ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
-                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 2) &&
+                                if ((currentWorksheet.Dimension.End.Row > 1) &&
                                     (currentWorksheet.Cells[1, 1].Value.ToString() == "Empregado") &&
                                     (currentWorksheet.Cells[1, 2].Value.ToString() == "Recurso"))
                                 {
@@ -3702,18 +3702,18 @@ namespace Hydra.Such.Portal.Controllers
                         ExcelWorkbook workBook = excel.Workbook;
                         if (workBook != null)
                         {
-                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
+                            if (workBook.Worksheets.Count > 0)
                             {
                                 workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
                                 workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
                                 workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
 
-                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets[0];
                                 ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
                                 ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
                                 ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
-                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 16) &&
+                                if ((currentWorksheet.Dimension.End.Row > 1) &&
                                     (currentWorksheet.Cells[1, 1].Value.ToString() == "NoProcedimento") &&
                                     (currentWorksheet.Cells[1, 2].Value.ToString() == "NoFornecedor") &&
                                     (currentWorksheet.Cells[1, 3].Value.ToString() == "CodProduto") &&
