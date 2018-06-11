@@ -99,6 +99,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
         </div>
 
         <vaadin-grid aria-label="FolhasDeHorasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -589,6 +590,14 @@
                         type: Boolean,
                         value: false
                     },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
+                    _showLevel: {
+                        type: Number,
+                        value: 1
+                    }
                 },
 
 
@@ -605,6 +614,28 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms) });
                     this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 1) {
+                            this._showLevel = 2;
+                        } else {
+                            this._showLevel = 1;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms) });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+
+                _setButtonTexts: function () {
+                    if (this._showLevel == 1) {
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._showLevel == 2) {
+                        this._showHistoryMessage = "Mostrar Ativas";
+                    }
                 },
 
                 _goBack: function (e) {
