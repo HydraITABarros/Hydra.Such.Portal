@@ -1,4 +1,5 @@
-﻿using Hydra.Such.Data.ViewModel.Clients;
+﻿using AutoMapper;
+using Hydra.Such.Data.ViewModel.Clients;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -23,7 +24,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.MaxBufferPoolSize = 20971520;*/
         }
 
-        public static async Task<WSShipToAddressNAV.WSShipToAddress[]> GetByNoAsync(string CustomerNo, NAVWSConfigurations WSConfigurations)
+        public static async Task<List<ShipToAddressViewModel>> GetByNoAsync(string CustomerNo, NAVWSConfigurations WSConfigurations)
         {
             if (CustomerNo == null)
                 throw new ArgumentNullException("CustomerNo");
@@ -40,12 +41,16 @@ namespace Hydra.Such.Data.NAV
             try
             {
                 WSShipToAddressNAV.ReadMultiple_Result result = await WS_ShipToAddress.ReadMultipleAsync(filterArray, null, 0);  //WS_ShipToAddress.ReadAsync(CustomerNo);
-                return result.ReadMultiple_Result1;
+                //return result.ReadMultiple_Result1;
 
-                //var WSCustomer = result.WSCustomer;
-
-                //var client = MapCustomerNAVToCustomerModel(WSCustomer);
-                //return client;
+                List<ShipToAddressViewModel> retval = new List<ShipToAddressViewModel>();
+                foreach (var r in result.ReadMultiple_Result1)
+                {
+                    var item = MapShipToAddressViewModel(r);
+                    item.Selected = false;
+                    retval.Add(item);                    
+                }
+                return retval;
                 //return WSCustomer;
             }
             catch (Exception ex)
@@ -55,14 +60,14 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSShipToAddressNAV.Create_Result> CreateAsync(ClientDetailsViewModel client, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSShipToAddressNAV.Create_Result> CreateAsync(ShipToAddressViewModel shipToAddress, NAVWSConfigurations WSConfigurations)
         {
-            if (client == null)
-                throw new ArgumentNullException("client");
+            if (shipToAddress == null)
+                throw new ArgumentNullException("shipToAddress");
 
             WSShipToAddressNAV.Create navCreate = new WSShipToAddressNAV.Create()
             {
-                //WSCustomer = MapCustomerModelToCustomerNAV(client)
+                WSShipToAddress = MapShipToAddressNAV(shipToAddress)
             };
 
             //Configure NAV Client
@@ -83,14 +88,14 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSShipToAddressNAV.Update_Result> UpdateAsync(ClientDetailsViewModel client, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSShipToAddressNAV.Update_Result> UpdateAsync(ShipToAddressViewModel shipToAddress, NAVWSConfigurations WSConfigurations)
         {
-            if (client == null)
-                throw new ArgumentNullException("client");
+            if (shipToAddress == null)
+                throw new ArgumentNullException("ShipToAddress");
 
             WSShipToAddressNAV.Update navUpdate = new WSShipToAddressNAV.Update()
             {
-                //WSCustomer = MapCustomerModelToCustomerNAV(client)
+                WSShipToAddress = MapShipToAddressNAV(shipToAddress)
             };
 
             //Configure NAV Client
@@ -138,5 +143,26 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static ShipToAddressViewModel MapShipToAddressViewModel(WSShipToAddressNAV.WSShipToAddress ShipToAddressNAV)
+        {
+            var mapper = new MapperConfiguration(cfg =>
+                cfg.CreateMap<WSShipToAddressNAV.WSShipToAddress, ShipToAddressViewModel>()
+            ).CreateMapper();
+
+            var Model = mapper.Map<WSShipToAddressNAV.WSShipToAddress, ShipToAddressViewModel>(ShipToAddressNAV);
+
+            return Model;
+        }
+
+        public static WSShipToAddressNAV.WSShipToAddress MapShipToAddressNAV(ShipToAddressViewModel ShipToAddressModel)
+        {
+            var mapper = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ShipToAddressViewModel, WSShipToAddressNAV.WSShipToAddress>()/*.ForMember(x => x.No, opt => opt.Ignore())*/
+            ).CreateMapper();
+
+            var ShipToAddressNAV = mapper.Map<ShipToAddressViewModel, WSShipToAddressNAV.WSShipToAddress>(ShipToAddressModel);
+
+            return ShipToAddressNAV;
+        }
     }
 }

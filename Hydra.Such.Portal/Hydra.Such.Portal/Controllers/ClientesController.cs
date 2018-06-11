@@ -68,7 +68,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Details
-        [AllowAnonymous]
+
         [HttpPost]
         public JsonResult GetDetails([FromBody] ClientDetailsViewModel data)
         {
@@ -103,13 +103,11 @@ namespace Hydra.Such.Portal.Controllers
         //eReason = 3 -> Error creating Project on NAV 
         //eReason = 4 -> Unknow Error 
         //eReason = 5 -> Error getting Numeration 
-        [AllowAnonymous]
+
         [HttpPost]
         public JsonResult Create([FromBody] ClientDetailsViewModel data)
         {
-
-            var cenas = ModelState;
-
+            
             if (data != null)
             {
                 var createClientTask = WSCustomerService.CreateAsync(data, _configws);
@@ -145,8 +143,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
-
-        [AllowAnonymous]
+        
         [HttpPost]
         public JsonResult Update([FromBody] ClientDetailsViewModel data)
         {
@@ -184,7 +181,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
-        [AllowAnonymous]
+
         [HttpPost]
         public JsonResult Delete([FromBody] ClientDetailsViewModel data)
         {
