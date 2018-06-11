@@ -209,12 +209,12 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button class="tablinks" id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
-                    <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
+                    <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
                     <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
                 <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
@@ -1827,7 +1827,7 @@
                     var currentTime = new Date();
                     var date = new Date(this.data.dueDate);
 
-                    if (date < currentTime || date == "Invalid Date") {
+                    if (date > currentTime || date == "Invalid Date") {
                         this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
                     }
                     else {
@@ -2498,6 +2498,10 @@
                             }
                         });
                     }
+
+                },
+
+                _createProject: function () {
 
                 },
 
