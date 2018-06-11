@@ -24,11 +24,12 @@
 
         <iron-ajax id="contacts_grid_datasource" url="/Contactos/GetContacts" last-response="{{Contacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax id="deleteContact_ajax" url="/Contactos/DeleteContact" last-response="{{DeleteContactResponse}}" on-response="_deleteContactResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <template is="dom-if" if="{{ _permissions.create }}">
-        <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
         </div>
-        </template>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
