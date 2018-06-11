@@ -49,44 +49,73 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        //public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
-        //{
-        //    FolhaDeHorasViewModel FHViewModel = new FolhaDeHorasViewModel();
+        public IActionResult FolhaDeHoras_Validacao(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.FolhasHoras);
 
-        //    FHViewModel.Area = 1;
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
 
-        //    return FHViewModel;
-        //}
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
+        public IActionResult FolhaDeHoras_IntegracaoKMS(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.FolhasHoras);
 
-        //[HttpPost]
-        //public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
-        //{
-        //    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
 
-        //    if (UPerm != null && UPerm.Read.Value)
-        //    {
-        //        bool teste = UPerm.Create.Value;
-        //        ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
-        //        List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, 0);
-        //        if (result != null)
-        //        {
-        //            result.ForEach(FH =>
-        //            {
-        //                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
-        //                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-        //                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
-        //                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
-        //                //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
-        //            });
-        //        }
+        public IActionResult FolhaDeHoras_Historico(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.FolhasHoras);
 
-        //        return Json(result);
-        //    }
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
 
-        //    return Json(null);
-        //}
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult FolhaDeHoras_IntegracaoAjudaCusto(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.FolhasHoras);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
         [HttpPost]
         //Listagem das Folhas de Horas consoante o estado

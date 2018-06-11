@@ -1,18 +1,15 @@
-﻿
-@{
-    ViewData["Title"] = "Folha de Horas";
+﻿@{
+    @if (ViewBag.FolhaDeHorasNo == "")
+    {
+        ViewData["Title"] = "Criar nova Folha de Horas";
+    }
+    else
+    {
+        ViewData["Title"] = "Folha de Horas > Nº " + ViewBag.FolhaDeHorasNo;
+    }
+
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-@if (ViewBag.FolhaDeHorasNo == "")
-{
-    <h1 class="title">Criar nova Folha de Horas</h1>
-}
-else
-{
-    <h1 class="title">Folha de Horas @ViewBag.FolhaDeHorasNo</h1>
-}
-
 
 <link rel="import" href="/elements/folhasdehoras/folhadehora_details.html">
 

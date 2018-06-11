@@ -1,10 +1,23 @@
-﻿
-@{
-    ViewData["Title"] = "Folha de Horas Engenharia";
+﻿@{
+    @if (ViewBag.FolhaDeHorasNo == "")
+    {
+        ViewData["Title"] = "Folha de Horas > Por Validar";
+    }
+    else
+    {
+        ViewData["Title"] = "Folha de Horas > Por Validar Nº " + ViewBag.FolhaDeHorasNo;
+    }
+
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="title">Folha de Horas Engenharia</h1>
 <link rel="import" href="~/elements/folhasdehoras/folhadehora_list.html">
 
-<x-folhadehoralist _areaid="1" _folhadehoraid="@ViewBag.FolhaDeHorasNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _estado="0" _validacao="1" _integracaoajuda="0" _integracaokms="0"></x-folhadehoralist>
+<x-folhadehoralist _areaid="1"
+                   _folhadehoraid="@ViewBag.FolhaDeHorasNo"
+                   _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                   _estado="0"
+                   _validacao="1"
+                   _integracaoajuda="0"
+                   _integracaokms="0">
+</x-folhadehoralist>
