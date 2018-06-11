@@ -46,11 +46,28 @@
 
         <style>
             .Vermelho {
-                background-color: red !important;
+                /*
+                    background-color: white !important;
+                    --background: #F8E6AE url('../../images/suchlogo.jpg') no-repeat 0px 0px;
+                */
+                background-color: white !important;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 25px 10px 0;
+                border-color: transparent #ff0000 transparent transparent;
             }
 
             .Verde {
-                background-color: greenyellow !important;
+                /*
+                    background-color: greenyellow !important;
+                */
+                background-color: white !important;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 0 10px 25px;
+                border-color: transparent transparent transparent #55ff00;
             }
 
             .Branco {
@@ -2510,7 +2527,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <vaadin-text-field id="workflow_nr" type="text" class$="{{item.nr_Workflow}}" readonly>&nbsp;</vaadin-text-field>
+                                                    <div class$="{{item.nr_Workflow}}"></div>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>

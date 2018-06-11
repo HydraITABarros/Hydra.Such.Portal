@@ -1,0 +1,8 @@
+﻿
+@{
+    ViewData["Title"] = "Projetos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/projects/project_list.html">
+
+<x-projectlist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectlist>

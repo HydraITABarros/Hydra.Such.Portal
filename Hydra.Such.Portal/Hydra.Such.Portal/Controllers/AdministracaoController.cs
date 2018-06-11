@@ -30,6 +30,8 @@ using OfficeOpenXml;
 using Microsoft.AspNetCore.Http;
 using System.Drawing;
 using System.Globalization;
+using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -123,7 +125,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    //Area = x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -168,7 +170,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserAccesses.Create(new AcessosUtilizador()
                 {
                     IdUtilizador = ObjectCreated.IdUtilizador,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -223,8 +225,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Get items to delete (for changed keys delete old, create new)
                 var userAccessesToDelete = userAccesses
                     .Where(x => !data.UserAccesses
-                        .Any(y => y.Area == x.Área &&
-                            y.Feature == x.Funcionalidade))
+                        .Any(y => y.Feature == x.Funcionalidade))
                     .ToList();
                 //Delete 
                 if (userAccessesToDelete.Count > 0)
@@ -239,8 +240,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Create (for changed keys) or Update existing
                 data.UserAccesses.ForEach(userAccess =>
                     {
-                        var updatedUA = userAccesses.SingleOrDefault(x => x.Área == userAccess.Area &&
-                            x.Funcionalidade == userAccess.Feature);
+                        var updatedUA = userAccesses.SingleOrDefault(x => x.Funcionalidade == userAccess.Feature);
 
                         if (updatedUA == null)
                         {
@@ -248,7 +248,7 @@ namespace Hydra.Such.Portal.Controllers
                             updatedUA = new AcessosUtilizador()
                             {
                                 IdUtilizador = data.IdUser,
-                                Área = userAccess.Area,
+                                //Área = userAccess.Area,
                                 Funcionalidade = userAccess.Feature,
                                 UtilizadorCriação = User.Identity.Name,
                                 DataHoraCriação = DateTime.Now
@@ -453,7 +453,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 AcessosUtilizador userAccess = new AcessosUtilizador();
                 userAccess.IdUtilizador = data.IdUser;
-                userAccess.Área = data.Area;
+                //userAccess.Área = data.Area;
                 userAccess.Funcionalidade = data.Feature;
                 userAccess.Eliminação = data.Delete;
                 userAccess.Inserção = data.Create;
@@ -565,7 +565,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProfileModelAccesses = DBAccessProfiles.GetByProfileModelId(data.Id).Select(x => new AccessProfileModelView()
                 {
                     IdProfile = x.IdPerfil,
-                    Area = x.Área,
+                    //Area = x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -593,7 +593,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBAccessProfiles.Create(new AcessosPerfil()
                 {
                     IdPerfil = ObjectCreated.Id,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -621,7 +621,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBAccessProfiles.Create(new AcessosPerfil()
                 {
                     IdPerfil = data.Id,
-                    Área = x.Area,
+                    //Área = x.Area,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -1968,6 +1968,314 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetPrecoVendaRecursoFH_AnexosErros()
+        {
+            //ORIGEM = 3 » FH Preço Venda Recursos
+            //TIPO = 2 » ERRO
+            List<AnexosErrosViewModel> result = DBAnexosErros.GetByOrigemAndCodigo(3, "").Select(x => new AnexosErrosViewModel()
+            {
+                ID = x.Id,
+                CodeTexto = x.Id.ToString(),
+                Origem = (int)x.Origem,
+                OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
+                Tipo = (int)x.Tipo,
+                TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
+                Codigo = x.Codigo,
+                NomeAnexo = x.NomeAnexo,
+                Anexo = x.Anexo,
+                CriadoPor = x.CriadoPor,
+                CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
+                DataHora_Criacao = x.DataHoraCriacao,
+                DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                AlteradoPor = x.AlteradoPor,
+                AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
+                DataHora_Alteracao = x.DataHoraAlteracao,
+                DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        [Route("Administracao/DownloadPrecoVendaRecursoFHTemplate")]
+        [Route("Administracao/DownloadPrecoVendaRecursoFH/{FileName}")]
+        public FileStreamResult DownloadPrecoVendaRecursoFHTemplate(string FileName)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+        }
+
+        [HttpPost]
+        [Route("Administracao/FileUpload_PrecoVendaRecursoFH")]
+        public JsonResult FileUpload_PrecoVendaRecursoFH()
+        {
+            //TESTE COM DLL EPPlus
+            var files = Request.Form.Files;
+            bool global_result = true;
+            foreach (var file in files)
+            {
+                try
+                {
+                    string name = Path.GetFileNameWithoutExtension(file.FileName);
+                    string filename = Path.GetFileName(file.FileName);
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    if (System.IO.File.Exists(full_path))
+                        System.IO.File.Delete(full_path);
+                    FileStream dd = new FileStream(full_path, FileMode.CreateNew);
+                    file.CopyTo(dd);
+                    dd.Dispose();
+                    var existingFile = new FileInfo(full_path);
+
+                    string filename_result = name + "_Resultado.xlsx";
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    if (System.IO.File.Exists(full_path_result))
+                        System.IO.File.Delete(full_path_result);
+                    var existingFile_result = new FileInfo(full_path_result);
+
+                    using (var excel = new ExcelPackage(existingFile))
+                    {
+                        var excel_result = new ExcelPackage(existingFile_result);
+                        ExcelWorkbook workBook_result = excel_result.Workbook;
+
+                        ExcelWorkbook workBook = excel.Workbook;
+                        if (workBook != null)
+                        {
+                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
+                            {
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
+
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+                                ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
+                                ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
+                                ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
+
+                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 6) &&
+                                    (currentWorksheet.Cells[1, 1].Value.ToString() == "Cod Familia Recurso") &&
+                                    (currentWorksheet.Cells[1, 2].Value.ToString() == "Cod Tipo Trabalho") &&
+                                    (currentWorksheet.Cells[1, 3].Value.ToString() == "Preco Unitario") &&
+                                    (currentWorksheet.Cells[1, 4].Value.ToString() == "Custo Unitario") &&
+                                    (currentWorksheet.Cells[1, 5].Value.ToString() == "Data Inicio") &&
+                                    (currentWorksheet.Cells[1, 6].Value.ToString() == "Data Fim"))
+                                {
+                                    int Linha_ORIGINAL = 2;
+                                    int Linha_SUCESSO = 2;
+                                    int Linha_ERRO = 2;
+                                    var result_list = new List<bool>();
+                                    for (int i = 1; i <= 8; i++)
+                                    {
+                                        result_list.Add(false);
+                                    }
+
+                                    string CodFamiliaRecurso = "";
+                                    string CodTipoTrabalho = "";
+                                    string PrecoUnitario = "";
+                                    string CustoUnitario = "";
+                                    string DataInicio = "";
+                                    string DataFim = "";
+
+                                    //VALIDAÇÃO DE TODOS OS CAMPOS
+                                    for (int rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
+                                    {
+                                        CodFamiliaRecurso = currentWorksheet.Cells[rowNumber, 1].Value == null ? "" : currentWorksheet.Cells[rowNumber, 1].Value.ToString();
+                                        CodTipoTrabalho = currentWorksheet.Cells[rowNumber, 2].Value == null ? "" : currentWorksheet.Cells[rowNumber, 2].Value.ToString();
+                                        PrecoUnitario = currentWorksheet.Cells[rowNumber, 3].Value == null ? "" : currentWorksheet.Cells[rowNumber, 3].Value.ToString();
+                                        CustoUnitario = currentWorksheet.Cells[rowNumber, 4].Value == null ? "" : currentWorksheet.Cells[rowNumber, 4].Value.ToString();
+                                        DataInicio = currentWorksheet.Cells[rowNumber, 5].Value == null ? "" : currentWorksheet.Cells[rowNumber, 5].Value.ToString();
+                                        DataFim = currentWorksheet.Cells[rowNumber, 6].Value == null ? "" : currentWorksheet.Cells[rowNumber, 6].Value.ToString();
+
+                                        result_list = Validar_LinhaExcel_PrecoVendaRecursoFH(CodFamiliaRecurso, CodTipoTrabalho, PrecoUnitario, CustoUnitario, DataInicio, DataFim, result_list);
+
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 1].Value = CodFamiliaRecurso;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 2].Value = CodTipoTrabalho;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 3].Value = PrecoUnitario;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 4].Value = CustoUnitario;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 5].Value = DataInicio;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 6].Value = DataFim;
+
+                                        Linha_ORIGINAL = Linha_ORIGINAL + 1;
+
+                                        if (result_list[1] == false && result_list[2] == false && result_list[3] == false && result_list[4] == false
+                                             && result_list[5] == false && result_list[6] == false)
+                                        {
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 1].Value = CodFamiliaRecurso;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 2].Value = CodTipoTrabalho;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 3].Value = PrecoUnitario;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 4].Value = CustoUnitario;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 5].Value = DataInicio;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 6].Value = DataFim;
+
+                                            if (result_list[7] == true)
+                                            {
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 5].Style.Font.Color.SetColor(Color.Orange);
+                                            }
+
+                                            Linha_SUCESSO = Linha_SUCESSO + 1;
+                                        }
+                                        else
+                                        {
+                                            global_result = false;
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Value = CodFamiliaRecurso;
+                                            if (result_list[1] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Value = CodTipoTrabalho;
+                                            if (result_list[2] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Value = PrecoUnitario;
+                                            if (result_list[3] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Value = CustoUnitario;
+                                            if (result_list[4] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 5].Value = DataInicio;
+                                            if (result_list[5] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 5].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 6].Value = DataFim;
+                                            if (result_list[6] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 6].Style.Font.Color.SetColor(Color.Red);
+
+                                            Linha_ERRO = Linha_ERRO + 1;
+                                        }
+
+                                        if (result_list.All(c => c == false))
+                                        {
+                                            PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.Create(new PrecoVendaRecursoFh()
+                                            {
+                                                Code = CodFamiliaRecurso,
+                                                Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").SingleOrDefault().Name,
+                                                CodTipoTrabalho = CodTipoTrabalho,
+                                                PrecoUnitario = PrecoUnitario == "" ? (decimal?)null : Convert.ToDecimal(PrecoUnitario),
+                                                CustoUnitario = CustoUnitario == "" ? (decimal?)null : Convert.ToDecimal(CustoUnitario),
+                                                StartingDate = Convert.ToDateTime(DataInicio),
+                                                EndingDate = DataFim == "" ? (DateTime?)null : Convert.ToDateTime(DataFim),
+                                                FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").SingleOrDefault().ResourceGroup,
+                                                CriadoPor = User.Identity.Name,
+                                                DataHoraCriacao = DateTime.Now
+                                            });
+                                        }
+
+                                        if (result_list[1] == false && result_list[2] == false && result_list[3] == false && result_list[4] == false
+                                             && result_list[5] == false && result_list[6] == false && result_list[7] == true)
+                                        {
+                                            PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.Update(new PrecoVendaRecursoFh()
+                                            {
+                                                Code = CodFamiliaRecurso,
+                                                Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").SingleOrDefault().Name,
+                                                CodTipoTrabalho = CodTipoTrabalho,
+                                                PrecoUnitario = PrecoUnitario == "" ? (decimal?)null : Convert.ToDecimal(PrecoUnitario),
+                                                CustoUnitario = CustoUnitario == "" ? (decimal?)null : Convert.ToDecimal(CustoUnitario),
+                                                StartingDate = Convert.ToDateTime(DataInicio),
+                                                EndingDate = DataFim == "" ? (DateTime?)null : Convert.ToDateTime(DataFim),
+                                                FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").SingleOrDefault().ResourceGroup,
+                                                CriadoPor = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == CodFamiliaRecurso && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == Convert.ToDateTime(DataInicio)).SingleOrDefault().CriadoPor,
+                                                DataHoraCriacao = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == CodFamiliaRecurso && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == Convert.ToDateTime(DataInicio)).SingleOrDefault().DataHoraCriacao,
+                                                AlteradoPor = User.Identity.Name,
+                                                DataHoraUltimaAlteracao = DateTime.Now
+                                            });
+                                        }
+                                    }
+
+                                    excel_result.Save();
+
+                                    byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
+
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 3; //Preco Venda Recurso FH
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = "";
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
+
+                                    excel.Dispose();
+                                    excel_result.Dispose();
+
+                                    System.IO.File.Delete(full_path_result);
+                                    System.IO.File.Delete(full_path);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
+            return Json("");
+        }
+
+        public List<bool> Validar_LinhaExcel_PrecoVendaRecursoFH(string CodFamiliaRecurso, string CodTipoTrabalho, string PrecoUnitario, string CustoUnitario, string DataInicio, string DataFim, List<bool> result_list)
+        {
+            DateTime currectDate;
+            decimal currectDecimal;
+
+            for (int i = 1; i <= 7; i++)
+            {
+                result_list[i] = false;
+            }
+
+            if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").Count() == 0)
+                result_list[1] = true;
+
+            if (DBTipoTrabalhoFH.GetAll().Where(x => x.Codigo == CodTipoTrabalho).Count() == 0)
+                result_list[2] = true;
+
+            if (PrecoUnitario != "")
+                if (!decimal.TryParse(PrecoUnitario, out currectDecimal))
+                    result_list[3] = true;
+
+            if (CustoUnitario != "")
+                if (!decimal.TryParse(CustoUnitario, out currectDecimal))
+                    result_list[4] = true;
+
+            if (!DateTime.TryParse(DataInicio, out currectDate))
+                result_list[5] = true;
+
+            if (DataFim != "")
+                if (!DateTime.TryParse(DataFim, out currectDate))
+                    result_list[6] = true;
+
+            if (result_list[1] == false && result_list[2] == false && result_list[5] == false)
+            {
+                if (DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == CodFamiliaRecurso && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == Convert.ToDateTime(DataInicio)).Count() > 0)
+                    result_list[7] = true;
+            }
+
+            return result_list;
+        }
+
+        public ExcelWorkbook Criar_Excel_Worksheet_PrecoVendaRecursoFH(ExcelWorkbook workBook, string Nome)
+        {
+            workBook.Worksheets.Add(Nome);
+            ExcelWorksheet currentWorksheet = workBook.Worksheets[Nome];
+
+            currentWorksheet.Cells[1, 1].Value = "Cod Familia Recurso";
+            currentWorksheet.Cells[1, 2].Value = "Cod Tipo Trabalho";
+            currentWorksheet.Cells[1, 3].Value = "Preco Unitario";
+            currentWorksheet.Cells[1, 4].Value = "Custo Unitario";
+            currentWorksheet.Cells[1, 5].Value = "Data Inicio";
+            currentWorksheet.Cells[1, 6].Value = "Data Fim";
+
+            return workBook;
+        }
+
         #endregion
 
         #region Configuração Preço Custo Recursos FH
@@ -2081,6 +2389,35 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRHRecursosFH_AnexosErros()
+        {
+            //ORIGEM = 2 » RH RECURSOS FH
+            //TIPO = 2 » ERRO
+            List<AnexosErrosViewModel> result = DBAnexosErros.GetByOrigemAndCodigo(2, "").Select(x => new AnexosErrosViewModel()
+            {
+                ID = x.Id,
+                CodeTexto = x.Id.ToString(),
+                Origem = (int)x.Origem,
+                OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
+                Tipo = (int)x.Tipo,
+                TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
+                Codigo = x.Codigo,
+                NomeAnexo = x.NomeAnexo,
+                Anexo = x.Anexo,
+                CriadoPor = x.CriadoPor,
+                CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
+                DataHora_Criacao = x.DataHoraCriacao,
+                DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                AlteradoPor = x.AlteradoPor,
+                AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
+                DataHora_Alteracao = x.DataHoraAlteracao,
+                DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
             int resultFinal = 0;
@@ -2141,6 +2478,215 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
+
+        [HttpGet]
+        [Route("Administracao/DownloadRHRecursosFHTemplate")]
+        [Route("Administracao/DownloadRHRecursosFHTemplate/{FileName}")]
+        public FileStreamResult DownloadRHRecursosFHTemplate(string FileName)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+        }
+
+        [HttpPost]
+        [Route("Administracao/FileUpload_FHEmpregadoRecursos")]
+        public JsonResult FileUpload_FHEmpregadoRecursos()
+        {
+            //TESTE COM DLL EPPlus
+            var files = Request.Form.Files;
+            bool global_result = true;
+            foreach (var file in files)
+            {
+                try
+                {
+                    string name = Path.GetFileNameWithoutExtension(file.FileName);
+                    string filename = Path.GetFileName(file.FileName);
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    if (System.IO.File.Exists(full_path))
+                        System.IO.File.Delete(full_path);
+                    FileStream dd = new FileStream(full_path, FileMode.CreateNew);
+                    file.CopyTo(dd);
+                    dd.Dispose();
+                    var existingFile = new FileInfo(full_path);
+
+                    string filename_result = name + "_Resultado.xlsx";
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    if (System.IO.File.Exists(full_path_result))
+                        System.IO.File.Delete(full_path_result);
+                    var existingFile_result = new FileInfo(full_path_result);
+
+                    using (var excel = new ExcelPackage(existingFile))
+                    {
+                        var excel_result = new ExcelPackage(existingFile_result);
+                        ExcelWorkbook workBook_result = excel_result.Workbook;
+
+                        ExcelWorkbook workBook = excel.Workbook;
+                        if (workBook != null)
+                        {
+                            if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
+                            {
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
+
+                                ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
+                                ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
+                                ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
+                                ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
+
+                                if ((currentWorksheet.Dimension.End.Row > 1 && currentWorksheet.Dimension.End.Column == 2) &&
+                                    (currentWorksheet.Cells[1, 1].Value.ToString() == "Empregado") &&
+                                    (currentWorksheet.Cells[1, 2].Value.ToString() == "Recurso"))
+                                {
+                                    int Linha_ORIGINAL = 2;
+                                    int Linha_SUCESSO = 2;
+                                    int Linha_ERRO = 2;
+                                    var result_list = new List<bool>();
+                                    for (int i = 1; i <= 4; i++)
+                                    {
+                                        result_list.Add(false);
+                                    }
+
+                                    string Empregado = "";
+                                    string Recurso = "";
+
+                                    //VALIDAÇÃO DE TODOS OS CAMPOS
+                                    for (int rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
+                                    {
+                                        Empregado = currentWorksheet.Cells[rowNumber, 1].Value == null ? "" : currentWorksheet.Cells[rowNumber, 1].Value.ToString();
+                                        Recurso = currentWorksheet.Cells[rowNumber, 2].Value == null ? "" : currentWorksheet.Cells[rowNumber, 2].Value.ToString();
+
+                                        result_list = Validar_LinhaExcel_FHEmpregadoRecursos(Empregado, Recurso, result_list);
+
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 1].Value = Empregado;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 2].Value = Recurso;
+
+                                        Linha_ORIGINAL = Linha_ORIGINAL + 1;
+
+                                        if (result_list[1] == false && result_list[2] == false)
+                                        {
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 1].Value = Empregado;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 2].Value = Recurso;
+
+                                            if (result_list[3] == true)
+                                            {
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Orange);
+                                            }
+
+                                            Linha_SUCESSO = Linha_SUCESSO + 1;
+                                        }
+                                        else
+                                        {
+                                            global_result = false;
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Value = Empregado;
+                                            if (result_list[1] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Red);
+
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Value = Recurso;
+                                            if (result_list[2] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Red);
+
+                                            Linha_ERRO = Linha_ERRO + 1;
+                                        }
+
+                                        if (result_list.All(c => c == false))
+                                        {
+                                            RhRecursosFh toCreate = DBRHRecursosFH.Create(new RhRecursosFh()
+                                            {
+                                                NoEmpregado = Empregado,
+                                                Recurso = Recurso,
+                                                NomeRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, Recurso, "", 0, "").SingleOrDefault().Name,
+                                                FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, Recurso, "", 0, "").SingleOrDefault().ResourceGroup,
+                                                NomeEmpregado = DBNAV2009Employees.GetAll(Empregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name,
+                                                CriadoPor = User.Identity.Name,
+                                                DataHoraCriacao = DateTime.Now
+                                            });
+                                        }
+
+                                        if (result_list[1] == false && result_list[2] == false && result_list[3] == true)
+                                        {
+                                            RhRecursosFh toUpdate = DBRHRecursosFH.Update(new RhRecursosFh()
+                                            {
+                                                NoEmpregado = Empregado,
+                                                Recurso = Recurso,
+                                                NomeRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, Recurso, "", 0, "").SingleOrDefault().Name,
+                                                FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, Recurso, "", 0, "").SingleOrDefault().ResourceGroup,
+                                                NomeEmpregado = DBNAV2009Employees.GetAll(Empregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name,
+                                                CriadoPor = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == Empregado && x.Recurso == Recurso).SingleOrDefault().CriadoPor,
+                                                DataHoraCriacao = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == Empregado && x.Recurso == Recurso).SingleOrDefault().DataHoraCriacao,
+                                                AlteradoPor = User.Identity.Name,
+                                                DataHoraUltimaAlteracao = DateTime.Now
+                                            });
+                                        }
+                                    }
+
+                                    excel_result.Save();
+
+                                    byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
+
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 2; //RH RECURSOS FH
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = "";
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
+
+                                    excel.Dispose();
+                                    excel_result.Dispose();
+
+                                    System.IO.File.Delete(full_path_result);
+                                    System.IO.File.Delete(full_path);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
+            return Json("");
+        }
+
+        public List<bool> Validar_LinhaExcel_FHEmpregadoRecursos(string Empregado, string Recurso, List<bool> result_list)
+        {
+            for (int i = 1; i <= 3; i++)
+            {
+                result_list[i] = false;
+            }
+
+            if (DBNAV2009Employees.GetAll(Empregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Count() == 0)
+                result_list[1] = true;
+
+            if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Where(x => x.Code == Recurso).Count() == 0)
+                result_list[2] = true;
+
+            if (DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == Empregado && x.Recurso == Recurso).Count() > 0)
+                result_list[3] = true;
+
+            return result_list;
+        }
+
+        public ExcelWorkbook Criar_Excel_Worksheet_FHEmpregadoRecursos(ExcelWorkbook workBook, string Nome)
+        {
+            workBook.Worksheets.Add(Nome);
+            ExcelWorksheet currentWorksheet = workBook.Worksheets[Nome];
+
+            currentWorksheet.Cells[1, 1].Value = "Empregado";
+            currentWorksheet.Cells[1, 2].Value = "Recurso";
+
+            return workBook;
+        }
+
         #endregion
 
         #region AutorizacaoFHRH
@@ -2593,7 +3139,7 @@ namespace Hydra.Such.Portal.Controllers
                     ValorAprovação = x.ApprovalValue,
                     GrupoAprovação = x.ApprovalGroup,
                     UtilizadorAprovação = x.ApprovalUser,
-                    Área = x.Area,
+                    //Área = x.Area,
                     CódigoÁreaFuncional = x.FunctionalArea,
                     CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                     CódigoRegião = x.Region,
@@ -2938,6 +3484,29 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPreco = x.TipoPreco,
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault().Value
                 }).ToList();
+
+                //ORIGEM = 1 » Acordo Preços
+                //TIPO = 2 » ERRO
+                result.AnexosErros = DBAnexosErros.GetByOrigemAndCodigo(1, data.NoProcedimento).Select(x => new AnexosErrosViewModel()
+                {
+                    ID = x.Id,
+                    CodeTexto = x.Id.ToString(),
+                    Origem = (int)x.Origem,
+                    OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
+                    Tipo = (int)x.Tipo,
+                    TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
+                    Codigo = x.Codigo,
+                    NomeAnexo = x.NomeAnexo,
+                    Anexo = x.Anexo,
+                    CriadoPor = x.CriadoPor,
+                    CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
+                    DataHora_Criacao = x.DataHoraCriacao,
+                    DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                    AlteradoPor = x.AlteradoPor,
+                    AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
+                    DataHora_Alteracao = x.DataHoraAlteracao,
+                    DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
+                }).ToList();
             }
 
             return Json(result);
@@ -3089,7 +3658,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult VerificarNoProcedimento([FromBody] AcordoPrecos data)
         {
-            AcordoPrecos AcordoPrecos =  DBAcordoPrecos.GetById(data.NoProcedimento);
+            AcordoPrecos AcordoPrecos = DBAcordoPrecos.GetById(data.NoProcedimento);
 
             if (AcordoPrecos == null)
                 return Json(0);
@@ -3097,21 +3666,20 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(1);
         }
 
-        //[HttpPost]
+        [HttpPost]
         [Route("Administracao/FileUpload")]
-        //[HttpGet]
-        public FileStreamResult FileUpload(string id, int linha)
+        [Route("Administracao/FileUpload/{FormularioNoProcedimento}")]
+        public JsonResult FileUpload(string FormularioNoProcedimento)
         {
             //TESTE COM DLL EPPlus
             var files = Request.Form.Files;
+            bool global_result = true;
             foreach (var file in files)
             {
                 try
                 {
+                    string name = Path.GetFileNameWithoutExtension(file.FileName);
                     string filename = Path.GetFileName(file.FileName);
-                    //LOCAL TEST
-                    //string full_path = "C:\\Users\\ARomao\\Desktop\\" + filename;
-                    //WEB TEST
                     var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
                     if (System.IO.File.Exists(full_path))
                         System.IO.File.Delete(full_path);
@@ -3120,10 +3688,7 @@ namespace Hydra.Such.Portal.Controllers
                     dd.Dispose();
                     var existingFile = new FileInfo(full_path);
 
-                    string filename_result = "AcordoPrecos_Result.xlsx";
-                    //LOCAL TEST
-                    //string full_path_result = "C:\\Users\\ARomao\\Desktop\\" + "AcordoPrecos_Result.xlsx";
-                    //WEB TEST
+                    string filename_result = name + "_Resultado.xlsx";
                     var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
                     if (System.IO.File.Exists(full_path_result))
                         System.IO.File.Delete(full_path_result);
@@ -3139,13 +3704,12 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (workBook.Worksheets.Count > 0 && workBook.Worksheets[0].Name == "LINHAS")
                             {
-                                workBook_result = Criar_Excel_SUCESSO(workBook_result);
-                                workBook_result = Criar_Excel_ERRO(workBook_result);
-                                //workBook.Worksheets.Add("SUCESSO");
-                                //workBook.Worksheets.Add("ERRO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ORIGINAL");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "SUCESSO");
+                                workBook_result = Criar_Excel_Worksheet(workBook_result, "ERRO");
 
                                 ExcelWorksheet currentWorksheet = workBook.Worksheets["LINHAS"];
-
+                                ExcelWorksheet currentWorksheet_ORIGINAL = workBook_result.Worksheets["ORIGINAL"];
                                 ExcelWorksheet currentWorksheet_SUCESSO = workBook_result.Worksheets["SUCESSO"];
                                 ExcelWorksheet currentWorksheet_ERRO = workBook_result.Worksheets["ERRO"];
 
@@ -3167,6 +3731,7 @@ namespace Hydra.Such.Portal.Controllers
                                     (currentWorksheet.Cells[1, 15].Value.ToString() == "FormaEntrega") &&
                                     (currentWorksheet.Cells[1, 16].Value.ToString() == "TipoPreco"))
                                 {
+                                    int Linha_ORIGINAL = 2;
                                     int Linha_SUCESSO = 2;
                                     int Linha_ERRO = 2;
                                     var result_list = new List<bool>();
@@ -3195,24 +3760,43 @@ namespace Hydra.Such.Portal.Controllers
                                     //VALIDAÇÃO DE TODOS OS CAMPOS
                                     for (int rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
                                     {
-                                        NoProcedimento = currentWorksheet.Cells[rowNumber, 1].Value.ToString();
-                                        NoFornecedor = currentWorksheet.Cells[rowNumber, 2].Value.ToString();
-                                        CodProduto = currentWorksheet.Cells[rowNumber, 3].Value.ToString();
-                                        DtValidadeInicio = currentWorksheet.Cells[rowNumber, 4].Value.ToString();
-                                        DtValidadeFim = currentWorksheet.Cells[rowNumber, 5].Value.ToString();
-                                        Regiao = currentWorksheet.Cells[rowNumber, 6].Value.ToString();
-                                        Area = currentWorksheet.Cells[rowNumber, 7].Value.ToString();
-                                        Cresp = currentWorksheet.Cells[rowNumber, 8].Value.ToString();
-                                        Localizacao = currentWorksheet.Cells[rowNumber, 9].Value.ToString();
-                                        CustoUnitario = currentWorksheet.Cells[rowNumber, 10].Value.ToString();
-                                        UM = currentWorksheet.Cells[rowNumber, 11].Value.ToString();
-                                        QtdPorUM = currentWorksheet.Cells[rowNumber, 12].Value.ToString();
-                                        PesoUnitario = currentWorksheet.Cells[rowNumber, 13].Value.ToString();
-                                        CodProdutoFornecedor = currentWorksheet.Cells[rowNumber, 14].Value.ToString();
-                                        FormaEntrega = currentWorksheet.Cells[rowNumber, 15].Value.ToString();
-                                        TipoPreco = currentWorksheet.Cells[rowNumber, 16].Value.ToString();
+                                        NoProcedimento = currentWorksheet.Cells[rowNumber, 1].Value == null ? "" : currentWorksheet.Cells[rowNumber, 1].Value.ToString();
+                                        NoFornecedor = currentWorksheet.Cells[rowNumber, 2].Value == null ? "" : currentWorksheet.Cells[rowNumber, 2].Value.ToString();
+                                        CodProduto = currentWorksheet.Cells[rowNumber, 3].Value == null ? "" : currentWorksheet.Cells[rowNumber, 3].Value.ToString();
+                                        DtValidadeInicio = currentWorksheet.Cells[rowNumber, 4].Value == null ? "" : currentWorksheet.Cells[rowNumber, 4].Value.ToString();
+                                        DtValidadeFim = currentWorksheet.Cells[rowNumber, 5].Value == null ? "" : currentWorksheet.Cells[rowNumber, 5].Value.ToString();
+                                        Regiao = currentWorksheet.Cells[rowNumber, 6].Value == null ? "" : currentWorksheet.Cells[rowNumber, 6].Value.ToString();
+                                        Area = currentWorksheet.Cells[rowNumber, 7].Value == null ? "" : currentWorksheet.Cells[rowNumber, 7].Value.ToString();
+                                        Cresp = currentWorksheet.Cells[rowNumber, 8].Value == null ? "" : currentWorksheet.Cells[rowNumber, 8].Value.ToString();
+                                        Localizacao = currentWorksheet.Cells[rowNumber, 9].Value == null ? "" : currentWorksheet.Cells[rowNumber, 9].Value.ToString();
+                                        CustoUnitario = currentWorksheet.Cells[rowNumber, 10].Value == null ? "" : currentWorksheet.Cells[rowNumber, 10].Value.ToString();
+                                        UM = currentWorksheet.Cells[rowNumber, 11].Value == null ? "" : currentWorksheet.Cells[rowNumber, 11].Value.ToString();
+                                        QtdPorUM = currentWorksheet.Cells[rowNumber, 12].Value == null ? "" : currentWorksheet.Cells[rowNumber, 12].Value.ToString();
+                                        PesoUnitario = currentWorksheet.Cells[rowNumber, 13].Value == null ? "" : currentWorksheet.Cells[rowNumber, 13].Value.ToString();
+                                        CodProdutoFornecedor = currentWorksheet.Cells[rowNumber, 14].Value == null ? "" : currentWorksheet.Cells[rowNumber, 14].Value.ToString();
+                                        FormaEntrega = currentWorksheet.Cells[rowNumber, 15].Value == null ? "" : currentWorksheet.Cells[rowNumber, 15].Value.ToString();
+                                        TipoPreco = currentWorksheet.Cells[rowNumber, 16].Value == null ? "" : currentWorksheet.Cells[rowNumber, 16].Value.ToString();
 
-                                        result_list = Validar_LinhaExcel(NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list);
+                                        result_list = Validar_LinhaExcel(FormularioNoProcedimento, NoProcedimento, NoFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp, Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list);
+
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 1].Value = NoProcedimento;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 2].Value = NoFornecedor;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 3].Value = CodProduto;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 4].Value = DtValidadeInicio;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 5].Value = DtValidadeFim;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 6].Value = Regiao;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 7].Value = Area;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 8].Value = Cresp;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 9].Value = Localizacao;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 10].Value = CustoUnitario;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 11].Value = UM;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 12].Value = QtdPorUM;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 13].Value = PesoUnitario;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 14].Value = CodProdutoFornecedor;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 15].Value = FormaEntrega;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 16].Value = TipoPreco;
+
+                                        Linha_ORIGINAL = Linha_ORIGINAL + 1;
 
                                         if (result_list.All(c => c == false))
                                         {
@@ -3233,10 +3817,22 @@ namespace Hydra.Such.Portal.Controllers
                                             currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 15].Value = FormaEntrega;
                                             currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 16].Value = TipoPreco;
 
+                                            if (result_list[15] == true)
+                                            {
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 8].Style.Font.Color.SetColor(Color.Orange);
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 9].Style.Font.Color.SetColor(Color.Orange);
+                                            }
+
                                             Linha_SUCESSO = Linha_SUCESSO + 1;
                                         }
                                         else
                                         {
+                                            global_result = false;
+
                                             currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Value = NoProcedimento;
                                             if (result_list[1] == true)
                                                 currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Red);
@@ -3297,16 +3893,6 @@ namespace Hydra.Such.Portal.Controllers
                                             if (result_list[14] == true)
                                                 currentWorksheet_ERRO.Cells[Linha_ERRO, 16].Style.Font.Color.SetColor(Color.Red);
 
-                                            if (result_list[15] == true)
-                                            {
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 1].Style.Font.Color.SetColor(Color.Orange);
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 2].Style.Font.Color.SetColor(Color.Orange);
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 3].Style.Font.Color.SetColor(Color.Orange);
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 4].Style.Font.Color.SetColor(Color.Orange);
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 8].Style.Font.Color.SetColor(Color.Orange);
-                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 9].Style.Font.Color.SetColor(Color.Orange);
-                                            }
-
                                             Linha_ERRO = Linha_ERRO + 1;
                                         }
 
@@ -3318,36 +3904,81 @@ namespace Hydra.Such.Portal.Controllers
                                                 NoFornecedor = NoFornecedor,
                                                 CodProduto = CodProduto,
                                                 DtValidadeInicio = Convert.ToDateTime(DtValidadeInicio),
-                                                DtValidadeFim = Convert.ToDateTime(DtValidadeFim),
+                                                DtValidadeFim = DtValidadeFim == "" ? (DateTime?)null : Convert.ToDateTime(DtValidadeFim),
                                                 Cresp = Cresp,
-                                                Area = Area,
-                                                Regiao = Regiao,
+                                                Area = Area == "" ? (string)null : Area,
+                                                Regiao = Regiao == "" ? (string)null : Regiao,
                                                 Localizacao = Localizacao,
-                                                CustoUnitario = Convert.ToDecimal(CustoUnitario),
+                                                CustoUnitario = CustoUnitario == "" ? (decimal?)null : Convert.ToDecimal(CustoUnitario),
                                                 NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).SingleOrDefault().Name,
                                                 DescricaoProduto = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).SingleOrDefault().Name,
-                                                Um = UM,
-                                                QtdPorUm = Convert.ToDecimal(QtdPorUM),
-                                                PesoUnitario = Convert.ToDecimal(PesoUnitario),
-                                                CodProdutoFornecedor = CodProdutoFornecedor,
-                                                DescricaoProdFornecedor = "",
-                                                FormaEntrega = Convert.ToInt32(FormaEntrega),
+                                                Um = UM == "" ? (string)null : UM,
+                                                QtdPorUm = QtdPorUM == "" ? (decimal?)null : Convert.ToDecimal(QtdPorUM),
+                                                PesoUnitario = PesoUnitario == "" ? (decimal?)null : Convert.ToDecimal(PesoUnitario),
+                                                CodProdutoFornecedor = CodProdutoFornecedor == "" ? (string)null : CodProdutoFornecedor,
+                                                DescricaoProdFornecedor = (string)null,
+                                                FormaEntrega = FormaEntrega == "" ? (int?)null : Convert.ToInt32(FormaEntrega),
                                                 UserId = User.Identity.Name,
                                                 DataCriacao = DateTime.Now,
-                                                TipoPreco = Convert.ToInt32(TipoPreco)
+                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco)
+                                            });
+                                        }
+
+                                        if (result_list[1] == false && result_list[2] == false && result_list[3] == false && result_list[4] == false && result_list[5] == false &&
+                                            result_list[6] == false && result_list[7] == false && result_list[8] == false && result_list[9] == false && result_list[10] == false &&
+                                            result_list[11] == false && result_list[12] == false && result_list[13] == false && result_list[14] == false && result_list[15] == true)
+                                        {
+                                            LinhasAcordoPrecos toUpdate = DBLinhasAcordoPrecos.Update(new LinhasAcordoPrecos()
+                                            {
+
+                                                NoProcedimento = NoProcedimento,
+                                                NoFornecedor = NoFornecedor,
+                                                CodProduto = CodProduto,
+                                                DtValidadeInicio = Convert.ToDateTime(DtValidadeInicio),
+                                                DtValidadeFim = DtValidadeFim == "" ? (DateTime?)null : Convert.ToDateTime(DtValidadeFim),
+                                                Cresp = Cresp,
+                                                Area = Area == "" ? (string)null : Area,
+                                                Regiao = Regiao == "" ? (string)null : Regiao,
+                                                Localizacao = Localizacao,
+                                                CustoUnitario = CustoUnitario == "" ? (decimal?)null : Convert.ToDecimal(CustoUnitario),
+                                                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).SingleOrDefault().Name,
+                                                DescricaoProduto = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).SingleOrDefault().Name,
+                                                Um = UM == "" ? (string)null : UM,
+                                                QtdPorUm = QtdPorUM == "" ? (decimal?)null : Convert.ToDecimal(QtdPorUM),
+                                                PesoUnitario = PesoUnitario == "" ? (decimal?)null : Convert.ToDecimal(PesoUnitario),
+                                                CodProdutoFornecedor = CodProdutoFornecedor == "" ? (string)null : CodProdutoFornecedor,
+                                                DescricaoProdFornecedor = (string)null,
+                                                FormaEntrega = FormaEntrega == "" ? (int?)null : Convert.ToInt32(FormaEntrega),
+                                                UserId = User.Identity.Name,
+                                                DataCriacao = DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
+                                                    x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).FirstOrDefault().DataCriacao,
+                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco)
                                             });
                                         }
                                     }
 
                                     excel_result.Save();
 
+                                    byte[] Anexo_Result = System.IO.File.ReadAllBytes(full_path_result);
+
+                                    AnexosErros newAnexo = new AnexosErros();
+                                    newAnexo.Origem = 1; //ACORDO DE PREÇOS
+                                    if (global_result)
+                                        newAnexo.Tipo = 1; //SUCESSO
+                                    else
+                                        newAnexo.Tipo = 2; //INSUCESSO
+                                    newAnexo.Codigo = FormularioNoProcedimento;
+                                    newAnexo.NomeAnexo = filename_result;
+                                    newAnexo.Anexo = Anexo_Result;
+                                    newAnexo.CriadoPor = User.Identity.Name;
+                                    newAnexo.DataHoraCriacao = DateTime.Now;
+                                    DBAnexosErros.Create(newAnexo);
+
                                     excel.Dispose();
                                     excel_result.Dispose();
-                                    DownloadFile(full_path_result);
-                                    //return new FileStreamResult(new FileStream(full_path_result, FileMode.Open), "application/xlsx");
-                                    //System.IO.File.Delete(full_path_result);
-                                    //System.IO.File.Delete(full_path);
 
+                                    System.IO.File.Delete(full_path_result);
+                                    System.IO.File.Delete(full_path);
                                 }
                             }
                         }
@@ -3359,23 +3990,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            return null;
+            return Json("");
         }
 
-        [HttpGet]
-        public FileStreamResult DownloadFile(string FileName)
-        {
-            try
-            {
-                return new FileStreamResult(new FileStream(FileName, FileMode.Open), "application/xlsx");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public List<bool> Validar_LinhaExcel(string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
+        public List<bool> Validar_LinhaExcel(string FormularioNoProcedimento, string NoProcedimento, string NoFornecedor, string CodProduto, string DtValidadeInicio, string DtValidadeFim,
             string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario,
             string FormaEntrega, string TipoPreco, List<bool> result_list)
         {
@@ -3388,7 +4006,7 @@ namespace Hydra.Such.Portal.Controllers
                 result_list[i] = false;
             }
 
-            if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0)
+            if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0 || FormularioNoProcedimento != NoProcedimento)
                 result_list[1] = true;
 
             if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
@@ -3400,14 +4018,17 @@ namespace Hydra.Such.Portal.Controllers
             if (!DateTime.TryParse(DtValidadeInicio, out currectDate))
                 result_list[4] = true;
 
-            if (!DateTime.TryParse(DtValidadeFim, out currectDate))
-                result_list[5] = true;
+            if (DtValidadeFim != "")
+                if (!DateTime.TryParse(DtValidadeFim, out currectDate))
+                    result_list[5] = true;
 
-            if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
-                result_list[6] = true;
+            if (Regiao != "")
+                if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
+                    result_list[6] = true;
 
-            if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
-                result_list[7] = true;
+            if (Area != "")
+                if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
+                    result_list[7] = true;
 
             if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(x => x.Code == Cresp).Count() == 0)
                 result_list[8] = true;
@@ -3415,30 +4036,39 @@ namespace Hydra.Such.Portal.Controllers
             if (DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Where(x => x.Localizacao == Localizacao).Count() == 0)
                 result_list[9] = true;
 
-            if (!decimal.TryParse(CustoUnitario, out currectDecimal))
-                result_list[10] = true;
+            if (CustoUnitario != "")
+                if (!decimal.TryParse(CustoUnitario, out currectDecimal))
+                    result_list[10] = true;
 
-            if (!decimal.TryParse(QtdPorUM, out currectDecimal))
-                result_list[11] = true;
+            if (QtdPorUM != "")
+                if (!decimal.TryParse(QtdPorUM, out currectDecimal))
+                    result_list[11] = true;
 
-            if (!decimal.TryParse(PesoUnitario, out currectDecimal))
-                result_list[12] = true;
+            if (PesoUnitario != "")
+                if (!decimal.TryParse(PesoUnitario, out currectDecimal))
+                    result_list[12] = true;
 
-            if (int.TryParse(FormaEntrega, out currectInt))
+            if (FormaEntrega != "")
             {
-                if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
+                if (int.TryParse(FormaEntrega, out currectInt))
+                {
+                    if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
+                        result_list[13] = true;
+                }
+                else
                     result_list[13] = true;
             }
-            else
-                result_list[13] = true;
 
-            if (int.TryParse(TipoPreco, out currectInt))
+            if (TipoPreco != "")
             {
-                if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
+                if (int.TryParse(TipoPreco, out currectInt))
+                {
+                    if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
+                        result_list[14] = true;
+                }
+                else
                     result_list[14] = true;
             }
-            else
-                result_list[14] = true;
 
             if (DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
                     x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).Count() > 0)
@@ -3448,10 +4078,10 @@ namespace Hydra.Such.Portal.Controllers
             return result_list;
         }
 
-        public ExcelWorkbook Criar_Excel_SUCESSO(ExcelWorkbook workBook)
+        public ExcelWorkbook Criar_Excel_Worksheet(ExcelWorkbook workBook, string Nome)
         {
-            workBook.Worksheets.Add("SUCESSO");
-            ExcelWorksheet currentWorksheet = workBook.Worksheets["SUCESSO"];
+            workBook.Worksheets.Add(Nome);
+            ExcelWorksheet currentWorksheet = workBook.Worksheets[Nome];
 
             currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
             currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
@@ -3473,85 +4103,303 @@ namespace Hydra.Such.Portal.Controllers
             return workBook;
         }
 
-        public ExcelWorkbook Criar_Excel_ERRO(ExcelWorkbook workBook)
+        [HttpGet]
+        public FileResult DownloadFileAnexosErros(string iD)
         {
-            workBook.Worksheets.Add("ERRO");
-            ExcelWorksheet currentWorksheet = workBook.Worksheets["ERRO"];
+            AnexosErros AnexoErro = DBAnexosErros.GetById(Convert.ToInt32(iD));
 
-            currentWorksheet.Cells[1, 1].Value = "NoProcedimento";
-            currentWorksheet.Cells[1, 2].Value = "NoFornecedor";
-            currentWorksheet.Cells[1, 3].Value = "CodProduto";
-            currentWorksheet.Cells[1, 4].Value = "DtValidadeInicio";
-            currentWorksheet.Cells[1, 5].Value = "DtValidadeFim";
-            currentWorksheet.Cells[1, 6].Value = "Regiao";
-            currentWorksheet.Cells[1, 7].Value = "Area";
-            currentWorksheet.Cells[1, 8].Value = "Cresp";
-            currentWorksheet.Cells[1, 9].Value = "Localizacao";
-            currentWorksheet.Cells[1, 10].Value = "CustoUnitario";
-            currentWorksheet.Cells[1, 11].Value = "UM";
-            currentWorksheet.Cells[1, 12].Value = "QtdPorUM";
-            currentWorksheet.Cells[1, 13].Value = "PesoUnitario";
-            currentWorksheet.Cells[1, 14].Value = "CodProdutoFornecedor";
-            currentWorksheet.Cells[1, 15].Value = "FormaEntrega";
-            currentWorksheet.Cells[1, 16].Value = "TipoPreco";
-
-            return workBook;
+            return File(AnexoErro.Anexo, System.Net.Mime.MediaTypeNames.Application.Octet, AnexoErro.NomeAnexo);
         }
 
+        [HttpGet]
+        [Route("Administracao/DownloadAcordoPrecosTemplate")]
+        [Route("Administracao/DownloadAcordoPrecosTemplate/{FileName}")]
+        public FileStreamResult DownloadAcordoPrecosTemplate(string FileName)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+        }
+        
+
+        [HttpPost]
+        public JsonResult DeleteAnexosErros([FromBody] AnexosErrosViewModel AnexoErro)
+        {
+            int result = 0;
+            bool dbDeleteAnexosErrosResult = false;
+
+            try
+            {
+                dbDeleteAnexosErrosResult = DBAnexosErros.Delete(Convert.ToInt32(AnexoErro.CodeTexto));
+
+                if (!dbDeleteAnexosErrosResult)
+                    result = 1;
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
+        
         #endregion Acordo de Preços
 
 
         #endregion
 
+        
+
+        #region Projetos
+
+
+
+        #endregion
+
+        #region Classificação Fichas Técnicas
+
+        public IActionResult ClassificacaoFichasTecnicas(string id, string option)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                if (option == "Grupos")
+                {
+                    @ViewBag.Option = "Grupos";
+                    @ViewBag.Groups = "hidden";
+                }
+                else
+                {
+                    @ViewBag.Option = "linhas";
+                    @ViewBag.Groups = "";
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        //O : Lines of Groups
+        //1 : Group
+        public JsonResult GetClassificationFilesTechniques([FromBody] string option)
+        {
+            List<ClassificationFilesTechniquesViewModel> result;
+            if (option == "Grupos")
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(1));
+            else
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(0));
+
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CreateClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            data.CreateUser = User.Identity.Name;
+            if (DBClassificationFilesTechniques.Create(DBClassificationFilesTechniques.ParseToDatabase(data)) != null)
+                return Json(data);
+            else
+                return null;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            //Delete lines of Groups
+            if (data.Type == 1)
+            {
+                if (DBClassificationFilesTechniques.GetTypeFiles(0).Exists(x => x.Grupo == data.Code))
+                {
+                    return Json(null);
+                }
+            }
+            // Delete Group
+            var result = DBClassificationFilesTechniques.Delete(DBClassificationFilesTechniques.ParseToDatabase(data));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Procedimento Confeção
+
+        public IActionResult ProcedimentoConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetConfectionProcedure()
+        {
+            List<ProceduresConfectionViewModel> result = ProceduresConfection.ParseToViewModel(ProceduresConfection.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = ProceduresConfection.Create(ProceduresConfection.ParseToDatabase(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            var result = ProceduresConfection.Delete(ProceduresConfection.ParseToDatabase(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfectionProcedure([FromBody] List<ProceduresConfectionViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                ProceduresConfection.Update(ProceduresConfection.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Acções Confeção
+
+        public IActionResult AccoesConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetActionsConfection()
+        {
+            List<ActionsConfectionViewModel> result = DBActionsConfection.ParseToViewModel(DBActionsConfection.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            DBActionsConfection.Create(DBActionsConfection.ParseToDb(data));
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+
+            if (ProceduresConfection.GetAllbyActionNo(data.Code).Count() == 0)
+            {
+                var result = DBActionsConfection.Delete(DBActionsConfection.ParseToDb(data));
+                return Json(result);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateActionsConfection([FromBody] List<ActionsConfectionViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                DBActionsConfection.Update(DBActionsConfection.ParseToDb(x));
+            });
+            return Json(data);
+        }
+        #endregion
+
         public UserAccessesViewModel GetPermissions(string id)
         {
-            UserAccessesViewModel UPerm = new UserAccessesViewModel();
-            if (id == "Engenharia")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
-            }
-            if (id == "Ambiente")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
-            }
-            if (id == "Nutricao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
-            }
-            if (id == "Vendas")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
-            }
-            if (id == "Apoio")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
-            }
-            if (id == "PO")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
-            }
-            if (id == "NovasAreas")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
-            }
-            if (id == "Internacionalizacao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
-            }
-            if (id == "Juridico")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
-            }
-            if (id == "Compras")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
-            }
-            if (id == "Administracao")
-            {
-                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
-            }
+            return DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
+            //UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            //if (id == "Engenharia")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Administração);
+            //}
+            //if (id == "Ambiente")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Ambiente, Enumerations.Features.Administração);
+            //}
+            //if (id == "Nutricao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Administração);
+            //}
+            //if (id == "Vendas")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Administração);
+            //}
+            //if (id == "Apoio")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Apoio, Enumerations.Features.Administração);
+            //}
+            //if (id == "PO")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.PO, Enumerations.Features.Administração);
+            //}
+            //if (id == "NovasAreas")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.NovasÁreas, Enumerations.Features.Administração);
+            //}
+            //if (id == "Internacionalizacao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Internacional, Enumerations.Features.Administração);
+            //}
+            //if (id == "Juridico")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração);
+            //}
+            //if (id == "Compras")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Administração);
+            //}
+            //if (id == "Administracao")
+            //{
+            //    UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Administração);
+            //}
 
-            return UPerm;
+            //return UPerm;
         }
     }
 }

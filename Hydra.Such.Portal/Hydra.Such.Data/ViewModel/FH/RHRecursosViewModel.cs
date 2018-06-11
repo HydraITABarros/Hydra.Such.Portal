@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.ViewModel.FH
 {
-    public partial class RHRecursosViewModel
+    public partial class RHRecursosViewModel : ErrorHandler
     {
         public string NoEmpregado { get; set; }
         public string Recurso { get; set; }
@@ -14,5 +14,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public DateTime? DataHoraCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
+
+        public List<AnexosErrosViewModel> AnexosErros { get; set; }
     }
 }

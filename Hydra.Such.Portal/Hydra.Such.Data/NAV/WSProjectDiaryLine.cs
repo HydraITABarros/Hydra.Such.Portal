@@ -28,8 +28,8 @@ namespace Hydra.Such.Data.NAV
                 WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
                 {
                     Job_No = y.ProjectNo,                  
-                    Document_DateSpecified = true,
-                    Document_Date = DateTime.Parse(y.Date),
+                    Document_DateSpecified = string.IsNullOrEmpty(y.Date) ? false : true,
+                    Document_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
                     //Entry_TypeSpecified = true,
                     //Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
                     TypeSpecified = true,

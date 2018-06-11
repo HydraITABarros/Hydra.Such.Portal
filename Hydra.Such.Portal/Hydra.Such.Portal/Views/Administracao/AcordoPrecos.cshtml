@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Acordo de Preços - Administração - eSuch";
+    ViewData["Title"] = "Acordo de Preços";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -45,8 +45,6 @@
 <!--SUCH-->
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-
-<h1 class="title">Acordo de Preços</h1>
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -222,6 +220,15 @@
                    handle-as="json"
                    id="page_deleteFornecedor_ajax"
                    on-response="_deleteFornecedorResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteAnexosErros"
+                   last-response="{{AnexosErrosDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteAnexosErros_ajax"
+                   on-response="_deleteFileAnexosErrosResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -417,193 +424,261 @@
 
 
                                 <div class="row break_clear">
-                                    <vaadin-upload id="UploadRequest"
-                                                   target="/Administracao/FileUpload/"
-                                                   method="POST"
-                                                   headers="{'Accept': 'application/json'}"
-                                                   max-files="1"
-                                                   accept=".xlsx"
-                                                   timeout=30000
-                                                   max-file-size="3000000">
-                                        <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
-                                    </vaadin-upload>
+                                    <div class="col-sm-10">
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/Administracao/FileUpload/{{data.noProcedimento}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       max-files="1"
+                                                       accept=".xlsx"
+                                                       timeout=30000>
+                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                                        </vaadin-upload>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                        <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
+                                    </div>
                                 </div>
 
+                                <div class="row break_clear">
+                                    <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ data.anexosErros }}" class="editGrid" multi-sort="true">
+                                        <vaadin-grid-column hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codeTexto" style="text-align:center;">Identificador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codeTexto" />
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoTexto" style="text-align:center;">Resultado</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoTexto" />
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.tipoTexto}}" disabled></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeAnexo" style="text-align:center;">Anexo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeAnexo" />
+                                            </template>
+                                            <template>
+                                                <a href="/Administracao/DownloadFileAnexosErros/{{item.codeTexto}}" target="_blank">{{item.nomeAnexo}}</a>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="criadoPorNome" style="text-align:center;">Criador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="criadoPorNome" />
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.criadoPorNome}}" disabled></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataHora_CriacaoTexto" style="text-align:center;">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataHora_CriacaoTexto" />
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field id="tabAnexosErrosdataHora_CriacaoTexto" value="{{item.dataHora_CriacaoTexto}}" disabled></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
                             </div>
                         </div>
                     </paper-collapse-item>
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabLinhas" aria-label="TabelaLinhas" items="{{ data.linhasAcordoPrecos }}" class="editGrid" multi-sort="true">
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="noProcedimento" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                    <div class="row break_clear">
+                        <vaadin-grid id="tabLinhas" aria-label="TabelaLinhas" items="{{ data.linhasAcordoPrecos }}" class="editGrid" multi-sort="true">
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="noProcedimento" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Fornecedor</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="nomeFornecedor" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="nomeFornecedor" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="codProduto" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codProduto" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhascodProduto" value="{{item.codProduto}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="codProduto" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="codProduto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhascodProduto" value="{{item.codProduto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="dtValidadeInicioTexto" style="text-align:center;">Data Validade Início</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dtValidadeInicioTexto" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasdtValidadeInicioTexto" value="{{item.dtValidadeInicioTexto}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dtValidadeInicioTexto" style="text-align:center;">Data Validade Início</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="dtValidadeInicioTexto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasdtValidadeInicioTexto" value="{{item.dtValidadeInicioTexto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="dtValidadeFimTexto" style="text-align:center;">Data Validade Fim</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dtValidadeFimTexto" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasdtValidadeFimTexto" value="{{item.dtValidadeFimTexto}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dtValidadeFimTexto" style="text-align:center;">Data Validade Fim</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="dtValidadeFimTexto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasdtValidadeFimTexto" value="{{item.dtValidadeFimTexto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="regiaoNome" style="text-align:center;">Região</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="regiaoNome" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasregiaoNome" value="{{item.regiaoNome}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="regiaoNome" style="text-align:center;">Região</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="regiaoNome" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasregiaoNome" value="{{item.regiaoNome}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="areaNome" style="text-align:center;">Área</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="areaNome" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasareaNome" value="{{item.areaNome}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="areaNome" style="text-align:center;">Área</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="areaNome" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasareaNome" value="{{item.areaNome}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="crespNome" style="text-align:center;">Cresp</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="crespNome" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhascrespNome" value="{{item.crespNome}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="crespNome" style="text-align:center;">Cresp</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="crespNome" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhascrespNome" value="{{item.crespNome}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Localização</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="localizacaoNome" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhaslocalizacaoNome" value="{{item.localizacaoNome}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Localização</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="localizacaoNome" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhaslocalizacaoNome" value="{{item.localizacaoNome}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoUnitario" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhascustoUnitario" value="{{item.custoUnitario}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="custoUnitario" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhascustoUnitario" value="{{item.custoUnitario}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="um" style="text-align:center;">UM</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="um" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasum" value="{{item.um}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="um" style="text-align:center;">UM</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="um" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasum" value="{{item.um}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="qtdPorUm" style="text-align:center;">Quantidade por UM</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="qtdPorUm" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasqtdPorUm" value="{{item.qtdPorUm}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="qtdPorUm" style="text-align:center;">Quantidade por UM</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="qtdPorUm" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasqtdPorUm" value="{{item.qtdPorUm}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="pesoUnitario" style="text-align:center;">Peso Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="pesoUnitario" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhaspesoUnitario" value="{{item.pesoUnitario}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="pesoUnitario" style="text-align:center;">Peso Unitário</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="pesoUnitario" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhaspesoUnitario" value="{{item.pesoUnitario}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="codProdutoFornecedor" style="text-align:center;">Cód. Produto Fornecedor</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codProdutoFornecedor" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhascodProdutoFornecedor" value="{{item.codProdutoFornecedor}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="codProdutoFornecedor" style="text-align:center;">Cód. Produto Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="codProdutoFornecedor" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhascodProdutoFornecedor" value="{{item.codProdutoFornecedor}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="formaEntregaTexto" style="text-align:center;">Forma Entrega</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="formaEntregaTexto" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhasformaEntregaTexto" value="{{item.formaEntregaTexto}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="formaEntregaTexto" style="text-align:center;">Forma Entrega</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="formaEntregaTexto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasformaEntregaTexto" value="{{item.formaEntregaTexto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="tipoPrecoTexto" style="text-align:center;">Tipo Preço</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="tipoPrecoTexto" />
-                            </template>
-                            <template>
-                                <vaadin-text-field id="tabLinhastipoPrecoTexto" value="{{item.tipoPrecoTexto}}" disabled></vaadin-text-field>
-                            </template>
-                        </vaadin-grid-column>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="tipoPrecoTexto" style="text-align:center;">Tipo Preço</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="tipoPrecoTexto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhastipoPrecoTexto" value="{{item.tipoPrecoTexto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                            </template>
-                            <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
-                            </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
                 </div>
             </div>
 
@@ -727,13 +802,14 @@
             DeleteValue = false;
         }
 
-        //window.addEventListener('WebComponentsReady', function () {
-        //    var upload = document.querySelector('vaadin-upload#UploadRequest');
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
 
-        //    upload.addEventListener('file-reject', function (event) {
-        //        window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
-        //    });
-        //});
+            upload.addEventListener('file-reject', function (event) {
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+                //window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady',
             function () {
@@ -885,7 +961,7 @@
                     },
 
                     _createFornecedor: function () {
-                        debugger;
+                        //debugger;
                         if (this._validateData("fornecedorAcordoPrecosCreate")) {
                             this.$.ajax_fornecedor_create.body = JSON.stringify({
                                 noProcedimento: this.$.fornecedorNoProcedimento.value,
@@ -1048,7 +1124,65 @@
                         };
                     },
 
-                    _goBack: function(e) {
+                    _refreshAnexosErros: function (e) {
+                        //debugger;
+                        this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
+                        this.$.page_databound_ajax.generateRequest();
+                    },
+
+                    _deleteFileAnexosErros: function (e) {
+                        //debugger;
+                        var code = e.model.item.codeTexto;
+
+                        var ajax_request = this.$.page_deleteAnexosErros_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Anexo?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAnexosErros) {
+                                if (deleteAnexosErros) {
+                                    ajax_request.body = JSON.stringify({
+                                        codeTexto: code
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabAnexosErros.clearCache();
+                                }
+                            }
+                        });
+                    },
+
+                    _deleteFileAnexosErrosResponse: function (e) {
+                        //debugger;
+                        var self = this;
+
+                        setTimeout(function () {
+                            bootbox.hideAll();
+                        }, 0);
+
+                        if (this.AnexosErrosDeleted == 0) {
+                            this.$.page_databound_ajax.generateRequest();
+                            this._showMessage('O Anexo foi removido com sucesso.');
+                        } else {
+                            if (this.AnexosErrosDeleted == 1) {
+                                this._showErrorMessage('Ocorreu um erro ao eliminar o Anexo.');
+                            } else {
+                                if (this.AnexosErrosDeleted == 99) {
+                                    this._showErrorMessage('Ocorreu um erro!!!');
+                                }
+                            }
+                        };
+                    },
+
+                    _goBack: function (e) {
                         //debugger;
                         window.history.back();
                     },

@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Projeto - Engenharia - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (ViewBag.ProjectNo == "")
+{
+    <h1 class="title">Criar Projeto</h1>
+}
+else
+{
+    <h1 class="title">Projeto @ViewBag.ProjectNo</h1>
+}
+
+
+<link rel="import" href="/elements/projects/project_details.html">
+
+<x-projectdetails _projectid="@ViewBag.ProjectNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectdetails>

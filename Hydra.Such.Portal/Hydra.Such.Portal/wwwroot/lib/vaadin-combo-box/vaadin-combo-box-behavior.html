@@ -532,7 +532,7 @@
       this._focusedIndex = this.filteredItems.indexOf(selectedItem);
     },
 
-    _valueChanged: function(value) {
+      _valueChanged: function (value) {
       if (this._isValidValue(value)) {
         if (this._getItemValue(this.selectedItem) !== value) {
           var valueIndex = this._indexOfValue(value, this.filteredItems);

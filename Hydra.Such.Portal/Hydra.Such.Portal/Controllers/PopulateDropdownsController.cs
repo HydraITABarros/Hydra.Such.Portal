@@ -142,7 +142,6 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Id,
                 value = x.Descrição
             }).ToList();
-
             return Json(result);
         }
 
@@ -1727,6 +1726,22 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get_AP_TipoPreco()
         {
             List<EnumData> result = EnumerablesFixed.AP_TipoPreco;
+            return Json(result);
+        }
+
+        //CLIENTE
+        [HttpPost]
+        public JsonResult GetCustomerTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.Tipo_Cliente;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCustomerNatures()
+        {
+            List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
             return Json(result);
         }
     }

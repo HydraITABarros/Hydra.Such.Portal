@@ -1,0 +1,347 @@
+﻿
+@{
+    ViewData["Title"] = "Propostas do Contrato " + ViewBag.ContractNo;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<x-proposals-contract _areaid="2" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-proposals-contract>
+
+<dom-module id="x-proposals-contract">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Contratos/GetListContractsProposalsById"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="oportunityNo" />
+                </template>
+                <template>
+                    {{item.oportunityNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+
+                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" />
+                </template>
+                <template>
+                    {{item.startData}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" />
+                </template>
+                <template>
+                    {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNo" />
+                </template>
+                <template>
+                    {{item.contactNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientNo" />
+                </template>
+                <template>
+                    {{item.clientNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="status" />
+                </template>
+                <template>
+                    {{item.statusDescription}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" />
+                </template>
+                <template>
+                    {{item.codeRegion}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    {{item.codeResponsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="versionNo" />
+                </template>
+                <template>
+                    {{item.versionNo}}
+                </template>
+            </vaadin-grid-column>
+            @*<template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>*@
+        </vaadin-grid>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-proposals-contract',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _archived: {
+                        type: Number,
+                        value: 0
+                    },
+                    _contractno: {
+                        type: String,
+                        //value: false
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _showLostMessage: {
+                        type: String,
+                        value: "Exibir Perdidas"
+                    },
+                    _showAbortedMessage: {
+                        type: String,
+                        value: "Exibir Canceladas"
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Exibir Histórico"
+                    },
+                    _showLevel: {
+                        type: Number,
+                        value: 1
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "DetalhesProposta/";
+                    }
+                },
+                ready: function () {
+                    
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _deleteOprotunity: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_contract.generateRequest();
+                },
+                _showAborted: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 2) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 2;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _showLosts: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 3) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 3;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 4) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 4;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _setButtonTexts: function () {
+                    if (this._showLevel == 1) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                    } else if (this._showLevel == 2) {
+                        this._showAbortedMessage = "Exibir Ativas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                    } else if (this._showLevel == 4) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Ativas";
+                    } else {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Ativas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                    }
+                },
+            });
+        });
+    </script>
+</dom-module>

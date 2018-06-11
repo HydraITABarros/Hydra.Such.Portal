@@ -1,0 +1,206 @@
+﻿
+@{
+    ViewData["Title"] = "Modelos de Requisição Simplificada - Nutrição - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+@*<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<h1 class="title">Modelos de Requisição Simplificada</h1>
+
+<x-reqtemplates></x-reqtemplates>
+<dom-module id="x-reqtemplates">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/ModelosReqSimplificada/GetAllReqTemplates"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ModelosReqSimplificada/DeleteReqTemplate"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_model"
+                   on-response="_onDeleteReqTemplateResponse"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{functionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{responsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{regions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{products}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+        </div>
+        <vaadin-grid aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionTemplateId">Nº Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionTemplateId" />
+                </template>
+                <template>
+                    {{item.requisitionTemplateId}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" />
+                </template>
+                <template>
+                    [[_getRegionDescription(item.codeRegion)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" />
+                </template>
+                <template>
+                    [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    [[_getResponsabilityCenterDescription(item.codeResponsabilityCenter)]]
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_deleteReqTemplate" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-reqtemplates',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value:true
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
+                },
+                observers: [
+                    '_onCacheLoaded(functionalAreas,responsabilityCenters,regions,products)'
+                ],
+                _onCacheLoaded: function (functionalAreas, responsabilityCenters, regions, products) {
+                    //If necessary, remove auto attribute from iron-ajax and make the request
+                    this.$.grid_databound.generateRequest();
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/ModelosReqSimplificada/Detalhes/" + item.requisitionTemplateId;
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/ModelosReqSimplificada/Detalhes/";
+                    }
+                },
+                _deleteReqTemplate: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_model.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_model.generateRequest();
+                },
+                _onDeleteReqTemplateResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/ModelosReqSimplificada";
+                                }, 2500);
+                        } else {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+                _getRegionDescription: function (id) {
+                    if (id != undefined && this.regions != undefined) {
+                        var sel = this.regions.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getFunctionalAreaDescription: function (id) {
+                    if (id != undefined && this.functionalAreas != undefined) {
+                        var sel = this.functionalAreas.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getResponsabilityCenterDescription: function (id) {
+                    if (id != undefined && this.responsabilityCenters != undefined) {
+                        var sel = this.responsabilityCenters.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+            });
+        });
+    </script>
+</dom-module>

@@ -145,6 +145,7 @@ namespace Hydra.Such.Data.Logic
 
         public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Areas area, Features feature)
         {
+            //TODO: Remover area
             try
             {
                 return GetByUserAreaFunctionality(userId, (int)area, (int)feature);
@@ -160,6 +161,7 @@ namespace Hydra.Such.Data.Logic
         {
             try
             {
+                //TODO: Remover area
                 using (var ctx = new SuchDBContext())
                 {
                     ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
@@ -178,7 +180,8 @@ namespace Hydra.Such.Data.Logic
                     }
                     else
                     {
-                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Área == AreaId && x.Funcionalidade == FeatureId).FirstOrDefault());
+                        //return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Área == AreaId && x.Funcionalidade == FeatureId).FirstOrDefault());
+                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Funcionalidade == FeatureId).FirstOrDefault());
                     }
                 }
             }
@@ -214,7 +217,7 @@ namespace Hydra.Such.Data.Logic
                     Delete = x.Eliminação
                 };
             }
-            
+
         }
     }
 }

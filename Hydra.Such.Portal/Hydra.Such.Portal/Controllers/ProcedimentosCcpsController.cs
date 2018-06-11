@@ -110,6 +110,9 @@ namespace Hydra.Such.Portal.Controllers
         public List<ProcedimentoCCPView> estado_18 { get; set; }
         public List<ProcedimentoCCPView> estado_19 { get; set; }
         public List<ProcedimentoCCPView> estado_20 { get; set; }
+        public List<ProcedimentoCCPView> estado_todos { get; set; }
+        public List<ProcedimentoCCPView> estado_ratificarCA { get; set; }
+        public List<ProcedimentoCCPView> estado_processos_suspensos { get; set; }
     }
 
     [Authorize]
@@ -209,6 +212,10 @@ namespace Hydra.Such.Portal.Controllers
             model.estado_18 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(18);
             model.estado_19 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(19);
             model.estado_10 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(20);
+
+            model.estado_todos = DBProcedimentosCCP.GetAllProcedimentosByView_QuadroBordo_ToList();
+            model.estado_ratificarCA = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoRatificarCAToList();
+            model.estado_processos_suspensos = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoProcessosSuspensosToList();
 
             return Json(model);
         }

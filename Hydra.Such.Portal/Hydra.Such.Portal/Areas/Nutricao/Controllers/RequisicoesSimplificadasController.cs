@@ -46,7 +46,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 //‘Requisições simplificadas para Registar’ com estado aprovado
                 if (option == 1)
                 {
-                    ViewBag.Option = "resgitar";
+                    ViewBag.Option = "registar";
                 }
                 //Histórico Requisições simplificadas
                 else if (option == 2)
@@ -76,11 +76,11 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
                 ViewBag.User = User.Identity.Name;
                 //Registar requisições aprovadas
-                if (ViewBag.Approval == "resgitar")
+                if (ViewBag.Approval == "registar")
                 {
                     ViewBag.LockFields = true;
                     UPerm.Create = false;
-                    ViewBag.Option = "resgitar";
+                    ViewBag.Option = "registar";
                 }
                 //Histórico requisições aprovadas
                 else if (ViewBag.Approval == "historico")
@@ -115,7 +115,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             List<SimplifiedRequisitionViewModel> result;
 
             //‘Requisições simplificadas para Registar’ com estado aprovado
-            if (option == "resgitar")
+            if (option == "registar")
             {
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(2));
                 HttpContext.Session.SetString("aprovadoSession", option);

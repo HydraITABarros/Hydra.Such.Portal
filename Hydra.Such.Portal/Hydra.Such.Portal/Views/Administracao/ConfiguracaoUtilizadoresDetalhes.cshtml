@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Configuração Utilizadores - Administração - eSuch";
+    ViewData["Title"] = "Detalhes de Configuração de Utilizador";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,8 +24,6 @@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-<h1 class="title">Detalhes de Configuração de Utilizador</h1>
 
 <x-details-config-users></x-details-config-users>
 <dom-module id="x-details-config-users">
@@ -189,17 +187,6 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box items="[[AreasData]]" id="_Areas" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-2">
                     <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
                         <template>
                             <paper-icon-item>
@@ -228,23 +215,6 @@
             </div>
             <br />
             <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Área
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{item.area}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-
-                    </template>
-                </vaadin-grid-column>
                 <vaadin-grid-column width="20%">
                     <template class="header">
                         Funcionalidade
@@ -494,11 +464,6 @@
                         notify: true,
                         value: ""
                     },
-                    ddArea: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
                     ddFeature: {
                         type: Number,
                         notify: true,
@@ -691,13 +656,11 @@
                 },
                 //User Accesses Functions
                 _createUserAccess: function () {
-                    if (this.ddArea == "") {
-                        this._showErrorMessage("É obrigatório preencher a àrea.");
-                    } else if (this.ddFeature == null) {
+                    if (this.ddFeature == null) {
                         this._showErrorMessage("É obrigatório preencher a Funcionalidade.");
                     } else {
                         this.$.page_createuseraccess_ajax.body = JSON.stringify({
-                            idUser: this.data.idUser, area: this.ddArea, feature: this.ddFeature,
+                            idUser: this.data.idUser, feature: this.ddFeature,
                             read: this.chkRead, create: this.chkCreate, update: this.chkUpdate, delete: this.chkDelete });
                         this.$.page_createuseraccess_ajax.generateRequest();
                         this.$.gridUserAccesses.clearCache();

@@ -625,27 +625,32 @@ This program is available under Apache License Version 2.0, available at https:/
       this._focusedIndex = this.filteredItems.indexOf(selectedItem);
     }
 
-    _valueChanged(value) {
-      if (this._isValidValue(value)) {
-        let item;
-        if (this._getItemValue(this.selectedItem) !== value) {
-          const valueIndex = this._indexOfValue(value, this.filteredItems);
-          this.selectedItem = valueIndex >= 0 ? this.filteredItems[valueIndex] : null;
-        } else {
-          item = this.selectedItem;
-        }
+      _valueChanged(value) {
 
-        if (!item && this.allowCustomValue) {
-          this._inputElementValue = value;
-        }
+          //this.title = this.selectedItem["item-label-path"];
+          if (this._isValidValue(value)) {
+              let item;
+              if (this._getItemValue(this.selectedItem) !== value) {
+                  const valueIndex = this._indexOfValue(value, this.filteredItems);
+                  this.selectedItem = valueIndex >= 0 ? this.filteredItems[valueIndex] : null;
+              } else {
+                  item = this.selectedItem;
+              }
+              if (!item && this.allowCustomValue) {
+                  this._inputElementValue = value;
+              }
 
-        this._setHasValue(this.value !== '');
-      } else {
-        this.selectedItem = null;
+              this._setHasValue(this.value !== '');
+          } else {
+              this.selectedItem = null;
+          }
+          // In the next _detectAndDispatchChange() call, the change detection should pass
+          this._lastCommittedValue = undefined;
+          if (this.selectedItem != null)
+              this.title = this.selectedItem[this.itemLabelPath];
+          else
+              this.title = "";
       }
-      // In the next _detectAndDispatchChange() call, the change detection should pass
-      this._lastCommittedValue = undefined;
-    }
 
     _detectAndDispatchChange() {
       if (this.value !== this._lastCommittedValue) {
