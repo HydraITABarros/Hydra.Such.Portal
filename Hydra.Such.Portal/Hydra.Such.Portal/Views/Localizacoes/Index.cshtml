@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "Localizações";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<x-locations></x-locations>
+<dom-module id="x-locations">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax auto method="post" handle-as="json" content-type="application/json" last-response="{{Locations}}" id="grid_datasource" url="/Localizacoes/GetLocations"></iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_redirectToNewLocationForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
+            </template>
+        </div>
+
+        <vaadin-grid aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="100px">
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    {{item.code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="name" />
+                </template>
+                <template>
+                    {{item.name}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px">
+                <template class="header">
+                    <vaadin-grid-sorter path="region">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="region" />
+                </template>
+                <template>
+                    {{item.region}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px">
+                <template class="header">
+                    <vaadin-grid-sorter path="locked">Bloqueado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locked" />
+                </template>
+                <template>
+                    {{item.locked}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-locations',
+                properties: {
+                    activeItem: {
+                        observer: '_onLocationRowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
+                },
+                _onLocationRowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Localizacoes/Detalhes/" + item.code;
+                    }
+                },
+                _redirectToNewLocationForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Localizacoes/Detalhes/0";
+                    }
+                }
+            });
+        });
+    </script>
+</dom-module>
