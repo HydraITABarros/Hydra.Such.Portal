@@ -1746,16 +1746,9 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Pre registo de Projetos
-        public IActionResult PreMovimentosProjetos(string id, [FromQuery]string areaid)
+        public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = null;
-
-            if (!string.IsNullOrEmpty(areaid))
-            {
-                Enumerations.Areas area = (Enumerations.Areas)Enum.Parse(typeof(Enumerations.Areas), areaid);
-                if (Enum.IsDefined(typeof(Enumerations.Areas), area))
-                    userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, area, Enumerations.Features.Projetos);
-            }
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Projetos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
