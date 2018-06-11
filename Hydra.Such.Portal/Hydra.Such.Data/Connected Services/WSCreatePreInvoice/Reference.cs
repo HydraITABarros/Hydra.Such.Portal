@@ -72,7 +72,15 @@ namespace WSCreatePreInvoice
         
         private string sell_to_Customer_NoField;
         
+        private Document_Type document_TypeField;
+        
+        private bool document_TypeFieldSpecified;
+        
         private string noField;
+        
+        private bool debit_MemoField;
+        
+        private bool debit_MemoFieldSpecified;
         
         private string your_ReferenceField;
         
@@ -144,6 +152,48 @@ namespace WSCreatePreInvoice
         
         private bool shipment_Start_TimeFieldSpecified;
         
+        private bool factura_CAFField;
+        
+        private bool factura_CAFFieldSpecified;
+        
+        private string no_CompromissoField;
+        
+        private string codigo_PedidoField;
+        
+        private string data_Serv_PrestadoField;
+        
+        private string observacoesField;
+        
+        private System.DateTime data_EncomendaField;
+        
+        private bool data_EncomendaFieldSpecified;
+        
+        private string periodo_de_Fact_ContratoField;
+        
+        private string observações_1Field;
+        
+        private string contract_NoField;
+        
+        private decimal valor_ContratoField;
+        
+        private bool valor_ContratoFieldSpecified;
+        
+        private string responsibility_CenterField;
+        
+        private int reportID_OriginalField;
+        
+        private bool reportID_OriginalFieldSpecified;
+        
+        private string posting_No_SeriesField;
+        
+        private string user_pre_registo_2009Field;
+        
+        private System.DateTime posting_DateField;
+        
+        private bool posting_DateFieldSpecified;
+        
+        private string currency_CodeField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -174,6 +224,34 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public Document_Type Document_Type
+        {
+            get
+            {
+                return this.document_TypeField;
+            }
+            set
+            {
+                this.document_TypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Document_TypeSpecified
+        {
+            get
+            {
+                return this.document_TypeFieldSpecified;
+            }
+            set
+            {
+                this.document_TypeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public string No
         {
             get
@@ -187,7 +265,35 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public bool Debit_Memo
+        {
+            get
+            {
+                return this.debit_MemoField;
+            }
+            set
+            {
+                this.debit_MemoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Debit_MemoSpecified
+        {
+            get
+            {
+                return this.debit_MemoFieldSpecified;
+            }
+            set
+            {
+                this.debit_MemoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string Your_Reference
         {
             get
@@ -201,7 +307,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string Ship_to_Code
         {
             get
@@ -215,7 +321,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string Ship_to_Name
         {
             get
@@ -229,7 +335,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string Ship_to_Name_2
         {
             get
@@ -243,7 +349,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public string Ship_to_Address
         {
             get
@@ -257,7 +363,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         public string Ship_to_Address_2
         {
             get
@@ -271,7 +377,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         public string Ship_to_City
         {
             get
@@ -285,7 +391,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public string Ship_to_Contact
         {
             get
@@ -299,7 +405,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=13)]
         public System.DateTime Order_Date
         {
             get
@@ -327,7 +433,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=14)]
         public System.DateTime Shipment_Date
         {
             get
@@ -355,7 +461,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string Payment_Terms_Code
         {
             get
@@ -369,7 +475,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=16)]
         public System.DateTime Due_Date
         {
             get
@@ -397,7 +503,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string Shipment_Method_Code
         {
             get
@@ -411,7 +517,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string Location_Code
         {
             get
@@ -425,7 +531,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string Salesperson_Code
         {
             get
@@ -439,7 +545,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public bool Comment
         {
             get
@@ -467,7 +573,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string VAT_Registration_No
         {
             get
@@ -481,7 +587,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public string Ship_to_Post_Code
         {
             get
@@ -495,7 +601,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string Ship_to_County
         {
             get
@@ -509,7 +615,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string Ship_to_Country_Region_Code
         {
             get
@@ -523,7 +629,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=23)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=25)]
         public System.DateTime Document_Date
         {
             get
@@ -551,7 +657,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
         public string External_Document_No
         {
             get
@@ -565,7 +671,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=25)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string Payment_Method_Code
         {
             get
@@ -579,7 +685,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string Shipping_Agent_Code
         {
             get
@@ -593,7 +699,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string Shipping_No_Series
         {
             get
@@ -607,7 +713,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string RegionCode20
         {
             get
@@ -621,7 +727,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public string FunctionAreaCode20
         {
             get
@@ -635,7 +741,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public string ResponsabilityCenterCode20
         {
             get
@@ -649,7 +755,7 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=31)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=33)]
         public System.DateTime Shipment_Start_Time
         {
             get
@@ -675,6 +781,325 @@ namespace WSCreatePreInvoice
                 this.shipment_Start_TimeFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
+        public bool Factura_CAF
+        {
+            get
+            {
+                return this.factura_CAFField;
+            }
+            set
+            {
+                this.factura_CAFField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Factura_CAFSpecified
+        {
+            get
+            {
+                return this.factura_CAFFieldSpecified;
+            }
+            set
+            {
+                this.factura_CAFFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
+        public string No_Compromisso
+        {
+            get
+            {
+                return this.no_CompromissoField;
+            }
+            set
+            {
+                this.no_CompromissoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
+        public string Codigo_Pedido
+        {
+            get
+            {
+                return this.codigo_PedidoField;
+            }
+            set
+            {
+                this.codigo_PedidoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
+        public string Data_Serv_Prestado
+        {
+            get
+            {
+                return this.data_Serv_PrestadoField;
+            }
+            set
+            {
+                this.data_Serv_PrestadoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
+        public string Observacoes
+        {
+            get
+            {
+                return this.observacoesField;
+            }
+            set
+            {
+                this.observacoesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=39)]
+        public System.DateTime Data_Encomenda
+        {
+            get
+            {
+                return this.data_EncomendaField;
+            }
+            set
+            {
+                this.data_EncomendaField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Data_EncomendaSpecified
+        {
+            get
+            {
+                return this.data_EncomendaFieldSpecified;
+            }
+            set
+            {
+                this.data_EncomendaFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
+        public string Periodo_de_Fact_Contrato
+        {
+            get
+            {
+                return this.periodo_de_Fact_ContratoField;
+            }
+            set
+            {
+                this.periodo_de_Fact_ContratoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
+        public string Observações_1
+        {
+            get
+            {
+                return this.observações_1Field;
+            }
+            set
+            {
+                this.observações_1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
+        public string Contract_No
+        {
+            get
+            {
+                return this.contract_NoField;
+            }
+            set
+            {
+                this.contract_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
+        public decimal Valor_Contrato
+        {
+            get
+            {
+                return this.valor_ContratoField;
+            }
+            set
+            {
+                this.valor_ContratoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Valor_ContratoSpecified
+        {
+            get
+            {
+                return this.valor_ContratoFieldSpecified;
+            }
+            set
+            {
+                this.valor_ContratoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
+        public string Responsibility_Center
+        {
+            get
+            {
+                return this.responsibility_CenterField;
+            }
+            set
+            {
+                this.responsibility_CenterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
+        public int ReportID_Original
+        {
+            get
+            {
+                return this.reportID_OriginalField;
+            }
+            set
+            {
+                this.reportID_OriginalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ReportID_OriginalSpecified
+        {
+            get
+            {
+                return this.reportID_OriginalFieldSpecified;
+            }
+            set
+            {
+                this.reportID_OriginalFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
+        public string Posting_No_Series
+        {
+            get
+            {
+                return this.posting_No_SeriesField;
+            }
+            set
+            {
+                this.posting_No_SeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
+        public string User_pre_registo_2009
+        {
+            get
+            {
+                return this.user_pre_registo_2009Field;
+            }
+            set
+            {
+                this.user_pre_registo_2009Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=48)]
+        public System.DateTime Posting_Date
+        {
+            get
+            {
+                return this.posting_DateField;
+            }
+            set
+            {
+                this.posting_DateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Posting_DateSpecified
+        {
+            get
+            {
+                return this.posting_DateFieldSpecified;
+            }
+            set
+            {
+                this.posting_DateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
+        public string Currency_Code
+        {
+            get
+            {
+                return this.currency_CodeField;
+            }
+            set
+            {
+                this.currency_CodeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice")]
+    public enum Document_Type
+    {
+        
+        /// <remarks/>
+        Quote,
+        
+        /// <remarks/>
+        Order,
+        
+        /// <remarks/>
+        Invoice,
+        
+        /// <remarks/>
+        Credit_Memo,
+        
+        /// <remarks/>
+        Blanket_Order,
+        
+        /// <remarks/>
+        Return_Order,
     }
     
     /// <remarks/>
@@ -727,7 +1152,13 @@ namespace WSCreatePreInvoice
         Sell_to_Customer_No,
         
         /// <remarks/>
+        Document_Type,
+        
+        /// <remarks/>
         No,
+        
+        /// <remarks/>
+        Debit_Memo,
         
         /// <remarks/>
         Your_Reference,
@@ -815,6 +1246,54 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         Shipment_Start_Time,
+        
+        /// <remarks/>
+        Factura_CAF,
+        
+        /// <remarks/>
+        No_Compromisso,
+        
+        /// <remarks/>
+        Codigo_Pedido,
+        
+        /// <remarks/>
+        Data_Serv_Prestado,
+        
+        /// <remarks/>
+        Observacoes,
+        
+        /// <remarks/>
+        Data_Encomenda,
+        
+        /// <remarks/>
+        Periodo_de_Fact_Contrato,
+        
+        /// <remarks/>
+        Observações_1,
+        
+        /// <remarks/>
+        Contract_No,
+        
+        /// <remarks/>
+        Valor_Contrato,
+        
+        /// <remarks/>
+        Responsibility_Center,
+        
+        /// <remarks/>
+        ReportID_Original,
+        
+        /// <remarks/>
+        Posting_No_Series,
+        
+        /// <remarks/>
+        User_pre_registo_2009,
+        
+        /// <remarks/>
+        Posting_Date,
+        
+        /// <remarks/>
+        Currency_Code,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -825,14 +1304,18 @@ namespace WSCreatePreInvoice
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
+        public string Document_Type;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=1)]
         public string No;
         
         public Read()
         {
         }
         
-        public Read(string No)
+        public Read(string Document_Type, string No)
         {
+            this.Document_Type = Document_Type;
             this.No = No;
         }
     }
@@ -1279,9 +1762,10 @@ namespace WSCreatePreInvoice
             return base.Channel.ReadAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSCreatePreInvoice.Read_Result> ReadAsync(string No)
+        public System.Threading.Tasks.Task<WSCreatePreInvoice.Read_Result> ReadAsync(string Document_Type, string No)
         {
             WSCreatePreInvoice.Read inValue = new WSCreatePreInvoice.Read();
+            inValue.Document_Type = Document_Type;
             inValue.No = No;
             return ((WSCreatePreInvoice.WSPreInvoice_Port)(this)).ReadAsync(inValue);
         }
@@ -1401,7 +1885,8 @@ namespace WSCreatePreInvoice
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPreInvoice_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSPreInvoice");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
+                        "SPreInvoice?wsdl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

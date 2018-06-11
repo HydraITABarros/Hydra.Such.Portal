@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Modelo de Requisição Simplificada - Nutrição - Such";
+    ViewData["Title"] = "Modelo de Requisição Simplificada";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -25,8 +25,6 @@
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-
-<h1 class="title">Modelo de Requisição Simplificada</h1>
 
 <x-reqtemplatedetails _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-reqtemplatedetails>
 
@@ -89,11 +87,11 @@
         </style>
 
         @*POPULATE GRID*@
-        <iron-ajax id="reqTemplateHeader_databound" url="/Nutricao/ModelosReqSimplificada/GetReqTemplate" last-response="{{data}}" on-response="_getReqTemplateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax id="deleteReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/DeleteReqTemplateLine" last-response="{{DelReqTemplateLineResponse}}" on-response="_deleteReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax id="updateReqTemplateLines_ajax" url="/Nutricao/ModelosReqSimplificada/UpdateReqTemplateLines" last-response="{{UpdReqTemplateLineResponse}}" on-response="_updateReqTemplateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax id="createReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/CreateReqTemplateLine" last-response="{{AddReqTemplateLineResponse}}" on-response="_createReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax id="validateNumeration_ajax" url="/Nutricao/ModelosReqSimplificada/ValidateNumeration" last-response="{{numValidationResponse}}" on-response="_onNumValidationResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="reqTemplateHeader_databound" url="/ModelosReqSimplificada/GetReqTemplate" last-response="{{data}}" on-response="_getReqTemplateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="deleteReqTemplateLine_ajax" url="/ModelosReqSimplificada/DeleteReqTemplateLine" last-response="{{DelReqTemplateLineResponse}}" on-response="_deleteReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="updateReqTemplateLines_ajax" url="/ModelosReqSimplificada/UpdateReqTemplateLines" last-response="{{UpdReqTemplateLineResponse}}" on-response="_updateReqTemplateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="createReqTemplateLine_ajax" url="/ModelosReqSimplificada/CreateReqTemplateLine" last-response="{{AddReqTemplateLineResponse}}" on-response="_createReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="validateNumeration_ajax" url="/ModelosReqSimplificada/ValidateNumeration" last-response="{{numValidationResponse}}" on-response="_onNumValidationResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         @*POPULATE DROPDOWNS*@
         @*<iron-ajax url="/PopulateDropdowns/GetNutritionReqTemplateTypes" last-response="{{CBRequisitionModelTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
@@ -109,12 +107,10 @@
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBUnitsOfMeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
-            <div class="row">
-                <div class="col-lg-12">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button class="" raised on-tap="_redirectToNewItemForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    </template>
-                </div>
+            <div class="subMenu">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button class="tablinks" on-tap="_redirectToNewItemForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
             </div>
         </template>
 
@@ -662,7 +658,7 @@
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
-                            this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
+                            this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/CreateReqTemplate"
                             this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                             this.$.reqTemplateHeader_databound.generateRequest();
                         }
@@ -673,13 +669,13 @@
                 },
                 _updateReqTemplate: function () {
                     if (this._validateUserInputForHeader()) {
-                        this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/UpdateReqTemplate";
+                        this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/UpdateReqTemplate";
                         this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                         this.$.reqTemplateHeader_databound.generateRequest();
                     }
                 },
                 _deleteReqTemplate: function () {
-                    this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/DeleteReqTemplate";
+                    this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/DeleteReqTemplate";
                     var ajax_request = this.$.reqTemplateHeader_databound;
 
                     var itemToDelete = this.data;
@@ -705,7 +701,7 @@
                     });
                 },
                 _redirectToNewItemForm: function (e) {
-                    window.location.href = "/Nutricao/ModelosReqSimplificada/Detalhes";
+                    window.location.href = "/ModelosReqSimplificada/Detalhes";
                 },
                 //RESPONSE PROCESSORS
                 _getReqTemplateResponse: function (data) {
@@ -718,7 +714,7 @@
                             if (this.data.eReasonCode == "1"){
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
-                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                                this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/GetReqTemplate";
                             }
                             else {
                                 this._isCreate = true;
@@ -728,7 +724,7 @@
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == "1") {
                                 this._openToast(this.data.eMessage);
-                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                                this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/GetReqTemplate";
                             }
                             else {
                                 this._openToastError(this.data.eMessage);
@@ -738,9 +734,9 @@
                             if (this.data.eReasonCode == "1") {
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
-                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                                this.$.reqTemplateHeader_databound.url = "/ModelosReqSimplificada/GetReqTemplate";
                                 setTimeout(function () {
-                                    window.location.href = "/Nutricao/ModelosReqSimplificada";
+                                    window.location.href = "/ModelosReqSimplificada";
                                 }, 2500);
                             }
                             else {

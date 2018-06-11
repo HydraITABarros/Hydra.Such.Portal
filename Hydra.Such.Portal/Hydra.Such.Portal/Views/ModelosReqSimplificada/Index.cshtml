@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Modelos de Requisição Simplificada - Nutrição - Such";
+    ViewData["Title"] = "Modelos de Requisição Simplificada";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,8 +16,6 @@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-<h1 class="title">Modelos de Requisição Simplificada</h1>
 
 <x-reqtemplates></x-reqtemplates>
 <dom-module id="x-reqtemplates">
@@ -45,12 +43,12 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{regions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{products}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
-        <div class="marginSpace">
+        <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
         </div>
+
         <vaadin-grid aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
                 <template class="header">

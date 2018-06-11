@@ -1,0 +1,347 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes de Localização";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<x-locationdetails _locationcode="@ViewBag.LocationCode" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-locationdetails>
+
+<dom-module id="x-locationdetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+            }
+        </style>
+
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBShipLocationCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/Localizacoes/GetLocationData"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Localizacoes/DeleteLocation"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_project"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="subMenu">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewLocation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
+                </template>
+            </div>
+        </template>
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Armazém</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+            <!--Geral-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.code}}" maxlength="20" disabled="{{ !_isCreate }}" id="LCode" name="LCode" ed label="Código"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.name}}" maxlength="100" id="LName" name="LName" label="Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.address}}" maxlength="100" id="LAddress" name="LAddress" label="Endereço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.city}}" maxlength="30" id="LCity" name="LCity" label="Cidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.mobilePhone}}" maxlength="30" id="LPhone" name="LPhone" label="Telefone" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.fax}}" maxlength="30" id="LFax" name="LFax" label="Nº Fax" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.contact}}" maxlength="50" id="LContact" name="LContact" label="Contato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.zipCode}}" maxlength="20" id="LZipCode" name="LZipCode" label="Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3 ">
+                        <vaadin-text-field value="{{data.email}}" maxlength="50" id="LEmail" name="LEmail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3 alignPoga">
+                        <vaadin-checkbox checked="{{data.locked}}" disabled="{{ !_permissions.update }}">Bloqueado</vaadin-checkbox>
+                    </div>
+                </div>
+            </div>
+
+            <!--Registo-->
+            <div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.region}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="550px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.supplierLocation}}" maxlength="6" id="LSupplierLocation" name="LSupplierLocation" label="Local Fornecedor" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                </div>
+                <br />
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[CBShipLocationCodes]]" item-value-path="id" item-label-path="value" value="{{data.shipLocationCode}}" label="Código Local Entrega" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <b>[[item.value]]</b>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[CBEmployees]]" item-value-path="id" item-label-path="value" value="{{data.warehouseManager}}" label="Responsável Armazém" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <b>[[item.value]]</b>
+                            </template>
+                        </vaadin-combo-box>
+
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
+                </template>
+            </template>
+        </div>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-locationdetails',
+                properties: {
+                    _locationcode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                },
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "code": this._locationcode });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function () {
+                    if (this.$.LCode.validate() &
+                        this.$.LName.validate() &
+                        this.$.LAddress.validate() &
+                        this.$.LCity.validate() &
+                        this.$.LPhone.validate() &
+                        this.$.LFax.validate() &
+                        this.$.LContact.validate() &
+                        this.$.LZipCode.validate() &
+                        this.$.LEmail.validate() &
+                        this.$.LSupplierLocation.validate()) {
+                        return true;
+                    }
+                    return true;
+                },
+                _createNewLocation: function () {
+                    window.location.href = "/Localizacoes/Detalhes";
+                },
+
+                //CRUDS
+                _create: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Localizacoes/CreateLocation", this.data)
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Localizacoes/UpdateLocation", this.data)
+                    }
+                },
+                _delete: function () {
+                    var Location = this.data;
+                    var ajax_request = this.$.ajax_delete_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a localização " + this.data.code + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Location);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                //Responses Processors
+                _responseProcessor: function (data) {
+                    var self = this;
+                    if (this.data.code != "" && this.data.code != null) {
+                        this._isCreate = false
+                    }
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("Update") !== -1 || data.detail.url.indexOf("Create") !== -1) {
+                            if (this.data.eReasonCode == 100) {
+                                this._openToast(this.data.eMessage);
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 100) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/Localizacoes";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 101) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+            });
+        });
+    </script>
+
+</dom-module>

@@ -93,7 +93,7 @@
                     <li id="approvalPendingShow">
                         <a href="/Approvals">
                             <i class="menu-icon zmdi zmdi-check zmdi-hc-lg"></i>
-                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes</span>
+                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes &nbsp;</span>
                         </a>
                     </li>
 
@@ -123,6 +123,7 @@
                             <li>@Html.ActionLink("Projetos", "Index", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Orçamentos", "", "", null, null)</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Pré-Registos", "PreregistoProjetos", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Unidades Produtivas", "Index", "UnidadesProdutivas", null, null)</li>
@@ -189,9 +190,11 @@
                             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                         </a>
                         <ul class="submenu">
-                            <li>@Html.ActionLink("Criação", "Index", "FolhasDeHoras", null, null)</li>
-                            <li>@Html.ActionLink("Validação - Aprovação", "FolhaDeHoras_Validacao", "Engenharia", null, null)</li>
-                            <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", null, null)</li>
+                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -227,6 +230,7 @@
                             <li>@Html.ActionLink("Cartões e Apólices", "CartoesEApolices", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Localizações", "Index", "Localizacoes", null, null)</li>
 
                             <!--FH-->
                             <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
