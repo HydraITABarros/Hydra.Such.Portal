@@ -110,11 +110,14 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
         public virtual DbSet<UnidadeDeArmazenamento> UnidadeDeArmazenamento { get; set; }
         public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
+        public virtual DbSet<UnidadePrestação> UnidadePrestação { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
+
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -7057,6 +7060,31 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.QtdPorUnidadeMedida)
                     .HasColumnName("Qtd por Unidade Medida")
                     .HasColumnType("decimal(, 2)");
+            });
+
+            modelBuilder.Entity<UnidadePrestação>(entity =>
+            {
+                entity.HasKey(e => e.Código);
+
+                entity.ToTable("Unidade Prestação");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descrição).HasColumnType("nchar(50)");
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<UnidadesProdutivas>(entity =>

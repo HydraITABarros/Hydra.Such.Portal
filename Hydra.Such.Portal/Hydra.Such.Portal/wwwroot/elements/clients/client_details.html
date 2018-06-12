@@ -60,6 +60,7 @@
                     padding: 0 0;
                 };
                 --paper-collapse-item-header: {
+                    margin-top: -1px;
                     padding: 0 15px;
                     color: #333;
                     background-color: #f5f5f5;
@@ -69,9 +70,16 @@
                     border-top:  solid #ddd 1px;
                 };
             }
-
+            /*
             .panel-body {
                 padding-top: 0px !important;
+            }*/
+            .header {
+                margin-top: -1px;
+            }
+
+            .spacer10 {
+                height: 10px;
             }
 
             .spacer20 {
@@ -137,438 +145,453 @@
 
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>            
+            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_isCreate }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </template>
-                <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
+            <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
+            
+
         </div>
+
+        
 
         <div class="panel panel-default break_clear">
 
             <iron-form>
                 <div id="customer-form">
                     <!--Geral-->
-                    <div class="panel-heading">
-                        Geral
+                    <div class="spacer10"></div>
+                    <div class="col-xs-12">
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab style="display: {{ _listDisplay }};">Endereços de Envio</paper-tab>
+                        </paper-tabs>
                     </div>
-                    <div class="panel-body">
+                    <div class="clearfix"></div>
+                    <iron-pages selected="{{selected}}">
+
+                        <!------------ Geral ------------>
                         <div>
-                            <div class="row break_clear">
-                                <div class="col-lg-4">
-                                    <vaadin-text-field value="{{data.no}}" maxlength="20" id="no" name="no" label="Nº" readonly> </vaadin-text-field>
+                            <div class="panel-body">
+                                <div>
+                                    <div class="row ">
+                                        <div class="col-lg-4">
+                                            <vaadin-text-field value="{{data.no}}" maxlength="20" id="no" name="no" label="Nº" readonly> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <vaadin-text-field value="{{data.name}}" maxlength="100" id="name" name="name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <vaadin-text-field value="{{data.name}}" maxlength="100" id="name" name="name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                            </div>
+                            <!------------ Endereço & Contacto ------------>
+                            <div class="panel-body">
+
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Endereço & Contacto" opened>
+                                            <div class="panel-body">
+                                                <div class="break_clear">
+
+                                                    <div class="row break_clear">
+                                                        <div class="col-lg-6">
+                                                            <vaadin-text-field value="{{data.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="address" name="address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <vaadin-text-field value="{{data.address_2}}" maxlength="255" id="address_2" name="address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row break_clear">
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="post_Code" name="post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.city}}" maxlength="100" id="city" name="city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
+                                                                <template>
+                                                                    &nbsp;[[item.value]]&nbsp;
+                                                                </template>
+                                                            </vaadin-combo-box>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field pattern="[0-9]{9}" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row break_clear">
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.fax_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" required> </vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.county}}" maxlength="255" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row break_clear">
+                                                        <div class="col-lg-3">
+                                                            <vaadin-combo-box items='[{"id":"0","value":""},{"id":23,"value":"Lisboa"},{"id":33,"value":"Porto"},{"id":43,"value":"Coimbra"}]' id="Regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.Regiao_Cliente}}" label="Região">
+                                                                <template>
+                                                                    &nbsp;[[item.value]]&nbsp;
+                                                                </template>
+                                                            </vaadin-combo-box>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!------------ Faturação ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Faturação" opened>
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-4">
+                                                        <vaadin-text-field value="{{data.vaT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!------------ Especificação ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Especificação" opened>
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-3 alignPoga">
+                                                        <vaadin-checkbox checked="{{data.cliente_Associado}}" id="cliente_Associado" name="cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[LCustomerTypes]]' id="tipo_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.tipo_Cliente}}" label="Tipo de Cliente">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[LCustomerNatures]]' id="natureza_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.natureza_Cliente}}" label="Natureza do Cliente">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <div class="marginSpace">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        </template>
+                                        <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
+                                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                        </template>
+                                    </template>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!------------ Endereço & Contacto ------------>
-                    <paper-collapse-group>
-                        <paper-collapse-item class="panel-heading" header="Endereço & Contacto" opened>
-                            <div class="panel-body">
-                                <div class="break_clear">
-
-                                    <div class="row break_clear">
-                                        <div class="col-lg-6">
-                                            <vaadin-text-field value="{{data.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="address" name="address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <vaadin-text-field value="{{data.address_2}}" maxlength="255" id="address_2" name="address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="post_Code" name="post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.city}}" maxlength="100" id="city" name="city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                        <!------------ Endereços de envio ------------>
+                        <div style="display: {{ _listDisplay }};">
+                            <div style="display: {{ _listDisplay }};">
+                                <div is="dom-if" if="{{ _permissions.update }}">
+                                    <div class="col-xs-12">
+                                        <div class="row break_clear">
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field value="{{shippingData.code}}" maxlength="100" id="shippingData.code" name="shippingData.code" label="Código" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field value="{{shippingData.name}}" maxlength="100" id="shippingData.name" name="shippingData.name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            </div>
                                         </div>
 
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
-                                                <template>
-                                                    &nbsp;[[item.value]]&nbsp;
-                                                </template>
-                                            </vaadin-combo-box>
+                                        <div class="row break_clear">
+                                            <div class="col-lg-6">
+                                                <vaadin-text-field value="{{shippingData.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.address" name="shippingData.address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <vaadin-text-field value="{{shippingData.address_2}}" maxlength="255" id="shippingData.address_2" name="shippingData.address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            </div>
                                         </div>
+                                        <div class="row break_clear">
 
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field pattern="[0-9]{9}" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
-                                        </div>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field value="{{shippingData.city}}" maxlength="100" id="shippingData.city" name="shippingData.city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            </div>
 
-                                    </div>
-
-                                    <div class="row break_clear">
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.fax_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" required> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.county}}" maxlength="255" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items='[{"id":"0","value":""},{"id":23,"value":"Lisboa"},{"id":33,"value":"Porto"},{"id":43,"value":"Coimbra"}]' id="Regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.Regiao_Cliente}}" label="Região">
-                                                <template>
-                                                    &nbsp;[[item.value]]&nbsp;
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
-
-                    <!------------ Faturação ------------>
-                    <paper-collapse-group>
-                        <paper-collapse-item class="panel-heading" header="Faturação" opened>
-                            <div class="panel-body">
-                                <div class="row break_clear">
-                                    <div class="col-lg-4">
-                                        <vaadin-text-field value="{{data.vaT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
-
-                    <!------------ Especificação ------------>
-                    <paper-collapse-group>
-                        <paper-collapse-item class="panel-heading" header="Especificação" opened>
-                            <div class="panel-body">
-                                <div class="row break_clear">
-                                    <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox checked="{{data.cliente_Associado}}" id="cliente_Associado" name="cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
-                                            <template>
-                                                &nbsp;[[item.value]]&nbsp;
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <vaadin-combo-box items='[[LCustomerTypes]]' id="tipo_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.tipo_Cliente}}" label="Tipo de Cliente">
-                                            <template>
-                                                &nbsp;[[item.value]]&nbsp;
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <vaadin-combo-box items='[[LCustomerNatures]]' id="natureza_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.natureza_Cliente}}" label="Natureza do Cliente">
-                                            <template>
-                                                &nbsp;[[item.value]]&nbsp;
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
-                    <div class="marginSpace">
-                        <template is="dom-if" if="{{ _isCreate }}">
-                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                        </template>
-                        <template is="dom-if" if="{{ !_isCreate }}">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
-                            <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
-                                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                            </template>
-                        </template>
-                    </div>
-                </div>
-                <!------------ Endereços de envio ------------>
-                <div style="display: {{ _listDisplay }};">
-                    <paper-collapse-group>
-                        <paper-collapse-item class="panel-heading" header="Endereços de envio" opened>
-                            <div is="dom-if" if="{{ _permissions.update }}">
-                                <div class="col-xs-12">
-                                    <div class="row break_clear">
-                                        <div class="col-lg-4">
-                                            <vaadin-text-field value="{{shippingData.code}}" maxlength="100" id="shippingData.code" name="shippingData.code" label="Código" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <vaadin-text-field value="{{shippingData.name}}" maxlength="100" id="shippingData.name" name="shippingData.name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-lg-6">
-                                            <vaadin-text-field value="{{shippingData.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.address" name="shippingData.address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <vaadin-text-field value="{{shippingData.address_2}}" maxlength="255" id="shippingData.address_2" name="shippingData.address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="row break_clear">
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{shippingData.city}}" maxlength="100" id="shippingData.city" name="shippingData.city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items='[{"value":"PT"}]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
-                                                <template>
-                                                    &nbsp;[[item.value]]&nbsp;
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.phone_No" name="shippingData.phone_No" label="Telefone" required></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="row break_clear">
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{shippingData.contact}}" disabled="{{ !_permissions.update }}" id="shippingData.contact" name="shippingData.contact" label="Contacto"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax" required></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{shippingData.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="clearfix"></div>
-
-                            </div>
-                            <template is="dom-if" if="{{ _permissions.create }}">
-                                <div class="col-lg-2  break_clear">
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createShippingLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                </div>
-                            </template>
-                            <div class="spacer20"></div>
-
-
-                            <div class="break_clear col-xs-12">
-
-                                <div class="spacer20"></div>
-
-                                <vaadin-grid aria-label="ShippingLines" id="grid_shippinglines" name="grid_shippinglines" items="[[shippingList]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="code" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.code}}" maxlength="10" id="shippingList.code" name="shippingList.code" disabled="disabled" required> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.code}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="name" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.name}}" maxlength="100" id="shippingList.name" name="shippingList.name" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.name}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="address" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.address" name="shippingList.address" required></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.address}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="address_2">Endereço 2</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="address_2" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.address_2}}" maxlength="255" id="shippingList.address_2" name="shippingList.address_2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.address_2}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="post_Code">Código Postal</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="post_Code" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.post_Code" name="shippingList.post_Code"></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.post_Code}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="city" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.city}}" maxlength="100" id="shippingList.city" name="shippingList.city" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.city}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="country_Region_Code">Cód. Região</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="country_Region_Code" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items='[{"value":"PT"}]' id="shippingList.country_Region_Code" name="shippingList.country_Region_Code" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
+                                            <div class="col-lg-3">
+                                                <vaadin-combo-box items='[{"value":"PT"}]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
                                                     <template>
                                                         &nbsp;[[item.value]]&nbsp;
                                                     </template>
                                                 </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.country_Region_Code}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
+                                            </div>
 
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="phone_No">Telefone</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="phone_No" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field pattern="[0-9]{9}" value="{{item.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.phone_No" name="shippingList.phone_No" required></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.phone_No}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.phone_No" name="shippingData.phone_No" label="Telefone" required></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
 
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="contact">Contacto</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="contact" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.contact}}" disabled="{{ !_permissions.update }}" id="shippingList.contact" name="shippingList.contact"></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.contact}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field value="{{shippingData.contact}}" disabled="{{ !_permissions.update }}" id="shippingData.contact" name="shippingData.contact" label="Contacto"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax" required></vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <vaadin-text-field value="{{shippingData.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <template is="dom-if" if="{{ _permissions.create }}">
+                                    <div class="col-lg-2  break_clear">
+                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createShippingLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
+                                </template>
+                                <div class="spacer20"></div>
 
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="fax_No">Nº Fax</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="fax_No" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field pattern="[0-9]{9}" value="{{item.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.fax_No" name="shippingList.fax_No"></vaadin-text-field>
+                                <div class="break_clear col-xs-12">
+                                    <div class="spacer20"></div>
+                                    <vaadin-grid aria-label="ShippingLines" id="grid_shippinglines" name="grid_shippinglines" items="[[shippingList]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="code" />
                                             </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.fax_No}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="e_Mail">Email</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="e_Mail" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingList.e_Mail" name="shippingList.e_Mail" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.e_Mail}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column>
-                                        <template class="header">
-                                        </template>
-                                        <template>
-                                            <center>
-                                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                                    <paper-button class="btnRemove" raised on-tap="_deleteShippingLine">Eliminar</paper-button>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.code}}" maxlength="10" id="shippingList.code" name="shippingList.code" disabled="disabled" required> </vaadin-text-field>
                                                 </template>
-                                            </center>
-                                        </template>
-                                    </vaadin-grid-column>
-                                </vaadin-grid>
-                            </div>
-                            <div class="clearfix"></div>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.code}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
 
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="name" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.name}}" maxlength="100" id="shippingList.name" name="shippingList.name" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.name}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
 
-                            <div class="spacer20"></div>
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <div class="col-lg-2 break_clear">
-                                    <paper-button raised id="btnUpdateLine" class="btnSave" on-tap="_updateShippingLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="address" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.address" name="shippingList.address" required></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.address}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="address_2">Endereço 2</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="address_2" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.address_2}}" maxlength="255" id="shippingList.address_2" name="shippingList.address_2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.address_2}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="post_Code">Código Postal</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="post_Code" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.post_Code" name="shippingList.post_Code"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.post_Code}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="city" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.city}}" maxlength="100" id="shippingList.city" name="shippingList.city" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.city}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="country_Region_Code">Cód. Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="country_Region_Code" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items='[{"value":"PT"}]' id="shippingList.country_Region_Code" name="shippingList.country_Region_Code" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
+                                                        <template>
+                                                            &nbsp;[[item.value]]&nbsp;
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.country_Region_Code}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="phone_No">Telefone</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="phone_No" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field pattern="[0-9]{9}" value="{{item.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.phone_No" name="shippingList.phone_No" required></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.phone_No}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="contact">Contacto</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="contact" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.contact}}" disabled="{{ !_permissions.update }}" id="shippingList.contact" name="shippingList.contact"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.contact}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fax_No">Nº Fax</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fax_No" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field pattern="[0-9]{9}" value="{{item.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.fax_No" name="shippingList.fax_No"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.fax_No}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="e_Mail">Email</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="e_Mail" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingList.e_Mail" name="shippingList.e_Mail" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.e_Mail}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                                        <paper-button class="btnRemove" raised on-tap="_deleteShippingLine">Eliminar</paper-button>
+                                                    </template>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
                                 </div>
                                 <div class="clearfix"></div>
-                            </template>
 
-                        </paper-collapse-item>
-                    </paper-collapse-group>
+                                <div class="spacer20"></div>
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <div class="col-lg-2 break_clear">
+                                        <paper-button raised id="btnUpdateLine" class="btnSave" on-tap="_updateShippingLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </template>
 
-
-                    <div class="spacer20"></div>
-
+                                <div class="spacer20"></div>
+                            </div>
+                        </div>
+                    </iron-pages>
                 </div>
             </iron-form>
         </div>
@@ -637,7 +660,7 @@
                         //this.data.area = this._areaid;
                     }
                     this._listDisplay = this._getListDisplay();
-                    
+
                     if (this._permissions.create && !this._isCreate) {
                         this._showCreateNew = true;
                     }
