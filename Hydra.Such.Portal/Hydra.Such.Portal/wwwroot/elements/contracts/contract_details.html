@@ -195,7 +195,6 @@
                    method="post"
                    handle-as="json"
                    id="createProject_ajax"
-                   on-response="_createProjectResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contratos/GetContractsProposalById"
@@ -751,9 +750,7 @@
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3">
-                                                                <vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>
-                                                            </div>
+                                                            
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{dataNav.nBilledInvoices}}" id="_IRnBilledInvoices" name="_IRnBilledInvoices" label="Nº Faturas Registadas" disabled> </vaadin-text-field>
                                                             </div>
@@ -770,6 +767,14 @@
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled> </vaadin-text-field>
+                                                            </div>
+                                        
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <such-textarea rows="5" value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </such-textarea>
+
+                                                                <!--<vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>-->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -808,8 +813,13 @@
                                                                         </template>
                                                                     </vaadin-combo-box>
                                                                 </div>
-                                                                <div class="col-md-3 ">
-                                                                    <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                           
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6 ">
+                                                                    <such-textarea rows="5" value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </such-textarea>
+
+                                                                    <!--<vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>-->
                                                                 </div>
                                                                 <div class="col-lg-1">
                                                                     <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
@@ -2505,10 +2515,6 @@
                             }
                         });
                     }
-
-                },
-
-                _createProject: function () {
 
                 },
 

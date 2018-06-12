@@ -1,4 +1,24 @@
 ﻿{
   "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
-  "Version": "0.5.10808.800"
+  "Version": "15.0.20119.1312",
+  "ExtendedData": {
+    "Uri": "http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH%20-%20QUALIDADE/Page/WSJobJournalLine",
+    "Namespace": "WSCreateProjectDiaryLine",
+    "SelectedAccessLevelForGeneratedClass": "Public",
+    "GenerateMessageContract": false,
+    "ReuseTypesinReferencedAssemblies": true,
+    "ReuseTypesinAllReferencedAssemblies": true,
+    "CollectionTypeReference": {
+      "Item1": "System.Array",
+      "Item2": "System.Runtime.dll"
+    },
+    "DictionaryCollectionTypeReference": {
+      "Item1": "System.Collections.Generic.Dictionary`2",
+      "Item2": "System.Collections.dll"
+    },
+    "CheckedReferencedAssemblies": [],
+    "InstanceId": null,
+    "Name": "WSCreateProjectDiaryLine",
+    "Metadata": {}
+  }
 }
