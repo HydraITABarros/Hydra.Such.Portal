@@ -1272,7 +1272,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (requisition != null)
                 {
                     var totalValue = requisition.GetTotalValue();
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
                 }
             }
             else

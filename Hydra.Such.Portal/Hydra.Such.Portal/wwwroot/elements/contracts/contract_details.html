@@ -85,7 +85,7 @@
 
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -258,11 +258,14 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <b>[[item.value]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
+                                                            items="[[CBFeeUnits]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1742,7 +1745,7 @@
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
-                        this.$.mFeeUnits.validate() &
+                        //this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
                         this.$.mResponsabilityCenter.validate() &
@@ -1770,7 +1773,11 @@
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate()) {
-
+                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            this.$.mFeeUnits.validate();
+                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");

@@ -212,38 +212,6 @@ namespace Hydra.Such.Portal.Controllers
     //            return RedirectToAction("AccessDenied", "Error");
     //        }
     //    }
-
-    //    #endregion
-
-    //    #region Clientes
-    //    public IActionResult Clientes()
-    //    {
-    //        UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Clientes); //4, 47);
-    //        if (UPerm != null && UPerm.Read.Value)
-    //        {
-    //            ViewBag.UPermissions = UPerm;
-    //            return View();
-    //        }
-    //        else
-    //        {
-    //            return RedirectToAction("AccessDenied", "Error");
-    //        }
-    //    }
-
-    //    public IActionResult DetalhesCliente(string id)
-    //    {
-    //        UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Clientes); //4, 47);
-    //        if (UPerm != null && UPerm.Read.Value)
-    //        {
-    //            ViewBag.No = id ?? "";
-    //            ViewBag.UPermissions = UPerm;
-    //            return View();
-    //        }
-    //        else
-    //        {
-    //            return RedirectToAction("AccessDenied", "Error");
-    //        }
-    //    }
     //    #endregion
 
 

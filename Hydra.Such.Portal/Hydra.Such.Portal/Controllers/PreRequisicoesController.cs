@@ -975,7 +975,7 @@ namespace Hydra.Such.Portal.Controllers
                                 createdReqIds += RequisitionNo + "; ";
                                 var totalValue = req.GetTotalValue();
                                 //Start Approval
-                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
                                 if (result.eReasonCode != 100)
                                 {
                                     data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
@@ -1043,7 +1043,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (String.IsNullOrEmpty(Error))
                 {
-                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
@@ -1058,7 +1058,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
                 if (ApprovalMovResult.eReasonCode != 100)
                 {
                     ApprovalMovResult.eReasonCode = 2;

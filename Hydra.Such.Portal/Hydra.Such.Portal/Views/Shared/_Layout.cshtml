@@ -71,7 +71,7 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <ul class="nav navbar-toolbar navbar-toolbar-left navbar-left">
                     <li class="hidden-float hidden-menubar-top">
-                        <a href="javascript:void(0)" role="button" id="menubar-fold-btn" class="hamburger hamburger--arrowalt is-active js-hamburger">
+                        <a href="javascript:void(0)" role="button" id="menubar-fold-btn" class="hamburger hamburger--arrowalt js-hamburger">
                             <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                         </a>
                     </li>
@@ -105,6 +105,7 @@
                         </a>
                         <ul class="submenu">
                             <li>@Html.ActionLink("Contactos", "Index", "Contactos", null, null)</li>
+                            <li>@Html.ActionLink("Clientes", "Index", "Clientes", null, null)</li>
                             <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Contratos", null, null)</li>
                             <li>@Html.ActionLink("Propostas", "Propostas", "Contratos", null, null)</li>
                             <li>@Html.ActionLink("Contratos", "Index", "Contratos", null, null)</li>
@@ -193,7 +194,7 @@
                             <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
-                            <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>
+                            @*<li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -230,6 +231,7 @@
 
                             <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Localizações", "Index", "Localizacoes", null, null)</li>
+                            <li>@Html.ActionLink("Unidades de Prestação", "UnidadePrestacao", "Administracao", null, null)</li>
 
                             <!--FH-->
                             <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
