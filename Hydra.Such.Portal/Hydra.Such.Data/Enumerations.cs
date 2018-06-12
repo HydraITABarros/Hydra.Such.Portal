@@ -78,7 +78,7 @@ namespace Hydra.Such.Data
             Oportunidades = 20,
             [Description("Propostas")]
             Propostas = 21,
-            [Description("Autorizaçãp Faturação")]
+            [Description("Autorização Faturação")]
             AutorizaçãoFaturação = 22,
             [Description("Elemento Juri CCP")]
             ElementoJuriCCP = 23,

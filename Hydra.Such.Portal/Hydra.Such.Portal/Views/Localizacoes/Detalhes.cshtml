@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Localizações - Nutrição - Such";
+    ViewData["Title"] = "Detalhes de Localização";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -59,7 +59,7 @@
 
 
         <!-- PROJECT CRUDS -->
-        <iron-ajax url="/Nutricao/Localizacoes/GetLocationData"
+        <iron-ajax url="/Localizacoes/GetLocationData"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -67,7 +67,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/Localizacoes/DeleteLocation"
+        <iron-ajax url="/Localizacoes/DeleteLocation"
                    last-response="{{deletedData}}"
                    method="post"
                    handle-as="json"
@@ -78,11 +78,10 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnProjectAdd" class="tablinks" on-tap="_createNewLocation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewLocation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
                 </template>
             </div>
         </template>
-        
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
@@ -264,18 +263,18 @@
                     return true;
                 },
                 _createNewLocation: function () {
-                    window.location.href = "/Nutricao/Localizacoes/Detalhes";
+                    window.location.href = "/Localizacoes/Detalhes";
                 },
 
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        this._executeRequest("/Nutricao/Localizacoes/CreateLocation", this.data)
+                        this._executeRequest("/Localizacoes/CreateLocation", this.data)
                     }
                 },
                 _update: function () {
                     if (this._validateData()) {
-                        this._executeRequest("/Nutricao/Localizacoes/UpdateLocation", this.data)
+                        this._executeRequest("/Localizacoes/UpdateLocation", this.data)
                     }
                 },
                 _delete: function () {
@@ -328,7 +327,7 @@
                         if (this.deletedData.eReasonCode == 100) {
                             setTimeout(
                                 function () {
-                                    window.location.href = "/Nutricao/Localizacoes";
+                                    window.location.href = "/Localizacoes";
                                 }, 2500);
                         } else if (this.deletedData.eReasonCode == 101) {
                             this._openToastError(this.deletedData.eMessage);
