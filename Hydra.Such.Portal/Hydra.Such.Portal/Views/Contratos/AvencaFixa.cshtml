@@ -32,6 +32,8 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 <x-avencafixa></x-avencafixa>
 <dom-module id="x-avencafixa">
@@ -56,6 +58,7 @@
         </style>
 
         <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/GetPedingAvencaFixa" last-response="{{resultpeding}}" id="ajax_getpeding" method="post" handle-as="json" content-type="application/json" on-response="_gridListPedingResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
         <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json" on-response="_invoiceCountResponse"></iron-ajax>
 
@@ -66,6 +69,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_generateInvoice"><i class="fa fa-clipboard" aria-hidden="true"></i> Gerar Fatura</paper-button>
             <paper-button class="tablinks" on-tap="_count"><i class="fa fa-align-right" aria-hidden="true"></i> Contabilizar</paper-button>
+            <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-stop-circle" aria-hidden="true"></i> CAFs Pendentes </paper-button>
         </div>
 
         <h2 class="separator">Autorizar Faturação Contratos</h2>
@@ -95,7 +99,7 @@
                     <vaadin-grid-filter path="clientNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                   {{item.clientNo}}
+                    {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -132,7 +136,7 @@
                     <vaadin-grid-filter path="invoiceTotal"></vaadin-grid-filter>
                 </template>
                 <template>
-                   {{item.invoiceTotal}}€
+                    {{item.invoiceTotal}}€
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -159,7 +163,7 @@
                     <vaadin-grid-filter path="billedValue"></vaadin-grid-filter>
                 </template>
                 <template>
-                   {{item.billedValue}}
+                    {{item.billedValue}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -168,7 +172,7 @@
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                   [[ _parseRegionCode(item.regionCode) ]]
+                    [[ _parseRegionCode(item.regionCode) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -199,7 +203,159 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        
+
+        <paper-dialog id="dialog" class="dialgoBox">
+            <vaadin-grid id="avencaFixaTable2" aria-label="Tabela Avença Fixa" items="[[resultpeding]]">
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contractNo"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.contractNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="clientNo"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.clientNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="clientName"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.clientName}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="invoiceValue">Valor da Fatura</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="invoiceValue"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.invoiceValue}}€
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseRegionCode(item.regionCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseFuncAreaCode(item.functionalAreaCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseRepCenterCode(item.responsabilityCenterCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="invoiceTotal">Total a Faturar</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="invoiceTotal"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.invoiceTotal}}€
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="contractValue">Valor do Contrato</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contractValue"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.contractValue}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valueToInvoice">Valor por Faturar</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="valueToInvoice"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.valueToInvoice}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="billedValue">Valor Faturado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="billedValue"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.billedValue}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseRegionCode(item.regionCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseFuncAreaCode(item.functionalAreaCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        [[ _parseRepCenterCode(item.responsabilityCenterCode) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="nextInvoiceDate">Data Próxima Fatura</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="nextInvoiceDate"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.registerDate}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -221,8 +377,7 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _gridListResponse: function()
-                {
+                _gridListResponse: function () {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
@@ -234,8 +389,8 @@
                 _generateInvoice: function () {
                     //if (this.result == null || this.result == undefined || this.result.length == 0)
                     //{
-                        this.$.ajax_generate.body = JSON.stringify(this.result);
-                        this.$.ajax_generate.generateRequest();
+                    this.$.ajax_generate.body = JSON.stringify(this.result);
+                    this.$.ajax_generate.generateRequest();
                     //}
                     //else {
                     //    this.openToastError("Não existem linhas disponiíveis para faturar.");
@@ -243,8 +398,7 @@
                 },
 
                 _invoiceGenResponse: function (e) {
-                    if (e.returnValue == true)
-                    {
+                    if (e.returnValue == true) {
                         this.$.ajax_getall.generateRequest();
                         this.$.avencaFixaTable.clearCache();
                     }
@@ -252,13 +406,15 @@
                         this.openToastError("Ocorreu um erro ao tentar gerar faturas.");
                     }
                 },
-
+                _gridListPedingResponse: function(e) {
+                    this.$.dialog.open();
+                },
                 _count: function () {
                     if (this.result != null || this.result != undefined || this.result.length != 0) {
                         this.$.ajax_count.body = JSON.stringify(this.result);
                         this.$.ajax_count.generateRequest();
                         //this.$.avencaFixaTable.clearCache();
-                    } 
+                    }
                     else {
                         this.openToastError("Não existem linhas disponiíveis para contabilizar.");
                     }
@@ -274,8 +430,7 @@
                     }
                 },
 
-                _parseRegionCode: function (param)
-                {
+                _parseRegionCode: function (param) {
                     if (param != undefined) {
                         var sel = this.CBRegions.find(x => x.id == param);
                         if (sel != undefined) {
@@ -285,8 +440,7 @@
                     return "";
                 },
 
-                _parseFuncAreaCode: function (param)
-                {
+                _parseFuncAreaCode: function (param) {
                     if (param != undefined) {
                         var sel = this.CBFunctionalAreas.find(x => x.id == param);
                         if (sel != undefined) {
@@ -297,16 +451,18 @@
 
                 },
 
-                _parseRepCenterCode: function (param)
-                {
+                _parseRepCenterCode: function (param) {
                     if (param != undefined) {
                         var sel = this.CBResponsabilityCenterCodes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
                         }
                     }
-                    return "";
 
+                },
+                _openPending: function (param) {
+                    this.$.ajax_getpeding.generateRequest();
+                    
                 },
             });
         });

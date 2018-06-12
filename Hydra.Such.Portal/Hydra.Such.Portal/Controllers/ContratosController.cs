@@ -953,6 +953,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetPedingAvencaFixa()
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
+            List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
+
+            foreach (var item in contractList)
+            {
+                //Estado Pendente
+                if (item.Estado == 4) {
+                    String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+                    // Valor Fatura
+                    List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
+                    Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+
+                    result.Add(new FaturacaoContratosViewModel
+                    {
+                        ContractNo = item.NºContrato,
+                        Description = item.Descrição,
+                        ClientNo = item.NºCliente,
+                        ClientName = cliName,
+                        InvoiceValue = sum,
+                        NumberOfInvoices = item.NºDeFaturasAEmitir,
+                        InvoiceTotal = item.TotalAFaturar,
+                        ContractValue = item.ValorDoContrato,
+                        ValueToInvoice = item.ValorPorFaturar,
+                        BilledValue = item.ValorFaturado,
+                        RegionCode = item.CódigoRegião,
+                        FunctionalAreaCode = item.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
+                    });
+                }
+            }
+            return Json(result);
+        }
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
