@@ -1117,7 +1117,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" 
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
@@ -1129,7 +1129,7 @@
                     <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" 
                                     items="[[CBResourceCode]]"
                                       on-value-changed="_projectChange"
                                     text-path="id"
@@ -1139,11 +1139,11 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" ></vaadin-date-picker>
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" disabled="{{disabledProjectNo}}" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
                         <template>
                             <table width="550px">
                                 <tr>
