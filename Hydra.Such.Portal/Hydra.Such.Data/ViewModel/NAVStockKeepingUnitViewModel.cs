@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.ViewModel
       
         //public timestamp { get; set; }
         public string LocationCode { get; set; }
-        public int ItemNo_ { get; set; }
+        public string ItemNo_ { get; set; }
         //public VariantCode { get; set; }
         //public ShelfNo_ { get; set; }
         public decimal UnitCost { get; set; }
@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.ViewModel
         //public LastDirectCost { get; set; }
         public String VendorNo_ { get; set; }
         public string VendorItemNo_ { get; set; }
-        public DateTime? LeadTimeCalculation { get; set; }
+        public string LeadTimeCalculation { get; set; }
         //public ReorderPoint { get; set; }
         //public MaximumInventory { get; set; }
         //public ReorderQuantity { get; set; }
@@ -30,11 +30,11 @@ namespace Hydra.Such.Data.ViewModel
         //public MaximumOrderQuantity { get; set; }
         public decimal? SafetyStockQuantity { get; set; }
         //public OrderMultiple { get; set; }
-        public DateTime? SafetyLeadTime { get; set; }
+        public string SafetyLeadTime { get; set; }
         //public ComponentsatLocation { get; set; }
         //public FlushingMethod { get; set; }
         //public ReplenishmentSystem { get; set; }
-        public DateTime? TimeBucket { get; set; }
+        public string TimeBucket { get; set; }
         //public ReorderingPolicy { get; set; }
         //public IncludeInventory { get; set; }
         //public ManufacturingPolicy { get; set; }

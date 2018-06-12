@@ -29,8 +29,7 @@ namespace Hydra.Such.Data.Logic
                         {
                             result.Add(new NAVStockKeepingUnitViewModel()
                             {
-                                
-                                ItemNo_ = temp.itemNo_,
+                                ItemNo_ = temp.ItemNo_,
                                 LocationCode = temp.LocationCode,
                                 UnitCost = temp.UnitCost,
                                 VendorNo_ = temp.VendorNo_,
