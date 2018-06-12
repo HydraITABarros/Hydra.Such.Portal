@@ -435,6 +435,31 @@
                             notify: true,
                             value: ""
                         },
+                        _coderegion: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _funcarea: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _respcode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _codeclient: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _contractno: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
                         selected: {
                             type: Number,
                             value: 0
@@ -455,6 +480,10 @@
 
                         if (this._projectid == "") {
                             this._isCreate = true;
+                        }
+
+                        if (this._contractno != "") {
+                            this.$.RegionCode.value = this._coderegion;
                         }
                     },
                     _openToast: function (message) {
