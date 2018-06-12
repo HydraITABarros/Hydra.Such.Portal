@@ -17,6 +17,7 @@ using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data;
 using Newtonsoft.Json;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -794,9 +795,9 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+        
 
-        [HttpPost]
-        public JsonResult CreateProjectContract([FromBody] ContractViewModel data)
+        public IActionResult CreateProjectContract([FromBody] ContractViewModel data)
         {
             try
             {
@@ -804,19 +805,23 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (data.ContractNo != null)
                     {
-                        //Contratos cContract = DBContracts.ParseToDB(data);
-                        Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-
-
-                        if (ContratoDB != null)
+                        UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+                        if (UPerm != null && UPerm.Read.Value)
                         {
-
-                            ContratoDB.Historico = false;
-                            ContratoDB.Arquivado = false;
-                            ContratoDB = DBContracts.Update(ContratoDB);
+                            ViewBag.UPermissions = UPerm;
+                            ViewBag.CodeRegion = data.CodeRegion;
+                            ViewBag.FuncArea = data.CodeFunctionalArea;
+                            ViewBag.RespCode = data.CodeResponsabilityCenter;
+                            ViewBag.CodClient = data.ClientNo;
+                            ViewBag.ContractNo = data.ContractNo;
+                                
+                            return View();
                         }
-                        data.eReasonCode = 1;
-                        data.eMessage = "Contrato atualizado com sucesso.";
+                        else
+                        {
+                            return RedirectToAction("AccessDenied", "Error");
+                        }
+
                     }
                 }
             }
