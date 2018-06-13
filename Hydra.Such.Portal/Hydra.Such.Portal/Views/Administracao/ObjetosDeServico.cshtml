@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Objetos De Servico";
+    ViewData["Title"] = "Objetos de Serviço";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -36,146 +36,157 @@
 
 <x-service-objects></x-service-objects>
 <dom-module id="x-service-objects">
-<template>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="~/css/main.css" />
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
 
-    <style>
-        input[readonly] {
-            border: 2px solid transparent;
-        }
-        input {
-            font: inherit;
-        }
-        --vaadin-grid-header-cell: {
-            font-size: 12px;
-        }
-        paper-input {
-            max-width: 450px !important;
-        }
-    </style>
-    @*POPULATE GRID*@
-    <iron-ajax url="/Administracao/GetServiceObjectsData"
-               last-response="{{result}}"
-               method="post"
-               auto
-               handle-as="json"
-               id="ajax_create"
-               content-type="application/json"></iron-ajax>
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
 
-    @*POPULATE GRID Update*@
-    <iron-ajax url="/Administracao/UpdateServiceObjects"
-               last-response="{{result}}"
-               method="post"
-               on-response="_updateResponse"
-               handle-as="json"
-               id="ajax_update"
-               content-type="application/json"></iron-ajax>
-    @*COMBO*@
-    <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-               last-response="{{AreaCodeData}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json">
-    </iron-ajax>
-    <div class="row">
-        <div class="col-lg-2">
-            <h2 class="separator">Novo Registo</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-2">
-            <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-        </div>
-        <div class="col-lg-2 alignPoga">
-            <vaadin-checkbox id="pcBlocked" disabled="{{ _permissionsCreate }}"> Bloqueado </vaadin-checkbox>
-        </div>
-        <div class="col-lg-2">
-            <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área" disabled="{{ _permissionsCreate }}">
-                <template>
-                    <table width="200px">
-                        <tr>
-                            <td width="40%">[[item.id]]</td>
-                            <td width="60%"> <b>[[item.value]]</b></td>
-                        </tr>
-                    </table>
+            input {
+                font: inherit;
+            }
+
+            --vaadin-grid-header-cell: {
+                font-size: 12px;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+        </style>
+        @*POPULATE GRID*@
+        <iron-ajax url="/Administracao/GetServiceObjectsData"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json"></iron-ajax>
+
+        @*POPULATE GRID Update*@
+        <iron-ajax url="/Administracao/UpdateServiceObjects"
+                   last-response="{{result}}"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_update"
+                   content-type="application/json"></iron-ajax>
+        @*COMBO*@
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{AreaCodeData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <template is="dom-if" if="{{ !_permissionsCreate }}">
+            <div class="row">
+                <div class="col-lg-2">
+                    <h2 class="separator">Novo Registo</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox id="pcBlocked" disabled="{{ _permissionsCreate }}"> Bloqueado </vaadin-checkbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                </div>
+            </div>
+        </template>
+        <br />
+
+        <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
                 </template>
-            </vaadin-combo-box>
-        </div>
-        <div class="col-lg-2 alignPoga">
-            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-        </div>
-    </div><br />
-    <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
-        <vaadin-grid-column resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-                <vaadin-grid-filter path="code" />
-            </template>
-            <template>
-                <vaadin-text-field id="piDescription" value="{{item.code}}" disabled></vaadin-text-field>
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                <vaadin-grid-filter path="description" />
-            </template>
-            <template>
-                <vaadin-text-field value="{{item.description}}"  disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column resizable>
-            <template class="header">
-                <p >
-                    <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
-                    Bloqueado
-                </p>
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.blocked}}"  disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
-            </template>
-            <template>
-                <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.areaCode}}"  disabled="{{ _permissionsUpdate }}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
+                <template>
+                    <vaadin-text-field id="piDescription" value="{{item.code}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <p>
+                        <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
+                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                        </vaadin-grid-filter>
+                        Bloqueado
+                    </p>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.blocked}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.areaCode}}" disabled="{{ _permissionsUpdate }}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ !_permissionsDelete }}">
+                <vaadin-grid-column with="10%">
+                    <template class="header">
                     </template>
-                </vaadin-combo-box>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
             </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column with="10%">
-            <template class="header">
-            </template>
-            <template>
-                <center>
-                    <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                </center>
-            </template>
-        </vaadin-grid-column>
-    </vaadin-grid>
-    <div class="marginSpace">
-        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-    </div>
+        </vaadin-grid>
 
-
-    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-    <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-</template>
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="marginSpace">
+                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
 
 <script>
     var CreateValue = true, UpdateValue = true, DeleteValue = true;

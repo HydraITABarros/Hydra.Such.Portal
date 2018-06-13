@@ -58,7 +58,7 @@
         </div>
 
         <vaadin-grid aria-label="CustomersGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -67,7 +67,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px">
+            <vaadin-grid-column width="220px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -76,7 +76,7 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px">
+            <vaadin-grid-column width="220px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="address">Morada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="address" />
@@ -85,7 +85,7 @@
                     {{item.address}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="post_Code">Cód. Postal</vaadin-grid-sorter>
                     <vaadin-grid-filter path="post_Code" />
@@ -94,7 +94,7 @@
                     {{item.post_Code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="city" />
@@ -103,7 +103,7 @@
                     {{item.city}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regiao_Cliente">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regiao_Cliente" />
