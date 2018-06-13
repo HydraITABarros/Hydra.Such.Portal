@@ -958,6 +958,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetPedingAvencaFixa()
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
+            List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
+
+            foreach (var item in contractList)
+            {
+                //Estado Pendente
+                if (item.Estado == 4) {
+                    String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+                    // Valor Fatura
+                    List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
+                    Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+
+                    result.Add(new FaturacaoContratosViewModel
+                    {
+                        ContractNo = item.NºContrato,
+                        Description = item.Descrição,
+                        ClientNo = item.NºCliente,
+                        ClientName = cliName,
+                        InvoiceValue = sum,
+                        NumberOfInvoices = item.NºDeFaturasAEmitir,
+                        InvoiceTotal = item.TotalAFaturar,
+                        ContractValue = item.ValorDoContrato,
+                        ValueToInvoice = item.ValorPorFaturar,
+                        BilledValue = item.ValorFaturado,
+                        RegionCode = item.CódigoRegião,
+                        FunctionalAreaCode = item.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
+                    });
+                }
+            }
+            return Json(result);
+        }
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
@@ -1422,41 +1458,38 @@ namespace Hydra.Such.Portal.Controllers
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                     PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
-                    if (Contract.SentData != null)
+                    if (Contract.SentData != null && Contract.SentData != "")
                         PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
-                    PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
+                    if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
+                        PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
                     PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
                     PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
-                    PreInvoiceToCreate.Ship_toCountryRegionCode = Contract.ShippingZipCode;
-                    if (Contract.DueDate != null)
+                    PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                    if (Contract.DueDate != null && Contract.DueDate != "")
                         PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
                     PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                    PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                    //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
                     PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
                     PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
-                    if (Contract.ReceiptDateRequisition != null)
+                    if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
                         PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
-                    PreInvoiceToCreate.Observacoes = obs;
                     string mes = DateTime.Now.ToString("MMMM");
                     PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+                    PreInvoiceToCreate.Observacoes = obs;
                     PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                     PreInvoiceToCreate.FacturaCAF = true;
                     PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                    if (Contract.StartDateFirstContract != null)
+                    if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
                         PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
 
                     PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
                     PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
                     PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
-
-
-
-
                     obs = "";
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                     InvoiceHeader.Wait();
-                    if (InvoiceHeader.IsCompletedSuccessfully)
-                    {
+                    if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result!=null)
+                    { 
                         string cod = InvoiceHeader.Result.WSPreInvoice.No;
                         List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                         foreach (ContractLineViewModel line in ContractLines)
@@ -1510,19 +1543,20 @@ namespace Hydra.Such.Portal.Controllers
                         NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                         PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                         PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
-                        if (Contract.SentData != null)
+                        if (Contract.SentData != null && Contract.SentData != "")
                             PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
-                        PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
+                        if(Contract.ContractStartDate!="" && Contract.ContractEndDate !="")
+                           PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
                         PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
                         PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
                         PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
-                        if (Contract.DueDate != null)
+                        if (Contract.DueDate != null && Contract.DueDate != "")
                             PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
                         PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                        PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                        //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
                         PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
                         PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
-                        if (Contract.ReceiptDateRequisition != null)
+                        if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
                             PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
                         string mes = DateTime.Now.ToString("MMMM");
                         PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
@@ -1530,16 +1564,16 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                        if (Contract.StartDateFirstContract != null)
+                        if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
                             PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
-
+                       
                         PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
                         PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
                         PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
                         obs = "";
                         Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                         InvoiceHeader.Wait();
-                        if (InvoiceHeader.IsCompletedSuccessfully)
+                        if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                         {
                             string cod = InvoiceHeader.Result.WSPreInvoice.No;
                             List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
@@ -1570,6 +1604,7 @@ namespace Hydra.Such.Portal.Controllers
                                 registado = true;
                             }
                         }
+                        
                     }
                 }
             }

@@ -748,7 +748,7 @@ namespace Hydra.Such.Portal.Controllers
                             else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
-                                item.eMessage = " Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                                item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                         }
                         else

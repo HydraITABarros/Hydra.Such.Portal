@@ -125,7 +125,14 @@ namespace Hydra.Such.Data
             [Description("Registo Nº Refeições")]
             RegistoRefeicoes = 46,
             [Description("Clientes")]
-            Clientes = 47
+            Clientes = 47,
+
+            [Description("Administração Geral")]
+            AdminGeral = 100,
+            [Description("Administração Projetos")]
+            AdminProjetos = 101,
+            [Description("Administração Folha de Horas")]
+            AdminFolhaHoras = 102,
         }
 
         public enum Areas
