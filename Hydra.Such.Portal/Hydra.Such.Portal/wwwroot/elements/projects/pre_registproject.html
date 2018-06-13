@@ -1159,7 +1159,7 @@
 
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
 
         </paper-dialog>
@@ -1514,6 +1514,20 @@
                         this.$.ajax_getall.generateRequest();
                         this.$.projectMovementTable.selectedItems = [];
                         this.$.projectMovementTable.selectedItem = [];
+                        this.$.projectSourceDlg.value = "";
+                        this.$.projectSourceDlg.valueText = "";
+                        this.$.ProjDiaryPriceDlg.value = "";
+                        this.$.DocIdDlg.value = "";
+                        this.$.idDateDlg.value = "";
+                        this.$.ResourcesDlg.value = "";
+                        this.$.ResourcesDlg.valueText = "";
+
+                        if (this.disabledProjectNo === false) {
+                            this.$.projectTargetDlg.value = "";
+                            this.$.projectTargetDlg.valueText = "";
+                        }
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                         if (this.result.eReasonCode === 1)
@@ -1614,8 +1628,36 @@
                     }
 
                 },
+                _Close_Dialog: function (e) {
+                    debugger;
+                    this.$.projectSourceDlg.value = "";
+                    this.$.projectSourceDlg.valueText = "";
+                    this.$.ProjDiaryPriceDlg.value = "";
+                    this.$.DocIdDlg.value = "";
+                    this.$.idDateDlg.value = "";
+                    this.$.ResourcesDlg.value = "";
+                    this.$.ResourcesDlg.valueText = "";
 
+                    if (this.disabledProjectNo === false) {
+                        this.$.projectTargetDlg.value = "";
+                        this.$.projectTargetDlg.valueText = "";
+                    }
+                },
                 _closedialog: function (e) {
+                    this.$.projectSourceDlg.value = "";
+                    this.$.projectSourceDlg.valueText = "";
+                    this.$.ProjDiaryPriceDlg.value = "";
+                    this.$.DocIdDlg.value = "";
+                    this.$.idDateDlg.value = "";
+                    this.$.ResourcesDlg.value = "";
+                    this.$.ResourcesDlg.valueText = "";
+
+                    if (this.disabledProjectNo === false) {
+                        this.$.projectTargetDlg.value = "";
+                        this.$.projectTargetDlg.valueText = "";
+                    }
+                    this.$.projectMovementTable.selectedItems = [];
+                    this.$.projectMovementTable.selectedItem = [];
                     this.$.grid_databound_ajax.generateRequest();
                 },
                 _projectChange: function (e) {

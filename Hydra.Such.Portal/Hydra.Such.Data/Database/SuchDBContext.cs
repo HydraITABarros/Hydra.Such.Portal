@@ -117,7 +117,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-      
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -241,12 +241,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.IdUtilizadorNavigation)
-                    .WithMany(p => p.AcessosUtilizador)
-                    .HasForeignKey(d => d.IdUtilizador)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Acessos Utilizador_Config. Utilizadores");
             });
 
             modelBuilder.Entity<AçõesDeConfeção>(entity =>
@@ -472,6 +466,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NºDeFaturasAEmitir).HasColumnName("Nº de Faturas a Emitir");
 
                 entity.Property(e => e.NãoFaturar).HasColumnName("Não Faturar");
+
+                entity.Property(e => e.Situação).HasMaxLength(50);
 
                 entity.Property(e => e.TotalAFaturar).HasColumnName("Total a Faturar");
 

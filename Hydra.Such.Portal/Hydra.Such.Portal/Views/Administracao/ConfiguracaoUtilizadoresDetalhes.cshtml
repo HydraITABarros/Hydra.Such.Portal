@@ -680,6 +680,14 @@
                     }
                 },
                 _onDimensionInGridChanged: function (e) {
+                    debugger;
+                   
+                    var oSel = this.data.allowedUserDimensions.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.dimension = e.detail.value;
+                        oSel.dimensionValue = "";
+                    }
+                    this.$.gridAllowedUserDimensions.clearCache();
                     this.$.dimensionValueInGrid_ajax.body = JSON.stringify(e.detail.value);
                     this.$.dimensionValueInGrid_ajax.generateRequest();
                 },

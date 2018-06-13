@@ -8,7 +8,6 @@ namespace Hydra.Such.Data.Database
         public ConfigUtilizadores()
         {
             AcessosDimensões = new HashSet<AcessosDimensões>();
-            AcessosUtilizador = new HashSet<AcessosUtilizador>();
             PerfisUtilizador = new HashSet<PerfisUtilizador>();
         }
 
@@ -29,7 +28,6 @@ namespace Hydra.Such.Data.Database
         public string CentroRespPorDefeito { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
-        public ICollection<AcessosUtilizador> AcessosUtilizador { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }
     }
 }
