@@ -24,10 +24,10 @@ namespace Hydra.Such.Data.NAV
         public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
             WSCreateProjectDiaryLine.CreateMultiple NAVCreate = new WSCreateProjectDiaryLine.CreateMultiple()
-            {                
+            {
                 WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
                 {
-                    Job_No = y.ProjectNo,                  
+                    Job_No = y.ProjectNo,
                     Document_DateSpecified = string.IsNullOrEmpty(y.Date) ? false : true,
                     Document_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
                     //Entry_TypeSpecified = true,
@@ -39,6 +39,9 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = y.ResponsabilityCenterCode,
                     RegionCode20 = y.RegionCode,
                     Location_Code = y.LocationCode,
+                    No = y.Code,
+                    Posting_DateSpecified = true,
+                    Posting_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
                     Unit_of_Measure_Code = y.MeasurementUnitCode,
                     ChargeableSpecified = true,
                     Chargeable = Convert.ToBoolean(y.Billable),
