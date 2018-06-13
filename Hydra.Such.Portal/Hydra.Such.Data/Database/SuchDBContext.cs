@@ -117,8 +117,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-        
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -218,7 +216,7 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<AcessosUtilizador>(entity =>
             {
-                entity.HasKey(e => new { e.IdUtilizador, e.Área, e.Funcionalidade });
+                entity.HasKey(e => new { e.IdUtilizador, e.Funcionalidade });
 
                 entity.ToTable("Acessos Utilizador");
 
