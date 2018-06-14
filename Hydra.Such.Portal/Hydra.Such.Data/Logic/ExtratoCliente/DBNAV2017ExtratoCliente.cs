@@ -28,16 +28,18 @@ namespace Hydra.Such.Data.Logic.ExtratoCliente
 
                     foreach (var item in data)
                     {
-                        resultList.Add(new ClientExtractViewModel {
-                            Customer_No = (string)item.Customer_No,
-                            Date = (DateTime)item.Date,
-                            Due_Date = (DateTime)item.Due_Date,
-                            Document_Type = (string)item.Document_Type,
-                            Document_No = (string)item.Document_No,
-                            Global_Dimension_2_Code = (string)item.Global_Dimension_2_Code,
-                            Value = (Decimal)item.Value,
-                            Factoring_Sem_Recurso = (string)item.Factoring_Sem_Recurso
-                        });
+                        resultList.Add(MapClientExtractViewModel(item));
+
+                        //resultList.Add(new ClientExtractViewModel {
+                        //    Customer_No = (string)item.Customer_No,
+                        //    Date = (DateTime)item.Date,
+                        //    Due_Date = (DateTime)item.Due_Date,
+                        //    Document_Type = (string)item.Document_Type,
+                        //    Document_No = (string)item.Document_No,
+                        //    Global_Dimension_2_Code = (string)item.Global_Dimension_2_Code,
+                        //    Value = (Decimal)item.Value,
+                        //    Factoring_Sem_Recurso = (string)item.Factoring_Sem_Recurso
+                        //});
                     }
 
                     return resultList;
@@ -47,6 +49,15 @@ namespace Hydra.Such.Data.Logic.ExtratoCliente
                     throw;
                 }
             }
+        }
+
+        public static ClientExtractViewModel MapClientExtractViewModel(dynamic ClientExtractNAV)
+        {
+            var mapper = new MapperConfiguration(cfg => { }).CreateMapper();
+
+            var Model = mapper.Map<ClientExtractViewModel>(ClientExtractNAV);
+
+            return Model;
         }
 
     }
