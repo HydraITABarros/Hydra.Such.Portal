@@ -28,7 +28,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get([FromBody] ClientDetailsViewModel data)
         {
 
-            if (data != null && data.No != null)
+            if (data != null && data.No != null && data.No != "")
             {
                 var getShipToAddress = WSShipToAddressService.GetByNoAsync(data.No, _configws);
                 try

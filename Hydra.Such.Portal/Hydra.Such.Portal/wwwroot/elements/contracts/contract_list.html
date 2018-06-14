@@ -108,11 +108,11 @@
                 </template>
             </template>
             <template is="dom-if" if="{{ !_contractno }}">
-                <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Histórico</paper-button>
+                <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
             </template>
         </div>
         
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -212,17 +212,15 @@
                     {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
-            <template is="dom-if" if="{{_ifHistoric}}">
-                <vaadin-grid-column width="200px" resizable>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-            </template>
+            <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -259,7 +257,7 @@
                     },
                     _ifHistoric: {
                         type: Boolean,
-                        value: false
+                        value: 0
                     },
                     _showMessage: {
                         type: String,
@@ -288,23 +286,43 @@
                 _redirectToContractHistory: function () {
                     debugger;
                     if (this._showMessage == "Exibir Histórico") {
-                        this._showMessage = "Exibir Ativas";
-                        this._ifHistoric = true;
+                        this._showMessage = "Exibir Ativos";
+                        this._ifHistoric = 1;
+                        this.$.ColunaReativar.removeAttribute("hidden");
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 1 });
                         this.$.grid_databound_ajax.generateRequest();
 
                     } else {
                         this._showMessage = "Exibir Histórico";
-                        this._ifHistoric = false;
+                        this._ifHistoric = 0;
+                        this.$.ColunaReativar.setAttribute("class", "hidden");
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 0 });
                         this.$.grid_databound_ajax.generateRequest();
-
                     }
                 },
 
                 _RemoveFromHistoric: function (e) {
-                    this.$.grid_removeFromHistoric_ajax.body = JSON.stringify(e.model.item);
-                    this.$.grid_removeFromHistoric_ajax.generateRequest();
+                    var Project = e.model.item;
+                    var ajax_request = this.$.grid_removeFromHistoric_ajax;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende reativar contrato?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
 
                 _clResponseProcessor: function (e) {

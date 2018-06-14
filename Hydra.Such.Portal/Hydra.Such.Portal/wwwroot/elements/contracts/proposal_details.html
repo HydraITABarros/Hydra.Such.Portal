@@ -124,7 +124,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
@@ -463,18 +463,17 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[LFetchUnits]]" id="mFetchUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <table width="300px">
-                                                        <tr>
-                                                            <td width="30%">[[item.id]]</td>
-                                                            <td width="70%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+
+                                            <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
+                                                            items="[[LFetchUnits]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
-                                    </div>
+
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
@@ -487,7 +486,7 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-
+                                    </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
@@ -680,6 +679,7 @@
                                     </div>
                                 </div>
                             </iron-pages>
+
                             <div class="marginSpace">
                                 <template is="dom-if" if="{{ _permissions.create }}">
                                     <template is="dom-if" if="{{ _isCreate }}">
@@ -1638,7 +1638,7 @@
                         //this.$.mClients.validate() &
                         //this.$.contactNo.validate() &
                         this.$.contractNo.validate() &
-                        this.$.mFeeUnits.validate() &
+                        //this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
                         this.$.mResponsabilityCenter.validate() &
@@ -1667,7 +1667,11 @@
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate() &
                         this.$.mTotalProposalValue.validate()) {
-
+                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            this.$.mFeeUnits.validate();
+                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
                         if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
                             (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
                             this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");

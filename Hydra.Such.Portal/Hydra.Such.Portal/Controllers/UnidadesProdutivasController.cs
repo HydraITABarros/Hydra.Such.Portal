@@ -81,7 +81,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.Code = code;
 
-                return Redirect(Url.Content("/Nutricao/CafetariasRefeitorios/Detalhes/" + "?productivityUnitNo=" + coffeeShop.NºUnidadeProdutiva + "&type=" + coffeeShop.Tipo + "&code=" + coffeeShop.Código + "&explorationStartDate=" + coffeeShop.DataInícioExploração));
+                return Redirect(Url.Content("/CafetariasRefeitorios/Detalhes/" + "?productivityUnitNo=" + coffeeShop.NºUnidadeProdutiva + "&type=" + coffeeShop.Tipo + "&code=" + coffeeShop.Código + "&explorationStartDate=" + coffeeShop.DataInícioExploração));
             }
             else
             {

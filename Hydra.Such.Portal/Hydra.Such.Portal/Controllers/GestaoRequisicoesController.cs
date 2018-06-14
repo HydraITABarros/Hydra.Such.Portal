@@ -748,7 +748,7 @@ namespace Hydra.Such.Portal.Controllers
                             else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
-                                item.eMessage = " Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                                item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                         }
                         else
@@ -1272,7 +1272,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (requisition != null)
                 {
                     var totalValue = requisition.GetTotalValue();
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
                 }
             }
             else
