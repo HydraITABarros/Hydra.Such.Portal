@@ -1109,10 +1109,6 @@ WHERE        (No_ = @Cliente)</CommandText>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="Cliente">
-      <DataType>String</DataType>
-      <Prompt>Cliente</Prompt>
-    </ReportParameter>
     <ReportParameter Name="Data">
       <DataType>DateTime</DataType>
       <Prompt>Data</Prompt>
@@ -1138,6 +1134,11 @@ WHERE        (No_ = @Cliente)</CommandText>
         </ParameterValues>
       </ValidValues>
     </ReportParameter>
+    <ReportParameter Name="Cliente">
+      <DataType>String</DataType>
+      <Prompt>Cliente</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -1146,17 +1147,17 @@ WHERE        (No_ = @Cliente)</CommandText>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>Cliente</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
+          <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Data</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
           <ParameterName>Movimentos</ParameterName>
         </CellDefinition>
       </CellDefinitions>
