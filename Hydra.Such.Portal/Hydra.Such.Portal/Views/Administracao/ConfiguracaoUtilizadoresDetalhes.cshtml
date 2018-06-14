@@ -587,11 +587,27 @@
 
                 //CRUD Functions
                 _validateData() {
+                    var Error = "";
+                    if (this.data != null && this.data != "" && 
+                        this.data.allowedUserDimensions != null && this.data.allowedUserDimensions != "") 
+                    {
+                        var Dimensions = this.data.allowedUserDimensions;
+                        for (var i = 0; i < Dimensions.length; i++) {
+                            if (Dimensions[i].dimensionValue == "" || Dimensions[i].dimensionValue == null ||
+                                Dimensions[i].dimension == "" || Dimensions[i].dimension == null) {
+                                Error = "É obrigatório preencher as colunas Dimensão e Valor Dimensão";
+                            }
+                        }
+                    }
                     if (this.data.idUser == '' || this.data.idUser == null) {
                         return "É obrigatório preencher o Id Utilizador";
                     } else if (this.data.name == '' || this.data.name == null) {
                         return "É obrigatório preencher o Nome";
                     }
+                    else if (Error != "") {
+                        return Error;
+                    }
+                    
                     return "";
                 },
                 _create: function () {
@@ -696,6 +712,13 @@
                     }
                 },
                 _onDimensionInGridChanged: function (e) {
+                   
+                    var oSel = this.data.allowedUserDimensions.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.dimension = e.detail.value;
+                        oSel.dimensionValue = "";
+                    }
+                    this.$.gridAllowedUserDimensions.clearCache();
                     this.$.dimensionValueInGrid_ajax.body = JSON.stringify(e.detail.value);
                     this.$.dimensionValueInGrid_ajax.generateRequest();
                 },
@@ -707,7 +730,6 @@
                     this.$.gridAllowedUserDimensions.clearCache();
                 },
                 _onDeleteUserAcessosLocalizacao: function (e) {
-                    //debugger;
                     var index = this.data.userAcessosLocalizacoes.indexOf(e.model.item);
 
                     var id_Utilizador = this.data.idUser;
@@ -739,9 +761,9 @@
                     });
                 },
                 _createUserDimensionAccess: function () {
-                    if (this.ddDimension == "") {
+                    if (this.ddDimension == "" || this.ddDimension == null) {
                         this._showErrorMessage("É obrigatório preencher a dimensão.");
-                    } else if (this.ddFeature == null) {
+                    } else if (this.ddDimensionValue == null || this.ddDimensionValue == "") {
                         this._showErrorMessage("É obrigatório preencher o valor dimensão.");
                     } else {
                         this.$.page_createuserdimension_ajax.body = JSON.stringify({ userId: this.data.idUser, dimension: this.ddDimension, dimensionValue: this.ddDimensionValue });
@@ -767,7 +789,6 @@
                     }
                 },
                 _deleteUserAcessosLocalizacoesResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -786,8 +807,8 @@
                     if (this.UserDimensionCreated) {
                         this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$._Dimension.value = ""
-                        this.$._DimensionValue.value = "";
+                        this.ddDimension = ""
+                        this.ddDimensionValue = "";
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar acesso a dimensão.');

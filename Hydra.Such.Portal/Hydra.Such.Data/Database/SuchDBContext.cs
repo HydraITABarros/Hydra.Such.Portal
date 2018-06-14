@@ -4116,6 +4116,27 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
 
+                entity.Property(e => e.CodCliente)
+                    .HasColumnName("CodCliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoLer)
+                    .HasColumnName("CodigoLer")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Grupo)
+                    .HasColumnName("Grupo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Operacao)
+                    .HasColumnName("Operacao")
+                    .HasMaxLength(20);
+
+
                 entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
                     .WithMany(p => p.MovimentosDeProjeto)
                     .HasForeignKey(d => d.CódDestinoFinalResíduos)

@@ -316,7 +316,7 @@ namespace Hydra.Such.Data.Logic
                 return new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    Area = (int)x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,

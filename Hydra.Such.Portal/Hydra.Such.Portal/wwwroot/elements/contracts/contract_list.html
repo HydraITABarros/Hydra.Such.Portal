@@ -212,17 +212,15 @@
                     {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
-            <template is="dom-if" if="{{ _ifHistoric }}">
-                <vaadin-grid-column width="200px" id="columnReactivate" resizable>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-            </template>
+            <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -290,12 +288,14 @@
                     if (this._showMessage == "Exibir Histórico") {
                         this._showMessage = "Exibir Ativos";
                         this._ifHistoric = 1;
+                        this.$.ColunaReativar.removeAttribute("hidden");
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 1 });
                         this.$.grid_databound_ajax.generateRequest();
 
                     } else {
                         this._showMessage = "Exibir Histórico";
                         this._ifHistoric = 0;
+                        this.$.ColunaReativar.setAttribute("class", "hidden");
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 0 });
                         this.$.grid_databound_ajax.generateRequest();
                     }
