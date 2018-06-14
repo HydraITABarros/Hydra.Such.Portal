@@ -125,12 +125,12 @@ namespace Hydra.Such.Tester
             //var x = ApprovalMovementsManager.ApproveMovement(6, "hydra06@such.pt");
 
             //var x = ApprovalMovementsManager.RejectMovement(2, "hydra06@such.pt", "O Valor não faz sentido face á dificuldade do projeto");
-            var items = Data.Logic.Approvals.DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(1, 1, "01", "010AG", "23", 600, DateTime.Now);
+            var items = Data.Logic.Approvals.DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(1, "01", "010AG", "23", 600, DateTime.Now);
 
             //var lowLevel = items.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).FirstOrDefault();
             //items.RemoveAll(x => x.NívelAprovação != lowLevel.NívelAprovação);
             return;
-            ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, 1, "10", "010AG", "23", 5000, "JP123", "hydra08@such.pt");
+            ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, "10", "010AG", "23", 5000, "JP123", "hydra08@such.pt");
 
             int movNo = Convert.ToInt32(result.eMessages[0].Message);
             ErrorHandler ApproveResult = ApprovalMovementsManager.ApproveMovement(movNo, "hydra08@such.pt");

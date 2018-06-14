@@ -145,10 +145,23 @@ namespace Hydra.Such.Data.Logic
 
         public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Areas area, Features feature)
         {
-            //TODO: Remover area
+            //TODO: Remover area e depois eliminar método
             try
             {
                 return GetByUserAreaFunctionality(userId, (int)area, (int)feature);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Features feature)
+        {
+            try
+            {
+                return GetByUserAreaFunctionality(userId, (int)feature);
             }
             catch (Exception ex)
             {
@@ -192,6 +205,39 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        private static UserAccessesViewModel GetByUserAreaFunctionality(string UserId, int FeatureId)
+        {
+            try
+            {
+                //TODO: Remover area
+                using (var ctx = new SuchDBContext())
+                {
+                    ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
+                    if (CUser.Administrador)
+                    {
+                        return new UserAccessesViewModel()
+                        {
+                            IdUser = UserId,
+                            Feature = FeatureId,
+                            Create = true,
+                            Read = true,
+                            Update = true,
+                            Delete = true
+                        };
+                    }
+                    else
+                    {
+                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Funcionalidade == FeatureId).FirstOrDefault());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static UserAccessesViewModel ParseToViewModel(AcessosUtilizador x)
         {
             if (x == null)
@@ -209,7 +255,7 @@ namespace Hydra.Such.Data.Logic
                 return new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    Area = (int)x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,

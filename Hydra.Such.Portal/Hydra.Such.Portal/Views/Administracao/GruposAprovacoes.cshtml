@@ -65,10 +65,12 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-        </div>
-
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
+        </template>
+        
         <vaadin-grid id="gridDescriptionApprovals" aria-label="gridDescriptionApprovals" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
@@ -76,7 +78,7 @@
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                   {{item.code}}
+                    {{item.code}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
@@ -85,10 +87,10 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                   {{item.description}}
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
-           
+
         </vaadin-grid>
     </template>
 
@@ -104,7 +106,11 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
