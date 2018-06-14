@@ -1119,7 +1119,24 @@ WHERE        (No_ = @Cliente)</CommandText>
     </ReportParameter>
     <ReportParameter Name="Movimentos">
       <DataType>Integer</DataType>
-      <Prompt>Movimentos</Prompt>
+      <DefaultValue>
+        <Values>
+          <Value>1</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Mostrar factoring</Prompt>
+      <ValidValues>
+        <ParameterValues>
+          <ParameterValue>
+            <Value>0</Value>
+            <Label>Sim</Label>
+          </ParameterValue>
+          <ParameterValue>
+            <Value>1</Value>
+            <Label>Não</Label>
+          </ParameterValue>
+        </ParameterValues>
+      </ValidValues>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
