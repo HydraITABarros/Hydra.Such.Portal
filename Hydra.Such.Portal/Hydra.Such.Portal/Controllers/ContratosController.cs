@@ -795,42 +795,28 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
-        
 
-        public IActionResult CreateProjectContract([FromBody] ContractViewModel data)
+
+        public IActionResult CreateProjectContract(string id, string versionNo = "")
         {
-            try
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
             {
-                if (data != null)
-                {
-                    if (data.ContractNo != null)
-                    {
-                        UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
-                        if (UPerm != null && UPerm.Read.Value)
-                        {
-                            ViewBag.UPermissions = UPerm;
-                            ViewBag.CodeRegion = data.CodeRegion;
-                            ViewBag.FuncArea = data.CodeFunctionalArea;
-                            ViewBag.RespCode = data.CodeResponsabilityCenter;
-                            ViewBag.CodClient = data.ClientNo;
-                            ViewBag.ContractNo = data.ContractNo;
-                                
-                            return View();
-                        }
-                        else
-                        {
-                            return RedirectToAction("AccessDenied", "Error");
-                        }
+                Contratos ContratoDB = DBContracts.GetByIdAndVersion(id, int.Parse(versionNo));
 
-                    }
-                }
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CodeRegion = ContratoDB.CódigoRegião;
+                ViewBag.FuncArea = ContratoDB.CódigoÁreaFuncional;
+                ViewBag.RespCode = ContratoDB.CódigoCentroResponsabilidade;
+                ViewBag.CodClient = ContratoDB.NºCliente;
+                ViewBag.ContractNo = id;
+
+                return View();
             }
-            catch (Exception ex)
+            else
             {
-                data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                return RedirectToAction("AccessDenied", "Error");
             }
-            return Json(data);
         }
         #endregion
 
