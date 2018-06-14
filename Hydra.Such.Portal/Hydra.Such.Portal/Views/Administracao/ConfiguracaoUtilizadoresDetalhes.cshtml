@@ -587,11 +587,28 @@
 
                 //CRUD Functions
                 _validateData() {
+                    debugger;
+                    var Error = "";
+                    if (this.data != null && this.data != "" && 
+                        this.data.allowedUserDimensions != null && this.data.allowedUserDimensions != "") 
+                    {
+                        var Dimensions = this.data.allowedUserDimensions;
+                        for (var i = 0; i < Dimensions.length; i++) {
+                            if (Dimensions[i].dimensionValue == "" || Dimensions[i].dimensionValue == null ||
+                                Dimensions[i].dimension == "" || Dimensions[i].dimension == null) {
+                                Error = "É obrigatório preencher as colunas Dimensão e Valor Dimensão";
+                            }
+                        }
+                    }
                     if (this.data.idUser == '' || this.data.idUser == null) {
                         return "É obrigatório preencher o Id Utilizador";
                     } else if (this.data.name == '' || this.data.name == null) {
                         return "É obrigatório preencher o Nome";
                     }
+                    else if (Error != "") {
+                        return Error;
+                    }
+                    
                     return "";
                 },
                 _create: function () {
@@ -605,6 +622,7 @@
                     }
                 },
                 _update: function () {
+                    debugger;
                     var validate = this._validateData();
                     if (validate == "") {
                         this.$.ajax_create.url = "/Administracao/UpdateUserConfig";
@@ -747,9 +765,10 @@
                     });
                 },
                 _createUserDimensionAccess: function () {
-                    if (this.ddDimension == "") {
+                    debugger;;
+                    if (this.ddDimension == "" || this.ddDimension == null) {
                         this._showErrorMessage("É obrigatório preencher a dimensão.");
-                    } else if (this.ddFeature == null) {
+                    } else if (this.ddDimensionValue == null || this.ddDimensionValue == "") {
                         this._showErrorMessage("É obrigatório preencher o valor dimensão.");
                     } else {
                         this.$.page_createuserdimension_ajax.body = JSON.stringify({ userId: this.data.idUser, dimension: this.ddDimension, dimensionValue: this.ddDimensionValue });
