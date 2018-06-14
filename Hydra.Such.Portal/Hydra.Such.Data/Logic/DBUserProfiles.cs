@@ -56,7 +56,7 @@ namespace Hydra.Such.Data.Logic
 
                     ProfileAccessesToAdd.ForEach(pa =>
                     {
-                        AcessosUtilizador AU = DBUserAccesses.GetById(ObjectToCreate.IdUtilizador, pa.Área, pa.Funcionalidade);
+                        AcessosUtilizador AU = DBUserAccesses.GetById(ObjectToCreate.IdUtilizador, pa.Funcionalidade);
                         if (AU != null)
                         {
                             ctx.AcessosUtilizador.Remove(AU);
@@ -66,7 +66,6 @@ namespace Hydra.Such.Data.Logic
                         AU = new AcessosUtilizador()
                         {
                             IdUtilizador = ObjectToCreate.IdUtilizador,
-                            //Área = pa.Área,
                             Funcionalidade = pa.Funcionalidade,
                             Leitura = pa.Leitura,
                             Inserção = pa.Inserção,

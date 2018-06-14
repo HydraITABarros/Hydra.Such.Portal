@@ -112,8 +112,8 @@ namespace Hydra.Such.Data
             Checklist_ElementoArea = 37,
             [Description("Modelos Requisições Simplificadas")]
             ModelosRequisiçõesSimplificadas = 38,
-            [Description("Localizações")]
-            Localizações = 39,
+            [Description("Existências")]
+            Existencias = 39,
             [Description("Necessidade de Compras")]
             NecessidadeCompras = 41,
             [Description("Histórico de Requisições")]
@@ -129,10 +129,24 @@ namespace Hydra.Such.Data
 
             [Description("Administração Geral")]
             AdminGeral = 100,
+            [Description("Administração Aprovações")]
+            AdminAprovacoes = 101,
             [Description("Administração Projetos")]
-            AdminProjetos = 101,
+            AdminProjetos = 102,
+            [Description("Administração Vendas")]
+            AdminVendas = 103,
+            [Description("Administração Nutrição")]
+            AdminNutricao = 104,
+            [Description("Administração Requisições")]
+            AdminRequisicoes = 105,
             [Description("Administração Folha de Horas")]
-            AdminFolhaHoras = 102,
+            AdminFolhaHoras = 106,
+            [Description("Administração Viaturas e Telemóveis")]
+            AdminViaturasTelemoveis = 107,
+            [Description("Administração Existências")]
+            AdminExistencias = 108,
+            [Description("A Definir")]
+            AdminADefinir = 999,
         }
 
         public enum Areas
