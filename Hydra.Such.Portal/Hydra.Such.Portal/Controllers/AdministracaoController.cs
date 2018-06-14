@@ -513,7 +513,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteUserAccess([FromBody] UserAccessesViewModel data)
         {
-            var userAccess = DBUserAccesses.GetById(data.IdUser, data.Area, data.Feature);
+            var userAccess = DBUserAccesses.GetById(data.IdUser, data.Feature);
             return Json(userAccess != null ? DBUserAccesses.Delete(userAccess) : false);
         }
 
@@ -873,7 +873,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult TiposProjetoDetalhes(string id)
         {
 
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminProjetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -931,7 +931,7 @@ namespace Hydra.Such.Portal.Controllers
         #region TiposGrupoContabProjeto
         public IActionResult TiposGrupoContabProjeto(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminProjetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1002,7 +1002,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ObjetosDeServico(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminProjetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1066,7 +1066,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult TiposGrupoContabOMProjeto(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminProjetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1161,7 +1161,7 @@ namespace Hydra.Such.Portal.Controllers
         #region TiposRefeicao
         public IActionResult TiposRefeicao(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1223,7 +1223,7 @@ namespace Hydra.Such.Portal.Controllers
         #region DestinosFinaisResiduos
         public IActionResult DestinosFinaisResiduos(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminProjetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1283,7 +1283,13 @@ namespace Hydra.Such.Portal.Controllers
         #region Serviço
         public IActionResult Servicos(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            List<Enumerations.Features> features = new List<Enumerations.Features>()
+            {
+                Enumerations.Features.AdminProjetos,
+                Enumerations.Features.AdminVendas,
+            };
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, features);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1341,7 +1347,13 @@ namespace Hydra.Such.Portal.Controllers
         #region ServiçosCliente
         public IActionResult ServicosCliente(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            List<Enumerations.Features> features = new List<Enumerations.Features>()
+            {
+                Enumerations.Features.AdminProjetos,
+                Enumerations.Features.AdminVendas,
+            };
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, features);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1486,7 +1498,7 @@ namespace Hydra.Such.Portal.Controllers
         #region TiposViaturas
         public IActionResult TiposViaturas(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1545,7 +1557,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Marcas
         public IActionResult Marcas(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1603,7 +1615,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Modelos
         public IActionResult Modelos(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1661,7 +1673,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Cartoes E Apolices
         public IActionResult CartoesEApolices(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1727,7 +1739,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuracao Ajuda De Custo
         public IActionResult ConfiguracaoAjudaCusto(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1809,7 +1821,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuracao Tipo Trabalho FH
         public IActionResult ConfiguracaoTipoTrabalhoFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -1883,7 +1895,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuração Preço Venda Recursos FH
         public IActionResult ConfiguracaoPrecoVendaRecursoFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2305,7 +2317,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuração Preço Custo Recursos FH
         public IActionResult ConfiguracaoPrecoCustoRecursoFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2375,7 +2387,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuração RH Recursos FH
         public IActionResult ConfiguracaoRHRecursosFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2391,7 +2403,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ConfiguracaoAutorizacaoFHRH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2815,7 +2827,7 @@ namespace Hydra.Such.Portal.Controllers
         #region OrigemDestinoFH
         public IActionResult ConfiguracaoOrigemDestinoFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2897,7 +2909,7 @@ namespace Hydra.Such.Portal.Controllers
         #region DistanciaFH
         public IActionResult ConfiguracaoDistanciaFH(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -2981,7 +2993,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Configuracao Recursos Folha Horas
         public IActionResult ConfiguracaoRecursosFolhaHoras(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminFolhaHoras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -3067,7 +3079,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Tipo Requisição
         public IActionResult TiposRequisicao(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminRequisicoes);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -3128,7 +3140,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ConfiguracaoAprovacoes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAprovacoes);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -3207,7 +3219,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Grupo Aprovações
         public IActionResult GruposAprovacoes(string id)
         {
-            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAprovacoes);
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UPermissions = userPerm;
@@ -3346,7 +3358,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Locais
         public IActionResult Locais(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminRequisicoes);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -3422,7 +3434,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Unidades Prestação
         public IActionResult UnidadePrestacao(string id)
         {
-            UserAccessesViewModel UPerm = GetPermissions(id);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminVendas);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -4261,8 +4273,6 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
-        
-
         #region Projetos
 
 
@@ -4273,11 +4283,14 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ClassificacaoFichasTecnicas(string id, string option)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
-            if (UPerm != null && UPerm.Read.Value)
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
+            if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
-                ViewBag.UPermissions = UPerm;
+                //ViewBag.UPermissions = userPerm;
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
 
                 if (option == "Grupos")
                 {
@@ -4354,7 +4367,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ProcedimentoConfecao(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -4414,11 +4427,13 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult AccoesConfecao(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
-                ViewBag.UPermissions = UPerm;
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
                 return View();
             }
             else
@@ -4465,6 +4480,37 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+        public IActionResult Localizacoes()
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UserPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
+        public IActionResult DetalhesLocalizacao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.LocationCode = id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public UserAccessesViewModel GetPermissions(string id)
         {

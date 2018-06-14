@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Tipos de Refeicao";
+    ViewData["Title"] = "Tipos de Refeição";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @*grid*@
@@ -29,7 +29,9 @@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 @*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
-
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
 <x-group-cont-product></x-group-cont-product>
 <dom-module id="x-group-cont-product">
     <template>
@@ -49,6 +51,20 @@
                 max-width: 450px !important;
             }
 
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
         </style>
         @*POPULATE GRID*@
         <iron-ajax url="/Administracao/GetMealTypesData"
@@ -74,33 +90,37 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[GroupContProductData]]" id="ddgroupcontprods" item-value-path="id" item-label-path="value" value="{{ddgroupcontprod}}" label="Grupos Contab. Produto" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-          
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-        </div><br />
-      
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[GroupContProductData]]" id="ddgroupcontprods" item-value-path="id" item-label-path="value" value="{{ddgroupcontprod}}" label="Grupos Contab. Produto" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <br />
+
         <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
@@ -117,7 +137,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field  value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
@@ -137,19 +157,26 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column with="10%">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button> </center>
-                </template>
-            </vaadin-grid-column>
+            <template is="dom-if" if="{{ !_permissionsDelete}}">
+                <vaadin-grid-column with="10%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+
+            </template>
         </vaadin-grid>
-        <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="marginSpace">
+                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -199,7 +226,7 @@
                         this.$.ToastMessageError.open();
                     },
                     _createAccessProfile: function () {
-                      
+
                         if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                             this.openToastError('É obrigatório preencher a Descrição.');
                         } else {
@@ -212,7 +239,7 @@
                             }
                             else {
                                 this.result.push(thisLine);
-                            } 
+                            }
                             this.$.ajax_update.body = JSON.stringify(this.result);
                             this.$.ajax_update.generateRequest();
                             this.$.gridMealTypes.clearCache();

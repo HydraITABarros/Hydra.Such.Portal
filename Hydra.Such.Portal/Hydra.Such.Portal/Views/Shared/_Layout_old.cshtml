@@ -465,6 +465,7 @@
         <script src="/lib/bootbox.min.js"></script>
 
         <script>
+            debugger;
             var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
             if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
                 $('#pendingApprovalsLink').text('Aprovações Pendentes (' + TotalPendingApprovals + ')');
