@@ -15,6 +15,7 @@
 <dom-module id="x-clientlist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
@@ -48,14 +49,16 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
+        <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                <template is="dom-if" if="{{ !_disabledCreate }}">
+                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+                </template>
             </template>
-
         </div>
+
         <vaadin-grid aria-label="CustomersGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -64,16 +67,16 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px">
+            <vaadin-grid-column width="220px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
                 </template>
-                <template >
+                <template>
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px">
+            <vaadin-grid-column width="220px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="address">Morada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="address" />
@@ -82,7 +85,7 @@
                     {{item.address}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="post_Code">Cód. Postal</vaadin-grid-sorter>
                     <vaadin-grid-filter path="post_Code" />
@@ -91,7 +94,7 @@
                     {{item.post_Code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="city" />
@@ -100,7 +103,7 @@
                     {{item.city}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regiao_Cliente">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regiao_Cliente" />
@@ -129,16 +132,20 @@
                         type: Number,
                         notify: true,
                         value: 0
-                    }
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesCliente/" + item.no;
+                        window.location.href = "Clientes/DetalhesCliente/" + item.no;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesCliente/";
+                        window.location.href = "Clientes/DetalhesCliente/";
                     }
                 },
                 ready: function () {

@@ -24,14 +24,15 @@ namespace Hydra.Such.Data.NAV
         public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
             WSCreateProjectDiaryLine.CreateMultiple NAVCreate = new WSCreateProjectDiaryLine.CreateMultiple()
-            {                
+            {
                 WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
                 {
-                    Job_No = y.ProjectNo,                  
+                    Job_No = y.ProjectNo,
                     Document_DateSpecified = string.IsNullOrEmpty(y.Date) ? false : true,
                     Document_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
                     //Entry_TypeSpecified = true,
                     //Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
+                    Document_No = "ES_" + y.ProjectNo,
                     TypeSpecified = true,
                     Type = getType(Convert.ToInt32(y.Type)),
                     Description100 = y.Description,
@@ -39,6 +40,9 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = y.ResponsabilityCenterCode,
                     RegionCode20 = y.RegionCode,
                     Location_Code = y.LocationCode,
+                    No = y.Code,
+                    Posting_DateSpecified = true,
+                    Posting_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
                     Unit_of_Measure_Code = y.MeasurementUnitCode,
                     ChargeableSpecified = true,
                     Chargeable = Convert.ToBoolean(y.Billable),
@@ -49,7 +53,7 @@ namespace Hydra.Such.Data.NAV
                     //Total_CostSpecified = true,
                     //Total_Cost = Convert.ToDecimal(y.TotalCost),
                     Unit_PriceSpecified = true,
-                    Unit_Price = Convert.ToDecimal(y.UnitPrice),
+                    Unit_Price = (decimal)y.UnitPrice,
                     //Total_PriceSpecified = true,
                     //Total_Price = Convert.ToDecimal(y.TotalPrice),
                     Portal_Transaction_No = TransactID.ToString()
@@ -61,11 +65,57 @@ namespace Hydra.Such.Data.NAV
             WSCreateProjectDiaryLine.WSJobJournalLine_PortClient WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
-            
+
             try
             {
-                WSCreateProjectDiaryLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
-                return result;
+                foreach (var test in NAVCreate.WSJobJournalLine_List)
+                {
+                    WSCreateProjectDiaryLine.Create toCreate = new WSCreateProjectDiaryLine.Create();
+                    toCreate.WSJobJournalLine = test;
+                    WSCreateProjectDiaryLine.Create_Result result = await WS_Client.CreateAsync(toCreate);
+
+                    if (result != null)
+                    {
+                        WSCreateProjectDiaryLine.Update toUpdate = new WSCreateProjectDiaryLine.Update()
+                        {
+                            WSJobJournalLine =  new WSCreateProjectDiaryLine.WSJobJournalLine()
+                            {
+                                Key = result.WSJobJournalLine.Key,
+                                Line_No = result.WSJobJournalLine.Line_No,
+                                Portal_Transaction_No = TransactID.ToString(),
+                                Job_No = result.WSJobJournalLine.Job_No,
+                                Document_DateSpecified = result.WSJobJournalLine.Document_DateSpecified,
+                                Document_Date = result.WSJobJournalLine.Document_Date,
+                                Document_No = result.WSJobJournalLine.Document_No,
+                                TypeSpecified = true,
+                                Type = result.WSJobJournalLine.Type,
+                                Description100 = result.WSJobJournalLine.Description100,
+                                FunctionAreaCode20 = result.WSJobJournalLine.FunctionAreaCode20,
+                                ResponsabilityCenterCode20 = result.WSJobJournalLine.ResponsabilityCenterCode20,
+                                RegionCode20 = result.WSJobJournalLine.RegionCode20,
+                                Location_Code = result.WSJobJournalLine.Location_Code,
+                                No = result.WSJobJournalLine.No,
+                                Posting_DateSpecified = true,
+                                Posting_Date = result.WSJobJournalLine.Posting_Date,
+                                Unit_of_Measure_Code = result.WSJobJournalLine.Unit_of_Measure_Code,
+                                ChargeableSpecified = true,
+                                Chargeable = result.WSJobJournalLine.Chargeable,
+                                QuantitySpecified = true,
+                                Quantity = result.WSJobJournalLine.Quantity,
+                                Unit_Cost = test.Unit_Cost,
+                                Unit_CostSpecified = true,
+                                Unit_Price = test.Unit_Price,
+                                Unit_PriceSpecified = true,
+                            }
+                        };
+                        WS_Client =  new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
+                        WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+                        WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+                        WSCreateProjectDiaryLine.Update_Result resultUpdate = await WS_Client.UpdateAsync(toUpdate);
+                    
+                    }
+                }
+                return null;
             }
             catch (Exception ex)
             {

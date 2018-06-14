@@ -61,6 +61,15 @@ namespace Hydra.Such.Portal.Controllers
                     case 2:
                         x.NumberLink = "/ModelosReqSimplificada";
                         break;
+                    case 3:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
+                    case 4:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
+                    case 5:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
                 }
             });
 

@@ -46,7 +46,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Detalhes(String id)
+        public IActionResult Detalhes(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
@@ -387,43 +387,43 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    Projetos cProject = new Projetos()
-                    {
-                        NºProjeto = data.ProjectNo,
-                        Área = data.Area,
-                        Descrição = data.Description,
-                        NºCliente = data.ClientNo,
-                        Data = data.Date == "" ? (DateTime?)null : DateTime.Parse(data.Date),
-                        Estado = data.Status,
-                        CódigoRegião = data.RegionCode,
-                        CódigoÁreaFuncional = data.FunctionalAreaCode,
-                        CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
-                        Faturável = data.Billable,
-                        NºContrato = data.ContractNo,
-                        CódEndereçoEnvio = data.ShippingAddressCode,
-                        EnvioANome = data.ShippingName,
-                        EnvioAEndereço = data.ShippingAddress,
-                        EnvioACódPostal = data.ShippingPostalCode,
-                        EnvioALocalidade = data.ShippingLocality,
-                        EnvioAContato = data.ShippingContact,
-                        CódTipoProjeto = data.ProjectTypeCode,
-                        NossaProposta = data.OurProposal,
-                        CódObjetoServiço = data.ServiceObjectCode,
-                        NºCompromisso = data.CommitmentCode,
-                        GrupoContabObra = data.AccountWorkGroup,
-                        TipoGrupoContabProjeto = data.GroupContabProjectType,
-                        TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
-                        PedidoDoCliente = data.ClientRequest,
-                        DataDoPedido = data.RequestDate == "" ? (DateTime?)null : DateTime.Parse(data.RequestDate),
-                        ValidadeDoPedido = data.RequestValidity,
-                        DescriçãoDetalhada = data.DetailedDescription,
-                        CategoriaProjeto = data.ProjectCategory,
-                        NºContratoOrçamento = data.BudgetContractNo,
-                        ProjetoInterno = data.InternalProject,
-                        ChefeProjeto = data.ProjectLeader,
-                        ResponsávelProjeto = data.ProjectResponsible,
-                        UtilizadorModificação = User.Identity.Name
-                    };
+                    Projetos cProject = new Projetos();
+
+                    cProject.NºProjeto = data.ProjectNo;
+                    cProject.Área = data.Area;
+                    cProject.Descrição = data.Description;
+                    cProject.NºCliente = data.ClientNo;
+                    cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                    cProject.Estado = data.Status;
+                    cProject.CódigoRegião = data.RegionCode;
+                    cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                    cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                    cProject.Faturável = data.Billable;
+                    cProject.NºContrato = data.ContractNo;
+                    cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                    cProject.EnvioANome = data.ShippingName;
+                    cProject.EnvioAEndereço = data.ShippingAddress;
+                    cProject.EnvioACódPostal = data.ShippingPostalCode;
+                    cProject.EnvioALocalidade = data.ShippingLocality;
+                    cProject.EnvioAContato = data.ShippingContact;
+                    cProject.CódTipoProjeto = data.ProjectTypeCode;
+                    cProject.NossaProposta = data.OurProposal;
+                    cProject.CódObjetoServiço = data.ServiceObjectCode;
+                    cProject.NºCompromisso = data.CommitmentCode;
+                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    cProject.PedidoDoCliente = data.ClientRequest;
+                    cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                    cProject.ValidadeDoPedido = data.RequestValidity;
+                    cProject.DescriçãoDetalhada = data.DetailedDescription;
+                    cProject.CategoriaProjeto = data.ProjectCategory;
+                    cProject.NºContratoOrçamento = data.BudgetContractNo;
+                    cProject.ProjetoInterno = data.InternalProject;
+                    cProject.ChefeProjeto = data.ProjectLeader;
+                    cProject.ResponsávelProjeto = data.ProjectResponsible;
+                    cProject.UtilizadorModificação = User.Identity.Name;
+                    
 
                     DBProjects.Update(cProject);
 
@@ -1746,16 +1746,9 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Pre registo de Projetos
-        public IActionResult PreMovimentosProjetos(string id, [FromQuery]string areaid)
+        public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = null;
-
-            if (!string.IsNullOrEmpty(areaid))
-            {
-                Enumerations.Areas area = (Enumerations.Areas)Enum.Parse(typeof(Enumerations.Areas), areaid);
-                if (Enum.IsDefined(typeof(Enumerations.Areas), area))
-                    userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, area, Enumerations.Features.Projetos);
-            }
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Projetos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)

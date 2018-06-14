@@ -33,9 +33,11 @@
                    id="grid_databound"
                    content-type="application/json"></iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-        </div>
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
+        </template>
 
         <vaadin-grid aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
@@ -66,6 +68,10 @@
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
+                    },
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
                     },
                 },
                 _rowSelected: function (item) {

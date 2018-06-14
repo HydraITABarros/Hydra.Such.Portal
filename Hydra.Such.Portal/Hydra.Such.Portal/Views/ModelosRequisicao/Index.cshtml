@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Modelos Requisição";
+    ViewData["Title"] = "Modelos de Requisição";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -25,7 +25,7 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-<h1 class="title">Modelos Requisição</h1>
+
 <x-requestmodels></x-requestmodels>
 
 <dom-module id="x-requestmodels">
@@ -42,11 +42,11 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <div class="marginSpace">
-                <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
-            </div>
-        </template>
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
+        </div>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>

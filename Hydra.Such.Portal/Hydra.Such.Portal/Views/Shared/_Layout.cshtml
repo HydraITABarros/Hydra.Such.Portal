@@ -71,7 +71,7 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <ul class="nav navbar-toolbar navbar-toolbar-left navbar-left">
                     <li class="hidden-float hidden-menubar-top">
-                        <a href="javascript:void(0)" role="button" id="menubar-fold-btn" class="hamburger hamburger--arrowalt is-active js-hamburger">
+                        <a href="javascript:void(0)" role="button" id="menubar-fold-btn" class="hamburger hamburger--arrowalt js-hamburger">
                             <span class="hamburger-box"><span class="hamburger-inner"></span></span>
                         </a>
                     </li>
@@ -93,7 +93,7 @@
                     <li id="approvalPendingShow">
                         <a href="/Approvals">
                             <i class="menu-icon zmdi zmdi-check zmdi-hc-lg"></i>
-                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes</span>
+                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes &nbsp;</span>
                         </a>
                     </li>
 
@@ -105,6 +105,7 @@
                         </a>
                         <ul class="submenu">
                             <li>@Html.ActionLink("Contactos", "Index", "Contactos", null, null)</li>
+                            <li>@Html.ActionLink("Clientes", "Index", "Clientes", null, null)</li>
                             <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Contratos", null, null)</li>
                             <li>@Html.ActionLink("Propostas", "Propostas", "Contratos", null, null)</li>
                             <li>@Html.ActionLink("Contratos", "Index", "Contratos", null, null)</li>
@@ -121,7 +122,8 @@
                         <ul class="submenu">
                             <li>@Html.ActionLink("Projetos", "Index", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Orçamentos", "", "", null, null)</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", null, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", new { id = ""}, null)</li>
+                            <li>@Html.ActionLink("Pré-Registos", "PreregistoProjetos", "Projetos", new { id = "" }, null)</li>
                             <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", null, null)</li>
                             <li>@Html.ActionLink("Unidades Produtivas", "Index", "UnidadesProdutivas", null, null)</li>
@@ -188,9 +190,11 @@
                             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                         </a>
                         <ul class="submenu">
-                            <li>@Html.ActionLink("Criação", "Index", "FolhasDeHoras", null, null)</li>
-                            <li>@Html.ActionLink("Validação - Aprovação", "FolhaDeHoras_Validacao", "Engenharia", null, null)</li>
-                            <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", null, null)</li>
+                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Por Integrar KMs RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
+                            @*<li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -226,6 +230,10 @@
                             <li>@Html.ActionLink("Cartões e Apólices", "CartoesEApolices", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
+                            
+                            <li>@Html.ActionLink("Tipos Requisições", "TiposRequisicao", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Localizações", "Localizacoes", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Unidades de Prestação", "UnidadePrestacao", "Administracao", null, null)</li>
 
                             <!--FH-->
                             <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
@@ -294,6 +302,7 @@
     <script src="/lib/bootbox.min.js"></script>
 
     <script>
+        debugger;
         var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
         if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
             //$('#approvalPendingShow').hide();

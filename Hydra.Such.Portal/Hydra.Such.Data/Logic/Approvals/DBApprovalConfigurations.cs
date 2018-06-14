@@ -103,7 +103,7 @@ namespace Hydra.Such.Data.Logic.Approvals
         }
         #endregion
 
-        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDateAndDimensions(int type, int area, string functionalArea, string responsabiltyCenter, string region, decimal value, DateTime fDate)
+        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDateAndDimensions(int type, string functionalArea, string responsabiltyCenter, string region, decimal value, DateTime fDate)
         {
             try
             {

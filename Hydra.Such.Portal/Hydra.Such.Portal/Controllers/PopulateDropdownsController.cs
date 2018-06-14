@@ -70,6 +70,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetProposalsFetchUnitDB()
+        {
+            List<DDMessage> result = DBFetcUnit.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetAreas()
         {

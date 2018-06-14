@@ -435,6 +435,31 @@
                             notify: true,
                             value: ""
                         },
+                        _coderegion: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _funcarea: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _respcode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _codeclient: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _contractno: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
                         selected: {
                             type: Number,
                             value: 0
@@ -447,16 +472,47 @@
                             type: Boolean,
                             value: false
                         },
+
+                        _coderegion: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _funcarea: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _respcode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _codeclient: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
                     },
                     ready: function () {
                         //GET PROJECT DATA
-                        this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
-                        this.$.page_databound_ajax.generateRequest();
+                            this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
+                            this.$.page_databound_ajax.generateRequest();
 
-                        if (this._projectid == "") {
-                            this._isCreate = true;
-                        }
+                            if (this._projectid == "") {
+                                this._isCreate = true;
+                            }
+
+                            if (this._contractno != "") {
+                                this.$.RegionCode.value = this._coderegion;
+                            }
                     },
+
+
                     _openToast: function (message) {
                         this.$.ToastMessageSuccess.text = message;
                         this.$.ToastMessageSuccess.open();
@@ -526,6 +582,7 @@
 
                     //Responses Processors
                     _responseProcessor: function (data) {
+                        debugger;
                         var self = this;
 
                         if (this.data.projectNo == "" || this.data.projectNo == undefined) {
@@ -541,12 +598,22 @@
                                 if (this.data.ProjectNo == "") {
                                     this._isCreate = true;
                                 } else {
+                                    if (this._contractno != "" && this._coderegion != "" && this._funcarea != "" && this._codeclient != "" && this._respcode != "" && (this.data.ProjectNo == "" || this.data.ProjectNo == undefined)) {
+                                        this.$.FunctionalAreaCode.value = this._funcarea;
+                                        this.$.RegionCode.value = this._coderegion;
+                                        this.$.ResponsabilityCenterCode.value = this._respcode;
+                                        this.$.ProjectClient.value = this._codeclient;
+                                        this.$.ContractNo.value = this._contractno;
+                                        this.data.clientNo = this._codeclient;
+                                    }
+
                                     this.$.projects_ajax.body = JSON.stringify(this.data.clientNo);
                                     this.$.projects_ajax.generateRequest();
                                     
                                     this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
                                     this.$.shippinhAddress_ajax.generateRequest();
 
+                                    
                                     //JP this._shippingAddressCode = this.data.shippingAddressCode;
                                 }
                             } else if (data.detail.url.indexOf("Create") !== -1) {
@@ -631,7 +698,7 @@
                         window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
                     },
                     _OpenPreProjectMovements: function (url, data) {
-                        window.location.href = "/Projetos/PreMovimentosProjetos/" + this.data.projectNo + "?areaid=" + this._areaid;
+                        window.location.href = "/Projetos/PreMovimentosProjetos/" + this.data.projectNo;
                     },
                     _OpenProjectPreRegistration: function (url, data) {
                         window.location.href = "/Projetos/PreregistoProjetos/" + this.data.projectNo;
@@ -643,6 +710,7 @@
 
                     //Client Change
                     _clientChanged: function (e) {
+                        debugger;
                         if (e.detail.value != "") {
                             this.$.projects_ajax.body = JSON.stringify(e.detail.value);
                             this.$.projects_ajax.generateRequest();

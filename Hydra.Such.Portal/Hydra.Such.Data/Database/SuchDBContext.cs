@@ -110,6 +110,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
         public virtual DbSet<UnidadeDeArmazenamento> UnidadeDeArmazenamento { get; set; }
         public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
+        public virtual DbSet<UnidadePrestação> UnidadePrestação { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
@@ -215,7 +216,7 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<AcessosUtilizador>(entity =>
             {
-                entity.HasKey(e => new { e.IdUtilizador, e.Área, e.Funcionalidade });
+                entity.HasKey(e => new { e.IdUtilizador, e.Funcionalidade });
 
                 entity.ToTable("Acessos Utilizador");
 
@@ -238,12 +239,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.IdUtilizadorNavigation)
-                    .WithMany(p => p.AcessosUtilizador)
-                    .HasForeignKey(d => d.IdUtilizador)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Acessos Utilizador_Config. Utilizadores");
             });
 
             modelBuilder.Entity<AçõesDeConfeção>(entity =>
@@ -469,6 +464,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NºDeFaturasAEmitir).HasColumnName("Nº de Faturas a Emitir");
 
                 entity.Property(e => e.NãoFaturar).HasColumnName("Não Faturar");
+
+                entity.Property(e => e.Situação).HasMaxLength(50);
 
                 entity.Property(e => e.TotalAFaturar).HasColumnName("Total a Faturar");
 
@@ -4119,6 +4116,27 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
 
+                entity.Property(e => e.CodCliente)
+                    .HasColumnName("CodCliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoLer)
+                    .HasColumnName("CodigoLer")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Grupo)
+                    .HasColumnName("Grupo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Operacao)
+                    .HasColumnName("Operacao")
+                    .HasMaxLength(20);
+
+
                 entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
                     .WithMany(p => p.MovimentosDeProjeto)
                     .HasForeignKey(d => d.CódDestinoFinalResíduos)
@@ -7057,6 +7075,31 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.QtdPorUnidadeMedida)
                     .HasColumnName("Qtd por Unidade Medida")
                     .HasColumnType("decimal(, 2)");
+            });
+
+            modelBuilder.Entity<UnidadePrestação>(entity =>
+            {
+                entity.HasKey(e => e.Código);
+
+                entity.ToTable("Unidade Prestação");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descrição).HasColumnType("nchar(50)");
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<UnidadesProdutivas>(entity =>
