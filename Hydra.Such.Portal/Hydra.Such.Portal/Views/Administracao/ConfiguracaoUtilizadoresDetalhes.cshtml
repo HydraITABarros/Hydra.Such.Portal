@@ -587,7 +587,6 @@
 
                 //CRUD Functions
                 _validateData() {
-                    debugger;
                     var Error = "";
                     if (this.data != null && this.data != "" && 
                         this.data.allowedUserDimensions != null && this.data.allowedUserDimensions != "") 
@@ -622,7 +621,6 @@
                     }
                 },
                 _update: function () {
-                    debugger;
                     var validate = this._validateData();
                     if (validate == "") {
                         this.$.ajax_create.url = "/Administracao/UpdateUserConfig";
@@ -714,7 +712,6 @@
                     }
                 },
                 _onDimensionInGridChanged: function (e) {
-                    debugger;
                    
                     var oSel = this.data.allowedUserDimensions.find(x => x.selected);
                     if (oSel != undefined) {
@@ -733,7 +730,6 @@
                     this.$.gridAllowedUserDimensions.clearCache();
                 },
                 _onDeleteUserAcessosLocalizacao: function (e) {
-                    //debugger;
                     var index = this.data.userAcessosLocalizacoes.indexOf(e.model.item);
 
                     var id_Utilizador = this.data.idUser;
@@ -765,7 +761,6 @@
                     });
                 },
                 _createUserDimensionAccess: function () {
-                    debugger;;
                     if (this.ddDimension == "" || this.ddDimension == null) {
                         this._showErrorMessage("É obrigatório preencher a dimensão.");
                     } else if (this.ddDimensionValue == null || this.ddDimensionValue == "") {
@@ -794,7 +789,6 @@
                     }
                 },
                 _deleteUserAcessosLocalizacoesResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -810,11 +804,12 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _createUserDimensionResponse: function (e) {
+                    debugger;
                     if (this.UserDimensionCreated) {
                         this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$._Dimension.value = ""
-                        this.$._DimensionValue.value = "";
+                        this.ddDimension = ""
+                        this.ddDimensionValue = "";
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar acesso a dimensão.');
