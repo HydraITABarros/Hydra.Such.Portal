@@ -145,8 +145,6 @@ namespace Hydra.Such.Data
             AdminViaturasTelemoveis = 107,
             [Description("Administração Existências")]
             AdminExistencias = 108,
-            [Description("A Definir")]
-            AdminADefinir = 999,
         }
 
         public enum Areas
