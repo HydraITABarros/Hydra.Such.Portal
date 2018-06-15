@@ -1627,7 +1627,6 @@
 
                 },
                 _Close_Dialog: function (e) {
-                    debugger;
                     this.$.projectSourceDlg.value = "";
                     this.$.projectSourceDlg.valueText = "";
                     this.$.ProjDiaryPriceDlg.value = "";
@@ -1658,8 +1657,7 @@
                     this.$.projectMovementTable.selectedItem = [];
                     this.$.grid_databound_ajax.generateRequest();
                 },
-                _projectChange: function (e) {
-                    debugger;
+                _projectChange: function (e) {         
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
