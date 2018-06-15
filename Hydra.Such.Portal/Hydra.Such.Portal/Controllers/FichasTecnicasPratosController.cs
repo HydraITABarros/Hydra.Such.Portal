@@ -18,7 +18,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FichasTécnicasPratos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -33,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FichaTecnica(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FichasTécnicasPratos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 if (!string.IsNullOrEmpty(id))
@@ -492,7 +492,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ClassificacaoFichasTecnicas(string id, string option)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";

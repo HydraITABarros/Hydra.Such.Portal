@@ -34,7 +34,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -48,7 +48,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -63,7 +63,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -75,12 +75,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-
-
-
-
-
-
 
 
         #region Home
@@ -551,7 +545,7 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -1419,7 +1413,7 @@ namespace Hydra.Such.Portal.Controllers
         //public IActionResult MovimentosDeProjeto(String id)
         public IActionResult MovimentosDeProjeto(string id, [FromQuery]string areaid)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
 
             if (userAccesses != null && userAccesses.Read.Value)
             {
@@ -1748,7 +1742,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Pre registo de Projetos
         public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
