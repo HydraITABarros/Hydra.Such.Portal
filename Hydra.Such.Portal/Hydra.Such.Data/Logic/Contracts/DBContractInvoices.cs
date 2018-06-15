@@ -25,6 +25,20 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<AutorizarFaturaçãoContratos> GetAllInvoice()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AutorizarFaturaçãoContratos.Where(x => x.Situação=="").ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<AutorizarFaturaçãoContratos> GetByContractNo(string contractNo)
         {
             try

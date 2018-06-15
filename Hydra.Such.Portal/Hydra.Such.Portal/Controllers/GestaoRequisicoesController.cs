@@ -36,7 +36,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -52,7 +52,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Detalhes()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -68,7 +68,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult RequisicoesAprovadas()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -83,7 +83,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult DetalhesReqAprovada(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -103,7 +103,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult LinhasRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -124,7 +124,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Arquivadas()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 4;
@@ -139,7 +139,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult HistóricoCabeçalhoRequisicao(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -1291,7 +1291,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PontosSituacao()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -1308,7 +1308,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId,[FromQuery] string lineId)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1442,7 +1442,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult HistoricoRequisicoes()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.HistóricoRequisições);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -1461,7 +1461,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, 0, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 

@@ -264,6 +264,22 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+        public static List<Contratos> GetAllAvencaFixa2()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x =>
+                    x.ContratoAvençaFixa == true &&
+                    x.Arquivado == false && x.TipoContrato==3).ToList(); 
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
 

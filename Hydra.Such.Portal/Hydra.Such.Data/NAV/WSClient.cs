@@ -213,7 +213,7 @@ namespace Hydra.Such.Data.NAV
             }
 
         }
-
+     
         public static async Task<WSClientNAV.ReadMultiple_Result> GetAllAsync(int size, NAVWSConfigurations WSConfigurations)
         {
             //if (size == null)

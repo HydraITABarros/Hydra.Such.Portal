@@ -33,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Listagem Unidades Produtivas
         public IActionResult Index()
         {
-            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.UnidadesProdutivas);
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.UnidadesProdutivas);
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UserPermissions = userPerm;
@@ -74,7 +74,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesCafetariasRefeitorios(int code)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Cafetarias_Refeitórios);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Cafetarias_Refeitórios);
             CafetariasRefeitórios coffeeShop = DBCoffeeShops.GetByCode(code);
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -92,7 +92,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Detalhes Unidades Produtivas
         public IActionResult Detalhes(int id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.UnidadesProdutivas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.UnidadesProdutivas);
 
             if (UPerm != null && UPerm.Read.Value)
             {

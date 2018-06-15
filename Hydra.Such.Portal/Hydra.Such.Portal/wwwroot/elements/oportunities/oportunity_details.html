@@ -129,7 +129,7 @@
 
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -209,7 +209,7 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
@@ -223,13 +223,13 @@
 
 
         <!--<div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-lg-12">-->
-                <!--<template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>-->
-                <!--<paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-            </div>
-        </div>-->
+        <div class="col-lg-12">-->
+        <!--<template is="dom-if" if="{{ _permissions.create }}">
+        <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+    </template>-->
+        <!--<paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
+        </div>
+    </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -392,11 +392,14 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <b>[[item.value]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
+                                                            items="[[CBFeeUnits]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -1458,7 +1461,7 @@
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         //this.$.mClients.validate() & //validate doesn't work
-                        this.$.mFeeUnits.validate() &
+                        //this.$.mFeeUnits.validate() &
                         //this.$.mCodeRegion.validate() &
                         //this.$.mFunctionalArea.validate() &
                         //this.$.mResponsabilityCenter.validate() &
@@ -1495,6 +1498,11 @@
                         //    (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
                         //    return true;
                         //}
+                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            this.$.mFeeUnits.validate();
+                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
                         if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
                             (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
                             this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
