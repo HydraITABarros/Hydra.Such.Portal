@@ -14,6 +14,9 @@ namespace Hydra.Such.Data.ViewModel
         public string Area { get; set; }
         public string Cresp { get; set; }
         public string EmployeeNo { get; set; }
+        public string ProcedimentosEmailEnvioParaCA { get; set; }
+        public string ProcedimentosEmailEnvioParaArea { get; set; }
+        public string ProcedimentosEmailEnvioParaArea2 { get; set; }
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
