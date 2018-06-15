@@ -18,6 +18,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data;
 using Newtonsoft.Json;
 using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1091,11 +1092,14 @@ namespace Hydra.Such.Portal.Controllers
                                     break;
                             }
                         }
+
+                        //Validações para registar situações
                         Problema = "";
                         if (item.TipoFaturação != 1 && item.TipoFaturação != 4)
                         {
                             Problema += "Tipo de fatura mal defenido!";
                         }
+
                         if (item.Estado != 4)
                         {
                             Problema += "Contrato Não Assinado!";
@@ -1104,10 +1108,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += "Contrato Aberto!";
                         }
-                        if (item.Estado != 4)
-                        {
-                            Problema += "O Estado não está assinado!";
-                        }
+                        
                         if (item.PróximaDataFatura < item.DataInicial || item.PróximaDataFatura >item.DataExpiração)
                         {
                             Problema += "Contrato Não Vigente!";
@@ -1120,12 +1121,21 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += "Falta Código Termos Pagamento!";
                         }
+                        if (item.CondiçõesPagamento == 0 )
+                        {
+                            Problema += "Falta Codições Pagamento!";
+                        }
+                        if (item.EnvioAEndereço == "")
+                        {
+                            Problema += "Falta Morada!";
+                        }
+                        
                         bool verifica = false;
                         if (item.NºComprimissoObrigatório == false || item.NºComprimissoObrigatório== null)
                         {
                            foreach(RequisiçõesClienteContrato req in DBContractClientRequisition.GetByContract(item.NºContrato))
                             {
-                                if(req.GrupoFatura==line.GrupoFatura && req.DataInícioCompromisso<=item.DataInícioContrato && req.DataFimCompromisso <= item.DataFimContrato)
+                                if(req.GrupoFatura==line.GrupoFatura && req.DataInícioCompromisso==item.DataInícioContrato && req.DataFimCompromisso == item.DataFimContrato)
                                 {
                                     if (req.NºCompromisso == "" || req.NºCompromisso == null)
                                         verifica = true;                                      
@@ -1140,6 +1150,17 @@ namespace Hydra.Such.Portal.Controllers
                         {
                            Problema += "Fatura no Pre-Registo";
                         }
+
+                        Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
+                        postNAV.Wait();
+                        if (postNAV.IsCompletedSuccessfully == true && postNAV.Result!=null)
+                        {
+                           if(postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                            {
+                                Problema += "Cliente Bloqueado";
+                            }
+                        }
+
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
