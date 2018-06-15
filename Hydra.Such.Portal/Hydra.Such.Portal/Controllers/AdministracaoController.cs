@@ -130,6 +130,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.Regiao = CU.RegiãoPorDefeito;
                 result.Area = CU.AreaPorDefeito;
                 result.Cresp = CU.CentroRespPorDefeito;
+                result.EmployeeNo = CU.EmployeeNo;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -168,6 +169,7 @@ namespace Hydra.Such.Portal.Controllers
                 RegiãoPorDefeito = data.Regiao,
                 AreaPorDefeito = data.Area,
                 CentroRespPorDefeito = data.Cresp,
+                EmployeeNo = data.EmployeeNo,
                 UtilizadorCriação = User.Identity.Name,
             });
 
@@ -222,6 +224,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RegiãoPorDefeito = data.Regiao;
                 userConfig.AreaPorDefeito = data.Area;
                 userConfig.CentroRespPorDefeito = data.Cresp;
+                userConfig.EmployeeNo = data.EmployeeNo;
                 userConfig.DataHoraModificação = DateTime.Now;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 DBUserConfigurations.Update(userConfig);

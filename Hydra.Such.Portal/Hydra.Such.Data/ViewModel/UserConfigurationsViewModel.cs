@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Regiao { get; set; }
         public string Area { get; set; }
         public string Cresp { get; set; }
+        public string EmployeeNo { get; set; }
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
