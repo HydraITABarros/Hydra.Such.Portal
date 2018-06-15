@@ -79,7 +79,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true &&
+                    return ctx.Contratos.Where(x => x.TipoContrato == 3 &&
                     x.NºContrato == ContractNo && x.NºCliente == ClientNo).
                     OrderByDescending(x => x.NºVersão).
                     FirstOrDefault();
