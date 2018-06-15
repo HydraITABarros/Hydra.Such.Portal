@@ -803,7 +803,7 @@
                                             <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
-
+                                    
                                     <vaadin-grid-column width="125px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
@@ -820,6 +820,15 @@
                                                         </paper-icon-item>
                                                     </template>
                                                 </vaadin-combo-box>
+
+                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
+                                                                items="[[CBItems]]"
+                                                                text-path="code"
+                                                                value-path="code"
+                                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>-->
+
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.code}}

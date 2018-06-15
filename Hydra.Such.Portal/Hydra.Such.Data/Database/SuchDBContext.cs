@@ -216,7 +216,7 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<AcessosUtilizador>(entity =>
             {
-                entity.HasKey(e => new { e.IdUtilizador, e.Área, e.Funcionalidade });
+                entity.HasKey(e => new { e.IdUtilizador, e.Funcionalidade });
 
                 entity.ToTable("Acessos Utilizador");
 
@@ -239,12 +239,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.IdUtilizadorNavigation)
-                    .WithMany(p => p.AcessosUtilizador)
-                    .HasForeignKey(d => d.IdUtilizador)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Acessos Utilizador_Config. Utilizadores");
             });
 
             modelBuilder.Entity<AçõesDeConfeção>(entity =>
@@ -4121,6 +4115,27 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
+
+                entity.Property(e => e.CodCliente)
+                    .HasColumnName("CodCliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoLer)
+                    .HasColumnName("CodigoLer")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Grupo)
+                    .HasColumnName("Grupo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Operacao)
+                    .HasColumnName("Operacao")
+                    .HasMaxLength(20);
+
 
                 entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
                     .WithMany(p => p.MovimentosDeProjeto)

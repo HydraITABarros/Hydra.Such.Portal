@@ -1,42 +1,34 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Configuração de Aprovações";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-@*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*mixin*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*ironform*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
-@*button*@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*toast*@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-@*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
-
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
-<!--link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
 
 <x-approvals></x-approvals>
 
 <dom-module id="x-approvals">
     <template>
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="/css/main.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
 
         <custom-style>
             <style is="custom-style">
@@ -50,6 +42,21 @@
 
                 paper-input {
                     max-width: 450px !important;
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                        padding: 0 0;
+                    };
+                    --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
                 }
             </style>
         </custom-style>
@@ -118,106 +125,106 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ddRegionsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ddFunctionalAreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[TypeRequisition]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Tipo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <b>[[item.value]]</b>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            @*<div class="col-lg-3">
-                <vaadin-combo-box items="[[AdminArea]]" id="ddArea" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <b>[[item.value]]</b>
-                    </template>
-                </vaadin-combo-box>
-            </div>*@
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="value" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="500px">
-                            <tr>
-                                <td width="10%">[[item.id]]</td>
-                                <td width="80%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[ddResponsabilityCenterData]]" id="ddResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Centro Responsabilidade" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="500px">
-                            <tr>
-                                <td width="20%">[[item.id]]</td>
-                                <td width="80%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[ddRegionsData]]" id="ddRegion" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Região" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="300px">
-                            <tr>
-                                <td width="10%">[[item.id]]</td>
-                                <td width="80%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="ddLevelApproval" type="number" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="ddValueApproval" type="number" label="Valor Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[UserApprovalList]]" id="ddUserApproval" on-change="_onChangeUser" item-value-path="id" item-label-path="value" value="{{item.approvalUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                                <td width="40%">[[item.id]]</td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[TypeRequisition]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Tipo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <b>[[item.value]]</b>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        @*<div class="col-lg-3">
+                            <vaadin-combo-box items="[[AdminArea]]" id="ddArea" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <b>[[item.value]]</b>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>*@
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="value" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="500px">
+                                        <tr>
+                                            <td width="10%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[ddResponsabilityCenterData]]" id="ddResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Centro Responsabilidade" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="500px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[ddRegionsData]]" id="ddRegion" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Região" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="300px">
+                                        <tr>
+                                            <td width="10%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-text-field id="ddLevelApproval" type="number" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-text-field id="ddValueApproval" type="number" label="Valor Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[UserApprovalList]]" id="ddUserApproval" on-change="_onChangeUser" item-value-path="id" item-label-path="value" value="{{item.approvalUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                            <td width="40%">[[item.id]]</td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
 
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box items="[[GroupApprovalList]]" id="ddGroupApproval" on-change="_onChangeGroup" item-value-path="id" item-label-path="value" value="{{ddGroupDescription}}" label="Grupo Aprovação" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="140px">
-                            <tr>
-                                <td width="80%"> <b>[[item.value]]</b></td>
-                                <td width="20%">[[item.id]]</td>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[GroupApprovalList]]" id="ddGroupApproval" on-change="_onChangeGroup" item-value-path="id" item-label-path="value" value="{{ddGroupDescription}}" label="Grupo Aprovação" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="140px">
+                                        <tr>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                            <td width="20%">[[item.id]]</td>
 
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-date-picker id="ddDataStart" label="Data de Inicial" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-date-picker id="ddDataEnd" label="Data Final" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createApproval" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-        </div>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-date-picker id="ddDataStart" label="Data de Inicial" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-date-picker id="ddDataEnd" label="Data Final" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createApproval" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
         <br />
-
         <vaadin-grid id="gridApprovals" aria-label="gridApprovals" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
@@ -398,21 +405,24 @@
                     <vaadin-date-picker id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="marginSpace">
+                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -443,6 +453,10 @@
                     _permissionsDelete: {
                         type: Boolean,
                         value: DeleteValue
+                    },
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
                     },
                 },
                 ready: function () {
