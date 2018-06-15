@@ -1337,7 +1337,7 @@ namespace Hydra.Such.Portal.Controllers
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
+                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
                             x => new DiárioDeProjeto()
                             {
                                 NºProjeto = projectNo,

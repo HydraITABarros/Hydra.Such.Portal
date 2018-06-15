@@ -551,7 +551,6 @@
                         }
                     },
                     _update: function () {
-                        debugger;
                         if (this._validateData()) {
                             this._executeRequest("/Projetos/UpdateProject", this.data)
                         }
@@ -709,7 +708,6 @@
 
                     //Client Change
                     _clientChanged: function (e) {
-                        debugger;
                         if (e.detail.value != "") {
                             this.$.projects_ajax.body = JSON.stringify(e.detail.value);
                             this.$.projects_ajax.generateRequest();
