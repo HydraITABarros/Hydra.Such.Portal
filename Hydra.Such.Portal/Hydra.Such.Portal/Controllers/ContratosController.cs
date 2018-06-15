@@ -35,7 +35,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Contratos
         public IActionResult Index(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Contratos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -71,7 +71,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesContrato(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Contratos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -799,7 +799,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult CreateProjectContract(string id, string versionNo = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos ContratoDB = DBContracts.GetByIdAndVersion(id, int.Parse(versionNo));
@@ -824,7 +824,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Oportunidades(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Oportunidades);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Oportunidades);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -842,7 +842,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesOportunidade(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Oportunidades);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Oportunidades);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -1261,7 +1261,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Propostas
         public IActionResult Propostas(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Propostas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -1278,7 +1278,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProposta(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Propostas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -1462,7 +1462,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PropostasContrato(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -1914,7 +1914,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ProjetosContrato(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;

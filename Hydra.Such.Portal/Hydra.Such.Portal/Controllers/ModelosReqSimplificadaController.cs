@@ -23,7 +23,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         
         public IActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.ModelosRequisiçõesSimplificadas);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ModelosRequisiçõesSimplificadas);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UserPermissions = userPermissions;
@@ -60,7 +60,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.ModelosRequisiçõesSimplificadas);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ModelosRequisiçõesSimplificadas);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {

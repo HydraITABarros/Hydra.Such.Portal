@@ -4498,7 +4498,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Localizacoes()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminExistencias);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -4513,7 +4513,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesLocalizacao(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminExistencias);
 
             if (UPerm != null && UPerm.Read.Value)
             {
