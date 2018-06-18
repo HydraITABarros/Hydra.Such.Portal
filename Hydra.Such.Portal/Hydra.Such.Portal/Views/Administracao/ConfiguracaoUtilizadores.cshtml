@@ -58,6 +58,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Mecanográfico</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoPorDefeito">Região</vaadin-grid-sorter>
@@ -88,7 +98,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="7%">
                 <template class="header">
                     <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
@@ -102,7 +112,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="8%">
                 <template class="header">
                     <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
                 </template>

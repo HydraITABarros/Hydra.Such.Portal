@@ -1810,6 +1810,21 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Requisições Simplificadas"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Folhas de Horas - Validar"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Folhas de Horas - Integrar Aj. Custo RH"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Folhas de Horas - Integrar kms RH"
             }
         };
 

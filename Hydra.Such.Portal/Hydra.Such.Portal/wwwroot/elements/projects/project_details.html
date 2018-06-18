@@ -472,20 +472,47 @@
                             type: Boolean,
                             value: false
                         },
+
+                        _coderegion: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _funcarea: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _respcode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
+                        _codeclient: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+
                     },
                     ready: function () {
                         //GET PROJECT DATA
-                        this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
-                        this.$.page_databound_ajax.generateRequest();
+                            this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
+                            this.$.page_databound_ajax.generateRequest();
 
-                        if (this._projectid == "") {
-                            this._isCreate = true;
-                        }
+                            if (this._projectid == "") {
+                                this._isCreate = true;
+                            }
 
-                        if (this._contractno != "") {
-                            this.$.RegionCode.value = this._coderegion;
-                        }
+                            if (this._contractno != "") {
+                                this.$.RegionCode.value = this._coderegion;
+                            }
                     },
+
+
                     _openToast: function (message) {
                         this.$.ToastMessageSuccess.text = message;
                         this.$.ToastMessageSuccess.open();
@@ -524,7 +551,6 @@
                         }
                     },
                     _update: function () {
-                        debugger;
                         if (this._validateData()) {
                             this._executeRequest("/Projetos/UpdateProject", this.data)
                         }
@@ -570,12 +596,22 @@
                                 if (this.data.ProjectNo == "") {
                                     this._isCreate = true;
                                 } else {
+                                    if (this._contractno != "" && this._coderegion != "" && this._funcarea != "" && this._codeclient != "" && this._respcode != "" && (this.data.ProjectNo == "" || this.data.ProjectNo == undefined)) {
+                                        this.$.FunctionalAreaCode.value = this._funcarea;
+                                        this.$.RegionCode.value = this._coderegion;
+                                        this.$.ResponsabilityCenterCode.value = this._respcode;
+                                        this.$.ProjectClient.value = this._codeclient;
+                                        this.$.ContractNo.value = this._contractno;
+                                        this.data.clientNo = this._codeclient;
+                                    }
+
                                     this.$.projects_ajax.body = JSON.stringify(this.data.clientNo);
                                     this.$.projects_ajax.generateRequest();
                                     
                                     this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
                                     this.$.shippinhAddress_ajax.generateRequest();
 
+                                    
                                     //JP this._shippingAddressCode = this.data.shippingAddressCode;
                                 }
                             } else if (data.detail.url.indexOf("Create") !== -1) {

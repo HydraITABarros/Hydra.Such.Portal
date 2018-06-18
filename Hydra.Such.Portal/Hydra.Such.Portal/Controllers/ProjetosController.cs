@@ -34,7 +34,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -46,9 +46,9 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Detalhes(String id)
+        public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -63,7 +63,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -75,12 +75,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-
-
-
-
-
-
 
 
         #region Home
@@ -387,43 +381,43 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    Projetos cProject = new Projetos()
-                    {
-                        NºProjeto = data.ProjectNo,
-                        Área = data.Area,
-                        Descrição = data.Description,
-                        NºCliente = data.ClientNo,
-                        Data = data.Date == "" ? (DateTime?)null : DateTime.Parse(data.Date),
-                        Estado = data.Status,
-                        CódigoRegião = data.RegionCode,
-                        CódigoÁreaFuncional = data.FunctionalAreaCode,
-                        CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
-                        Faturável = data.Billable,
-                        NºContrato = data.ContractNo,
-                        CódEndereçoEnvio = data.ShippingAddressCode,
-                        EnvioANome = data.ShippingName,
-                        EnvioAEndereço = data.ShippingAddress,
-                        EnvioACódPostal = data.ShippingPostalCode,
-                        EnvioALocalidade = data.ShippingLocality,
-                        EnvioAContato = data.ShippingContact,
-                        CódTipoProjeto = data.ProjectTypeCode,
-                        NossaProposta = data.OurProposal,
-                        CódObjetoServiço = data.ServiceObjectCode,
-                        NºCompromisso = data.CommitmentCode,
-                        GrupoContabObra = data.AccountWorkGroup,
-                        TipoGrupoContabProjeto = data.GroupContabProjectType,
-                        TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
-                        PedidoDoCliente = data.ClientRequest,
-                        DataDoPedido = data.RequestDate == "" ? (DateTime?)null : DateTime.Parse(data.RequestDate),
-                        ValidadeDoPedido = data.RequestValidity,
-                        DescriçãoDetalhada = data.DetailedDescription,
-                        CategoriaProjeto = data.ProjectCategory,
-                        NºContratoOrçamento = data.BudgetContractNo,
-                        ProjetoInterno = data.InternalProject,
-                        ChefeProjeto = data.ProjectLeader,
-                        ResponsávelProjeto = data.ProjectResponsible,
-                        UtilizadorModificação = User.Identity.Name
-                    };
+                    Projetos cProject = new Projetos();
+
+                    cProject.NºProjeto = data.ProjectNo;
+                    cProject.Área = data.Area;
+                    cProject.Descrição = data.Description;
+                    cProject.NºCliente = data.ClientNo;
+                    cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                    cProject.Estado = data.Status;
+                    cProject.CódigoRegião = data.RegionCode;
+                    cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                    cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                    cProject.Faturável = data.Billable;
+                    cProject.NºContrato = data.ContractNo;
+                    cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                    cProject.EnvioANome = data.ShippingName;
+                    cProject.EnvioAEndereço = data.ShippingAddress;
+                    cProject.EnvioACódPostal = data.ShippingPostalCode;
+                    cProject.EnvioALocalidade = data.ShippingLocality;
+                    cProject.EnvioAContato = data.ShippingContact;
+                    cProject.CódTipoProjeto = data.ProjectTypeCode;
+                    cProject.NossaProposta = data.OurProposal;
+                    cProject.CódObjetoServiço = data.ServiceObjectCode;
+                    cProject.NºCompromisso = data.CommitmentCode;
+                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    cProject.PedidoDoCliente = data.ClientRequest;
+                    cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                    cProject.ValidadeDoPedido = data.RequestValidity;
+                    cProject.DescriçãoDetalhada = data.DetailedDescription;
+                    cProject.CategoriaProjeto = data.ProjectCategory;
+                    cProject.NºContratoOrçamento = data.BudgetContractNo;
+                    cProject.ProjetoInterno = data.InternalProject;
+                    cProject.ChefeProjeto = data.ProjectLeader;
+                    cProject.ResponsávelProjeto = data.ProjectResponsible;
+                    cProject.UtilizadorModificação = User.Identity.Name;
+                    
 
                     DBProjects.Update(cProject);
 
@@ -551,7 +545,7 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -959,15 +953,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
@@ -1343,7 +1337,7 @@ namespace Hydra.Such.Portal.Controllers
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
+                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
                             x => new DiárioDeProjeto()
                             {
                                 NºProjeto = projectNo,
@@ -1419,7 +1413,7 @@ namespace Hydra.Such.Portal.Controllers
         //public IActionResult MovimentosDeProjeto(String id)
         public IActionResult MovimentosDeProjeto(string id, [FromQuery]string areaid)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
 
             if (userAccesses != null && userAccesses.Read.Value)
             {
@@ -1748,7 +1742,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Pre registo de Projetos
         public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
@@ -1844,15 +1838,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {

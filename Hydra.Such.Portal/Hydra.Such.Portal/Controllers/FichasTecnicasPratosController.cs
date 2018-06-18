@@ -18,7 +18,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FichasTécnicasPratos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -33,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FichaTecnica(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.FichasTécnicasPratos);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FichasTécnicasPratos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 if (!string.IsNullOrEmpty(id))
@@ -104,7 +104,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
         [HttpPost]
-
         public JsonResult UpdateConfection([FromBody] List<ProceduresConfectionViewModel> data, string plateNo)
         {
             ErrorHandler result = new ErrorHandler();
@@ -169,7 +168,6 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-
         public JsonResult CreateConfection([FromBody] ProceduresConfectionViewModel data)
         {
             ErrorHandler result = new ErrorHandler();
@@ -490,5 +488,86 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Classificação Fichas Técnicas
+
+        public IActionResult ClassificacaoFichasTecnicas(string id, string option)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                if (option == "Grupos")
+                {
+                    @ViewBag.Option = "Grupos";
+                    @ViewBag.Groups = "hidden";
+                }
+                else
+                {
+                    @ViewBag.Option = "linhas";
+                    @ViewBag.Groups = "";
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        //O : Lines of Groups
+        //1 : Group
+        public JsonResult GetClassificationFilesTechniques([FromBody] string option)
+        {
+            List<ClassificationFilesTechniquesViewModel> result;
+            if (option == "Grupos")
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(1));
+            else
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(0));
+
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CreateClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            data.CreateUser = User.Identity.Name;
+            if (DBClassificationFilesTechniques.Create(DBClassificationFilesTechniques.ParseToDatabase(data)) != null)
+                return Json(data);
+            else
+                return null;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+
+            //Delete lines of Groups
+            if (data.Type == 1)
+            {
+                if (DBClassificationFilesTechniques.GetTypeFiles(0).Exists(x => x.Grupo == data.Code))
+                {
+                    return Json(null);
+                }
+            }
+            // Delete Group
+            var result = DBClassificationFilesTechniques.Delete(DBClassificationFilesTechniques.ParseToDatabase(data));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
+        {
+
+            data.ForEach(x =>
+            {
+                x.UpdateUser = User.Identity.Name;
+                DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
+#endregion
     }
 }

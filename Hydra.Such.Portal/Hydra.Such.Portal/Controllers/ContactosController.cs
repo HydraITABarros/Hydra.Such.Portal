@@ -4,9 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-
-
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -32,7 +29,7 @@ namespace Hydra.Such.Portal.Controllers
         // GET: Contactos
         public ActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Genérica, Enumerations.Features.Contactos);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contactos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UserPermissions = userPermissions;

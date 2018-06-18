@@ -4,14 +4,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @*@if (ViewBag.No == "" || ViewBag.No == null)
-{
-    <h1 class="title">Criar Cliente</h1>
-}
-else
-{
-    <h1 class="title">Cliente @ViewBag.No</h1>
-}*@
+    {
+        <h1 class="title">Criar Cliente</h1>
+    }
+    else
+    {
+        <h1 class="title">Cliente @ViewBag.No</h1>
+    }*@
 
 <link rel="import" href="/elements/clients/client_details.html">
 
-<x-clientdetails _no="@ViewBag.No" _areaid="4" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-clientdetails>
+<x-clientdetails _no="@ViewBag.No"
+                 _areaid="4"
+                 _reportserverurl='@ViewBag.reportServerURL'
+                 _userlogin='@ViewBag.userLogin'
+                 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-clientdetails>

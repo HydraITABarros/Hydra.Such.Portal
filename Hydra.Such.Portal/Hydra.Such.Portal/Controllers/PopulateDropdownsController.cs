@@ -565,7 +565,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetClientServices([FromBody] string ClientNo)
         {
-            List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage()
+            List<DDMessageString> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessageString()
             {
                 id = x.ServiceCode,
                 value = x.ServiceDescription
@@ -1073,7 +1073,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage()
+            List<DDMessageString> result = DBServices.GetAll().Select(x => new DDMessageString()
             {
                 id = x.Código,
                 value = x.Descrição

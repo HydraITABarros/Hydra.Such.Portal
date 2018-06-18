@@ -191,7 +191,6 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contratos/CreateProjectContract"
-                   last-response="{{CreateProjectResponse}}"
                    method="post"
                    handle-as="json"
                    id="createProject_ajax"
@@ -2468,7 +2467,7 @@
                 },
 
                 _sendToHistory: function () {
-                    debugger;
+
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     var currentTime = new Date();
@@ -2587,8 +2586,9 @@
                     }
                 },
                 _createProject: function () {
-                    this.$.createProject_ajax.body = JSON.stringify(this.data);
-                    this.$.createProject_ajax.generateRequest();
+                    var contractNo = this.data.contractNo;
+                    var versionNo = this.data.versionNo;
+                    window.location.href = "/Contratos/CreateProjectContract/" + contractNo + "?versionNo=" + versionNo;
                 },
 
                 _viewMenuItemSelected: function (e) {

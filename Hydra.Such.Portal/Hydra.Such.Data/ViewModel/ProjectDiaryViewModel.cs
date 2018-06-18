@@ -72,7 +72,7 @@ namespace Hydra.Such.Data.ViewModel
 
         public string ServiceData { get; set; }
         public string ClientRequest { get; set; }
-        public int? ServiceClientCode { get; set; }
+        public string ServiceClientCode { get; set; }
         public string RequestNo { get; set; }
         public int? RequestLineNo { get; set; }
         public string Driver { get; set; }

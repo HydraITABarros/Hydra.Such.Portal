@@ -54,6 +54,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.No = id ?? "";
+                ViewBag.reportServerURL = _config.ReportServerURL;
+                ViewBag.userLogin = User.Identity.Name.ToString();
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
