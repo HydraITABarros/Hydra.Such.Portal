@@ -4106,6 +4106,62 @@
                     }
                 },
 
+                // JPM.20180618.b
+                _confirmAutorizarImobilizado: function () {
+                    if (!this.__isElementCA) {
+                        this._openToast('Não está autorizado a utilizar esta opção!');
+                        return;
+                    }
+
+                    if (!this.data.imobilizado) {
+                        this._openToast('O Procedimento !' + this.data.no + ' não é de Imobilizado!');
+                        return;
+                    }
+
+                    if (this.data.estado != 8) {
+                        this._openToast('Neste estado não pode autorizar o processo!');
+                        return;
+                    }
+
+                    if (this.data.responsavelImobCA != "") {
+                        this._openToast('Este passo já foi Autorizado!');
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_confirmAutorizarImobilizado;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Autorização?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                    if (this.data.comentarioImobCA == "") {
+                        this.data.comentarioImobCA = "Autorizado.";
+                    }
+
+                    this.$.ajax_confirmAutorizarImobilizado.body = JSON.stringify(this.data);
+
+                },
+
+                _confirmAutorizarImobilizadoResponse: function (e) {
+                    if (this.ConfirmarAutorizarImobilizado.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " Autorizado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ProcedimentoConfirmed.eMessage);
+                    }
+                },
+                // JPM.20180618.e
+
                 //NR 20180307
                 _pedirAutorizacao: function () {
                     var ajax_request = this.$.ajax_pedirAutorizacao;
