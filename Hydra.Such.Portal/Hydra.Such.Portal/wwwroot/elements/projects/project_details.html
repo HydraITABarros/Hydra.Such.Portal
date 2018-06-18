@@ -551,7 +551,6 @@
                         }
                     },
                     _update: function () {
-                        debugger;
                         if (this._validateData()) {
                             this._executeRequest("/Projetos/UpdateProject", this.data)
                         }
@@ -582,7 +581,6 @@
 
                     //Responses Processors
                     _responseProcessor: function (data) {
-                        debugger;
                         var self = this;
 
                         if (this.data.projectNo == "" || this.data.projectNo == undefined) {
@@ -710,7 +708,6 @@
 
                     //Client Change
                     _clientChanged: function (e) {
-                        debugger;
                         if (e.detail.value != "") {
                             this.$.projects_ajax.body = JSON.stringify(e.detail.value);
                             this.$.projects_ajax.generateRequest();

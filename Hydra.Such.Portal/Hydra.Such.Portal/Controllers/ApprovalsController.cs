@@ -40,7 +40,6 @@ namespace Hydra.Such.Portal.Controllers
 
             result.ForEach(x => {
                 x.TypeText = EnumerablesFixed.ApprovalTypes.Where(y => y.Id == x.Type).FirstOrDefault().Value;
-                x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
                 switch (x.Status)
                 {
                     case 1:

@@ -28,10 +28,9 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-
         public IActionResult Administracao()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Jurídico, Enumerations.Features.Administração); //9, 18);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Administração);
             if (UPerm != null && UPerm.Read.Value)
             {
                 return View();
