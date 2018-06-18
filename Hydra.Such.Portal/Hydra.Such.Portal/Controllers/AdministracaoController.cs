@@ -1318,7 +1318,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<ProjectTypesModelView> result = DBServices.GetAll().Select(x => new ProjectTypesModelView()
+            List<ProjectTypesModelViewStr> result = DBServices.GetAll().Select(x => new ProjectTypesModelViewStr()
             {
                 Code = x.Código,
                 Description = x.Descrição
@@ -1327,7 +1327,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelView> data)
+        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelViewStr> data)
         {
             List<Serviços> results = DBServices.GetAll();
             results.RemoveAll(x => data.Any(u => u.Code == x.Código));
@@ -1338,7 +1338,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Descrição = x.Description
                 };
-                if (x.Code > 0)
+                if (x.Code != "" && x.Code !=null)
                 {
                     tpval.DataHoraModificação = DateTime.Now;
                     tpval.UtilizadorModificação = User.Identity.Name;
@@ -1472,7 +1472,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public bool CheckIfExist(string ClientNumber, int ServiceCode, bool? ServiceGroup, int param)
+        public bool CheckIfExist(string ClientNumber, string ServiceCode, bool? ServiceGroup, int param)
         {
             List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
             {

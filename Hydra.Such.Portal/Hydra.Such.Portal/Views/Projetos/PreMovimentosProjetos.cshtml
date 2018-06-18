@@ -2,5 +2,5 @@
     ViewData["Title"] = "Pré-Movimentos de projeto";
 }
 <link rel="import" href="~/elements/projects/premovproj.html">
-<x-premovproj paramprojno="@ViewBag.ProjectNo"></x-premovproj>
+<x-premovproj paramprojno="@ViewBag.ProjectNo" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-premovproj>
 

@@ -9,4 +9,10 @@ namespace Hydra.Such.Data.ViewModel.ProjectView
         public int Code { get; set; }
         public string Description { get; set; }
     }
+
+    public class ProjectTypesModelViewStr
+    {
+        public string Code { get; set; }
+        public string Description { get; set; }
+    }
 }
