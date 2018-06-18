@@ -55,6 +55,7 @@
     <DataSource Include="eSuchDS.rds" />
   </ItemGroup>
   <ItemGroup>
+    <Report Include="ExtratoCliente.rdl" />
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />
     <Report Include="RequisitionReport.rdl" />
