@@ -21,6 +21,39 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+           public static PréMovimentosProjeto GetByLine(int Line)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréMovimentosProjeto.Where(x => x.NºLinha == Line && x.Registado == false).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+          public static PréMovimentosProjeto Update(PréMovimentosProjeto ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
+                    ctx.PréMovimentosProjeto.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
         public static PréMovimentosProjeto CreatePreRegist(PréMovimentosProjeto ObjectToCreate)
         {
             try
