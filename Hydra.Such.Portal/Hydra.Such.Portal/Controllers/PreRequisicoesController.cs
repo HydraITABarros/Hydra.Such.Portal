@@ -36,18 +36,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
-            //if (UPerm != null && UPerm.Read.Value)
-            //{
-
-            //    ViewBag.UPermissions = UPerm;
-            //    return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("AccessDenied", "Error");
-            //}
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UploadURL = _config.FileUploadFolder;
@@ -64,7 +53,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult RequisicoesPendentes()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Requisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -229,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 
@@ -636,7 +625,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult RequisiçõesModeloLista(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreReqNo = id;
@@ -725,17 +714,15 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GetPendingReq([FromBody] JObject requestParams)
+        public JsonResult GetPendingReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Pending,
                 RequisitionStates.Rejected
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -758,16 +745,14 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
-        public JsonResult GetHistoryReq([FromBody] JObject requestParams)
+        public JsonResult GetHistoryReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 

@@ -174,19 +174,19 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetReqByUserAreaStatus(string userName, int areaId, RequisitionStates status)
+        public static List<Requisição> GetReqByUserAreaStatus(string userName, RequisitionStates status)
         {
-            return GetReqByUserAreaStatus(userName, areaId, new List<RequisitionStates> { status });
+            return GetReqByUserAreaStatus(userName, new List<RequisitionStates> { status });
         }
 
-        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, List<RequisitionStates> status)
+        public static List<Requisição> GetReqByUserAreaStatus(string UserName, List<RequisitionStates> status)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     var statusValues = status.Cast<int>().ToList();
-
+                    
                     return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value)).ToList();
                 }
             }
