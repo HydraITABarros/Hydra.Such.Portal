@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using System;
@@ -291,8 +292,31 @@ namespace Hydra.Such.Portal.Extensions
                 //Delete All User Approval Movements
                 DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, ApproveUser);
 
+                FolhasDeHoras FolhaHoras = DBFolhasDeHoras.GetById(ApprovalMovement.Number);
+                int NoAjudasCusto = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == FolhaHoras.NºFolhaDeHoras.ToLower() && x.TipoCusto == 2).Count();
+                int Estado = 0;
+                int nivel = 99;
+
+                if (FolhaHoras.TipoDeslocação != 2 && NoAjudasCusto == 0)
+                {
+                    Estado = 2; // 2 = Registado FINAL
+                    nivel = 99;
+                }
+                else
+                {
+                    Estado = 1; //VALIDADO
+                    if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
+                        nivel = 2; //IntegracaoAjuda
+                    if ((FolhaHoras.IntegradoEmRhkm == false || FolhaHoras.IntegradoEmRhkm == null) && FolhaHoras.Estado == Estado && FolhaHoras.TipoDeslocação == 2)
+                        nivel = 3; //IntegracaoKMS
+                }
+
+                //TESTE
+                nivel = 2;
+                //
+
                 //Get Next Level Configuration
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(ApprovalMovement.Type.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(ApprovalMovement.Type.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now, nivel);
                 ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
 
                 string itemToApproveInfo = string.Empty;
@@ -301,7 +325,7 @@ namespace Hydra.Such.Portal.Extensions
                     if (ApprovalMovement.Type.Value == 3 && !string.IsNullOrEmpty(ApprovalMovement.Number))
                         itemToApproveInfo += " - Folha de Horas " + ApprovalMovement.Number;
                 }
-                if (ApprovalConfigurations.Count > 0)
+                if (ApprovalConfigurations.Count > 0 && Estado != 2)
                 {
                     int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
                     ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
@@ -367,6 +391,11 @@ namespace Hydra.Such.Portal.Extensions
                         Email.EmailApproval = EmailApproval;
 
                         Email.SendEmail();
+
+
+                        EmailApproval.Enviado = true;
+                        EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                        DBApprovalEmails.Create(EmailApproval);
                     });
                     return new ErrorHandler()
                     {
@@ -387,7 +416,6 @@ namespace Hydra.Such.Portal.Extensions
                         Enviado = false
                     };
 
-
                     SendEmailApprovals Email = new SendEmailApprovals
                     {
                         Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
@@ -402,6 +430,10 @@ namespace Hydra.Such.Portal.Extensions
                     Email.EmailApproval = EmailApproval;
 
                     Email.SendEmail();
+
+                    EmailApproval.Enviado = true;
+                    EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                    DBApprovalEmails.Create(EmailApproval);
 
                     return new ErrorHandler()
                     {
