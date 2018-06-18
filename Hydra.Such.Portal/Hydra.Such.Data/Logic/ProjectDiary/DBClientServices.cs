@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
 {
     public class DBClientServices
     {
-        public static ServiçosCliente GetByServiceCode(int Codigo)
+        public static ServiçosCliente GetByServiceCode(string Codigo)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
             }
         }
 
-        public static bool Delete(int ServCode, string ClientCode)
+        public static bool Delete(string ServCode, string ClientCode)
         {
             try
             {

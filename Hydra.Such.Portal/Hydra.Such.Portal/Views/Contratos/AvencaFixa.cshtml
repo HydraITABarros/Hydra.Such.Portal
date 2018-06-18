@@ -75,7 +75,6 @@
         </div>
 
         <h2 class="separator">Autorizar Faturação Contratos</h2>
-
         <vaadin-grid id="avencaFixaTable" aria-label="Tabela Avença Fixa" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
@@ -84,6 +83,15 @@
                 </template>
                 <template>
                     {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden="{{checked}}">
+                <template class="header">
+                    <vaadin-grid-sorter path="situation">Situação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="situation"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.situation}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -204,18 +212,10 @@
                     {{item.registerDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="situation">Situação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="situation"></vaadin-grid-filter>
-                </template>
-                <template>
-                    {{item.situation}}
-                </template>
-            </vaadin-grid-column>
+
         </vaadin-grid>
 
-        
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -229,6 +229,10 @@
                         type: Boolean,
                         value: true
                     },
+                    checked: {
+                        type: Boolean,
+                        value: true 
+                    }
                 },
 
                 openToastSuccess: function (message) {
@@ -246,6 +250,7 @@
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
                     else {
+                        this.checked = true;
                         this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
                     }
                 },
@@ -266,6 +271,7 @@
                     if (e.returnValue == true) {
                         this.$.ajax_getall.generateRequest();
                         this.$.avencaFixaTable.clearCache();
+                        
                     }
                     else {
                         this.openToastError("Ocorreu um erro ao tentar gerar faturas.");
@@ -277,6 +283,7 @@
                     }
                     else {
                         this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
+                        this.checked = false;
                     }
                 },
                 _count: function () {
@@ -331,8 +338,7 @@
 
                 },
                 _openPending: function (param) {
-                    this.$.ajax_getpeding.generateRequest();
-                    
+                    this.$.ajax_getpeding.generateRequest();                    
                 },
                 _openInvice: function (param) {
                     this.$.ajax_getall.generateRequest();
