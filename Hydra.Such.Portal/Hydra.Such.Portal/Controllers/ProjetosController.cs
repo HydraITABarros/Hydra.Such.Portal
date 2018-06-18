@@ -953,15 +953,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
@@ -1838,15 +1838,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {

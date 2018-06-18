@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
 {
     public class DBServices
     {
-        public static Serviços GetById(int Codigo)
+        public static Serviços GetById(string Codigo)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
             }
         }
 
-        public static bool Delete(int ProfileId)
+        public static bool Delete(string ProfileId)
         {
             try
             {
