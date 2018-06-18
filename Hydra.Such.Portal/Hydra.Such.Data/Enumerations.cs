@@ -126,7 +126,8 @@ namespace Hydra.Such.Data
             RegistoRefeicoes = 46,
             [Description("Clientes")]
             Clientes = 47,
-
+            [Description("Pré-Registos")]
+            PreRegistos = 48,
             [Description("Administração Geral")]
             AdminGeral = 100,
             [Description("Administração Projetos")]

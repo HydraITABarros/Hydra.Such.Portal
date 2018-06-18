@@ -1634,14 +1634,15 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
+                    debugger;
                     if (this.$.Description.validate() &
                         //this.$.mClients.validate() &
                         //this.$.contactNo.validate() &
                         this.$.contractNo.validate() &
                         //this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
-                        this.$.mFunctionalArea.validate() &
-                        this.$.mResponsabilityCenter.validate() &
+                        //this.$.mFunctionalArea.validate() &
+                        //this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
                         this.$.txtRelatedContractNo.validate() &
                         this.$.mPaymentTerms.validate() &
@@ -1688,7 +1689,7 @@
                     return false;
                 },
                 _createNewContract: function () {
-                    window.location.href = "../DetalhesProposta/";
+                    window.location.href = "/Contratos/DetalhesProposta/";
                 },
                 _closeCustomerShipDateDlg: function () {
                     this.$.dtpCustomerShipmentDate.value = "";
