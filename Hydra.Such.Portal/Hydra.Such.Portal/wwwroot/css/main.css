@@ -213,6 +213,9 @@ ul.nav li:hover {
     background-color: #cecece;
     color: black;
 }
+paper-toast {
+    z-index: 1001 !important;
+}
 /* Custom General Classes */
 /* Main Menu */
 .item {
@@ -481,7 +484,6 @@ ul.nav li:hover {
 }
 /* Sub Menu */
 
-
 /* DialogBoxes */
 .dialgoBox {
     position: fixed;
@@ -491,6 +493,7 @@ ul.nav li:hover {
     height: 75%;
     padding: 10px;
     box-shadow: 4px 8px 14px 8px #888888;
+    /*z-index: 1000 !important;*/
 }
 
 .dialogTitle {

@@ -803,7 +803,7 @@
                                             <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
-
+                                    
                                     <vaadin-grid-column width="125px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
@@ -820,6 +820,15 @@
                                                         </paper-icon-item>
                                                     </template>
                                                 </vaadin-combo-box>
+
+                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
+                                                                items="[[CBItems]]"
+                                                                text-path="code"
+                                                                value-path="code"
+                                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>-->
+
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.code}}
@@ -1363,7 +1372,6 @@
                     this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
-
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
                             if (e.detail.xhr.status == 200) {
@@ -1379,7 +1387,7 @@
                         this.$.page_update_ajax.generateRequest();
                     }
                 },
-
+                
                 _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine) {
 
                     if (!this.Flag) {
@@ -1399,7 +1407,6 @@
                 //},
 
                 _getCDirect: function (e) {
-                    debugger;
                     if (e.detail.value != "") {
                         var locationId = e.detail.value;
                         var sel = this.CBLocations.find(x => x.id == locationId);
@@ -1408,21 +1415,18 @@
                 },
 
                 _setProjectDim: function (e) {
-                    debugger;
                     var projectNo = this.$.projectNo.value;
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
                 },
 
                 _setProjectDim2: function (e) {
-                    debugger;
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
                 },
 
                 _getProjectDimsResponse: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         if (this.ProjectDims != null) {
                             this.$._CLRegion.value = this.ProjectDims.regionCode;
@@ -1437,7 +1441,6 @@
                 },
 
                 _getProjectDimsResponse2: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         if (this.ProjectDims2 != null) {
 
@@ -1469,7 +1472,6 @@
                     }
                 },
                 _onSearchTermChanged: function (value) {
-                    debugger;
                     var id = this.$.requesitionType.value;
                     if (id != "" && id.length > 0) {
                         this.$.ajax_cbReqType.body = JSON.stringify(id);
@@ -1480,7 +1482,6 @@
                     }
                 },
                 _responseVehicleFleetBool: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
 
@@ -1608,7 +1609,6 @@
                     }
                 },
                 _loadProductsByAreaAndType: function (requisitionType) {
-                    debugger;;
                     if (this._areaid != null && requisitionType != null) {
                         this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
                         this.$.filteredProducts_ajax.generateRequest();
@@ -1708,13 +1708,12 @@
 
                 _responseDeleteProcessor: function (data) {
                     var self = this;
-
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
                         if (this.deletedData.eReasonCode == 1) {
                             setTimeout(
                                 function () {
-                                    window.location.href = "../../Compras/PreRequisicoesLista";
+                                    window.location.reload();
                                 }, 2500);
                         } else if (this.deletedData.eReasonCode == 2) {
                             this._openToastError(this.deletedData.eMessage);
@@ -1831,7 +1830,6 @@
                 },
 
                 _GridOrderChange: function (e, _selected) {
-                    debugger;
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                         var itemNo = e.model.item.projectNo;
@@ -1844,7 +1842,6 @@
 
                 _getprojectdimsResponse: function (e) {
                     if (this.ProjectDims != null) {
-                        debugger;
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                         line.regionCode = this.ProjectDims[0].regionCode;
                         line.functionalAreaCode = this.ProjectDims[0].areaCode;
@@ -2108,10 +2105,9 @@
                 },
 
                 _pendingreq: function (e) {
-                    window.location.href = "RequisicoesPendentes/";
+                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
                 },
                _CleanPreRequesitionResponse: function(e) {
-                    debugger;
                     if (this.ClPreReq.eReasonCode != null) {
                         this._openToastError(this.ClPreReq.eMessage);
                     }

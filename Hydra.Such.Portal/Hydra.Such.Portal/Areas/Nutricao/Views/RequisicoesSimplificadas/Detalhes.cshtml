@@ -40,7 +40,7 @@ else if (ViewBag.Option == "historico")
 {
     <h1 class="title">Histórico Requisição Simplificada</h1>
 }
-else if (ViewBag.Option == "resgitar")
+else if (ViewBag.Option == "registar")
 {
     <h1 class="title">Registar Requisição Simplificada</h1>
 }
@@ -968,7 +968,7 @@ else
                         this.$.contractLines_databound_ajax.body = JSON.stringify({ "RequisitionNo": this._requestno });
                     }
 
-                    if ("@ViewBag.Approval" == "resgitar") {
+                    if ("@ViewBag.Approval" == "registar") {
                         this._showLinesForm = 'none';
                         this.$.ddmarginSpaceCabe.style.display = 'none';
                     }
@@ -1278,7 +1278,7 @@ else
                     if (data.detail.status === 200) {
                         if (this.requisitions.eReasonCode == 100) {
                             this._openToast(this.requisitions.eMessage);
-                            if ("@ViewBag.Approval" == "resgitar")
+                            if ("@ViewBag.Approval" == "registar")
                                 setTimeout(
                                     function () {
                                         window.location.href = "/Nutricao/RequisicoesSimplificadas/Index/?option=" + 1;

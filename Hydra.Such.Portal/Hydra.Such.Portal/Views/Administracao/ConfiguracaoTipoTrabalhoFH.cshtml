@@ -40,8 +40,6 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<h1 class="title">Configuração Tipo Trabalho Folha de Horas</h1>
-
 <x-group-cont-product></x-group-cont-product>
 
 <dom-module id="x-group-cont-product">
@@ -136,23 +134,12 @@
                 <div class="panel-body">
 
                     <div class="row" id="configuracaoTipoTrabalho">
-                        @*<div class="col-sm-2">
-                            <vaadin-text-field id="codigo" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-text-field>
-                        </div>*@
                         <div class="col-sm-2">
-                            <vaadin-combo-box items="[[LCodeTipoTrabalho]]" id="codTipoTrabalho" item-value-path="id" item-label-path="value" label="Código - Tipo Trabalho" value="{{codTipoTrabalho}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
+                            <vaadin-text-field id="codTipoTrabalho" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" disabled="true" maxlength="30"></vaadin-text-field>
+                            <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" disabled="{{ _permissionsCreate }}" maxlength="30"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-2">
@@ -247,46 +234,6 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-
-            @*<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="criadoPor" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraCriacao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="alteradoPor" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>*@
 
             <vaadin-grid-column>
                 <template class="header">

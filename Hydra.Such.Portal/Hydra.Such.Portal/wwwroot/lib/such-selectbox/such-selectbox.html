@@ -482,6 +482,7 @@
                         _this.items.forEach(function (item) {
                             if (_this.value == item[_this['value-path']]) {
                                 _this.activeItem = item;
+                                _this.title = _this._getFieldValue(_this['text-path'], item);
                             }
                         });
                     }
@@ -559,6 +560,7 @@
                     _this.value = "";
                     _this.valueText = "";
                     _this.activeItem = null;
+                    _this.title = "";
                 }
                 _clearElement() {
                     var _this = this;

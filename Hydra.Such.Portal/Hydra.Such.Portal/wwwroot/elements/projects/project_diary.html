@@ -253,7 +253,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"  
                                     items="[[RegionData]]"
                                     text-path="value"
                                     value-path="id"
@@ -261,7 +261,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" 
                                     items="[[FunctionalAreaCodeData]]"
                                     text-path="value"
                                     value-path="id"
@@ -271,7 +271,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}" 
                                     items="[[ResponsabilityCenterData]]"
                                     text-path="value"
                                     value-path="id"
@@ -1126,10 +1126,10 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" disabled="{{ disabledProjectNo }}"></vaadin-text-field>
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" ></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
                                     items="[[CBResourceCode]]"
                                       on-value-changed="_projectChange"
                                     text-path="id"
@@ -1139,11 +1139,11 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" disabled="{{disabledProjectNo}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateDlg"   on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}" ></vaadin-date-picker>
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" disabled="{{disabledProjectNo}}" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
                         <template>
                             <table width="550px">
                                 <tr>
@@ -1159,7 +1159,7 @@
 
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <paper-button class="btnRemove"on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
 
         </paper-dialog>
@@ -1509,12 +1509,23 @@
                 },
 
                 _createmovprojResponse: function (e) {
-                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
                         this.$.projectMovementTable.selectedItems = [];
                         this.$.projectMovementTable.selectedItem = [];
+                        this.$.projectSourceDlg.value = "";
+                        this.$.projectSourceDlg.valueText = "";
+                        this.$.ProjDiaryPriceDlg.value = "";
+                        this.$.DocIdDlg.value = "";
+                        this.$.idDateDlg.value = "";
+                        this.$.ResourcesDlg.value = "";
+                        this.$.ResourcesDlg.valueText = "";
+
+                        if (this.disabledProjectNo === false) {
+                            this.$.projectTargetDlg.value = "";
+                            this.$.projectTargetDlg.valueText = "";
+                        }
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                         if (this.result.eReasonCode === 1)
@@ -1615,13 +1626,38 @@
                     }
 
                 },
+                _Close_Dialog: function (e) {
+                    this.$.projectSourceDlg.value = "";
+                    this.$.projectSourceDlg.valueText = "";
+                    this.$.ProjDiaryPriceDlg.value = "";
+                    this.$.DocIdDlg.value = "";
+                    this.$.idDateDlg.value = "";
+                    this.$.ResourcesDlg.value = "";
+                    this.$.ResourcesDlg.valueText = "";
 
+                    if (this.disabledProjectNo === false) {
+                        this.$.projectTargetDlg.value = "";
+                        this.$.projectTargetDlg.valueText = "";
+                    }
+                },
                 _closedialog: function (e) {
+                    this.$.projectSourceDlg.value = "";
+                    this.$.projectSourceDlg.valueText = "";
+                    this.$.ProjDiaryPriceDlg.value = "";
+                    this.$.DocIdDlg.value = "";
+                    this.$.idDateDlg.value = "";
+                    this.$.ResourcesDlg.value = "";
+                    this.$.ResourcesDlg.valueText = "";
+
+                    if (this.disabledProjectNo === false) {
+                        this.$.projectTargetDlg.value = "";
+                        this.$.projectTargetDlg.valueText = "";
+                    }
+                    this.$.projectMovementTable.selectedItems = [];
+                    this.$.projectMovementTable.selectedItem = [];
                     this.$.grid_databound_ajax.generateRequest();
                 },
-
-                _projectChange: function (e) {
-                    debugger;
+                _projectChange: function (e) {         
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1669,7 +1705,6 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
-
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
@@ -1688,7 +1723,7 @@
                 },
                 _updateRegisterResponse: function (e) {
                     if (this.data == null || this.data.length <= 0) {
-                        this.openToastError("Não existe linhas de Diário para Registar.");
+                        this.openToastError("Não existem linhas de Diário para Registar.");
                     } else {
 
                         if (e.detail.status === 200) {
@@ -1728,9 +1763,6 @@
 
                 },
                 _dlgNext: function () {
-                    debugger;
-                    
-                    
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();

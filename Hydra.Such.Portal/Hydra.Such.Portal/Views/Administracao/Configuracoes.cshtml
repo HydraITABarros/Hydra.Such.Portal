@@ -19,14 +19,6 @@
 
 <link rel="import" href="/elements/comboboxs/NumerationsList.html">
 
-<h1 class="title">Configurações</h1>
-@*<paper-tabs selected="0" fit-container no-slide autoselect autoselect-delay="0">
-    <paper-tab>Geral</paper-tab>
-    <paper-tab>Numeração</paper-tab>
-</paper-tabs>
-<iron-pages flex selected="0">
-    <div>1</div>*@
-
     <div>
         <x-configurations></x-configurations>
         <dom-module id="x-configurations">
@@ -159,8 +151,10 @@
                             </div>
                         </iron-pages>
                         <div class="marginSpace" style="width: 500px;">
-                            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                            </template>
                         </div>
                     </form>
                 </iron-form>
@@ -177,6 +171,10 @@
                             selected: {
                                 type: Number,
                                 value: 0
+                            },
+                            _permissions: {
+                                type: Array,
+                                value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
                             },
                         },
                         openToast: function (message) {

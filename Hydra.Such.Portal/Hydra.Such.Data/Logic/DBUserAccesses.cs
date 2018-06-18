@@ -11,18 +11,17 @@ namespace Hydra.Such.Data.Logic
     public class DBUserAccesses
     {
         #region CRUD
-        public static AcessosUtilizador GetById(string IdUtilizador, int Área, int Funcionalidade)
+        public static AcessosUtilizador GetById(string IdUtilizador, int Funcionalidade)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosUtilizador.Where(x => x.IdUtilizador == IdUtilizador && x.Área == Área && x.Funcionalidade == Funcionalidade).FirstOrDefault();
+                    return ctx.AcessosUtilizador.Where(x => x.IdUtilizador == IdUtilizador && x.Funcionalidade == Funcionalidade).FirstOrDefault();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -145,9 +144,37 @@ namespace Hydra.Such.Data.Logic
 
         public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Areas area, Features feature)
         {
+            //TODO: Remover area e depois eliminar método
             try
             {
                 return GetByUserAreaFunctionality(userId, (int)area, (int)feature);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, Features feature)
+        {
+            try
+            {
+                return GetByUserAreaFunctionality(userId, (int)feature);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static UserAccessesViewModel GetByUserAreaFunctionality(string userId, List<Features> features)
+        {
+            try
+            {
+                var items = features.Select(x => (int)x).ToList();
+                return GetByUserAreaFunctionality(userId, items);
             }
             catch (Exception ex)
             {
@@ -160,6 +187,7 @@ namespace Hydra.Such.Data.Logic
         {
             try
             {
+                //TODO: Remover area
                 using (var ctx = new SuchDBContext())
                 {
                     ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
@@ -178,7 +206,8 @@ namespace Hydra.Such.Data.Logic
                     }
                     else
                     {
-                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Área == AreaId && x.Funcionalidade == FeatureId).FirstOrDefault());
+                        //return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Área == AreaId && x.Funcionalidade == FeatureId).FirstOrDefault());
+                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Funcionalidade == FeatureId).FirstOrDefault());
                     }
                 }
             }
@@ -187,6 +216,87 @@ namespace Hydra.Such.Data.Logic
 
                 return null;
             }
+        }
+
+        private static UserAccessesViewModel GetByUserAreaFunctionality(string userId, int featureId)
+        {
+            return GetByUserAreaFunctionality(userId, new List<int>() { featureId });
+            //try
+            //{
+            //    //TODO: Remover area
+            //    using (var ctx = new SuchDBContext())
+            //    {
+            //        ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
+            //        if (CUser.Administrador)
+            //        {
+            //            return new UserAccessesViewModel()
+            //            {
+            //                IdUser = UserId,
+            //                Feature = FeatureId,
+            //                Create = true,
+            //                Read = true,
+            //                Update = true,
+            //                Delete = true
+            //            };
+            //        }
+            //        else
+            //        {
+            //            return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Funcionalidade == FeatureId).FirstOrDefault());
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    return null;
+            //}
+        }
+
+        private static UserAccessesViewModel GetByUserAreaFunctionality(string UserId, List<int> features)
+        {
+            UserAccessesViewModel userAccess = new UserAccessesViewModel()
+            {
+                IdUser = UserId,
+                Feature = 0,
+                Create = false,
+                Read = false,
+                Update = false,
+                Delete = false
+            };
+
+            try
+            {
+                //TODO: Remover area
+                using (var ctx = new SuchDBContext())
+                {
+                    ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
+                    if (CUser.Administrador)
+                    {
+                        userAccess.Feature = features.FirstOrDefault();
+                        userAccess.Create = true;
+                        userAccess.Read = true;
+                        userAccess.Update = true;
+                        userAccess.Delete = true;
+                    }
+                    else
+                    {
+                        var userAccessess = ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => features.Contains(x.Funcionalidade)).ToList();
+                        if (userAccessess.Count > 0)
+                        {
+                            userAccess = ParseToViewModel(userAccessess.FirstOrDefault());
+                            userAccess.Create = userAccessess.Any(x => x.Inserção.Value);
+                            userAccess.Read = userAccessess.Any(x => x.Leitura.Value);
+                            userAccess.Update = userAccessess.Any(x => x.Modificação.Value);
+                            userAccess.Delete = userAccessess.Any(x => x.Eliminação.Value);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return userAccess;
         }
 
         public static UserAccessesViewModel ParseToViewModel(AcessosUtilizador x)
@@ -206,7 +316,7 @@ namespace Hydra.Such.Data.Logic
                 return new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    Area = (int)x.Área,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -214,7 +324,7 @@ namespace Hydra.Such.Data.Logic
                     Delete = x.Eliminação
                 };
             }
-            
+
         }
     }
 }

@@ -44,7 +44,9 @@
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\reports\" />
+    <Folder Include="wwwroot\Upload\" />
   </ItemGroup>
 
   <ItemGroup>

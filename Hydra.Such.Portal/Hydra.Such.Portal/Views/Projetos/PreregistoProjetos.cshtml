@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Pré-Registo";
+}
+
+
+
+<link rel="import" href="~/elements/projects/pre_registproject.html">
+
+<x-pre_registproject paramprojno="@ViewBag.ProjectNo" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pre_registproject>

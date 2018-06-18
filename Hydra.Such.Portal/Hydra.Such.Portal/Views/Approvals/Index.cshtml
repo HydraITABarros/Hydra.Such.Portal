@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Aprovações - eSuch";
+    ViewData["Title"] = "Pedidos de Aprovação";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -15,8 +15,6 @@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-<h1 class="title">Pedidos de aprovação</h1>
 
 <x-approvals></x-approvals>
 <dom-module id="x-approvals">
@@ -61,15 +59,6 @@
                 </template>
                 <template>
                     {{item.typeText}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="areaText">Área</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="areaText" />
-                </template>
-                <template>
-                    {{item.areaText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="150px">
@@ -145,8 +134,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>

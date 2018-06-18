@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Acordo de Preços - Administração - eSuch";
+    ViewData["Title"] = "Acordo de Preços";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -45,8 +45,6 @@
 <!--SUCH-->
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-
-<h1 class="title">Acordo de Preços</h1>
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -433,13 +431,12 @@
                                                        headers="{'Accept': 'application/json'}"
                                                        max-files="1"
                                                        accept=".xlsx"
-                                                       timeout=30000
-                                                       max-file-size="3000000">
-                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel... (com tamanho máximo de 3MB)</span>
+                                                       timeout=3000000>
+                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
                                         </vaadin-upload>
                                     </div>
                                     <div class="col-sm-2">
-                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Linhas_Template.xlsx" target="_blank">Descarregar Modelo</a>
+                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>
                                         <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
                                     </div>
                                 </div>
@@ -452,7 +449,7 @@
                                                 <vaadin-grid-filter path="codeTexto" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}" ></vaadin-text-field>
+                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -805,13 +802,14 @@
             DeleteValue = false;
         }
 
-        //window.addEventListener('WebComponentsReady', function () {
-        //    var upload = document.querySelector('vaadin-upload#UploadRequest');
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
 
-        //    upload.addEventListener('file-reject', function (event) {
-        //        window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
-        //    });
-        //});
+            upload.addEventListener('file-reject', function (event) {
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+                //window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady',
             function () {

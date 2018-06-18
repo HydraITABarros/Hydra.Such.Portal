@@ -1,41 +1,32 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Cartões e Apólices";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*textfield*@
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-
-
-@*combobox*@
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
-@*toast*@
 <link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
-@*layout*@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-@*mixin*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*button*@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*ironform*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
 
-<h1 class="title">Cartões e Apólices</h1>
 <x-group-cont-product></x-group-cont-product>
+
 <dom-module id="x-group-cont-product">
     <template>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -57,6 +48,21 @@
 
             paper-input {
                 max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
             }
         </style>
         @*POPULATE GRID*@
@@ -99,53 +105,50 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row" id="modelosCreate">
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="tipoCartoesEApolices" items="[[LtipoCartoesEApolices]]" item-value-path="id" item-label-path="value" required value="{{tipoCartoesEApolices}}" label="Tipo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px">
+                                        <tr>
+                                            <td width="100%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
+                        <div class="col-lg-3">
+                            <vaadin-text-field id="numero" value="{{numero}}" label="Numero" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
 
-        <div class="row" id="modelosCreate">
-            <div class="col-lg-3">
-                <vaadin-combo-box id="tipoCartoesEApolices" items="[[LtipoCartoesEApolices]]" item-value-path="id" item-label-path="value" required value="{{tipoCartoesEApolices}}" label="Tipo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px">
-                            <tr>
-                                <td width="100%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-lg-3">
+                            <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
 
-            <div class="col-lg-3">
-                <vaadin-text-field id="numero" value="{{numero}}" label="Numero" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
+                        <div class="col-lg-3">
+                            <vaadin-date-picker id="dataInicio" value="{{dataInicio}}" label="Data Início" name="dataInicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
+                        <div class="clearfix"></div>
 
-            <div class="col-lg-3">
-                <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
+                        <div class="col-lg-3">
+                            <vaadin-date-picker id="dataFim" value="{{dataFim}}" la label="Data Fim" name="dataFim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                        </div>
 
-            <div class="col-lg-3">
-                <vaadin-date-picker id="dataInicio" value="{{dataInicio}}" label="Data Início" name="dataInicio" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-            </div>
-            <div class="clearfix"></div>
+                        <div class="col-lg-3">
+                            <vaadin-text-field id="fornecedor" value="{{fornecedor}}" label="Fornecedor" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
 
-            <div class="col-lg-3">
-                <vaadin-date-picker id="dataFim" value="{{dataFim}}" la label="Data Fim" name="dataFim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-            </div>
-
-            <div class="col-lg-3">
-                <vaadin-text-field id="fornecedor" value="{{fornecedor}}" label="Fornecedor" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-
-
-        </div>
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
         <br />
 
         <vaadin-grid id="gridModelos" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">

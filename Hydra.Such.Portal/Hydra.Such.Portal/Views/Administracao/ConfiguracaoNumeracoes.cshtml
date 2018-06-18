@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuracao Numericoes";
+    ViewData["Title"] = "Configuração de Numerações";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,8 +24,6 @@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<h1 class="title">Configuração de Numerações</h1>
-
 <x-confignumerations></x-confignumerations>
 <dom-module id="x-confignumerations">
     <template>
@@ -42,16 +40,18 @@
                 font: inherit;
             }
         </style>
-        <h2 class="separator">Novo Registo</h2>
-        <div class="row">
-            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
-            <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
-        </div>
 
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <h2 class="separator">Novo Registo</h2>
+            <div class="row">
+                <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+                <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+                <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+                <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
+            </div>
+        </template>
         <h2 class="separator">Numerações Ativas</h2>
 
         <iron-ajax url="/Administracao/GetListConfigNumerations"
@@ -128,19 +128,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
-                </template>
-            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
 
-        <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="marginSpace">
+                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -150,12 +154,16 @@
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-confignumerations',
-                //properties: {
-                //    flag: {
-                //        type: Number,
-                //        value: 0
-                //    }
-                //},
+                properties: {
+                    //flag: {
+                    //    type: Number,
+                    //    value: 0
+                    //}
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
+                },
 
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;

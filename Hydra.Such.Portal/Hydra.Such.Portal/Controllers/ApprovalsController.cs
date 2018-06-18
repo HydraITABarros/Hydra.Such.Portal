@@ -40,7 +40,6 @@ namespace Hydra.Such.Portal.Controllers
 
             result.ForEach(x => {
                 x.TypeText = EnumerablesFixed.ApprovalTypes.Where(y => y.Id == x.Type).FirstOrDefault().Value;
-                x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
                 switch (x.Status)
                 {
                     case 1:
@@ -56,10 +55,19 @@ namespace Hydra.Such.Portal.Controllers
                 switch (x.Type)
                 {
                     case 1:
-                        x.NumberLink = "/Compras/GestaoRequisicoes/DetalhesReqAprovada/"+x.Number;
+                        x.NumberLink = "/GestaoRequisicoes/DetalhesReqAprovada/"+x.Number;
                         break;
                     case 2:
-                        x.NumberLink = "/Compras/Nutricao/ModelosReqSimplificada";
+                        x.NumberLink = "/ModelosReqSimplificada";
+                        break;
+                    case 3:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
+                    case 4:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
+                    case 5:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
                         break;
                 }
             });

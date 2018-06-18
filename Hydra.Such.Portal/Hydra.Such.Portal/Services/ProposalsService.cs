@@ -235,6 +235,7 @@ namespace Hydra.Such.Portal.Services
                 contract.ContractType = (int)ContractType.Proposal;
                 contract.VersionNo = 1;
                 contract.Status = 1;
+                contract.RelatedContract = contractId;
                 contract.CreateDate = DateTime.Now.ToString();
                 contract.CreateUser = changedByUserName;
                 contract.UpdateDate = string.Empty;

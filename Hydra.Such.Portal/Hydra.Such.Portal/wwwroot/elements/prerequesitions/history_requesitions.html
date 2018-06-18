@@ -131,7 +131,7 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>
+        <!--<paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>-->
         <br> <br/>
         <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
@@ -218,79 +218,6 @@
             </vaadin-grid-column>-->
         </vaadin-grid>
 
-        <paper-dialog id="dialog" class="dialgoBox">
-            <h2>Linhas Requisição</h2>
-            <vaadin-grid aria-label="HistoryReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="requestNo" />
-                    </template>
-                    <template>
-                        {{item.requestNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="supplierProductCode">Cód. Produto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="supplierProductCode" />
-                    </template>
-                    <template>
-                        {{item.supplierProductCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="description" />
-                    </template>
-                    <template>
-                        {{item.description}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="quantityRequired">Quantidade Requerida</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="quantityRequired" />
-                    </template>
-                    <template>
-                        {{item.quantityRequired}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº Consulta Mercado</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="queryCreatedMarketNo" />
-                    </template>
-                    <template>
-                        {{item.queryCreatedMarketNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="createdOrderNo" />
-                    </template>
-                    <template>
-                        {{item.createdOrderNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="150px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="projectNo" />
-                    </template>
-                    <template>
-                        {{item.projectNo}}
-                    </template>
-                </vaadin-grid-column>
-
-            </vaadin-grid>
-            <div class="buttons">
-                <paper-button dialog-dismiss>Cancelar</paper-button>
-            </div>
-        </paper-dialog>
-
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -311,13 +238,6 @@
                         value: 0
                     }
                 },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        this.$.dialog.open();
-                        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
-                        this.$.grid_datareqlines_ajax.generateRequest();
-                    }
-                },
                 _responsehead: function (data) {
 
                     _clFormatState(this.result.state);
@@ -336,10 +256,10 @@
                 _pendingreq: function (e) {
                     window.location.href = "../RequisicoesPendentes/";
                 },
-                _GoToReq: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
-                    window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
+                    }
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;

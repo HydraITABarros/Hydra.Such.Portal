@@ -36,10 +36,28 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = User.Identity.Name;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -200,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 
@@ -607,7 +625,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult RequisiçõesModeloLista(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreReqNo = id;
@@ -696,17 +714,15 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GetPendingReq([FromBody] JObject requestParams)
+        public JsonResult GetPendingReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Pending,
                 RequisitionStates.Rejected
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -729,16 +745,14 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
-        public JsonResult GetHistoryReq([FromBody] JObject requestParams)
+        public JsonResult GetHistoryReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -946,7 +960,7 @@ namespace Hydra.Such.Portal.Controllers
                                 createdReqIds += RequisitionNo + "; ";
                                 var totalValue = req.GetTotalValue();
                                 //Start Approval
-                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
                                 if (result.eReasonCode != 100)
                                 {
                                     data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
@@ -1014,7 +1028,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (String.IsNullOrEmpty(Error))
                 {
-                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
@@ -1029,7 +1043,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
                 if (ApprovalMovResult.eReasonCode != 100)
                 {
                     ApprovalMovResult.eReasonCode = 2;

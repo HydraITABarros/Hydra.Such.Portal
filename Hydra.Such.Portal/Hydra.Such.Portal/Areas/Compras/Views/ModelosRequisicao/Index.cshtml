@@ -35,7 +35,7 @@
         <link rel="stylesheet" href="/css/main.css" />
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/Compras/ModelosRequisicao/GetRequisitionTemplates" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ModelosRequisicao/GetRequisitionTemplates" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -169,7 +169,7 @@
             },
             _rowSelected: function (item) {
                 if (item != null) {
-                    window.location.href = "/Compras/ModelosRequisicao/Detalhes/" + item.requisitionNo;
+                    window.location.href = "/ModelosRequisicao/Detalhes/" + item.requisitionNo;
                 }
             },
             _parseregion: function (param) {
@@ -221,7 +221,7 @@
             },
             _create: function (item) {
                 if (item != null) {
-                    window.location.href = "/Compras/ModelosRequisicao/Detalhes/";
+                    window.location.href = "/ModelosRequisicao/Detalhes/";
                 }
             },
         });

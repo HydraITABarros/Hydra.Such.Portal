@@ -24,6 +24,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         //public DateTime? DataDeExpiração { get; set; }
         public string NextInvoiceDate { get; set; }
         public string RegisterDate { get; set; }
+        public string Situation { get; set; } 
         public int? Status { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Utilizadores - Administração - eSuch";
+    ViewData["Title"] = "Configuração de Utilizadores";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,8 +14,6 @@
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-
-<h1 class="title">Configuração de Utilizadores</h1>
 
 <x-users></x-users>
 <dom-module id="x-users">
@@ -33,10 +31,12 @@
                    id="grid_databound"
                    content-type="application/json"></iron-ajax>
 
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
+        </template>
 
-        <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-        </div>
         <vaadin-grid aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="15%">
                 <template class="header">
@@ -58,6 +58,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Mecanográfico</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoPorDefeito">Região</vaadin-grid-sorter>
@@ -88,7 +98,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="7%">
                 <template class="header">
                     <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
@@ -102,7 +112,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="8%">
                 <template class="header">
                     <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
                 </template>
@@ -127,7 +137,11 @@
                     _filterActive: {
                         type: Boolean,
                         value:true
-                    }
+                    },
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {

@@ -118,7 +118,6 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   auto
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
@@ -139,7 +138,7 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
+        <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{CloseRequisition}}"
                    id="closereq_ajax"
                    on-response="_closeRequisitionResponse"
@@ -147,8 +146,10 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <paper-button class="btn-default" on-tap="_goHistory"> Histórico</paper-button>
-        <br></br>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
+        </div>
+
         <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -374,7 +375,7 @@
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                    window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
                 },
                 _ToApproved: function (e) {
                     if (e != null) {
@@ -383,7 +384,7 @@
                     }
                 },
                 _goHistory: function(e) {
-                    window.location.href = "../RequisicoesHistorico/";
+                    window.location.href = "/GestaoRequisicoes/Arquivadas"; 
                 },
                 _closeRequisition: function (e) {
                     if (e.model.item.state == 5 | e.model.item.state == 5) {

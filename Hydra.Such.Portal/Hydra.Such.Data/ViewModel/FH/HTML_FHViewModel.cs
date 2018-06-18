@@ -12,5 +12,6 @@ namespace Hydra.Such.Data.ViewModel.FH
         public int validacao { get; set; }
         public int integracaoajuda { get; set; }
         public int integracaokms { get; set; }
+        public int historico { get; set; }
     }
 }

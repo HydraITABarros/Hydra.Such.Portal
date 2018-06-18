@@ -24,6 +24,7 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <dom-module id="x-contractdetails">
     <template>
         <!-- STYLES -->
@@ -84,7 +85,7 @@
 
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -165,6 +166,22 @@
                    on-response="_createProposalResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/CreateInvoiceHeaderFromContract"
+                   last-response="{{CreateInvoiceResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="createInvoice_ajax"
+                   on-response="_ResponseProcessorInvoice"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/ExitSalesHeader"
+                   last-response="{{ExitSalesHeader}}"
+                   method="post"
+                   handle-as="json"
+                   id="ExitSalesHeader_ajax"
+                   on-response="_createInvoiceResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/UpdateContractPrices"
                    last-response="{{UpdatePricesResponse}}"
                    method="post"
@@ -173,39 +190,36 @@
                    on-response="_updatePricesResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/CreateProjectContract"
+                   method="post"
+                   handle-as="json"
+                   id="createProject_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetContractsProposalById"
+                   last-response="{{propContract}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_getProposalResponse"
+                   id="get_proposalscontract_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
+                    <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
+                    <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
+                <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
             </div>
         </template>
 
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-lg-12">
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>
-                <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-                <paper-button raised id="btnContractProjects" class="" on-tap="_redirectToContractProjects"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Projetos</paper-button>
-                <paper-button raised id="btnContractProposals" class="" on-tap="_redirectToContractProposals"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consultar Propostas</paper-button>
 
-            </div>
-        </div>
-        <template is="dom-if" if="{{ _showAreas }}">
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
-                        <template>
-                            <b>[[item.value]]</b>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-            </div>
-        </template>
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
@@ -242,11 +256,14 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <b>[[item.value]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
+                                                            items="[[CBFeeUnits]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -263,7 +280,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Àrea Funcional" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Àrea Funcional" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <table width="500px">
                                                         <tr>
@@ -276,7 +293,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <table width="520px">
                                                         <tr>
@@ -306,7 +323,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Inicio 1º Contrato" id="mStartDateFirstContract" name="startDateFirstContract" value="{{data.startDateFirstContract}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Inicio 1º Contrato" id="mStartDateFirstContract" name="startDateFirstContract" value="{{data.startDateFirstContract}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.firstContractReference}}" id="mFirstContractReference" name="firstContractReference" label="Referência 1º Contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -528,7 +545,7 @@
                                                         </template>
                                                         <!-- VAADIN GRID  Requisições Cliente -->
                                                         <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="startDate" />
@@ -538,7 +555,7 @@
                                                                     <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="endDate" />
@@ -548,7 +565,7 @@
                                                                     <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="clientRequisitionNo" />
@@ -557,7 +574,7 @@
                                                                     <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="requisitionDate" />
@@ -567,7 +584,7 @@
                                                                     <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="promiseNo" />
@@ -577,7 +594,7 @@
 
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
@@ -595,7 +612,7 @@
                                                                     </vaadin-combo-box>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="projectNo" />
@@ -612,7 +629,7 @@
                                                                     </vaadin-combo-box>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="lastInvoiceDate" />
@@ -622,7 +639,7 @@
                                                                     <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                 </template>
                                                                 <template>
@@ -732,9 +749,7 @@
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3">
-                                                                <vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>
-                                                            </div>
+                                                            
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{dataNav.nBilledInvoices}}" id="_IRnBilledInvoices" name="_IRnBilledInvoices" label="Nº Faturas Registadas" disabled> </vaadin-text-field>
                                                             </div>
@@ -751,6 +766,14 @@
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled> </vaadin-text-field>
+                                                            </div>
+                                        
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <such-textarea rows="5" value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </such-textarea>
+
+                                                                <!--<vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>-->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -789,8 +812,13 @@
                                                                         </template>
                                                                     </vaadin-combo-box>
                                                                 </div>
-                                                                <div class="col-md-3 ">
-                                                                    <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                           
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6 ">
+                                                                    <such-textarea rows="5" value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </such-textarea>
+
+                                                                    <!--<vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>-->
                                                                 </div>
                                                                 <div class="col-lg-1">
                                                                     <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
@@ -800,7 +828,7 @@
 
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
@@ -818,7 +846,7 @@
 
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="projectNo" />
@@ -835,7 +863,7 @@
                                                                     </vaadin-combo-box>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceText" />
@@ -844,7 +872,7 @@
                                                                     <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                 </template>
                                                                 <template>
@@ -1036,7 +1064,7 @@
                         </paper-collapse-group>
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="130px">
+                                <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
@@ -1058,7 +1086,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="code" />
@@ -1080,7 +1108,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="description" />
@@ -1094,7 +1122,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="120px">
+                                <vaadin-grid-column width="120px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="quantity" />
@@ -1109,7 +1137,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="170px">
+                                <vaadin-grid-column width="170px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeMeasureUnit">Cód. Uni. Medida</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeMeasureUnit" />
@@ -1131,7 +1159,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="unitPrice" />
@@ -1145,7 +1173,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="lineDiscount">% Desconto Linha</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="lineDiscount" />
@@ -1159,7 +1187,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="120px">
+                                <vaadin-grid-column width="120px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
@@ -1170,7 +1198,7 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeRegion" />
@@ -1194,7 +1222,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="190px">
+                                <vaadin-grid-column width="190px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeFunctionalArea" />
@@ -1217,7 +1245,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -1240,7 +1268,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
+                                <vaadin-grid-column width="100px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="frequency">Periocidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="frequency" />
@@ -1254,7 +1282,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="160px">
+                                <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="interventionHours">Nº Horas Intervenção</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="interventionHours" />
@@ -1268,7 +1296,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="totalTechinicians">Nº Técnicos</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="totalTechinicians" />
@@ -1282,7 +1310,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionStartDate">Data Inicio Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionStartDate" />
@@ -1297,7 +1325,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
@@ -1312,7 +1340,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px">
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="responsibleNo">Nº Responsável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="responsibleNo" />
@@ -1335,7 +1363,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px">
+                                <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeServiceCliente">Cód. Serviço Cliente</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeServiceCliente" />
@@ -1357,7 +1385,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="125px">
+                                <vaadin-grid-column width="125px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="invoiceGroup" />
@@ -1379,7 +1407,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
+                                <vaadin-grid-column width="100px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="createContract">Cria Contrato</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="createContract" />
@@ -1390,7 +1418,7 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column>
+                                <vaadin-grid-column resizable>
                                     <template class="header">
                                     </template>
                                     <template>
@@ -1428,6 +1456,24 @@
             </div>
         </paper-dialog>
 
+        <paper-dialog id="dlgCreateInvoice" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroupBox" name="_IRGridInvoiceGroupBox" item-value-path="id" item-label-path="value" label="Grupo Fatura">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_createNewInvoice">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCreateInvoiceDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+        
         <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
             <div class="row break_clear">
                 <div class="col-md-4 ">
@@ -1466,17 +1512,16 @@
                         type: Boolean,
                         value: true
                     },
+                    _viewMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Arquivos" }, { value: 2, description: "Projetos" }, { value: 3, description: "Propostas" }],
+                    },
                     _lockFields: {
                         type: Boolean,
                         value: false
                     },
                     _permissions: {
                         type: Array
-                    },
-                    _areaid: {
-                        type: Number,
-                        notify: true,
-                        value: 0
                     },
                     _contractno: {
                         type: String,
@@ -1664,10 +1709,6 @@
                         type: Boolean,
                         value: false
                     },
-                    _showAreas: {
-                        type: Boolean,
-                        value: false
-                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1679,8 +1720,6 @@
                         this._lockFields = true;
                         this._contractStatusLocked = true;
                     }
-
-                    this._showAreas = this._areaid == 4;
 
                 },
                 _ConvertDecimals: function (e) {
@@ -1698,8 +1737,9 @@
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
-                        this.$.mFeeUnits.validate() &
+                        //this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
+                        this.$.mStartDateFirstContract.validate() &
                         this.$.mFunctionalArea.validate() &
                         this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
@@ -1726,7 +1766,11 @@
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate()) {
-
+                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            this.$.mFeeUnits.validate();
+                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
@@ -1777,28 +1821,37 @@
                     });
                 },
                 _archive: function () {
+                    
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende arquivar o contrato " + this.data.contractNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                    var currentTime = new Date();
+                    var date = new Date(this.data.dueDate);
+
+                    if (date > currentTime || date == "Invalid Date") {
+                        this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
+                    }
+                    else {
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende arquivar o contrato " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.url = "/Contratos/ArchiveContract";
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
                             }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.url = "/Contratos/ArchiveContract";
-                                ajax_request.body = JSON.stringify(_dataContract);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //Responses Processors
@@ -1807,7 +1860,6 @@
 
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                         this.data.filed = 0
                     } else {
@@ -1865,10 +1917,18 @@
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             this._openToast(this.data.eMessage);
                         }
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.");
+                        else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
+                            if (this.data.eReasonCode == 1) {
+                                this._openToast("Enviado para Histórico com sucesso.");
+                                location.reload();
+                            }
+                        }
+                        else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
                     }
                 },
+                
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -1995,15 +2055,25 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openContractArchive: function () {
-                    window.location.href = "../Contratos?archived=1&contractno=" + this.data.contractNo;
+                    window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
                 },
                 _redirectToContractProjects: function () {
                     window.location.href = "../ProjetosContrato/" + this.data.contractNo;
                 },
-                
-                _redirectToContractProposals: function() {
-                    window.location.href = "../PropostasContrato/" + this.data.contractNo;
+                _redirectToContractProposals: function () {
+                    this.$.get_proposalscontract_ajax.body = JSON.stringify(this.data.contractNo);
+                    this.$.get_proposalscontract_ajax.generateRequest();
                 },
+                
+                _getProposalResponse: function (e) {
+                    if (this.propContract == true) {
+                        window.location.href = "../PropostasContrato/" + this.data.contractNo;
+                    } else {
+                        this._openToastError("Este contrato não contém Propostas.");
+                    }
+
+                },
+
                 //#################################
                 //        CONTRACT LINES
                 //#################################
@@ -2088,7 +2158,105 @@
                         }
                     }
                 },
+                _ResponseProcessorInvoice: function (data) {
+                    if (this.CreateInvoiceResponse == true) {
+                        this._openToast("Fatura Criada com Sucesso!");
+                    }
+                    else {
+                        this._openToastError("Erro ao criar a fatura!");
+                    }
 
+                },
+                _createInvoiceResponseProcessor: function (data) {
+                    var verifica = false;
+                    var ListLines = [];
+                    var Invoice;
+                    var ajax_request = this.$.createInvoice_ajax;
+                    var t1 = this.$._IRGridInvoiceGroupBox.value;
+                    var t2 = this.dataLines.lines;
+                    var t3 = this.data;
+                    if (data.detail.status === 200) {
+                        if (this.ExitSalesHeader.eReasonCode == 2)
+                            this._openToastError(this.ExitSalesHeader.eMessage);
+                        else if (this.ExitSalesHeader.eReasonCode == 1) {
+                          
+                            bootbox.confirm({
+                                message: this.ExitSalesHeader.eMessage,
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                     if (result) {
+                                        if (t1 == "") {
+                                            ListLines = t2;
+                                        }
+                                        else {
+                                            for (var lines in t2) {
+                                                if (t2[lines].invoiceGroup == t1) {
+                                                    ListLines.push(t2[lines]);
+                                                }
+                                            }
+                                        }
+                                        Invoice = {
+                                            "Contrato": t3,
+                                            "LinhasContrato": ListLines,
+                                            "GrupoFatura": t1
+                                        };
+                                        ajax_request.body = JSON.stringify(Invoice);
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        
+                            
+                        }
+                        else {
+                            bootbox.confirm({
+                                message: "Deseja criar a(s) fatura(s) para este contrato?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        if (t1 == "") {
+                                            ListLines = t2;
+                                        }
+                                        else {
+                                            for (var lines in t2) {
+                                                if (t2[lines].invoiceGroup == t1) {
+                                                    ListLines.push(t2[lines]);
+                                                }
+                                            }
+                                        }
+                                        Invoice = {
+                                            "Contrato": t3,
+                                            "LinhasContrato": ListLines,
+                                            "GrupoFatura": t1
+                                        };
+                                        ajax_request.body = JSON.stringify(Invoice);
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    return true;
+                },
+                
                 _clContractLineTypeChange: function (e) {
                     this.$.contractlinecodes_ajax.body = JSON.stringify(e.detail.value);
                     this.$.contractlinecodes_ajax.generateRequest();
@@ -2240,7 +2408,12 @@
                         this._createProposal();
                     }
                 },
-           
+                _createNewInvoice: function (param) {
+                    this.$.dlgCreateInvoice.close();
+                    var contract = this.$.contractNo.value;
+                    this.$.ExitSalesHeader_ajax.body = JSON.stringify({ "Contrato": contract });
+                    this.$.ExitSalesHeader_ajax.generateRequest();
+               },
                 _createProposal: function () {
                     var contractId = this.data.contractNo;
                     var version = this.data.versionNo;
@@ -2254,6 +2427,16 @@
                 },
                 _openNewproposalDialog: function (param) {
                     this.$.dlgCreateProposal.open();
+                },
+                _openNewinvoiceDialog: function (param) {
+                    if (this._validateData()) {
+                        if (this._ValidateInvoice()){
+                            this.$.dlgCreateInvoice.open();
+                        }
+                    }
+                },
+                _closeCreateInvoiceDlg: function (param) {
+                    this.$.dlgCreateInvoice.close();
                 },
                 _closeCreateProposalDlg: function () {
                     this.$.dlgCreateProposal.close();
@@ -2282,6 +2465,42 @@
                 _openUpdatePricesDlg: function () {
                     this.$.dlgUpdatePrices.open();
                 },
+
+                _sendToHistory: function () {
+                    debugger;
+                    var _dataContract = this.data;
+                    var ajax_request = this.$.page_databound_ajax;
+                    var currentTime = new Date();
+                    var date = new Date(this.data.dueDate);
+
+                    if (date > currentTime || date == "Invalid Date") {
+                        this._openToastError("Contrato ainda não expirou ou não tem data de expiração.");
+                    }
+                    else {
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende enviar para histórico o contrato " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.url = "/Contratos/SendContractToHistory";
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+
+                },
+
                 _validateUpdatePricesDlgInput: function () {
                     if (this.$.dpStartDate.validate() &
                         this.$.dpDueDate.validate() &
@@ -2293,6 +2512,45 @@
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
+                },
+                _ValidateInvoice: function () {
+                    var messageErro = "";
+                    if (this.$.mStatus.value != 4 && this.$.mStatus.value !=7) {
+                        messageErro= "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
+                    }
+                    if (this.$.mBillingTypes.value != 1 && this.$.mBillingTypes.value != 4) {
+                        messageErro += "Para criar a fatura, o Tipo de Faturação deverá ser 'Mensal' ou 'Mensal + Consumo' \n";
+                    }
+                    if (this.$.mChangeStatus.value != 2) {
+                        messageErro += "O estado de alteração tem que estar Bloqueado \n";
+                    }
+                    if (this.$.mInvoicePeriods.value == null) {
+                        messageErro += "O periodo de faturação tem de estar preenchido \n";
+                    }
+                    if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value =="") {
+                        messageErro += "Os termos de pagamento de estar preenchido \n";
+                    }
+                    if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value!=null)
+                        messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
+
+                    if (this.$.dueDate.value <= this.$.contractEndDate.value && this.$.dueDate.value != null)
+                        messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
+
+                    if (this.dataLines != null) {
+                        var exist = false;
+                        for (var lines in this.dataLines.lines) {
+                            if (this.dataLines.lines[lines].billable == true)
+                                exist = true;
+                    }
+                    if (exist == false)
+                        messageErro += "Não existe linhas de faturação no contrato";
+                    }
+                    if (messageErro != "")
+                        this._openToastError(messageErro);
+                    else
+                        return true;
+                    return false;
+
                 },
                 _updatePrices: function () {
                     if (this._validateUpdatePricesDlgInput()) {
@@ -2325,6 +2583,31 @@
                             }, 1000);
                     } else {
                         this._openToastError(this.UpdatePricesResponse.eMessage);
+                    }
+                },
+                _createProject: function () {
+                    var contractNo = this.data.contractNo;
+                    var versionNo = this.data.versionNo;
+                    window.location.href = "/Contratos/CreateProjectContract/" + contractNo + "?versionNo=" + versionNo;
+                },
+
+                _viewMenuItemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this._openContractArchive();
+                            break;
+                        case 2:
+                            this._redirectToContractProjects();
+                            break;
+                        case 3:
+                            this._redirectToContractProposals();
+                            break;
                     }
                 },
             });

@@ -70,6 +70,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetProposalsFetchUnitDB()
+        {
+            List<DDMessage> result = DBFetcUnit.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetAreas()
         {
@@ -142,7 +153,6 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Id,
                 value = x.Descrição
             }).ToList();
-
             return Json(result);
         }
 
@@ -1727,6 +1737,22 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get_AP_TipoPreco()
         {
             List<EnumData> result = EnumerablesFixed.AP_TipoPreco;
+            return Json(result);
+        }
+
+        //CLIENTE
+        [HttpPost]
+        public JsonResult GetCustomerTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.Tipo_Cliente;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCustomerNatures()
+        {
+            List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
             return Json(result);
         }
     }

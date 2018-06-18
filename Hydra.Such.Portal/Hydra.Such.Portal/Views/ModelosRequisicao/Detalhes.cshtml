@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "Detalhes de Modelo de Requisição";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/requisitions/requisitionmodeldetails.html">
+
+<x-requisitionmodeldetails _requisitionid="@ViewBag.RequisitionId"
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UserPermissions))'>
+</x-requisitionmodeldetails>

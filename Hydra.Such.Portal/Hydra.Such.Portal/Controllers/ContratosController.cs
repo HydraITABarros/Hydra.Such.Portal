@@ -15,6 +15,10 @@ using Newtonsoft.Json.Linq;
 using Hydra.Such.Portal.Services;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Data;
+using Newtonsoft.Json;
+using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -29,15 +33,16 @@ namespace Hydra.Such.Portal.Controllers
             _configws = NAVWSConfigs.Value;
         }
 
-
+        #region Contratos
         public IActionResult Index(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
 
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Archived = archived == null ? 0 : 1;
                 ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -65,6 +70,34 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
+        public IActionResult DetalhesContrato(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                //if (cContract != null && (cContract.Arquivado == true || cContract.EstadoAlteração == 2))
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult AvencaFixa()
         {
             return View();
@@ -72,24 +105,22 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetListContractsByArea([FromBody] JObject requestParams)
         {
-            int AreaId = int.Parse(requestParams["AreaId"].ToString());
             int Archived = int.Parse(requestParams["Archived"].ToString());
             string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
 
             List<Contratos> ContractsList = null;
 
-            if (Archived == 0 || ContractNo == "")
+            if ((Archived == 0 || ContractNo == "") && (Historic == 0))
             {
-                if (AreaId == 4)
-                {
-                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Contract);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                }
-                else
-                {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Contract);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                }
+                ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else if (Historic == 1)
+            {
+                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
             }
             else
             {
@@ -119,7 +150,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        #region Details
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] ContractViewModel data)
         {
@@ -246,6 +276,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ContractNo != null)
                     {
                         data.Filed = false;
+                        data.History = false;
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
@@ -440,7 +471,7 @@ namespace Hydra.Such.Portal.Controllers
                         result.eReasonCode = 1;
                         result.eMessage = "Contrato eliminado com sucesso.";
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -460,60 +491,6 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsService serv = new ContractsService(User.Identity.Name);
                 data = serv.ArchiveContract(data);
-                //Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-
-                //if (cContract != null)
-                //{
-                //    try
-                //    {
-                //        //Create new contract and update old
-                //        cContract.UtilizadorModificação = User.Identity.Name;
-                //        cContract.Arquivado = true;
-                //        DBContracts.Update(cContract);
-
-                //        cContract.NºVersão = cContract.NºVersão + 1;
-                //        cContract.UtilizadorCriação = User.Identity.Name;
-                //        cContract.UtilizadorModificação = "";
-                //        if(cContract.TipoContrato == 1)
-                //        {
-                //            cContract.NºProposta = "";
-                //        }else if(cContract.TipoContrato == 2 )
-                //        {
-                //            cContract.NºContrato = "";
-                //        }
-                        
-                //        cContract.DataHoraModificação = null;
-                //        cContract.Arquivado = false;
-
-                //        if (data.ActionCode.HasValue && data.ActionCode.Value == 2)
-                //        {
-                //            cContract.Estado = 1;
-                //            cContract.DataHoraModificação = DateTime.Now;
-                //            cContract.UtilizadorModificação = User.Identity.Name;
-                //        }
-
-                //        DBContracts.Create(cContract);
-
-                //        //Duplicate Contract Lines
-                //        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
-
-                //        ContractLines.ForEach(x =>
-                //        {
-                //            x.NºVersão = cContract.NºVersão;
-                //            DBContractLines.Create(x);
-                //        });
-
-                //        data.VersionNo = cContract.NºVersão;
-                //        data.eReasonCode = 1;
-                //        data.eMessage = "Arquivado com sucesso.";
-                //        return Json(data);
-                //    }
-                //    catch (Exception)
-                //    {
-                //        data.eReasonCode = 2;
-                //        data.eMessage = "Ocorreu um erro ao arquivar.";
-                //    }
-                //}
             }
             else
             {
@@ -523,68 +500,44 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-        //[HttpPost]
-        //public JsonResult UpdateProposalContract([FromBody] ContractViewModel data)
-        //{
+        [HttpPost]
+        public JsonResult SendContractToHistory([FromBody] ContractViewModel data)
+        {
 
-        //    if (data != null)
-        //    {
-        //        Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+            if (data != null)
+            {
+                ContractsService serv = new ContractsService(User.Identity.Name);
+                data = serv.ArchiveContract(data);
+                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
-        //        if (cContract != null)
-        //        {
-        //            try
-        //            {
+                if (cContract != null)
+                {
+                    try
+                    {
+                        //Create new contract and update old
+                        cContract.UtilizadorModificação = User.Identity.Name;
+                        cContract.Arquivado = true;
+                        cContract.Historico = true;
+                        DBContracts.Update(cContract);
 
-        //                //Create new contract and update old
-        //                cContract.UtilizadorModificação = User.Identity.Name;
-        //                cContract.Arquivado = true;
-        //                DBContracts.Update(cContract);
-
-        //                cContract.NºVersão = cContract.NºVersão + 1;
-        //                cContract.UtilizadorCriação = User.Identity.Name;
-        //                cContract.UtilizadorModificação = "";
-        //                if (cContract.TipoContrato == 1)
-        //                {
-        //                    cContract.NºProposta = "";
-        //                }
-        //                else if (cContract.TipoContrato == 2)
-        //                {
-        //                    cContract.NºContrato = "";
-        //                }
-
-        //                cContract.DataHoraModificação = null;
-        //                cContract.Arquivado = false;
-        //                DBContracts.Create(cContract);
-
-        //                //Duplicate Contract Lines
-        //                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
-        //                ContractLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
-        //                ContractLines.ForEach(x =>
-        //                {
-        //                    x.NºVersão = cContract.NºVersão;
-        //                    DBContractLines.Create(x);
-        //                });
-
-        //                data.VersionNo = cContract.NºVersão;
-        //                data.eReasonCode = 1;
-        //                data.eMessage = "Contrato atualizado com sucesso.";
-        //                return Json(data);
-        //            }
-        //            catch (Exception)
-        //            {
-        //                data.eReasonCode = 2;
-        //                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        data.eReasonCode = 2;
-        //        data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
-        //    }
-        //    return Json(data);
-        //}
+                        data.eReasonCode = 1;
+                        data.eMessage = "Arquivado com sucesso.";
+                        return Json(data);
+                    }
+                    catch (Exception)
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao arquivar.";
+                    }
+                }
+            }
+            else
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao arquivar.";
+            }
+            return Json(data);
+        }
 
         [HttpPost]
         public JsonResult UpdateProposalContract([FromBody] JObject requestParams)
@@ -675,7 +628,7 @@ namespace Hydra.Such.Portal.Controllers
                             proposal.eReasonCode = 2;
                             proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
                         }
-                        
+
                         return Json(proposal);
                     }
                     catch (Exception)
@@ -699,7 +652,7 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 NAVContractDetailsViewModel result = DBNAV2017ContractDetails.GetContractByNo(data.ContractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-                
+
                 return Json(result);
             }
             return Json(false);
@@ -811,45 +764,125 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedContract);
         }
+
+        [HttpPost]
+        public JsonResult RemoveFromHistoric([FromBody] ContractViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (data.ContractNo != null)
+                    {
+                        //Contratos cContract = DBContracts.ParseToDB(data);
+                        Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+
+
+                        if (ContratoDB != null)
+                        {
+                            ContratoDB.Historico = false;
+                            ContratoDB.Arquivado = false;
+                            ContratoDB = DBContracts.Update(ContratoDB);
+                        }
+                        data.eReasonCode = 1;
+                        data.eMessage = "Contrato atualizado com sucesso.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+            }
+            return Json(data);
+        }
+
+
+        public IActionResult CreateProjectContract(string id, string versionNo = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos ContratoDB = DBContracts.GetByIdAndVersion(id, int.Parse(versionNo));
+
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CodeRegion = ContratoDB.CódigoRegião;
+                ViewBag.FuncArea = ContratoDB.CódigoÁreaFuncional;
+                ViewBag.RespCode = ContratoDB.CódigoCentroResponsabilidade;
+                ViewBag.CodClient = ContratoDB.NºCliente;
+                ViewBag.ContractNo = id;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         #endregion
 
         #region Oportunidades
 
-        public JsonResult GetListOportunitiesByArea([FromBody] JObject requestParams)
+        public IActionResult Oportunidades(int? archived, string contractNo)
         {
-            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Oportunidades);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesOportunidade(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Oportunidades);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetListOportunities([FromBody] JObject requestParams)
+        {
             int Archived = int.Parse(requestParams["Archived"].ToString());
             string ContractNo = requestParams["ContractNo"].ToString();
 
             List<Contratos> ContractsList = null;
 
-            if (Archived == 0 )
+            if (Archived == 0)
             {
-                if (AreaId == 4)
-                {
-                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Oportunity);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                    //ContractsList.RemoveAll(x => x.Estado == 9);
-                }
-                else
-                {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Oportunity);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                    //ContractsList.RemoveAll(x => x.Estado == 9);
-                }
+                ContractsList = DBContracts.GetAllByContractType(ContractType.Oportunity);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
             {
-                if (AreaId == 4)
-                {
-                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Oportunity);
-                    //ContractsList.RemoveAll(x => x.Estado != 9);
-                }
-                else
-                {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Oportunity);
-                    //ContractsList.RemoveAll(x => x.Estado != 9);
-                }
+                ContractsList = DBContracts.GetAllByContractType(ContractType.Oportunity);
             }
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -878,7 +911,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetAllAvencaFixa()
         {
-            List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAll();
+            List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAllInvoice();
             List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
 
             foreach (var item in contractList)
@@ -912,13 +945,50 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetPedingAvencaFixa()
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetPedding();
+            List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
+
+            foreach (var item in contractList)
+            {
+                //Estado Pendente
+                
+                    String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+                    // Valor Fatura
+                    List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
+                    Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+
+                    result.Add(new FaturacaoContratosViewModel
+                    {
+                        ContractNo = item.NºContrato,
+                        Description = item.Descrição,
+                        ClientNo = item.NºCliente,
+                        ClientName = cliName,
+                        InvoiceValue = sum,
+                        NumberOfInvoices = item.NºDeFaturasAEmitir,
+                        InvoiceTotal = item.TotalAFaturar,
+                        ContractValue = item.ValorDoContrato,
+                        ValueToInvoice = item.ValorPorFaturar,
+                        BilledValue = item.ValorFaturado,
+                        RegionCode = item.CódigoRegião,
+                        Situation= item.Situação,
+                        FunctionalAreaCode = item.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
+                    });
+                
+            }
+            return Json(result);
+        }
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
 
-            List<Contratos> contractList = DBContracts.GetAllAvencaFixa();
+            List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
                 List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
@@ -928,9 +998,10 @@ namespace Hydra.Such.Portal.Controllers
                 int InvoiceGroupDuplicate = -1;
                 DateTime current = DateTime.Now;
                 DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
-
+                string Problema;
                 foreach (var line in contractLinesList)
                 {
+                  
                     Decimal lineQuantity = 1;
 
                     if (ContractNoDuplicate != line.NºContrato || InvoiceGroupDuplicate != line.GrupoFatura)
@@ -973,7 +1044,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.DataInicial != null)
                             {
-                                nextInvoice = item.ÚltimaDataFatura.Value;
+                                //nextInvoice = item.ÚltimaDataFatura.Value;
                                 lastInvoice = item.DataInicial.Value.Month;
                             }
                         }
@@ -1022,6 +1093,74 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
+                        //Validações para registar situações
+                        Problema = "";
+                        if (item.TipoFaturação != 1 && item.TipoFaturação != 4)
+                        {
+                            Problema += "Tipo de fatura mal defenido!";
+                        }
+
+                        if (item.Estado != 4)
+                        {
+                            Problema += "Contrato Não Assinado!";
+                        }
+                        if (item.EstadoAlteração ==1)
+                        {
+                            Problema += "Contrato Aberto!";
+                        }
+                        
+                        if (item.PróximaDataFatura < item.DataInicial || item.PróximaDataFatura >item.DataExpiração)
+                        {
+                            Problema += "Contrato Não Vigente!";
+                        }
+                        if (item.CódigoRegião =="" || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
+                        {
+                            Problema += "Dimensões Bloqueadas!";
+                        }
+                        if (item.CódTermosPagamento == "" || item.CondiçõesPagamento == 0 || item.EnvioAEndereço == "" )
+                        {
+                            Problema += "Falta Código Termos Pagamento!";
+                        }
+                        if (item.CondiçõesPagamento == 0 )
+                        {
+                            Problema += "Falta Codições Pagamento!";
+                        }
+                        if (item.EnvioAEndereço == "")
+                        {
+                            Problema += "Falta Morada!";
+                        }
+                        
+                        bool verifica = false;
+                        if (item.NºComprimissoObrigatório == false || item.NºComprimissoObrigatório== null)
+                        {
+                           foreach(RequisiçõesClienteContrato req in DBContractClientRequisition.GetByContract(item.NºContrato))
+                            {
+                                if(req.GrupoFatura==line.GrupoFatura && req.DataInícioCompromisso==item.DataInícioContrato && req.DataFimCompromisso == item.DataFimContrato)
+                                {
+                                    if (req.NºCompromisso == "" || req.NºCompromisso == null)
+                                        verifica = true;                                      
+                                }
+                            }
+                        }
+                        if(verifica==true)
+                            Problema += "Falta Nº Compromisso";
+
+                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, 2);
+                        if (result != null)
+                        {
+                           Problema += "Fatura no Pre-Registo";
+                        }
+
+                        Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
+                        postNAV.Wait();
+                        if (postNAV.IsCompletedSuccessfully == true && postNAV.Result!=null)
+                        {
+                           if(postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                            {
+                                Problema += "Cliente Bloqueado";
+                            }
+                        }
+
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
@@ -1038,6 +1177,7 @@ namespace Hydra.Such.Portal.Controllers
                             DataPróximaFatura = nextInvoice,
                             DataDeRegisto = lastDay,
                             Estado = item.Estado,
+                            Situação=Problema,
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name
                         };
@@ -1049,6 +1189,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             return Json(false);
                         }
+                    }
+
+                    if (lineQuantity == 0)
+                    {
+                        Problema = "Sem Valor!";
                     }
 
                     //Create Contract Lines
@@ -1091,38 +1236,41 @@ namespace Hydra.Such.Portal.Controllers
 
             foreach (var item in contractList)
             {
-                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
-                InvoiceHeader.Wait();
-
-                if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null)
+                if (item.Situação == "" || item.Situação == null)
                 {
-                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
-                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
+                    Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                    InvoiceHeader.Wait();
 
-                    if (itemList.Count > 0)
+                    if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null)
                     {
-                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-                        InvoiceLines.Wait();
+                        String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                        List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
 
-                        if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
+                        if (itemList.Count > 0)
                         {
-                            Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-                            postNAV.Wait();
+                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                            InvoiceLines.Wait();
 
-                            if (!postNAV.IsCompletedSuccessfully || postNAV == null)
+                            if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
+                            {
+                                Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                                postNAV.Wait();
+
+                                if (!postNAV.IsCompletedSuccessfully || postNAV == null)
+                                {
+                                    return Json(false);
+                                }
+                            }
+                            else
                             {
                                 return Json(false);
                             }
                         }
-                        else
-                        {
-                            return Json(false);
-                        }
                     }
-                }
-                else
-                {
-                    return Json(false);
+                    else
+                    {
+                        return Json(false);
+                    }
                 }
             }
             // Delete Lines
@@ -1132,10 +1280,53 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Propostas
+        public IActionResult Propostas(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesProposta(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
         public JsonResult GetListContractsProposals([FromBody] JObject requestParams)
         {
-            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+            //int AreaId = int.Parse(requestParams["AreaId"].ToString());
             int Archived = int.Parse(requestParams["Archived"].ToString());
             string ContractNo = requestParams["ContractNo"].ToString();
             int showLevel = int.Parse(requestParams["showLevel"].ToString());
@@ -1144,13 +1335,10 @@ namespace Hydra.Such.Portal.Controllers
 
             if (ContractNo == "")
             {
-                if (AreaId == 4)
-                    ContractsList = DBContracts.GetAllByContractType((int)ContractType.Proposal);
-                else
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, (int)ContractType.Proposal);
+                ContractsList = DBContracts.GetAllByContractType(ContractType.Proposal);
 
-                if(Archived == 0)
-                    ContractsList.RemoveAll(x => x.Arquivado.Value);
+                if (Archived == 0)
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 else
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && !x.Arquivado.Value);
             }
@@ -1185,16 +1373,16 @@ namespace Hydra.Such.Portal.Controllers
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
             List<EnumData> status = EnumerablesFixed.ProposalsStatus;
-            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault();
+            result.ForEach(x => {
+                x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault();
                 //x.CodeRegion = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, x.CodeRegion).FirstOrDefault().Name ?? "";
                 //x.CodeFunctionalArea = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, x.CodeFunctionalArea).FirstOrDefault().Name ?? "";
                 //x.CodeResponsabilityCenter = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, x.CodeResponsabilityCenter).FirstOrDefault().Name ?? "";
-                
+
             });
-            
+
             return Json(result);
         }
-
 
         public JsonResult GetListContractsProposalsById([FromBody] JObject requestParams)
         {
@@ -1208,13 +1396,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-
-        public JsonResult GetListContractsAllProposals([FromBody] JObject requestParams)
+        public JsonResult GetContractsProposalById([FromBody] string ContractNo)
         {
-            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+            Contratos ContractsList = null;
+            bool haveProposals = false;
 
-            List<Contratos> ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
-            
+            ContractsList = DBContracts.GetContractProposalsNo(ContractNo);
+
+            if (ContractsList != null)
+            {
+                haveProposals = true;
+            }
+
+            return Json(haveProposals);
+        }
+
+        public JsonResult GetListContractsAllProposals()
+        {
+            List<Contratos> ContractsList = DBContracts.GetAllByContractType(ContractType.Proposal);
+
             List<ContractViewModel> result = new List<ContractViewModel>();
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
@@ -1228,7 +1428,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             int contractVersion = int.Parse(requestParams["Version"].ToString());
             string contractNo = requestParams["ContractNo"].ToString();
-            
+
 
             ContractViewModel result = DBContracts.ParseToViewModel(DBContracts.GetByIdAndVersion(contractNo, contractVersion), _config.NAVDatabaseName, _config.NAVCompanyName);
 
@@ -1263,7 +1463,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(percentage))
                 decimal.TryParse(requestParams["percentageToApllyInLines"].ToString(), out percentageToApllyInLines);
-            
+
             ErrorHandler result = new ErrorHandler();
             try
             {
@@ -1280,6 +1480,238 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+        public IActionResult PropostasContrato(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.ContractNo = string.IsNullOrEmpty(id) ? string.Empty : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Invoice
+        [HttpPost]
+        public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams)
+        {
+            bool registado = false;
+            if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
+            {
+                string obs = "";
+                ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
+                List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
+                string groupInvoice = requestParams["GrupoFatura"].ToString();
+                List<int> groups = new List<int>();
+
+                if (groupInvoice != null && groupInvoice != "")
+                {
+                    
+                    foreach(ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
+                    {
+                        if (texts.InvoiceGroup == Convert.ToInt32(groupInvoice))
+                        {
+                            obs += texts.InvoiceText;
+                        }
+                    }
+                    //CREATE SALES HEADER
+                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                    PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                    PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
+                    if (Contract.SentData != null && Contract.SentData != "")
+                        PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
+                    if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
+                        PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
+                    PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                    PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                    PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                    if (Contract.DueDate != null && Contract.DueDate != "")
+                        PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
+                    PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+                    //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                    PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                    PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                    if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                        PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+                    string mes = DateTime.Now.ToString("MMMM");
+                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+                    PreInvoiceToCreate.Observacoes = obs;
+                    PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                    PreInvoiceToCreate.FacturaCAF = true;
+                    PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                    if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
+                        PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
+
+                    PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                    PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                    PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                    obs = "";
+                    Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                    InvoiceHeader.Wait();
+                    if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result!=null)
+                    { 
+                        string cod = InvoiceHeader.Result.WSPreInvoice.No;
+                        List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
+                        foreach (ContractLineViewModel line in ContractLines)
+                        {
+                            //CREATE SALES LINES
+                            if (line.Billable == true)
+                            {
+                                LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
+                                PreInvoiceLinesToCreate.Tipo = "1";
+                                PreInvoiceLinesToCreate.Descrição = line.Description;
+                                PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
+                                PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
+                                PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
+                                PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
+                                PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
+                                PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
+                                PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
+                                LinhasFaturacao.Add(PreInvoiceLinesToCreate);
+                            }
+                        }
+                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                        InvoiceLines.Wait();
+                        if (InvoiceLines.IsCompletedSuccessfully)
+                        {
+                            registado = true;
+                        }
+                    }
+
+                }
+                else
+                {
+                    foreach (ContractLineViewModel line in ContractLines)
+                    {
+                        if (groups.Find(x => x == line.InvoiceGroup) == 0)
+                        {
+                            groups.Add(line.InvoiceGroup ?? 0);
+                        }
+                    }
+
+                    foreach (int group in groups)
+                    {
+                        //CREATE SALES HEADER
+                        foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
+                        {
+                            if (texts.InvoiceGroup == Convert.ToInt32(group))
+                            {
+                                obs += texts.InvoiceText;
+                            }
+                        }
+                        NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                        PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                        PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
+                        if (Contract.SentData != null && Contract.SentData != "")
+                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
+                        if(Contract.ContractStartDate!="" && Contract.ContractEndDate !="")
+                           PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
+                        PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                        PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                        PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                        if (Contract.DueDate != null && Contract.DueDate != "")
+                            PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
+                        PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+                        //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                        PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                        PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                        if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                            PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+                        string mes = DateTime.Now.ToString("MMMM");
+                        PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+                        PreInvoiceToCreate.Observacoes = obs;
+                        PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                        PreInvoiceToCreate.FacturaCAF = true;
+                        PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                        if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
+                            PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
+                       
+                        PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                        PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                        PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                        obs = "";
+                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                        InvoiceHeader.Wait();
+                        if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
+                        {
+                            string cod = InvoiceHeader.Result.WSPreInvoice.No;
+                            List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
+                            foreach (ContractLineViewModel line in ContractLines)
+                            {
+                                //CREATE SALES LINES
+                                if (line.Billable == true && group == line.InvoiceGroup)
+                                {
+                                    LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
+                                    PreInvoiceLinesToCreate.Tipo = "1";
+                                    PreInvoiceLinesToCreate.Descrição = line.Description;
+                                    PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
+                                    PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
+                                    PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
+                                    PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
+                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
+                                    PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
+                                    PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
+                                    PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
+                                    LinhasFaturacao.Add(PreInvoiceLinesToCreate);
+                                }
+                            }
+                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                            InvoiceLines.Wait();
+                            if (InvoiceLines.IsCompletedSuccessfully)
+                            {
+                                registado = true;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+
+            return Json(registado);
+        }
+
+        public JsonResult ExitSalesHeader([FromBody] JObject requestParams)
+        {
+
+            string Contract = requestParams["Contrato"].ToString();
+            NAVSalesHeaderViewModel result = new NAVSalesHeaderViewModel();
+            result.eReasonCode = 0;
+            result.eMessage = "";
+            try
+            {
+                result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, Contract, 2);
+
+            }
+            catch
+            {
+
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao pesquisar Vendas";
+
+            }
+
+            if (result != null)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Existem facturas não registadas ligadas a este contrato. Deseja continuar?";
+            }
+            else if (result == null)
+            {
+                result = new NAVSalesHeaderViewModel();
+                result.eReasonCode = 0;
+                result.eMessage = "";
+            }
+            return Json(result);
+        }
+
         #endregion
 
         public JsonResult ParseContractType([FromBody] JObject requestParams)
@@ -1347,7 +1779,7 @@ namespace Hydra.Such.Portal.Controllers
                                     foreach (var contractlinestocreate in ContractLines)
                                     {
                                         LinhasContratos newline = ParseToNewModel(contractlinestocreate);
-                                        
+
                                         newline.TipoContrato = contractType;
                                         newline.NºContrato = newNumeration;
                                         newline.NºVersão = int.Parse(versionNo);
@@ -1371,7 +1803,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 return null;
                             }
-                           
+
                             //Update Last Numeration Used
                             ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
                             ConfigNumerations.ÚltimoNºUsado = newNumeration;
@@ -1385,7 +1817,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
 
-                                
+
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºOportunidade = contractNo;
                                 thisHeader.NºProposta = newNumeration;
@@ -1406,7 +1838,7 @@ namespace Hydra.Such.Portal.Controllers
                                     foreach (var contractlinestocreate in ContractLines)
                                     {
                                         LinhasContratos newline = ParseToNewModel(contractlinestocreate);
-                                        
+
                                         newline.NºLinha = 0;
                                         newline.TipoContrato = contractType;
                                         newline.NºContrato = newNumeration;
@@ -1419,7 +1851,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 return null;
                             }
-                            
+
                             //Update Last Numeration Used
                             ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
                             ConfigNumerations.ÚltimoNºUsado = newNumeration;
@@ -1494,10 +1926,26 @@ namespace Hydra.Such.Portal.Controllers
             }
             return ProjectNumerationConfigurationId;
         }
-        
+
         private static int GetMonthDiff(DateTime NewDate, DateTime OldDate)
         {
             return ((NewDate.Year - OldDate.Year) * 12) + NewDate.Month - OldDate.Month;
+        }
+
+
+        public IActionResult ProjetosContrato(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.ContractId = string.IsNullOrEmpty(id) ? string.Empty : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
     }
 }

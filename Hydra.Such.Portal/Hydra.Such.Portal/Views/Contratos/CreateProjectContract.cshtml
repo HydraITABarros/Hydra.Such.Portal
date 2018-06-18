@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "CreateProjectContract";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="/elements/projects/project_details.html">
+
+<x-projectdetails _areaid="1" _coderegion="@ViewBag.CodeRegion" _funcarea="@ViewBag.FuncArea" _respcode="@ViewBag.RespCode" _codeclient="@ViewBag.CodClient" _contractno="@ViewBag.ContractNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectdetails>
+

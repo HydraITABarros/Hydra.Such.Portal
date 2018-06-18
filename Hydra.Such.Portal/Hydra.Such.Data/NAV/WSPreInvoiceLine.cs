@@ -115,6 +115,7 @@ namespace Hydra.Such.Data.NAV
                    Unit_PriceSpecified = true,
                    //Amount = x.ValorVenda.Value,
                    //AmountSpecified = true,
+                   Contract_No=x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
@@ -163,6 +164,7 @@ namespace Hydra.Such.Data.NAV
                    Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0,
                    Line_No = counter += 10000,
                    Line_NoSpecified = true
+                   
                    //Job_Journal_Line_No_Portal = x.LineNo,
                    //Job_Journal_Line_No_PortalSpecified = true,
 

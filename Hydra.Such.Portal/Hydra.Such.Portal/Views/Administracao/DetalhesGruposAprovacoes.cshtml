@@ -1,10 +1,8 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Grupos Aprovacões - eSuch";
+    ViewData["Title"] = "Detalhes de Grupo de Aprovação";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 
 @*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -31,9 +29,6 @@
 
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
-
-
-<h1 class="title">@ViewData["Title"]</h1>
 
 <x-detailsgroupapprovals _requestno="@ViewBag.IDGroupApproval" ></x-detailsgroupapprovals>
 
@@ -145,7 +140,7 @@
                                         <template is="dom-if" if="{{ !_permissionsDelete }}">
                                             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteGroup"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                         </template>
-                                        <template is="dom-if" if="{{ !_permissionsDelete }}">
+                                        <template is="dom-if" if="{{ !_permissionsCreate }}">
                                             <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
                                         </template>
                                     </template>
@@ -162,23 +157,25 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Utilizadores</div>
                         <div class="panel-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <vaadin-combo-box items="[[UsersList]]" id="ddUser" item-value-path="id" item-label-path="value" value="{{ddUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
-                                        <template>
-                                            <table width="350px">
-                                                <tr>
-                                                    <td width="30%"> <b>[[item.value]]</b></td>
-                                                    <td width="70%">[[item.id]]</td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
+                            <template is="dom-if" if="{{ !_permissionsUpdate }}">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <vaadin-combo-box items="[[UsersList]]" id="ddUser" item-value-path="id" item-label-path="value" value="{{ddUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
+                                            <template>
+                                                <table width="350px">
+                                                    <tr>
+                                                        <td width="30%"> <b>[[item.value]]</b></td>
+                                                        <td width="70%">[[item.id]]</td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-lg-2 alignPoga">
+                                        <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroupDetails" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                                    </div>
                                 </div>
-                                <div class="col-lg-2 alignPoga">
-                                    <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroupDetails" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-                                </div>
-                            </div>
+                            </template>
                             <br />
 
                             <vaadin-grid id="gridDetailsGroupApprovals" aria-label="gridDetailsGroupApprovals" items="[[result]]" class="grid" multi-sort="true">
@@ -191,15 +188,17 @@
                                         <vaadin-text-field value="{{item.approvalUser}}" disabled></vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="10%" resizable>
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{ !_permissionsUpdate }}">
+                                    <vaadin-grid-column width="10%" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsUpdate}}">Eliminar</paper-button>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
                             </vaadin-grid>
                         </div>
                     </div>
