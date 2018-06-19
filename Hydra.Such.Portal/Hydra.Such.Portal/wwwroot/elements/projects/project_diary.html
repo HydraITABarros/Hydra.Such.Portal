@@ -697,9 +697,9 @@
             <vaadin-grid-column width="75px" resizable>
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
-                    <vaadin-grid-filter path="billable" value="[[_filterActive]]">
+                    <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
                         <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    </vaadin-grid-filter>-->
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
@@ -1126,7 +1126,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" value="{{DocDlg}}" ></vaadin-text-field>
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento"  on-value-changed="_projectChange" value="{{DocDlg}}" ></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
@@ -1382,7 +1382,11 @@
                         this.$.page_databound_ajax.generateRequest();
 
                         this.$.projectList.value = this.paramprojno;
+                        this.$.projectList.valueText = this.paramprojno;
                         this.disabledProjectNo = true;
+
+                        this.$.projectTargetDlg.value = this.paramprojno;
+                        this.$.projectTargetDlg.valueText = this.paramprojno;
 
                         this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
@@ -1609,6 +1613,7 @@
                     }
                 },
                 _confirm: function (selectedItem, selectedItems) {
+                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         var destinationProject = this.$.projectTargetDlg.value;
@@ -1658,6 +1663,7 @@
                     this.$.grid_databound_ajax.generateRequest();
                 },
                 _projectChange: function (e) {         
+                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1744,6 +1750,7 @@
                 },
 
                 _getMovements: function () {
+                    debugger;
                     //Request
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);

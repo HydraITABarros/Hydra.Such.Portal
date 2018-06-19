@@ -1508,7 +1508,10 @@ namespace Hydra.Such.Portal.Controllers
             }
             if (!string.IsNullOrEmpty(Date))
             {
-                dp = dp.Where(x => x.Date == Date).ToList();
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
             }
 
             return Json(dp);
