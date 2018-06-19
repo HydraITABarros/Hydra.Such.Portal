@@ -1160,7 +1160,21 @@ namespace Hydra.Such.Portal.Controllers
                                 Problema += "Cliente Bloqueado";
                             }
                         }
+                        decimal valFatura= invoicePeriod - creditPeriod;
+                        decimal ValorPorFatura = (contractVal - (invoicePeriod - creditPeriod));
 
+                        if (valFatura > ValorPorFatura)
+                        {
+                            Problema += "Valor Não Disponível";
+                        }
+                        if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
+                        {
+                            List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+                            RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.PróximaDataFatura && x.DataFimCompromisso >= item.PróximaDataFatura);
+                            if(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "") {
+                                Problema += "Falta Nota Encomenda";
+                            }
+                        }
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
@@ -1171,8 +1185,8 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = item.CódigoÁreaFuncional,
                             CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
                             ValorDoContrato = contractVal,
-                            ValorFaturado = (invoicePeriod - creditPeriod),
-                            ValorPorFaturar = (contractVal - (invoicePeriod - creditPeriod)),
+                            ValorFaturado = valFatura,
+                            ValorPorFaturar = ValorPorFatura,
                             NºDeFaturasAEmitir = invoiceNumber,
                             DataPróximaFatura = nextInvoice,
                             DataDeRegisto = lastDay,
