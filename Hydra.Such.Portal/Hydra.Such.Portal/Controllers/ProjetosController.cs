@@ -151,7 +151,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         #region Details
-        
+
 
         [HttpPost]
         public JsonResult GetProjectDetails([FromBody] ProjectDetailsViewModel data)
@@ -292,9 +292,9 @@ namespace Hydra.Such.Portal.Controllers
                             NossaProposta = data.OurProposal,
                             CódObjetoServiço = data.ServiceObjectCode,
                             NºCompromisso = data.CommitmentCode,
-                            GrupoContabObra = data.AccountWorkGroup,
+                            GrupoContabObra = "PROJETO",
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
-                            TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
                             DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
@@ -337,7 +337,7 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                                 if (TCreateNavProj.Exception != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                if(TCreateNavProj.Exception.InnerException != null)
+                                if (TCreateNavProj.Exception.InnerException != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
@@ -405,9 +405,9 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.NossaProposta = data.OurProposal;
                     cProject.CódObjetoServiço = data.ServiceObjectCode;
                     cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.GrupoContabObra = "PROJETO";
                     cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
                     cProject.PedidoDoCliente = data.ClientRequest;
                     cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
                     cProject.ValidadeDoPedido = data.RequestValidity;
@@ -418,7 +418,7 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.ChefeProjeto = data.ProjectLeader;
                     cProject.ResponsávelProjeto = data.ProjectResponsible;
                     cProject.UtilizadorModificação = User.Identity.Name;
-                    
+
 
                     DBProjects.Update(cProject);
 
@@ -1323,9 +1323,13 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(dp);
         }
+
         [HttpPost]
-        public JsonResult GetMovements([FromBody] string projectNo)
+        public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
+            string projectNo = requestParams["noproj"].ToString();
+            string codServiceCliente= requestParams["codClienteServico"].ToString();
+            string codServiceGroup = requestParams["codGrupoServico"].ToString();
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -1508,7 +1512,10 @@ namespace Hydra.Such.Portal.Controllers
             }
             if (!string.IsNullOrEmpty(Date))
             {
-                dp = dp.Where(x => x.Date == Date).ToList();
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
             }
 
             return Json(dp);
