@@ -1387,17 +1387,17 @@
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
 
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.projectMovementTable.clearCache();
+                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        //this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
+                        //this.$.grid_databound_ajax.generateRequest();
+                        //this.$.projectMovementTable.clearCache();
 
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
-                        this.$.grid_databound_ajax.body = JSON.stringify("");
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.projectMovementTable.clearCache();
+                        //this.$.grid_databound_ajax.body = JSON.stringify("");
+                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        //this.$.grid_databound_ajax.generateRequest();
+                        //this.$.projectMovementTable.clearCache();
                     }
                     this.$.ajax_ServiceGroup.body = JSON.stringify("");
                     this.$.ajax_ServiceGroup.params = { "allProjs": true };
@@ -1525,13 +1525,13 @@
                         this.$.ResourcesDlg.value = "";
                         this.$.ResourcesDlg.valueText = "";
 
-                        if (this.disabledProjectNo === false) {
-                            this.$.projectTargetDlg.value = "";
-                            this.$.projectTargetDlg.valueText = "";
-                        }
+                        //if (this.disabledProjectNo === false) {
+                        //    this.$.projectTargetDlg.value = "";
+                        //    this.$.projectTargetDlg.valueText = "";
+                        //}
                         this.$.projectMovementTable.selectedItems = [];
                         this.$.projectMovementTable.selectedItem = [];
-                        this.$.grid_databound_ajax.generateRequest();
+                        //this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                         if (this.result.eReasonCode === 1)
                         {
@@ -1642,10 +1642,10 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    if (this.disabledProjectNo === false) {
-                        this.$.projectTargetDlg.value = "";
-                        this.$.projectTargetDlg.valueText = "";
-                    }
+                    //if (this.disabledProjectNo === false) {
+                    //    this.$.projectTargetDlg.value = "";
+                    //    this.$.projectTargetDlg.valueText = "";
+                    //}
                 },
                 _closedialog: function (e) {
                     this.$.projectSourceDlg.value = "";
@@ -1656,17 +1656,19 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    if (this.disabledProjectNo === false) {
-                        this.$.projectTargetDlg.value = "";
-                        this.$.projectTargetDlg.valueText = "";
-                    } else {
-                        this.disabledProjectNo = true;
-                    }
+                    //if (this.disabledProjectNo === false) {
+                    //    this.$.projectTargetDlg.value = "";
+                    //    this.$.projectTargetDlg.valueText = "";
+                    //} else {
+                    //    this.disabledProjectNo = true;
+                    //}
                     this.$.projectMovementTable.selectedItems = [];
                     this.$.projectMovementTable.selectedItem = [];
-                    this.$.grid_databound_ajax.generateRequest();
+                    //this.$.grid_databound_ajax.generateRequest();
+                    this.$.projectMovementTable.clearCache();
                 },
                 _projectChange: function (e) {
+                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1676,8 +1678,8 @@
                         //Request Project Data
                         this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-
                         this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
 
                     } else if (this.$.projectList.value != undefined && this.$.projectList.value != "") {
                         this.$.ajax_related.body = JSON.stringify(this.$.projectList.value);
@@ -1765,9 +1767,6 @@
                 },
                 _getMovementsProject: function () {
                     this.$.dialogGetProjetStart.open();
-                    /*if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
-                        this.openToastError("Não existem movimentos associados a este projeto.");
-                    }*/
                 },
                 _dlgNext: function () {
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
