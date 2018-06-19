@@ -292,9 +292,9 @@ namespace Hydra.Such.Portal.Controllers
                             NossaProposta = data.OurProposal,
                             CódObjetoServiço = data.ServiceObjectCode,
                             NºCompromisso = data.CommitmentCode,
-                            GrupoContabObra = data.AccountWorkGroup,
+                            GrupoContabObra = "PROJETO",
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
-                            TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
                             DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
@@ -405,9 +405,9 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.NossaProposta = data.OurProposal;
                     cProject.CódObjetoServiço = data.ServiceObjectCode;
                     cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.GrupoContabObra = "PROJETO";
                     cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
                     cProject.PedidoDoCliente = data.ClientRequest;
                     cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
                     cProject.ValidadeDoPedido = data.RequestValidity;
