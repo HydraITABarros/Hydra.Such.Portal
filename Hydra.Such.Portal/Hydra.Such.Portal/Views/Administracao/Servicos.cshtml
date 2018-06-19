@@ -78,6 +78,14 @@
         </iron-ajax>
 
         @*POPULATE Update*@
+        <iron-ajax url="/Administracao/CreateServices"
+                   last-response="{{create}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_create"
+                   on-response="_createResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Administracao/UpdateServices"
                    last-response="{{result}}"
                    method="post"
@@ -91,6 +99,9 @@
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddCode" label="Código" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
                         <div class="col-lg-2">
                             <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
@@ -199,11 +210,24 @@
                         this.openToast('Atualizado com sucesso!');
                         this.$.page_databound_ajax.generateRequest();
                         this.$.gridServices.clearCache();
-
+                        this.$.ddCode.value = "";
                         this.$.ddDescription.value = "";
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
+                _createResponse: function (e) {
+                    var self = this;
+                    if (this.create == null) {
+
+                        this.openToast('Inserido com sucesso!');
+                        this.$.gridServices.clearCache();
+                        this.$.ddDescription.value = "";
+                        this.$.ddCode.value = "";
+                    }
+                    else {
+                        this.openToastError('Não é possivel inserir o registo!');
                     }
                 },
                 _cancel: function () {
@@ -212,21 +236,21 @@
                 },
 
                 _createService: function () {
-                    if (this.$.ddDescription.value == "" || this.$.ddDescription.value == null) {
+                    if (this.$.ddDescription.value == "" || this.$.ddDescription.value == null || this.$.ddCode.value == "" || this.$.ddCode.value==null) {
                         this.openToastError('É obrigatório preencher a Descrição.');
                     } else {
 
                         var thisLine = {
+                            code: this.$.ddCode.value,
                             description: this.$.ddDescription.value
                         };
-                        if (this.result == null) {
-                            this.result = thisLine;
-                        }
-                        else {
+                        var item = this.result.find(x => x.code == this.$.ddCode.value);
+                        if (item==null)
+                        {
                             this.result.push(thisLine);
                         }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.generateRequest();
+                        this.$.ajax_create.body = JSON.stringify(thisLine);
+                        this.$.ajax_create.generateRequest();
                         this.$.gridServices.clearCache();
                     }
 
