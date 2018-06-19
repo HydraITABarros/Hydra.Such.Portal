@@ -60,10 +60,9 @@
                 </button>*@
             <a href="/" class="navbar-brand">
                 <span class="brand-icon">
-                    <img src="~/Infinity/assets/images/logo1.png" width="40px" height="30px" alt="">
+                    <img src="~/images/esuchSVG-02.svg" alt="">
                 </span>
-
-                <span class="brand-name" style="color: black;">SUCH</span>
+                @*<span class="brand-name" style="color: black;">SUCH</span>*@
             </a>
         </div><!-- .navbar-header -->
 
@@ -303,6 +302,7 @@
     <script src="/lib/bootbox.min.js"></script>
 
     <script>
+        debugger;
         var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
         if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
             //$('#approvalPendingShow').hide();
