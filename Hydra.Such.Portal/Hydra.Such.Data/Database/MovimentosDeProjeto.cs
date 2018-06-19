@@ -55,13 +55,12 @@ namespace Hydra.Such.Data.Database
         public bool? Faturada { get; set; }
         public string Moeda { get; set; }
         public decimal? ValorUnitárioAFaturar { get; set; }
-        public int? CódServiçoCliente { get; set; }
+        public string CódServiçoCliente { get; set; }
         public string CodCliente { get; set; }
         public string Matricula { get; set; }
         public string CodigoLer { get; set; }
         public string Grupo { get; set; }
         public string Operacao { get; set; }
-
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

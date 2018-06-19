@@ -359,7 +359,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<Portal.Controllers.DDMessage> result = Data.Logic.ProjectDiary.DBServices.GetAll().Select(x => new Portal.Controllers.DDMessage()
+            List<Portal.Controllers.DDMessageString> result = Data.Logic.ProjectDiary.DBServices.GetAll().Select(x => new Portal.Controllers.DDMessageString()
             {
                 id = x.Código,
                 value = x.Descrição

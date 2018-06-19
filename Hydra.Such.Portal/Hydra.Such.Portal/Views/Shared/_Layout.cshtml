@@ -177,6 +177,7 @@
                                 <ul class="submenu">
                                     <li>@Html.ActionLink("Pedido de Aquisição", "PedidoAquisicao", "ProcedimentosCcps", null, null)</li>
                                     <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", null, null)</li>
+                                    <li>@Html.ActionLink("Quadro de bordo", "QuadroBordo", "ProcedimentosCcps", null, null)</li>
                                 </ul>
                             </li>
                         </ul>
@@ -301,6 +302,7 @@
     <script src="/lib/bootbox.min.js"></script>
 
     <script>
+        debugger;
         var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
         if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
             //$('#approvalPendingShow').hide();

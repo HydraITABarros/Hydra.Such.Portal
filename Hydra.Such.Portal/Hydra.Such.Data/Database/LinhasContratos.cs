@@ -27,7 +27,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataInícioVersão { get; set; }
         public DateTime? DataFimVersão { get; set; }
         public string NºResponsável { get; set; }
-        public int? CódServiçoCliente { get; set; }
+        public string CódServiçoCliente { get; set; }
         public int? GrupoFatura { get; set; }
         public bool? CriaContrato { get; set; }
         public DateTime? DataHoraCriação { get; set; }
