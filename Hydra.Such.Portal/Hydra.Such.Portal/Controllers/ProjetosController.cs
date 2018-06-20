@@ -560,8 +560,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]  JObject requestParams)
         {
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+           
             List<ProjectDiaryViewModel> dp = null;
             if (projectNo == null || projectNo == "")
             {
@@ -592,12 +607,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode = codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -635,12 +650,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode =  codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -1327,11 +1342,21 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
-            string projectNo = requestParams["noproj"].ToString();
-            string dataReque = requestParams["data"].ToString();
-            string codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
-            string codServiceGroup = (requestParams["codGrupoServico"] != null) ? requestParams["codGrupoServico"].ToString() : "";
-          
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+
 
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
@@ -1363,7 +1388,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Registado = false,
                                 Data = string.IsNullOrEmpty(dataReque) ? (DateTime?)null : DateTime.Parse(dataReque),
                                 CódServiçoCliente = (x.CódServiçoCliente !="" && x.CódServiçoCliente != null ) ? x.CódServiçoCliente : codServiceCliente,
-                               // CódGrupoServiço = (x.CódGrupoServiço != "" && x.CódServiçoCliente != null) ? x.CódServiçoCliente : codServiceCliente,
+                                CódGrupoServiço = codServiceGroup,
                                 PréRegisto = false
                             }).ToList();
                         if (dp.Count == 0)

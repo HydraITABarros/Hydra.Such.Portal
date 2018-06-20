@@ -1172,7 +1172,7 @@
                     <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceClientCodeMov" name="piCodeResponsabilityCenter" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceClientCodeMov" name="piServiceClienteMov" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -1181,7 +1181,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceGroupCodMov" name="piCodeResponsabilityCenter" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceGroupCodMov" name="piServiceGroupMov" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -1395,7 +1395,7 @@
                     serviceGroupCod,
                     serviceClientCode
                 ) {
-
+                    
                     if (!this.Flag) {
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
@@ -1432,10 +1432,8 @@
                         //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         //this.$.grid_databound_ajax.generateRequest();
                         //this.$.projectMovementTable.clearCache();
-                    }
-                    this.$.ajax_ServiceGroup.body = JSON.stringify("");
-                    this.$.ajax_ServiceGroup.params = { "allProjs": true };
-                    this.$.ajax_ServiceGroup.generateRequest();
+                    } 
+                    
 
                     this.$.ajax_SServiceClient.body = JSON.stringify("");
                     this.$.ajax_SServiceClient.params = { "allProjs": true };
@@ -1575,7 +1573,6 @@
                 },
                 _updateResponse: function (e) {
                     var self = this;
-
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
@@ -1783,16 +1780,10 @@
                 _getMovements: function () {
                     //Request
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
-
+                        
                         this.$.idDateMovDlg.value = this.$.dpDate.value;
-                        var serviceGroup = this.ServiceGroupData.find(x => x.serviceCode == this.ddServiceGroupCode);
-                        if (serviceGroup != undefined) {
-                            this.$.ServiceGroupCodMov.value = serviceGroup.serviceDescription;
-                        }
-                        var serviceClie = this.ServiceClientData.find(x => x.serviceCode == this.ddServiceClientCode);
-                        if (serviceClie != undefined) {
-                            this.$.ServiceClientCodeMov.value = serviceClie.serviceDescription;
-                        }
+                        this.$.ServiceGroupCodMov.value = this.ddServiceGroupCode;
+                        this.$.ServiceClientCodeMov.value = this.ddServiceClientCode;
 
                         this.$.dialogGetMovement.open();
                         //this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
@@ -1806,7 +1797,7 @@
                 _dlgNextMov: function () {
                     if (this.$.idDateMovDlg.value != undefined && this.$.idDateMovDlg.value != "") {
                         this.$.dialogGetMovement.close();
-                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.dpDate.value });
+                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
                         this.$.ajax_movementLines.generateRequest();
                     }
                     else {
@@ -1833,7 +1824,14 @@
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
-                            this.$.ajax_getall.generateRequest();
+                            this.$.ajax_SServiceClient.body = JSON.stringify("");
+                            this.$.ajax_SServiceClient.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_SServiceClient.generateRequest();
+                            this.$.ajax_ServiceGroup.body = JSON.stringify("");
+                            this.$.ajax_ServiceGroup.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_ServiceGroup.generateRequest();
+                            this.$.ajax_getall.body = JSON.stringify({"noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
+                            this.$.ajax_getall.generateRequest();                        
                             this.$.projectDiaryProject.clearCache();
                             this.openToastSuccess(this.movementLines.eMessage);
                         } else {
@@ -2013,6 +2011,7 @@
                 _parseServiceClient: function (param1, param2) {
                     //refinar array c/ param2
                     //retornar valor c/ param1
+                    debugger;
                     if (param2 != undefined) {
 
                         if (this.ServiceClientData != null) {
