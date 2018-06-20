@@ -518,7 +518,7 @@
                 <div class="col-sm-6">
                     <div class="panel panel-default">
                         <paper-collapse-group>
-                            <paper-collapse-item header="1 - Cabimento" id="paper1">
+                            <paper-collapse-item header="1 - Cabimento" id="paper1" on-blur="_mete_numero">
                                 <div class="panel-body">
                                     <vaadin-grid aria-label="paper1" items="[[result.estado_1]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
                                         <vaadin-grid-column width="50px">
@@ -1526,8 +1526,13 @@
                 _openDetail: function (e) {
 
                     window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + e.model.item.no;
+                },
+                _mete_numero: function (e) {
+                    //$('#paper1').text('111 --- CCCabimento (' + result.estado_1.count() + ')');
                 }
             });
         });
+
+        
     </script>
 </dom-module>
