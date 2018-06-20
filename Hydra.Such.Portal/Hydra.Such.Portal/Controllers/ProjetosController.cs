@@ -1328,8 +1328,11 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
             string projectNo = requestParams["noproj"].ToString();
-            string codServiceCliente= requestParams["codClienteServico"].ToString();
-            string codServiceGroup = requestParams["codGrupoServico"].ToString();
+            string dataReque = requestParams["data"].ToString();
+            string codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+            string codServiceGroup = (requestParams["codGrupoServico"] != null) ? requestParams["codGrupoServico"].ToString() : "";
+          
+
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -1358,6 +1361,9 @@ namespace Hydra.Such.Portal.Controllers
                                 PreçoUnitário = x.PreçoUnitário,
                                 Faturável = x.Faturável,
                                 Registado = false,
+                                Data = string.IsNullOrEmpty(dataReque) ? (DateTime?)null : DateTime.Parse(dataReque),
+                                CódServiçoCliente = (x.CódServiçoCliente !="" && x.CódServiçoCliente != null ) ? x.CódServiçoCliente : codServiceCliente,
+                               // CódGrupoServiço = (x.CódGrupoServiço != "" && x.CódServiçoCliente != null) ? x.CódServiçoCliente : codServiceCliente,
                                 PréRegisto = false
                             }).ToList();
                         if (dp.Count == 0)
