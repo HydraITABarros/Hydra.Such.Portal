@@ -699,8 +699,8 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                    </vaadin-grid-filter>-->
+                    <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                </vaadin-grid-filter>-->
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
@@ -1127,7 +1127,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="DocIdDlg" label="Nº Documento"  on-value-changed="_projectChange" value="{{DocDlg}}" ></vaadin-text-field>
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
@@ -1165,18 +1165,19 @@
 
         </paper-dialog>
 
-        <paper-dialog id="dialogGetMovement" >
+        <paper-dialog id="dialogGetMovement">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-3">
-                    <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-3">
                     <such-selectbox id="ServiceClientCodeMov" name="piCodeResponsabilityCenter" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
-                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'
+                                   >
                     </such-selectbox>
                 </div>
                 <div class="col-lg-3">
@@ -1755,12 +1756,12 @@
                     this.$.ajax_register.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
-                
+
                 _getMovements: function () {
                     //Request
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
 
-                        this.$.idDateMovDlg.value = this.$.dpDate.value;                  
+                        this.$.idDateMovDlg.value = this.$.dpDate.value;
                         var serviceGroup = this.ServiceGroupData.find(x => x.serviceCode == this.ddServiceGroupCode);
                         if (serviceGroup != undefined) {
                             this.$.ServiceGroupCodMov.value = serviceGroup.serviceDescription;
@@ -1780,9 +1781,14 @@
 
                 },
                 _dlgNextMov: function () {
-                    this.$.dialogGetMovement.close();
-                    this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value});
-                    this.$.ajax_movementLines.generateRequest();
+                    if (this.$.idDateMovDlg.value != undefined && this.$.idDateMovDlg.value != "") {
+                        this.$.dialogGetMovement.close();
+                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.dpDate.value });
+                        this.$.ajax_movementLines.generateRequest();
+                    }
+                    else {
+                        this.openToastError("Preencher campos obrigatórios!");
+                    }
                 },
                 _getMovementsProject: function () {
                     this.$.dialogGetProjetStart.open();
