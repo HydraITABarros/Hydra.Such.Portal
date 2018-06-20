@@ -1120,7 +1120,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         throw;
                     }
