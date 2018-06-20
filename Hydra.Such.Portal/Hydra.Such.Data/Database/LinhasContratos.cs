@@ -34,7 +34,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
-
         public Contratos Contratos { get; set; }
     }
 }

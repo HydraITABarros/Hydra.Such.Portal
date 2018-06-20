@@ -361,11 +361,11 @@
             <div>
                 <div class="row">
                        <div class="col-lg-3">
-                            <such-selectbox id="ProjectType" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto"
+                            <such-selectbox id="ProjectType" value="{{data.projectTypeCode}}" label="Tipo Projeto"
                                             items="[[LProjectTypes]]"
                                             text-path="value"
                                             value-path="id"
-                                            fields='[{"field":"id", "name":"Cód. Projeto"}, {"field":"value", "name":"Descrição"}]'
+                                            fields='[{"field":"value", "name":"Descrição"}]'
                                             disabled="{{ !_permissions.update }}">
                             </such-selectbox>
                         </div>
