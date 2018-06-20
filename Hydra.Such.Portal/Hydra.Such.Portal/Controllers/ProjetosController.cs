@@ -925,8 +925,9 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
+
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
             string notCreatedLines = "";
@@ -934,7 +935,15 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
-                response.Items = dp;
+            {
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+              response.Items = dp;
+            }
+                
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Diário de Projeto atualizado.";
@@ -1474,7 +1483,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string Date, string ProjDiaryPrice)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice)
         {
 
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
@@ -1500,6 +1509,7 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
+                DocumentNo = x.NºDocumento,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
@@ -1510,13 +1520,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 dp = dp.Where(x => x.Code == Resources).ToList();
             }
-            if (!string.IsNullOrEmpty(Date))
-            {
-                foreach (ProjectDiaryViewModel item in dp)
-                {
-                    item.Date = Date;
-                }
-            }
+          
 
             return Json(dp);
         }
@@ -1817,7 +1821,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         [HttpPost]
-        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
@@ -1826,7 +1830,14 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
+            {
                 response.Items = dp;
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+            }
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Pré-Registo atualizado.";

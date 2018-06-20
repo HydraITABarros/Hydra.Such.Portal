@@ -1140,7 +1140,7 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="idDateDlg" on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateDlg" name="DatenameDlg" value="{{DateDlg}}" ></vaadin-date-picker>
                 </div>
 
                 <div class="col-lg-2">
@@ -1420,17 +1420,9 @@
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
 
-                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        //this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-                        //this.$.grid_databound_ajax.generateRequest();
-                        //this.$.projectMovementTable.clearCache();
 
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
-                        //this.$.grid_databound_ajax.body = JSON.stringify("");
-                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        //this.$.grid_databound_ajax.generateRequest();
-                        //this.$.projectMovementTable.clearCache();
                     }
                     this.$.ajax_ServiceGroup.body = JSON.stringify("");
                     this.$.ajax_ServiceGroup.params = { "allProjs": true };
@@ -1547,9 +1539,6 @@
                 _createmovprojResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.$.ajax_getall.generateRequest();
-                        this.$.projectMovementTable.selectedItems = [];
-                        this.$.projectMovementTable.selectedItem = [];
                         this.$.projectSourceDlg.value = "";
                         this.$.projectSourceDlg.valueText = "";
                         this.$.ProjDiaryPriceDlg.value = "";
@@ -1558,12 +1547,12 @@
                         this.$.ResourcesDlg.value = "";
                         this.$.ResourcesDlg.valueText = "";
 
-                        //if (this.disabledProjectNo === false) {
-                        //    this.$.projectTargetDlg.value = "";
-                        //    this.$.projectTargetDlg.valueText = "";
-                        //}
-                        //this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
                         this.$.projectMovementTable.clearCache();
+
+                        this.$.ajax_getall.generateRequest();
+                        this.$.projectDiaryProject.clearCache();
                         if (this.result.eReasonCode === 1)
                         {
                             this.openToastSuccess(this.result.eMessage);
@@ -1587,10 +1576,6 @@
                                 this.projectNumber = "";
                                 this.$.projectList._clearSelection();
                             }
-
-                            //this.codeRegion = "";
-                            //this.codeFuncArea = "";
-                            //this.codeResponsabilityCenter = "";
                             this.date = "";
                             this.projectMovementNumber = "";
                             this.projectTypeNumber = "";
@@ -1599,7 +1584,6 @@
                             this.quantity = "";
                             this.codeMeasurementUnit = "";
                             this.codeLocation = "";
-                            //this.codeProjectContabGroup = "";
                             this.unitCost = "";
                             this.totalCost = "";
                             this.unitPrice = "";
@@ -1613,10 +1597,6 @@
                             this.consumptionDate = "";
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
-
-                            //this.$.piCodeRegion._clearSelection();
-                            //this.$.piFuncArea._clearSelection();
-                            //this.$.piCodeResponsabilityCenter._clearSelection();
                             this.$.piCode._clearSelection();
                             this.$.piDescription.value = "";
                             this.$.piCodeLocation._clearSelection();
@@ -1632,7 +1612,6 @@
                             this.$.piResidueGuideNo.value = "";
                             this.$.piExternalGuideNo.value = "";
                             this.$.dpcompDate.value = "";
-                            //this.$.piContabGroup._clearSelection();
                             this.$.piCodeMeasurementUnit._clearSelection();
                             this.$.projectMovementList._clearSelection();
                             this.$.projectTypeList._clearSelection();
@@ -1654,7 +1633,7 @@
                         }
 
                         this.$.dialogGetProjetStart.close();
-                        this.$.ajax_createmovproj.params = { "projectNo": "","Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.ajax_createmovproj.params = { "projectNo": "", "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value, "Date": this.$.idDateDlg.value };
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
                     } else {
@@ -1671,10 +1650,10 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    //if (this.disabledProjectNo === false) {
-                    //    this.$.projectTargetDlg.value = "";
-                    //    this.$.projectTargetDlg.valueText = "";
-                    //}
+
+                    this.$.projectMovementTable.selectedItems = [];
+                    this.$.projectMovementTable.selectedItem = [];
+                    this.$.projectMovementTable.clearCache();
                 },
                 _closedialog: function (e) {
                     this.$.projectSourceDlg.value = "";
@@ -1685,26 +1664,22 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    //if (this.disabledProjectNo === false) {
-                    //    this.$.projectTargetDlg.value = "";
-                    //    this.$.projectTargetDlg.valueText = "";
-                    //}
+
                     this.$.projectMovementTable.selectedItems = [];
                     this.$.projectMovementTable.selectedItem = [];
-                    //this.$.grid_databound_ajax.generateRequest();
                     this.$.projectMovementTable.clearCache();
                 },
                 _projectChange: function (e) {         
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
+                        this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
                         this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
 
@@ -1818,11 +1793,13 @@
 
                 },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
+                        this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
+                        this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();
                     } else {
-                        this.openToastError("É obrigatório escolher o projeto de origem e destino.");
+                        this.openToastError("É obrigatório escolher o projeto de origem, de destino e a Data.");
                     }
 
                 },
