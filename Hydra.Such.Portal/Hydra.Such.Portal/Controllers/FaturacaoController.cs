@@ -148,7 +148,26 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ValidateForPosting(item))
                 {
+                    Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
+                    createPurchHeaderTask.Wait();
+                    if (createPurchHeaderTask.IsCompletedSuccessfully)
+                    {
+                        //createPurchHeaderTask.Result.WSPrePurchaseDocs
+                        RececaoFaturacaoWorkflow rfws = new RececaoFaturacaoWorkflow();
+                        string typeDescription = EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
+                        rfws.Descricao = "Contabilização da " + typeDescription;
+                        rfws.Estado = (int)BillingReceptionStates.Contabilizado;
+                        rfws.Data = DateTime.Now;
+                        rfws.Utilizador = User.Identity.Name;
+                        rfws.CriadoPor = User.Identity.Name;
 
+                        var createdItem = DBBillingReceptionWf.Create(rfws);
+                        if (createdItem != null)
+                        {
+                            item.eReasonCode = 1;
+                            item.eMessage = "Documento criado com sucesso.";
+                        }
+                    }
                 }
             }
             else
