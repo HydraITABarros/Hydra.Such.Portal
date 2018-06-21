@@ -175,5 +175,39 @@ namespace Hydra.Such.Data
             [Description("Genérica")]
             Genérica = 99
         }
+
+        public enum BillingReceptionStates
+        {
+            [Description("Receção / Conferência")]
+            Rececao,
+            [Description("Pendente")]
+            Pendente,
+            [Description("Contabilizado")]
+            Contabilizado,
+            [Description("Devolvido")]
+            Devolvido,
+            [Description("Sem Efeito")]
+            SemEfeito
+        }
+
+        public enum BillingDocumentTypes
+        {
+            Fatura = PurchaseDocumentTypes.Fatura,
+            [Description("Nota de Crédito")]
+            NotaCredito = PurchaseDocumentTypes.NotaCredito
+        }
+
+        public enum PurchaseDocumentTypes
+        {
+            Proposta,
+            Encomenda,
+            Fatura,
+            [Description("Nota de Crédito")]
+            NotaCredito,
+            [Description("Encomenda Aberta")]
+            EncomendaAberta,
+            [Description("Devolução")]
+            Devolucao
+        }
     }
 }
