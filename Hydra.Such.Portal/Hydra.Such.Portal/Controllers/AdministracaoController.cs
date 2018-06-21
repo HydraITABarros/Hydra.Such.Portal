@@ -1327,6 +1327,22 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateServices([FromBody] ProjectTypesModelViewStr data)
+        {
+            List<Serviços> results = DBServices.GetAll();
+            Serviços result = DBServices.GetById(data.Code);
+            if (result == null) {
+                Serviços tpval = new Serviços();
+                tpval.Descrição = data.Description;
+                tpval.Código = data.Code;
+                tpval.UtilizadorCriação = User.Identity.Name;
+                tpval.DataHoraCriação = DateTime.Now;
+                DBServices.Create(tpval);
+            }
+
+           
+            return Json(result);
+        }
         public JsonResult UpdateServices([FromBody] List<ProjectTypesModelViewStr> data)
         {
             List<Serviços> results = DBServices.GetAll();

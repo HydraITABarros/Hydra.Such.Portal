@@ -151,7 +151,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         #region Details
-        
+
 
         [HttpPost]
         public JsonResult GetProjectDetails([FromBody] ProjectDetailsViewModel data)
@@ -292,9 +292,9 @@ namespace Hydra.Such.Portal.Controllers
                             NossaProposta = data.OurProposal,
                             CódObjetoServiço = data.ServiceObjectCode,
                             NºCompromisso = data.CommitmentCode,
-                            GrupoContabObra = data.AccountWorkGroup,
+                            GrupoContabObra = "PROJETO",
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
-                            TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
                             DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
@@ -337,7 +337,7 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                                 if (TCreateNavProj.Exception != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                if(TCreateNavProj.Exception.InnerException != null)
+                                if (TCreateNavProj.Exception.InnerException != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
@@ -405,9 +405,9 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.NossaProposta = data.OurProposal;
                     cProject.CódObjetoServiço = data.ServiceObjectCode;
                     cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.GrupoContabObra = "PROJETO";
                     cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
                     cProject.PedidoDoCliente = data.ClientRequest;
                     cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
                     cProject.ValidadeDoPedido = data.RequestValidity;
@@ -418,7 +418,7 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.ChefeProjeto = data.ProjectLeader;
                     cProject.ResponsávelProjeto = data.ProjectResponsible;
                     cProject.UtilizadorModificação = User.Identity.Name;
-                    
+
 
                     DBProjects.Update(cProject);
 
@@ -560,8 +560,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]  JObject requestParams)
         {
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+           
             List<ProjectDiaryViewModel> dp = null;
             if (projectNo == null || projectNo == "")
             {
@@ -592,12 +607,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode = codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -635,12 +650,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode =  codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -925,8 +940,9 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
+
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
             string notCreatedLines = "";
@@ -934,7 +950,15 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
-                response.Items = dp;
+            {
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+              response.Items = dp;
+            }
+                
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Diário de Projeto atualizado.";
@@ -1323,9 +1347,26 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(dp);
         }
+
         [HttpPost]
-        public JsonResult GetMovements([FromBody] string projectNo)
+        public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+
+
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -1354,6 +1395,9 @@ namespace Hydra.Such.Portal.Controllers
                                 PreçoUnitário = x.PreçoUnitário,
                                 Faturável = x.Faturável,
                                 Registado = false,
+                                Data = string.IsNullOrEmpty(dataReque) ? (DateTime?)null : DateTime.Parse(dataReque),
+                                CódServiçoCliente = (x.CódServiçoCliente !="" && x.CódServiçoCliente != null ) ? x.CódServiçoCliente : codServiceCliente,
+                                CódGrupoServiço = codServiceGroup,
                                 PréRegisto = false
                             }).ToList();
                         if (dp.Count == 0)
@@ -1470,7 +1514,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string Date, string ProjDiaryPrice)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice)
         {
 
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
@@ -1496,6 +1540,7 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
+                DocumentNo = x.NºDocumento,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
@@ -1506,10 +1551,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 dp = dp.Where(x => x.Code == Resources).ToList();
             }
-            if (!string.IsNullOrEmpty(Date))
-            {
-                dp = dp.Where(x => x.Date == Date).ToList();
-            }
+          
 
             return Json(dp);
         }
@@ -1810,7 +1852,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         [HttpPost]
-        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
@@ -1819,7 +1861,14 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
+            {
                 response.Items = dp;
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+            }
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Pré-Registo atualizado.";

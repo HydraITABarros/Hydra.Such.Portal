@@ -5,32 +5,17 @@
 <link rel="import" href="/elements/submenu/subMenuItemView.html">
 
 @ViewBag.Error
-
-<div class="row">
-    <div class="col-md-6 col-sm-6">
-        <div class="widget p-md clearfix">
-            <div class="pull-left">
-                <h3>Benvindo ao e-SUCH</h3>
-                <small class="text-color"></small>
-                
-            </div>
-            <span class="pull-right fz-lg fw-500 counter" data-plugin="counterUp"></span>
-        </div><!-- .widget -->
-    </div>
-
-
-</div><!-- .row -->
-
-@*<ul class="list-unstyled">
-    <x-submenu link="@Url.Action("", "Engenharia")" image="engineer1.png" title="Engenharia"></x-submenu>
-    <x-submenu link="@Url.Action("", "Ambiente")" image="environment3.png" title="Ambiente"></x-submenu>
-    <x-submenu link="@Url.Action("", "Nutricao")" image="nutricion4.png" title="Nutrição"></x-submenu>
-    <x-submenu link="@Url.Action("", "Vendas")" image="sales2.png" title="Vendas"></x-submenu>
-    <x-submenu link="@Url.Action("", "Apoio")" image="support2.png" title="Apoio"></x-submenu>
-    <x-submenu link="@Url.Action("", "PO")" image="po2.png" title="P&O"></x-submenu>
-    <x-submenu link="@Url.Action("", "NovasAreas")" image="newareas1.png" title="Novas Areas"></x-submenu>
-    <x-submenu link="@Url.Action("", "Internacional")" image="international1.png" title="Internacional"></x-submenu>
-    <x-submenu link="@Url.Action("", "Juridico")" image="juridico.png" title="Jurídico"></x-submenu>
-    <x-submenu link="@Url.Action("", "Compras")" image="compras.png" title="Compras"></x-submenu>
-    <x-submenu link="@Url.Action("", "Administracao")" image="admin2.png" title="Administração"></x-submenu>
-</ul>*@
+<div id="bg">
+    <img src="~/images/2018_06_14_esuch_fundo_inicial.jpg" alt="" />
+</div>
+    
+<style>
+    #bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        /* Preserve aspet ratio */
+        min-width: 100%;
+        min-height: 100%;
+    }
+</style>
