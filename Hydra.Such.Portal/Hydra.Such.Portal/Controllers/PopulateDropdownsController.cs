@@ -1755,6 +1755,26 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
             return Json(result);
         }
+
+        public JsonResult GetBillingReceptionStates()
+        {
+            var items = EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+
+        public JsonResult GetBillingDocumentTypes()
+        {
+            var items = EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetOrders([FromBody] string supplierId)
+        {
+            List<Data.ViewModel.Compras.PurchaseHeader> result = DBNAV2017Purchases.GetOrdersBySupplier(_config.NAVDatabaseName, _config.NAVCompanyName, supplierId);
+            return Json(result);
+        }
     }
 
 
