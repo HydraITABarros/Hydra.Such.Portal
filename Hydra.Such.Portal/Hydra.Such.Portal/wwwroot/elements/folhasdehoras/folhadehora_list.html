@@ -612,13 +612,11 @@
                 },
 
                 ready: function () {
-                    debugger;
                     this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
                 _showHistory: function (item) {
-                    debugger;
                     if (item != null) {
                         if (this._historico == 0) {
                             this._historico = 1;
@@ -632,7 +630,6 @@
                 },
 
                 _setButtonTexts: function () {
-                    debugger;
                     if (this._historico == 0) {
                         this._showHistoryMessage = "Mostrar Histórico";
                     }

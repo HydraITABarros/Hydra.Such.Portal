@@ -161,13 +161,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
-                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatefolhadehorasvalidacao_ajax"
-                   on-response="_updatefolhadehorasvalidacaoResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{FolhaDeHorasUpdatedValidacao}}"
+               method="post"
+               handle-as="json"
+               id="page_updatefolhadehorasvalidacao_ajax"
+               on-response="_updatefolhadehorasvalidacaoResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
@@ -197,13 +197,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
-                   last-response="{{validateResponse}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_validator_ajax"
-                   on-response="_responseValidatorProcessor"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{validateResponse}}"
+               method="post"
+               handle-as="json"
+               id="page_validator_ajax"
+               on-response="_responseValidatorProcessor"
+               content-type="application/json">
+    </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -224,13 +224,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
-                   last-response="{{PercursoUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatepercurso_ajax"
-                   on-response="_updatePercursoResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{PercursoUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatepercurso_ajax"
+               on-response="_updatePercursoResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -262,13 +262,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
-                   last-response="{{AjudaUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updateajuda_ajax"
-                   on-response="_updateAjudaResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{AjudaUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updateajuda_ajax"
+               on-response="_updateAjudaResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
@@ -299,13 +299,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
-                   last-response="{{MaoDeObraUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatemaodeobra_ajax"
-                   on-response="_updateMaoDeObraResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{MaoDeObraUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatemaodeobra_ajax"
+               on-response="_updateMaoDeObraResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -345,13 +345,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
-                   last-response="{{PresencaUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatepresenca_ajax"
-                   on-response="_updatePresencaResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{PresencaUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatepresenca_ajax"
+               on-response="_updatePresencaResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -369,6 +369,15 @@
                    handle-as="json"
                    id="page_calcularajudascusto_ajax"
                    on-response="_updateCalcularAjudasCustoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/TerminarFolhaDeHoras"
+                   last-response="{{terminarFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="terminarfolhadehoras_ajax"
+                   on-response="_terminarfolhadehorasResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -506,8 +515,8 @@
 
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-blur="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
                     </div>
 
@@ -703,7 +712,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-change="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo"    ="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -1364,7 +1373,7 @@
                         </div>
 
                         <div class="col-sm-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.validado}}" disabled="true">Validado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.validado}}" id="validado" disabled="true">Validado</vaadin-checkbox>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1420,25 +1429,25 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalAjudaCusto}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                            <vaadin-text-field type="text" value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas">
+                            <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="custoTotalHoras" name="custoTotalHoras" disabled="true" class="alignRight" label="Custo Total Horas">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM">
+                            <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" disabled="true" class="alignRight" label="Custo Total KM">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Nº Total KM">
+                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" disabled="true" class="alignRight" label="Nº Total KM">
                                 <div slot="suffix">KM</div>
                             </vaadin-text-field>
                         </div>
@@ -1843,6 +1852,133 @@
                         if (this.$.matricula.value != "") {
                             this.$.matricula.value = "";
                         }
+                    }
+                },
+
+                _validacaoTerminada: function () {
+                    debugger;
+
+                    var ok = 0;
+                    var ajax_request = this.$.terminarfolhadehoras_ajax;
+
+                    if (this.data.terminada == true) {
+                        if (this._validateFolhaHoras()) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    ok = 1;
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                ok = 1;
+                            }
+                        }
+                    }
+
+                    if (ok == 1) {
+                        //debugger;
+
+                        var terminada_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
+                        var terminada_Area = this.data.codigoArea;
+                        var terminada_ProjetoNo = this.$.projetoNo.value;
+                        var terminada_EmpregadoNo = this.$.empregadoNo.value;
+                        var terminada_DataPartidaTexto = this.$.dataPartidaTexto.value;
+                        var terminada_HoraPartidaTexto = this.$.horaPartidaTexto.value;
+                        var terminada_DataChegadaTexto = this.$.dataChegadaTexto.value
+                        var terminada_HoraChegadaTexto = this.$.horaChegadaTexto.value;
+                        var terminada_TipoDeslocacao = this.$.tipoDeslocacao.value;
+                        var terminada_CodigoTipoKms = this.$.codigoTipoKms.value;
+                        var terminada_Matricula = this.$.matricula.value;
+                        var terminada_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
+                        var terminada_Estado = this.$.folhaDeHoraStatus.value;
+                        var terminada_CriadoPor = this.$.criadoPor.value;
+                        var terminada_CodigoRegiao = this.$.codigoRegiao.value;
+                        var terminada_CodigoAreaFuncional = this.$.codigoAreaFuncional.value;
+                        var terminada_CodigoCentroResponsabilidade = this.$.codigoCentroResponsabilidade.value;
+                        var terminada_Validado = this.data.validado;
+                        var terminada_Validadores = this.$.validadores.value;
+                        var terminada_Validador = this.$.validador.value;
+                        var terminada_DataValidacaoTexto = this.$.dataValidacaoTexto.value;
+                        var terminada_HoraValidacaoTexto = this.$.horaValidacaoTexto.value;
+                        var terminada_IntegradoresEmRH = this.$.integradoresEmRH.value;
+                        var terminada_IntegradorEmRH = this.$.integradorEmRH.value;
+                        var terminada_DataIntegracaoEmRHTexto = this.$.dataIntegracaoEmRHTexto.value;
+                        var terminada_HoraIntegracaoEmRHTexto = this.$.horaIntegracaoEmRHTexto.value;
+                        var terminada_IntegradoresEmRHKM = this.$.integradoresEmRHKM.value;
+                        var terminada_IntegradorEmRHKM = this.$.integradorEmRHKM.value;
+                        var terminada_DataIntegracaoEmRHKMTexto = this.$.dataIntegracaoEmRHKMTexto.value;
+                        var terminada_HoraIntegracaoEmRHKMTexto = this.$.horaIntegracaoEmRHKMTexto.value;
+                        var terminada_CustoTotalAjudaCusto = this.$.custoTotalAjudaCusto.value;
+                        var terminada_CustoTotalHoras = this.$.custoTotalHoras.value;
+                        var terminada_CustoTotalKM = this.$.custoTotalKM.value;
+                        var terminada_NumTotalKM = this.$.numTotalKM.value;
+                        var terminada_Observacoes = this.$.observacoes.value;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Terminar a Folha de Horas?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (terminarFolhaHoras) {
+                                if (terminarFolhaHoras) {
+                                    //debugger;
+                                    ajax_request.body = JSON.stringify({
+                                        folhaDeHorasNo: terminada_FolhaDeHorasNo,
+                                        projetoNo: terminada_ProjetoNo,
+                                        empregadoNo: terminada_EmpregadoNo,
+                                        dataPartidaTexto: terminada_DataPartidaTexto,
+                                        horaPartidaTexto: terminada_HoraPartidaTexto,
+                                        dataChegadaTexto: terminada_DataChegadaTexto,
+                                        horaChegadaTexto: terminada_HoraChegadaTexto,
+                                        tipoDeslocacao: terminada_TipoDeslocacao,
+                                        codigoTipoKms: terminada_CodigoTipoKms,
+                                        matricula: terminada_Matricula,
+                                        deslocacaoForaConcelho: terminada_DeslocacaoForaConcelho,
+                                        estado: terminada_Estado,
+                                        criadoPor: terminada_CriadoPor,
+                                        codigoRegiao: terminada_CodigoRegiao,
+                                        codigoAreaFuncional: terminada_CodigoAreaFuncional,
+                                        codigoCentroResponsabilidade: terminada_CodigoCentroResponsabilidade,
+                                        validado: terminada_Validado,
+                                        validadores: terminada_Validadores,
+                                        validador: terminada_Validador,
+                                        dataValidacaoTexto: terminada_DataValidacaoTexto,
+                                        horaValidacaoTexto: terminada_HoraValidacaoTexto,
+                                        integradoresEmRH: terminada_IntegradoresEmRH,
+                                        integradorEmRH: terminada_IntegradorEmRH,
+                                        dataIntegracaoEmRHTexto: terminada_DataIntegracaoEmRHTexto,
+                                        horaIntegracaoEmRHTexto: terminada_HoraIntegracaoEmRHTexto,
+                                        integradoresEmRHKM: terminada_IntegradoresEmRHKM,
+                                        integradorEmRHKM: terminada_IntegradorEmRHKM,
+                                        dataIntegracaoEmRHKMTexto: terminada_DataIntegracaoEmRHKMTexto,
+                                        horaIntegracaoEmRHKMTexto: terminada_HoraIntegracaoEmRHKMTexto,
+                                        custoTotalAjudaCusto: terminada_CustoTotalAjudaCusto,
+                                        custoTotalHoras: terminada_CustoTotalHoras,
+                                        custoTotalKM: terminada_CustoTotalKM,
+                                        numTotalKM: terminada_NumTotalKM,
+                                        observacoes: terminada_Observacoes
+                                    });
+                                    ajax_request.generateRequest();
+                                }
+                                else {
+                                    this.data.terminada = false;
+                                }
+                            }
+                        });
+                        //this.$.terminarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                        //this.$.terminarfolhadehoras_ajax.generateRequest();
+                    }
+                    else {
+                        this.data.terminada = false;
                     }
                 },
 
@@ -3071,6 +3207,28 @@
                     }
                 },
 
+                _terminarfolhadehorasResponse: function (e) {
+                    debugger;
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.terminarFolhaDeHoras == 0) {
+                        this._showMessage('Folha de Horas terminada com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        if (this.terminarFolhaDeHoras == 6) {
+                            this._showErrorMessage('Ocorreu um erro ao Terminar a Folha de Horas.');
+                        }
+                        else {
+                            if (this.terminarFolhaDeHoras == 99) {
+                                this._showErrorMessage('Ocorreu um erro.');
+                            }
+                        }
+                    }
+                },
+
                 _validarfolhadehorasResponse: function (e) {
                     //debugger;
                     if (this.validarFolhaDeHoras == 0) {
@@ -3584,12 +3742,16 @@
                 //EMPREGADO FUNÇÕES
                 _codeChange: function (e) {
                     //debugger;
-                    this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.getEmpoyeeNAV_ajax.generateRequest();
+                    //this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value, this.$.folhaDeHorasNo.value);
+                    if (e.detail.value != "") {
+                        this.data.empregadoNo = e.detail.value;
+                        this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
+                        this.$.getEmpoyeeNAV_ajax.generateRequest();
+                    };
                 },
 
                 _getEmpoyeeNAVResponse: function (e) {
-                    //debugger;
+                    debugger;
 
                     this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
                     this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;
@@ -3683,6 +3845,10 @@
                     var _self = this;
 
                     //BOTÕES
+                    if (data.terminada == true) { //TERMINADA
+                        $(_self.$.btn_updateFH1).addClass('disabled');
+                        $(_self.$.btn_updateFH2).addClass('disabled');
+                    };
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
@@ -3709,6 +3875,24 @@
                     };
 
                     //CAMPOS
+                    if (data.terminada == true) { //TERMINADA
+                        _self.$.projetoNo.disabled = true;
+                        _self.$.empregadoNo.disabled = true;
+                        _self.$.dataPartidaTexto.disabled = true;
+                        _self.$.horaPartidaTexto.disabled = true;
+                        _self.$.dataChegadaTexto.disabled = true;
+                        _self.$.horaChegadaTexto.disabled = true;
+                        _self.$.tipoDeslocacao.disabled = true;
+                        _self.$.codigoTipoKms.disabled = true;
+                        _self.$.matricula.disabled = true;
+                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        _self.$.terminada.disabled = true;
+
+                        _self.$.codigoRegiao.disabled = true;
+                        _self.$.codigoAreaFuncional.disabled = true;
+                        _self.$.codigoCentroResponsabilidade.disabled = true;
+                        _self.$.observacoes.disabled = true;
+                    };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
                         _self.$.empregadoNo.disabled = true;

@@ -699,8 +699,8 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                    </vaadin-grid-filter>-->
+                    <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                </vaadin-grid-filter>-->
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
@@ -1127,7 +1127,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="DocIdDlg" label="Nº Documento"  on-value-changed="_projectChange" value="{{DocDlg}}" ></vaadin-text-field>
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
@@ -1140,7 +1140,7 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="idDateDlg" on-value-changed="_projectChange" name="DatenameDlg" value="{{DateDlg}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateDlg" name="DatenameDlg" value="{{DateDlg}}" ></vaadin-date-picker>
                 </div>
 
                 <div class="col-lg-2">
@@ -1165,22 +1165,23 @@
 
         </paper-dialog>
 
-        <paper-dialog id="dialogGetMovement" >
+        <paper-dialog id="dialogGetMovement">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-3">
-                    <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceClientCodeMov" name="piCodeResponsabilityCenter" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceClientCodeMov" name="piServiceClienteMov" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
-                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'
+                                   >
                     </such-selectbox>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceGroupCodMov" name="piCodeResponsabilityCenter" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceGroupCodMov" name="piServiceGroupMov" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -1394,7 +1395,7 @@
                     serviceGroupCod,
                     serviceClientCode
                 ) {
-
+                    
                     if (!this.Flag) {
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
@@ -1420,17 +1421,9 @@
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
 
-                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        //this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-                        //this.$.grid_databound_ajax.generateRequest();
-                        //this.$.projectMovementTable.clearCache();
 
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
-                        //this.$.grid_databound_ajax.body = JSON.stringify("");
-                        //this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
-                        //this.$.grid_databound_ajax.generateRequest();
-                        //this.$.projectMovementTable.clearCache();
                     }
                     this.$.ajax_ServiceGroup.body = JSON.stringify("");
                     this.$.ajax_ServiceGroup.params = { "allProjs": true };
@@ -1547,9 +1540,6 @@
                 _createmovprojResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.$.ajax_getall.generateRequest();
-                        this.$.projectMovementTable.selectedItems = [];
-                        this.$.projectMovementTable.selectedItem = [];
                         this.$.projectSourceDlg.value = "";
                         this.$.projectSourceDlg.valueText = "";
                         this.$.ProjDiaryPriceDlg.value = "";
@@ -1558,12 +1548,12 @@
                         this.$.ResourcesDlg.value = "";
                         this.$.ResourcesDlg.valueText = "";
 
-                        //if (this.disabledProjectNo === false) {
-                        //    this.$.projectTargetDlg.value = "";
-                        //    this.$.projectTargetDlg.valueText = "";
-                        //}
-                        //this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.selectedItems = [];
+                        this.$.projectMovementTable.selectedItem = [];
                         this.$.projectMovementTable.clearCache();
+
+                        this.$.ajax_getall.generateRequest();
+                        this.$.projectDiaryProject.clearCache();
                         if (this.result.eReasonCode === 1)
                         {
                             this.openToastSuccess(this.result.eMessage);
@@ -1576,7 +1566,6 @@
                 },
                 _updateResponse: function (e) {
                     var self = this;
-
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
@@ -1587,10 +1576,6 @@
                                 this.projectNumber = "";
                                 this.$.projectList._clearSelection();
                             }
-
-                            //this.codeRegion = "";
-                            //this.codeFuncArea = "";
-                            //this.codeResponsabilityCenter = "";
                             this.date = "";
                             this.projectMovementNumber = "";
                             this.projectTypeNumber = "";
@@ -1599,7 +1584,6 @@
                             this.quantity = "";
                             this.codeMeasurementUnit = "";
                             this.codeLocation = "";
-                            //this.codeProjectContabGroup = "";
                             this.unitCost = "";
                             this.totalCost = "";
                             this.unitPrice = "";
@@ -1613,10 +1597,6 @@
                             this.consumptionDate = "";
                             this.ddServiceClientCode = "";
                             this.unitValueToInvoice = "";
-
-                            //this.$.piCodeRegion._clearSelection();
-                            //this.$.piFuncArea._clearSelection();
-                            //this.$.piCodeResponsabilityCenter._clearSelection();
                             this.$.piCode._clearSelection();
                             this.$.piDescription.value = "";
                             this.$.piCodeLocation._clearSelection();
@@ -1632,7 +1612,6 @@
                             this.$.piResidueGuideNo.value = "";
                             this.$.piExternalGuideNo.value = "";
                             this.$.dpcompDate.value = "";
-                            //this.$.piContabGroup._clearSelection();
                             this.$.piCodeMeasurementUnit._clearSelection();
                             this.$.projectMovementList._clearSelection();
                             this.$.projectTypeList._clearSelection();
@@ -1654,7 +1633,7 @@
                         }
 
                         this.$.dialogGetProjetStart.close();
-                        this.$.ajax_createmovproj.params = { "projectNo": "","Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.ajax_createmovproj.params = { "projectNo": "", "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value, "Date": this.$.idDateDlg.value };
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
                     } else {
@@ -1671,10 +1650,10 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    //if (this.disabledProjectNo === false) {
-                    //    this.$.projectTargetDlg.value = "";
-                    //    this.$.projectTargetDlg.valueText = "";
-                    //}
+
+                    this.$.projectMovementTable.selectedItems = [];
+                    this.$.projectMovementTable.selectedItem = [];
+                    this.$.projectMovementTable.clearCache();
                 },
                 _closedialog: function (e) {
                     this.$.projectSourceDlg.value = "";
@@ -1685,26 +1664,22 @@
                     this.$.ResourcesDlg.value = "";
                     this.$.ResourcesDlg.valueText = "";
 
-                    //if (this.disabledProjectNo === false) {
-                    //    this.$.projectTargetDlg.value = "";
-                    //    this.$.projectTargetDlg.valueText = "";
-                    //}
+
                     this.$.projectMovementTable.selectedItems = [];
                     this.$.projectMovementTable.selectedItem = [];
-                    //this.$.grid_databound_ajax.generateRequest();
                     this.$.projectMovementTable.clearCache();
                 },
                 _projectChange: function (e) {         
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
+                        this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
                         this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "Date": this.$.idDateDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
-
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
 
@@ -1780,20 +1755,14 @@
                     this.$.ajax_register.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
-                
+
                 _getMovements: function () {
                     //Request
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
-
-                        this.$.idDateMovDlg.value = this.$.dpDate.value;                  
-                        var serviceGroup = this.ServiceGroupData.find(x => x.serviceCode == this.ddServiceGroupCode);
-                        if (serviceGroup != undefined) {
-                            this.$.ServiceGroupCodMov.value = serviceGroup.serviceDescription;
-                        }
-                        var serviceClie = this.ServiceClientData.find(x => x.serviceCode == this.ddServiceClientCode);
-                        if (serviceClie != undefined) {
-                            this.$.ServiceClientCodeMov.value = serviceClie.serviceDescription;
-                        }
+                        
+                        this.$.idDateMovDlg.value = this.$.dpDate.value;
+                        this.$.ServiceGroupCodMov.value = this.ddServiceGroupCode;
+                        this.$.ServiceClientCodeMov.value = this.ddServiceClientCode;
 
                         this.$.dialogGetMovement.open();
                         //this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
@@ -1805,9 +1774,14 @@
 
                 },
                 _dlgNextMov: function () {
-                    this.$.dialogGetMovement.close();
-                    this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value});
-                    this.$.ajax_movementLines.generateRequest();
+                    if (this.$.idDateMovDlg.value != undefined && this.$.idDateMovDlg.value != "") {
+                        this.$.dialogGetMovement.close();
+                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
+                        this.$.ajax_movementLines.generateRequest();
+                    }
+                    else {
+                        this.openToastError("Preencher campos obrigatórios!");
+                    }
                 },
                 _getMovementsProject: function () {
                     this.$.dialogGetProjetStart.open();
@@ -1818,18 +1792,27 @@
 
                 },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
+                        this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
+                        this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
                         this.$.dialog.open();
                     } else {
-                        this.openToastError("É obrigatório escolher o projeto de origem e destino.");
+                        this.openToastError("É obrigatório escolher o projeto de origem, de destino e a Data.");
                     }
 
                 },
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
-                            this.$.ajax_getall.generateRequest();
+                            this.$.ajax_SServiceClient.body = JSON.stringify("");
+                            this.$.ajax_SServiceClient.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_SServiceClient.generateRequest();
+                            this.$.ajax_ServiceGroup.body = JSON.stringify("");
+                            this.$.ajax_ServiceGroup.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_ServiceGroup.generateRequest();
+                            this.$.ajax_getall.body = JSON.stringify({"noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
+                            this.$.ajax_getall.generateRequest();                        
                             this.$.projectDiaryProject.clearCache();
                             this.openToastSuccess(this.movementLines.eMessage);
                         } else {

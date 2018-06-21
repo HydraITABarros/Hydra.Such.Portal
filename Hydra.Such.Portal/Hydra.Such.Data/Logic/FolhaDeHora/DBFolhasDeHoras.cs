@@ -9,6 +9,7 @@ using System.Text;
 using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
@@ -104,6 +105,27 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     FolhaDeHora.CustoTotalHoras = CustoTotalHoras;
                     FolhaDeHora.CustoTotalKm = CustoTotalKm;
                     FolhaDeHora.NumTotalKm = NumTotalKm;
+                    FolhaDeHora.DataHoraModificação = DateTime.Now;
+
+                    ctx.FolhasDeHoras.Update(FolhaDeHora);
+                    ctx.SaveChanges();
+                }
+
+                FolhaDeHorasViewModel FH = GetListaValidadoresIntegradores(NoFolhaHoras, FolhaDeHora.NºEmpregado);
+                using (var ctx = new SuchDBContext())
+                {
+                    FolhaDeHora.CódigoRegião = FH.CodigoRegiao;
+                    FolhaDeHora.CódigoÁreaFuncional = FH.CodigoAreaFuncional;
+                    FolhaDeHora.CódigoCentroResponsabilidade = FH.CodigoCentroResponsabilidade;
+
+                    FolhaDeHora.NºResponsável1 = FH.Responsavel1No;
+                    FolhaDeHora.NºResponsável2 = FH.Responsavel2No;
+                    FolhaDeHora.NºResponsável3 = FH.Responsavel3No;
+
+                    FolhaDeHora.Validadores = FH.Validadores;
+                    FolhaDeHora.IntegradoresEmRh = FH.IntegradoresEmRH;
+                    FolhaDeHora.IntegradoresEmRhkm = FH.IntegradoresEmRHKM;
+
                     FolhaDeHora.DataHoraModificação = DateTime.Now;
 
                     ctx.FolhasDeHoras.Update(FolhaDeHora);
@@ -868,5 +890,144 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
+
+        public static FolhaDeHorasViewModel GetListaValidadoresIntegradores(string FolhaHorasNo, string idEmployee)
+        {
+            FolhasDeHoras FolhaHoras = new FolhasDeHoras();
+            FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
+
+            if (!string.IsNullOrEmpty(FolhaHorasNo))
+            {
+                FolhaHoras = DBFolhasDeHoras.GetById(FolhaHorasNo);
+
+                decimal CustoTotalHoras = FolhaHoras.CustoTotalHoras == null ? 0 : (decimal)FolhaHoras.CustoTotalHoras;
+                decimal CustoTotalAjudaCusto = FolhaHoras.CustoTotalAjudaCusto == null ? 0 : (decimal)FolhaHoras.CustoTotalAjudaCusto;
+                decimal CustoTotalKm = FolhaHoras.CustoTotalKm == null ? 0 : (decimal)FolhaHoras.CustoTotalKm;
+                decimal CustoTotal = CustoTotalHoras + CustoTotalAjudaCusto + CustoTotalKm;
+
+                if (idEmployee != null && idEmployee != "")
+                {
+                    string idEmployeePortal = null;
+
+                    //idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).SingleOrDefault().IdUtilizador;
+                    ConfigUtilizadores ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).SingleOrDefault();
+
+                    if (ConfUtilizadores != null)
+                        idEmployeePortal = ConfUtilizadores.IdUtilizador;
+
+                    if (idEmployeePortal != null)
+                    {
+                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito;
+                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
+                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+
+                        //GET LIST VALIDADORES
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsValidadores = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 1);
+                        ApprovalConfigurationsValidadores.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 1);
+
+                        if (ApprovalConfigurationsValidadores.Count > 0)
+                        {
+                            //Create User ApprovalMovements
+                            List<string> UsersToNotify = new List<string>();
+                            var approvalConfiguration = ApprovalConfigurationsValidadores[0];
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                            {
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                            else if (approvalConfiguration.GrupoAprovação.HasValue)
+                            {
+                                List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                                GUsers.ForEach(y =>
+                                {
+                                    UsersToNotify.Add(y);
+                                });
+                            }
+
+                            //Notify Users
+                            int indice = 1;
+                            UsersToNotify = UsersToNotify.Distinct().ToList();
+                            UsersToNotify.ForEach(user =>
+                            {
+                                if (indice == 1 && user != "")
+                                    FH.Responsavel1No = user;
+                                if (indice == 2 && user != "")
+                                    FH.Responsavel2No = user;
+                                if (indice == 3 && user != "")
+                                    FH.Responsavel3No = user;
+                                indice = indice + 1;
+
+                                FH.Validadores = FH.Validadores + user + " - ";
+                            });
+                        }
+
+                        //GET LIST INTEGRADORES EM RH
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRH = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 2);
+                        ApprovalConfigurationsIntegradoresEmRH.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 2);
+
+                        if (ApprovalConfigurationsIntegradoresEmRH.Count > 0)
+                        {
+                            //Create User ApprovalMovements
+                            List<string> UsersToNotify = new List<string>();
+                            var approvalConfiguration = ApprovalConfigurationsIntegradoresEmRH[0];
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                            {
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                            else if (approvalConfiguration.GrupoAprovação.HasValue)
+                            {
+                                List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                                GUsers.ForEach(y =>
+                                {
+                                    UsersToNotify.Add(y);
+                                });
+                            }
+
+                            //Notify Users
+                            UsersToNotify = UsersToNotify.Distinct().ToList();
+                            UsersToNotify.ForEach(user =>
+                            {
+                                FH.IntegradoresEmRH = FH.IntegradoresEmRH + user + " - ";
+                            });
+                        }
+
+                        //GET LIST INTEGRADORES EM RH KM
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRHKM = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 3);
+                        ApprovalConfigurationsIntegradoresEmRHKM.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 3);
+
+                        if (ApprovalConfigurationsIntegradoresEmRHKM.Count > 0)
+                        {
+                            //Create User ApprovalMovements
+                            List<string> UsersToNotify = new List<string>();
+                            var approvalConfiguration = ApprovalConfigurationsIntegradoresEmRHKM[0];
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                            {
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                            else if (approvalConfiguration.GrupoAprovação.HasValue)
+                            {
+                                List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                                GUsers.ForEach(y =>
+                                {
+                                    UsersToNotify.Add(y);
+                                });
+                            }
+
+                            //Notify Users
+                            UsersToNotify = UsersToNotify.Distinct().ToList();
+                            UsersToNotify.ForEach(user =>
+                            {
+                                FH.IntegradoresEmRHKM = FH.IntegradoresEmRHKM + user + " - ";
+                            });
+                        }
+                    }
+                }
+            }
+
+            return FH;
+        }
+
     }
 }

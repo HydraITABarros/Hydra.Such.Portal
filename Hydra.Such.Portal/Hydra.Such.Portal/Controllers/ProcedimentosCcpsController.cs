@@ -113,6 +113,7 @@ namespace Hydra.Such.Portal.Controllers
         public List<ProcedimentoCCPView> estado_todos { get; set; }
         public List<ProcedimentoCCPView> estado_ratificarCA { get; set; }
         public List<ProcedimentoCCPView> estado_processos_suspensos { get; set; }
+
     }
 
     [Authorize]
@@ -169,6 +170,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
+        public IActionResult QuadroBordoSimplificado()
+        {
+            return View();
+        }
         #endregion
 
         [HttpPost]
@@ -211,11 +216,29 @@ namespace Hydra.Such.Portal.Controllers
             model.estado_17 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(17);
             model.estado_18 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(18);
             model.estado_19 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(19);
-            model.estado_10 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(20);
+            model.estado_20 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(20);
 
             model.estado_todos = DBProcedimentosCCP.GetAllProcedimentosByView_QuadroBordo_ToList();
             model.estado_ratificarCA = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoRatificarCAToList();
             model.estado_processos_suspensos = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoProcessosSuspensosToList();
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentosSimplificados_Estados()
+        {
+            var model = new CCP_QuadroBordo();
+            model.estado_1 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(1);
+            model.estado_2 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(2);
+            model.estado_4 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(4);
+            model.estado_5 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(5);
+            model.estado_16 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(16);
+            model.estado_17 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(17);
+
+            /*              !!!!!!!!!   NOTA    !!!!!!!!!           */
+            //estado_processos_suspensos equivale a autorizados nos Procedimentos Simplificados, apenas para não alterar a class!!!!
+            model.estado_processos_suspensos = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoProcessosAutorizadosToList();
 
             return Json(model);
         }
