@@ -1534,6 +1534,7 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
+            ViewBag.projectNo = id;
             return View();
         }
 
