@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic.Project;
 using System.Data.SqlClient;
 using Hydra.Such.Data;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -667,43 +668,41 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         //Buscar o Nome de Empregado, Região, Área, CRESP, Responsáveis, Validadores e Integradores
-        public JsonResult GetEmployeeNome([FromBody] string idEmployee)
+        //public JsonResult GetEmployeeNome([FromBody] string idEmployee, [FromBody] string folhaDeHorasNo)
+        public JsonResult GetEmployeeNome([FromBody] FolhaDeHorasViewModel data)
         {
+            string idEmployee;
+            string folhaDeHorasNo;
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-            if (idEmployee != null && idEmployee != "")
+            if (data != null)
             {
-                string idEmployeePortal;
+                idEmployee = data.EmpregadoNo;
+                folhaDeHorasNo = data.FolhaDeHorasNo;
+                //FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-                List<ConfigUtilizadores> ConfUtili = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).ToList();
-                if (ConfUtili.Count > 0)
+                if (!string.IsNullOrEmpty(folhaDeHorasNo))
                 {
-                    idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).FirstOrDefault().IdUtilizador;
-
-                    if (idEmployeePortal != null)
-                    {
-                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito;
-                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
-                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
-                    }
-
-                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado.ToLower() == idEmployeePortal.ToLower()).FirstOrDefault();
-
-                    if (Autorizacao != null)
-                    {
-                        FH.Responsavel1No = Autorizacao.NoResponsavel1;
-                        FH.Responsavel2No = Autorizacao.NoResponsavel2;
-                        FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                        FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
-                        FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
-                        FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
-                    };
+                    FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee);
+                    FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
                 }
-                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
+                //AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado.ToLower() == idEmployeePortal.ToLower()).FirstOrDefault();
+
+                //if (Autorizacao != null)
+                //{
+                //    FH.Responsavel1No = Autorizacao.NoResponsavel1;
+                //    FH.Responsavel2No = Autorizacao.NoResponsavel2;
+                //    FH.Responsavel3No = Autorizacao.NoResponsavel3;
+                //    FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                //    FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                //    FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+                //};
             }
+
+
             return Json(FH);
         }
-
 
         //[HttpPost]
         //public JsonResult ValidateNumeration([FromBody] FolhaDeHorasViewModel data)
@@ -1063,6 +1062,8 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
+                    FolhaDeHorasViewModel FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, data.EmpregadoNo);
+
                     if (DBFolhasDeHoras.Update(new FolhasDeHoras()
                     {
                         NºFolhaDeHoras = data.FolhaDeHorasNo,
@@ -1082,24 +1083,24 @@ namespace Hydra.Such.Portal.Controllers
                         Estado = data.Estadotexto == "" ? 0 : Convert.ToInt32(data.Estadotexto),
                         CriadoPor = data.CriadoPor,
                         DataHoraCriação = data.DataHoraCriacao,
-                        CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                        CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                        CódigoRegião = FH.CodigoRegiao == "" ? null : FH.CodigoRegiao,
+                        CódigoÁreaFuncional = FH.CodigoAreaFuncional == "" ? null : FH.CodigoAreaFuncional,
+                        CódigoCentroResponsabilidade = FH.CodigoCentroResponsabilidade == "" ? null : FH.CodigoCentroResponsabilidade,
                         TerminadoPor = data.TerminadoPor,
                         DataHoraTerminado = data.DataHoraTerminado,
 
                         Validado = data.ValidadoTexto == "" ? false : Convert.ToBoolean(data.ValidadoTexto),
-                        Validadores = data.Validadores == "" ? null : data.Validadores,
+                        Validadores = FH.Validadores == "" ? null : FH.Validadores,
                         Validador = data.Validador,
                         DataHoraValidação = data.DataHoraValidacao,
 
                         IntegradoEmRh = data.IntegradoEmRhTexto == "" ? false : Convert.ToBoolean(data.IntegradoEmRhTexto),
-                        IntegradoresEmRh = data.IntegradoresEmRH == "" ? null : data.IntegradoresEmRH,
+                        IntegradoresEmRh = FH.IntegradoresEmRH == "" ? null : FH.IntegradoresEmRH,
                         IntegradorEmRh = data.IntegradorEmRH,
                         DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
 
                         IntegradoEmRhkm = data.IntegradoEmRhKmTexto == "" ? false : Convert.ToBoolean(data.IntegradoEmRhKmTexto),
-                        IntegradoresEmRhkm = data.IntegradoresEmRHKM == "" ? null : data.IntegradoresEmRHKM,
+                        IntegradoresEmRhkm = FH.IntegradoresEmRHKM == "" ? null : FH.IntegradoresEmRHKM,
                         IntegradorEmRhKm = data.IntegradorEmRHKM,
                         DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM,
 
@@ -1108,9 +1109,9 @@ namespace Hydra.Such.Portal.Controllers
                         CustoTotalKm = data.CustoTotalKM,
                         NumTotalKm = data.NumTotalKM,
                         Observações = data.Observacoes,
-                        NºResponsável1 = data.Responsavel1No,
-                        NºResponsável2 = data.Responsavel2No,
-                        NºResponsável3 = data.Responsavel3No,
+                        NºResponsável1 = FH.Responsavel1No == "" ? null : FH.Responsavel1No,
+                        NºResponsável2 = FH.Responsavel2No == "" ? null : FH.Responsavel2No,
+                        NºResponsável3 = FH.Responsavel3No == "" ? null : FH.Responsavel3No,
                         ValidadoresRhKm = data.ValidadoresRHKM,
                         DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
                         UtilizadorModificação = User.Identity.Name,
@@ -2577,6 +2578,81 @@ namespace Hydra.Such.Portal.Controllers
         //        return null;
         //    }
         //}
+
+        [HttpPost]
+        //Terminar uma Folha de Horas
+        public JsonResult TerminarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            int result = 0;
+            try
+            {
+                if (data != null)
+                {
+                    FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                    //if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                    //{
+                    //    NºFolhaDeHoras = data.FolhaDeHorasNo,
+                    //    Área = FH.Área,
+                    //    NºProjeto = data.ProjetoNo,
+                    //    ProjetoDescricao = DBProjects.GetById(data.ProjetoNo).Descrição,
+                    //    NºEmpregado = data.EmpregadoNo,
+                    //    NomeEmpregado = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name,
+                    //    DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                    //    DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                    //    TipoDeslocação = data.TipoDeslocacao,
+                    //    CódigoTipoKmS = data.CodigoTipoKms,
+                    //    Matrícula = data.Matricula,
+                    //    DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                    //    DeslocaçãoPlaneada = null,
+                    //    Terminada = true, //TERMINADA
+                    //    Estado = data.Estado,
+                    //    CriadoPor = data.CriadoPor,
+                    //    DataHoraCriação = FH.DataHoraCriação,
+                    //    CódigoRegião = data.CodigoRegiao,
+                    //    CódigoÁreaFuncional = data.CodigoAreaFuncional,
+                    //    CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
+                    //    TerminadoPor = User.Identity.Name, //TERMINADA
+                    //    DataHoraTerminado = DateTime.Now, //TERMINADA
+                    //    Validado = data.Validado,
+                    //    Validadores = data.Validadores,
+                    //    Validador = data.Validador,
+                    //    DataHoraValidação = DateTime.Parse(string.Concat(data.DataValidacaoTexto, " ", data.HoraValidacaoTexto)),
+                    //    IntegradoEmRh = FH.IntegradoEmRh,
+                    //    IntegradoresEmRh = data.IntegradoresEmRH,
+                    //    IntegradorEmRh = data.IntegradorEmRH,
+                    //    DataIntegraçãoEmRh = DateTime.Parse(string.Concat(data.DataIntegracaoEmRHTexto, " ", data.HoraIntegracaoEmRHTexto)),
+                    //    IntegradoEmRhkm = FH.IntegradoEmRhkm,
+                    //    IntegradoresEmRhkm = data.IntegradoresEmRHKM,
+                    //    IntegradorEmRhKm = data.IntegradorEmRHKM,
+                    //    DataIntegraçãoEmRhKm = DateTime.Parse(string.Concat(data.DataIntegracaoEmRHKMTexto, " ", data.HoraIntegracaoEmRHKMTexto)),
+                    //    CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
+                    //    CustoTotalHoras = data.CustoTotalHoras,
+                    //    CustoTotalKm = data.CustoTotalKM,
+                    //    NumTotalKm = data.NumTotalKM,
+                    //    Observações = data.Observacoes,
+                    //    NºResponsável1 = FH.NºResponsável1,
+                    //    NºResponsável2 = FH.NºResponsável2,
+                    //    NºResponsável3 = FH.NºResponsável3,
+                    //    ValidadoresRhKm = FH.ValidadoresRhKm,
+                    //    DataHoraÚltimoEstado = FH.DataHoraÚltimoEstado,
+                    //    UtilizadorModificação = User.Identity.Name, //TERMINADA
+                    //    DataHoraModificação = DateTime.Now //TERMINADA
+                    //}) == null)
+                    //{
+                    //    result = 6;
+                    //}
+                    //else
+                    //{
+                    //    result = 0;
+                    //};
+                }
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
 
         [HttpPost]
         //Valida uma Folha de Horas
