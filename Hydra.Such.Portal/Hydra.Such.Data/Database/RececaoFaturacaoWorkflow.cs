@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.Database
     public partial class RececaoFaturacaoWorkflow
     {
         public int Id { get; set; }
+        public string IdRecFaturacao { get; set; }
         public int? Estado { get; set; }
         public string AreaWorkflow { get; set; }
         public string Descricao { get; set; }

@@ -11,41 +11,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public BillingDocumentTypes TipoDocumento { get; set; }
         public BillingReceptionStates Estado { get; set; }
         public string DataRececao { get; set; }
-        //public string DataRececaoTextValue
-        //{
-        //    get
-        //    {
-        //        return DataRececao.HasValue ? DataRececao.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
-        //    }
-        //    set
-        //    {
-        //        if (!string.IsNullOrEmpty(value))
-        //        {
-        //            DateTime date = new DateTime();
-        //            if (DateTime.TryParse(value, out date))
-        //                DataRececao = date;
-        //        }
-        //    }
-        //}
         public string CodFornecedor { get; set; }
         public string NumDocFornecedor { get; set; }
         public string DataDocFornecedor { get; set; }
-        //public string DataDocFornecedorTextValue
-        //{
-        //    get
-        //    {
-        //        return DataDocFornecedor.HasValue ? DataDocFornecedor.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
-        //    }
-        //    set
-        //    {
-        //        if (!string.IsNullOrEmpty(value))
-        //        {
-        //            DateTime date = new DateTime();
-        //            if (DateTime.TryParse(value, out date))
-        //                DataDocFornecedor = date;
-        //        }
-        //    }
-        //}
         public string NumEncomenda { get; set; }
         public string NumEncomendaManual { get; set; }
         public decimal? ValorEncomendaOriginal { get; set; }
@@ -62,22 +30,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Destinatario { get; set; }
         public string AreaPendente { get; set; }
         public string DataUltimaInteracao { get; set; }
-        //public string DataUltimaInteracaoTextValue
-        //{
-        //    get
-        //    {
-        //        return DataUltimaInteracao.HasValue ? DataUltimaInteracao.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
-        //    }
-        //    set
-        //    {
-        //        if (!string.IsNullOrEmpty(value))
-        //        {
-        //            DateTime date = new DateTime();
-        //            if (DateTime.TryParse(value, out date))
-        //                DataUltimaInteracao = date;
-        //        }
-        //    }
-        //}
         public DateTime? DataCriacao { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }

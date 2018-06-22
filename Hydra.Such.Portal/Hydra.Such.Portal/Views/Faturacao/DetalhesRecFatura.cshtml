@@ -109,9 +109,10 @@
                 <paper-button class="tablinks" on-tap="_redirectToCreateForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
             <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button class="tablinks" on-tap="_postFacturaCF"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
-                <paper-button class="tablinks" on-tap="_postFacturaCP"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
-                <paper-button class="tablinks" on-tap="_postNotaDeCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
             </template>
         </div>
 
@@ -508,12 +509,12 @@
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
-                        //if (this.data.estado != this._states.Rececao || this.data.estado != this._states.Pendente) {
-                        //    var selState = this.States.find(x => x.id == this.data.estado);
-                        //    var stateDescription = selState != null ? selState.value : this.data.estado;
-                        //    this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
-                        //    return false;
-                        //}
+                        if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                            var selState = this.States.find(x => x.id == this.data.estado);
+                            var stateDescription = selState != null ? selState.value : this.data.estado;
+                            this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                            return false;
+                        }
                         if (this.data.codFornecedor == "") {
                             this._openToastError("O Fornecedor tem que estar preenchido.");
                             return false;
@@ -614,31 +615,11 @@
                             this._openToastError("Encomenda por rececionar.");
                     }
                 },
-                _destinationChange: function () {
-                    if (this.$.cmbDestinatario.value == 1) {
-                        this._checkDestination = true;
+                _postDocument: function () {
+                    if (this._validateInputForAccounting()) { 
+                        //callPostDocument
                     }
-                    else {
-                        this._checkDestination = false;
-                    }
-                },
-                _sendPending: function () {
-                    this.$.dialogSendPeding.open();
-                },
-                _postFacturaCF: function () {
-                    if (this._validateInputForAccounting()) {
-                        this.$.txtAreaPendente = "";
-                        this.$.txtDestinatario ="";
-                        this._checkPending = true;
-                        this._invoice = true;
-                    }
-                },
-                _postFacturaCP: function () {
-                    if (this._validateInputForAccounting()) {
-                        this._checkPending = false;
-                        this._invoice = true;
-                    }               
-                }             
+                 }
             });
         });
     </script>
