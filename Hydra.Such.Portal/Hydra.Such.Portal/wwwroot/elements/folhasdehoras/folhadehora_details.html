@@ -516,7 +516,7 @@
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
                             <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-blur="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
                     </div>
 
@@ -1856,7 +1856,10 @@
                 },
 
                 _validacaoTerminada: function () {
-                    debugger;
+                    if (this.data.terminada == true)
+                        this.data.terminada = false;
+                    else if (this.data.terminada == false)
+                        this.data.terminada = true;
 
                     var ok = 0;
                     var ajax_request = this.$.terminarfolhadehoras_ajax;
@@ -1878,8 +1881,6 @@
                     }
 
                     if (ok == 1) {
-                        //debugger;
-
                         var terminada_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
                         var terminada_Area = this.data.codigoArea;
                         var terminada_ProjetoNo = this.$.projetoNo.value;
@@ -1892,6 +1893,7 @@
                         var terminada_CodigoTipoKms = this.$.codigoTipoKms.value;
                         var terminada_Matricula = this.$.matricula.value;
                         var terminada_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
+                        var terminada_Terminada = null;
                         var terminada_Estado = this.$.folhaDeHoraStatus.value;
                         var terminada_CriadoPor = this.$.criadoPor.value;
                         var terminada_CodigoRegiao = this.$.codigoRegiao.value;
@@ -1930,55 +1932,55 @@
                             },
                             callback: function (terminarFolhaHoras) {
                                 if (terminarFolhaHoras) {
-                                    //debugger;
-                                    ajax_request.body = JSON.stringify({
-                                        folhaDeHorasNo: terminada_FolhaDeHorasNo,
-                                        projetoNo: terminada_ProjetoNo,
-                                        empregadoNo: terminada_EmpregadoNo,
-                                        dataPartidaTexto: terminada_DataPartidaTexto,
-                                        horaPartidaTexto: terminada_HoraPartidaTexto,
-                                        dataChegadaTexto: terminada_DataChegadaTexto,
-                                        horaChegadaTexto: terminada_HoraChegadaTexto,
-                                        tipoDeslocacao: terminada_TipoDeslocacao,
-                                        codigoTipoKms: terminada_CodigoTipoKms,
-                                        matricula: terminada_Matricula,
-                                        deslocacaoForaConcelho: terminada_DeslocacaoForaConcelho,
-                                        estado: terminada_Estado,
-                                        criadoPor: terminada_CriadoPor,
-                                        codigoRegiao: terminada_CodigoRegiao,
-                                        codigoAreaFuncional: terminada_CodigoAreaFuncional,
-                                        codigoCentroResponsabilidade: terminada_CodigoCentroResponsabilidade,
-                                        validado: terminada_Validado,
-                                        validadores: terminada_Validadores,
-                                        validador: terminada_Validador,
-                                        dataValidacaoTexto: terminada_DataValidacaoTexto,
-                                        horaValidacaoTexto: terminada_HoraValidacaoTexto,
-                                        integradoresEmRH: terminada_IntegradoresEmRH,
-                                        integradorEmRH: terminada_IntegradorEmRH,
-                                        dataIntegracaoEmRHTexto: terminada_DataIntegracaoEmRHTexto,
-                                        horaIntegracaoEmRHTexto: terminada_HoraIntegracaoEmRHTexto,
-                                        integradoresEmRHKM: terminada_IntegradoresEmRHKM,
-                                        integradorEmRHKM: terminada_IntegradorEmRHKM,
-                                        dataIntegracaoEmRHKMTexto: terminada_DataIntegracaoEmRHKMTexto,
-                                        horaIntegracaoEmRHKMTexto: terminada_HoraIntegracaoEmRHKMTexto,
-                                        custoTotalAjudaCusto: terminada_CustoTotalAjudaCusto,
-                                        custoTotalHoras: terminada_CustoTotalHoras,
-                                        custoTotalKM: terminada_CustoTotalKM,
-                                        numTotalKM: terminada_NumTotalKM,
-                                        observacoes: terminada_Observacoes
-                                    });
-                                    ajax_request.generateRequest();
+                                    terminada_Terminada = true;
                                 }
                                 else {
-                                    this.data.terminada = false;
-                                }
+                                    terminada_Terminada = false;
+                                };
+
+                                ajax_request.body = JSON.stringify({
+                                    folhaDeHorasNo: terminada_FolhaDeHorasNo,
+                                    projetoNo: terminada_ProjetoNo,
+                                    empregadoNo: terminada_EmpregadoNo,
+                                    dataPartidaTexto: terminada_DataPartidaTexto,
+                                    horaPartidaTexto: terminada_HoraPartidaTexto,
+                                    dataChegadaTexto: terminada_DataChegadaTexto,
+                                    horaChegadaTexto: terminada_HoraChegadaTexto,
+                                    tipoDeslocacao: terminada_TipoDeslocacao,
+                                    codigoTipoKms: terminada_CodigoTipoKms,
+                                    matricula: terminada_Matricula,
+                                    deslocacaoForaConcelho: terminada_DeslocacaoForaConcelho,
+                                    terminada: terminada_Terminada,
+                                    estado: terminada_Estado,
+                                    criadoPor: terminada_CriadoPor,
+                                    codigoRegiao: terminada_CodigoRegiao,
+                                    codigoAreaFuncional: terminada_CodigoAreaFuncional,
+                                    codigoCentroResponsabilidade: terminada_CodigoCentroResponsabilidade,
+                                    validado: terminada_Validado,
+                                    validadores: terminada_Validadores,
+                                    validador: terminada_Validador,
+                                    dataValidacaoTexto: terminada_DataValidacaoTexto,
+                                    horaValidacaoTexto: terminada_HoraValidacaoTexto,
+                                    integradoresEmRH: terminada_IntegradoresEmRH,
+                                    integradorEmRH: terminada_IntegradorEmRH,
+                                    dataIntegracaoEmRHTexto: terminada_DataIntegracaoEmRHTexto,
+                                    horaIntegracaoEmRHTexto: terminada_HoraIntegracaoEmRHTexto,
+                                    integradoresEmRHKM: terminada_IntegradoresEmRHKM,
+                                    integradorEmRHKM: terminada_IntegradorEmRHKM,
+                                    dataIntegracaoEmRHKMTexto: terminada_DataIntegracaoEmRHKMTexto,
+                                    horaIntegracaoEmRHKMTexto: terminada_HoraIntegracaoEmRHKMTexto,
+                                    custoTotalAjudaCusto: terminada_CustoTotalAjudaCusto,
+                                    custoTotalHoras: terminada_CustoTotalHoras,
+                                    custoTotalKM: terminada_CustoTotalKM,
+                                    numTotalKM: terminada_NumTotalKM,
+                                    observacoes: terminada_Observacoes
+                                });
+                                ajax_request.generateRequest();
                             }
                         });
-                        //this.$.terminarfolhadehoras_ajax.body = JSON.stringify(this.data);
-                        //this.$.terminarfolhadehoras_ajax.generateRequest();
                     }
                     else {
-                        this.data.terminada = false;
+                        ajax_ready.generateRequest();
                     }
                 },
 
@@ -3213,138 +3215,47 @@
                         bootbox.hideAll();
                     }, 0);
 
-                    if (this.terminarFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas terminada com sucesso.');
+                    if (this.terminarFolhaDeHoras.eReasonCode == 0 || this.terminarFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.terminarFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.terminarFolhaDeHoras == 6) {
-                            this._showErrorMessage('Ocorreu um erro ao Terminar a Folha de Horas.');
+                    } else {
+                        if (this.terminarFolhaDeHoras.eReasonCode == 1) {
+                            this.$.page_databound_ajax.generateRequest();
                         }
                         else {
-                            if (this.terminarFolhaDeHoras == 99) {
-                                this._showErrorMessage('Ocorreu um erro.');
-                            }
+                            this._showErrorMessage(this.terminarFolhaDeHoras.eMessage);
                         }
-                    }
+                    };
                 },
 
                 _validarfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.validarFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas validada com sucesso.');
+                    if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.validarFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.validarFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para validar esta Folha de Horas.');
-                        }
-                        else {
-                            if (this.validarFolhaDeHoras == 2) {
-                                this._showErrorMessage('O projecto definido na Folha de Horas não existe no eSUCH e/ou Evolution.');
-                            }
-                            else {
-                                if (this.validarFolhaDeHoras == 3) {
-                                    this._showErrorMessage('O projecto definido na Mão de Obra não existe no eSUCH e/ou Evolution.');
-                                }
-                                else {
-                                    if (this.validarFolhaDeHoras == 4) {
-                                        this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                                    }
-                                    else {
-                                        if (this.validarFolhaDeHoras == 5) {
-                                            this._showErrorMessage('Não pode validar esta Folha de Horas pois a mesma já se encontra Validada.');
-                                        }
-                                        else {
-                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha de Horas.');
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    } else {
+                        this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
+                    };
                 },
 
                 _integraremrhfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.integrarEmRHFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas Integrada em RH com sucesso.');
+                    if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.integrarEmRHFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para Integrar em RH esta Folha de Horas.');
-                        }
-                        else {
-                            if (this.integrarEmRHFolhaDeHoras == 4) {
-                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                            }
-                            else {
-                                if (this.integrarEmRHFolhaDeHoras == 5) {
-                                    this._showErrorMessage('Não pode Integrar em RH esta Folha de Horas pois a mesma já se encontra Integrada em RH.');
-                                }
-                                else {
-                                    if (this.integrarEmRHFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
-                                    }
-                                    else {
-                                        if (this.integrarEmRHFolhaDeHoras == 7) {
-                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH no eSUCH.');
-                                        }
-                                        else {
-                                            if (this.integrarEmRHFolhaDeHoras == 8) {
-                                                this._showErrorMessage('A Folha de Horas tem que estar no estado Validado');
-                                            }
-                                            else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha de Horas.');
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    } else {
+                        this._showErrorMessage(this.integrarEmRHFolhaDeHoras.eMessage);
+                    };
                 },
 
                 _integraremrhkmfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.integrarEmRHKMFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas Integrada em RH KM com sucesso.');
+                    if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.integrarEmRHKMFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para Integrar em RH KM esta Folha de Horas.');
-                        }
-                        else {
-                            if (this.integrarEmRHKMFolhaDeHoras == 4) {
-                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                            }
-                            else {
-                                if (this.integrarEmRHKMFolhaDeHoras == 5) {
-                                    this._showErrorMessage('Não pode Integrar em RH KM esta Folha de Horas pois a mesma já se encontra Integrada em RH KM.');
-                                }
-                                else {
-                                    if (this.integrarEmRHKMFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.');
-                                    }
-                                    else {
-                                        if (this.integrarEmRHKMFolhaDeHoras == 7) {
-                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH KM no eSUCH.');
-                                        }
-                                        else {
-                                            if (this.integrarEmRHKMFolhaDeHoras == 8) {
-                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
-                                            }
-                                            else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha de Horas.');
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    } else {
+                        this._showErrorMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
+                    };
                 },
 
 
@@ -3488,13 +3399,20 @@
                 //AJUDA DE CUSTOS
                 _updateCalcularAjudasCustoResponse: function (e) {
                     //debugger;
-                    if (this.CalcularAjudasCustoUpdated) {
-                        this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
+                    if (this.CalcularAjudasCustoUpdated.eReasonCode == 0) {
+                        this._showMessage(this.CalcularAjudasCustoUpdated.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
-                    }
+                    } else {
+                        this._showErrorMessage(this.CalcularAjudasCustoUpdated.eMessage);
+                    };
+
+                    //if (this.CalcularAjudasCustoUpdated) {
+                    //    this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
+                    //    this.$.page_databound_ajax.generateRequest();
+                    //}
+                    //else {
+                    //    this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
+                    //}
                 },
 
                 //MAODEOBRA

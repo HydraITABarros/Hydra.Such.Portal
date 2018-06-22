@@ -1814,18 +1814,8 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 3,
-                Value = "Folhas de Horas - Validar"
+                Value = "Folhas de Horas"
             },
-            new EnumData
-            {
-                Id = 4,
-                Value = "Folhas de Horas - Integrar Aj. Custo RH"
-            },
-            new EnumData
-            {
-                Id = 5,
-                Value = "Folhas de Horas - Integrar kms RH"
-            }
         };
 
         public static readonly List<EnumData> CookingTechniqueTypes = new List<EnumData>()

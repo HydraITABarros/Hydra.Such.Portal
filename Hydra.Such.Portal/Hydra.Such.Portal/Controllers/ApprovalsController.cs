@@ -48,6 +48,7 @@ namespace Hydra.Such.Portal.Controllers
             result.ForEach(x =>
             {
                 x.TypeText = EnumerablesFixed.ApprovalTypes.Where(y => y.Id == x.Type).FirstOrDefault().Value;
+
                 switch (x.Status)
                 {
                     case 1:
@@ -60,6 +61,7 @@ namespace Hydra.Such.Portal.Controllers
                         x.StatusText = "Pendente";
                         break;
                 }
+
                 switch (x.Type)
                 {
                     case 1:
@@ -71,12 +73,22 @@ namespace Hydra.Such.Portal.Controllers
                     case 3:
                         x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
                         break;
-                    case 4:
-                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
-                        break;
-                    case 5:
-                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
-                        break;
+                }
+
+                if (x.Type == 3)
+                {
+                    switch (x.Level)
+                    {
+                        case 1:
+                            x.TypeText = "Folha de Horas - Validar";
+                            break;
+                        case 2:
+                            x.TypeText = "Folha de Horas - Integrar Ajudas de Custo";
+                            break;
+                        case 3:
+                            x.TypeText = "Folha de Horas - Integrar km's";
+                            break;
+                    }
                 }
             });
 
@@ -218,23 +230,23 @@ namespace Hydra.Such.Portal.Controllers
                         //Aprovar
                         if (movementStatus == 1)
                         {
-                            if (string.IsNullOrEmpty(FolhaHoras.NºEmpregado))
+                            if (string.IsNullOrEmpty(FolhaHoras.NºFolhaDeHoras) || string.IsNullOrEmpty(FolhaHoras.NºEmpregado))
                             {
-                                result.eReasonCode = 101; //Não existe Nº de Empregado
-                                result.eMessage = "Não existe Nº de Empregado na Folha de Horas.";
+                                result.eReasonCode = 101;
+                                result.eMessage = "Faltam preencher os campos obrigatórios.";
                             }
                             else
                             {
                                 if ((FolhaHoras.Validado == null ? false : (bool)FolhaHoras.Validado) || (int)FolhaHoras.Estado != 0)
                                 {
-                                    result.eReasonCode = 101; //Não Pode validar pois já se encontra validada
+                                    result.eReasonCode = 101;
                                     result.eMessage = "A Folha de Horas já se encontra validada.";
                                 }
                                 else
                                 {
                                     if (!FolhaHoras.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                                     {
-                                        result.eReasonCode = 101; //Não tem permissões para validar
+                                        result.eReasonCode = 101;
                                         result.eMessage = "Não tem permissões para validar a Folha de Horas.";
                                     }
                                     else
@@ -299,7 +311,7 @@ namespace Hydra.Such.Portal.Controllers
                                                         });
                                                     }
 
-                                                    if (FolhaHoras.Estado == 1 && NoAjudasCusto > 0)
+                                                    if (FolhaHoras.Estado == 1)
                                                     {
                                                         //Approve Movement
                                                         ErrorHandler approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.MovementNo, User.Identity.Name);
@@ -324,14 +336,28 @@ namespace Hydra.Such.Portal.Controllers
 
                                                     if (FolhaHoras.Estado == 2)
                                                     {
+                                                        //Update Old Movement
+                                                        ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                                        if (ApprovalMovement != null)
+                                                        {
+                                                            ApprovalMovement.Status = 2;
+                                                            ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                            ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                            ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                            ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                            //Delete All User Approval Movements
+                                                            DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                                        }
+
                                                         result.eReasonCode = 100;
-                                                        result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                                        result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
                                                     }
                                                 }
                                             }
                                             else
                                             {
-                                                result.eReasonCode = 101; //Houve erro no script SQL de Validação
+                                                result.eReasonCode = 101;
                                                 result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                             }
                                         }
@@ -443,26 +469,35 @@ namespace Hydra.Such.Portal.Controllers
 
                                                         if (FolhaHoras.Estado == 2)
                                                         {
+                                                            //Update Old Movement
+                                                            ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                                            if (ApprovalMovement != null)
+                                                            {
+                                                                ApprovalMovement.Status = 2;
+                                                                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                                ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                                //Delete All User Approval Movements
+                                                                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                                            }
+
                                                             result.eReasonCode = 100;
-                                                            result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                                            result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    result.eReasonCode = 101; //Houve erro no script SQL de Validação
+                                                    result.eReasonCode = 101;
                                                     result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                                 }
-
                                             }
-
                                         }
                                     }
-
                                 }
-
                             }
-
                         }
                         //Rejeitar
                         else if (movementStatus == 2)
@@ -540,7 +575,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                                     if (DBFolhasDeHoras.Update(FolhaHoras) == null)
                                                     {
-                                                        result.eReasonCode = 101; //Houve erro no Update na Folha de Horas
+                                                        result.eReasonCode = 101;
                                                         result.eMessage = "Houve erro na atualização da Folha de Horas.";
                                                     }
                                                     else
@@ -570,24 +605,35 @@ namespace Hydra.Such.Portal.Controllers
 
                                                         if (FolhaHoras.Estado == 2)
                                                         {
+                                                            //Update Old Movement
+                                                            ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+
+                                                            if (ApprovalMovement != null)
+                                                            {
+                                                                ApprovalMovement.Status = 2;
+                                                                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                                ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                                //Delete All User Approval Movements
+                                                                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                                            }
+
                                                             result.eReasonCode = 100;
-                                                            result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                                            result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    result.eReasonCode = 101; //Houve erro no script SQL de Validação
+                                                    result.eReasonCode = 101;
                                                     result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                                 }
-
                                             }
-
                                         }
                                     }
-
                                 }
-
                             }
                         }
                         //Rejeitar
