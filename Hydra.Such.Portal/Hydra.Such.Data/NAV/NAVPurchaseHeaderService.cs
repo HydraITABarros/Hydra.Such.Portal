@@ -23,25 +23,33 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
+        public static async Task<WsPrePurchaseDocs.Create_Result> CreateAsync(BillingReceptionModel purchDoc, NAVWSConfigurations WSConfigurations)
         {
-            if (purchFromSupplier == null)
-                throw new ArgumentNullException("purchFromSupplier");
+            if (purchDoc == null)
+                throw new ArgumentNullException("purchDoc");
 
-            WSPurchaseInvHeader.Create navCreate = new WSPurchaseInvHeader.Create()
+            WsPrePurchaseDocs.WSPrePurchaseDocs itemToCreate = new WsPrePurchaseDocs.WSPrePurchaseDocs();
+            itemToCreate.Document_Type = (WsPrePurchaseDocs.Document_Type)purchDoc.TipoDocumento;
+            itemToCreate.RegionCode20 = purchDoc.CodRegiao;
+            itemToCreate.FunctionAreaCode20 = purchDoc.CodAreaFuncional;
+            itemToCreate.ResponsabilityCenterCode20 = purchDoc.CodCentroResponsabilidade;
+            itemToCreate.Buy_from_Vendor_No = purchDoc.CodFornecedor;
+            itemToCreate.Rececao_Faturacao = purchDoc.Id;
+            if (purchDoc.Valor.HasValue)
             {
-                WSPurchInvHeaderInterm = new WSPurchaseInvHeader.WSPurchInvHeaderInterm()
-                {
-                    Pay_to_Vendor_No = purchFromSupplier.SupplierId,
-                    FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
-                    RegionCode20 = purchFromSupplier.RegionCode,
-                    ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode
-                }
-            };
+                itemToCreate.Valor_Factura = purchDoc.Valor.Value;
+                itemToCreate.Valor_FacturaSpecified = true;
+            }
+            if (purchDoc.TipoDocumento == Enumerations.BillingDocumentTypes.Fatura)
+                itemToCreate.Vendor_Invoice_No = purchDoc.NumDocFornecedor;
+            else
+                itemToCreate.Vendor_Cr_Memo_No = purchDoc.NumDocFornecedor;
+            
+            WsPrePurchaseDocs.Create navCreate = new WsPrePurchaseDocs.Create(itemToCreate);
 
             //Configure NAV Client
-            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_PurchaseInvHeader_URL.Replace("Company", WSConfigurations.WS_User_Company));
-            WSPurchaseInvHeader.WSPurchInvHeaderInterm_PortClient ws_Client = new WSPurchaseInvHeader.WSPurchInvHeaderInterm_PortClient(navWSBinding, ws_URL);
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_PurchaseHeaderDocs_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WsPrePurchaseDocs.WSPrePurchaseDocs_PortClient ws_Client = new WsPrePurchaseDocs.WSPrePurchaseDocs_PortClient(navWSBinding, ws_URL);
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 

@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public partial class RececaoFaturacao
+    public class BillingReceptionModel : ErrorHandler
     {
         public string Id { get; set; }
-        public int? TipoDocumento { get; set; }
-        public int? Estado { get; set; }
-        public DateTime? DataRececao { get; set; }
+        public BillingDocumentTypes TipoDocumento { get; set; }
+        public BillingReceptionStates Estado { get; set; }
+        public string DataRececao { get; set; }
         public string CodFornecedor { get; set; }
         public string NumDocFornecedor { get; set; }
-        public DateTime? DataDocFornecedor { get; set; }
+        public string DataDocFornecedor { get; set; }
         public string NumEncomenda { get; set; }
         public string NumEncomendaManual { get; set; }
         public decimal? ValorEncomendaOriginal { get; set; }
@@ -25,11 +27,9 @@ namespace Hydra.Such.Data.Database
         public string CodLocalizacao { get; set; }
         public string Local { get; set; }
         public string NumAcordoFornecedor { get; set; }
-        public DateTime? DocumentoCriadoEm { get; set; }
-        public string DocumentoCriadoPor { get; set; }
         public string Destinatario { get; set; }
         public string AreaPendente { get; set; }
-        public DateTime? DataUltimaInteracao { get; set; }
+        public string DataUltimaInteracao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }

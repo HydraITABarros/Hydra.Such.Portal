@@ -1,0 +1,626 @@
+﻿@{
+    ViewData["Title"] = "Receção de Faturas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<x-rececaofaturasdetails></x-rececaofaturasdetails>
+
+<dom-module id="x-rececaofaturasdetails">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+        </style>
+
+        <iron-ajax auto url="/PopulateDropdowns/GetRegionCode" last-response="{{ Regions }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ FunctionalAreas }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ ResponsabilityCenters }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetLocations" last-response="{{ Locations }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetBillingReceptionStates" last-response="{{ States }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetBillingDocumentTypes" last-response="{{ DocumentTypes }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ Vendors }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Faturacao/GetBillingReception/"
+                   last-response="{{ data }}"
+                   method="get"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_getBillingReceptionResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetOrders"
+                   last-response="{{ Orders }}"
+                   method="post"
+                   handle-as="json"
+                   id="orders_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/CreateBillingReception"
+                   last-response="{{ createdItem }}"
+                   id="page_create_ajax"
+                   on-response="_createResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateBillingReception"
+                   last-response="{{ updatedItem }}"
+                   id="page_update_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_redirectToCreateForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
+            </template>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
+                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
+            </template>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{ data.id }}" id="txtBillingReceptionId" name="txtBillingReceptionId" label="Nº Receção"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[DocumentTypes]]" id="cmbDocumentTypes" item-value-path="id" item-label-path="value" value="{{ data.tipoDocumento }}" label="Tipo de Documento" disabled="{{ !_permissions.update }}"
+                                          required error-message="Este campo é obrigatório">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-date-picker label="Data Receção" id="dpDataRececao" disabled="{{ !_permissions.update }}" value="{{ data.dataRececao }}"></vaadin-date-picker>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Nº Fornecedor"
+                                        items="[[ Vendors ]]"
+                                        text-path="name"
+                                        value-path="no_"
+                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                        disabled="{{ !_permissions.update }}"
+                                        on-value-changed="_supplierSelected">
+                        </such-selectbox>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-date-picker label="Data Doc. Fornecedor" id="dpDataDocFornecedor" disabled="{{ !_permissions.update }}" value="{{ data.dataDocFornecedor }}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{data.numAcordoFornecedor}}" id="txtNumAcordoFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Acordo Fornecedor"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box label="Região" items="[[Regions]]" id="cmbRegions" item-value-path="id" item-label-path="value" value="{{data.codRegiao}}" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box label="Área Funcional" items="[[FunctionalAreas]]" id="cmbFunctionalAreas" item-value-path="id" item-label-path="value" value="{{data.codAreaFuncional}}" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box label="Centro Responsabilidade" items="[[ResponsabilityCenters]]" id="cmbResponsabilityCenters" item-value-path="id" item-label-path="value" value="{{data.codCentroResponsabilidade}}" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box label="Localização" items="[[Locations]]" id="cmbLocations" item-value-path="id" item-label-path="value" value="{{data.codLocalizacao}}" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Local" type="text" value="{{data.local}}" id="txtLocal" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Destinatário" type="text" value="{{data.destinatario}}" id="txtDestinatario" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Área Pendente" type="text" value="{{data.areaPendente}}" id="txtAreaPendente" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-date-picker label="Data Última Interação" id="dpDataUltimaInteracao " disabled value="{{data.dataUltimaInteracao }}"></vaadin-date-picker>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <such-selectbox id="sbOrders" value="{{ data.numEncomenda }}" label="Nº Encomenda"
+                                        items="[[ Orders ]]"
+                                        text-path="no"
+                                        value-path="no"
+                                        fields='[{"field":"no", "name":"Nº Encomenda"},
+                                            {"field":"buyFromVendorNo", "name":"Nº Fornecedor"},
+                                            {"field":"buyFromVendorName", "name":"Nome Fornecedor"},
+                                            {"field":"valorFactura", "name":"Valor"},
+                                            {"field":"quantity", "name":"Quantidade"},
+                                            {"field":"quantityReceived", "name":"Quantidade Recebida"},
+                                            {"field":"amountRcdNotInvoiced", "name":"Quantidade Rec. não Contabilizada"},
+                                            {"field":"orderDate", "name":"Data"},
+                                            {"field":"dueDate", "name":"Data Expiração"},
+                                            {"field":"locationCode", "name":"Local"},
+                                            {"field":"regionId", "name":"Região"},
+                                            {"field":"functionalAreaId", "name":"Área Funcional"},
+                                            {"field":"respCenterId", "name":"Centro Responsabilidade"},
+                                            {"field":"vendorOrderNo", "name":"Nº Encomenda Fornecedor"},
+                                            {"field":"vendorInvoiceNo", "name":"Nº Fatura Fornecedor"},
+                                            {"field":"vendorCrMemoNo", "name":"Nº Nota Crédito Fornecedor"},
+                                            {"field":"documentDate", "name":"Data Documento"},
+                                            {"field":"dimensionSetID", "name":"Cód. Dimensão"},
+                                            {"field":"relatedDocument", "name":"Documento Relacionado"},
+                                            {"field":"sourceDocNo", "name":"Nº Doc. Origem"}]'
+                                        disabled="{{ !_permissions.update }}"
+                                        on-value-changed="_orderSelected">
+                        </such-selectbox>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+
+                    </div>
+                </div>
+                <div class="marginSpace">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <template is="dom-if" if="{{ _isCreate }}">
+                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <template is="dom-if" if="{{ !_isCreate }}">
+                            <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </template>
+                    </template>
+                </div>
+            </div>
+
+            <template is="dom-if" if="{{ _invoice }}">
+                <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[States]]" id="cmbEstadosFac" item-value-path="id" item-label-path="value" value="{{_status}}" label="Estado" disable>
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>                 
+                        <div class="col-sm-2">
+                            <template is="dom-if" if="{{ !_checkPending }}">
+                                <vaadin-text-field type="text" value="{{ data.id }}" id="txtDate" name="txtDate" label=" " disabled></vaadin-text-field>
+                            </template>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtArea" name="txtArea" label="Area"  disabled></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDestination" name="txtDestination" label="Destinatário"  disabled></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-date-picker  value="{{data.id}}" id="txtData"  label="Data"  disabled></vaadin-date-picker>
+                        </div>
+                    </div>
+                    <div class="row break_clear">                       
+                            <div class="col-sm-8">
+                                <such-textarea rows="3" id="txtDescription" name="txtDescription" label="Descrição"  disabled></such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field type="text" value="{{ data.id }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente"  disabled></vaadin-text-field>
+                            </div>         
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-8">
+                            <such-textarea rows="3" id="txtComment" name="txtComment" label="Comentário"></such-textarea>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução"  disabled></vaadin-text-field>
+                        </div>
+                    </div>
+                    <div class="marginSpace">
+                        <div class="col-sm-9">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </div>
+                        <div class="col-sm-3">
+                            <template is="dom-if" if="{{ !_checkPending }}">
+                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending" disabled="{{ !_permissions.update }}">Pendente</paper-button>
+                            </template>
+                        </div>
+                    </div>
+              </div> 
+            </template>
+            <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[States]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{_status}}" label="Destinatário" on-value-changed="_destinationChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <template is="dom-if" if="{{ !_checkDestination }}">
+                        <div class="col-sm-6">
+                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
+                        </div>
+                    </template>
+                </div>
+                <div class="row break_clear">
+                    <template is="dom-if" if="{{ !_checkDestination }}">
+                        <div class="col-sm-3">
+                            <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-6">
+                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="{{ _checkDestination }}">
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field label="Problema" type="text" value="{{data.valor}}" id="txtProblema"></vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field label="Área" type="text" value="{{data.valor}}" id="txtAreadgl"></vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt1"></vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt2"></vaadin-text-field>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexo">Anexo</vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                    <paper-button class="btnSave" raised on-tap="_dlgNextMov">&nbsp; Enviar</paper-button>
+                </div>
+
+            </paper-dialog>
+        </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+   </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-rececaofaturasdetails',
+                properties: {
+                    _billingReceptionId: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.Id)),
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true,
+                    },
+                   _status: {
+                        type: Number,
+                        value: 1,
+                    },
+                    _checkPending: {
+                        type: Boolean,
+                        value: false,
+                   },
+                    _checkDestination: {
+                        type: Boolean,
+                        value: true,
+                    },
+                    data: {
+                        type: Array,
+                        value: {},
+                    },
+                    _invoice: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _states: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.BillingReceptionStates)),
+                    },
+                },
+                ready: function () {
+                    if (this._billingReceptionId != null && this._billingReceptionId != "") {
+                        this._isCreate = false;
+                        this.$.page_databound_ajax.url += this._billingReceptionId;
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._loadOrders();
+                    }
+                },
+                _loadOrders: function (supplierId) {
+                    if (supplierId != null) {
+                        this.$.orders_databound_ajax.body = JSON.stringify(supplierId);
+                    }
+                    else {
+                        this.$.orders_databound_ajax.body = JSON.stringify("");
+                    }
+                    this.$.orders_databound_ajax.generateRequest();
+                },
+                _getBillingReceptionResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this._loadOrders(this.data.codFornecedor);
+                    }
+                },
+                _supplierSelected: function (e) {
+                    this._loadOrders(e.detail.value);
+                },
+                _redirectToCreateForm: function () {
+                    window.location.href = "/Faturacao/DetalhesRecFatura";
+                },
+                _validateInputForNew: function () {
+                    if (this.$.cmbDocumentTypes.validate()) {
+                        return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _validateInputForAccounting: function () {
+                    if (this._validateInputForNew()) {
+                        if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                            var selState = this.States.find(x => x.id == this.data.estado);
+                            var stateDescription = selState != null ? selState.value : this.data.estado;
+                            this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                            return false;
+                        }
+                        if (this.data.codFornecedor == "") {
+                            this._openToastError("O Fornecedor tem que estar preenchido.");
+                            return false;
+                        }
+                        if (this.data.numDocFornecedor == "") {
+                            this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
+                            return false;
+                        }
+                        if (this.data.valor == "") {
+                            this._openToastError("O valor tem que estar preenchido.");
+                            return false;
+                        }
+                        if (this.data.codRegiao == "") {
+                            this._openToastError("Tem que selecionar a Região.");
+                            return false;
+                        }
+                        return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _create: function () {
+                    if (this._validateInputForNew()) {
+                        this.$.page_create_ajax.body = JSON.stringify(this.data);
+                        this.$.page_create_ajax.generateRequest();
+                    }
+                },
+                _createResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.createdItem.eReasonCode == "1") {
+                            this._openToast(this.createdItem.eMessage);
+                            this.data = this.createdItem;
+                        } else {
+                            this._openToastError(this.createdItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                },
+                _update: function () {
+                    //debugger;
+                    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_update_ajax.generateRequest();
+                },
+                _updateResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.updatedItem.eReasonCode == "1") {
+                            this._openToast(this.updatedItem.eMessage);
+                            this.data = this.updatedItem;
+                        } else {
+                            this._openToastError(this.updatedItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _orderSelected: function (e) {
+                    var order = this.$.sbOrders.activeItem;
+                    if (order != null) {
+
+                        var vendorId = new String(this.$.sbVendors.value).valueOf();
+                        var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
+
+                        if (vendorId == "") {
+                            this.$.sbVendors.value = order.buyFromVendorNo;
+                            this.$.cmbRegions.value = order.regionId;
+                            this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                            this.$.cmbResponsabilityCenters.value = order.respCenterId;
+                            //this.$.txtLocal.value = order.locationCode;
+                        }
+                        //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
+                        else if (vendorId != "" && vendorId != "undefined" &&
+                                vendorIdFromOrder != "" && vendorIdFromOrder != "undefined" &&
+                                vendorId != vendorIdFromOrder)
+                        {
+                            this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
+                            return;
+                        }
+                        this.$.txtLocal.value = order.locationCode;
+                        //this.$.txtValorEncomendaOriginal.value = order.
+                        this.$.txtQuantidadeEncomenda.value = order.quantity;
+                        this.$.txtQuantidadeRecebida.value = order.quantityReceived;
+                        this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
+                        this.$.txtValor.value = order.valorFactura;
+                        if (order.quantity == order.quantityReceived)
+                            this._openToast("Encomenda totalmente rececionada.");
+                        else
+                            this._openToastError("Encomenda por rececionar.");
+                    }
+                },
+                _postDocument: function () {
+                    if (this._validateInputForAccounting()) { 
+                        //callPostDocument
+                    }
+                 }
+            });
+        });
+    </script>
+</dom-module>

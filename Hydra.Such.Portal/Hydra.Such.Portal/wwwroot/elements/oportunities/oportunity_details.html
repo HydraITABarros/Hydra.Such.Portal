@@ -441,7 +441,7 @@
                                                         <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
-                                                                <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" on-value-changed="_limitClarificationDateDateChanged" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-4" style="padding-left: 0px;">
                                                                 <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
@@ -1729,16 +1729,35 @@
                     this.$.mStartData.max = this.$.DueDate.value;
                 },
 
+                _limitClarificationDateDateChanged: function (e) {
+                    this.$.mErrorsOmissionsDate.min = this.$.mLimitClarificationDate.value;
+                },
+
                 _propDeliveryDateChanged: function (e) {
-                    this.$.previousHearingDate.min = this.$.mProposalDelivery.value;
+                    debugger;
+                    var d = new Date(this.$.mProposalDelivery.value);
+                    d.setDate(d.getDate() + 1);
+                    this.$.previousHearingDate.min = d.getFullYear() + '-'
+                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                        + ('0' +d.getDate()).slice(-2);
                 },
 
                 _previousHearingDateChanged: function (e) {
-                    this.$.mFinalReportDate.min = this.$.previousHearingDate.value;
+                    var d = new Date(this.$.previousHearingDate.value);
+                    d.setDate(d.getDate() + 1);
+
+                    this.$.mFinalReportDate.min = d.getFullYear() + '-'
+                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                        + ('0' + d.getDate()).slice(-2);
                 },
 
                 _finalReporDateChanged: function (e) {
-                    this.$.mDocumentationHabilitationDate.min = this.$.mFinalReportDate.value;
+                    var d = new Date(this.$.mFinalReportDate.value);
+                    d.setDate(d.getDate() + 1);
+
+                    this.$.mDocumentationHabilitationDate.min = d.getFullYear() + '-'
+                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                        + ('0' + d.getDate()).slice(-2);
                 },
                 //Address Functions
                 _getAddressByCode: function (e) {
