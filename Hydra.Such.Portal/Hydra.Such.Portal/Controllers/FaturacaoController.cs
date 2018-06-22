@@ -152,9 +152,11 @@ namespace Hydra.Such.Portal.Controllers
                     createPurchHeaderTask.Wait();
                     if (createPurchHeaderTask.IsCompletedSuccessfully)
                     {
+                        string typeDescription = EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
+
                         //createPurchHeaderTask.Result.WSPrePurchaseDocs
                         RececaoFaturacaoWorkflow rfws = new RececaoFaturacaoWorkflow();
-                        string typeDescription = EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
+                        rfws.IdRecFaturacao = item.Id;
                         rfws.Descricao = "Contabilização da " + typeDescription;
                         rfws.Estado = (int)BillingReceptionStates.Contabilizado;
                         rfws.Data = DateTime.Now;
@@ -162,6 +164,7 @@ namespace Hydra.Such.Portal.Controllers
                         rfws.CriadoPor = User.Identity.Name;
 
                         var createdItem = DBBillingReceptionWf.Create(rfws);
+                        var createdItem = DBBillingReceptionWf.Update(rfws);
                         if (createdItem != null)
                         {
                             item.eReasonCode = 1;
@@ -237,6 +240,21 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return isValid;
+        }
+
+        [HttpPost]
+        public JsonResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
+        {
+            //if (item != null)
+            //{
+                
+            //}
+            //else
+            //{
+            //    item.eReasonCode = 2;
+            //    item.eMessage = "O registo não pode ser nulo";
+            //}
+            return Json(false);
         }
     }
 }

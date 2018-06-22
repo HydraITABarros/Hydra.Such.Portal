@@ -79,6 +79,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<PontosSituaçãoRq> PontosSituaçãoRq { get; set; }
         public virtual DbSet<PrecoCustoRecursoFh> PrecoCustoRecursoFh { get; set; }
         public virtual DbSet<PreçosFornecedor> PreçosFornecedor { get; set; }
+        public virtual DbSet<PreçosServiçosCliente> PreçosServiçosCliente { get; set; }
         public virtual DbSet<PrecoVendaRecursoFh> PrecoVendaRecursoFh { get; set; }
         public virtual DbSet<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
         public virtual DbSet<PréRequisição> PréRequisição { get; set; }
@@ -118,7 +119,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -4770,6 +4770,87 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<PreçosServiçosCliente>(entity =>
+            {
+                entity.HasKey(e => new { e.Cliente, e.CodServCliente, e.Recurso });
+
+                entity.ToTable("Preços Serviços Cliente");
+
+                entity.Property(e => e.Cliente).HasMaxLength(20);
+
+                entity.Property(e => e.CodServCliente)
+                    .HasColumnName("Cod.Serv.Cliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Recurso).HasMaxLength(20);
+
+                entity.Property(e => e.CodigoArea)
+                    .HasColumnName("Codigo Area")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoCentroResponsabilidade)
+                    .HasColumnName("Codigo Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoRegião)
+                    .HasColumnName("Codigo Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Data).HasColumnType("date");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DescriçãoDoRecurso)
+                    .HasColumnName("Descrição do Recurso")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.DescriçãoServiço)
+                    .HasColumnName("Descrição Serviço")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.DescriçãoTipoRefeição)
+                    .HasColumnName("Descrição Tipo Refeição")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Nome).HasMaxLength(80);
+
+                entity.Property(e => e.Nome2)
+                    .HasColumnName("Nome 2")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PreçoDeCusto).HasColumnName("Preço de Custo");
+
+                entity.Property(e => e.PreçoVenda).HasColumnName("Preço Venda");
+
+                entity.Property(e => e.TipoRefeição)
+                    .HasColumnName("Tipo Refeição")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.UnidadeMedida)
+                    .HasColumnName("Unidade Medida")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.CodServClienteNavigation)
+                    .WithMany(p => p.PreçosServiçosCliente)
+                    .HasForeignKey(d => d.CodServCliente)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Preços Serviços Cliente_Serviços");
+            });
+
             modelBuilder.Entity<PrecoVendaRecursoFh>(entity =>
             {
                 entity.HasKey(e => new { e.Code, e.CodTipoTrabalho, e.StartingDate });
@@ -5932,6 +6013,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Destinatario).HasMaxLength(50);
 
+                entity.Property(e => e.DocumentoCriadoEm).HasColumnType("datetime");
+
+                entity.Property(e => e.DocumentoCriadoPor).HasMaxLength(50);
+
                 entity.Property(e => e.Local).HasColumnType("nchar(10)");
 
                 entity.Property(e => e.ModificadoPor).HasMaxLength(50);
@@ -5958,6 +6043,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataModificacao).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.IdRecFaturacao).HasMaxLength(20);
 
                 entity.Property(e => e.ModificadoPor).HasMaxLength(50);
 

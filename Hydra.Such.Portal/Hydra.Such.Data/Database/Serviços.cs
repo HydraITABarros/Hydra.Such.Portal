@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public Serviços()
         {
+            PreçosServiçosCliente = new HashSet<PreçosServiçosCliente>();
             ServiçosCliente = new HashSet<ServiçosCliente>();
         }
 
@@ -17,6 +18,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
+        public ICollection<PreçosServiçosCliente> PreçosServiçosCliente { get; set; }
         public ICollection<ServiçosCliente> ServiçosCliente { get; set; }
     }
 }

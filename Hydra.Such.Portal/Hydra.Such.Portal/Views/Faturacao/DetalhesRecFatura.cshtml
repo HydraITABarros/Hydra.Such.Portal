@@ -109,6 +109,7 @@
                 <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
                 <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
                 <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
             </template>
         </div>
 
@@ -475,8 +476,15 @@
                 _postDocument: function () {
                     if (this._validateInputForAccounting()) { 
                         //callPostDocument
+                        this._notImplemented();
                     }
-                 }
+                },
+                _notImplemented: function () {
+                    alert("Funcionalidade não implementada");
+                 },
+                _openDocument: function () { 
+                    this._notImplemented();
+                },
             });
         });
     </script>
