@@ -123,12 +123,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateBillingReception([FromBody] BillingReceptionModel item)
         {
             BillingReceptionModel updatedItem = null;
-            if (item != null)
+            //if (item != null)
+            if (updatedItem != null)
             {
-                item.ModificadoPor = User.Identity.Name;
-                updatedItem = DBBillingReception.Update(item);
-                updatedItem.eReasonCode = 1;
-                updatedItem.eMessage = "Registo atualizado com sucesso";
+            item.ModificadoPor = User.Identity.Name;
+            updatedItem = DBBillingReception.Update(item);
+            updatedItem.eReasonCode = 1;
+            updatedItem.eMessage = "Registo atualizado com sucesso";
             }
             else
             {
@@ -164,7 +165,6 @@ namespace Hydra.Such.Portal.Controllers
                         rfws.CriadoPor = User.Identity.Name;
 
                         var createdItem = DBBillingReceptionWf.Create(rfws);
-                        var createdItem = DBBillingReceptionWf.Update(rfws);
                         if (createdItem != null)
                         {
                             item.eReasonCode = 1;

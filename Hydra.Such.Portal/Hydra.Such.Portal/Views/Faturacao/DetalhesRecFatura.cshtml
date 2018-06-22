@@ -109,8 +109,8 @@
                 <paper-button class="tablinks" on-tap="_redirectToCreateForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
             <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
-                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
+                <paper-button class="tablinks" on-tap="_postInvoiceCF"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
+                <paper-button class="tablinks" on-tap="_postInvoiceCP"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
                 <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
             </template>
@@ -304,7 +304,7 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[States]]" id="cmbEstadosFac" item-value-path="id" item-label-path="value" value="{{_status}}" label="Estado" disable>
+                            <vaadin-combo-box items="[[States]]" id="cmbEstadosFac" item-value-path="id" item-label-path="value" value="{{_status}}" label="Estado" disabled>
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -339,7 +339,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-8">
-                            <such-textarea rows="3" id="txtComment" name="txtComment" label="Comentário"></such-textarea>
+                            <such-textarea rows="3" id="txtComment" name="txtComment" label="Comentário" disabled></such-textarea>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{ data.id }}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução"  disabled></vaadin-text-field>
@@ -351,7 +351,7 @@
                         </div>
                         <div class="col-sm-3">
                             <template is="dom-if" if="{{ !_checkPending }}">
-                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending" disabled="{{ !_permissions.update }}">Pendente</paper-button>
+                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
                             </template>
                         </div>
                     </div>
@@ -409,7 +409,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
-                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
+                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário" ></such-textarea>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -509,12 +509,12 @@
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
-                        if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
-                            var selState = this.States.find(x => x.id == this.data.estado);
-                            var stateDescription = selState != null ? selState.value : this.data.estado;
-                            this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
-                            return false;
-                        }
+                        //if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                        //    var selState = this.States.find(x => x.id == this.data.estado);
+                        //    var stateDescription = selState != null ? selState.value : this.data.estado;
+                        //    this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                        //    return false;
+                        //}
                         if (this.data.codFornecedor == "") {
                             this._openToastError("O Fornecedor tem que estar preenchido.");
                             return false;
@@ -563,10 +563,13 @@
                 _updateResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
-                            this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                        } else {
-                            this._openToastError(this.updatedItem.eMessage);
+                            this._invoice = true;
+                            this.$.cmbEstadosFac = 2;
+                        } else {// pendente
+                            this._invoice = true;
+                            this._checkPending = false;
+                            this._openToastError("Pendente - Ver Ponto de situação");
                         }
                     }
                     else {
@@ -613,6 +616,30 @@
                             this._openToast("Encomenda totalmente rececionada.");
                         else
                             this._openToastError("Encomenda por rececionar.");
+                    }
+                },
+                _destinationChange: function (e) {
+                var type = e.detail.value;
+                debugger;;
+                if (type==1){//interno
+                    this._checkDestination = true;
+                } else {//externo
+                    this._checkDestination = false;
+                }
+                },
+                _sendPending: function () {
+                    this.$.dialogSendPeding.open();
+                },
+                _postInvoiceCF: function () {
+                    if (this._validateInputForAccounting()) {
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
+                    }
+                },
+                _postInvoiceCP: function () {
+                    if (this._validateInputForAccounting()) {
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
                     }
                 },
                 _postDocument: function () {
