@@ -164,7 +164,6 @@ namespace Hydra.Such.Portal.Controllers
                         rfws.CriadoPor = User.Identity.Name;
 
                         var createdItem = DBBillingReceptionWf.Create(rfws);
-                        var createdItem = DBBillingReceptionWf.Update(rfws);
                         if (createdItem != null)
                         {
                             item.eReasonCode = 1;
