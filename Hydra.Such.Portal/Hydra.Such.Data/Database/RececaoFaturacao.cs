@@ -25,6 +25,8 @@ namespace Hydra.Such.Data.Database
         public string CodLocalizacao { get; set; }
         public string Local { get; set; }
         public string NumAcordoFornecedor { get; set; }
+        public DateTime? DocumentoCriadoEm { get; set; }
+        public string DocumentoCriadoPor { get; set; }
         public string Destinatario { get; set; }
         public string AreaPendente { get; set; }
         public DateTime? DataUltimaInteracao { get; set; }

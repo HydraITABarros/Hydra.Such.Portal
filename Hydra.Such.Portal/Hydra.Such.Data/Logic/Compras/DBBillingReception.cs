@@ -62,6 +62,7 @@ namespace Hydra.Such.Data.Logic.Request
                     ctx.RececaoFaturacao.Add(item.ParseToDB());
 
                     RececaoFaturacaoWorkflow wf = new RececaoFaturacaoWorkflow();
+                    wf.IdRecFaturacao = item.Id;
                     wf.AreaWorkflow = "Contabilidade";//TODO: Identificar áres possivels
                     wf.Descricao = "Entrada fatura em receção";
                     wf.CriadoPor = item.CriadoPor;
@@ -73,7 +74,6 @@ namespace Hydra.Such.Data.Logic.Request
 
                     ctx.SaveChanges();
                 }
-
                 return item;
             }
             catch (Exception ex)

@@ -123,12 +123,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateBillingReception([FromBody] BillingReceptionModel item)
         {
             BillingReceptionModel updatedItem = null;
-            if (item != null)
+            //if (item != null)
+            if (updatedItem != null)
             {
-                item.ModificadoPor = User.Identity.Name;
-                updatedItem = DBBillingReception.Update(item);
-                updatedItem.eReasonCode = 1;
-                updatedItem.eMessage = "Registo atualizado com sucesso";
+            item.ModificadoPor = User.Identity.Name;
+            updatedItem = DBBillingReception.Update(item);
+            updatedItem.eReasonCode = 1;
+            updatedItem.eMessage = "Registo atualizado com sucesso";
             }
             else
             {
@@ -148,7 +149,28 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ValidateForPosting(item))
                 {
+                    Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
+                    createPurchHeaderTask.Wait();
+                    if (createPurchHeaderTask.IsCompletedSuccessfully)
+                    {
+                        string typeDescription = EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
 
+                        //createPurchHeaderTask.Result.WSPrePurchaseDocs
+                        RececaoFaturacaoWorkflow rfws = new RececaoFaturacaoWorkflow();
+                        rfws.IdRecFaturacao = item.Id;
+                        rfws.Descricao = "Contabilização da " + typeDescription;
+                        rfws.Estado = (int)BillingReceptionStates.Contabilizado;
+                        rfws.Data = DateTime.Now;
+                        rfws.Utilizador = User.Identity.Name;
+                        rfws.CriadoPor = User.Identity.Name;
+
+                        var createdItem = DBBillingReceptionWf.Create(rfws);
+                        if (createdItem != null)
+                        {
+                            item.eReasonCode = 1;
+                            item.eMessage = "Documento criado com sucesso.";
+                        }
+                    }
                 }
             }
             else
@@ -218,6 +240,21 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return isValid;
+        }
+
+        [HttpPost]
+        public JsonResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
+        {
+            //if (item != null)
+            //{
+                
+            //}
+            //else
+            //{
+            //    item.eReasonCode = 2;
+            //    item.eMessage = "O registo não pode ser nulo";
+            //}
+            return Json(false);
         }
     }
 }

@@ -19,6 +19,8 @@ using Hydra.Such.Data.Logic.Project;
 using System.Data.SqlClient;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Portal.Extensions;
+using Hydra.Such.Data.ViewModel.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2408,7 +2410,7 @@ namespace Hydra.Such.Portal.Controllers
         //Calcula as Ajudas de Custo
         public JsonResult CalcularAjudasCusto([FromBody] FolhaDeHorasViewModel data)
         {
-            bool result = false;
+            ErrorHandler result = new ErrorHandler();
             try
             {
                 decimal NoDias = 0;
@@ -2513,24 +2515,31 @@ namespace Hydra.Such.Portal.Controllers
                             Ajuda.UtilizadorModificacao = User.Identity.Name;
                             Ajuda.DataHoraModificacao = DateTime.Now;
 
-                            var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                            LinhasFolhaHoras dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                            if (dbCreateResult != null)
+                            {
+                                result.eReasonCode = 0;
+                                result.eMessage = "Foram calculados as Ajudas de Custo com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Ocorreu um erro na no calculo das Ajudas de Custo.";
+                            }
                         }
                     });
                 }
 
-                result = true;
-
-                if (result)
-                {
-                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
-                }
+                FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
 
                 return Json(result);
             }
             catch (Exception ex)
             {
-                //log
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
             }
+
             return Json(result);
         }
 
@@ -2583,99 +2592,111 @@ namespace Hydra.Such.Portal.Controllers
         //Terminar uma Folha de Horas
         public JsonResult TerminarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            int result = 0;
+            ErrorHandler resultApprovalMovement = new ErrorHandler();
             try
             {
                 if (data != null)
                 {
                     FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
-                    //if (DBFolhasDeHoras.Update(new FolhasDeHoras()
-                    //{
-                    //    NºFolhaDeHoras = data.FolhaDeHorasNo,
-                    //    Área = FH.Área,
-                    //    NºProjeto = data.ProjetoNo,
-                    //    ProjetoDescricao = DBProjects.GetById(data.ProjetoNo).Descrição,
-                    //    NºEmpregado = data.EmpregadoNo,
-                    //    NomeEmpregado = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name,
-                    //    DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
-                    //    DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                    //    TipoDeslocação = data.TipoDeslocacao,
-                    //    CódigoTipoKmS = data.CodigoTipoKms,
-                    //    Matrícula = data.Matricula,
-                    //    DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                    //    DeslocaçãoPlaneada = null,
-                    //    Terminada = true, //TERMINADA
-                    //    Estado = data.Estado,
-                    //    CriadoPor = data.CriadoPor,
-                    //    DataHoraCriação = FH.DataHoraCriação,
-                    //    CódigoRegião = data.CodigoRegiao,
-                    //    CódigoÁreaFuncional = data.CodigoAreaFuncional,
-                    //    CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
-                    //    TerminadoPor = User.Identity.Name, //TERMINADA
-                    //    DataHoraTerminado = DateTime.Now, //TERMINADA
-                    //    Validado = data.Validado,
-                    //    Validadores = data.Validadores,
-                    //    Validador = data.Validador,
-                    //    DataHoraValidação = DateTime.Parse(string.Concat(data.DataValidacaoTexto, " ", data.HoraValidacaoTexto)),
-                    //    IntegradoEmRh = FH.IntegradoEmRh,
-                    //    IntegradoresEmRh = data.IntegradoresEmRH,
-                    //    IntegradorEmRh = data.IntegradorEmRH,
-                    //    DataIntegraçãoEmRh = DateTime.Parse(string.Concat(data.DataIntegracaoEmRHTexto, " ", data.HoraIntegracaoEmRHTexto)),
-                    //    IntegradoEmRhkm = FH.IntegradoEmRhkm,
-                    //    IntegradoresEmRhkm = data.IntegradoresEmRHKM,
-                    //    IntegradorEmRhKm = data.IntegradorEmRHKM,
-                    //    DataIntegraçãoEmRhKm = DateTime.Parse(string.Concat(data.DataIntegracaoEmRHKMTexto, " ", data.HoraIntegracaoEmRHKMTexto)),
-                    //    CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
-                    //    CustoTotalHoras = data.CustoTotalHoras,
-                    //    CustoTotalKm = data.CustoTotalKM,
-                    //    NumTotalKm = data.NumTotalKM,
-                    //    Observações = data.Observacoes,
-                    //    NºResponsável1 = FH.NºResponsável1,
-                    //    NºResponsável2 = FH.NºResponsável2,
-                    //    NºResponsável3 = FH.NºResponsável3,
-                    //    ValidadoresRhKm = FH.ValidadoresRhKm,
-                    //    DataHoraÚltimoEstado = FH.DataHoraÚltimoEstado,
-                    //    UtilizadorModificação = User.Identity.Name, //TERMINADA
-                    //    DataHoraModificação = DateTime.Now //TERMINADA
-                    //}) == null)
-                    //{
-                    //    result = 6;
-                    //}
-                    //else
-                    //{
-                    //    result = 0;
-                    //};
+
+                    if (FH != null)
+                    {
+                        if (data.Terminada == true)
+                        {
+                            FH.Terminada = true; //TERMINADA
+                            FH.TerminadoPor = User.Identity.Name; //TERMINADA
+                            FH.DataHoraTerminado = DateTime.Now; //TERMINADA
+                            FH.UtilizadorModificação = User.Identity.Name; //TERMINADA
+                            FH.DataHoraModificação = DateTime.Now; //TERMINADA
+                        }
+                        else
+                        {
+                            FH.Terminada = false; //TERMINADA
+                            FH.TerminadoPor = null; //TERMINADA
+                            FH.UtilizadorModificação = User.Identity.Name; //TERMINADA
+                            FH.DataHoraModificação = DateTime.Now; //TERMINADA
+                        }
+
+                        FH.NºFolhaDeHoras = data.FolhaDeHorasNo;
+                        FH.NºProjeto = data.ProjetoNo;
+                        FH.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo).Descrição;
+                        FH.NºEmpregado = data.EmpregadoNo;
+                        FH.NomeEmpregado = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+                        FH.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                        FH.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+                        FH.TipoDeslocação = data.TipoDeslocacao;
+                        FH.CódigoTipoKmS = data.CodigoTipoKms;
+                        FH.Matrícula = data.Matricula;
+                        FH.DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho;
+                        FH.CódigoRegião = data.CodigoRegiao;
+                        FH.CódigoÁreaFuncional = data.CodigoAreaFuncional;
+                        FH.CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
+
+                        if (DBFolhasDeHoras.Update(FH) == null)
+                        {
+                            resultApprovalMovement.eReasonCode = 6;
+                            resultApprovalMovement.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
+                        }
+                        else
+                        {
+                            if (FH.Terminada == true)
+                            {
+                                decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
+
+                                resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                            }
+                            else
+                            {
+                                resultApprovalMovement.eReasonCode = 1;
+                                resultApprovalMovement.eMessage = "";
+                            }
+                        };
+                    }
+                    else
+                    {
+                        resultApprovalMovement.eReasonCode = 3;
+                        resultApprovalMovement.eMessage = "Ocorreu um erro nos dados.";
+                    }
+                }
+                else
+                {
+                    resultApprovalMovement.eReasonCode = 2;
+                    resultApprovalMovement.eMessage = "Ocorreu um erro no processamento dados.";
                 }
             }
             catch (Exception ex)
             {
-                result = 99;
+                resultApprovalMovement.eReasonCode = 99;
+                resultApprovalMovement.eMessage = "Ocorreu um erro no processamento dados.";
             }
-            return Json(result);
+            return Json(resultApprovalMovement);
         }
 
         [HttpPost]
         //Valida uma Folha de Horas
         public JsonResult ValidarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            int result = 0;
+            ErrorHandler result = new ErrorHandler();
             try
             {
                 if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo))
                 {
-                    result = 6;
+                    result.eReasonCode = 101;
+                    result.eMessage = "Faltam preencher os campos obrigatórios.";
                 }
                 else
                 {
                     if ((data.Validado == null ? false : (bool)data.Validado) || (int)data.Estado != 0)
                     {
-                        result = 5; //Não Pode validar pois já se encontra validada
+                        result.eReasonCode = 101;
+                        result.eMessage = "A Folha de Horas já se encontra validada.";
                     }
                     else
                     {
                         if (!data.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
-                            result = 1; //Não tem permissões para validar
+                            result.eReasonCode = 101;
+                            result.eMessage = "Não tem permissões para validar a Folha de Horas.";
                         }
                         else
                         {
@@ -2686,9 +2707,9 @@ namespace Hydra.Such.Portal.Controllers
                                     new SqlParameter("@NoFH", data.FolhaDeHorasNo),
                                     new SqlParameter("@NoUtilizador", data.EmpregadoNo)
                                 };
-                                result = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
+                                result.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
 
-                                if (result == 0)
+                                if (result.eReasonCode == 0)
                                 {
                                     string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
                                     string TipoDeslocação = data.TipoDeslocacaoTexto;
@@ -2752,16 +2773,17 @@ namespace Hydra.Such.Portal.Controllers
                                         UtilizadorModificação = User.Identity.Name //VALIDAÇÂO
                                     }) == null)
                                     {
-                                        result = 6;
+                                        result.eReasonCode = 6;
+                                        result.eMessage = "Ocorreu um erro ao atualizar a Folha de Horas.";
                                     }
                                     else
                                     {
-                                        result = 0;
+                                        result.eReasonCode = 0;
                                     };
 
                                     //Atualiza a tabela Presenças
                                     //ATENÇÃO QUE VAI ATIVAR O TRIGGER!!!
-                                    if (result == 0)
+                                    if (result.eReasonCode == 0)
                                     {
                                         List<PresencasFolhaDeHorasViewModel> presencas = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo);
                                         if (presencas != null)
@@ -2789,8 +2811,65 @@ namespace Hydra.Such.Portal.Controllers
                                             });
                                         }
 
+                                        if (Estado == 1)
+                                        {
+                                            ErrorHandler approvalResult = new ErrorHandler();
+                                            
+                                            //Approve Movement
+                                            MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+                                            
+                                            if (approvalMovement != null)
+                                                approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
 
+                                            //Check Approve Status
+                                            if (approvalResult.eReasonCode == 353)
+                                            {
+                                                result.eReasonCode = 100;
+                                                result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                            }
+                                            else if (approvalResult.eReasonCode == 350)
+                                            {
+                                                result.eReasonCode = 100;
+                                                result.eMessage = "A Folha de Horas aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                                            }
+                                            else
+                                            {
+                                                result.eReasonCode = 199;
+                                                result.eMessage = "Ocorreu um erro desconhecido ao aprovar a Folha de Horas.";
+                                            }
+                                        }
+
+                                        if (Estado == 2)
+                                        {
+                                            //Update Old Movement
+                                            MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+
+                                            if (approvalMovement != null)
+                                            {
+                                                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(approvalMovement.NºMovimento));
+                                                ApprovalMovement.Status = 2;
+                                                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                //Delete All User Approval Movements
+                                                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                            }
+
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 101;
+                                    result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                 }
                             }
                         }
@@ -2799,7 +2878,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception ex)
             {
-                result = 99;
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro";
             }
             return Json(result);
         }
@@ -2808,30 +2888,34 @@ namespace Hydra.Such.Portal.Controllers
         //Intregra as Ajudas de Custo de uma Folha de Horas
         public JsonResult IntegrarEmRHFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            int result = 0;
+            ErrorHandler result = new ErrorHandler();
             try
             {
                 if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                 {
-                    result = 6;
+                    result.eReasonCode = 101;
+                    result.eMessage = "Faltam preencher algum campo obrigatório na Folha de Horas.";
                 }
                 else
                 {
                     if (data.IntegradoEmRh == null ? false : (bool)data.IntegradoEmRh)
                     {
-                        result = 5;
+                        result.eReasonCode = 101;
+                        result.eMessage = "Já foram integradas as Ajudas de Custo na Folha de Horas.";
                     }
                     else
                     {
                         if ((int)data.Estado != 1)
                         {
-                            result = 8;
+                            result.eReasonCode = 101;
+                            result.eMessage = "É necessário primeiro validar a Folha de Horas.";
                         }
                         else
                         {
                             if (!data.IntegradoresEmRH.ToLower().Contains(User.Identity.Name.ToLower()))
                             {
-                                result = 1;
+                                result.eReasonCode = 101;
+                                result.eMessage = "Não tem permissões para validar a Folha de Horas";
                             }
                             else
                             {
@@ -2843,9 +2927,9 @@ namespace Hydra.Such.Portal.Controllers
                                         new SqlParameter("@NoUtilizador", data.EmpregadoNo)
                                     };
 
-                                    result = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
+                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
 
-                                    if (result == 0)
+                                    if (result.eReasonCode == 0)
                                     {
                                         string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
                                         bool IntegradoEmRhKm = (bool)data.IntegradoEmRhKm;
@@ -2905,12 +2989,72 @@ namespace Hydra.Such.Portal.Controllers
                                             DataHoraModificação = DateTime.Now //INTEGRAREMRH
                                         }) == null)
                                         {
-                                            result = 7;
+                                            result.eReasonCode = 7;
+                                            result.eMessage = "Ocorreu um erro ao Integrar a Folha de Horas.";
                                         }
                                         else
                                         {
-                                            result = 0;
-                                        };
+                                            result.eReasonCode = 0;
+
+                                            if (Estado == 1)
+                                            {
+                                                ErrorHandler approvalResult = new ErrorHandler();
+
+                                                //Approve Movement
+                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                    x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                    x.Estado == 1 && x.Nivel == 2).FirstOrDefault();
+
+                                                if (approvalMovement != null)
+                                                    approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
+
+                                                //Check Approve Status
+                                                if (approvalResult.eReasonCode == 353)
+                                                {
+                                                    result.eReasonCode = 100;
+                                                    result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                                }
+                                                else if (approvalResult.eReasonCode == 350)
+                                                {
+                                                    result.eReasonCode = 100;
+                                                    result.eMessage = "A Folha de Horas aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                                                }
+                                                else
+                                                {
+                                                    result.eReasonCode = 199;
+                                                    result.eMessage = "Ocorreu um erro desconhecido ao aprovar a Folha de Horas.";
+                                                }
+                                            }
+
+                                            if (Estado == 2)
+                                            {
+                                                //Update Old Movement
+                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                    x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                    x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+
+                                                if (approvalMovement != null)
+                                                {
+                                                    ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(approvalMovement.NºMovimento));
+                                                    ApprovalMovement.Status = 2;
+                                                    ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                    ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                    ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                    //Delete All User Approval Movements
+                                                    DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                                }
+
+                                                result.eReasonCode = 100;
+                                                result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 101;
+                                        result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                     }
                                 }
                             }
@@ -2920,7 +3064,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception ex)
             {
-                result = 99;
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
             }
             return Json(result);
         }
@@ -2929,30 +3074,34 @@ namespace Hydra.Such.Portal.Controllers
         //Integra os KM's de uma Folha de Horas
         public JsonResult IntegrarEmRHKMFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            int result = 0;
+            ErrorHandler result = new ErrorHandler();
             try
             {
                 if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo) || data.TipoDeslocacao != 2) //2 = "Viatura Própria"
                 {
-                    result = 6;
+                    result.eReasonCode = 101;
+                    result.eMessage = "Faltam preencher algum campo obrigatório na Folha de Horas.";
                 }
                 else
                 {
                     if (data.IntegradoEmRhKm == null ? false : (bool)data.IntegradoEmRhKm)
                     {
-                        result = 5;
+                        result.eReasonCode = 101;
+                        result.eMessage = "Já foram integradas os km's na Folha de Horas.";
                     }
                     else
                     {
                         if ((int)data.Estado != 1)
                         {
-                            result = 8;
+                            result.eReasonCode = 101;
+                            result.eMessage = "A Folha de Horas não está num estado possível de Integrar os km's.";
                         }
                         else
                         {
                             if (!data.IntegradoresEmRHKM.ToLower().Contains(User.Identity.Name.ToLower()))
                             {
-                                result = 1;
+                                result.eReasonCode = 101;
+                                result.eMessage = "Não tem permissões para validar a Folha de Horas";
                             }
                             else
                             {
@@ -2964,9 +3113,9 @@ namespace Hydra.Such.Portal.Controllers
                                         new SqlParameter("@NoUtilizador", data.EmpregadoNo)
                                     };
 
-                                    result = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
+                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
 
-                                    if (result == 0)
+                                    if (result.eReasonCode == 0)
                                     {
                                         string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
                                         bool IntegradoEmRh = (bool)data.IntegradoEmRh;
@@ -3028,12 +3177,70 @@ namespace Hydra.Such.Portal.Controllers
                                             DataHoraModificação = DateTime.Now //INTEGRAREMRHKM
                                         }) == null)
                                         {
-                                            result = 7;
+                                            result.eReasonCode = 101;
+                                            result.eMessage = "Houve erro na atualização da Folha de Horas.";
                                         }
                                         else
                                         {
-                                            result = 0;
-                                        };
+                                            if (Estado == 1)
+                                            {
+                                                ErrorHandler approvalResult = new ErrorHandler();
+
+                                                //Approve Movement
+                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                    x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                    x.Estado == 1 && x.Nivel == 3).FirstOrDefault();
+
+                                                if (approvalMovement != null)
+                                                    approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
+
+                                                //Check Approve Status
+                                                if (approvalResult.eReasonCode == 353)
+                                                {
+                                                    result.eReasonCode = 100;
+                                                    result.eMessage = "A Folha de Horas foi aprovada com sucesso.";
+                                                }
+                                                else if (approvalResult.eReasonCode == 350)
+                                                {
+                                                    result.eReasonCode = 100;
+                                                    result.eMessage = "A Folha de Horas aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                                                }
+                                                else
+                                                {
+                                                    result.eReasonCode = 199;
+                                                    result.eMessage = "Ocorreu um erro desconhecido ao aprovar a Folha de Horas.";
+                                                }
+                                            }
+
+                                            if (Estado == 2)
+                                            {
+                                                //Update Old Movement
+                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                    x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
+                                                    x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+
+                                                if (approvalMovement != null)
+                                                {
+                                                    ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(approvalMovement.NºMovimento));
+                                                    ApprovalMovement.Status = 2;
+                                                    ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                                    ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                                    ApprovalMovement.UserUpdate = User.Identity.Name;
+                                                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                                    //Delete All User Approval Movements
+                                                    DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+                                                }
+
+                                                result.eReasonCode = 100;
+                                                result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 101;
+                                        result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                     }
                                 }
                             }
@@ -3043,7 +3250,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception ex)
             {
-                result = 99;
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
             }
             return Json(result);
         }
