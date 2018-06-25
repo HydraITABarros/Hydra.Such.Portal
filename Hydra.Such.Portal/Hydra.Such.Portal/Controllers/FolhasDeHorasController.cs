@@ -2641,7 +2641,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (FH.Terminada == true)
                             {
-                                decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto + (decimal)FH.CustoTotalHoras + (decimal)FH.CustoTotalKm;
+                                decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
 
                                 resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
                             }

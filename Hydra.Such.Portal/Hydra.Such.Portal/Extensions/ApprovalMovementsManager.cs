@@ -428,6 +428,7 @@ namespace Hydra.Such.Portal.Extensions
                     if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
                     {
                         IntegradoEmRh = true; //IntegracaoAjuda
+                        ApprovalMovement.Value = FolhaHoras.CustoTotalHoras;
                         nivel = 2;
                     }
                     else
@@ -435,6 +436,7 @@ namespace Hydra.Such.Portal.Extensions
                         if ((FolhaHoras.IntegradoEmRhkm == false || FolhaHoras.IntegradoEmRhkm == null) && FolhaHoras.Estado == Estado && FolhaHoras.TipoDeslocação == 2)
                         {
                             IntegradoEmRhkm = true; //IntegracaoKMS
+                            ApprovalMovement.Value = FolhaHoras.CustoTotalKm;
                             nivel = 3;
                         }
                         else
