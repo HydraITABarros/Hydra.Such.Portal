@@ -160,10 +160,18 @@
                     }
                 },
                 _Reject: function (e) {
+                    debugger;
                     if (e != null) {
                         var TMessage = this.$.ToastMessage;
                         var TMessageError = this.$.ToastError;
                         var ARequest = this.$.action_databound;
+
+                        if (e.model.item.type == 3 & (e.model.item.level == 2 | e.model.item.level == 3)) {
+                            TMessageError.text = "Não é possível rejeitar a Folha de Horas neste nível.";
+                            TMessageError.open();
+                            return false;
+                        };
+
                         bootbox.prompt({
                             title: "Introduza o motivo de rejeição!",
                             inputType: 'textarea',

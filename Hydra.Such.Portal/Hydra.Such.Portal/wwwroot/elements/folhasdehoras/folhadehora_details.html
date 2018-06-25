@@ -3764,8 +3764,17 @@
 
                     //BOTÕES
                     if (data.terminada == true) { //TERMINADA
+                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
+                        $(_self.$.btn_createPercurso).addClass('disabled');
+                        $(_self.$.btn_createAjuda).addClass('disabled');
+                        if (_self.$.integradorEmRH.value != null) {
+                            $(_self.$.btn_integrarEmRH).addClass('disabled');
+                        }
+                        if (_self.$.integradorEmRHKM.value != null) {
+                            $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                        }
                     };
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
@@ -3904,10 +3913,14 @@
                     };
 
                     //TABELAS
-                    //if (data.estado == 1) { //VALIDADO
-                    //    $(_self.$.tabPercurso).addClass('disabled');
-                    //    $(_self.$.tabAjuda).addClass('disabled');
-                    //};
+                    if (data.terminada == true) { //TERMINADA
+                        $(_self.$.tabPercurso).addClass('disabled');
+                        $(_self.$.tabAjuda).addClass('disabled');
+                    }
+                    if (data.estado == 1) { //VALIDADO
+                        $(_self.$.tabPercurso).addClass('disabled');
+                        $(_self.$.tabAjuda).addClass('disabled');
+                    };
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.tabPercurso).addClass('disabled');
                         $(_self.$.tabAjuda).addClass('disabled');

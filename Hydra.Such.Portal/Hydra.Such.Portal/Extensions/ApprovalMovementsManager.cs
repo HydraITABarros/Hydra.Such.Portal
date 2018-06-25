@@ -343,7 +343,7 @@ namespace Hydra.Such.Portal.Extensions
 
 
                     string itemToApproveInfo = string.Empty;
-                    if (type == 1 && !string.IsNullOrEmpty(number))
+                    if (type == 3 && !string.IsNullOrEmpty(number))
                         itemToApproveInfo += " - Folha de Horas " + number;
 
                     UsersToNotify = UsersToNotify.Distinct().ToList();
@@ -710,6 +710,72 @@ namespace Hydra.Such.Portal.Extensions
                 {
                     eReasonCode = 351,
                     eMessage = "Ocorreu um erro desconhecido ao aprovar a tarefa."
+                };
+            }
+        }
+
+        //100 - Tarefa rejeitada com sucesso
+        //101 - Erro desconhecido
+        public static ErrorHandler RejectMovement_FH(int movementNo, string rejectUser, string rejectReason)
+        {
+            try
+            {
+                //Update Old Movement
+                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(ApprovalMovement.Number);
+
+                ApprovalMovement.Status = 3;
+                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                ApprovalMovement.UserUpdate = rejectUser;
+                ApprovalMovement.ReproveReason = rejectReason;
+                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                //Delete All User Approval Movements
+                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, rejectUser);
+
+                string itemToApproveInfo = string.Empty;
+                if (ApprovalMovement.Type.Value == 3 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                    itemToApproveInfo += " - Folha de Horas " + ApprovalMovement.Number;
+
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = ApprovalMovement.MovementNo,
+                    EmailDestinatário = FH.CriadoPor, // ApprovalMovement.RequestUser,
+                    NomeDestinatário = FH.CriadoPor, // ApprovalMovement.RequestUser,
+                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    From = "plataforma@such.pt"
+                };
+
+                Email.To.Add(FH.CriadoPor); // ApprovalMovement.RequestUser);
+
+                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
+
+                Email.IsBodyHtml = true;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+                return new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Tarefa rejeitada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido."
                 };
             }
         }
