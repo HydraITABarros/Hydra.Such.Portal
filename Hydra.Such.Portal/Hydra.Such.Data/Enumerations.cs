@@ -209,5 +209,15 @@ namespace Hydra.Such.Data
             [Description("Devolução")]
             Devolucao
         }
+
+        public enum BillingReceptionAreas
+        {
+            Contabilidade,
+            Aprovisionamento,
+            [Description("Unidades Produtivas")]
+            UnidadesProdutivas,
+            [Description("Unidades de Apoio e Suporte")]
+            UnidadesApoioESuporte,
+        }
     }
 }

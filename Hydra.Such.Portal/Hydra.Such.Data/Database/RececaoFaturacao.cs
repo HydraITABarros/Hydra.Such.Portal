@@ -5,6 +5,11 @@ namespace Hydra.Such.Data.Database
 {
     public partial class RececaoFaturacao
     {
+        public RececaoFaturacao()
+        {
+            RececaoFaturacaoWorkflow = new HashSet<RececaoFaturacaoWorkflow>();
+        }
+
         public string Id { get; set; }
         public int? TipoDocumento { get; set; }
         public int? Estado { get; set; }
@@ -28,11 +33,15 @@ namespace Hydra.Such.Data.Database
         public DateTime? DocumentoCriadoEm { get; set; }
         public string DocumentoCriadoPor { get; set; }
         public string Destinatario { get; set; }
-        public string AreaPendente { get; set; }
+        public int? AreaPendente { get; set; }
         public DateTime? DataUltimaInteracao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
+
+        public RececaoFaturacao IdNavigation { get; set; }
+        public RececaoFaturacao InverseIdNavigation { get; set; }
+        public ICollection<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
     }
 }

@@ -13,115 +13,115 @@ namespace Hydra.Such.Data.Logic.Request
     {
         #region CRUD
 
-        public static List<BillingReceptionModel> GetAll()
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.RececaoFaturacao
-                        .OrderByDescending(x => x.Id)
-                        .ToList()
-                        .ParseToViewModel();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //public static List<BillingReceptionModel> GetAll()
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            return ctx.RececaoFaturacao
+        //                .OrderByDescending(x => x.Id)
+        //                .ToList()
+        //                .ParseToViewModel();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public static BillingReceptionModel GetById(string id)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.RececaoFaturacao
-                        .SingleOrDefault(x => x.Id == id)
-                        .ParseToViewModel();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //public static BillingReceptionModel GetById(string id)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            return ctx.RececaoFaturacao
+        //                .SingleOrDefault(x => x.Id == id)
+        //                .ParseToViewModel();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public static BillingReceptionModel Create(BillingReceptionModel item)
-        {
-            if (item == null)
-                throw new ArgumentNullException("item");
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    item.Estado = BillingReceptionStates.Rececao;
-                    item.DataCriacao = DateTime.Now;
-                    item.DataUltimaInteracao = DateTime.Now.ToString();
-                    ctx.RececaoFaturacao.Add(item.ParseToDB());
+        //public static BillingReceptionModel Create(BillingReceptionModel item)
+        //{
+        //    if (item == null)
+        //        throw new ArgumentNullException("item");
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            item.Estado = BillingReceptionStates.Rececao;
+        //            item.DataCriacao = DateTime.Now;
+        //            item.DataUltimaInteracao = DateTime.Now.ToString();
+        //            ctx.RececaoFaturacao.Add(item.ParseToDB());
 
-                    RececaoFaturacaoWorkflow wf = new RececaoFaturacaoWorkflow();
-                    wf.IdRecFaturacao = item.Id;
-                    wf.AreaWorkflow = "Contabilidade";//TODO: Identificar áres possivels
-                    wf.Descricao = "Entrada fatura em receção";
-                    wf.CriadoPor = item.CriadoPor;
-                    wf.Data = DateTime.Now;
-                    wf.DataCriacao = DateTime.Now;
-                    wf.Estado = (int)BillingReceptionStates.Rececao;//TODO: Identificar estados possivels “Receção/Conferência”
-                    wf.Utilizador = item.CriadoPor;
-                    ctx.RececaoFaturacaoWorkflow.Add(wf);
+        //            RececaoFaturacaoWorkflow wf = new RececaoFaturacaoWorkflow();
+        //            wf.IdRecFaturacao = item.Id;
+        //            wf.AreaWorkflow = "Contabilidade";//TODO: Identificar áres possivels
+        //            wf.Descricao = "Entrada fatura em receção";
+        //            wf.CriadoPor = item.CriadoPor;
+        //            wf.Data = DateTime.Now;
+        //            wf.DataCriacao = DateTime.Now;
+        //            wf.Estado = (int)BillingReceptionStates.Rececao;//TODO: Identificar estados possivels “Receção/Conferência”
+        //            wf.Utilizador = item.CriadoPor;
+        //            ctx.RececaoFaturacaoWorkflow.Add(wf);
 
-                    ctx.SaveChanges();
-                }
-                return item;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //            ctx.SaveChanges();
+        //        }
+        //        return item;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public static BillingReceptionModel Update(BillingReceptionModel item)
-        {
-            if (item == null)
-                throw new ArgumentNullException("item");
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    item.DataModificacao = DateTime.Now;
-                    item.DataUltimaInteracao = DateTime.Now.ToString();
-                    ctx.RececaoFaturacao.Update(item.ParseToDB());
-                    ctx.SaveChanges();
-                }
+        //public static BillingReceptionModel Update(BillingReceptionModel item)
+        //{
+        //    if (item == null)
+        //        throw new ArgumentNullException("item");
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            item.DataModificacao = DateTime.Now;
+        //            item.DataUltimaInteracao = DateTime.Now.ToString();
+        //            ctx.RececaoFaturacao.Update(item.ParseToDB());
+        //            ctx.SaveChanges();
+        //        }
 
-                return item;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //        return item;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public static bool Delete(BillingReceptionModel item)
-        {
-            if (item == null)
-                throw new ArgumentNullException("item");
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.RececaoFaturacao.Remove(item.ParseToDB());
-                    ctx.SaveChanges();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
+        //public static bool Delete(BillingReceptionModel item)
+        //{
+        //    if (item == null)
+        //        throw new ArgumentNullException("item");
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            ctx.RececaoFaturacao.Remove(item.ParseToDB());
+        //            ctx.SaveChanges();
+        //        }
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //}
 
         #endregion
 
@@ -130,10 +130,12 @@ namespace Hydra.Such.Data.Logic.Request
         {
             if (item != null)
             {
+
                 return new BillingReceptionModel()
                 {
                     Id = item.Id,
-                    AreaPendente = item.AreaPendente,
+                    AreaPendente = (BillingReceptionAreas)item.AreaPendente,
+                    AreaPendenteDescricao = item.AreaPendente != null ? EnumHelper.GetDescriptionFor(typeof(BillingReceptionAreas), (int)item.AreaPendente) : string.Empty,
                     CodAreaFuncional = item.CodAreaFuncional,
                     CodCentroResponsabilidade = item.CodCentroResponsabilidade,
                     CodFornecedor = item.CodFornecedor,
@@ -158,7 +160,10 @@ namespace Hydra.Such.Data.Logic.Request
                     TipoDocumento = (Enumerations.BillingDocumentTypes)item.TipoDocumento,
                     Valor = item.Valor,
                     ValorEncomendaOriginal = item.ValorEncomendaOriginal,
-                    ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado
+                    ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
+                    DocumentoCriadoEm = item.DocumentoCriadoEm,
+                    DocumentoCriadoPor = item.DocumentoCriadoPor,
+                    WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel(),
                 };
             }
             return null;
@@ -180,7 +185,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new RececaoFaturacao()
                 {
                     Id = item.Id,
-                    AreaPendente = item.AreaPendente,
+                    AreaPendente = (int)item.AreaPendente,
                     CodAreaFuncional = item.CodAreaFuncional,
                     CodCentroResponsabilidade = item.CodCentroResponsabilidade,
                     CodFornecedor = item.CodFornecedor,
@@ -205,7 +210,9 @@ namespace Hydra.Such.Data.Logic.Request
                     TipoDocumento = (int)item.TipoDocumento,
                     Valor = item.Valor,
                     ValorEncomendaOriginal = item.ValorEncomendaOriginal,
-                    ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado
+                    ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
+                    DocumentoCriadoEm = item.DocumentoCriadoEm,
+                    DocumentoCriadoPor = item.DocumentoCriadoPor
                 };
             }
             return null;

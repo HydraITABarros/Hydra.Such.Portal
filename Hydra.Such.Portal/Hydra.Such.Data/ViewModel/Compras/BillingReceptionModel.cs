@@ -28,11 +28,16 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Local { get; set; }
         public string NumAcordoFornecedor { get; set; }
         public string Destinatario { get; set; }
-        public string AreaPendente { get; set; }
+        public BillingReceptionAreas AreaPendente { get; set; }
+        public string AreaPendenteDescricao { get; set; }
         public string DataUltimaInteracao { get; set; }
+        public DateTime? DocumentoCriadoEm { get; set; }
+        public string DocumentoCriadoPor { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
+
+        public List<BillingRecWorkflowModel> WorkflowItems { get; set; }
     }
 }

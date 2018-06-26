@@ -1758,14 +1758,14 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptionStates()
         {
-            var items = EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
 
         public JsonResult GetBillingDocumentTypes()
         {
-            var items = EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
