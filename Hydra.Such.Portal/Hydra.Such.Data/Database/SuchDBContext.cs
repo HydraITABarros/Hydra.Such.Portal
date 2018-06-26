@@ -6027,12 +6027,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumEncomenda).HasMaxLength(20);
 
                 entity.Property(e => e.NumEncomendaManual).HasMaxLength(20);
-
-                entity.HasOne(d => d.IdNavigation)
-                    .WithOne(p => p.InverseIdNavigation)
-                    .HasForeignKey<RececaoFaturacao>(d => d.Id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RececaoFaturacao_RececaoFaturacao");
             });
 
             modelBuilder.Entity<RececaoFaturacaoWorkflow>(entity =>

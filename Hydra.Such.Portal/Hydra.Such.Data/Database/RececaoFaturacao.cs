@@ -40,8 +40,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
 
-        public RececaoFaturacao IdNavigation { get; set; }
-        public RececaoFaturacao InverseIdNavigation { get; set; }
         public ICollection<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
     }
 }
