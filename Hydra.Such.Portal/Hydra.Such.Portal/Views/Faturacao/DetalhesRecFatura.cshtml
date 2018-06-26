@@ -13,9 +13,9 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
@@ -109,11 +109,15 @@
                 <paper-button class="tablinks" on-tap="_redirectToCreateForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
             <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button class="tablinks" on-tap="_postInvoiceCF"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
-                <paper-button class="tablinks" on-tap="_postInvoiceCP"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
-                <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
-                <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
+                <template is="dom-if" if="{{ _isInvoice }}">
+                    <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CF</paper-button>
+                    <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _isCreditMemo }}">
+                    <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                </template>
             </template>
+            <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
         </div>
 
         <div class="panel panel-default">
@@ -136,15 +140,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+
                     </div>
                     <div class="col-sm-3">
                         <vaadin-date-picker label="Data Receção" id="dpDataRececao" disabled="{{ !_permissions.update }}" value="{{ data.dataRececao }}"></vaadin-date-picker>
@@ -225,7 +221,7 @@
                         <vaadin-text-field label="Destinatário" type="text" value="{{data.destinatario}}" id="txtDestinatario" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Área Pendente" type="text" value="{{data.areaPendente}}" id="txtAreaPendente" disabled></vaadin-text-field>
+
                     </div>
                     <div class="col-sm-3">
                         <vaadin-date-picker label="Data Última Interação" id="dpDataUltimaInteracao " disabled value="{{data.dataUltimaInteracao }}"></vaadin-date-picker>
@@ -299,12 +295,12 @@
                 </div>
             </div>
 
-            <template is="dom-if" if="{{ _invoice }}">
+            <template is="dom-if" if="{{ _showWorkflowData }}">
                 <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[States]]" id="cmbEstadosFac" item-value-path="id" item-label-path="value" value="{{_status}}" label="Estado" disabled>
+                            <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -313,36 +309,33 @@
                                     </paper-icon-item>
                                 </template>
                             </vaadin-combo-box>
-                        </div>                 
-                        <div class="col-sm-2">
-                            <template is="dom-if" if="{{ !_checkPending }}">
-                                <vaadin-text-field type="text" value="{{ data.id }}" id="txtDate" name="txtDate" label=" " disabled></vaadin-text-field>
-                            </template>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtArea" name="txtArea" label="Area"  disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDestination" name="txtDestination" label="Destinatário"  disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-date-picker  value="{{data.id}}" id="txtData"  label="Data"  disabled></vaadin-date-picker>
-                        </div>
-                    </div>
-                    <div class="row break_clear">                       
-                            <div class="col-sm-8">
-                                <such-textarea rows="3" id="txtDescription" name="txtDescription" label="Descrição"  disabled></such-textarea>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field type="text" value="{{ data.id }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente"  disabled></vaadin-text-field>
-                            </div>         
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-8">
-                            <such-textarea rows="3" id="txtComment" name="txtComment" label="Comentário" disabled></such-textarea>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução"  disabled></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field label="Área Pendente" type="text" value="{{data.AreaPendenteDescricao}}" id="txtAreaPendente" disabled></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDestination" name="txtDestination" label="Destinatário" disabled></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-date-picker value="{{data.id}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-10">
+                            <such-textarea rows="3" id="txtDescription" name="txtDescription" label="Descrição" disabled></such-textarea>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-10">
+                            <such-textarea rows="3" id="txtComment" name="txtComment" label="Comentário" disabled></such-textarea>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
                         </div>
                     </div>
                     <div class="marginSpace">
@@ -355,12 +348,40 @@
                             </template>
                         </div>
                     </div>
-              </div> 
+
+                    <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
+                        <vaadin-grid-column width="160px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="localCode">Cód.</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="localCode"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+                                    <vaadin-combo-box items="[[Locations]]" id="CBGridLocations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    <!--[[_getLocalCodeDescription(item.localCode)]]-->
+                                    {{item.localCode}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+
+                    </vaadin-grid>
+                </div>
             </template>
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[States]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{_status}}" label="Destinatário" on-value-changed="_destinationChange">
+                        <vaadin-combo-box items="[[States]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{_status}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -409,7 +430,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
-                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário" ></such-textarea>
+                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -427,7 +448,7 @@
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-   </template>
+    </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -463,11 +484,23 @@
                     },
                     _invoice: {
                         type: Boolean,
-                        value: false,
+                        value: true,
                     },
                     _states: {
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.BillingReceptionStates)),
+                    },
+                    _isInvoice: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _isCreditMemo: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _showWorkflowData: {
+                        type: Boolean,
+                        value: false,
                     },
                 },
                 ready: function () {
@@ -492,6 +525,9 @@
                 _getBillingReceptionResponse: function (e) {
                     if (e.detail.status === 200) {
                         this._loadOrders(this.data.codFornecedor);
+                        this._isInvoice = this.data.tipoDocumento == 2;//Fatura
+                        this._isCreditMemo = this.data.tipoDocumento == 3;//Nota de Crédito
+                        this._showWorkflowData = this.data.estado >= this._states.Rececao;
                     }
                 },
                 _supplierSelected: function (e) {
@@ -509,12 +545,12 @@
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
-                        //if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
-                        //    var selState = this.States.find(x => x.id == this.data.estado);
-                        //    var stateDescription = selState != null ? selState.value : this.data.estado;
-                        //    this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
-                        //    return false;
-                        //}
+                        if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                            var selState = this.States.find(x => x.id == this.data.estado);
+                            var stateDescription = selState != null ? selState.value : this.data.estado;
+                            this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                            return false;
+                        }
                         if (this.data.codFornecedor == "") {
                             this._openToastError("O Fornecedor tem que estar preenchido.");
                             return false;
@@ -546,8 +582,14 @@
                     if (e.detail.status === 200) {
                         if (this.createdItem.eReasonCode == "1") {
                             this._openToast(this.createdItem.eMessage);
-                            this.data = this.createdItem;
-                        } else {
+                            //this.data = this.createdItem;
+                            var id = this.createdItem.id;
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/Faturacao/DetalhesRecFatura/" + id;
+                                }, 1000);
+                        }
+                        else {
                             this._openToastError(this.createdItem.eMessage);
                         }
                     }
@@ -556,20 +598,17 @@
                     }
                 },
                 _update: function () {
-                    //debugger;
                     this.$.page_update_ajax.body = JSON.stringify(this.data);
                     this.$.page_update_ajax.generateRequest();
                 },
                 _updateResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
+                            this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                            this._invoice = true;
-                            this.$.cmbEstadosFac = 2;
-                        } else {// pendente
-                            this._invoice = true;
-                            this._checkPending = false;
-                            this._openToastError("Pendente - Ver Ponto de situação");
+                        }
+                        else {
+                            this._openToastError(this.updatedItem.eMessage);
                         }
                     }
                     else {
@@ -618,14 +657,14 @@
                             this._openToastError("Encomenda por rececionar.");
                     }
                 },
-                _destinationChange: function (e) {
-                var type = e.detail.value;
-                debugger;;
-                if (type==1){//interno
-                    this._checkDestination = true;
-                } else {//externo
-                    this._checkDestination = false;
-                }
+                _destinationTypeChanged: function (e) {
+                    var type = e.detail.value;
+                    debugger;;
+                    if (type == 1) {//interno
+                        this._checkDestination = true;
+                    } else {//externo
+                        this._checkDestination = false;
+                    }
                 },
                 _sendPending: function () {
                     this.$.dialogSendPeding.open();
@@ -643,7 +682,7 @@
                     }
                 },
                 _postDocument: function () {
-                    if (this._validateInputForAccounting()) { 
+                    if (this._validateInputForAccounting()) {
                         //callPostDocument
                     }
                  }

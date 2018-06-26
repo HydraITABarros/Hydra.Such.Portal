@@ -705,6 +705,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllLocations()
+        {
+            List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = Convert.ToString(x.ArmazemCDireta)
+            }).ToList();
+            return Json(result_all);
+        }
+
+        [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {
             List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Name == locationId).Select(x => new DDMessageString()
@@ -1758,14 +1770,14 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptionStates()
         {
-            var items = EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
 
         public JsonResult GetBillingDocumentTypes()
         {
-            var items = EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }

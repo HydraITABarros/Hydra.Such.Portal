@@ -558,7 +558,7 @@ namespace Hydra.Such.Portal.Controllers
                 status = int.Parse(requestParams["status"].ToString());
             }
 
-            bool statusIsValid = Configurations.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
+            bool statusIsValid = Data.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
 
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
