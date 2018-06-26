@@ -5725,7 +5725,6 @@ namespace Hydra.Such.Portal.Controllers
 
         #region MenuButton "Acções" in the "A Preencher pelos Serviços Financeiros (16)" section
 
-
         public JsonResult CBVASubmetAprov_Simplificado([FromBody] ProcedimentoCCPView data)
         {
             if (data != null)
@@ -5823,9 +5822,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-
         #endregion
-
 
         #endregion
 
