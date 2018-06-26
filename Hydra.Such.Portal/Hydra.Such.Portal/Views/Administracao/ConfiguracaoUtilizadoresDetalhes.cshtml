@@ -173,7 +173,7 @@
         <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/CreateUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesCreated}}" method="post" handle-as="json" id="page_createuserAcessosLocalizacoes_ajax" on-response="_createUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/DeleteUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesDeleted}}" method="post" handle-as="json" id="page_deleteuserAcessosLocalizacoes_ajax" on-response="_deleteUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
 
@@ -437,7 +437,7 @@
             <template is="dom-if" if="{{ _permissions.update }}">
                 <div class="row">
                     <div class="col-lg-2">
-                        <vaadin-combo-box items="[[CBLocations]]" id="AcessoLocalizacao" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[CBLocations]]" id="_acessoLocalizacao" item-value-path="id" item-label-path="value" value="{{acessoLocalizacao}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -824,10 +824,11 @@
                     }
                 },
                 _createUserAcessosLocalizacoes: function () {
-                    if (this.$.AcessoLocalizacao.value == "") {
+                    debugger;
+                    if (this.acessoLocalizacao == "" || this.acessoLocalizacao == null) {
                         this._showErrorMessage("É obrigatório preencher a localização.");
                     } else {
-                        this.$.page_createuserAcessosLocalizacoes_ajax.body = JSON.stringify({ IdUtilizador: this.data.idUser, Localizacao: this.$.AcessoLocalizacao.value });
+                        this.$.page_createuserAcessosLocalizacoes_ajax.body = JSON.stringify({ IdUtilizador: this.data.idUser, Localizacao: this.acessoLocalizacao });
                         this.$.page_createuserAcessosLocalizacoes_ajax.generateRequest();
                         this.$.gridAllowedUserAcessosLocalizacoes.clearCache();
                     }
@@ -862,7 +863,7 @@
                     if (this.UserAcessosLocalizacoesCreated) {
                         this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$.AcessoLocalizacao.value = ""
+                        this.acessoLocalizacao = ""
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar acesso a dimensão.');
