@@ -663,7 +663,7 @@ namespace Hydra.Such.Portal.Controllers
                 project = DBProjects.GetById(req.ProjectNo);
             }
 
-            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetAllByRequisiçãos(req.RequisitionNo).ParseToViewModel();
+            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
             if (reqLines != null)
             {
                 List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
@@ -736,7 +736,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
@@ -766,7 +766,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
