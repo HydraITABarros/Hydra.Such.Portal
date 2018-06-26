@@ -4443,7 +4443,329 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
-        
+
+
+        // The following method maps NAV2009 FDComprasConfirmar(pEstado : Integer) function, from Procedimento Simplificado
+        public static ErrorHandler DecisionGroundsToBuy_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
+        {
+            if (Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo2 = GetChecklistControloProcedimento(Procedimento.No, 2);
+                if (Fluxo2 != null)
+                {
+                    Fluxo2.Resposta = Procedimento.ComentarioFundamentoCompras;
+                    Fluxo2.TipoResposta = StateToCheck == 0 ? 0 : 1;
+                    Fluxo2.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo2.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo2))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo2 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 2).LastOrDefault();
+                if (Fluxo2 != null)
+                {
+                    Fluxo2.Resposta = Procedimento.ComentarioFundamentoCompras;
+                    Fluxo2.TipoResposta = StateToCheck == 0 ? 0 : 1;
+                    Fluxo2.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo2.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo2))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+            FluxoTrabalhoListaControlo NewFluxo4 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 4,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ComentarioFundamentoCompras,
+                User = UserDetails.IdUtilizador,
+                TipoEstado = 1,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
+            };
+
+            switch (StateToCheck)
+            {
+                case 1:
+                    NewFluxo4.EstadoSeguinte = 5;
+                    break;
+                case 2:
+                    NewFluxo4.EstadoSeguinte = 6;
+                    break;
+                case 3:
+                    NewFluxo4.EstadoSeguinte = 16;
+                    break;
+                case 9:
+                    NewFluxo4.EstadoSeguinte = 0;
+                    NewFluxo4.TipoEstado = 1;
+                    break;
+                case 0:
+                    NewFluxo4.TipoEstado = 0;
+                    NewFluxo4.EstadoSeguinte = Procedimento.Imobilizado.Value ? 2 : 0;
+                    break;
+            }
+
+            if (__CreateFluxoTrabalho(NewFluxo4) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
+
+            if (Procedimento.Estado == 4)
+            {
+                switch (StateToCheck)
+                {
+                    case 1:
+                        Procedimento.Estado = 5;
+                        Procedimento.WorkflowFinanceiros = true;
+                        Procedimento.WorkflowFinanceirosConfirm = false;
+                        Procedimento.ComentarioEstado = "";
+                        break;
+                    case 2:
+                        Procedimento.Estado = 6;
+                        Procedimento.WorkflowJuridicos = true;
+                        Procedimento.WorkflowJuridicosConfirm = false;
+                        Procedimento.ComentarioEstado = "";
+                        break;
+                    case 3:
+                        Procedimento.Estado = 16;
+                        Procedimento.ComentarioEstado = "";
+                        break;
+                    case 0:
+                        Procedimento.Estado = Procedimento.Imobilizado.Value ? 2 : 0;
+                        Procedimento.ComentarioEstado = Procedimento.ComentarioFundamentoCompras;
+                        break;
+                };
+                
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = DateTime.Now;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    return ReturnHandlers.UnableToUpdateProcedimento;
+                };
+            }
+
+            return ReturnHandlers.Success;
+        }
+
+        // The following method maps NAV2009 FDFinancConfirmar(pEstado : Integer) function 
+        public static ErrorHandler FinancialDecisionGroundsToBuy_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
+        {
+            if (Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo4 = GetChecklistControloProcedimento(Procedimento.No, 4);
+                if (Fluxo4 != null)
+                {
+                    Fluxo4.Resposta = Procedimento.ComentarioFundamentoFinanceiros;
+                    Fluxo4.TipoResposta = StateToCheck;
+                    Fluxo4.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo4.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo4))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo4 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 4).LastOrDefault();
+                if (Fluxo4 != null)
+                {
+                    Fluxo4.Resposta = Procedimento.ComentarioFundamentoCompras;
+                    Fluxo4.TipoResposta = StateToCheck;
+                    Fluxo4.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo4.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo4))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+            FluxoTrabalhoListaControlo NewFluxo5 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 5,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ComentarioFundamentoFinanceiros,
+                //Comentario2 = Procedimento.ComentarioFundamentoFinanceiros2,
+                User = UserDetails.IdUtilizador,
+                EstadoSeguinte = 4,
+                TipoEstado = StateToCheck,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now
+            };
+            
+            if (__CreateFluxoTrabalho(NewFluxo5) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            if (Procedimento.Estado == 5)
+            {
+                if (StateToCheck == 1)
+                {
+                    Procedimento.Estado = 4;
+                    Procedimento.ComentarioEstado = "";
+                }
+                else
+                {
+                    Procedimento.Estado = 3;
+                    Procedimento.ComentarioEstado = Procedimento.ComentarioFundamentoFinanceiros;
+                }
+
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = DateTime.Now;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    return ReturnHandlers.UnableToUpdateProcedimento;
+                };
+            }
+
+            return ReturnHandlers.Success;
+        }
+
+        // The following method maps NAV2009 VAAreaConfirmar(pEstado : Integer) function
+        public static ErrorHandler VAAreaConfirmar_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
+        {
+            if (Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo15 = GetChecklistControloProcedimento(Procedimento.No, 15);
+                if (Fluxo15 != null)
+                {
+                    Fluxo15.Resposta = Procedimento.ComentarioAdjudicacao16;
+                    Fluxo15.TipoResposta = StateToCheck;
+                    Fluxo15.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo15.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo15))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo15 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 15).LastOrDefault();
+                if (Fluxo15 != null)
+                {
+                    Fluxo15.Resposta = Procedimento.ComentarioAdjudicacao16;
+                    Fluxo15.TipoResposta = StateToCheck;
+                    Fluxo15.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo15.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo15))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+            FluxoTrabalhoListaControlo NewFluxo16 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 16,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ComentarioAdjudicacao16,
+                User = UserDetails.IdUtilizador,
+                TipoEstado = StateToCheck,
+                //EstadoSeguinte = 15,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
+            };
+
+            switch (StateToCheck)
+            {
+                case 0:
+                    NewFluxo16.EstadoSeguinte = 15;
+                    break;
+                case 1:
+                    NewFluxo16.EstadoSeguinte = 17;
+                    break;
+                case 3:
+                    NewFluxo16.EstadoSeguinte = 19;
+                    break;
+                case 9:
+                    NewFluxo16.EstadoSeguinte = 0;
+                    NewFluxo16.TipoEstado = 1;
+                    break;
+            }
+
+            if (__CreateFluxoTrabalho(NewFluxo16) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
+
+            if (Procedimento.Estado == 16)
+            {
+                if (StateToCheck == 1)
+                {
+                    Procedimento.Estado = 17;   // Enviar p/ CA
+                    Procedimento.ComentarioEstado = "";
+                }
+                else if (StateToCheck == 3)
+                {
+                    Procedimento.Estado = 19;    // Fecho do processo
+                    Procedimento.ComentarioEstado = Procedimento.ComentarioAdjudicacao16;
+                }
+                else if (StateToCheck == 0)
+                {
+                    Procedimento.Estado = 15;    // Devolver p/ Compras
+                    Procedimento.ComentarioEstado = Procedimento.ComentarioAdjudicacao16;
+                }
+                
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = DateTime.Now;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    return ReturnHandlers.UnableToUpdateProcedimento;
+                };
+            }
+
+            return ReturnHandlers.Success;
+        }
+
+
         #endregion
 
     }
