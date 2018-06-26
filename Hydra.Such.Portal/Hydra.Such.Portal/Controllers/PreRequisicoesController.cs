@@ -1015,7 +1015,9 @@ namespace Hydra.Such.Portal.Controllers
             Requisição createReq = DBRequest.GetById(ReqNo);
             ErrorHandler ApprovalMovResult = new ErrorHandler();
             string Error = "";
+
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+
             if (result != null && result.Count >0)
             {
                 foreach (ApprovalMovementsViewModel req in result)
