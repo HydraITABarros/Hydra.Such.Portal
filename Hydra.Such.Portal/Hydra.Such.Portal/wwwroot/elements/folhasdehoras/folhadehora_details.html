@@ -161,13 +161,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
-               last-response="{{FolhaDeHorasUpdatedValidacao}}"
-               method="post"
-               handle-as="json"
-               id="page_updatefolhadehorasvalidacao_ajax"
-               on-response="_updatefolhadehorasvalidacaoResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehorasvalidacao_ajax"
+                   on-response="_updatefolhadehorasvalidacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
@@ -197,13 +197,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
-               last-response="{{validateResponse}}"
-               method="post"
-               handle-as="json"
-               id="page_validator_ajax"
-               on-response="_responseValidatorProcessor"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json">
+        </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -224,13 +224,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
-               last-response="{{PercursoUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepercurso_ajax"
-               on-response="_updatePercursoResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{PercursoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatepercurso_ajax"
+                   on-response="_updatePercursoResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -262,13 +262,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
-               last-response="{{AjudaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updateajuda_ajax"
-               on-response="_updateAjudaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{AjudaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updateajuda_ajax"
+                   on-response="_updateAjudaResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
@@ -299,13 +299,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
-               last-response="{{MaoDeObraUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatemaodeobra_ajax"
-               on-response="_updateMaoDeObraResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{MaoDeObraUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatemaodeobra_ajax"
+                   on-response="_updateMaoDeObraResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -345,13 +345,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
-               last-response="{{PresencaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepresenca_ajax"
-               on-response="_updatePresencaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{PresencaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatepresenca_ajax"
+                   on-response="_updatePresencaResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -712,7 +712,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo"    ="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" ="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -2358,7 +2358,7 @@
                 },
 
                 _AjudaQuantidadeValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaQuantidade.value != "") {
                         var quant = parseInt(this.$.ajudaQuantidade.value);
                         if (quant < 0) {
@@ -2371,7 +2371,7 @@
                 },
 
                 _AjudaCustoUnitarioValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaCustoUnitario.value != "") {
                         var custo = parseInt(this.$.ajudaCustoUnitario.value);
                         if (custo < 0) {
@@ -2384,7 +2384,7 @@
                 },
 
                 _AjudaPrecoUnitarioValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaPrecoUnitario.value != "") {
                         var preco = parseInt(this.$.ajudaPrecoUnitario.value);
                         if (preco < 0) {
@@ -3210,7 +3210,7 @@
                 },
 
                 _terminarfolhadehorasResponse: function (e) {
-                    debugger;
+                    //debugger;
                     setTimeout(function () {
                         bootbox.hideAll();
                     }, 0);
@@ -3669,7 +3669,7 @@
                 },
 
                 _getEmpoyeeNAVResponse: function (e) {
-                    debugger;
+                    //debugger;
 
                     this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
                     this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;

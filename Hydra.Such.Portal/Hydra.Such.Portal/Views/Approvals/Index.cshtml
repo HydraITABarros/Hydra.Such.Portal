@@ -160,7 +160,6 @@
                     }
                 },
                 _Reject: function (e) {
-                    debugger;
                     if (e != null) {
                         var TMessage = this.$.ToastMessage;
                         var TMessageError = this.$.ToastError;
@@ -191,7 +190,7 @@
                                     TMessageError.open();
                                     return false;
                                 } else {
-                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status : 2, rejectReason: result });
+                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 2, rejectReason: result });
                                     ARequest.generateRequest();
                                 }
                             }
