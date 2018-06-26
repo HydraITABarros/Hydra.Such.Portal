@@ -705,6 +705,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllLocations()
+        {
+            List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = Convert.ToString(x.ArmazemCDireta)
+            }).ToList();
+            return Json(result_all);
+        }
+
+        [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {
             List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Name == locationId).Select(x => new DDMessageString()
