@@ -1016,6 +1016,8 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler ApprovalMovResult = new ErrorHandler();
             string Error = "";
 
+            List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll()
+
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
 
             if (result != null && result.Count >0)
