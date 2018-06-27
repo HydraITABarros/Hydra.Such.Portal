@@ -88,6 +88,14 @@
                    id="ajax_delete"
                    content-type="application/json"></iron-ajax>
 
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
@@ -107,7 +115,7 @@
 
         <div class="row break_clear">
             <vaadin-grid id="gridActionsConfection" aria-label="gridActionsConfection" items="[[result]]" class="grid" multi-sort="true">
-                <vaadin-grid-column resizable width="160px">
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                         <vaadin-grid-filter path="code" />
@@ -116,7 +124,8 @@
                         <vaadin-text-field value="{{item.code}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column resizable width="160px">
+
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="description" />
@@ -125,8 +134,9 @@
                         <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                     </template>
                 </vaadin-grid-column>
+
                 <template is="dom-if" if="{{ !_permissionsDelete }}">
-                    <vaadin-grid-column with="10%">
+                    <vaadin-grid-column resizable width="150px">
                         <template class="header">
                         </template>
                         <template>
@@ -138,12 +148,6 @@
                 </template>
             </vaadin-grid>
         </div>
-        <template is="dom-if" if="{{ !_permissionsUpdate }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -179,7 +183,22 @@
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
                 },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridActionsConfection);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridActionsConfection).height(height);
+                },
+
                 _create: function () {
                     this.$.ajax_create.body = JSON.stringify({ description: this.$.ddDescription.value });
                     this.$.ajax_create.generateRequest();
@@ -246,8 +265,11 @@
                 openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
-                }
+                },
 
+                _goBack: function (e) {
+                    window.history.back();
+                },
             });
         });
     </script>

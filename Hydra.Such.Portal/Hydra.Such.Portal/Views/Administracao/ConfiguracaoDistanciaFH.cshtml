@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Distância Folha de Horas";
+    ViewData["Title"] = "FH Distância";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -39,6 +39,7 @@
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -63,16 +64,16 @@
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
-                    padding: 0 0;
-                };
+                        padding: 0 0;
+                    };
                 --paper-collapse-item-header: {
-                    padding: 0 15px;
-                    color: #333;
-                    background-color: #f5f5f5;
-                    border-bottom: solid #ddd 1px;
-                    border-top-left-radius: 3px;
-                    border-top-right-radius: 3px;
-                };
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
             }
         </style>
 
@@ -129,10 +130,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
-
                     <div class="row break_clear">
                         <div class="col-sm-4">
                             <vaadin-combo-box items="[[LOrigemDestino]]" id="origem" name="origem" item-value-path="id" item-label-path="value" label="Origen" disabled="{{ _permissionsCreate }}">
@@ -166,7 +172,6 @@
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
                     </div>
-
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
@@ -174,7 +179,7 @@
         <br />
 
         <vaadin-grid id="gridDistanciaFH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="origem">Origem</vaadin-grid-sorter>
                     <vaadin-grid-filter path="origem" />
@@ -192,7 +197,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="destino">Destino</vaadin-grid-sorter>
                     <vaadin-grid-filter path="destino" />
@@ -210,7 +215,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="distancia">Distância</vaadin-grid-sorter>
                     <vaadin-grid-filter path="distancia" />
@@ -220,63 +225,7 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column width="200px">
-                <template class="header">
-                <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                <vaadin-grid-filter path="criadoPor" />
-                </template>
-                <template>
-                <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.criadoPor}}" disabled="true">
-                <template>
-                <paper-icon-item>
-                <paper-item-body two-line>
-                <div>[[item.value]]</div>
-                </paper-item-body>
-                </paper-icon-item>
-                </template>
-                </vaadin-combo-box>
-                </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                <template class="header">
-                <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                <vaadin-grid-filter path="dataHoraCriacao" />
-                </template>
-                <template>
-                <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                <template class="header">
-                <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                <vaadin-grid-filter path="alteradoPor" />
-                </template>
-                <template>
-                <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.alteradoPor}}" disabled="true">
-                <template>
-                <paper-icon-item>
-                <paper-item-body two-line>
-                <div>[[item.value]]</div>
-                </paper-item-body>
-                </paper-icon-item>
-                </template>
-                </vaadin-combo-box>
-                </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                <template class="header">
-                <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
-                </template>
-                <template>
-                <vaadin-text-field value="{{item.dataHoraUltimaAlteracao}}" disabled="true"></vaadin-text-field>
-                </template>
-                </vaadin-grid-column>*@
-
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
@@ -286,12 +235,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
@@ -337,6 +280,20 @@
                 ready: function () {
                     this.$.ajax_GetAll.generateRequest();
                     this.$.gridDistanciaFH.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridDistanciaFH);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridDistanciaFH).height(height);
                 },
 
                 openToast: function (message) {
@@ -487,7 +444,6 @@
                 },
 
                 _goBack: function (e) {
-                    //window.location = "../";
                     window.history.back();
                 }
             });
