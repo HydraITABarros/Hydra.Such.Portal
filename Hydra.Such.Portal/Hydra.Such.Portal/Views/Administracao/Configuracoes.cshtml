@@ -19,151 +19,153 @@
 
 <link rel="import" href="/elements/comboboxs/NumerationsList.html">
 
-    <div>
-        <x-configurations></x-configurations>
-        <dom-module id="x-configurations">
-            <template>
-                <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-                <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-                <link rel="stylesheet" href="~/css/main.css" />
+<div>
+    <x-configurations></x-configurations>
+    <dom-module id="x-configurations">
+        <template>
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+            <link rel="stylesheet" href="~/css/main.css" />
 
-                @*POPULATE DROPDOWNS*@
-                <iron-ajax url="/Administracao/GetListConfigNumerations"
-                           last-response="{{result}}"
-                           auto
-                           method="post"
-                           handle-as="json"
-                           content-type="application/json"></iron-ajax>
+            @*POPULATE DROPDOWNS*@
+            <iron-ajax url="/Administracao/GetListConfigNumerations"
+                       last-response="{{result}}"
+                       auto
+                       method="post"
+                       handle-as="json"
+                       content-type="application/json"></iron-ajax>
 
-                @*POPULATE DATA*@
-                <iron-ajax url="/Administracao/GetListConfigurations"
-                           last-response="{{response}}"
-                           id="ajax_populate"
-                           auto
-                           method="post"
-                           handle-as="json"
-                           content-type="application/json"></iron-ajax>
+            @*POPULATE DATA*@
+            <iron-ajax url="/Administracao/GetListConfigurations"
+                       last-response="{{response}}"
+                       id="ajax_populate"
+                       auto
+                       method="post"
+                       handle-as="json"
+                       content-type="application/json"></iron-ajax>
 
-                @*UPDATE INFO*@
-                <iron-ajax url="/Administracao/UpdateConfigurations"
-                           id="ajax_create"
-                           last-response="{{data}}"
-                           method="post"
-                           handle-as="json"
-                           on-response="_createResponse"
-                           content-type="application/json; charset=utf-8"></iron-ajax>
+            @*UPDATE INFO*@
+            <iron-ajax url="/Administracao/UpdateConfigurations"
+                       id="ajax_create"
+                       last-response="{{data}}"
+                       method="post"
+                       handle-as="json"
+                       on-response="_createResponse"
+                       content-type="application/json; charset=utf-8"></iron-ajax>
 
-                <iron-form>
-                    <form>
-                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <paper-tab>Geral</paper-tab>
-                            <paper-tab>Numeração</paper-tab>
+            <iron-form>
+                <form>
+                    <div class="subMenu">
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                            <paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                        </template>
+                    </div>
 
-                        </paper-tabs>
-                        <iron-pages selected="{{selected}}">
-                            <!--Geral-->
-                            <div>
-                                <div class="list-group">
-                                    <div class="col-md-2 ">
-                                        <h3 class="titleLabel">Inicio Hora Almoço</h3>
-                                        @*<time-element time="{{response.lunchStartTime}}"></time-element>
-                                        <time-input time="{{response.lunchStartTim}}"></time-input>*@
-                                        <time-picker time="{{response.lunchStartTime}}"></time-picker>
-                                    </div>
-                                    <div class="col-md-2 ">
-                                        <h3 class="titleLabel">Fim Hora Almoço</h3>
-                                        @*<time-element time="{{response.lunchEndTime}}"></time-element>*@
-                                        <time-picker time="{{response.lunchEndTime}}"></time-picker>
-                                    </div>
-                                </div>
-                                <div class="list-group">
-                                    <div class="col-md-2 ">
-                                        <h3 class="titleLabel">Inicio Hora Jantar</h3>
-                                        @*<time-element time="{{response.dinnerStartTime}}"></time-element>*@
-                                        <time-picker time="{{response.dinnerStartTime}}"></time-picker>
-                                    </div>
-                                    <div class="col-md-2 ">
-                                        <h3 class="titleLabel">Inicio Hora Jantar</h3>
-                                        @*<time-element time="{{response.dinnerEndTime}}"></time-element>*@
-                                        <time-picker time="{{response.dinnerEndTime}}"></time-picker>
-                                    </div>
-                                </div>
-                                <div class="list-group">
-                                    <div class="col-md-6 ">
-                                        &nbsp;
-                                    </div>
-                                </div>
-                            </div>
-                            <!--Numerações-->
+                    <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                        <paper-tab>Geral</paper-tab>
+                        <paper-tab>Numeração</paper-tab>
+
+                    </paper-tabs>
+                    <iron-pages selected="{{selected}}">
+                        <!--Geral-->
+                        <div>
                             <div class="list-group">
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Projetos</h3>
-                                    <cb-numerations id="nProject" indexvalue="{{response.projectNumeration}}"></cb-numerations>
+                                <div class="col-md-2 ">
+                                    <h3 class="titleLabel">Inicio Hora Almoço</h3>
+                                    @*<time-element time="{{response.lunchStartTime}}"></time-element>
+                                        <time-input time="{{response.lunchStartTim}}"></time-input>*@
+                                    <time-picker time="{{response.lunchStartTime}}"></time-picker>
                                 </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Contratos</h3>
-                                    <cb-numerations id="nContract" indexvalue="{{response.contractNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Folhas de Horas</h3>
-                                    <cb-numerations id="nTimeSheet" indexvalue="{{response.timeSheetNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração Oportunidades</h3>
-                                    <cb-numerations id="nTimeSheet" indexvalue="{{response.oportunitiesNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração Propostas</h3>
-                                    <cb-numerations id="nTimeSheet" indexvalue="{{response.proposalsNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração Contactos</h3>
-                                    <cb-numerations id="nTimeSheet" indexvalue="{{response.contactsNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Procedimentos de Compra</h3>
-                                    <cb-numerations id="nPurchasingProcedures" indexvalue="{{response.purchasingProceduresNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Procedimentos Simplificados</h3>
-                                    <cb-numerations id="nSimplifiedProcedures" indexvalue="{{response.simplifiedProceduresNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Pré-Requisições</h3>
-                                    <cb-numerations id="nPreRequisition" indexvalue="{{response.preRequisitionNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Requisições</h3>
-                                    <cb-numerations id="nRequisition" indexvalue="{{response.requisitionNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Fichas Técnicas de Pratos</h3>
-                                    <cb-numerations id="nDishesTechnicalSheets" indexvalue="{{response.dishesTechnicalSheetsNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Modelos de Requisição Simplificasdas</h3>
-                                    <cb-numerations id="nSimplifiedReqTemplates" indexvalue="{{response.simplifiedReqTemplatesNumeration}}"></cb-numerations>
-                                </div>
-                                <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
-                                    <h3 class="titleLabel">Numeração de Requisições Simplificadas</h3>
-                                    <cb-numerations id="nSimplifiedRequisition" indexvalue="{{response.simplifiedRequisitionNumeration}}"></cb-numerations>
+                                <div class="col-md-2 ">
+                                    <h3 class="titleLabel">Fim Hora Almoço</h3>
+                                    @*<time-element time="{{response.lunchEndTime}}"></time-element>*@
+                                    <time-picker time="{{response.lunchEndTime}}"></time-picker>
                                 </div>
                             </div>
-                        </iron-pages>
-                        <div class="marginSpace" style="width: 500px;">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-                            </template>
+                            <div class="list-group">
+                                <div class="col-md-2 ">
+                                    <h3 class="titleLabel">Inicio Hora Jantar</h3>
+                                    @*<time-element time="{{response.dinnerStartTime}}"></time-element>*@
+                                    <time-picker time="{{response.dinnerStartTime}}"></time-picker>
+                                </div>
+                                <div class="col-md-2 ">
+                                    <h3 class="titleLabel">Inicio Hora Jantar</h3>
+                                    @*<time-element time="{{response.dinnerEndTime}}"></time-element>*@
+                                    <time-picker time="{{response.dinnerEndTime}}"></time-picker>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-md-6 ">
+                                    &nbsp;
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </iron-form>
+                        <!--Numerações-->
+                        <div class="list-group">
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Projetos</h3>
+                                <cb-numerations id="nProject" indexvalue="{{response.projectNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Contratos</h3>
+                                <cb-numerations id="nContract" indexvalue="{{response.contractNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Folhas de Horas</h3>
+                                <cb-numerations id="nTimeSheet" indexvalue="{{response.timeSheetNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração Oportunidades</h3>
+                                <cb-numerations id="nTimeSheet" indexvalue="{{response.oportunitiesNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração Propostas</h3>
+                                <cb-numerations id="nTimeSheet" indexvalue="{{response.proposalsNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração Contactos</h3>
+                                <cb-numerations id="nTimeSheet" indexvalue="{{response.contactsNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Procedimentos de Compra</h3>
+                                <cb-numerations id="nPurchasingProcedures" indexvalue="{{response.purchasingProceduresNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Procedimentos Simplificados</h3>
+                                <cb-numerations id="nSimplifiedProcedures" indexvalue="{{response.simplifiedProceduresNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Pré-Requisições</h3>
+                                <cb-numerations id="nPreRequisition" indexvalue="{{response.preRequisitionNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Requisições</h3>
+                                <cb-numerations id="nRequisition" indexvalue="{{response.requisitionNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Fichas Técnicas de Pratos</h3>
+                                <cb-numerations id="nDishesTechnicalSheets" indexvalue="{{response.dishesTechnicalSheetsNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Modelos de Requisição Simplificasdas</h3>
+                                <cb-numerations id="nSimplifiedReqTemplates" indexvalue="{{response.simplifiedReqTemplatesNumeration}}"></cb-numerations>
+                            </div>
+                            <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
+                                <h3 class="titleLabel">Numeração de Requisições Simplificadas</h3>
+                                <cb-numerations id="nSimplifiedRequisition" indexvalue="{{response.simplifiedRequisitionNumeration}}"></cb-numerations>
+                            </div>
+                        </div>
+                    </iron-pages>
+                </form>
+            </iron-form>
 
-                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-            </template>
-            <script>
+        </template>
+        <script>
                 document.addEventListener('WebComponentsReady', function () {
                     Polymer({
                         is: 'x-configurations',
@@ -216,17 +218,21 @@
 
                         _cancel: function () {
                             this.$.ajax_populate.generateRequest();
+                        },
+                        _goBack: function (e) {
+                            //window.location = "../";
+                            window.history.back();
                         }
                     });
                 });
-            </script>
-        </dom-module>
-    </div>
+        </script>
+    </dom-module>
+</div>
 @*</iron-pages>*@
 @*<script>
-                var pages = document.querySelector('iron-pages');
-                var tabs = document.querySelector('paper-tabs');
-                tabs.addEventListener('iron-select', function () {
-                    pages.selected = tabs.selected;
-                });
-</script>*@
+                    var pages = document.querySelector('iron-pages');
+                    var tabs = document.querySelector('paper-tabs');
+                    tabs.addEventListener('iron-select', function () {
+                        pages.selected = tabs.selected;
+                    });
+    </script>*@
