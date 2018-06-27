@@ -159,10 +159,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
-
                     <div class="row" id="configuracaoPrecoVendaRecurso">
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LResourceCode]]" id="code" item-value-path="id" item-label-path="value" label="Código - Fam. Recurso" value="{{tipoHora}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
@@ -229,7 +234,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ anexosErros }}" class="editGrid" multi-sort="true">
-                                    <vaadin-grid-column hidden>
+                                    <vaadin-grid-column hidden resizable width="150px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="codeTexto" style="text-align:center;">Identificador</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="codeTexto" />
@@ -239,7 +244,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column resizable width="150px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="tipoTexto" style="text-align:center;">Resultado</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="tipoTexto" />
@@ -249,7 +254,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column resizable width="150px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="nomeAnexo" style="text-align:center;">Anexo</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="nomeAnexo" />
@@ -259,7 +264,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column resizable width="150px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="criadoPorNome" style="text-align:center;">Criador</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="criadoPorNome" />
@@ -269,7 +274,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column resizable width="150px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="dataHora_CriacaoTexto" style="text-align:center;">Data Criação</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="dataHora_CriacaoTexto" />
@@ -279,7 +284,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column resizable width="150px">
                                         <template class="header">
                                         </template>
                                         <template>
@@ -289,9 +294,7 @@
                                 </vaadin-grid>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
@@ -299,7 +302,7 @@
         <br />
 
         <vaadin-grid id="gridPrecoVendaRecursoFH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Código - Fam. Recurso</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao" />
@@ -309,7 +312,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codTipoTrabalhoTexto">Código - Tipo Trabalho</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codTipoTrabalhoTexto" />
@@ -319,7 +322,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="precoUnitario">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="precoUnitario" />
@@ -329,7 +332,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="custoUnitario" />
@@ -339,7 +342,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="startingDate">Data Início</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startingDate" />
@@ -349,7 +352,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="endingDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="endingDate" />
@@ -359,7 +362,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
@@ -369,12 +372,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
@@ -447,6 +444,20 @@
                     ready: function () {
                         this.$.ajax_GetAll.generateRequest();
                         this.$.ajax_GetAll_AnexosErros.generateRequest();
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
+                    },
+
+                    fixGridToBottom: function () {
+                        var grid_el = $(this.$.gridPrecoVendaRecursoFH);
+                        var parentHeight = $(this).offsetParent().height();
+                        var offsetTop = $(this).offset().top;
+                        var height = parentHeight - offsetTop;
+                        $(this.$.gridPrecoVendaRecursoFH).height(height);
                     },
 
                     openToast: function (message) {

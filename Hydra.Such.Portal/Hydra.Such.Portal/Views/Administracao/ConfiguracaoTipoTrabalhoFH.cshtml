@@ -129,10 +129,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
-
                     <div class="row" id="configuracaoTipoTrabalho">
                         <div class="col-sm-2">
                             <vaadin-text-field id="codTipoTrabalho" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-text-field>
@@ -161,11 +166,11 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-sm-1 alignPoga">
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
                     </div>
-
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
@@ -173,7 +178,7 @@
         <br />
 
         <vaadin-grid id="gridTipoTrabalhoFH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codigo">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigo" />
@@ -183,7 +188,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao" />
@@ -193,7 +198,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codUnidadeMedida">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codUnidadeMedida" />
@@ -203,7 +208,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="horaViagem">Hora Viagem</vaadin-grid-sorter>
                     <vaadin-grid-filter path="horaViagem" value="[[_filterActive]]">
@@ -211,18 +216,16 @@
                     </vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
                     <vaadin-checkbox checked="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoHoraText">Tipo Hora</vaadin-grid-sorter>
                     <vaadin-grid-filter path="tipoHoraText" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
                     <vaadin-combo-box items="[[LTipoHora]]" id="tipoHora" name="tipoHora" item-value-path="id" item-label-path="value" value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}">
                         <template>
                             <paper-icon-item>
@@ -235,7 +238,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
@@ -245,12 +248,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
@@ -310,7 +307,21 @@
 
                     this.$.codTipoTrabalho.addEventListener('value-changed', function () {
                         _self.$.descricao.value = _self.$.codTipoTrabalho.__data.selectedItem.extra;
-                    });;
+                    });
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridTipoTrabalhoFH);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridTipoTrabalhoFH).height(height);
                 },
 
                 openToast: function (message) {
