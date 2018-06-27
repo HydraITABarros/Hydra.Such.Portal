@@ -919,25 +919,25 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServiceObjects()
         {
-            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Select(x => new DDMessage()
+            List<DDMessage> sevices = DBServiceObjects.GetAll().Select(x => new DDMessage()
             {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
 
-            return Json(ResponsabilityCenter);
+            return Json(sevices);
         }
 
         [HttpPost]
         public JsonResult GetServiceObjectsByAreaId(string AreaCode)
         {
-            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Where(x => x.CódÁrea == AreaCode).Select(x => new DDMessage()
+            List<DDMessage> services = DBServiceObjects.GetAll().Where(x => x.CódÁrea == AreaCode).Select(x => new DDMessage()
             {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
 
-            return Json(ResponsabilityCenter);
+            return Json(services);
         }
 
 

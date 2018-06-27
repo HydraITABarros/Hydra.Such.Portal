@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
 using static Hydra.Such.Data.Enumerations;
 using System.Net;
+using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1347,7 +1348,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(dp);
         }
-
+        
         [HttpPost]
         public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
@@ -1370,7 +1371,7 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
-            List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
+            List<ProjectDiaryViewModel> projectDiaryItems = new List<ProjectDiaryViewModel>();
             if (!String.IsNullOrEmpty(projectNo))
             {
                 Projetos proj = DBProjects.GetById(projectNo);
@@ -1379,39 +1380,22 @@ namespace Hydra.Such.Portal.Controllers
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
-                            x => new DiárioDeProjeto()
-                            {
-                                NºProjeto = projectNo,
-                                Tipo = x.Tipo,
-                                Código = x.Código,
-                                Descrição = x.Descrição,
-                                Quantidade = 0,
-                                CódUnidadeMedida = x.CódUnidadeMedida,
-                                CódigoRegião = x.CódigoRegião,
-                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                PreçoUnitário = x.PreçoUnitário,
-                                Faturável = x.Faturável,
-                                Registado = false,
-                                Data = string.IsNullOrEmpty(dataReque) ? (DateTime?)null : DateTime.Parse(dataReque),
-                                CódServiçoCliente = (x.CódServiçoCliente !="" && x.CódServiçoCliente != null ) ? x.CódServiçoCliente : codServiceCliente,
-                                CódGrupoServiço = codServiceGroup,
-                                PréRegisto = false
-                            }).ToList();
-                        if (dp.Count == 0)
+                        projectDiaryItems = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão)
+                            .Select(x => x.ParseToProjectDiary(projectNo, User.Identity.Name, dataReque, codServiceCliente, codServiceGroup))
+                            .ToList();
+
+                        if (projectDiaryItems.Count == 0)
                         {
                             result.eReasonCode = 4;
                             result.eMessage = "Este projeto não tem contrato com linhas associadas";
                         }
-                        foreach (var item in dp)
+                        foreach (var item in projectDiaryItems)
                         {
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
-                            item.UtilizadorCriação = User.Identity.Name;
-                            item.DataHoraCriação = DateTime.Now;
-                            dpValidation = DBProjectDiary.Create(item);
+                            item.CreateUser = User.Identity.Name;
+                            item.CreateDate = DateTime.Now;
+                            dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(item));
                             if (dpValidation == null)
                             {
                                 result.eReasonCode = 5;

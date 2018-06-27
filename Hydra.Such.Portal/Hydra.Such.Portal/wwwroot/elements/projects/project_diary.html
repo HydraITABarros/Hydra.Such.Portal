@@ -1990,30 +1990,39 @@
                 },
 
                 _parseServiceClient: function (param1, param2) {
-                    //refinar array c/ param2
-                    //retornar valor c/ param1
-                    if (param2 != undefined) {
 
-                        if (this.ServiceClientData != null) {
-                            var array = this.ServiceClientData;
-
-                            array = array.filter(function (obj) {
-                                return obj.clientNumber == param2;
-                            });
-                            this.$.ajax_SServiceClient.body = JSON.stringify(param2);
-                            this.$.ajax_SServiceClient.params = { "allProjs": false };
-                            this.$.ajax_SServiceClient.generateRequest();
-                            if (param1 != undefined) {
-                                var arrayfindcode = array.find(x => x.serviceCode == param1);
-                                if (arrayfindcode != undefined) {
-                                    return arrayfindcode.serviceDescription;
-                                } else {
-                                    return "";
-                                }
-                            }
+                    if (this.ServiceClientData != null) {
+                        var item = this.ServiceClientData.find(x => x.serviceCode == param1);
+                        if (item != null) {
+                            return item.serviceDescription;
                         }
                     }
-                    return "";
+                    return param1;
+                    ////refinar array c/ param2
+                    ////retornar valor c/ param1
+                    //if (param2 != undefined) {
+
+                    //    if (this.ServiceClientData != null) {
+
+                    //        var array = this.ServiceClientData;
+
+                    //        array = array.filter(function (obj) {
+                    //            return obj.clientNumber == param2;
+                    //        });
+                    //        this.$.ajax_SServiceClient.body = JSON.stringify(param2);
+                    //        this.$.ajax_SServiceClient.params = { "allProjs": false };
+                    //        this.$.ajax_SServiceClient.generateRequest();
+                    //        if (param1 != undefined) {
+                    //            var arrayfindcode = array.find(x => x.serviceCode == param1);
+                    //            if (arrayfindcode != undefined) {
+                    //                return arrayfindcode.serviceDescription;
+                    //            } else {
+                    //                return "";
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //return "";
 
                 },
                 _parseServiceGroup: function (param1, param2) {
