@@ -37,6 +37,11 @@
 @*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
 
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
 <x-group-cont-product></x-group-cont-product>
 <dom-module id="x-group-cont-product">
     <template>
@@ -59,6 +64,21 @@
 
             paper-input {
                 max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                        padding: 0 0;
+                    };
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
             }
         </style>
         @*POPULATE GRID*@
@@ -122,63 +142,82 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
 
-        <div class="row" id="configuracaoAjudaCusto">
-            <div class="col-lg-3">
-                <vaadin-combo-box id="codigoTipoCusto" items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{codigoTipoCusto}}" label="Código Tipo Custo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-            <div class="col-lg-3 alignPoga"><vaadin-checkbox id="dataChegadaDataPartida" checked="{{dataChegadaDataPartida}}" disabled="{{ _permissionsCreate }}">Data Chegada > Data Partida</vaadin-checkbox></div>
-            <div class="col-lg-3"><vaadin-text-field id="limiteHoraPartida" value="{{limiteHoraPartida}}" label="Limite Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-            <div class="col-lg-3"><vaadin-text-field id="limiteHoraChegada" value="{{limiteHoraChegada}}" label="Limite Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-            <div class="col-lg-3 alignPoga"><vaadin-checkbox id="prioritario" checked="{{pripritario}}" disabled="{{ _permissionsCreate }}">Prioritário</vaadin-checkbox></div>
-            <div class="col-lg-3">
-                <vaadin-combo-box id="tipoCusto" items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{tipoCusto}}" label="Tipo Custo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box id="codigoRefCusto" items="[[LRefCusto]]" item-value-path="id" item-label-path="value" required value="{{codigoRefCusto}}" label="Código Ref. Custo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-combo-box id="sinalHoraPartida" items="[[LSinalPartidaChegada]]" item-value-path="id" item-label-path="value" value="{{sinalHoraPartida}}" label="Sinal Hora Partida" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="100%"><b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3"><vaadin-text-field value="{{horaPartida}}" id="horaPartida" name="horaPartida" label="Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"></vaadin-text-field></div>
-            <div class="col-lg-3">
-                <vaadin-combo-box id="sinalHoraChegada" items="[[LSinalPartidaChegada]]" item-value-path="id" item-label-path="value" value="{{sinalHoraChegada}}" label="Sinal Hora Chegada" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="100%"><b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3"><vaadin-text-field value="{{horaChegada}}" id="horaChegada" name="horaChegada" label="Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-            <div class="col-lg-3 alignPoga"><vaadin-checkbox id="tipoEstadia" checked="{{tipoEstadia}}" disabled="{{ _permissionsCreate }}">Tipo Estadia</vaadin-checkbox></div>
-            <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
-        </div>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="codigoTipoCusto" items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{codigoTipoCusto}}" label="Código Tipo Custo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
+                        <div class="col-lg-3 alignPoga"><vaadin-checkbox id="dataChegadaDataPartida" checked="{{dataChegadaDataPartida}}" disabled="{{ _permissionsCreate }}">Data Chegada > Data Partida</vaadin-checkbox></div>
+
+                        <div class="col-lg-3"><vaadin-text-field id="limiteHoraPartida" value="{{limiteHoraPartida}}" label="Limite Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
+                        <div class="col-lg-3"><vaadin-text-field id="limiteHoraChegada" value="{{limiteHoraChegada}}" label="Limite Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
+                        <div class="col-lg-3 alignPoga"><vaadin-checkbox id="prioritario" checked="{{pripritario}}" disabled="{{ _permissionsCreate }}">Prioritário</vaadin-checkbox></div>
+
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="tipoCusto" items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{tipoCusto}}" label="Tipo Custo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="codigoRefCusto" items="[[LRefCusto]]" item-value-path="id" item-label-path="value" required value="{{codigoRefCusto}}" label="Código Ref. Custo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="sinalHoraPartida" items="[[LSinalPartidaChegada]]" item-value-path="id" item-label-path="value" value="{{sinalHoraPartida}}" label="Sinal Hora Partida" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="100%"><b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-3"><vaadin-text-field value="{{horaPartida}}" id="horaPartida" name="horaPartida" label="Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"></vaadin-text-field></div>
+
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="sinalHoraChegada" items="[[LSinalPartidaChegada]]" item-value-path="id" item-label-path="value" value="{{sinalHoraChegada}}" label="Sinal Hora Chegada" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="100%"><b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-3"><vaadin-text-field value="{{horaChegada}}" id="horaChegada" name="horaChegada" label="Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
+                        <div class="col-lg-3 alignPoga"><vaadin-checkbox id="tipoEstadia" checked="{{tipoEstadia}}" disabled="{{ _permissionsCreate }}">Tipo Estadia</vaadin-checkbox></div>
+
+                        <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <br />
 
         <vaadin-grid id="gridConfiguracaoAjudaCusto" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="CodigoTipoCustoTexto" disabled>Código Tipo Custo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="CodigoTipoCustoTexto" />
@@ -189,7 +228,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="distanciaMinima">Distância Minima</vaadin-grid-sorter>
                     <vaadin-grid-filter path="distanciaMinima" />
@@ -199,7 +238,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="12%" resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="dataChegadaDataPartida">Data Chegada > Data Partida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataChegadaDataPartida" />
@@ -209,7 +248,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="limiteHoraPartida">Limite Hora Partida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="limiteHoraPartida" />
@@ -219,7 +258,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="limiteHoraChegada">Limite Hora Chegada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="limiteHoraChegada" />
@@ -229,7 +268,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="6%" resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="prioritario">Prioritario</vaadin-grid-sorter>
                     <vaadin-grid-filter path="prioritario" />
@@ -239,7 +278,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoCusto">Tipo Custo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="tipoCusto" />
@@ -253,7 +292,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRefCusto">Código Ref. Custo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRefCusto" />
@@ -267,7 +306,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="sinalHoraPartida">Sinal Hora Partida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="sinalHoraPartida" />
@@ -281,7 +320,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="horaPartida">Hora Partida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="horaPartida" />
@@ -291,7 +330,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="sinalHoraChegada">Sinal Hora Chegada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="sinalHoraChegada" />
@@ -305,7 +344,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="horaChegada">Hora Chegada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="horaChegada" />
@@ -315,7 +354,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
@@ -326,12 +365,6 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
@@ -371,7 +404,22 @@
                     },
                     ready: function () {
                         this.$.ajax_GetAll.generateRequest();
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
                     },
+
+                    fixGridToBottom: function () {
+                        var grid_el = $(this.$.gridConfiguracaoAjudaCusto);
+                        var parentHeight = $(this).offsetParent().height();
+                        var offsetTop = $(this).offset().top;
+                        var height = parentHeight - offsetTop;
+                        $(this.$.gridConfiguracaoAjudaCusto).height(height);
+                    },
+
                     openToast: function (message) {
                         this.$.ToastMessage.text = message;
                         this.$.ToastMessage.open();

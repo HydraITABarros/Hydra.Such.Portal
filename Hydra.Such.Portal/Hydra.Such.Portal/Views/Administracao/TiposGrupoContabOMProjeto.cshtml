@@ -99,11 +99,20 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
                         <div class="col-lg-2">
                             <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -116,8 +125,11 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCorrectiveMaintenance" disabled="{{ _permissionsCreate }}"> Manut. Correctiva </vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkPreventiveMaintenance" disabled="{{ _permissionsCreate }}"> Manut. Preventiva </vaadin-checkbox></div>
+
                         <div class="col-lg-2 ">
                             <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -130,31 +142,43 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkResponseTimeIndicator" disabled="{{ _permissionsCreate }}">Ind. Tempo Resposta</vaadin-checkbox></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkStopTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Imobilização </vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkRepairEffectiveTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Efetivo Reparação </vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkClosingWorksTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Fecho Obras </vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBillingTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Faturação </vaadin-checkbox> </div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkEmployeesOccupationTimeIndicator" disabled="{{ _permissionsCreate }}">Ind. Tempo Ocup. Colaboradores</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCostSaleValueIndicator" disabled="{{ _permissionsCreate }}">Ind. Valor Custo/Venda</vaadin-checkbox></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATCoverageRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cobertura CAT</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATComplianceRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cumprimento CAT</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkMPRoutineFulfillmentRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cumpr. Rotinas MP</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBreakoutIncidentsIndicator" disabled="{{ _permissionsCreate }}">Ind. Incidências Avarias</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkOrdernInProgressIndicator" disabled="{{ _permissionsCreate }}">Ind. Ordens em Curso</vaadin-checkbox></div>
+
                         <div class="col-lg-2 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupTypeOM" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
                     </div>
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
+
         <br />
 
-        <vaadin-grid id="gridContabGroupTypesOM" aria-label="gridContabGroupTypesTableOM" items="[[result]]" style="max-height:400px" class="grid" multi-sort="true">
-            <vaadin-grid-column width="200px" resizable>
+        <vaadin-grid id="gridContabGroupTypesOM" aria-label="gridContabGroupTypesTableOM" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
@@ -163,7 +187,8 @@
                     <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -181,7 +206,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -190,7 +216,8 @@
                     <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="correctiveMaintenance">Manut. Corretiva</vaadin-grid-sorter>
                 </template>
@@ -198,7 +225,8 @@
                     <vaadin-checkbox checked="{{item.correctiveMaintenance}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="preventiveMaintenance">Manut. Preventiva</vaadin-grid-sorter>
                 </template>
@@ -206,7 +234,8 @@
                     <vaadin-checkbox checked="{{item.preventiveMaintenance}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="failType">Tipo Razão Falha</vaadin-grid-sorter>
                     <vaadin-grid-filter path="failType" />
@@ -224,7 +253,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="responseTimeIndicator">Ind. Tempo Resposta</vaadin-grid-sorter>
                 </template>
@@ -232,7 +262,8 @@
                     <vaadin-checkbox checked="{{item.responseTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="stopTimeIndicator">Ind. Tempo Imobilização</vaadin-grid-sorter>
                 </template>
@@ -240,7 +271,8 @@
                     <vaadin-checkbox checked="{{item.stopTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="repairEffectiveTimeIndicator">Ind. Tempo Efetivo Reparação</vaadin-grid-sorter>
                 </template>
@@ -248,7 +280,8 @@
                     <vaadin-checkbox checked="{{item.repairEffectiveTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="closingWorksTimeIndicator">Ind. Tempo Fecho Obras</vaadin-grid-sorter>
                 </template>
@@ -256,7 +289,8 @@
                     <vaadin-checkbox checked="{{item.closingWorksTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="billingTimeIndicator">Ind. Tempo Faturação</vaadin-grid-sorter>
                 </template>
@@ -264,7 +298,8 @@
                     <vaadin-checkbox checked="{{item.billingTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="employeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-grid-sorter>
                 </template>
@@ -272,7 +307,8 @@
                     <vaadin-checkbox checked="{{item.employeesOccupationTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="costSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-grid-sorter>
                 </template>
@@ -280,7 +316,8 @@
                     <vaadin-checkbox checked="{{item.costSaleValueIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="catComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-grid-sorter>
                 </template>
@@ -288,7 +325,8 @@
                     <vaadin-checkbox checked="{{item.catComplianceRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="catCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-grid-sorter>
                 </template>
@@ -296,7 +334,8 @@
                     <vaadin-checkbox checked="{{item.catCoverageRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="mpRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas</vaadin-grid-sorter>
                 </template>
@@ -304,7 +343,8 @@
                     <vaadin-checkbox checked="{{item.mpRoutineFulfillmentRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="breakoutIncidentsIndicator">Ind. Incidencias Avarias</vaadin-grid-sorter>
                 </template>
@@ -312,7 +352,8 @@
                     <vaadin-checkbox checked="{{item.breakoutIncidentsIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="ordernInProgressIndicator">Ind. Ordens em Curso</vaadin-grid-sorter>
                 </template>
@@ -320,8 +361,9 @@
                     <vaadin-checkbox checked="{{item.ordernInProgressIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ !_permissionsDelete }}">
-                <vaadin-grid-column width="200px" resizable>
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                     </template>
                     <template>
@@ -332,12 +374,6 @@
                 </vaadin-grid-column>
             </template>
         </vaadin-grid>
-        <template is="dom-if" if="{{ !_permissionsUpdate }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -384,7 +420,22 @@
             },
             ready: function () {
                 this.$.page_databound_ajax.generateRequest();
+
+                var _this = this;
+                $(window).resize(function () {
+                    _this.fixGridToBottom();
+                });
+                $(window).trigger('resize');
             },
+
+            fixGridToBottom: function () {
+                var grid_el = $(this.$.gridContabGroupTypesOM);
+                var parentHeight = $(this).offsetParent().height();
+                var offsetTop = $(this).offset().top;
+                var height = parentHeight - offsetTop;
+                $(this.$.gridContabGroupTypesOM).height(height);
+            },
+
             openToast: function (message) {
                 this.$.ToastMessageSuccess.text = message;
                 this.$.ToastMessageSuccess.open();
@@ -466,6 +517,10 @@
                 this.$.update_ajax.body = JSON.stringify(this.result);
                 this.$.update_ajax.generateRequest();
                 this.$.gridContabGroupTypesOM.clearCache();
+            },
+            _goBack: function (e) {
+                //window.location = "../";
+                window.history.back();
             }
 
         });
