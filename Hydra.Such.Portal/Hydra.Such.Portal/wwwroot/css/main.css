@@ -161,6 +161,14 @@ ul.nav li:hover {
     cursor: pointer;
 }
 
+.tableBtn {
+    height: auto !important;
+    white-space: nowrap;
+    padding: 6px 9px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+    min-width: 0 !important;
+}
 
 .editGrid {
     /*margin: 10px 20px;*/

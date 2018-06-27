@@ -151,18 +151,22 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "areaid": this._areaid});
                     this.$.grid_databound_ajax.generateRequest();
-                    var _this = this;
 
+                    var _this = this;
+                    var gridToBottomTimeout;
                     $(window).resize(function () {
-                        _this.fixGridToBottom();
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
                     });
                     $(window).trigger('resize');
                 },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = windowHeight - offsetTop - paddingTop;
                     $(this.$.grid).height(height);
                 }
             });
