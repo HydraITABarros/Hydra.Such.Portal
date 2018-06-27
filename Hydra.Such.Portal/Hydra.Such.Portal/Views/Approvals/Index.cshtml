@@ -42,7 +42,7 @@
                    content-type="application/json"></iron-ajax>
 
 
-        <vaadin-grid aria-label="ApprovalsTable" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="60px">
                 <template class="header">
                     <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -128,6 +128,24 @@
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-approvals',
+                ready: function () {
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
+                },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();

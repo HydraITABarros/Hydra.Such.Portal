@@ -1150,17 +1150,17 @@ namespace Hydra.Such.Portal.Configurations
             new EnumDataString()
             {
                 Id = "KM",
-                Value = "Kilómetros"
+                Value = "quilómetros"
             },
             new EnumDataString()
             {
                 Id = "KMC",
-                Value = "Kilómetros (Coimbra)"
+                Value = "quilómetros (Coimbra)"
             },
             new EnumDataString()
             {
                 Id = "KMP",
-                Value = "Kilómetros (Porto)"
+                Value = "quilómetros (Porto)"
             }
         };
 
@@ -1552,7 +1552,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 1,
-                Value = "Km"
+                Value = "km"
             },
             new EnumData
             {
@@ -1591,7 +1591,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 3,
-                Value = "Kilometros"
+                Value = "quilómetros"
             }
         };
 
