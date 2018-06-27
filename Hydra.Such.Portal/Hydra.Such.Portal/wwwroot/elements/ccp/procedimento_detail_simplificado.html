@@ -306,7 +306,7 @@
                    auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
         <!-- NR 20180228 -->
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP"
                    last-response="{{CBObjectoContrato}}"
@@ -392,7 +392,7 @@
                    on-response="_submitProcedimentoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/ConfirmProcedimento"
+        <iron-ajax url="/ProcedimentosCcps/ConfirmProcedimento_Simplificado"
                    last-response="{{ ProcedimentoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -444,7 +444,7 @@
         </iron-ajax>
 
         <!--NR 20180320-->
-        <iron-ajax url="/ProcedimentosCcps/CBRejeitar2CA"
+        <iron-ajax url="/ProcedimentosCcps/CBRejeitar2CA_Simplificado"
                    last-response="{{ RejectAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
@@ -454,7 +454,7 @@
         </iron-ajax>
 
         <!--NR 20180321-->
-        <iron-ajax url="/ProcedimentosCcps/CBAutorizar2CA"
+        <iron-ajax url="/ProcedimentosCcps/CBAutorizar2CA_Simplificado"
                    last-response="{{ ConfirmAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
@@ -462,12 +462,12 @@
                    on-response="_confirmAutorizacaoAdjudicacaoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/Dummy"
-                   last-response="{{ ConfirmAutorizacaoAdjudicacao_Confirmar }}"
+        <iron-ajax url="/ProcedimentosCcps/CBDevolverAutorizacaoCA_Simplificado"
+                   last-response="{{ SuspendAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
-                   id="ajax_confirmAutorizacaoAdjudicacao_Confirmar"
-                   on-response="_confirmAutorizacaoAdjudicacao_ConfirmarResponse"
+                   id="ajax_suspendAutorizacaoAdjudicacao"
+                   on-response="_suspendAutorizacaoAdjudicacaoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -546,7 +546,7 @@
         </iron-ajax>
 
         <!--NR 20180307-->
-        <iron-ajax url="/ProcedimentosCcps/GetPermission"
+        <iron-ajax url="/ProcedimentosCcps/GetPermission_Simplificado"
                    last-response="{{ PedirAutorizacaoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -554,7 +554,7 @@
                    on-response="_pedirAutorizacaoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/ReturnToAccounting"
+        <iron-ajax url="/ProcedimentosCcps/ReturnToAccounting_Simplificado"
                    last-response="{{ DevolverContabilidadeConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -562,7 +562,7 @@
                    on-response="_devolverContabilidadeResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoArea"
+        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoArea_Simplificado"
                    last-response="{{ FecharProcessoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -1442,8 +1442,8 @@
                                             <paper-tooltip for="btnAutorizacaoAdjudicacaoSuspend" position="top" offset="-1" animation-delay="1">
                                                 Devolver à área que fez o pedido (passo 16)
                                             </paper-tooltip>
-                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao_Confirmar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
-                                            <paper-button raised id="btnAutorizacaoAdjudicacaoDevolver" class="btn--sendtoevaluate" on-tap="_devolverAutorizacaoAdjudicacao">Devolver Processo - FALTA!</paper-button>
+                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
+                                            <paper-button raised id="btnAutorizacaoAdjudicacaoDevolver" class="btn--sendtoevaluate" on-tap="_suspendAutorizacaoAdjudicacao">Devolver Processo - FALTA!</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoReject" class="btn--remove" on-tap="_rejectAutorizacaoAdjudicacao"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
                                         </div>
                                     </div>
@@ -1458,7 +1458,7 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Linhas Encomendas" opened>
-                                
+
 
 
                                 <div class="clearfix"></div>
@@ -1812,11 +1812,11 @@
                 properties: {
                     _mnuAccao1_MenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Pedir Autorização" }, { value: 2, description: "Devolver Contabilidade" }, { value: 3, description: "Fechar Processo -> (19)" }],
+                        value: [{ value: 1, description: "Confirmar" }],
                     },
                     _mnuAccao2_MenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar" }, { value: 2, description: "Devolver à Área" }],
+                        value: [{ value: 1, description: "Pedir Autorização" }, { value: 2, description: "Devolver Contabilidade" }, { value: 3, description: "Fechar Processo -> (19)" }],
                     },
                     _mnuAccao4_MenuItems: {
                         type: Array,
@@ -2453,7 +2453,7 @@
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
                     this._confirmAndExecuteActionToast(
-                        "Confirma o Envio à Área?", ajax_request
+                        "Confirma?", ajax_request
                     );
 
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
@@ -2803,30 +2803,34 @@
                         this._openToast(this.ConfirmAutorizacaoAdjudicacao.eMessage);
                     }
                 },
-                _confirmAutorizacaoAdjudicacao_Confirmar: function () {
-                    var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
+
+                _suspendAutorizacaoAdjudicacao: function () {
+                    var ajax_request = this.$.ajax_suspendAutorizacaoAdjudicacao;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
-                    debugger
-                    if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
-                        this._confirmAndExecuteActionToast_NR(
-                            "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
-                            ajax_request
-                        );
-                    } else if (!(this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 20000) && (this.data.nome_Utilizador != "CASUCH")) {
-                        this._confirmAndExecuteActionToast_NR(
-                            "O Valor do procedimento é superior a 20.000, pretende ratificar em CA?",
-                            ajax_request
-                        );
-                    }
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Suspensão do processo?", ajax_request
+                    );
 
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
-                    this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.body = JSON.stringify(this.data);
+                    this.$.ajax_suspendAutorizacaoAdjudicacao.body = JSON.stringify(this.data);
                 },
-                _confirmAutorizacaoAdjudicacao_ConfirmarResponse: function (e) {
+                _suspendAutorizacaoAdjudicacaoResponse: function (e) {
+                    if (this.SuspendAutorizacaoAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " suspenso com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
 
-                    this._confirmAutorizacaoAdjudicacao();
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SuspendAutorizacaoAdjudicacao.eMessage);
+                    }
                 },
 
                 //NR 20180328
@@ -3101,9 +3105,6 @@
                     switch (this._newStatus) {
                         case 1:
                             this._confirmImobilizadoContab();
-                            break;
-                        case 2:
-                            this._imobReturnToArea();
                             break;
                     }
                 },
