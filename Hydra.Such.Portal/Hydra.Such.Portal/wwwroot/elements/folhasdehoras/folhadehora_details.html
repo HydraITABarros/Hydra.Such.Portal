@@ -413,7 +413,7 @@
             <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
-            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
             <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
         </div>
 
@@ -490,7 +490,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo Kms">
+                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -650,7 +650,7 @@
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
-                                    <div slot="suffix">KM</div>
+                                    <div slot="suffix">km</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
@@ -662,7 +662,7 @@
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
-                                    <div slot="suffix">KM</div>
+                                    <div slot="suffix">km</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
@@ -1412,19 +1412,19 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores km RH"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador km RH"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. km RH"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. km RH"></vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1441,14 +1441,14 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" disabled="true" class="alignRight" label="Custo Total KM">
+                            <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" disabled="true" class="alignRight" label="Custo Total km">
                                 <div slot="suffix">€</div>
                             </vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" disabled="true" class="alignRight" label="Nº Total KM">
-                                <div slot="suffix">KM</div>
+                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" disabled="true" class="alignRight" label="Nº Total km">
+                                <div slot="suffix">km</div>
                             </vaadin-text-field>
                         </div>
                     </div>
@@ -1617,7 +1617,7 @@
                                                     }
                                                 }
                                                 else {
-                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo Kms.");
+                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo km.");
                                                     return false;
                                                 }
                                             }
@@ -2046,7 +2046,7 @@
                             }
                         }
                         else {
-                            this._showErrorMessage("A Integração dos KMs já foi feita.");
+                            this._showErrorMessage("A Integração dos km já foi feita.");
                         }
                     }
                 },
@@ -2095,7 +2095,7 @@
                                 }
                             }
                             else {
-                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo KMs.');
+                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
                             }
                         }
                         else {
@@ -3140,7 +3140,7 @@
                             this._showErrorMessage('Falta preencher o campo Tipo Deslocação.');
                         }
                         if (this.FolhaDeHorasUpdatedValidacao == 28) {
-                            this._showErrorMessage('Falta preencher o campo Tipo Kms.');
+                            this._showErrorMessage('Falta preencher o campo Tipo km.');
                         }
                         if (this.FolhaDeHorasUpdatedValidacao == 29) {
                             this._showErrorMessage('Falta preencher o campo Matrícula.');
@@ -3697,7 +3697,7 @@
 
                         if (this.getEmpoyeeNAV.integradoresEmRHKM == null | this.getEmpoyeeNAV.integradoresEmRHKM == "") {
                             this.$.integradoresEmRHKM.value = "";
-                            this._showErrorMessage('O Empregado não tem Integradore(s) KMs RH.');
+                            this._showErrorMessage('O Empregado não tem Integradore(s) km RH.');
                         }
                         else {
                             this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
