@@ -164,10 +164,11 @@ ul.nav li:hover {
 .tableBtn {
     height: auto !important;
     white-space: nowrap;
-    padding: 6px 9px;
+    padding: 6px 5px;
     margin-top: -5px;
     margin-bottom: -5px;
     min-width: 0 !important;
+    width: 30px;
 }
 
 .editGrid {

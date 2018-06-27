@@ -306,7 +306,33 @@
                    auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
+        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP"
+                   last-response="{{CBTipo}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{CBLocations}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProducts"
+                   last-response="{{CBItems}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+                   last-response="{{LCBMeasuresUnit}}"
+                   auto method="post"
+                   id="measuresunit_ajax"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- NR 20180228 -->
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP"
                    last-response="{{CBObjectoContrato}}"
@@ -392,7 +418,7 @@
                    on-response="_submitProcedimentoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/ConfirmProcedimento"
+        <iron-ajax url="/ProcedimentosCcps/ConfirmProcedimento_Simplificado"
                    last-response="{{ ProcedimentoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -406,6 +432,23 @@
                    handle-as="json"
                    id="ajax_imobReturnToArea"
                    on-response="_imobReturnToAreaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/ProcedimentosCcps/CreateLinhaProdutoServico"
+                   last-response="{{LinhaProdutoServicoCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createaLinhaProdutoServico_ajax"
+                   on-response="_createLinhaProdutoServicoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteLinhaProdutoServico"
+                   last-response="{{LinhaProdutoServicoDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteLinhaProdutoServico_ajax"
+                   on-response="_deleteLinhaProdutoServicoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -444,7 +487,7 @@
         </iron-ajax>
 
         <!--NR 20180320-->
-        <iron-ajax url="/ProcedimentosCcps/CBRejeitar2CA"
+        <iron-ajax url="/ProcedimentosCcps/CBRejeitar2CA_Simplificado"
                    last-response="{{ RejectAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
@@ -454,7 +497,7 @@
         </iron-ajax>
 
         <!--NR 20180321-->
-        <iron-ajax url="/ProcedimentosCcps/CBAutorizar2CA"
+        <iron-ajax url="/ProcedimentosCcps/CBAutorizar2CA_Simplificado"
                    last-response="{{ ConfirmAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
@@ -462,12 +505,12 @@
                    on-response="_confirmAutorizacaoAdjudicacaoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/Dummy"
-                   last-response="{{ ConfirmAutorizacaoAdjudicacao_Confirmar }}"
+        <iron-ajax url="/ProcedimentosCcps/CBDevolverAutorizacaoCA_Simplificado"
+                   last-response="{{ SuspendAutorizacaoAdjudicacao }}"
                    method="post"
                    handle-as="json"
-                   id="ajax_confirmAutorizacaoAdjudicacao_Confirmar"
-                   on-response="_confirmAutorizacaoAdjudicacao_ConfirmarResponse"
+                   id="ajax_suspendAutorizacaoAdjudicacao"
+                   on-response="_suspendAutorizacaoAdjudicacaoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -546,7 +589,7 @@
         </iron-ajax>
 
         <!--NR 20180307-->
-        <iron-ajax url="/ProcedimentosCcps/GetPermission"
+        <iron-ajax url="/ProcedimentosCcps/GetPermission_Simplificado"
                    last-response="{{ PedirAutorizacaoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -554,7 +597,7 @@
                    on-response="_pedirAutorizacaoResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/ReturnToAccounting"
+        <iron-ajax url="/ProcedimentosCcps/ReturnToAccounting_Simplificado"
                    last-response="{{ DevolverContabilidadeConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -562,7 +605,7 @@
                    on-response="_devolverContabilidadeResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoArea"
+        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoArea_Simplificado"
                    last-response="{{ FecharProcessoConfirmed }}"
                    method="post"
                    handle-as="json"
@@ -1403,7 +1446,7 @@
                     <!-- Tab CA-->
                     <div class="panel panel-default">
                         <paper-collapse-group>
-                            <paper-collapse-item header="Autorização de Adjudicação (17)">
+                            <paper-collapse-item header="Autorização de Adjudicação (17)" opened>
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
@@ -1442,8 +1485,8 @@
                                             <paper-tooltip for="btnAutorizacaoAdjudicacaoSuspend" position="top" offset="-1" animation-delay="1">
                                                 Devolver à área que fez o pedido (passo 16)
                                             </paper-tooltip>
-                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao_Confirmar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
-                                            <paper-button raised id="btnAutorizacaoAdjudicacaoDevolver" class="btn--sendtoevaluate" on-tap="_devolverAutorizacaoAdjudicacao">Devolver Processo - FALTA!</paper-button>
+                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
+                                            <paper-button raised id="btnAutorizacaoAdjudicacaoDevolver" class="btn--sendtoevaluate" on-tap="_suspendAutorizacaoAdjudicacao">Devolver Processo</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoReject" class="btn--remove" on-tap="_rejectAutorizacaoAdjudicacao"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
                                         </div>
                                     </div>
@@ -1458,7 +1501,183 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Linhas Encomendas" opened>
-                                
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <vaadin-combo-box items="[[CBTipo]]" item-value-path="id" item-label-path="value" required id="linhaTipo" label="Tipo">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" required value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <table width="200px">
+                                                                <tr>
+                                                                    <td width="40%">[[item.id]]</td>
+                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <such-selectbox id="_CBItems" value="{{_CBItems}}" label="Cód. Produto"
+                                                                    items="[[CBItems]]"
+                                                                    text-path="code"
+                                                                    value-path="code"
+                                                                    required
+                                                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                    disabled="{{ !_permissions.update }}">
+                                                    </such-selectbox>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_UnitMeasureCode" name="_UnitMeasureCode" item-value-path="id" item-label-path="id" value="{{_UnitMeasureCode}}" label="Código Unid. Medida" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <table width="200px">
+                                                                <tr>
+                                                                    <td width="40%">[[item.id]]</td>
+                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field id="_linhaQuantidadeRequerer" label="Qtd. a Requerer" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field id="_linhaCustoUnitario" label="Custo Unitário" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarLinhaProdutosServicos" raised on-tap="_createLinhaProdutosServicos"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <!-- NR 20180226 -->
+                                            <vaadin-grid id="tabLinhaProdutos" aria-label="Tabela Linhas Produtos Serviços" items="{{ data.linhasPEncomendaProcedimentosCcp }}" class="editGrid">
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noProcedimento" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabLinhaProdutosNoProcedimento" id="tabLinhaProdutosNoProcedimento" value="{{item.noProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noLinha" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabLinhaProdutosNoLinha" id="tabLinhaProdutosNoLinha" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="tipoText" style="text-align:center;">Tipo</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="tipoText" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box id="tabTipo" items="[[CBTipo]]" item-value-path="id" item-label-path="value" value="{{item.tipo}}" disabled="true" style="text-align:left;">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="200px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="codLocalizacaoText" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codLocalizacaoText" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box id="tabCodigoLocalizacao" items="[[CBLocations]]" item-value-path="id" item-label-path="value" value="{{item.codLocalizacao}}" disabled="true" style="text-align:left;">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="codigo" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codigo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabCodProduto" id="tabCodProduto" value="{{item.codigo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="200px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="descricao" style="text-align:center;">Descrição</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="descricao" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabDescricaoProduto" id="tabDescricaoProduto" value="{{item.descricao}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="80px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="quantARequerer" style="text-align:center;">Qtd. a Requerer</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="quantARequerer" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabQuantidade" value="{{item.quantARequerer}}" disabled="true" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="80px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="custoUnitario" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" disabled="true" style="text-align:right;">
+                                                            <div slot="suffix">€</div>
+                                                        </vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="80px">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <paper-button class="btnRemove" id="btnDeleteLinhaProdutoServico" raised on-tap="_deleteLinha" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
 
 
                                 <div class="clearfix"></div>
@@ -1812,11 +2031,11 @@
                 properties: {
                     _mnuAccao1_MenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Pedir Autorização" }, { value: 2, description: "Devolver Contabilidade" }, { value: 3, description: "Fechar Processo -> (19)" }],
+                        value: [{ value: 1, description: "Confirmar" }],
                     },
                     _mnuAccao2_MenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar" }, { value: 2, description: "Devolver à Área" }],
+                        value: [{ value: 1, description: "Pedir Autorização" }, { value: 2, description: "Devolver Contabilidade" }, { value: 3, description: "Fechar Processo -> (19)" }],
                     },
                     _mnuAccao4_MenuItems: {
                         type: Array,
@@ -1930,6 +2149,9 @@
                         notify: true,
                         value: ""
                     },
+                    _CBItems: {
+                        observer: '_setProductData'
+                    },
                 },
                 _testFunction: function () {
 
@@ -1974,6 +2196,15 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
+
+                _setProductData: function (e) {
+                    var item = this.CBItems.find(x => x.code == e);
+                    if (item != null) {
+                        this.$._DescricaoProduto.value = item.name;
+                        this.$._UnitMeasureCode.value = item.measureUnit;
+                    }
+                },
+
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
                         message: _message,
@@ -2453,7 +2684,7 @@
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
                     this._confirmAndExecuteActionToast(
-                        "Confirma o Envio à Área?", ajax_request
+                        "Confirma?", ajax_request
                     );
 
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
@@ -2582,6 +2813,59 @@
                         this.$.precoMaisBaixo.value = true;
                     } else {
                         this.$.precoMaisBaixo.value = this.$.precoMaisBaixo.value;
+                    }
+                },
+                _createLinhaProdutosServicos: function () {
+                    this.$.page_createaLinhaProdutoServico_ajax.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        tipo: this.$.linhaTipo.value,
+                        código: this.$._CBItems.value,
+                        códLocalização: this.$._CBLocations.value,
+                        descrição: this.$._DescricaoProduto.value,
+                        códUnidadeMedida: this.$._UnitMeasureCode.value,
+                        custoUnitário: this.$._linhaCustoUnitario.value,
+                        quantARequerer: this.$._linhaQuantidadeRequerer.value,
+                        códigoRegião: this.$.codigoRegiao.value,
+                        códigoÁreaFuncional: this.$.codigoAreaFuncional.value,
+                        códigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value
+                    });
+                    this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+                    this.$.tabLinhaProdutos.clearCache();
+                },
+                _createLinhaProdutoServicoResponse: function (e) {
+                    if (this.LinhaProdutoServicoCreated) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Linha com sucesso.');
+
+                        this.$.tabLinhaProdutos.clearCache();
+
+                        this.$.linhaTipo.value = "";
+                        this.$._CBItems.value = "";
+                        this.$._CBLocations.value = "";
+                        this.$._DescricaoProduto.value = "";
+                        this.$._UnitMeasureCode.value = "";
+                        this.$._linhaCustoUnitario.value = "";
+                        this.$._linhaQuantidadeRequerer.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
+                    }
+                },
+
+                _deleteLinha: function (e) {
+                    var index = this.data.linhasPEncomendaProcedimentosCcp.indexOf(e.model.item);
+                    this.data.linhasPEncomendaProcedimentosCcp.splice(index, 1);
+                    this.$.page_deleteLinhaProdutoServico_ajax.body = JSON.stringify({ nºProcedimento: e.model.item.noProcedimento, nºLinha: e.model.item.noLinha });
+                    this.$.page_deleteLinhaProdutoServico_ajax.generateRequest();
+                    this.$.tabLinhaProdutos.clearCache();
+
+                },
+                _deleteLinhaProdutoServicoResponse: function (e) {
+                    if (this.LinhaProdutoServicoDeleted) {
+                        this._openToast('Linha eliminada com sucesso');
+                        this.$.tabLinhaProdutos.clearCache();
+                    } else {
+                        this._openToast('Não foi possível eliminar a Linha!')
                     }
                 },
 
@@ -2803,30 +3087,34 @@
                         this._openToast(this.ConfirmAutorizacaoAdjudicacao.eMessage);
                     }
                 },
-                _confirmAutorizacaoAdjudicacao_Confirmar: function () {
-                    var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
+
+                _suspendAutorizacaoAdjudicacao: function () {
+                    var ajax_request = this.$.ajax_suspendAutorizacaoAdjudicacao;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
-                    debugger
-                    if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
-                        this._confirmAndExecuteActionToast_NR(
-                            "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
-                            ajax_request
-                        );
-                    } else if (!(this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 20000) && (this.data.nome_Utilizador != "CASUCH")) {
-                        this._confirmAndExecuteActionToast_NR(
-                            "O Valor do procedimento é superior a 20.000, pretende ratificar em CA?",
-                            ajax_request
-                        );
-                    }
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a devolução do processo?", ajax_request
+                    );
 
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
-                    this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.body = JSON.stringify(this.data);
+                    this.$.ajax_suspendAutorizacaoAdjudicacao.body = JSON.stringify(this.data);
                 },
-                _confirmAutorizacaoAdjudicacao_ConfirmarResponse: function (e) {
+                _suspendAutorizacaoAdjudicacaoResponse: function (e) {
+                    if (this.SuspendAutorizacaoAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " devolvido com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
 
-                    this._confirmAutorizacaoAdjudicacao();
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SuspendAutorizacaoAdjudicacao.eMessage);
+                    }
                 },
 
                 //NR 20180328
@@ -3102,9 +3390,6 @@
                         case 1:
                             this._confirmImobilizadoContab();
                             break;
-                        case 2:
-                            this._imobReturnToArea();
-                            break;
                     }
                 },
                 _mnuAccao2_ItemSelected: function (e) {
@@ -3193,10 +3478,10 @@
                         //$(_self.$.buttonCriarElementoJuri).addClass('disabled');
 
                         //NR 20180228
-                        $(_self.$.btnCriarLinhaProdutosServicos).addClass('disabled');
-                        $(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
+                        //$(_self.$.btnCriarLinhaProdutosServicos).addClass('disabled');
+                        //$(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
 
-                        $(_self.$.tabLinhaProdutos).addClass('disabled');
+                        //$(_self.$.tabLinhaProdutos).addClass('disabled');
                     }
 
                     _self.$.informacaoTecnica.disabled = (data.estado != 0);
@@ -3227,7 +3512,17 @@
                     _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
                     _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
                     _self.$.interlocutor.disabled = (data.estado != 0);
-                    
+
+                    //_self.$.linhaTipo.disabled = (data.estado != 0);
+                    //_self.$._CBLocations.disabled = (data.estado != 0);
+                    //_self.$._CBItems.disabled = (data.estado != 0);
+                    //_self.$._DescricaoProduto.disabled = (data.estado != 0);
+                    ////_self.$._DescricaoProduto2.disabled = (data.estado != 0);
+                    //_self.$._UnitMeasureCode.disabled = (data.estado != 0);
+                    //_self.$._linhaQuantidadeRequerer.disabled = (data.estado != 0);
+                    //_self.$._linhaCustoUnitario.disabled = (data.estado != 0);
+                    //_self.$.tabLinhaProdutos.disabled = (data.estado != 0);
+
                     //NR 20180305
                     _self.$.comentarioImobContabilidade.disabled = (data.estado != 1);
                     _self.$.ImobilizadoSimNao.disabled = (data.estado != 1);
@@ -3270,7 +3565,6 @@
 
                     _self.$.comentarioCA17.disabled = (data.estado != 17);
                     _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);
-                    _self.$.criticoAdjudicacao.disabled = (data.estado != 17);
                     if (data.estado != 17) {
                         $(_self.$.btnAutorizacaoAdjudicacaoConfirm).addClass('disabled');
                         $(_self.$.btnAutorizacaoAdjudicacaoDevolver).addClass('disabled');

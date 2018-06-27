@@ -41,14 +41,13 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnCreate" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-
-            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button class="tablinks" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
 
         <vaadin-grid id="acordoPrecosTabela" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="noProcedimento">Nº Procedimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noProcedimento" />
@@ -58,7 +57,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="dtInicioTexto">Data Início</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dtInicioTexto" />
@@ -68,7 +67,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="dtFimTexto">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dtFimTexto" />
@@ -78,7 +77,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="valorTotal">Valor Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="valorTotal" />
@@ -88,14 +87,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
                     <paper-button id="btn_deleteAcordoPreco" class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
-
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -135,6 +133,20 @@
                     //debugger;
                     this.$.grid_databound_ajax.body = JSON.stringify();
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.acordoPrecosTabela);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.acordoPrecosTabela).height(height);
                 },
 
                 _rowSelected: function (item) {

@@ -99,6 +99,14 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
@@ -106,6 +114,7 @@
                         <div class="col-lg-2">
                             <vaadin-text-field id="descricao" value="{{description}}" label="Descrição" required disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
+
                         <div class="col-lg-3">
                             <vaadin-combo-box id="codigoMarca" items="[[marcas]]" item-value-path="id" item-label-path="value" required value="{{codigoMarca}}" label="Marca" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -118,6 +127,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 alignPoga">
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
@@ -125,9 +135,11 @@
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
+
         <br />
+
         <vaadin-grid id="gridModelos" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoModelo">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoModelo" />
@@ -137,7 +149,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoMarca">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoMarca" />
@@ -147,7 +159,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao" />
@@ -156,7 +168,8 @@
                     <vaadin-text-field value="{{item.descricao}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataHoraCriacao" />
@@ -165,7 +178,8 @@
                     <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorCriacao" />
@@ -174,7 +188,8 @@
                     <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Modificação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataHoraModificacao" />
@@ -183,7 +198,8 @@
                     <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Modificação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorModificacao" />
@@ -192,8 +208,9 @@
                     <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ !_permissionsDelete }}">
-                <vaadin-grid-column with="10%">
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                     </template>
                     <template>
@@ -205,12 +222,6 @@
             </template>
         </vaadin-grid>
 
-        <template is="dom-if" if="{{ !_permissionsUpdate }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -250,7 +261,22 @@
                     },
                     ready: function () {
                         this.$.ajax_GetAll.generateRequest();
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
                     },
+
+                    fixGridToBottom: function () {
+                        var grid_el = $(this.$.gridModelos);
+                        var parentHeight = $(this).offsetParent().height();
+                        var offsetTop = $(this).offset().top;
+                        var height = parentHeight - offsetTop;
+                        $(this.$.gridModelos).height(height);
+                    },
+
                     openToast: function (message) {
                         this.$.ToastMessageSuccess.text = message;
                         this.$.ToastMessageSuccess.open();
@@ -332,6 +358,9 @@
                         else {
                             this.openToastError("Occorreu um erro ao atualizar.");
                         }
+                    },
+                    _goBack: function (e) {
+                        window.history.back();
                     }
                 });
             });

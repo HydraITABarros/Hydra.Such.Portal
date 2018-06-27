@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Autorização Empregado Folha de Horas";
+    ViewData["Title"] = "FH Autorização Empregado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -121,10 +121,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
-
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LUtilizador]]" id="empregado" name="empregado" item-value-path="id" item-label-path="value" label="Empregado" disabled="{{ _permissionsCreate }}">
@@ -250,7 +255,7 @@
         <br />
 
         <vaadin-grid id="gridAutorizacaoFHRH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeEmpregado">Empregado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeEmpregado" />
@@ -268,7 +273,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeResponsavel1">Responsável Nº 1</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeResponsavel1" />
@@ -286,7 +291,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeResponsavel2">Responsável Nº 2</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeResponsavel2" />
@@ -304,7 +309,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeResponsavel3">Responsável Nº 3</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeResponsavel3" />
@@ -322,7 +327,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeValidadorRH1">Validador RH Nº 1</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeValidadorRH1" />
@@ -340,7 +345,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeValidadorRH2">Validador RH Nº 2</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeValidadorRH2" />
@@ -358,7 +363,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeValidadorRH3">Validador RH Nº 3</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeValidadorRH3" />
@@ -376,7 +381,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeValidadorRHKM1">Validador RH KM Nº 1</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeValidadorRHKM1" />
@@ -394,7 +399,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeValidadorRHKM2">Validador RH KM Nº 2</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeValidadorRHKM2" />
@@ -412,63 +417,7 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="utilizadorCriacao">Criado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="utilizadorCriacao" />
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorCriacao}}" disabled="true">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraCriacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="utilizadorModificacao">Alterado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="utilizadorModificacao" />
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.utilizadorModificacao}}" disabled="true">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraModificacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
-
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
@@ -478,12 +427,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
@@ -528,7 +471,21 @@
 
                 ready: function () {
                     this.$.ajax_GetAll.generateRequest();
-                    this.$.gridAutorizacaoFHRH.clearCache();
+                    //this.$.gridAutorizacaoFHRH.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridAutorizacaoFHRH);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridAutorizacaoFHRH).height(height);
                 },
 
                 openToast: function (message) {
@@ -680,7 +637,6 @@
                 },
 
                 _goBack: function (e) {
-                    //window.location = "../";
                     window.history.back();
                 }
             });
