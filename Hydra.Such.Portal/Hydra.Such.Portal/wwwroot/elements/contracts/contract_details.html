@@ -2547,6 +2547,7 @@
                     this.$.dlgCreateProposal.open();
                 },
                 _openNewinvoiceDialog: function (param) {
+                    debugger;
                     if (this._validateData()) {
                         if (this._ValidateInvoice()){
                             this.$.dlgCreateInvoice.open();
@@ -2632,6 +2633,7 @@
                     return false;
                 },
                 _ValidateInvoice: function () {
+                    debugger;
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value !=7) {
                         messageErro= "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
