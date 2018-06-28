@@ -384,7 +384,7 @@
                                                 </template>
                                             </vaadin-combo-box>-->
 
-                                            <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                                            <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -398,7 +398,7 @@
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
                                                             required error-message="Este campo é obrigatório"
-                                                            disabled="{{ _lockFields }}">
+                                                            disabled="disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
@@ -627,7 +627,7 @@
                                     </template>
                                 </template>
                                 <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    <paper-button raised class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
                             </div>
                         </div>
@@ -844,7 +844,9 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
                                     </div>
                                 </div>
                             </paper-collapse-item>
@@ -1216,8 +1218,6 @@
                                     <template>
                                         <center>
                                             <template is="dom-if" if="{{ _permissions.delete }}">
-                                                <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_deleteContractLine">Eliminar</paper-button>
-
                                                 <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                             </template>
                                         </center>
@@ -1457,7 +1457,6 @@
                     //Validate function of such-element doesn't work. Ensure validation message
                     //this.$.mClients.validate();
                     //this.$.contactNo.validate();
-                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         //this.$.mClients.validate() & //validate doesn't work
@@ -1544,8 +1543,8 @@
                     //this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
                     //this.$.contacts_ajax.generateRequest();
 
-                    this.data.shippingAddressCode = "";
-                    this.$.sbClientShippingAddresses._clearSelection();
+                    //this.data.shippingAddressCode = "";
+                    //this.$.sbClientShippingAddresses._clearSelection();
                     //this.data.contactNo = "";
                     //this.$.contactNo._clearSelection();
                 },
@@ -1611,7 +1610,6 @@
                         }
                     });
                 },
-
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
@@ -1620,7 +1618,7 @@
                         //this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
-                        this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
+                        this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.clientNo);
                         this.$.shippingAddresses_ajax.generateRequest();
 
                         //this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
@@ -1636,7 +1634,7 @@
                     }
 
                     if (this.data.filed) {
-                        this._permissions.update = false;
+                        this._permissions.update = false;                        
                     }
 
                     if (data.detail.status === 200) {
@@ -1742,7 +1740,7 @@
                 },
 
                 _propDeliveryDateChanged: function (e) {
-                    debugger;
+
                     var d = new Date(this.$.mProposalDelivery.value);
                     d.setDate(d.getDate() + 1);
                     this.$.previousHearingDate.min = d.getFullYear() + '-'

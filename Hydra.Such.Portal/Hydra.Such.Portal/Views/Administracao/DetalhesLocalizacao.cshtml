@@ -201,8 +201,10 @@
                     <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _permissions.delete }}">
-                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-
+                    <center>
+                        @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                        <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
                 </template>
             </template>
         </div>

@@ -45,7 +45,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Contactos/Detalhes/{id}")]
         public ActionResult Details(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 99, 24);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contactos);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.ContactId = string.IsNullOrEmpty(id) ? string.Empty : id;

@@ -243,7 +243,8 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsUpdate }}">Eliminar</paper-button>
+                        @*<paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsUpdate }}">Eliminar</paper-button>*@
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_delete" disabled="{{ _permissionsUpdate }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -320,7 +321,7 @@
                     var grid_el = $(this.$.gridTipoTrabalhoFH);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = parentHeight - offsetTop - 71;
                     $(this.$.gridTipoTrabalhoFH).height(height);
                 },
 
