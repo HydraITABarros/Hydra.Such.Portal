@@ -2087,7 +2087,17 @@
                                                     codCresp: this.$.codigoCentroResponsabilidade.value,
                                                     matricula: this.$.matricula.value
                                                 });
-                                                this.$.page_createpercurso_ajax.generateRequest();
+                                                //this.$.page_createpercurso_ajax.generateRequest();
+                                                //this.$.tabPercurso.clearCache();
+
+                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                var linha = this.$.page_createpercurso_ajax.generateRequest();
+
+                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                })
+
                                                 this.$.tabPercurso.clearCache();
                                             }
                                             else {
@@ -2122,10 +2132,12 @@
                 _deletePercurso: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
-
                     var percursoFH = this.$.folhaDeHorasNo.value;
                     var percursoNoLinha = e.model.item.noLinha;
                     var ajax_request = this.$.page_deletepercurso_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o Percurso?",
@@ -2146,6 +2158,7 @@
                                     noLinha: percursoNoLinha
                                 });
                                 ajax_request.generateRequest();
+
                                 this.$.tabPercurso.clearCache();
                             }
                         }
@@ -2232,7 +2245,17 @@
                                                                         codArea: this.$.codigoAreaFuncional.value,
                                                                         codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
-                                                                    this.$.page_createajuda_ajax.generateRequest();
+                                                                    //this.$.page_createajuda_ajax.generateRequest();
+                                                                    //this.$.tabAjuda.clearCache();
+
+                                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                                    var linha = this.$.page_createajuda_ajax.generateRequest();
+
+                                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                                    })
+
                                                                     this.$.tabAjuda.clearCache();
                                                                 }
                                                                 else {
@@ -2287,10 +2310,12 @@
                 _deleteAjuda: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
-
                     var ajudaFH = this.$.folhaDeHorasNo.value;
                     var ajudaNoLinha = e.model.item.noLinha;
                     var ajax_request = this.$.page_deleteajuda_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Ajuda?",
@@ -2456,7 +2481,17 @@
                                                     horaFim: this.$.maoDeObraHoraFim.value,
                                                     horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
                                                 });
-                                                this.$.page_createmaodeobra_ajax.generateRequest();
+                                                //this.$.page_createmaodeobra_ajax.generateRequest();
+                                                //this.$.tabMaoDeObra.clearCache();
+
+                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                var linha = this.$.page_createmaodeobra_ajax.generateRequest();
+
+                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                })
+
                                                 this.$.tabMaoDeObra.clearCache();
                                             }
                                             else {
@@ -2491,10 +2526,12 @@
                 _deleteMaoDeObra: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
-
                     var maoDeObraFH = this.$.folhaDeHorasNo.value;
                     var maoDeObraNoLinha = e.model.item.linhaNo;
                     var ajax_request = this.$.page_deletemaodeobra_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Mão de Obra?",
@@ -2717,7 +2754,17 @@
                                                         hora2Saida: this.$.presencaHora2Saida.value,
                                                         observacoes: this.$.presencaObservacoes.value
                                                     });
-                                                    this.$.page_createpresenca_ajax.generateRequest();
+                                                    //this.$.page_createpresenca_ajax.generateRequest();
+                                                    //this.$.tabPresenca.clearCache();
+
+                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                    var linha = this.$.page_createpresenca_ajax.generateRequest();
+
+                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                    })
+
                                                     this.$.tabPresenca.clearCache();
                                                 }
                                                 else {
@@ -2756,10 +2803,12 @@
                 _deletePresenca: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
-
                     var presencaFH = this.$.folhaDeHorasNo.value;
                     var presencaData = e.model.item.dataTexto;
                     var ajax_request = this.$.page_deletepresenca_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Presença?",
@@ -3067,7 +3116,7 @@
                     ajax_request.body = JSON.stringify(this.data);
 
                     if (this.FolhaDeHorasUpdatedValidacao == 0) {
-                        ajax_request.generateRequest();
+                        ajax_request.generateRequest(); 
                     }
                     else {
                         if (this.FolhaDeHorasUpdatedValidacao == 1) {
@@ -3200,7 +3249,7 @@
 
                     if (this.FolhaDeHorasUpdated == 0) {
                         this._showMessage('Folha de Horas actualizada com sucesso.');
-
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         if (this.FolhaDeHorasUpdated == 1) {
                             this._showErrorMessage('Já existe uma Folha de Horas nesse período de tempo para empregado em questão.');
