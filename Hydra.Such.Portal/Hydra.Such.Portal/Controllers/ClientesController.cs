@@ -36,7 +36,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Clientes
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Clientes); //4, 47);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Clientes); //4, 47);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -50,7 +50,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesCliente(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Vendas, Enumerations.Features.Clientes); //4, 47);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Clientes); //4, 47);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.No = id ?? "";

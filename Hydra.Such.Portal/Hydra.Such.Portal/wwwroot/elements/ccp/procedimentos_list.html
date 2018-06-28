@@ -83,10 +83,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-        <div class="marginSpace">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
         </div>
+
+        <!--<div class="marginSpace">
+            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+        </div>-->
+
         <vaadin-grid aria-label="ProcedimentosGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column>
                 <template class="header">

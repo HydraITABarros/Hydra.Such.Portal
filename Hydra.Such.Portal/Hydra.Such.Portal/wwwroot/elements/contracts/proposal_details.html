@@ -930,9 +930,15 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
+                                    </div>
+                                </div>    
                             </paper-collapse-item>
                         </paper-collapse-group>
 
