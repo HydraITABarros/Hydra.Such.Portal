@@ -598,7 +598,7 @@
                                                                 <div class="col-lg-1">
                                                                     <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
                                                                 </div>
-                                                            </div>
+                                                            </div>   
                                                         </template>
                                                         <!-- VAADIN GRID  Requisições Cliente -->
                                                         <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
@@ -1161,12 +1161,14 @@
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
                                     </div>
-                                    <template is="dom-if" if="{{ _permissions.create }}">
+                                </div>
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
                                         <div class="col-lg-2">
                                             <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </template>
-                                </div>
+                                </div>    
                             </paper-collapse-item>
                         </paper-collapse-group>
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
@@ -1525,17 +1527,19 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column resizable>
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <template is="dom-if" if="{{ _lockFields }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
-                                            </template>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _lockFields }}">
+                                                    <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
@@ -2547,7 +2551,6 @@
                     this.$.dlgCreateProposal.open();
                 },
                 _openNewinvoiceDialog: function (param) {
-                    debugger;
                     if (this._validateData()) {
                         if (this._ValidateInvoice()){
                             this.$.dlgCreateInvoice.open();
@@ -2633,7 +2636,6 @@
                     return false;
                 },
                 _ValidateInvoice: function () {
-                    debugger;
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value !=7) {
                         messageErro= "O estado do contrato tem que ser: Assinado ou Em Vigor \n";

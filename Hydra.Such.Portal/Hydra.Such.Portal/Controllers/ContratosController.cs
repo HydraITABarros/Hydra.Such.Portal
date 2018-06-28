@@ -85,6 +85,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
 
                 ViewBag.ContractNo = id ?? "";
@@ -855,6 +856,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
 
                 ViewBag.ContractNo = id ?? "";
@@ -1325,6 +1327,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
 
                 ViewBag.ContractNo = id ?? "";
