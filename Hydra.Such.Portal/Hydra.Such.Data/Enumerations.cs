@@ -219,5 +219,25 @@ namespace Hydra.Such.Data
             [Description("Unidades de Apoio e Suporte")]
             UnidadesApoioESuporte,
         }
+
+        public enum ContractLineTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Recurso,
+            Produto,
+            [Description("Conta CG")]
+            ContaCG,
+        }
+
+        public enum ProjectDiaryTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Produto,
+            Recurso,            
+            [Description("Conta CG")]
+            ContaCG,
+        }
     }
 }

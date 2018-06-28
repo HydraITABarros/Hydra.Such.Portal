@@ -4446,14 +4446,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
 
 
-
-
-
-
-
         /* PROCEDIMENTOS SIMPLIFICADOS */
-
-
 
         // The following method maps NAV2009 ImobContabConfirmar(pEstado : Integer) function
         public static ErrorHandler AccountingConfirmsAssetPurchase_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
@@ -4648,7 +4641,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
-
 
         // The following method maps NAV2009 FDComprasConfirmar(pEstado : Integer) function, from Procedimento Simplificado
         public static ErrorHandler DecisionGroundsToBuy_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
@@ -4969,8 +4961,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
-
-
 
         // The following method maps NAV2009 CAConfirmarAutorizacao(pEstado : Integer) function
         public static ErrorHandler BoardOfManagementConfirmAuthorization_Simplificado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)

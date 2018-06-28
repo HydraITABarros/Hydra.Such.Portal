@@ -6414,7 +6414,7 @@ namespace Hydra.Such.Portal.Controllers
                     NºProcedimento = data.No,
                     Assunto = data.No + " " + data.NomeProcesso + " - Devolução Autorização Adjudicação",
                     UtilizadorEmail = UserEmail,
-                    EmailDestinatário = UserEmail_Area,
+                    EmailDestinatário = UserDetails_Area.IdUtilizador,
                     TextoEmail = (data.ComentarioCA17 == "" || data.ComentarioCA17 == null) ? "Devolução do Procedimento" : data.ComentarioCA17,
                     DataHoraEmail = DateTime.Now,
                     UtilizadorCriação = User.Identity.Name,
