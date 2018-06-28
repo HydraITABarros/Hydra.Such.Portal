@@ -220,7 +220,10 @@
                         <template class="header">
                         </template>
                         <template>
-                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            <center>
+                                @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                            </center>
                         </template>
                     </vaadin-grid-column>
                 </template>
@@ -332,7 +335,8 @@
                         </template>
                         <template>
                             <center>
-                                <paper-button raised class="btnRemove" on-tap="_deleteUserAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                @*<paper-button raised class="btnRemove" on-tap="_deleteUserAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                <paper-button raised class="btnRemove tableBtn" on-tap="_deleteUserAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                             </center>
                         </template>
                     </vaadin-grid-column>
@@ -422,7 +426,8 @@
                         </template>
                         <template>
                             <center>
-                                <paper-button raised class="btnRemove" on-tap="_onDeleteUserDimensionAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserDimensionAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserDimensionAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                             </center>
                         </template>
                     </vaadin-grid-column>
@@ -479,7 +484,8 @@
                         </template>
                         <template>
                             <center>
-                                <paper-button raised class="btnRemove" on-tap="_onDeleteUserAcessosLocalizacao"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserAcessosLocalizacao"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserAcessosLocalizacao" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                             </center>
                         </template>
                     </vaadin-grid-column>
@@ -500,7 +506,10 @@
                     <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _permissions.delete }}">
-                    <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <center>
+                        @*<paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
                 </template>
             }
         </div>

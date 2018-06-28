@@ -91,7 +91,10 @@
                 <template class="header">
                 </template>
                 <template>
-                    <paper-button id="btn_deleteAcordoPreco" class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                    <center>
+                        @*<paper-button id="btn_deleteAcordoPreco" class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
+                        <paper-button id="btn_deleteAcordoPreco" class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

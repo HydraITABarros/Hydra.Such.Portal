@@ -695,7 +695,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button id="btn_deletePercurso" class="btnRemove tableBtn" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
@@ -881,7 +884,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                 </div>
@@ -1138,7 +1144,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
@@ -1277,7 +1286,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                 </div>
