@@ -1164,7 +1164,7 @@
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <template is="dom-if" if="{{ _permissions.update }}">
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-2" hidden="{{_ifHistoric}}">
                                             <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </template>
@@ -1820,6 +1820,11 @@
                         type: Boolean,
                         value: false
                     },
+
+                    _isHistoric: {
+                        type: Boolean,
+                        value: false
+                    }
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -2250,17 +2255,17 @@
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
                             this._CLContractLineType = "";
-                            this._CLMeasureUnit._clearSelection();
+                            this.$._CLMeasureUnit._clearSelection();
                             this._CLFrequency = "";
-                            this._CLServiceClient._clearSelection();
-                            this._CLCode._clearSelection();
+                            this.$._CLServiceClient._clearSelection();
+                            this.$._CLCode._clearSelection();
                             this._CLUnitPrice = "";
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup = "";
                             this._CLDescription = "";
                             this._CLDiscountLine = "";
                             this._CLTotalTechnicians = "";
-                            this._CLResponsible._clearSelection();
+                            this.$._CLResponsible._clearSelection();
                             this._CLCreateContract = "";
                             this._CLQuantity = "";
                             this._CLBillable = true;
@@ -2290,6 +2295,7 @@
 
                 },
                 _createInvoiceResponseProcessor: function (data) {
+                    debugger;
                     var verifica = false;
                     var ListLines = [];
                     var Invoice;
@@ -2340,6 +2346,7 @@
                             
                         }
                         else {
+
                             bootbox.confirm({
                                 message: "Deseja criar a(s) fatura(s) para este contrato?",
                                 buttons: {
@@ -2353,6 +2360,7 @@
                                     }
                                 },
                                 callback: function (result) {
+                                    debugger;
                                     if (result) {
                                         if (t1 == "") {
                                             ListLines = t2;

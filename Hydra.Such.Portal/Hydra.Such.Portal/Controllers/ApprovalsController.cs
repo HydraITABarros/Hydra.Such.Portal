@@ -382,7 +382,7 @@ namespace Hydra.Such.Portal.Controllers
                                 FolhaHoras.Validado = false;
                                 FolhaHoras.Validador = null;
                                 FolhaHoras.DataHoraValidação = null;
-                                FolhaHoras.Observações = FolhaHoras.Observações + " - Rejeição: " + rejectionComments + " - Data: " + DateTime.Now.ToString() + " - Utilizador: " + User.Identity.Name;
+                                FolhaHoras.Observações = FolhaHoras.Observações + "\r\nRejeição: " + rejectionComments + " - Data: " + DateTime.Now.ToString() + " - Utilizador: " + User.Identity.Name;
                                 FolhaHoras.DataHoraÚltimoEstado = DateTime.Now;
                                 FolhaHoras.UtilizadorModificação = User.Identity.Name;
                                 FolhaHoras.DataHoraModificação = DateTime.Now;

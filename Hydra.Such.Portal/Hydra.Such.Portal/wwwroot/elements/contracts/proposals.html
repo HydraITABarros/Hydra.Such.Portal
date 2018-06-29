@@ -244,11 +244,15 @@
                     _showLevel: {
                         type: Number,
                         value: 1
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
                     }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesProposta/" + item.contractNo +"?version="+item.versionNo;
+                        window.location.href = "DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
                 },
                 _create: function (item) {
@@ -341,18 +345,22 @@
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Exibir Perdidas";
                         this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
                     } else if (this._showLevel == 2) {
                         this._showAbortedMessage = "Exibir Ativas";
                         this._showLostMessage = "Exibir Perdidas";
                         this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
                     } else if (this._showLevel == 4) {
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Exibir Perdidas";
                         this._showHistoryMessage = "Exibir Ativas";
+                        this._isHistoric = "true";
                     } else {
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Exibir Ativas";
                         this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
                     }
                 },
             });
