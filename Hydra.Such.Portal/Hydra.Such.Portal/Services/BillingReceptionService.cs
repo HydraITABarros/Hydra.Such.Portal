@@ -193,7 +193,7 @@ namespace Hydra.Such.Portal.Services
             }
             else
             {
-                var purchItemInfo = DBNAV2017Purchases.GetByExternalDocNo(_config.NAVDatabaseName, _config.NAVCompanyName, (PurchaseDocumentTypes)item.TipoDocumento, item.NumDocFornecedor);
+                var purchItemInfo = DBNAV2017Purchases.GetByExternalDocNo(_config.NAVDatabaseName, _config.NAVCompanyName, (NAVBaseDocumentTypes)item.TipoDocumento, item.NumDocFornecedor);
                 if (purchItemInfo != null)
                 {
                     string typeDescription = Data.EnumHelper.GetDescriptionFor(typeof(BillingReceptionStates), (int)item.Estado);

@@ -868,10 +868,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (cContract != null && cContract.Arquivado == true)
                 {
-                    UPerm.Update = false;
-                    UPerm.Delete = false;
+                    //UPerm.Update = false;
+                    //UPerm.Delete = false;
                 }
-                if(hist == "true")
+                if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico) ";
                 }
@@ -1167,7 +1167,7 @@ namespace Hydra.Such.Portal.Controllers
                         if(verifica==true)
                             Problema += "Falta Nº Compromisso";
 
-                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, 2);
+                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
                         if (result != null)
                         {
                            Problema += "Fatura no Pre-Registo";
@@ -1739,8 +1739,7 @@ namespace Hydra.Such.Portal.Controllers
             result.eMessage = "";
             try
             {
-                result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, Contract, 2);
-
+                result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, Contract, NAVBaseDocumentTypes.Fatura);
             }
             catch
             {

@@ -192,12 +192,12 @@ namespace Hydra.Such.Data
 
         public enum BillingDocumentTypes
         {
-            Fatura = PurchaseDocumentTypes.Fatura,
+            Fatura = NAVBaseDocumentTypes.Fatura,
             [Description("Nota de Crédito")]
-            NotaCredito = PurchaseDocumentTypes.NotaCredito
+            NotaCredito = NAVBaseDocumentTypes.NotaCredito
         }
 
-        public enum PurchaseDocumentTypes
+        public enum NAVBaseDocumentTypes
         {
             Proposta,
             Encomenda,
