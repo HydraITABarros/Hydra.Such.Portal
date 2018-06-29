@@ -226,11 +226,16 @@
                     _disabledCreate: {
                         type: Boolean,
                         value: false
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
                     }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo;
+                        debugger;
+                        window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
                 },
                 _create: function (item) {
@@ -285,8 +290,10 @@
 
                         if (this._archived == 1) {
                             this._showHistory = "Exibir ativas";
+                            this._isHistoric = "true";
                         } else {
                             this._showHistory = "Exibir histórico";
+                            this._isHistoric = "false";
                         }
 
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });

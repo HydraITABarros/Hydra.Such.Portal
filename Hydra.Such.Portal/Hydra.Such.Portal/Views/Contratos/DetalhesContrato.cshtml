@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes do Contrato";
+    ViewData["Title"] = "Detalhes do Contrato " + ViewBag.Historic;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,6 +16,6 @@ else
 }
 
 
-<x-contractdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractdetails>
+<x-contractdetails _isHistoric="@ViewBag.ifHistoric" _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractdetails>
 
 

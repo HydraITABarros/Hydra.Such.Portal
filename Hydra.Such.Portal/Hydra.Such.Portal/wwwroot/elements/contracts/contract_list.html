@@ -263,10 +263,15 @@
                         type: String,
                         value: "Exibir Histórico"
                     },
+                    _isHistoric: {
+                        type: Boolean,
+                        value: false
+                    }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "Contratos/DetalhesContrato/" + item.contractNo + "?version=" + item.versionNo;
+                        debugger;
+                        window.location.href = "Contratos/DetalhesContrato/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
                 },
                 _create: function (item) {
@@ -291,11 +296,13 @@
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 1 });
                         this.$.grid_databound_ajax.generateRequest();
                         this._ifHistoric = false;
+                        this._isHistoric = true;
                     } else {
                         this._showMessage = "Exibir Histórico";
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "Historic": 0 });
                         this.$.grid_databound_ajax.generateRequest();
                         this._ifHistoric = true;
+                        this._isHistoric = false;
                     }
                 },
 
