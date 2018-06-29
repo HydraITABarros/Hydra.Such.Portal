@@ -6435,6 +6435,7 @@ namespace Hydra.Such.Portal.Controllers
                     From = DBProcedimentosCCP._EmailSender
                 };
 
+                Email.To.Add(UserDetails_Area.IdUtilizador);
                 Email.To.Add(UserEmail_Area);
                 Email.BCC.Add(UserEmail);
                 Email.CC.Add(UserEmail_Area);

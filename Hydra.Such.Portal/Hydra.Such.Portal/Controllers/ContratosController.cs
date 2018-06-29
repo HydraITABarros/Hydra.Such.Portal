@@ -87,6 +87,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
                 if (hist == true)
                 {
@@ -868,6 +869,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
                 if(hist == "true")
                 {
@@ -1347,6 +1349,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
 
                 if (hist == "true")
