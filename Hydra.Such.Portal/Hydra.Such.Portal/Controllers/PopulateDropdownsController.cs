@@ -23,6 +23,8 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Extensions;
 using Newtonsoft.Json.Linq;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1191,6 +1193,28 @@ namespace Hydra.Such.Portal.Controllers
             return Json(BoolValues);
         }
         // zpgm.>
+
+        //NR20180629 - Obter Requisições
+
+        [HttpPost]
+        public JsonResult GetRequisitions()
+        {
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetDimensions()

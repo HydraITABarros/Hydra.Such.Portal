@@ -333,6 +333,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- Requisições-->
+        <iron-ajax url="/PopulateDropdowns/GetRequisitions"
+                   last-response="{{CB_REQ}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- NR 20180228 -->
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP"
                    last-response="{{CBObjectoContrato}}"
@@ -1683,6 +1691,43 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
+
+                            <paper-collapse-item header="Ligação a Requisições">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <such-selectbox id="_CB_REQ" value="{{_CB_REQ}}" label="Nº Requisição"
+                                                                    items="[[CB_REQ]]"
+                                                                    text-path="requisitionNo"
+                                                                    value-path="requisitionNo"
+                                                                    required
+                                                                    fields='[{"field":"requisitionNo", "name":"Nº Requisição"}, {"field":"comments", "name":"Observações"}]'
+                                                                    disabled="{{ !_permissions.update }}">
+                                                    </such-selectbox>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <vaadin-text-field type="text" id="_DescricaoRequisicao" label="Descrição" maxlength="100"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Linhas com as Requisições -->
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
 
@@ -2152,6 +2197,9 @@
                     _CBItems: {
                         observer: '_setProductData'
                     },
+                    _CB_REQ: {
+                        observer: '_setREQData'
+                    },
                 },
                 _testFunction: function () {
 
@@ -2202,6 +2250,13 @@
                     if (item != null) {
                         this.$._DescricaoProduto.value = item.name;
                         this.$._UnitMeasureCode.value = item.measureUnit;
+                    }
+                },
+
+                _setREQData: function (e) {
+                    var item = this.CB_REQ.find(x => x.requisitionNo == e);
+                    if (item != null) {
+                        this.$._DescricaoRequisicao.value = item.comments;
                     }
                 },
 
@@ -2517,7 +2572,6 @@
                             enviarEmail: this.chkSendMail
                         });
 
-                        //this.$.ajax_createelementojuri.generateRequest();
 
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
 
@@ -2525,8 +2579,6 @@
                         var lin = this.$.ajax_createelementojuri.generateRequest();
 
                         Promise.all([sav.completes, lin.completes]).then(function (requests) {
-                            //var savReq = requests[0].result;
-                            //var linReq = requests[1].result;
                         })
 
                         this.$.gridElementosJuri.clearCache();
