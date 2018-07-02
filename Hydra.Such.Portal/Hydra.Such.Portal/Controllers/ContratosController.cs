@@ -51,24 +51,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Details(string id, string version)
-        {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                ViewBag.ContractNo = id ?? "";
-                ViewBag.VersionNo = version ?? "";
-                ViewBag.UPermissions = UPerm;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
+        //public IActionResult Details(string id, string version)
+        //{
+        //    UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+        //    if (UPerm != null && UPerm.Read.Value)
+        //    {
+        //        ViewBag.ContractNo = id ?? "";
+        //        ViewBag.VersionNo = version ?? "";
+        //        ViewBag.UPermissions = UPerm;
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("AccessDenied", "Error");
+        //    }
 
 
 
-        }
+        //}
 
         public IActionResult DetalhesContrato(string id, string version = "", bool isHistoric = false)
         {
@@ -513,6 +513,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult UnArchiveContract([FromBody] ContractViewModel data)
+        {
+            data.eReasonCode = 2;
+            data.eMessage = "Ocorreu um erro ao ativar.";
+
+            if (data != null)
+            {
+                data.Filed = false;
+                var updated = DBContracts.Update(DBContracts.ParseToDB(data));
+                if (updated != null)
+                {
+                    data = DBContracts.ParseToViewModel(updated, _config.NAVDatabaseName, _config.NAVCompanyName);
+                    data.eReasonCode = 1;
+                    data.eMessage = "Ativado com sucesso.";
+                }
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
         public JsonResult SendContractToHistory([FromBody] ContractViewModel data)
         {
 
@@ -866,11 +886,11 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
 
-                if (cContract != null && cContract.Arquivado == true)
-                {
+                //if (cContract != null && cContract.Arquivado == true)
+                //{
                     //UPerm.Update = false;
                     //UPerm.Delete = false;
-                }
+                //}
                 if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico) ";
@@ -905,6 +925,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 ContractsList = DBContracts.GetAllByContractType(ContractType.Oportunity);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && !x.Arquivado.Value);
             }
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1346,11 +1367,11 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
 
-                if (cContract != null && cContract.Arquivado == true)
-                {
-                    UPerm.Update = false;
-                    UPerm.Delete = false;
-                }
+                //if (cContract != null && cContract.Arquivado == true)
+                //{
+                //    UPerm.Update = false;
+                //    UPerm.Delete = false;
+                //}
 
                 if (hist == "true")
                 {

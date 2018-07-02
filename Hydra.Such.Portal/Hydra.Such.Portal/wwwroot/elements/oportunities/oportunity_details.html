@@ -217,7 +217,7 @@
             <paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
-                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+                <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
             </template>
         </div>
 
@@ -886,11 +886,6 @@
                                                             <td width="60%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
-                                                    <!--<paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.id]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1427,16 +1422,20 @@
                         notify: true,
                         value: ""
                     },
+                    _btnArchiveMessage: {
+                        type: String,
+                        value: "",
+                    },
                 },
                 observers: [
-                    'propChanged(data.filed)'
+                    'filedChanged(data.filed)'
                 ],
-                propChanged: function (newValue) {
+                filedChanged: function (newValue) {
                     this._setControlsVisibility(newValue);
                 },
                 _setControlsVisibility: function (isArquived) {
-
-                    var excludeItemsIds = ["btnContractAdd", "btnAtivar"];
+                    this._btnArchiveMessage = isArquived ? "Ativar" : "Arquivar";
+                    var excludeItemsIds = ["btnContractAdd", "btnArchive"];
                     //debugger;
                     elems = Polymer.dom(this.root).querySelectorAll('paper-button');
                     elems.forEach(function (elem) {
@@ -1605,8 +1604,9 @@
                 _archive: function () {
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
+                    var message = this._btnArchiveMessage.toLowerCase();
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende arquivar a Oportunidade " + this.data.contractNo + "?",
+                        message: "Tem a certeza que pretende " + message + " a Oportunidade " + this.data.contractNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1619,10 +1619,12 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                ajax_request.url = "/Contratos/ArchiveContract";
+                                if (_dataContract.filed)
+                                    ajax_request.url = "/Contratos/UnArchiveContract";
+                                else
+                                    ajax_request.url = "/Contratos/ArchiveContract";
                                 ajax_request.body = JSON.stringify(_dataContract);
                                 ajax_request.generateRequest();
-
                             }
                         }
                     });
