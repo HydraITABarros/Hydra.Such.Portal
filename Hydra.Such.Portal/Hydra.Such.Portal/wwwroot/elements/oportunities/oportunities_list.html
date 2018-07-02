@@ -141,6 +141,15 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalProposalValue">Valor Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalProposalValue" />
+                </template>
+                <template>
+                    {{item.totalProposalValue}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
