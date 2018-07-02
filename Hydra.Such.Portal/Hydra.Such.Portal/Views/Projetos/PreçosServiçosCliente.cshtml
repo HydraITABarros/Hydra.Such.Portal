@@ -1,0 +1,7 @@
+﻿
+@{
+    ViewData["Title"] = "Preços Serviços Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/projects/priceServiceClient.html">
+<x-pservclient paramprojno="@ViewBag.ProjectNo" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pservclient>

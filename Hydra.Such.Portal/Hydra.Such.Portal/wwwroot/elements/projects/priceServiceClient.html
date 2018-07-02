@@ -1,0 +1,994 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<dom-module id="x-pservclient">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBMeasureUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServices" last-response="{{ServiceClient}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{lResources}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/GeAlltMealTypes" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/UpdatePriceServiceClient" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllPriceServiceClient" last-response="{{Griddate}}" id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/ExportToExcel" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/OnPostImport" last-response="{{import}}" id="ajax_Import" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
+
+        
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
+
+             };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+        </style>
+        <div class="row">
+            <div class="col-lg-2">
+                <such-selectbox id="piClient" value="{{ClientValue}}" label="Cliente" on-value-changed="_clientChanged"
+                                items="[[LProjectClients]]"
+                                text-path="no_"
+                                value-path="no_"
+                                fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'
+                                disabled="{{ !_permissions.create }}">
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piDescription" label="Nome Cliente" value="{{ClDescriptionValue}}" readonly></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piServiceClientCode" name="piCodeResponsabilityCenter" value="{{CServClientCodeValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceChanged"
+                                items="[[ServiceClient]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                disabled="{{ !_permissions.create }}">
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piservicedescription" label="Descrição Serviço" value="{{CServClientDescValue}}" readonly></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piSalePrice" label="Preço Venda" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{SalePriceValue}}" on-value-changed="_decimalValue" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piCostPrice" label="Preço de Custo" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{CostPriceValue}}" on-value-changed="_decimalValue" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-2">
+                <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{DateValue}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piResourceCode" name="piResourceCode" value="{{ResourceCodeValue}}" label="Código Recurso" disabled="{{ !_permissions.create }}"
+                                on-value-changed="_ResourceChanged"
+                                items="[[lResources]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piResourcedescription" label="Descrição do Recurso" value="{{ResourcedescValue}}" readonly></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piCLMeasureUnit" name="_CLMeasureUnit" value="{{MeasureUnitValue}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}"
+                                items="[[CBMeasureUnits]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piMealTypesCode" name="piCodeResponsabilityCenter" value="{{MealTypesCodeValue}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}"
+                                items="[[MealTypesData]]"
+                                on-value-changed="_MealTypesChanged"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"grupoContabProduto", "name":"Grupo Contab. Produto"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="piMealdescription" label="Descrição Tipo Refeição" value="{{MealdescValue}}" readonly></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
+                                items="[[RegionData]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
+                                items="[[FunctionalAreaCodeData]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-lg-2">
+                <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                                items="[[ResponsabilityCenterData]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
+            </div>
+        </div>
+        <div class="row" hidden="{{ !_permissions.create }}">
+            <div class="col-lg-2">
+                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <br />
+        <div class="row" hidden="{{ !_permissions.create }}">
+            
+            <div class="col-lg-10">
+                <vaadin-upload id="UploadRequest"
+                               method="POST"
+                               headers="{'Accept': 'application/json'}"
+                               accept=".xlsx"
+                               timeout=3000000>
+                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                </vaadin-upload>
+            </div>
+                <div class="col-lg-2">
+                    <center>
+                        <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
+                    </center>
+                </div>
+           
+        </div>
+        <vaadin-grid id="priceServiceClientGrid" aria-label="Tabela Preços Serviços Clientes" items="[[Griddate]]" class="editGrid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="client">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="client"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="no_" item-label-path="no_" on-value-changed="_clientGridChanged" value="{{item.client}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.no_]]</td>
+                                        <td width="60%"> <b>[[item.name]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.client}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="completeName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="completeName"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piDescriptionGrid" value="{{item.completeName}}" readonly></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.completeName}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codServClient">Cód. Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codServClient"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ServiceClient]]" item-value-path="id" item-label-path="id" on-value-changed="_ServiceGridChanged" value="{{item.codServClient}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.codServClient}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceDescription">Descrição Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceDescription"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piservicedescriptionGrid" value="{{item.serviceDescription}}" readonly></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.serviceDescription}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="salePrice">Preço Venda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="salePrice"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piSalePriceGrid" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.salePrice}}" on-value-changed="_decimalValue" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.salePrice}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="priceCost">Preço de Custo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="priceCost"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piCostPriceGrid" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.priceCost}}" on-value-changed="_decimalValue" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.priceCost}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="date"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-date-picker id="dpDateGrid" name="dpDateGrid" value="{{item.date}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseDateFormat(item.date) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="resource">Código Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="resource"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[lResources]]" item-value-path="id" item-label-path="id" on-value-changed="_ResourceGridChanged" value="{{item.resource}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.resource}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="resourceDescription">Descrição do Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="resourceDescription"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piResourcedescriptionGrid" value="{{item.resourceDescription}}" readonly></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.resourceDescription}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitMeasure">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitMeasure"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[CBMeasureUnits]]" item-value-path="id" item-label-path="id" value="{{item.unitMeasure}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitMeasure}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="typeMeal">Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeMeal"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[MealTypesData]]" item-value-path="id" item-label-path="id" on-value-changed="_MealTypesGridChanged" value="{{item.typeMeal}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.description]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.typeMeal}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="typeMealDescription">Descrição Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeMealDescription"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piMealdescriptionGrid" value="{{item.typeMealDescription}}" readonly></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.typeMealDescription}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseRegion(item.regionCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseFuncArea(item.functionalAreaCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Respon.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseResponsabilityCenter(item.responsabilityCenterCode) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <div class="marginSpace" hidden="{{ disabledFields }}">
+            <div class="marginSpace" hidden="{{ !_permissions.update }}">
+                <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                <paper-button raised id="btnExport" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            </div>
+        </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
+            upload.addEventListener('file-reject', function (event) {
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pservclient',
+                properties: {
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    ClientValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClDescriptionValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    CServClientCodeValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    CServClientDescValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    SalePriceValue: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    CostPriceValue: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    DateValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ResourceCodeValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ResourcedescValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    MeasureUnitValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    MealTypesCodeValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    MealdescValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeRegion: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeFuncArea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeResponsabilityCenter: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                },
+                observers: [
+                    '_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,date)'
+                ],
+                _onCacheLoaded: function (RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,date) {
+
+                    if (!this.Flag) {
+                        this.$.ajax_gridList.generateRequest();
+                            this.Flag = true;
+                    }
+                },
+                _clientChanged: function (e) {
+                    if (e.detail.value != "" && this.LProjectClients != null && this.LProjectClients != "") {
+                        this.$.piDescription.value = this.LProjectClients.find(x => x.no_ == e.detail.value).name;
+
+                    } else {
+                        this.$.piDescription.value = "";
+                    }
+                },
+                _ServiceChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceClient != null && this.ServiceClient != "") {
+                        this.$.piservicedescription.value = this.ServiceClient.find(x => x.id == e.detail.value).value;
+
+                    } else {
+                        this.$.piservicedescription.value = "";
+                    }
+                },
+                _ResourceChanged: function (e) {
+                    if (e.detail.value != "" && this.lResources != null && this.lResources != "") {
+                        this.$.piResourcedescription.value = this.lResources.find(x => x.id == e.detail.value).value;
+
+                    } else {
+                        this.$.piResourcedescription.value = "";
+                    }
+                },
+                _MealTypesChanged: function (e) {
+                    if (e.detail.value != "" && this.MealTypesData != null && this.MealTypesData != "") {
+                        this.$.piMealdescription.value = this.MealTypesData.find(x => x.id == e.detail.value).description;
+
+                    } else {
+                        this.$.piMealdescription.value = "";
+                    }
+                },
+                _clientGridChanged: function (e) {
+                    var res = this.Griddate.find(x => x.selected == true);
+                    if (res != null) {
+                        if (e.target.value != "" && this.LProjectClients != null && this.LProjectClients != "") {
+                            res.completeName = this.LProjectClients.find(x => x.no_ == e.detail.value).name;
+                            res.client = e.target.value; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        } else {
+                            res.completeName = "";
+                            res.client = ""; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        }
+                    }
+                },
+                _ServiceGridChanged: function (e) {
+                    var res = this.Griddate.find(x => x.selected == true);
+                    if (res != null) {
+                        if (e.target.value != "" && this.ServiceClient != null && this.ServiceClient != "") {
+                            res.serviceDescription = this.ServiceClient.find(x => x.id == e.detail.value).value;
+                            res.codServClient = e.target.value; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        } else {
+                            res.serviceDescription = "";
+                            res.codServClient = ""; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        }
+                    }
+                },
+                _ResourceGridChanged: function (e) {
+                    var res = this.Griddate.find(x => x.selected == true);
+                    if (res != null) {
+                        if (e.target.value != "" && this.lResources != null && this.lResources != "") {
+                            res.resourceDescription = this.lResources.find(x => x.id == e.detail.value).value;
+                            res.resource = e.target.value; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        } else {
+                            res.resourceDescription = "";
+                            res.resource = ""; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        }
+                    }
+                },
+                _MealTypesGridChanged: function (e) {
+                    var res = this.Griddate.find(x => x.selected == true);
+                    if (res != null) {
+                        if (e.target.value != "" && this.MealTypesData != null && this.MealTypesData != "") {
+                            res.typeMealDescription = this.MealTypesData.find(x => x.id == e.detail.value).description;
+                            res.typeMeal = e.target.value; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        } else {
+                            res.typeMealDescription = "";
+                            res.typeMeal = ""; 
+                            this.$.priceServiceClientGrid.clearCache();
+                        }
+                    }
+                },
+                _decimalValue: function (e) {
+                    if (e.target.id != "" && e.target.id != null) {
+                        switch (e.target.id) {
+                            case "piSalePrice":
+                                this.$.piSalePrice.value = e.detail.value.replace(",", ".");
+                                break;
+                            case "piCostPrice":
+                                this.$.piCostPrice.value = e.detail.value.replace(",", ".");
+                                break;
+                            case "piSalePriceGrid":
+                                var res = this.Griddate.find(x => x.selected == true);
+                                if (res != null) {
+                                    res.salePrice = e.target.value.replace(",", ".");
+                                    this.$.priceServiceClientGrid.clearCache();
+                                }
+                                break;
+                            case "piCostPriceGrid":
+                                var res = this.Griddate.find(x => x.selected == true);
+                                if (res != null) {
+                                    res.priceCost = e.target.value.replace(",", ".");
+                                    this.$.priceServiceClientGrid.clearCache();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                },
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.Griddate.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+                        var sel = this.Griddate.find(x => x == item);
+                        if (sel != undefined) {
+                            this.Griddate.find(x => x == item).selected = true;
+                            this.$.priceServiceClientGrid.clearCache();
+                        }
+                    }
+                },
+                _parseRegion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseFuncArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var x = date.split("-");
+                        return x[2] + "-" + x[1] + "-" + x[0];
+                    }
+                },
+                _parseResponsabilityCenter: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _add() {
+                    if (this.ClientValue != null && this.ClientValue != "" &&
+                        this.CServClientCodeValue != null && this.CServClientCodeValue != "" &&
+                        this.ResourceCodeValue != null && this.ResourceCodeValue != "") {
+                        this.Griddate.unshift({
+                            client: this.ClientValue,
+                            completeName: this.ClDescriptionValue,
+                            codServClient: this.CServClientCodeValue,
+                            serviceDescription: this.CServClientDescValue,
+                            salePrice: this.SalePriceValue,
+                            priceCost: this.CostPriceValue,
+                            date: this.DateValue,
+                            resource: this.ResourceCodeValue,
+                            resourceDescription: this.ResourcedescValue,
+                            unitMeasure: this.MeasureUnitValue,
+                            typeMeal: this.MealTypesCodeValue,
+                            typeMealDescription: this.MealdescValue,
+                            regionCode: this.codeRegion,
+                            functionalAreaCode: this.codeFuncArea,
+                            responsabilityCenterCode: this.codeResponsabilityCenter
+                        });
+                        this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                        this.$.ajax_update.generateRequest();
+                        this.$.priceServiceClientGrid.clearCache();
+                    }
+                    else {
+                        this.openToastError("Os campos Dliente, Cód. Serviço Cliente e Código Recurso, são obrigatórios.");
+                    }
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                    this.$.ajax_update.generateRequest();
+                    this.$.priceServiceClientGrid.clearCache();
+                },
+                _delete: function (e) {
+                    var index = this.Griddate.indexOf(e.model.item);
+                    this.Griddate.splice(index, 1);
+                    // Save to DB
+                    this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                    this.$.ajax_update.generateRequest();
+                    this.$.priceServiceClientGrid.clearCache();
+                },
+                _cancel: function () {
+                    this.$.ajax_gridList.generateRequest();
+                    this.$.priceServiceClientGrid.clearCache();
+                },
+                _export: function () {
+                    this.$.ajax_Export.body = JSON.stringify(this.Griddate);
+                    this.$.ajax_Export.generateRequest();
+                    this.$.priceServiceClientGrid.clearCache();
+                },
+                _ExportResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Projetos/ExportToExcelDownload?sFileName=' + FileName;
+                   
+                },
+                _addExcel: function () {
+                    var urlFile = "/Projetos/OnPostImport";
+                    var toastSuccess = this.$.ToastMessageSuccess;
+                    var toastError = this.$.ToastMessageError;
+                    var data = new FormData();
+                    var uploadFile = this.$.UploadRequest.files;
+                    var ajaxImport = this.$.ajax_update;
+                    var VaadinGrid = this.Griddate;
+                    for (var i = 0; i < uploadFile.length; i++) {
+                        data.append(uploadFile[i].name, uploadFile[i]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: urlFile,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (ListToCreate) {
+                            ajaxImport.body = JSON.stringify(ListToCreate);
+                            ajaxImport.generateRequest();
+                        },
+                        error: function () {
+                            toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
+                            toastError.open();
+                        }
+                    });
+                    
+                },
+                _updateResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.ajax_gridList.generateRequest();
+                        this.$.priceServiceClientGrid.clearCache();
+                        if (this.result.eReasonCode === 1)
+                        {
+                            if (this.$.UploadRequest != null && this.$.UploadRequest != "") {
+                                this.$.UploadRequest.files = [];
+                            }
+                            this.openToastSuccess(this.result.eMessage);
+                        }
+                        else {
+                            this.openToastError(this.result.eMessage);
+                        }
+                    } else {
+                        this.openToastError("Occorreu um erro ao atualizar");
+                    }
+                    this._cleanValues();
+                },
+                _cleanValues: function () {
+                    this.$.piClient.value = "";
+                    this.$.piClient.valueText = "";
+                    this.$.piDescription.value = "";
+                    this.$.piServiceClientCode.value = "";
+                    this.$.piServiceClientCode.valueText = "";
+                    this.$.piservicedescription.value = "";
+                    this.$.piSalePrice.value = "";
+                    this.$.piCostPrice.value = "";
+                    this.$.dpDate.value = "";
+                    this.$.piResourceCode.value = "";
+                    this.$.piResourceCode.valueText = "";
+                    this.$.piResourcedescription.value = "";
+                    this.$.piCLMeasureUnit.value = "";
+                    this.$.piCLMeasureUnit.valueText = "";
+                    this.$.piMealTypesCode.value = "";
+                    this.$.piMealTypesCode.valueText = "";
+                    this.$.piMealdescription.value = "";
+                    this.$.piCodeRegion.value = "";
+                    this.$.piCodeRegion.valueText = "";
+                    this.$.piFuncArea.value = "";
+                    this.$.piFuncArea.valueText = "";
+                    this.$.piCodeResponsabilityCenter.value = "";
+                    this.$.piCodeResponsabilityCenter.valueText = "";
+                },
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+            });
+        });
+    </script>
+</dom-module>
