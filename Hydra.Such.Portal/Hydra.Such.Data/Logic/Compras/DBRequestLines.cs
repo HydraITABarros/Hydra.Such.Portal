@@ -129,7 +129,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return false;
             }
         }
-        public static List<LinhasRequisição> GetAllByRequisiçãos(string requisicao)
+        public static List<LinhasRequisição> GetByRequisitionId(string requisicao)
         {
             try
             {

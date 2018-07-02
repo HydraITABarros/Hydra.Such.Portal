@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic
 { 
     public static class DBNAV2017SalesHeader
     {
-        public static NAVSalesHeaderViewModel GetSalesHeader(string NAVDatabaseName, string NAVCompanyName, string NAVContractNo, int NAVDocumentType)
+        public static NAVSalesHeaderViewModel GetSalesHeader(string NAVDatabaseName, string NAVCompanyName, string NAVContractNo, NAVBaseDocumentTypes documentType)
         {
             try
             {
@@ -19,7 +20,7 @@ namespace Hydra.Such.Data.Logic
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@DocumentType",NAVDocumentType),
+                        new SqlParameter("@DocumentType",(int)documentType),
                         new SqlParameter("@ContractNo_", NAVContractNo)                                         
                     };
 

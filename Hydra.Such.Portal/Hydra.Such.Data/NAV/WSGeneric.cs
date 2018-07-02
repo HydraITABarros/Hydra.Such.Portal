@@ -78,7 +78,7 @@ namespace Hydra.Such.Data.NAV
             //}
         }
 
-        public static async Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> GetALLNavLocationProduct(string pItemNo, string pLocationCode,NAVWSConfigurations WSConfigurations)
+        public static async Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> GetNAVProductQuantityInStockFor(string productId, string stockKeepingUnitId,NAVWSConfigurations WSConfigurations)
         {
 
             //Configure NAV Client
@@ -87,7 +87,7 @@ namespace Hydra.Such.Data.NAV
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            return await ws_Client.FxGetStock_ItemLocationAsync(pItemNo, pLocationCode);
+            return await ws_Client.FxGetStock_ItemLocationAsync(productId, stockKeepingUnitId);
         }
 
         public static async Task<WSGenericCodeUnit.FxContact2Customer_Result> ConvertToCustomer(string contactNo, NAVWSConfigurations WSConfigurations)

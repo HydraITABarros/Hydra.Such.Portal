@@ -233,7 +233,7 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -497,7 +497,10 @@
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                                <center>
+                                                    @*<paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
+                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -674,7 +677,10 @@
                                 <template class="header">
                                 </template>
                                 <template>
-                                    <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                    <center>
+                                        @*<paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
+                                       <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                    </center>
                                 </template>
                             </vaadin-grid-column>
                         </vaadin-grid>
@@ -771,7 +777,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteFornecedor" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                                <center>
+                                    @*<paper-button class="btnRemove" raised on-tap="_deleteFornecedor" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFornecedor" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
@@ -1183,7 +1192,6 @@
                     },
 
                     _goBack: function (e) {
-                        //debugger;
                         window.history.back();
                     },
 

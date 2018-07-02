@@ -1,19 +1,19 @@
 ﻿@model Hydra.Such.Data.Database.ProcedimentosCcp
 
 @{
-    ViewData["Title"] = "DetalhePedidoSimplificado";
+    ViewData["Title"] = "Detalhe Pedido Simplificado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (ViewBag.No == "")
+@*@if (ViewBag.No == "")
 {
     <h2>Criar Procedimento</h2>
 }
 else
 {
-    <h2>Procedimento Simplificado</h2>
-}
+    <h2>Pedido Simplificado</h2>
+}*@
 
-<link rel="import" href="~/elements/ccp/procedimento_detail.html" />
+<link rel="import" href="~/elements/ccp/procedimento_detail_simplificado.html" />
 
 <x-procedimentodetails _procedimentoid="@ViewBag.No" _procedimentotypeid="2"></x-procedimentodetails>

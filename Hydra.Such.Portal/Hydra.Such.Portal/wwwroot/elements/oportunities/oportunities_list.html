@@ -68,7 +68,7 @@
             <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
         </div>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
@@ -183,7 +183,7 @@
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>
@@ -226,11 +226,16 @@
                     _disabledCreate: {
                         type: Boolean,
                         value: false
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
                     }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo;
+                        debugger;
+                        window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
                 },
                 _create: function (item) {
@@ -245,6 +250,23 @@
 
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {
@@ -268,8 +290,10 @@
 
                         if (this._archived == 1) {
                             this._showHistory = "Exibir ativas";
+                            this._isHistoric = "true";
                         } else {
                             this._showHistory = "Exibir histórico";
+                            this._isHistoric = "false";
                         }
 
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });

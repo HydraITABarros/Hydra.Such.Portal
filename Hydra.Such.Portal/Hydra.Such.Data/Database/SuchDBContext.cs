@@ -91,6 +91,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ProjetosFaturação> ProjetosFaturação { get; set; }
         public virtual DbSet<RececaoFaturacao> RececaoFaturacao { get; set; }
         public virtual DbSet<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
+        public virtual DbSet<RecFacturasProblemas> RecFacturasProblemas { get; set; }
         public virtual DbSet<RegistoDeAtas> RegistoDeAtas { get; set; }
         public virtual DbSet<Requisição> Requisição { get; set; }
         public virtual DbSet<RequisiçõesClienteContrato> RequisiçõesClienteContrato { get; set; }
@@ -119,8 +120,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -5989,8 +5988,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.AreaPendente).HasMaxLength(50);
-
                 entity.Property(e => e.CodAreaFuncional).HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade).HasMaxLength(20);
@@ -6015,6 +6012,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Destinatario).HasMaxLength(50);
 
+                entity.Property(e => e.DocumentoCriadoEm).HasColumnType("datetime");
+
+                entity.Property(e => e.DocumentoCriadoPor).HasMaxLength(50);
+
                 entity.Property(e => e.Local).HasColumnType("nchar(10)");
 
                 entity.Property(e => e.ModificadoPor).HasMaxLength(50);
@@ -6030,7 +6031,9 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<RececaoFaturacaoWorkflow>(entity =>
             {
-                entity.Property(e => e.AreaWorkflow).HasColumnType("nchar(10)");
+                entity.Property(e => e.AreaWorkflow).HasMaxLength(50);
+
+                entity.Property(e => e.CodTipoProblema).HasMaxLength(20);
 
                 entity.Property(e => e.CriadoPor).HasMaxLength(50);
 
@@ -6042,9 +6045,36 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
+                entity.Property(e => e.EnderecoEnvio).HasMaxLength(100);
+
+                entity.Property(e => e.EnderecoFornecedor).HasMaxLength(100);
+
+                entity.Property(e => e.IdRecFaturacao).HasMaxLength(20);
+
                 entity.Property(e => e.ModificadoPor).HasMaxLength(50);
 
                 entity.Property(e => e.Utilizador).HasMaxLength(50);
+
+                entity.HasOne(d => d.IdRecFaturacaoNavigation)
+                    .WithMany(p => p.RececaoFaturacaoWorkflow)
+                    .HasForeignKey(d => d.IdRecFaturacao)
+                    .HasConstraintName("FK_RececaoFaturacaoWorkflow_RececaoFaturacao");
+
+                entity.HasOne(d => d.Cod)
+                    .WithMany(p => p.RececaoFaturacaoWorkflow)
+                    .HasForeignKey(d => new { d.CodProblema, d.CodTipoProblema })
+                    .HasConstraintName("FK_RececaoFaturacaoWorkflow_RecFacturasProblemas");
+            });
+
+            modelBuilder.Entity<RecFacturasProblemas>(entity =>
+            {
+                entity.HasKey(e => new { e.Codigo, e.Tipo });
+
+                entity.Property(e => e.Tipo).HasMaxLength(20);
+
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.EnvioAreas).HasMaxLength(60);
             });
 
             modelBuilder.Entity<RegistoDeAtas>(entity =>

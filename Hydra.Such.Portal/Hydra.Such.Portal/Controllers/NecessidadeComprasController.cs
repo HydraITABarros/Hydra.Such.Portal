@@ -387,7 +387,7 @@ namespace Hydra.Such.Portal.Controllers
                 foreach (RequisitionViewModel rpu in data)
                 {
                     List<LinhasRequisição> result = new List<LinhasRequisição>();
-                    result = DBRequestLine.GetAllByRequisiçãos(rpu.RequisitionNo);
+                    result = DBRequestLine.GetByRequisitionId(rpu.RequisitionNo);
                     if (result != null && result.Count > 0)
                     {
                         foreach (LinhasRequisição lr in result)

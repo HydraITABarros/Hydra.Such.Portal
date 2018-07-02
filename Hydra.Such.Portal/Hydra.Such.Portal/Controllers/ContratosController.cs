@@ -70,8 +70,10 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
-        public IActionResult DetalhesContrato(string id, string version = "")
+        public IActionResult DetalhesContrato(string id, string version = "", bool isHistoric = false)
         {
+            bool hist = isHistoric;
+
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -85,8 +87,18 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
                 }
-
+                if (hist == true)
+                {
+                    ViewBag.Historic = "(Histórico) ";
+                    ViewBag.ifHistoric = true;
+                }
+                else
+                {
+                    ViewBag.Historic = "";
+                    ViewBag.ifHistoric = false;
+                }
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -841,8 +853,10 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesOportunidade(string id, string version = "")
+        public IActionResult DetalhesOportunidade(string id, string version = "", string isHistoric = "")
         {
+            string hist = isHistoric;
+
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Oportunidades);
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -854,9 +868,17 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (cContract != null && cContract.Arquivado == true)
                 {
-                    UPerm.Update = false;
+                    //UPerm.Update = false;
+                    //UPerm.Delete = false;
                 }
-
+                if (hist == "true")
+                {
+                    ViewBag.Historic = "(Histórico) ";
+                }
+                else
+                {
+                    ViewBag.Historic = "";
+                }
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -1145,7 +1167,7 @@ namespace Hydra.Such.Portal.Controllers
                         if(verifica==true)
                             Problema += "Falta Nº Compromisso";
 
-                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, 2);
+                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
                         if (result != null)
                         {
                            Problema += "Fatura no Pre-Registo";
@@ -1311,8 +1333,10 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesProposta(string id, string version = "")
+        public IActionResult DetalhesProposta(string id, string version = "", string isHistoric = "")
         {
+            string hist = isHistoric;
+
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -1325,6 +1349,16 @@ namespace Hydra.Such.Portal.Controllers
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
+                    UPerm.Delete = false;
+                }
+
+                if (hist == "true")
+                {
+                    ViewBag.Historic = "(Histórico)";
+                }
+                else
+                {
+                    ViewBag.Historic = "";
                 }
 
                 ViewBag.ContractNo = id ?? "";
@@ -1705,8 +1739,7 @@ namespace Hydra.Such.Portal.Controllers
             result.eMessage = "";
             try
             {
-                result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, Contract, 2);
-
+                result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, Contract, NAVBaseDocumentTypes.Fatura);
             }
             catch
             {

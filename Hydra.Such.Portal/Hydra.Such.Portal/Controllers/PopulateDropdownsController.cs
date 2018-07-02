@@ -23,6 +23,8 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Extensions;
 using Newtonsoft.Json.Linq;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -705,6 +707,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllLocations()
+        {
+            List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = Convert.ToString(x.ArmazemCDireta)
+            }).ToList();
+            return Json(result_all);
+        }
+
+        [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {
             List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Name == locationId).Select(x => new DDMessageString()
@@ -907,25 +921,25 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServiceObjects()
         {
-            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Select(x => new DDMessage()
+            List<DDMessage> sevices = DBServiceObjects.GetAll().Select(x => new DDMessage()
             {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
 
-            return Json(ResponsabilityCenter);
+            return Json(sevices);
         }
 
         [HttpPost]
         public JsonResult GetServiceObjectsByAreaId(string AreaCode)
         {
-            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Where(x => x.CódÁrea == AreaCode).Select(x => new DDMessage()
+            List<DDMessage> services = DBServiceObjects.GetAll().Where(x => x.CódÁrea == AreaCode).Select(x => new DDMessage()
             {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
 
-            return Json(ResponsabilityCenter);
+            return Json(services);
         }
 
 
@@ -1179,6 +1193,28 @@ namespace Hydra.Such.Portal.Controllers
             return Json(BoolValues);
         }
         // zpgm.>
+
+        //NR20180629 - Obter Requisições
+
+        [HttpPost]
+        public JsonResult GetRequisitions()
+        {
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetDimensions()
@@ -1753,6 +1789,26 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCustomerNatures()
         {
             List<EnumData> result = EnumerablesFixed.Natureza_Cliente;
+            return Json(result);
+        }
+
+        public JsonResult GetBillingReceptionStates()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingReceptionStates));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+
+        public JsonResult GetBillingDocumentTypes()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingDocumentTypes));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetOrders([FromBody] string supplierId)
+        {
+            List<Data.ViewModel.Compras.PurchaseHeader> result = DBNAV2017Purchases.GetOrdersBySupplier(_config.NAVDatabaseName, _config.NAVCompanyName, supplierId);
             return Json(result);
         }
     }

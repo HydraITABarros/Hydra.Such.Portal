@@ -57,7 +57,7 @@
             </template>
         </div>
 
-        <vaadin-grid aria-label="CustomersGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
@@ -151,6 +151,23 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "areaid": this._areaid});
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
                 }
             });
         });

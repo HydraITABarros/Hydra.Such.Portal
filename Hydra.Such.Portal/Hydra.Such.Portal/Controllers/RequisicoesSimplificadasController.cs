@@ -687,7 +687,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (item.QuantityReceipt == 0 || item.QuantityReceipt== null)
                 {
-                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> TGetNavLocationProduct = WSGeneric.GetALLNavLocationProduct(item.Code, item.LocationCode, configws);
+                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> TGetNavLocationProduct = WSGeneric.GetNAVProductQuantityInStockFor(item.Code, item.LocationCode, configws);
                     TGetNavLocationProduct.Wait();
                     if (TGetNavLocationProduct.IsCompletedSuccessfully)
                     {

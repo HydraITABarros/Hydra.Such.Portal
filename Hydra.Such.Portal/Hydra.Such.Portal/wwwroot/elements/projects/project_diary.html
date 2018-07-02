@@ -225,13 +225,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2" hidden>
-                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
-                                    items="[[ContabGroupData]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -268,6 +263,8 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
                                     items="[[ResponsabilityCenterData]]"
@@ -276,9 +273,6 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-            </div>
-            <div class="row">
-
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
@@ -294,11 +288,11 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
@@ -310,6 +304,7 @@
                                     fields='[{"field":"code", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"grupoContabProduto", "name":"Grupo Contab. Produto"}]'>
                     </such-selectbox>
                 </div>
+
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
@@ -324,17 +319,23 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
-                <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                </div>
             </div>
-            <div class="row">              
+            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
+                                    items="[[ContabGroupData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                    style="display: none;">
                     </such-selectbox>
                 </div>
             </div>
@@ -480,7 +481,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[ContabGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
+                        <vaadin-combo-box items="[[ContabGroupData]]" disabled item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -1172,7 +1173,7 @@
                     <vaadin-date-picker label="Data" id="idDateMovDlg" name="DatenameDlg" value=""  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceClientCodeMov" name="piCodeResponsabilityCenter" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceClientCodeMov" name="piServiceClienteMov" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -1181,7 +1182,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="ServiceGroupCodMov" name="piCodeResponsabilityCenter" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                    <such-selectbox id="ServiceGroupCodMov" name="piServiceGroupMov" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
@@ -1395,7 +1396,7 @@
                     serviceGroupCod,
                     serviceClientCode
                 ) {
-
+                    
                     if (!this.Flag) {
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
@@ -1566,7 +1567,6 @@
                 },
                 _updateResponse: function (e) {
                     var self = this;
-
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
@@ -1760,16 +1760,10 @@
                 _getMovements: function () {
                     //Request
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
-
+                        
                         this.$.idDateMovDlg.value = this.$.dpDate.value;
-                        var serviceGroup = this.ServiceGroupData.find(x => x.serviceCode == this.ddServiceGroupCode);
-                        if (serviceGroup != undefined) {
-                            this.$.ServiceGroupCodMov.value = serviceGroup.serviceDescription;
-                        }
-                        var serviceClie = this.ServiceClientData.find(x => x.serviceCode == this.ddServiceClientCode);
-                        if (serviceClie != undefined) {
-                            this.$.ServiceClientCodeMov.value = serviceClie.serviceDescription;
-                        }
+                        this.$.ServiceGroupCodMov.value = this.ddServiceGroupCode;
+                        this.$.ServiceClientCodeMov.value = this.ddServiceClientCode;
 
                         this.$.dialogGetMovement.open();
                         //this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
@@ -1783,7 +1777,7 @@
                 _dlgNextMov: function () {
                     if (this.$.idDateMovDlg.value != undefined && this.$.idDateMovDlg.value != "") {
                         this.$.dialogGetMovement.close();
-                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.dpDate.value });
+                        this.$.ajax_movementLines.body = JSON.stringify({ "noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
                         this.$.ajax_movementLines.generateRequest();
                     }
                     else {
@@ -1812,7 +1806,14 @@
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
-                            this.$.ajax_getall.generateRequest();
+                            this.$.ajax_SServiceClient.body = JSON.stringify("");
+                            this.$.ajax_SServiceClient.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_SServiceClient.generateRequest();
+                            this.$.ajax_ServiceGroup.body = JSON.stringify("");
+                            this.$.ajax_ServiceGroup.params = { "invoiceClientNo": this.invoiceClientNo, "allProjs": true };
+                            this.$.ajax_ServiceGroup.generateRequest();
+                            this.$.ajax_getall.body = JSON.stringify({"noproj": this.$.projectList.value, "codClienteServico": this.$.ServiceClientCodeMov.value, "codGrupoServico": this.$.ServiceGroupCodMov.value, "data": this.$.idDateMovDlg.value });
+                            this.$.ajax_getall.generateRequest();                        
                             this.$.projectDiaryProject.clearCache();
                             this.openToastSuccess(this.movementLines.eMessage);
                         } else {
@@ -1990,30 +1991,39 @@
                 },
 
                 _parseServiceClient: function (param1, param2) {
-                    //refinar array c/ param2
-                    //retornar valor c/ param1
-                    if (param2 != undefined) {
 
-                        if (this.ServiceClientData != null) {
-                            var array = this.ServiceClientData;
-
-                            array = array.filter(function (obj) {
-                                return obj.clientNumber == param2;
-                            });
-                            this.$.ajax_SServiceClient.body = JSON.stringify(param2);
-                            this.$.ajax_SServiceClient.params = { "allProjs": false };
-                            this.$.ajax_SServiceClient.generateRequest();
-                            if (param1 != undefined) {
-                                var arrayfindcode = array.find(x => x.serviceCode == param1);
-                                if (arrayfindcode != undefined) {
-                                    return arrayfindcode.serviceDescription;
-                                } else {
-                                    return "";
-                                }
-                            }
+                    if (this.ServiceClientData != null) {
+                        var item = this.ServiceClientData.find(x => x.serviceCode == param1);
+                        if (item != null) {
+                            return item.serviceDescription;
                         }
                     }
-                    return "";
+                    return param1;
+                    ////refinar array c/ param2
+                    ////retornar valor c/ param1
+                    //if (param2 != undefined) {
+
+                    //    if (this.ServiceClientData != null) {
+
+                    //        var array = this.ServiceClientData;
+
+                    //        array = array.filter(function (obj) {
+                    //            return obj.clientNumber == param2;
+                    //        });
+                    //        this.$.ajax_SServiceClient.body = JSON.stringify(param2);
+                    //        this.$.ajax_SServiceClient.params = { "allProjs": false };
+                    //        this.$.ajax_SServiceClient.generateRequest();
+                    //        if (param1 != undefined) {
+                    //            var arrayfindcode = array.find(x => x.serviceCode == param1);
+                    //            if (arrayfindcode != undefined) {
+                    //                return arrayfindcode.serviceDescription;
+                    //            } else {
+                    //                return "";
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //return "";
 
                 },
                 _parseServiceGroup: function (param1, param2) {

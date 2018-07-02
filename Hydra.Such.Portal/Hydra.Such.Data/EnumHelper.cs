@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Hydra.Such.Portal.Configurations
+namespace Hydra.Such.Data
 {
     public class EnumHelper
     {

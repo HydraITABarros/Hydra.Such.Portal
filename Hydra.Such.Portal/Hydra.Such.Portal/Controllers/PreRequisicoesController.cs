@@ -663,7 +663,7 @@ namespace Hydra.Such.Portal.Controllers
                 project = DBProjects.GetById(req.ProjectNo);
             }
 
-            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetAllByRequisiçãos(req.RequisitionNo).ParseToViewModel();
+            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
             if (reqLines != null)
             {
                 List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
@@ -736,7 +736,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
@@ -766,7 +766,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
@@ -963,8 +963,9 @@ namespace Hydra.Such.Portal.Controllers
                                 ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
                                 if (result.eReasonCode != 100)
                                 {
-                                    data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
+                                    data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
                                 }
+
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
@@ -986,11 +987,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //if all items have been created delete pre-requisition lines
                         DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-                        data.eMessage += createdReqIds;
-                        if (data.eMessages.Count > 0)
-                        {
-                            data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
-                        }
+                        //data.eMessage += createdReqIds;
+                        //if (data.eMessages.Count > 0)
+                        //{
+                        //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                        //}
                     }
                     else
                     {
@@ -1015,7 +1016,11 @@ namespace Hydra.Such.Portal.Controllers
             Requisição createReq = DBRequest.GetById(ReqNo);
             ErrorHandler ApprovalMovResult = new ErrorHandler();
             string Error = "";
+
+            List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
+
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+
             if (result != null && result.Count >0)
             {
                 foreach (ApprovalMovementsViewModel req in result)

@@ -192,11 +192,11 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço" on-value-changed="_clientChanged"
+                        <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço"
                                         items="[[LProjectServiceObjects]]"
                                         text-path="value"
                                         value-path="id"
-                                        fields='[{"field":"id", "name":"Nº Objecto"}, {"field":"value", "name":"Nome Serviço"}]'
+                                        fields='[{"field":"value", "name":"Nome Serviço"}]'
                                         disabled="{{ !_permissions.update }}">
                         </such-selectbox>
                     </div>
@@ -366,7 +366,7 @@
                                             text-path="value"
                                             value-path="id"
                                             fields='[{"field":"value", "name":"Descrição"}]'
-                                            disabled="{{ !_permissions.update }}">
+                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
                         <div class="col-lg-3">
@@ -519,18 +519,27 @@
                     },
                     _validateData: function () {
                         this.$.ProjectClient.validate();
+                        this.$.ProjectType.validate();
                         if (this.$.Description.validate() &
                             this.$.ProjectLeader.validate() &
                             this.$.ProjectResponsible.validate() &
                             this.$.ContractNo.validate() &
-                            this.$.ProjectType.validate() &
                             this.$.RegionCode.validate() &
                             this.$.FunctionalAreaCode.validate() &
                             this.$.ResponsabilityCenterCode.validate()) {
 
-                            if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
-                                return true;
-                            } 
+                            //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
+                            //    return true;
+                            //} 
+                            if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
+                                this._openToastError("É obrigatória seleção de um Nº Cliente.");
+                                return false;
+                            }
+                            if (this.$.ProjectType.value == "" || this.$.ProjectType.value == undefined) {
+                                this._openToastError("É obrigatória seleção do Tipo de Projeto.");
+                                return false;
+                            }
+                            return true;
                         }
                         this._openToastError("Verifique os dados inseridos.");
                         return false;

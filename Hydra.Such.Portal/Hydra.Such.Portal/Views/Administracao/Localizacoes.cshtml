@@ -23,12 +23,15 @@
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
                 <paper-button class="tablinks" on-tap="_redirectToNewLocationForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
             </template>
         </div>
 
-        <vaadin-grid aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="100px">
+        <br />
+
+        <vaadin-grid id="grid" aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
@@ -37,7 +40,8 @@
                     {{item.code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -46,7 +50,8 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="100px">
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="region">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="region" />
@@ -55,7 +60,8 @@
                     {{item.region}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="100px">
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="locked">Bloqueado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locked" />
@@ -84,6 +90,25 @@
                         value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
                     },
                 },
+
+                ready: function () {
+                    this.$.grid_datasource.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 2;
+                    $(this.$.grid).height(height);
+                },
+
                 _onLocationRowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/Administracao/DetalhesLocalizacao/" + item.code;
@@ -93,6 +118,9 @@
                     if (item != null) {
                         window.location.href = "/Administracao/DetalhesLocalizacao/0";
                     }
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

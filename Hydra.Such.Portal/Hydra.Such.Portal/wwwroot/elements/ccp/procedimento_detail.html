@@ -3915,7 +3915,18 @@
                             enviarEmail: this.chkSendMail
                         });
 
-                        this.$.ajax_createelementojuri.generateRequest();
+                        //this.$.ajax_createelementojuri.generateRequest();
+
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                        var sav = this.$.ajax_update_procedimento.generateRequest();
+                        var lin = this.$.ajax_createelementojuri.generateRequest();
+
+                        Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                            //var savReq = requests[0].result;
+                            //var linReq = requests[1].result;
+                        })
+
                         this.$.gridElementosJuri.clearCache();
                     }
                 },
@@ -4291,11 +4302,23 @@
                         códigoÁreaFuncional: this.$.codigoAreaFuncional.value,
                         códigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value
                     });
-                    this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+                    //this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                        //var savReq = requests[0].result;
+                        //var linReq = requests[1].result;
+                    })
+
                     this.$.tabLinhaProdutos.clearCache();
                 },
                 _createLinhaProdutoServicoResponse: function (e) {
                     if (this.LinhaProdutoServicoCreated) {
+
                         this.$.page_databound_ajax.generateRequest();
                         this._showMessage('Adicionada Linha com sucesso.');
 
@@ -4856,7 +4879,18 @@
                         nºProcedimento: this.$.no.value,
                         nota: this.$._NovaNota.value
                     });
-                    this.$.page_createNota_ajax.generateRequest();
+                    //this.$.page_createNota_ajax.generateRequest();
+
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createNota_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                        //var savReq = requests[0].result;
+                        //var linReq = requests[1].result;
+                    })
+
                     this.$.tabNotas.clearCache();
                 },
                 _createNotaResponse: function (e) {
