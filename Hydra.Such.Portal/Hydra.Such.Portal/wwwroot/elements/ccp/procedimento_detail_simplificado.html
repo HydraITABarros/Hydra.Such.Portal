@@ -460,6 +460,21 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+
+        <iron-ajax url="/ProcedimentosCcps/CreateLigacaoRequisicao"
+                   last-response="{{LigacaoRequisicaoCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createLigacaoRequisicao_ajax"
+                   on-response="_createLigacaoRequisicaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        
+
+
+
         <!--NR 20180301-->
         <iron-ajax url="/ProcedimentosCcps/SubmitToAccounting_Simplificado"
                    last-response="{{ EnviarParaFinanceiros }}"
@@ -1711,7 +1726,8 @@
                                                     <vaadin-text-field type="text" id="_DescricaoRequisicao" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-2">
-
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarLigacaoRequisicao" raised on-tap="_createLigacaoRequisicao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1720,6 +1736,44 @@
                                     <!-- Linhas com as Requisições -->
                                     <div class="col-xs-12 mb-15">
                                         <div class="break_clear">
+
+
+
+
+                                            <vaadin-grid id="tabLigacoesRequisicoes" aria-label="Tabela Ligações a Requisições" items="{{ data.listaReq_Show }}" class="editGrid">
+
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="requisitionNo" style="text-align:center;">Nº Requisição</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="requisitionNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="requisitionNo" id="requisitionNo" value="{{item.requisitionNo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="comments" style="text-align:center;">Observações</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="comments" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="comments" id="comments" value="{{item.comments}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="projectNo" style="text-align:center;">Nº Projecto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="projectNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="projectNo" id="projectNo" value="{{item.projectNo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                            </vaadin-grid>
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -2925,6 +2979,41 @@
                         this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
                     }
                 },
+
+
+                _createLigacaoRequisicao: function () {
+                    debugger
+                    this.$.page_createLigacaoRequisicao_ajax.body = JSON.stringify({
+                        procedureCcpNo: this.$.no.value,
+                        requisitionNo: this.$._CB_REQ.value
+                    });
+                    
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createLigacaoRequisicao_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                    })
+
+                    this.$.tabLigacoesRequisicoes.clearCache();
+                },
+                _createLigacaoRequisicaoResponse: function (e) {
+                    if (this.LigacaoRequisicaoCreated) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada ligação à Requisição com sucesso.');
+
+                        this.$.tabLigacoesRequisicoes.clearCache();
+
+                        this.$._CB_REQ.value = "";
+                        this.$._DescricaoRequisicao.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a ligação à Requisição.');
+                    }
+                },
+
+                
 
                 _deleteLinha: function (e) {
                     var index = this.data.linhasPEncomendaProcedimentosCcp.indexOf(e.model.item);
