@@ -27,6 +27,14 @@ namespace Hydra.Such.Portal.Services
             if (contractToArchive != null)
             {
                 Contratos cContract = DBContracts.GetByIdAndVersion(contractToArchive.ContractNo, contractToArchive.VersionNo);
+                var lastVersionContract = DBContracts.GetByIdLastVersion(contractToArchive.ContractNo);
+                int lastVersionNumber = 0;
+
+                if (lastVersionContract != null)
+                    lastVersionNumber = lastVersionContract.NºVersão + 1;
+                else
+                    lastVersionNumber = contractToArchive.VersionNo + 1;
+
                 if (cContract != null)
                 {
                     try
@@ -36,7 +44,7 @@ namespace Hydra.Such.Portal.Services
                         cContract.Arquivado = true;
                         DBContracts.Update(cContract);
 
-                        cContract.NºVersão = cContract.NºVersão + 1;
+                        cContract.NºVersão = lastVersionNumber;// cContract.NºVersão + 1;
                         cContract.UtilizadorCriação = changedByUserName;
                         cContract.UtilizadorModificação = "";
                         if (cContract.TipoContrato == (int)ContractType.Oportunity)
@@ -65,11 +73,11 @@ namespace Hydra.Such.Portal.Services
 
                         ContractLines.ForEach(x =>
                         {
-                            x.NºVersão = cContract.NºVersão;
+                            x.NºVersão = lastVersionNumber;// cContract.NºVersão;
                             DBContractLines.Create(x);
                         });
 
-                        contractToArchive.VersionNo = cContract.NºVersão;
+                        contractToArchive.VersionNo = lastVersionNumber;// cContract.NºVersão;
                         contractToArchive.eReasonCode = 1;
                         contractToArchive.eMessage = "Arquivado com sucesso.";
                         return contractToArchive;
