@@ -24,6 +24,7 @@ using NPOI.XSSF.UserModel;
 using NPOI.HSSF.UserModel;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
