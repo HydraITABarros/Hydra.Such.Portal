@@ -157,6 +157,23 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+
+        public static List<Requisição> GetByProcedimento(string procedimentoNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.NºProcedimentoCcp == procedimentoNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         public static List<Requisição> GetReqModel()

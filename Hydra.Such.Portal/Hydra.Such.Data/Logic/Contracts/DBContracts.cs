@@ -234,7 +234,6 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-
                     return ctx.Contratos.Where(x => x.TipoContrato == ContractType && x.Historico == true).ToList();
                 }
             }
