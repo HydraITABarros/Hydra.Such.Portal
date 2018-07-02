@@ -17,19 +17,28 @@ using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
 using static Hydra.Such.Data.Enumerations;
 using System.Net;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.HSSF.UserModel;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace Hydra.Such.Portal.Controllers
 {
+  
     [Authorize]
     public class ProjetosController : Controller
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
-
-        public ProjetosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public ProjetosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -1136,7 +1145,7 @@ namespace Hydra.Such.Portal.Controllers
                 catch
                 {
                     response.eReasonCode = 2;
-                    response.eMessage = "Occorreu um erro ao atualizar o Diário de Projeto.";
+                    response.eMessage = "Ocorreu um erro ao atualizar o Diário de Projeto.";
                 }
             }
             return Json(response);// dp);
@@ -1390,7 +1399,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (dpValidation == null)
                             {
                                 result.eReasonCode = 5;
-                                result.eMessage = "Occorreu um erro ao obter os movimentos";
+                                result.eMessage = "Ocorreu um erro ao obter os movimentos";
                             }
                         }
 
@@ -2539,5 +2548,468 @@ namespace Hydra.Such.Portal.Controllers
             return Json(erro);
         }
         #endregion
+
+        #region Preços Serviços Cliente
+        public IActionResult PreçosServiçosCliente()
+        {
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreçoServCliente);
+            if (userAccesses != null && userAccesses.Read.Value)
+            {
+                    return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        public JsonResult GetAllPriceServiceClient()
+        {
+            List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll());
+            return Json(dp);
+        }
+        [HttpPost]
+        public JsonResult UpdatePriceServiceClient([FromBody] List<PriceServiceClientViewModel> dp)
+        {
+            ErrorHandler responde = new ErrorHandler();
+            responde.eReasonCode = 1;
+            responde.eMessage = "Atualizado com sucesso";
+            if (dp != null)
+            {
+                List<PreçosServiçosCliente> getAllLines = DBPriceServiceClient.GetAll();
+                if (getAllLines != null && getAllLines.Count > 0)
+                {
+                    foreach (PreçosServiçosCliente psc in getAllLines)
+                    {
+                        if (!dp.Any(x => x.Client == psc.Cliente && x.CodServClient == psc.CodServCliente && x.Resource == psc.Recurso))
+                        {
+                            DBPriceServiceClient.Delete(psc);
+                        }
+                    }
+                    dp.ForEach(x =>
+                    {
+                        string nome1 = "", nome2 = "", resto = "";
+                        int n = 0, n2 = 0;
+                        List<PreçosServiçosCliente> dpObject = DBPriceServiceClient.GetByC_SC_R(x.Client, x.CodServClient, x.Resource);
+                        if (dpObject != null && dpObject.Count >0)
+                        {
+                            PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                            if (x.CompleteName != null && x.CompleteName.Length >0)
+                            {
+                                if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                                {
+                                    x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                                }
+                                if (x.CompleteName.Length > 80)
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 80);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome1[nome1.Length - 1] != ' ')
+                                    {
+                                        if (nome2[0] != ' ')
+                                        {
+                                            n = nome1.LastIndexOf(" ");
+                                            nome1 = x.CompleteName.Substring(0, n);
+                                            nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome1 = x.CompleteName.Substring(0, 79);
+                                        nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName;
+                                    nome2 = "";
+                                }
+                                newdp.Nome = nome1;
+                                newdp.Nome2 = nome2;
+                            }
+                           
+                            
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            DBPriceServiceClient.Update(newdp);
+                        }
+                        else
+                        {
+                            PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                            if (x.CompleteName != null && x.CompleteName.Length > 0)
+                            {
+                                if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                                {
+                                    x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                                }
+                                if (x.CompleteName.Length > 80)
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 80);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome1[nome1.Length - 1] != ' ')
+                                    {
+                                        if (nome2[0] != ' ')
+                                        {
+                                            n = nome1.LastIndexOf(" ");
+                                            nome1 = x.CompleteName.Substring(0, n);
+                                            nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome1 = x.CompleteName.Substring(0, 79);
+                                        nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName;
+                                    nome2 = "";
+                                }
+                                newdp.Nome = nome1;
+                                newdp.Nome2 = nome2;
+                            }
+                            newdp.DataHoraCriação = DateTime.Now;
+                            newdp.UtilizadorCriação = User.Identity.Name;
+                            DBPriceServiceClient.Create(newdp);
+                        }
+                    });
+                }
+                else
+                {
+                    dp.ForEach(x=>{
+                        PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                        string nome1 = "", nome2 = "", resto = "";
+                        int n = 0, n2 = 0;
+                        if (x.CompleteName != null && x.CompleteName.Length > 0)
+                        {
+                            if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                            {
+                                x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                            }
+                            if (x.CompleteName.Length > 80)
+                            {
+                                nome1 = x.CompleteName.Substring(0, 80);
+                                nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                if (nome1[nome1.Length - 1] != ' ')
+                                {
+                                    if (nome2[0] != ' ')
+                                    {
+                                        n = nome1.LastIndexOf(" ");
+                                        nome1 = x.CompleteName.Substring(0, n);
+                                        nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 79);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome2.Length > 50)
+                                    {
+                                        nome2 = nome2.Substring(0, 50);
+                                        resto = nome2.Substring(50, nome2.Length);
+                                        if (nome2[nome2.Length - 1] != ' ')
+                                        {
+                                            if (resto[0] != ' ')
+                                            {
+                                                n2 = nome2.LastIndexOf(" ");
+                                                nome2 = nome2.Substring(0, n2);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                nome1 = x.CompleteName;
+                                nome2 = "";
+                            }
+                            newdp.Nome = nome1;
+                            newdp.Nome2 = nome2;
+                        }
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBPriceServiceClient.Create(newdp);
+                    });
+                }
+                
+            }
+            else
+            {
+                responde.eReasonCode = 2;
+                responde.eMessage = "Ocorreu um erro ao atualizar";
+            }
+            return Json(responde);
+        }
+        #region Export Excel
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel([FromBody] List<PriceServiceClientViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Preços Serviços Cliente");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Cliente");
+                row.CreateCell(1).SetCellValue("Nome");
+                row.CreateCell(2).SetCellValue("Cod. Serv. Cliente");
+                row.CreateCell(3).SetCellValue("Descrição Serviço");
+                row.CreateCell(4).SetCellValue("Preço Venda");
+                row.CreateCell(5).SetCellValue("Preço de Custo");
+                row.CreateCell(6).SetCellValue("Data");
+                row.CreateCell(7).SetCellValue("Recurso");
+                row.CreateCell(8).SetCellValue("Descrição do Recurso");
+                row.CreateCell(9).SetCellValue("Unidade Medida");
+                row.CreateCell(10).SetCellValue("Tipo Refeição");
+                row.CreateCell(11).SetCellValue("Descrição Tipo Refeição");
+                row.CreateCell(12).SetCellValue("Codigo Região");
+                row.CreateCell(13).SetCellValue("Codigo Area");
+                row.CreateCell(14).SetCellValue("Codigo Centro Responsabilidade");
+                int count = 1;
+                foreach (PriceServiceClientViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.Client);
+                    row.CreateCell(1).SetCellValue(item.CompleteName);
+                    row.CreateCell(2).SetCellValue(item.CodServClient);
+                    row.CreateCell(3).SetCellValue(item.ServiceDescription);
+                    row.CreateCell(4).SetCellValue(item.SalePrice.HasValue ? item.SalePrice.ToString() : "");
+                    row.CreateCell(5).SetCellValue(item.PriceCost.HasValue ? item.PriceCost.ToString() : "");
+                    row.CreateCell(6).SetCellValue(item.Date);
+                    row.CreateCell(7).SetCellValue(item.Resource);
+                    row.CreateCell(8).SetCellValue(item.ResourceDescription);
+                    row.CreateCell(9).SetCellValue(item.UnitMeasure);
+                    row.CreateCell(10).SetCellValue(item.TypeMeal);
+                    row.CreateCell(11).SetCellValue(item.TypeMealDescription);
+                    row.CreateCell(12).SetCellValue(item.RegionCode);
+                    row.CreateCell(13).SetCellValue(item.FunctionalAreaCode);
+                    row.CreateCell(14).SetCellValue(item.ResponsabilityCenterCode);
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        public IActionResult ExportToExcelDownload(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Preços Serviços Cliente.xlsx");
+        }
+        #endregion
+        #region Upload Excel
+        [HttpPost]
+        public JsonResult OnPostImport()
+        {
+            var files = Request.Form.Files;
+            List<PriceServiceClientViewModel> ListToCreate = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll());
+            PriceServiceClientViewModel nrow = new PriceServiceClientViewModel();
+            for (int i = 0; i < files.Count; i++)
+            {
+                IFormFile file = files[i];
+                string folderName = "Upload";
+                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string newPath = Path.Combine(webRootPath, folderName);
+                StringBuilder sb = new StringBuilder();
+                if (!Directory.Exists(newPath))
+                {
+                    Directory.CreateDirectory(newPath);
+                }
+                if (file.Length > 0)
+                {
+                    string sFileExtension = Path.GetExtension(file.FileName).ToLower();
+                    ISheet sheet;
+                    string fullPath = Path.Combine(newPath, file.FileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                        stream.Position = 0;
+                        if (sFileExtension == ".xls")
+                        {
+                            HSSFWorkbook hssfwb = new HSSFWorkbook(stream); //This will read the Excel 97-2000 formats  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook  
+                        }
+                        else
+                        {
+                            XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook   
+                        }
+                        for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
+                        {
+                            IRow row = sheet.GetRow(j);
+                            if (row != null)
+                            {
+                                nrow = new PriceServiceClientViewModel();
+                                nrow.Client = row.GetCell(0).ToString();
+                                nrow.CompleteName = row.GetCell(1).ToString();
+                                nrow.CodServClient = row.GetCell(2).ToString();
+                                nrow.ServiceDescription = row.GetCell(3).ToString();
+                                nrow.strSalePrice = row.GetCell(4).ToString();
+                                nrow.strPriceCost = row.GetCell(5).ToString();
+                                nrow.Date = row.GetCell(6).ToString();
+                                nrow.Resource = row.GetCell(7).ToString();
+                                nrow.ResourceDescription = row.GetCell(8).ToString();
+                                nrow.UnitMeasure = row.GetCell(9).ToString();
+                                nrow.TypeMeal = row.GetCell(10).ToString();
+                                nrow.TypeMealDescription = row.GetCell(11).ToString();
+                                nrow.RegionCode = row.GetCell(12).ToString();
+                                nrow.FunctionalAreaCode = row.GetCell(13).ToString();
+                                nrow.ResponsabilityCenterCode = row.GetCell(14).ToString();
+                                ListToCreate.Add(nrow);
+                            }
+                        }
+                    }
+                }
+                if (ListToCreate.Count > 0)
+                {
+                    foreach (PriceServiceClientViewModel item in ListToCreate)
+                    {
+                        if (!string.IsNullOrEmpty(item.strPriceCost))
+                        {
+                            item.PriceCost = Convert.ToDecimal(item.strPriceCost);
+                            item.strPriceCost = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.strSalePrice))
+                        {
+                            item.SalePrice = Convert.ToDecimal(item.strSalePrice);
+                            item.strSalePrice = "";
+                        }
+                    }
+                }
+            }
+            return Json(ListToCreate);
+        }
+        #endregion
+        #endregion
+
     }
 }

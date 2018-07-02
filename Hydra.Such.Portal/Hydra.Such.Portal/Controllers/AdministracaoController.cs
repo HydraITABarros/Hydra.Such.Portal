@@ -1198,6 +1198,18 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult GeAlltMealTypes()
+        {
+            List<MealTypesViewModel> result = DBMealTypes.GetAll().Select(x => new MealTypesViewModel()
+            {
+                id = Convert.ToString(x.Código),
+                Code = x.Código,
+                Description = x.Descrição,
+                GrupoContabProduto = x.GrupoContabProduto
+            }).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult UpdateMealTypes([FromBody] List<MealTypesViewModel> data)
