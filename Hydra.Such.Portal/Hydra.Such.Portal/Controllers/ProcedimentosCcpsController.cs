@@ -20,6 +20,8 @@ using Hydra.Such.Data.NAV;
 
 using System.IO;
 using System.Net.Mail;
+using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.ViewModel.Compras;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -926,6 +928,72 @@ namespace Hydra.Such.Portal.Controllers
 
             return result;
         }
+
+
+
+
+        [HttpPost]
+        public JsonResult CreateLigacaoRequisicao([FromBody] RequisitionViewModel requisition/*string procedureNo, string requisitionNo*/)
+        {
+            bool result = false;
+            try
+            {
+                Requisição reqDB = DBRequest.GetById(requisition.RequisitionNo/*requisitionNo*/);
+
+                reqDB.NºProcedimentoCcp = requisition.ProcedureCcpNo/*procedureNo*/;
+
+                RequisitionViewModel updatedRequisition = DBRequest.Update(reqDB).ParseToViewModel();
+                
+                List<LinhasRequisição> linhasReq = DBRequestLine.GetByRequisitionId(requisition.RequisitionNo/*requisitionNo*/);
+                for (int i = 0; i < linhasReq.Count; i++)
+                {
+                    LinhasPEncomendaProcedimentosCcp LinhaProdutoServico = new LinhasPEncomendaProcedimentosCcp();
+                    LinhaProdutoServico.CustoUnitário = linhasReq[i].CustoUnitário;
+                    LinhaProdutoServico.Código = linhasReq[i].Código;
+                    LinhaProdutoServico.CódigoCentroResponsabilidade = linhasReq[i].CódigoCentroResponsabilidade;
+                    LinhaProdutoServico.CódigoRegião = linhasReq[i].CódigoRegião;
+                    LinhaProdutoServico.CódigoÁreaFuncional = linhasReq[i].CódigoÁreaFuncional;
+                    LinhaProdutoServico.CódLocalização = linhasReq[i].CódigoLocalização;
+                    LinhaProdutoServico.CódUnidadeMedida = linhasReq[i].CódigoUnidadeMedida;
+                    LinhaProdutoServico.CustoUnitário = linhasReq[i].CustoUnitário;
+                    LinhaProdutoServico.DataHoraCriação = DateTime.Now;
+                    LinhaProdutoServico.DataHoraModificação = linhasReq[i].DataHoraModificação;
+                    LinhaProdutoServico.Descrição = linhasReq[i].Descrição;
+                    //LinhaProdutoServico.Nº = linhasReq[i].NºLinha;
+                    //LinhaProdutoServico.NºLinha = noLinha;
+                    LinhaProdutoServico.NºLinhaRequisição = linhasReq[i].NºLinha;
+                    LinhaProdutoServico.NºProcedimento = requisition.ProcedureCcpNo/*procedureNo*/;
+                    //LinhaProdutoServico.NºProcedimentoNavigation = procedureNo;
+                    LinhaProdutoServico.NºProjeto = linhasReq[i].NºProjeto;
+                    LinhaProdutoServico.NºRequisição = linhasReq[i].NºRequisição;
+                    LinhaProdutoServico.NºRequisiçãoNavigation = linhasReq[i].NºRequisiçãoNavigation;
+                    LinhaProdutoServico.QuantARequerer = linhasReq[i].QuantidadeARequerer;
+                    LinhaProdutoServico.Tipo = linhasReq[i].Tipo;
+                    LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;
+                    LinhaProdutoServico.UtilizadorModificação = linhasReq[i].UtilizadorModificação;
+
+                    var dbCreateResult = DBProcedimentosCCP.CreateLinhaProdutoServico(LinhaProdutoServico);
+
+                    if (dbCreateResult != null)
+                        result = true;
+                    else
+                        result = false;
+                }
+
+                if (updatedRequisition != null)
+                    result = true;
+                else
+                    result = false;
+
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+
 
         /*
          *      In the following methods the ErrorHandler will return:

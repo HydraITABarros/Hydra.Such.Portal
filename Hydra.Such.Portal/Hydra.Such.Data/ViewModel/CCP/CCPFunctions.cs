@@ -1,6 +1,8 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.CCP;
+using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.ViewModel.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -292,7 +294,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
                 Cor_Folder = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent" : "Transparent",
 
-            Ano = Procedimento.Ano,
+                Ano = Procedimento.Ano,
                 Referencia = Procedimento.Referência,
                 CodigoRegiao = Procedimento.CódigoRegião,
                 CodigoAreaFuncional = Procedimento.CódigoÁreaFuncional,
@@ -491,6 +493,17 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
                 ProcedimentoView.FluxoTrabalhoListaControlo_Show = DBProcedimentosCCP.GetAllFluxoTrabalhoListaControloCCPView(Procedimento);
             }
+
+            //Lista de Requisições
+            List<Requisição> Lista_REQ = DBRequest.GetByProcedimento(Procedimento.Nº);
+
+            List<RequisitionViewModel> ListaRequisicoes = new List<RequisitionViewModel>();
+
+            Lista_REQ.ForEach(x => ListaRequisicoes.Add(DBRequest.ParseToViewModel(x)));
+
+            ProcedimentoView.ListaReq_Show = ListaRequisicoes;
+            // FIM Lista de Requisições
+
             return ProcedimentoView;
         }
 

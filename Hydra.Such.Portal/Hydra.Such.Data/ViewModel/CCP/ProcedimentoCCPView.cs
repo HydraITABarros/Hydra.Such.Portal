@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Compras;
 
 namespace Hydra.Such.Data.ViewModel.CCP
 {
@@ -288,5 +289,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string Tipo_Show { get; set; }
         public string PrecoBase_Show { get; set; }
         public string Cor_Folder { get; set; }
+
+        public ICollection<RequisitionViewModel> ListaReq_Show { get; set; }
     }
 }

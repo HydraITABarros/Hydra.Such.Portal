@@ -225,7 +225,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
                                     items="[[ContabGroupData]]"
                                     text-path="value"
@@ -253,7 +253,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"  
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
                                     items="[[RegionData]]"
                                     text-path="value"
                                     value-path="id"
@@ -261,8 +261,16 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" 
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
                                     items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                                    items="[[ResponsabilityCenterData]]"
                                     text-path="value"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -270,14 +278,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2">
-                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}" 
-                                    items="[[ResponsabilityCenterData]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
-                </div>
+
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
@@ -293,11 +294,12 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
+
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
@@ -323,11 +325,12 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
+            </div>
+            <div class="row">
+                
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
