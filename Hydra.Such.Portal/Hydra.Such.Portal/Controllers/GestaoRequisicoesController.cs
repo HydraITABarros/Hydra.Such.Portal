@@ -758,7 +758,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Receber":
-                        if (item.State == RequisitionStates.Validated)
+                        if (item.State == RequisitionStates.Available)
                         {
                             List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
                             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
