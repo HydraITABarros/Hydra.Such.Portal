@@ -471,10 +471,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        
-
-
-
         <!--NR 20180301-->
         <iron-ajax url="/ProcedimentosCcps/SubmitToAccounting_Simplificado"
                    last-response="{{ EnviarParaFinanceiros }}"
@@ -1736,12 +1732,7 @@
                                     <!-- Linhas com as Requisições -->
                                     <div class="col-xs-12 mb-15">
                                         <div class="break_clear">
-
-
-
-
                                             <vaadin-grid id="tabLigacoesRequisicoes" aria-label="Tabela Ligações a Requisições" items="{{ data.listaReq_Show }}" class="editGrid">
-
                                                 <vaadin-grid-column width="60px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="requisitionNo" style="text-align:center;">Nº Requisição</vaadin-grid-sorter>
@@ -1769,22 +1760,16 @@
                                                         <vaadin-text-field name="projectNo" id="projectNo" value="{{item.projectNo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                             </vaadin-grid>
-
-
-
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
-
 
                     <!--Tab Workflow-->
                     <div class="panel panel-default">

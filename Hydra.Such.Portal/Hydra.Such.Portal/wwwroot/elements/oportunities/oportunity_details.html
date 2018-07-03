@@ -1226,18 +1226,6 @@
                 </iron-form>
             </div>
         </div>
-        <paper-dialog id="dlg_DeleteRow" modal style="height:140px; width:400px">
-            <div class="col-lg-12">
-                <center>
-                    <h2>Deseja eliminar esta linha?</h2>
-                </center>
-            </div>
-            
-            <div class="buttons">
-                <paper-button class="btnSave" raised on-tap="_DeleteRowDlg"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Sim</paper-button>
-                <paper-button class="btnRemove" raised on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Não</paper-button>
-            </div>
-        </paper-dialog>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1266,11 +1254,6 @@
                     },
                     selected: {
                         type: Number,
-                        value: 0
-                    },
-                    indexValeu: {
-                        type: Number,
-                        notify: true,
                         value: 0
                     },
                     _isCreate: {
@@ -2075,25 +2058,38 @@
                     }
                     return "";
                 },
-                _DeleteRowDlg(e) {
-                    var index = this.indexValeu;
-                    if (index != "") {
-                        this.dataLines.lines.splice(index, 1);
-
-                        this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                        this.$.contractLines_databound_ajax.generateRequest();
-                        this.$.dlg_DeleteRow.close();
-                    }
-                },
-                _Close_Dialog(e) {
-                    this.indexValeu ="";
-                    this.$.dlg_DeleteRow.close();
-
-                },
                 _deleteContractLine: function (e) {
-                    this.indexValeu = this.dataLines.lines.indexOf(e.model.item);
-                    this.$.dlg_DeleteRow.open();
+                    debugger;
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    var spliceDataLine = this.dataLines.lines;
+                    var contLinesdatabound_ajax = this.$.contractLines_databound_ajax;
+                    var contLines_grid = this.$.grid_contractlines;
+                    var model_item = e.model.item;
+                    var dataL = this.dataLines;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover esta Linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                       
+                        callback: function (result) {
+                             debugger;
+                            if (result) {
+                                    spliceDataLine.splice(index, 1);
+                                    contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
+                                    contLinesdatabound_ajax.body = JSON.stringify(dataL);
+                                    contLinesdatabound_ajax.generateRequest();
+                                    contLines_grid.clearCache();
+                            }
+                        }
+                    });
                 },
 
                 //Parse To Proposal

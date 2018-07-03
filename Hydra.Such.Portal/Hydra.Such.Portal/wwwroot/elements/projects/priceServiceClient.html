@@ -55,8 +55,7 @@
         <iron-ajax url="/Projetos/UpdatePriceServiceClient" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllPriceServiceClient" last-response="{{Griddate}}" id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Projetos/OnPostImport" last-response="{{import}}" id="ajax_Import" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
-
+      
         
         <style>
             vaadin-combo-box {
@@ -899,7 +898,8 @@
                     this.$.priceServiceClientGrid.clearCache();
                 },
                 _export: function () {
-                    this.$.ajax_Export.body = JSON.stringify(this.Griddate);
+                    debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.$.priceServiceClientGrid._cache[0]);
                     this.$.ajax_Export.generateRequest();
                     this.$.priceServiceClientGrid.clearCache();
                 },
