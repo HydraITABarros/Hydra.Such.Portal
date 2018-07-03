@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public int? Estado { get; set; }
         public string AreaWorkflow { get; set; }
         public string Descricao { get; set; }
+        public string Comentario { get; set; }
         public DateTime? Data { get; set; }
         public string Utilizador { get; set; }
         public string CodTipoProblema { get; set; }

@@ -6035,6 +6035,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CodTipoProblema).HasMaxLength(20);
 
+                entity.Property(e => e.Comentario).HasMaxLength(250);
+
                 entity.Property(e => e.CriadoPor).HasMaxLength(50);
 
                 entity.Property(e => e.Data).HasColumnType("datetime");

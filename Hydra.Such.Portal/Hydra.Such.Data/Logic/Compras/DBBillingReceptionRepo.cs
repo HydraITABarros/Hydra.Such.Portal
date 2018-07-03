@@ -6,6 +6,7 @@ using System.Text;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hydra.Such.Data.Logic.Compras
 {
@@ -61,6 +62,7 @@ namespace Hydra.Such.Data.Logic.Compras
             try
             {
                 return ctx.RececaoFaturacao
+                    .Include(x => x.RececaoFaturacaoWorkflow)
                     .SingleOrDefault(x => x.Id == id)
                     .ParseToViewModel();
             }

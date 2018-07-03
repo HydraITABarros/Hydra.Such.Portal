@@ -294,7 +294,7 @@
                     </template>
                 </div>
             </div>
-
+            
             <template is="dom-if" if="{{ _showWorkflowData }}">
                 <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
                 <div class="panel-body">
@@ -338,550 +338,111 @@
                             <vaadin-text-field type="text" value="{{ data.id }}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
                         </div>
                     </div>
-                    <div class="marginSpace">
+                    <div class="row break_clear">
                         <div class="col-sm-9">
                             <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
                         </div>
                         <div class="col-sm-3">
-                            <template is="dom-if" if="{{ !_checkPending }}">
-                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
-                            </template>
+                            @*<template is="dom-if" if="{{ !_checkPending }}">*@
+                            <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
+                            @*</template>*@
                         </div>
                     </div>
 
                     <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
                         <vaadin-grid-column width="160px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="localCode">Cód.</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="localCode"></vaadin-grid-filter>
+                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="data"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[Locations]]" id="CBGridLocations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
+
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    <!--[[_getLocalCodeDescription(item.localCode)]]-->
-                                    {{item.localCode}}
+                                    {{item.data}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column width="160px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="code"></vaadin-grid-filter>
+                                <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="180px">
-                                                <tr>
-                                                    <td width="40%">[[item.code]]</td>
-                                                    <td width="60%"> <b>[[item.name]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
+
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.code}}
+                                    {{item.areaWorkflow}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
                         <vaadin-grid-column width="160px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="description"></vaadin-grid-filter>
+                                <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatário" name="txtDestinatário" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.description}}
+                                    {{item.utilizador}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
                         <vaadin-grid-column width="200px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="unitMeasureCode">Cód. Unid. Medida</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="unitMeasureCode" />
+                                <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codTipoProblema" />
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.unitMeasureCode}}
+                                    {{item.codTipoProblema}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column width="160px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
+                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.unitCost}}
+                                    {{item.descricao}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column width="200px" resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="quantityToRequire">Qt. a Requerer</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityToRequire" />
+                                <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="comentario" />
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityToRequire}}
+                                    {{item.comentario}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantityRequired">Qt. Requerida</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityRequired" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityRequired}}" id="_CLGridQuantityRequired" name="_CLGridQuantityRequired" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityRequired}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantityToProvide">Qt. a Disponibilizar</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityToProvide" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityToProvide}}" id="_CLGridQuantityToProvide" name="_CLGridQuantityToProvide" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityToProvide}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantityAvailable">Qt. Disponibilizada</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityAvailable"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityAvailable}}" id="_CLGridQuantityAvailable" name="_CLGridQuantityAvailable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityAvailable}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantityReceivable">Qt. a Receber</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityReceivable"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityReceivable}}" id="_CLGridQuantityReceivable" name="_CLGridQuantityReceivable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityReceivable}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantityReceived">Qt. Recebida</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantityReceived"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.quantityReceived}}" id="_CLGridQuantityReceived" name="_CLGridQuantityReceived" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.quantityReceived}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="unitCostsould">Preço Unitário Venda</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="unitCostsould"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.unitCostsould}}" id="_CLGridUnitPriceSale" name="_CLGridUnitPriceSale" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.unitCostsould}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="budgetValue">Valor Orçamento</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="budgetValue"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.budgetValue}}" id="_CLGridBudgetValue" name="_CLGridBudgetValue" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.budgetValue}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="queryCreatedMarketNo">Nº de Consulta Mercado Criada</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="queryCreatedMarketNo"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.queryCreatedMarketNo}}" id="_CLGridCreatedMarketNo" name="_CLGridCreatedMarketNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.queryCreatedMarketNo}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <p class="alignCenter">Criar Consulta Mercado</p>
-                                <vaadin-grid-filter path="createMarketSearchStringValue">
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    <!--<vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>-->
-                                    {{item.createMarketSearchStringValue}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="130px" resizable>
-                            <template class="header">
-                                <p class="alignCenter">Mercado Local</p>
-                                <vaadin-grid-filter path="localMarketStringValue">
-                                    <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>
-                                 i
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
-                                    {{item.localMarketStringValue}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <p class="alignCenter">Enviado Pré Compra</p>
-                                <vaadin-grid-filter path="submitPrePurchaseStringValue">
-                                    <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>
-                                 i
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    <!--<vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>-->
-                                    {{item.submitPrePurchaseStringValue}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <p class="alignCenter">Enviar Pré Compra</p>
-                                <vaadin-grid-filter path="sendPrePurchaseStringValue">
-                                    <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>
-                                 i
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    <!--<vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>-->
-                                    {{item.sendPrePurchaseStringValue}}
-                                </template>
-                            </template>
-                            </
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="maintenanceOrderLineNo" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.maintenanceOrderLineNo}}" id="_CLGridMaintenanceOrderLineNo" name="_CLGridMaintenanceOrderLineNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.maintenanceOrderLineNo}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="125px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="vehicle">Viatura</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="vehicle" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[CBVehicle]]" id="_CLGridVehicle" name="_CLGridVehicle" item-value-path="id" item-label-path="id" value="{{item.vehicle}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.id]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ item.vehicle ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="125px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="supplierNo">Fornecedor</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="supplierNo" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.name]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ _getSupplierDescription(item.supplierNo) ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="125px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="projectNo">Projeto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="projectNo" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.no]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.projectNo}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="125px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="regionCode" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.regionCode}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="300px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ _getRegionDescription(item.regionCode) ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="190px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="functionalAreaCode">Cód. Area Funcional</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="functionalAreaCode" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="500px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ _getAreaDescription(item.functionalAreaCode) ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="centerResponsibilityCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="centerResponsibilityCode" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="550px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ _getResponsCenterDescription(item.centerResponsibilityCode) ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="openOrderNo" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[GridPurchaseHeaders]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="60%"> <b>[[item.id]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[item.openOrderNo ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="openOrderLineNo" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-combo-box items="[[CBPurchaseLineGrid]]" id="_CBGridPurchaseLine" item-value-path="id" item-label-path="value" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ item.openOrderLineNo ]]
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <template is="dom-if" if="{{ !isReadOnly() }}">
-                            <template is="dom-if" if="{{ _permissions.delete }}">
-                                <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <paper-button class="btnRemove" raised on-tap="_deleteRequisitionLine">Eliminar</paper-button>
-                                    </template>
-                                </vaadin-grid-column>
-                            </template>
-                        </template>
                     </vaadin-grid>
                 </div>
             </template>
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[States]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{_status}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
+                        <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -891,31 +452,31 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <template is="dom-if" if="{{ !_checkDestination }}">
-                        <div class="col-sm-6">
-                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
-                        </div>
-                    </template>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label="" type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" disabled></vaadin-text-field>
+                    </div>
                 </div>
                 <div class="row break_clear">
-                    <template is="dom-if" if="{{ !_checkDestination }}">
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" hidden="{{ !_checkDestination }}">
                             <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
                         </div>
-                        <div class="col-sm-6">
-                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
-                        </div>
-                    </template>
-                    <template is="dom-if" if="{{ _checkDestination }}">
-                        <div class="row break_clear">
+                        <div class="row break_clear" hidden="{{ _checkDestination }}">
                             <div class="col-sm-3">
-                                <vaadin-text-field label="Problema" type="text" value="{{data.valor}}" id="txtProblema"></vaadin-text-field>
+                                <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
                             </div>
                             <div class="col-sm-6">
                                 <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
                             </div>
                         </div>
-                        <div class="row break_clear">
+                        <div class="row break_clear" hidden="{{ _checkDestination }}">
                             <div class="col-sm-3">
                                 <vaadin-text-field label="Área" type="text" value="{{data.valor}}" id="txtAreadgl"></vaadin-text-field>
                             </div>
@@ -926,7 +487,6 @@
                                 <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt2"></vaadin-text-field>
                             </div>
                         </div>
-                    </template>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
@@ -961,6 +521,10 @@
                     _permissions: {
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
+                    },
+                    TiposDestinatarios: {
+                        type: Array,
+                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }], 
                     },
                     _isCreate: {
                         type: Boolean,
@@ -1159,11 +723,11 @@
                 },
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
-                    debugger;;
-                    if (type == 1) {//interno
+                    if (type == 0) //interno
                         this._checkDestination = true;
-                    } else {//externo
+                    else {//externo
                         this._checkDestination = false;
+                        this.$.txtFornecedor.value = this.data.codFornecedor;
                     }
                 },
                 _sendPending: function () {
