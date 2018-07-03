@@ -359,7 +359,7 @@
                                 <template is="dom-if" if="{{ item.selected }}">
                                     <vaadin-combo-box items="[[Locations]]" id="CBGridLocations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}">
                                         <template>
-                                            <table width="200px">
+                                            <table width="200">
                                                 <tr>
                                                     <td width="40%">[[item.id]]</td>
                                                     <td width="60%"> <b>[[item.value]]</b></td>
