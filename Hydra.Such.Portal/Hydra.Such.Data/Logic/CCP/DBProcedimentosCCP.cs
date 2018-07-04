@@ -29,12 +29,22 @@ namespace Hydra.Such.Data.Logic.CCP
         public const string _EmailSender = "CCP_NAV@such.pt";
 
         #region CRUD Procedimentos
-        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type, int hist)
         {
             SuchDBContext _context = new SuchDBContext();
             try
             {
-                return _context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).ToList();
+                bool _historico = hist == 1;
+
+                if (_historico)
+                {
+                    return _context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).Where(p => p.Arquivado == _historico).ToList();
+                }
+                else
+                {
+                    return _context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).Where(p => p.Arquivado != !_historico).ToList();
+                }
+                
             }
             catch(Exception e)
             {
@@ -1279,9 +1289,9 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion 
 
         #region parse ProcedimentosCCPView
-        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type)
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type, int hist)
         {
-            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoTypeToList(type);
+            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoTypeToList(type, hist);
             List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
 
             if (ProcList == null)
