@@ -774,6 +774,7 @@
                 }
             },
             _DatePriceChange: function (e) {
+                debugger;
                         if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
                             this.$.ajax_result.body = JSON.stringify(this._numb);
                             this.$.ajax_result.params = {
@@ -800,6 +801,7 @@
                         }
                     },
             _openOrderLinesOnChange: function (e) {
+                debugger;
                 if (e.detail.value) {
                     var res = e.detail.value.split(" ");
                     this._documentNo = res[0];
