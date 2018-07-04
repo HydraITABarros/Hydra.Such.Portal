@@ -68,7 +68,7 @@
             </template>
         </template>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
@@ -266,6 +266,20 @@
                     }
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 2;
+                    $(this.$.grid).height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {

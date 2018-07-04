@@ -554,7 +554,7 @@
                             <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
 
-                        
+
 
                         <!--<div class="col-sm-3" style="padding-top:20px">
                             <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -742,7 +742,6 @@
                             <template class="header">
                             </template>
                             <template>
-                                <t
                                 <center>
                                     <!--<paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button id="btn_deletePercurso" class="btnRemove tableBtn" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
@@ -933,10 +932,8 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
-                            <
                             <template>
                                 <center>
-
                                     <!--<paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
@@ -1202,7 +1199,6 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
-                            te
                             <template>
                                 <center>
                                     <!--<paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
@@ -1352,7 +1348,6 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                             </template>
-                            <t
                             <template>
                                 <center>
                                     <!--<paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
@@ -1366,6 +1361,7 @@
 
 
             <!--DETALHE-->
+
 
 
 
@@ -1383,7 +1379,6 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"></vaadin-text-field>
                         </div>
@@ -1398,17 +1393,8 @@
                                 <div class="col-sm-4" style="padding-left: 0px;">
                                     <vaadin-text-field id="horaCriacaoTexto" name="horaCriacaoTexto" value="{{data.horaCriacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
                                 </div>
-                                v>
                             </div>
                         </div>
-
-                        <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataCriacaoTexto}}" id="dataCriacaoTexto" name="dataCriacaoTexto" disabled="true" label="Data Criação"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaCriacaoTexto}}" id="horaCriacaoTexto" name="horaCriacaoTexto" disabled="true" label="Hora Criação"></vaadin-text-field>
-                        </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1421,7 +1407,6 @@
                                         </tr>
                                     </table>
                                 </template>
-
                             </vaadin-combo-box>
                         </div>
 
@@ -1435,7 +1420,6 @@
                                         </tr>
                                     </table>
                                 </template>
-
                             </vaadin-combo-box>
                         </div>
 
@@ -1468,17 +1452,8 @@
                                 <div class="col-sm-4" style="padding-left: 0px;">
                                     <vaadin-text-field id="horaTerminadoTexto" name="horaTerminadoTexto" value="{{data.horaTerminadoTexto}}" type="time" disabled="true"></vaadin-text-field>
                                 </div>
-                                v>
                             </div>
                         </div>
-
-                        <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataTerminadoTexto}}" id="dataTerminadoTexto" name="dataTerminadoTexto" disabled="true" label="Data Terminado"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"></vaadin-text-field>
-                        </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1499,17 +1474,8 @@
                                 <div class="col-sm-4" style="padding-left: 0px;">
                                     <vaadin-text-field id="horaValidacaoTexto" name="horaValidacaoTexto" value="{{data.horaValidacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
                                 </div>
-                                v>
                             </div>
                         </div>
-
-                        <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataValidacaoTexto}}" id="dataValidacaoTexto" name="dataValidacaoTexto" disabled="true" label="Data Validação"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaValidacaoTexto}}" id="horaValidacaoTexto" name="horaValidacaoTexto" disabled="true" label="Hora Validação"></vaadin-text-field>
-                        </div>-->
 
                         <div class="col-sm-3 alignPoga" style="padding-left:28px">
                             <vaadin-checkbox checked="{{data.validado}}" id="validado" disabled="true">Validado</vaadin-checkbox>
@@ -1534,17 +1500,8 @@
                                 <div class="col-sm-4" style="padding-left: 0px;">
                                     <vaadin-text-field id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" value="{{data.horaIntegracaoEmRHTexto}}" type="time" disabled="true"></vaadin-text-field>
                                 </div>
-                                v>
                             </div>
                         </div>
-
-                        <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHTexto}}" id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" disabled="true" label="Data Integ. Aj. Custo RH"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHTexto}}" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" disabled="true" label="Hora Integ. Aj. Custo RH"></vaadin-text-field>
-                        </div>-->
 
                         <div class="col-sm-3">
                             <div class="col-sm-6">
@@ -1578,18 +1535,8 @@
                                 <div class="col-sm-4" style="padding-left: 0px;">
                                     <vaadin-text-field id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" type="time" disabled="true"></vaadin-text-field>
                                 </div>
-                                v>
-                                </
                             </div>
                         </div>
-
-                        <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. km RH"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. km RH"></vaadin-text-field>
-                        </div>-->
 
                         <div class="col-sm-3">
                             <div class="col-sm-6">
@@ -1603,26 +1550,13 @@
                                 </vaadin-text-field>
                             </div>
                         </div>
-                        
-
                     </div>
-
-                    
 
                     <div class="row break_clear">
-                        r"
                         <div class="col-sm-12">
-                            <!--<vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></vaadin-text-field>-->
-                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"> </such-textarea>
+                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></such-textarea>
                         </div>
-                        
-
-                        di
                     </div>
-
-                    <!--<div class="marginSpace">
-                        <paper-button raised id="btn_updateFH2" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    </div>-->
                 </div>
             </div>
         </iron-pages>

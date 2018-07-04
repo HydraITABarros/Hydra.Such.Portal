@@ -1,7 +1,7 @@
 ﻿@model Hydra.Such.Data.Database.ProcedimentosCcp
 
 @{
-    ViewData["Title"] = "Detalhe Pedido Simplificado";
+    ViewData["Title"] = "Detalhe Pedido Simplificado " + ViewBag.Historic + ViewBag.No; ;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,4 +16,4 @@ else
 
 <link rel="import" href="~/elements/ccp/procedimento_detail_simplificado.html" />
 
-<x-procedimentodetails _procedimentoid="@ViewBag.No" _procedimentotypeid="2"></x-procedimentodetails>
+<x-procedimentodetails _isHistoric="@ViewBag.ifHistoric" _procedimentoid="@ViewBag.No" _procedimentotypeid="2"></x-procedimentodetails>

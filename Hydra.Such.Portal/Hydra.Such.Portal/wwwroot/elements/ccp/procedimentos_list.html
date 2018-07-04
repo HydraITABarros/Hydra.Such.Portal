@@ -85,13 +85,14 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
         </div>
 
         <!--<div class="marginSpace">
             <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
         </div>-->
 
-        <vaadin-grid aria-label="ProcedimentosGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ProcedimentosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
@@ -139,19 +140,45 @@
                         type: Number,
                         notify: true,
                         value: 0
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
+                    _historico: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "id": this._procedimentotypeid, "Historic": this._historico }/*this._procedimentotypeid*/);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 2;
+                    $(this.$.grid).height(height);
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
                         if (this._procedimentotypeid == 1) {
-                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/" + item.no;
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/" + item.no + "?isHistoric=" + this._isHistoric;
                         }
                         else {
-                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + item.no;
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + item.no + "?isHistoric=" + this._isHistoric;
                         }
 
                     }
@@ -198,6 +225,29 @@
                         var sel = this.LProcedimentoState.find(x => x.id == param);
                         if (sel != undefined)
                             return sel.value;
+                    }
+                },
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._historico == 0) {
+                            this._historico = 1;
+                            this._isHistoric = "true";
+                        } else {
+                            this._historico = 0;
+                            this._isHistoric = "false";
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "id": this._procedimentotypeid, "Historic": this._historico }/*this._procedimentotypeid*/);
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+
+                _setButtonTexts: function () {
+                    if (this._historico == 0) {
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._historico == 1) {
+                        this._showHistoryMessage = "Mostrar Ativos";
                     }
                 }
             });
