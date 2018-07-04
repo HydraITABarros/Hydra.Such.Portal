@@ -72,6 +72,7 @@
         <iron-ajax auto url="/PopulateDropdowns/GetBillingReceptionStates" last-response="{{ States }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetBillingDocumentTypes" last-response="{{ DocumentTypes }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ Vendors }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetQuestions" last-response="{{ TiposProblemas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
@@ -103,6 +104,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -294,7 +296,7 @@
                     </template>
                 </div>
             </div>
-            
+
             <template is="dom-if" if="{{ _showWorkflowData }}">
                 <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
                 <div class="panel-body">
@@ -453,40 +455,40 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-6">
-                        <vaadin-text-field label="" type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" disabled></vaadin-text-field>
+                        <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" disabled></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                        <div class="col-sm-3" hidden="{{ !_checkDestination }}">
-                            <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
+                    <div class="col-sm-3" hidden="{{ !_checkDestination }}">
+                        <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
+                    </div>
+                    <div class="row break_clear" hidden="{{ _checkDestination }}">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
                         </div>
-                        <div class="row break_clear" hidden="{{ _checkDestination }}">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
-                            </div>
+                        <div class="col-sm-6">
+                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
                         </div>
-                        <div class="row break_clear" hidden="{{ _checkDestination }}">
-                            <div class="col-sm-3">
-                                <vaadin-text-field label="Área" type="text" value="{{data.valor}}" id="txtAreadgl"></vaadin-text-field>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt1"></vaadin-text-field>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt2"></vaadin-text-field>
-                            </div>
+                    </div>
+                    <div class="row break_clear" hidden="{{ _checkDestination }}">
+                        <div class="col-sm-3">
+                            <vaadin-text-field label="Área" type="text" value="{{data.valor}}" id="txtAreadgl"></vaadin-text-field>
                         </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt1"></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt2"></vaadin-text-field>
+                        </div>
+                    </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
