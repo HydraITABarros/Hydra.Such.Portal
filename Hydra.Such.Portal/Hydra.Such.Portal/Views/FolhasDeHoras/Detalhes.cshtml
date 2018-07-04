@@ -5,11 +5,18 @@
     }
     else
     {
-        ViewData["Title"] = "Folha de Horas > Nº " + ViewBag.FolhaDeHorasNo;
+        if (ViewBag.Estado == 2)
+        {
+            ViewData["Title"] = "Folha de Horas (Histórico) > Nº " + ViewBag.FolhaDeHorasNo;
+        }
+        else
+        {
+            ViewData["Title"] = "Folha de Horas > Nº " + ViewBag.FolhaDeHorasNo;
+        }
     }
 
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 
 <link rel="import" href="/elements/folhasdehoras/folhadehora_details.html">
 

@@ -306,11 +306,10 @@
                     this.$.ajax_delete_group.generateRequest();
                 },
                 _createApprovalGroupDetails: function () {
-
-                    if (this.$.ddUser.value != null && this.$.ddUser.value != "") {
+                    if (this.ddUser != null && this.ddUser != "") {
                         var line = {
                             approvalGroup: this.$.lRequestNo.value,
-                            approvalUser: this.$.ddUser.value
+                            approvalUser: this.ddUser
                         }
                         if (this.result == null) {
                             this.result = line;
@@ -351,7 +350,7 @@
                             this.$.page_databound_ajax.generateRequest();
 
                         } else {
-                            this.$.ddUser.value = "";
+                            this.ddUser = "";
                             this.openToast('Atualizado com sucesso!');
                             this.$.page_databound_ajax.body = JSON.stringify(this._requestno);
                             this.$.page_databound_ajax.generateRequest();

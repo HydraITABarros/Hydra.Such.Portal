@@ -346,6 +346,7 @@ namespace Hydra.Such.Portal.Controllers
         //Criação da Folha de Horas
         public ActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
+            int Estado = 0;
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
 
             ViewBag.reportServerURL = _config.ReportServerURL;
@@ -415,8 +416,13 @@ namespace Hydra.Such.Portal.Controllers
 
                     FHNo = FH.NºFolhaDeHoras;
                 }
+                else
+                {
+                    Estado = (int)DBFolhasDeHoras.GetById(FHNo).Estado;
+                }
 
                 ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
+                ViewBag.Estado = Estado;
 
                 return View();
             }

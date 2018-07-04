@@ -22,6 +22,7 @@ using System.IO;
 using System.Net.Mail;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Compras;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -155,16 +156,40 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        public IActionResult DetalhePedidoAquisicao(string id)
+        public IActionResult DetalhePedidoAquisicao(string id, bool isHistoric = false)
         {
             ViewBag.No = id == null ? "" : id;
+
+            if (isHistoric == true)
+            {
+                ViewBag.Historic = "(Histórico) ";
+                ViewBag.ifHistoric = true;
+            }
+            else
+            {
+                ViewBag.Historic = "";
+                ViewBag.ifHistoric = false;
+            }
+
             return View();
         }
 
-        public IActionResult DetalhePedidoSimplificado(string id)
+        public IActionResult DetalhePedidoSimplificado(string id, bool isHistoric = false)
         {
             ViewBag.No = id == null ? "" : id;
             ViewBag.TipoProcedimento = 2;
+
+            if (isHistoric == true)
+            {
+                ViewBag.Historic = "(Histórico) ";
+                ViewBag.ifHistoric = true;
+            }
+            else
+            {
+                ViewBag.Historic = "";
+                ViewBag.ifHistoric = false;
+            }
+
             return View();
         }
 
@@ -187,10 +212,15 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         [HttpPost]
-        public JsonResult GetProcedimentosByProcedimentoType([FromBody] int id)
+        public JsonResult GetProcedimentosByProcedimentoType([FromBody] JObject requestParams/*[FromBody] int id*/)
         {
-            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoTypeToList(id);
+            int id = int.Parse(requestParams["id"].ToString());
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
 
+            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoTypeToList(id, Historic);
+            
             return Json(result);
         }
 
