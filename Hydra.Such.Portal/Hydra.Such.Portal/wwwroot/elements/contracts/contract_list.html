@@ -286,6 +286,19 @@
                     
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridContracts);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 2;
+                    $(this.$.gridContracts).height(height);
                 },
 
                 _redirectToContractHistory: function () {
