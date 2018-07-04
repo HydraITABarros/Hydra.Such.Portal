@@ -17,7 +17,8 @@
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
-
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
@@ -217,19 +218,9 @@
             <paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
-                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+                <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
             </template>
         </div>
-
-
-        <!--<div class="row" style="display: {{ _showContractLines }};">
-        <div class="col-lg-12">-->
-        <!--<template is="dom-if" if="{{ _permissions.create }}">
-        <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-    </template>-->
-        <!--<paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-        </div>
-    </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -348,7 +339,7 @@
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                             required error-message="Este campo é obrigatório">
-                                                              
+
                                             </such-selectbox>
                                         </div>
                                     </div>
@@ -392,20 +383,20 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade de Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade de Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
 
-                                            <!--<such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
+                                            <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
                                                             items="[[CBFeeUnits]]"
                                                             text-path="value"
                                                             value-path="id"
-                                                            fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                            fields='[{"field":"value", "name":"Descrição"}]'
                                                             required error-message="Este campo é obrigatório"
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>-->
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -896,11 +887,6 @@
                                                             <td width="60%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
-                                                    <!--<paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.id]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1214,21 +1200,21 @@
                                     </template>
                                     <template>
                                         <center>
-                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected}}"></vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected }}"></vaadin-checkbox>
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column resizable>
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <vaadin-grid-column resizable hidden="{{data.filed}}">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
                                                 <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
-                                            </template>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
@@ -1437,6 +1423,31 @@
                         notify: true,
                         value: ""
                     },
+                    _btnArchiveMessage: {
+                        type: String,
+                        value: "",
+                    },
+                },
+                observers: [
+                    'filedChanged(data.filed)'
+                ],
+                filedChanged: function (newValue) {
+                    this._setControlsVisibility(newValue);
+                },
+                _setControlsVisibility: function (isArquived) {
+                    this._btnArchiveMessage = isArquived ? "Ativar" : "Arquivar";
+                    var excludeItemsIds = ["btnContractAdd", "btnArchive"];
+                    //debugger;
+                    elems = Polymer.dom(this.root).querySelectorAll('paper-button');
+                    elems.forEach(function (elem) {
+                        if (excludeItemsIds.indexOf(elem.id) == -1)
+                            elem.hidden = isArquived;
+                    });
+                    elems = Polymer.dom(this.root).querySelectorAll('such-dropdown-menu');
+                    elems.forEach(function (elem) {
+                        if (excludeItemsIds.indexOf(elem.id) == -1)
+                            elem.hidden = isArquived;
+                    });
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1594,8 +1605,9 @@
                 _archive: function () {
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
+                    var message = this._btnArchiveMessage.toLowerCase();
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende arquivar a Oportunidade " + this.data.contractNo + "?",
+                        message: "Tem a certeza que pretende " + message + " a Oportunidade " + this.data.contractNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1608,10 +1620,12 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                ajax_request.url = "/Contratos/ArchiveContract";
+                                if (_dataContract.filed)
+                                    ajax_request.url = "/Contratos/UnArchiveContract";
+                                else
+                                    ajax_request.url = "/Contratos/ArchiveContract";
                                 ajax_request.body = JSON.stringify(_dataContract);
                                 ajax_request.generateRequest();
-
                             }
                         }
                     });
@@ -1619,9 +1633,7 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-                    //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        //this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.clientNo);
@@ -1640,7 +1652,7 @@
                     }
 
                     if (this.data.filed) {
-                        this._permissions.update = false;                        
+                        this._permissions.update = false;
                     }
 
                     if (data.detail.status === 200) {
@@ -1727,7 +1739,7 @@
                         }
                     }
                 },
-                //Date 
+                //Date
                 _startEndDate: function (e) {
                     this.$.DueDate.min = this.$.mStartData.value;
                     this.$.mStartData.max = this.$.DueDate.value;
@@ -1751,7 +1763,7 @@
                     d.setDate(d.getDate() + 1);
                     this.$.previousHearingDate.min = d.getFullYear() + '-'
                         + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
-                        + ('0' +d.getDate()).slice(-2);
+                        + ('0' + d.getDate()).slice(-2);
                 },
 
                 _previousHearingDateChanged: function (e) {
@@ -2046,16 +2058,38 @@
                     }
                     return "";
                 },
-
                 _deleteContractLine: function (e) {
+                    debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
-                    this.dataLines.lines.splice(index, 1);
-
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
-
-                    //this.$.gridUserAccesses.clearCache();
+                    var spliceDataLine = this.dataLines.lines;
+                    var contLinesdatabound_ajax = this.$.contractLines_databound_ajax;
+                    var contLines_grid = this.$.grid_contractlines;
+                    var model_item = e.model.item;
+                    var dataL = this.dataLines;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover esta Linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                       
+                        callback: function (result) {
+                             debugger;
+                            if (result) {
+                                    spliceDataLine.splice(index, 1);
+                                    contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
+                                    contLinesdatabound_ajax.body = JSON.stringify(dataL);
+                                    contLinesdatabound_ajax.generateRequest();
+                                    contLines_grid.clearCache();
+                            }
+                        }
+                    });
                 },
 
                 //Parse To Proposal

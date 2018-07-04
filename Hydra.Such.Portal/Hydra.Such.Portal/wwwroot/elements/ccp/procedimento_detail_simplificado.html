@@ -333,6 +333,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- Requisições-->
+        <iron-ajax url="/PopulateDropdowns/GetRequisitions"
+                   last-response="{{CB_REQ}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- NR 20180228 -->
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP"
                    last-response="{{CBObjectoContrato}}"
@@ -449,6 +457,17 @@
                    handle-as="json"
                    id="page_deleteLinhaProdutoServico_ajax"
                    on-response="_deleteLinhaProdutoServicoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
+        <iron-ajax url="/ProcedimentosCcps/CreateLigacaoRequisicao"
+                   last-response="{{LigacaoRequisicaoCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createLigacaoRequisicao_ajax"
+                   on-response="_createLigacaoRequisicaoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -1683,9 +1702,74 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
+
+                            <paper-collapse-item header="Ligação a Requisições">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <such-selectbox id="_CB_REQ" value="{{_CB_REQ}}" label="Nº Requisição"
+                                                                    items="[[CB_REQ]]"
+                                                                    text-path="requisitionNo"
+                                                                    value-path="requisitionNo"
+                                                                    required
+                                                                    fields='[{"field":"requisitionNo", "name":"Nº Requisição"}, {"field":"comments", "name":"Observações"}]'
+                                                                    disabled="{{ !_permissions.update }}">
+                                                    </such-selectbox>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <vaadin-text-field type="text" id="_DescricaoRequisicao" label="Descrição" maxlength="100"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarLigacaoRequisicao" raised on-tap="_createLigacaoRequisicao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Linhas com as Requisições -->
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="tabLigacoesRequisicoes" aria-label="Tabela Ligações a Requisições" items="{{ data.listaReq_Show }}" class="editGrid">
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="requisitionNo" style="text-align:center;">Nº Requisição</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="requisitionNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="requisitionNo" id="requisitionNo" value="{{item.requisitionNo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="comments" style="text-align:center;">Observações</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="comments" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="comments" id="comments" value="{{item.comments}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="60px">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="projectNo" style="text-align:center;">Nº Projecto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="projectNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="projectNo" id="projectNo" value="{{item.projectNo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
-
 
                     <!--Tab Workflow-->
                     <div class="panel panel-default">
@@ -2152,6 +2236,9 @@
                     _CBItems: {
                         observer: '_setProductData'
                     },
+                    _CB_REQ: {
+                        observer: '_setREQData'
+                    },
                 },
                 _testFunction: function () {
 
@@ -2202,6 +2289,13 @@
                     if (item != null) {
                         this.$._DescricaoProduto.value = item.name;
                         this.$._UnitMeasureCode.value = item.measureUnit;
+                    }
+                },
+
+                _setREQData: function (e) {
+                    var item = this.CB_REQ.find(x => x.requisitionNo == e);
+                    if (item != null) {
+                        this.$._DescricaoRequisicao.value = item.comments;
                     }
                 },
 
@@ -2517,7 +2611,6 @@
                             enviarEmail: this.chkSendMail
                         });
 
-                        //this.$.ajax_createelementojuri.generateRequest();
 
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
 
@@ -2525,8 +2618,6 @@
                         var lin = this.$.ajax_createelementojuri.generateRequest();
 
                         Promise.all([sav.completes, lin.completes]).then(function (requests) {
-                            //var savReq = requests[0].result;
-                            //var linReq = requests[1].result;
                         })
 
                         this.$.gridElementosJuri.clearCache();
@@ -2873,6 +2964,41 @@
                         this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
                     }
                 },
+
+
+                _createLigacaoRequisicao: function () {
+                    debugger
+                    this.$.page_createLigacaoRequisicao_ajax.body = JSON.stringify({
+                        procedureCcpNo: this.$.no.value,
+                        requisitionNo: this.$._CB_REQ.value
+                    });
+                    
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createLigacaoRequisicao_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                    })
+
+                    this.$.tabLigacoesRequisicoes.clearCache();
+                },
+                _createLigacaoRequisicaoResponse: function (e) {
+                    if (this.LigacaoRequisicaoCreated) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada ligação à Requisição com sucesso.');
+
+                        this.$.tabLigacoesRequisicoes.clearCache();
+
+                        this.$._CB_REQ.value = "";
+                        this.$._DescricaoRequisicao.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a ligação à Requisição.');
+                    }
+                },
+
+                
 
                 _deleteLinha: function (e) {
                     var index = this.data.linhasPEncomendaProcedimentosCcp.indexOf(e.model.item);

@@ -226,12 +226,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
-                                    items="[[ContabGroupData]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -327,14 +322,20 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceDescription"
                                     value-path="serviceCode"
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
+                                    items="[[ContabGroupData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                    style="display: none;">
                     </such-selectbox>
                 </div>
             </div>
@@ -480,7 +481,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[ContabGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
+                        <vaadin-combo-box items="[[ContabGroupData]]" disabled item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
                             <template>
                                 <table width="200px">
                                     <tr>

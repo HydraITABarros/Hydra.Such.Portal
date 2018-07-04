@@ -10,7 +10,7 @@ namespace Hydra.Such.Data.Database
             RececaoFaturacaoWorkflow = new HashSet<RececaoFaturacaoWorkflow>();
         }
 
-        public int Codigo { get; set; }
+        public string Codigo { get; set; }
         public string Tipo { get; set; }
         public string Descricao { get; set; }
         public string EnvioAreas { get; set; }

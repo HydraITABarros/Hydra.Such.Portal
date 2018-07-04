@@ -116,7 +116,7 @@ namespace Hydra.Such.Portal.Extensions
                 else
                 {
                     result.eReasonCode = 101;
-                    result.eMessage = "Não existem configurações de numerações compativeis.";
+                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas. Solicite esta configuração submeta para aprovação nas suas requisições pendentes.";
                 }
                 return result;
             }

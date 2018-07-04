@@ -6033,7 +6033,11 @@ namespace Hydra.Such.Data.Database
             {
                 entity.Property(e => e.AreaWorkflow).HasMaxLength(50);
 
+                entity.Property(e => e.CodProblema).HasColumnType("nchar(10)");
+
                 entity.Property(e => e.CodTipoProblema).HasMaxLength(20);
+
+                entity.Property(e => e.Comentario).HasMaxLength(250);
 
                 entity.Property(e => e.CriadoPor).HasMaxLength(50);
 
@@ -6069,6 +6073,8 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<RecFacturasProblemas>(entity =>
             {
                 entity.HasKey(e => new { e.Codigo, e.Tipo });
+
+                entity.Property(e => e.Codigo).HasColumnType("nchar(10)");
 
                 entity.Property(e => e.Tipo).HasMaxLength(20);
 

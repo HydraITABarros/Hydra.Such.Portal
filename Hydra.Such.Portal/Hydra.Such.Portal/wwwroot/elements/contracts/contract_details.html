@@ -956,17 +956,17 @@
                                     </div>
                                 </div>
                             </iron-pages>
-
-                            <div class="marginSpace" style="display: {{ _showButtons }};">
+                            
+                            <div class="marginSpace" style="display: {{ _showButtons }}">
                                 <!--<template is="dom-if" if="{{ !_contractStatusLocked }}">-->
 
                                 <template is="dom-if" if="{{ _isCreate }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
                                 <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _showUpdateButtons }}">
-                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                        <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
+                                    <template is="dom-if" if="{{ _showUpdateButtons}}" >
+                                            <paper-button raised id="btnUpdate" hidden="{{ _isHistoric }}" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                            <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
                                 <template is="dom-if" if="{{ _permissions.delete }}">
@@ -1164,7 +1164,7 @@
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <template is="dom-if" if="{{ _permissions.update }}">
-                                        <div class="col-lg-2" hidden="{{_ifHistoric}}">
+                                        <div class="col-lg-2" hidden="{{_isHistoric}}">
                                             <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </template>
@@ -2047,7 +2047,8 @@
                         else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
                             if (this.data.eReasonCode == 1) {
                                 this._openToast("Enviado para Histórico com sucesso.");
-                                location.reload();
+                                window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + true;
+
                             }
                         }
                         else {
