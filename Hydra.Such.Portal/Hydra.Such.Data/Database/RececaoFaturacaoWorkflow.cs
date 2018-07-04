@@ -14,7 +14,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? Data { get; set; }
         public string Utilizador { get; set; }
         public string CodTipoProblema { get; set; }
-        public int? CodProblema { get; set; }
+        public string CodProblema { get; set; }
         public string EnderecoEnvio { get; set; }
         public string EnderecoFornecedor { get; set; }
         public DateTime? DataCriacao { get; set; }

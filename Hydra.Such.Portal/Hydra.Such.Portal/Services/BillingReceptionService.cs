@@ -232,5 +232,14 @@ namespace Hydra.Such.Portal.Services
 
             return isValid;
         }
+
+        #region Problems
+
+        public List<RecFacturasProblemas> GetQuestions()
+        {
+            return repo.GetQuestions();
+        }
+
+        #endregion
     }
 }

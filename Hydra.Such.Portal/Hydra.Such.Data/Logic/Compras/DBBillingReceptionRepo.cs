@@ -116,6 +116,15 @@ namespace Hydra.Such.Data.Logic.Compras
 
         #endregion
 
+        #region Problems
+
+        public List<RecFacturasProblemas> GetQuestions()
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == "P").ToList();
+        }
+
+        #endregion
+
         void IDisposable.Dispose()
         {
             ctx.Dispose();
