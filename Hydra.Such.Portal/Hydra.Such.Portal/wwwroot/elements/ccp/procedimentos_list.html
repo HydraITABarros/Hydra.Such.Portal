@@ -91,7 +91,7 @@
             <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
         </div>-->
 
-        <vaadin-grid aria-label="ProcedimentosGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ProcedimentosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
@@ -144,6 +144,19 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 2;
+                    $(this.$.grid).height(height);
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
