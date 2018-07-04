@@ -1471,13 +1471,14 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _validateData: function () {
+                    debugger;
                     //Validate function of such-element doesn't work. Ensure validation message
                     //this.$.mClients.validate();
                     //this.$.contactNo.validate();
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         //this.$.mClients.validate() & //validate doesn't work
-                        this.$.mFeeUnits.validate() &
+                        //this.$.mFeeUnits.validate() &
                         //this.$.mCodeRegion.validate() &
                         //this.$.mFunctionalArea.validate() &
                         //this.$.mResponsabilityCenter.validate() &
@@ -1514,11 +1515,11 @@
                         //    (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
                         //    return true;
                         //}
-                        //if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
-                        //    this.$.mFeeUnits.validate();
-                        //    this._openToastError("É obrigatória seleção de uma unidade de prestação.");
-                        //    return false;
-                        //}
+                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            this.$.mFeeUnits.validate();
+                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
                         if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
                             (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
                             this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");

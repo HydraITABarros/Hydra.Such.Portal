@@ -965,7 +965,7 @@
                                 </template>
                                 <template is="dom-if" if="{{ !_isCreate }}">
                                     <template is="dom-if" if="{{ _showUpdateButtons}}" >
-                                            <paper-button raised id="btnUpdate" hidden="{{ _isHistoric }}" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                            <paper-button raised id="btnUpdate" style="display: {{ !_isHistoric }}" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                             <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
