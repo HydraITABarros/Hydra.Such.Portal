@@ -73,6 +73,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhesContrato(string id, string version = "", bool isHistoric = false)
         {
             bool hist = isHistoric;
+            string ifHistoric;
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
             if (UPerm != null && UPerm.Read.Value)
@@ -92,13 +93,15 @@ namespace Hydra.Such.Portal.Controllers
                 if (hist == true)
                 {
                     ViewBag.Historic = "(Histórico) ";
-                    ViewBag.ifHistoric = true;
+                    ifHistoric = "true";
                 }
                 else
                 {
                     ViewBag.Historic = "";
-                    ViewBag.ifHistoric = false;
+                    ifHistoric = "false";
                 }
+
+                ViewBag.ifHistoric = ifHistoric;
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -539,7 +542,6 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 ContractsService serv = new ContractsService(User.Identity.Name);
-                data = serv.ArchiveContract(data);
                 Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
                 if (cContract != null)
@@ -553,20 +555,20 @@ namespace Hydra.Such.Portal.Controllers
                         DBContracts.Update(cContract);
 
                         data.eReasonCode = 1;
-                        data.eMessage = "Arquivado com sucesso.";
+                        data.eMessage = "Contrato enviado para histórico com sucesso.";
                         return Json(data);
                     }
                     catch (Exception)
                     {
                         data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro ao arquivar.";
+                        data.eMessage = "Ocorreu um erro ao enviar para histórico.";
                     }
                 }
             }
             else
             {
                 data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao arquivar.";
+                data.eMessage = "Ocorreu um erro ao enviar para histórico.";
             }
             return Json(data);
         }

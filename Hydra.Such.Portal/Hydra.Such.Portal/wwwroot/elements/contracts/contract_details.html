@@ -956,25 +956,28 @@
                                     </div>
                                 </div>
                             </iron-pages>
-                            
-                            <div class="marginSpace" style="display: {{ _showButtons }}">
-                                <!--<template is="dom-if" if="{{ !_contractStatusLocked }}">-->
 
-                                <template is="dom-if" if="{{ _isCreate }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _showUpdateButtons}}" >
-                                            <paper-button raised id="btnUpdate" style="display: {{ !_isHistoric }}" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                            <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
+                            <template is="dom-if" if="{{ !_isHistoricDiv }}">
+                                <div class="marginSpace" style="display: {{ _showButtons }}">
+
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
-                                </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
-                                <!--</template>-->
-                            </div>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+
+                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
+
+                                    </template>
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    </template>
+
+                                </div>
+                            </template>
                         </div>
+
+
                         <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
@@ -1164,7 +1167,7 @@
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <template is="dom-if" if="{{ _permissions.update }}">
-                                        <div class="col-lg-2" hidden="{{_isHistoric}}">
+                                        <div class="col-lg-2" hidden="{{_isHistoricDiv}}">
                                             <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </template>
@@ -1821,12 +1824,19 @@
                         value: false
                     },
 
-                    _isHistoric: {
+                    _ishistoric: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _isHistoricDiv: {
                         type: Boolean,
                         value: false
                     }
                 },
                 ready: function () {
+                    debugger;
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
@@ -1835,6 +1845,10 @@
                     if (!this._permissions.update) {
                         this._lockFields = true;
                         this._contractStatusLocked = true;
+                    }
+
+                    if (this._ishistoric == "true") {
+                        this._isHistoricDiv = true;
                     }
 
                 },
