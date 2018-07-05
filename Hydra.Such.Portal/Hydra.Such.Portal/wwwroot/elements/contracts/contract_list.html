@@ -111,7 +111,7 @@
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
             </template>
         </div>
-        
+
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -212,15 +212,15 @@
                     {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
-                <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_RemoveFromHistoric">Reativar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -283,7 +283,7 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    
+
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
 
@@ -297,8 +297,8 @@
                     var grid_el = $(this.$.gridContracts);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop - 2;
-                    $(this.$.gridContracts).height(height);
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
 
                 _redirectToContractHistory: function () {

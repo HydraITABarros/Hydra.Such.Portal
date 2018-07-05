@@ -104,9 +104,11 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_redirectToCreateForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
@@ -526,7 +528,7 @@
                     },
                     TiposDestinatarios: {
                         type: Array,
-                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }], 
+                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }],
                     },
                     _isCreate: {
                         type: Boolean,
@@ -751,7 +753,12 @@
                     if (this._validateInputForAccounting()) {
                         //callPostDocument
                     }
-                 }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

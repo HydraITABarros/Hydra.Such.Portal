@@ -143,6 +143,8 @@
             }
         </style>
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
@@ -330,7 +332,7 @@
                 </div>
             </div>
             <div class="row">
-                
+
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
@@ -704,7 +706,9 @@
                         <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                     </vaadin-grid-filter>-->
                 </template>
+                <
                 <template>
+                    in
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
@@ -840,8 +844,12 @@
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
                 <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <!--<paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>-->
+                >
             </div>
+            >
         </div>
+
+        >
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1119,7 +1127,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino"  disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
@@ -1131,9 +1139,9 @@
                     <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" 
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
                                     items="[[CBResourceCode]]"
-                                      on-value-changed="_projectChange"
+                                    on-value-changed="_projectChange"
                                     text-path="id"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -1145,7 +1153,7 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value" on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
                         <template>
                             <table width="550px">
                                 <tr>
@@ -1386,7 +1394,7 @@
                         this.$.projectList.value = this.paramprojno;
                         this.$.projectList.valueText = this.paramprojno;
                         this.disabledProjectNo = true;
-                        
+
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
                     } else {
@@ -1521,15 +1529,13 @@
 
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                        if (this.result.eReasonCode === 1)
-                        {
+                        if (this.result.eReasonCode === 1) {
                             this.openToastSuccess(this.result.eMessage);
-                        } 
-                        else
-                        {
+                        }
+                        else {
                             this.openToastError(this.result.eMessage);
                         }
-                    }                   
+                    }
                 },
                 _updateResponse: function (e) {
                     var self = this;
@@ -1642,7 +1648,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
@@ -1735,7 +1741,7 @@
                     this.$.dialogGetProjetStart.open();
                 },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
                         this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
                         this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
@@ -2029,7 +2035,12 @@
                         var x = date.split("-");
                         return x[2] + "-" + x[1] + "-" + x[0];
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
 
         });

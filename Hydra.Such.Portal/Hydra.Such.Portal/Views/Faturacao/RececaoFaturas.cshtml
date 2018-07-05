@@ -63,7 +63,7 @@
             </template>
         </div>
 
-        <vaadin-grid aria-label="grdBillingReceptions" items="[[BillingReceptions]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdgrdBillingReceptions" aria-label="grdBillingReceptions" items="[[BillingReceptions]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -286,6 +286,22 @@
                         value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
                     },
                 },
+                ready: function () {
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdgrdBillingReceptions);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
                 _rowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/Faturacao/DetalhesRecFatura/" + item.id;
@@ -297,4 +313,4 @@
             });
         });
     </script>
-</dom-module >
+</dom-module>

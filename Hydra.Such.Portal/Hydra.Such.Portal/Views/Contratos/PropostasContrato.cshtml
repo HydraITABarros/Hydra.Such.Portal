@@ -57,7 +57,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
@@ -177,16 +177,16 @@
                 </template>
             </vaadin-grid-column>
             @*<template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column width="10%" resizable>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-            </template>*@
+                    <vaadin-grid-column width="10%" resizable>
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                </template>*@
         </vaadin-grid>
     </template>
     <script>
@@ -245,9 +245,23 @@
                     }
                 },
                 ready: function () {
-                    
+
                     this.$.grid_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdContractsGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {

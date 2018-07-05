@@ -27,7 +27,7 @@
             </template>
         </div>
 
-        <vaadin-grid aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdContactsTable" aria-label="ContactsTable" items="[[Locations]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="100px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -83,6 +83,21 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
                     },
+                },
+                ready: function () {
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdContactsTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _onLocationRowSelected: function (item) {
                     if (item != null) {

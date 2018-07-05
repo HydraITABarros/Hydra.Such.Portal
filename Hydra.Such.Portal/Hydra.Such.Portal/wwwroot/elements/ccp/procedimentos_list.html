@@ -155,7 +155,7 @@
                     var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop - 2;
+                    var height = parentHeight - offsetTop;
                     $(this.$.grid).height(height);
                 },
                 _rowSelected: function (item) {

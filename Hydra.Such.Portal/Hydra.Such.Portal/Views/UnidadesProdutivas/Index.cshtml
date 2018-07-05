@@ -38,7 +38,7 @@
             </template>
         </div>
 
-        <vaadin-grid aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdProductivityUnitsTable" aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="productivityUnitNo">Nº Unidade Produtiva</vaadin-grid-sorter>
@@ -126,32 +126,48 @@
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
-                            Polymer({
-                                is: 'x-productivityunits',
-                                properties: {
-                                    activeItem: {
-                                        observer: '_rowSelected'
-                                    },
-                                    _filterActive: {
-                                        type: Boolean,
-                                        value: true
-                                    },
-                                    _permissions: {
-                                        type: Array
-                                    },
-                                },
-                                _rowSelected: function (item) {
-                                    if (item != null) {
-                                        window.location.href = "/UnidadesProdutivas/Detalhes/" + item.productivityUnitNo;
-                                    }
-                                },
-                                _create: function (item) {
-                                    if (item != null) {
-                                        window.location.href = "/UnidadesProdutivas/Detalhes/";
-                                    }
-                                }
-                            });
-                        });
+            Polymer({
+                is: 'x-productivityunits',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                },
+                ready: function () {
+                    this.$.grid_databound.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdProductivityUnitsTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/UnidadesProdutivas/Detalhes/" + item.productivityUnitNo;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/UnidadesProdutivas/Detalhes/";
+                    }
+                }
+            });
+        });
     </script>
 
 </dom-module>

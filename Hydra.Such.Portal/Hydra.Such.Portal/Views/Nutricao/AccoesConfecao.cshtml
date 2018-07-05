@@ -168,6 +168,19 @@
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridActionsConfection);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _create: function () {
                     this.$.ajax_create.body = JSON.stringify({ description: this.$.ddDescription.value });

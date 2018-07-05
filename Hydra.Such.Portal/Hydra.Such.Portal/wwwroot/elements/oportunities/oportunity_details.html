@@ -212,6 +212,8 @@
 
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
@@ -1210,7 +1212,8 @@
                                         </template>
                                         <template>
                                             <center>
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
+                                                <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
+                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </center>
                                         </template>
                                     </vaadin-grid-column>
@@ -2078,15 +2081,15 @@
                                 className: 'btn-danger'
                             }
                         },
-                       
+
                         callback: function (result) {
-                             debugger;
+                            debugger;
                             if (result) {
-                                    spliceDataLine.splice(index, 1);
-                                    contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
-                                    contLinesdatabound_ajax.body = JSON.stringify(dataL);
-                                    contLinesdatabound_ajax.generateRequest();
-                                    contLines_grid.clearCache();
+                                spliceDataLine.splice(index, 1);
+                                contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
+                                contLinesdatabound_ajax.body = JSON.stringify(dataL);
+                                contLinesdatabound_ajax.generateRequest();
+                                contLines_grid.clearCache();
                             }
                         }
                     });
@@ -2116,7 +2119,12 @@
                     else {
                         this._openToastError("Erro na criação da proposta.");
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

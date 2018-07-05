@@ -55,8 +55,8 @@
         <iron-ajax url="/Projetos/UpdatePriceServiceClient" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllPriceServiceClient" last-response="{{Griddate}}" id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
-      
-        
+
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -264,7 +264,7 @@
         </div>
         <br />
         <div class="row" hidden="{{ !_permissions.create }}">
-            
+
             <div class="col-lg-10">
                 <vaadin-upload id="UploadRequest"
                                method="POST"
@@ -274,12 +274,12 @@
                     <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
                 </vaadin-upload>
             </div>
-                <div class="col-lg-2">
-                    <center>
-                        <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
-                    </center>
-                </div>
-           
+            <div class="col-lg-2">
+                <center>
+                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
+                </center>
+            </div>
+
         </div>
         <vaadin-grid id="priceServiceClientGrid" aria-label="Tabela Preços Serviços Clientes" items="[[Griddate]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -682,11 +682,11 @@
                 observers: [
                     '_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,date)'
                 ],
-                _onCacheLoaded: function (RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,date) {
+                _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, date) {
 
                     if (!this.Flag) {
                         this.$.ajax_gridList.generateRequest();
-                            this.Flag = true;
+                        this.Flag = true;
                     }
                 },
                 _clientChanged: function (e) {
@@ -726,11 +726,11 @@
                     if (res != null) {
                         if (e.target.value != "" && this.LProjectClients != null && this.LProjectClients != "") {
                             res.completeName = this.LProjectClients.find(x => x.no_ == e.detail.value).name;
-                            res.client = e.target.value; 
+                            res.client = e.target.value;
                             this.$.priceServiceClientGrid.clearCache();
                         } else {
                             res.completeName = "";
-                            res.client = ""; 
+                            res.client = "";
                             this.$.priceServiceClientGrid.clearCache();
                         }
                     }
@@ -740,11 +740,11 @@
                     if (res != null) {
                         if (e.target.value != "" && this.ServiceClient != null && this.ServiceClient != "") {
                             res.serviceDescription = this.ServiceClient.find(x => x.id == e.detail.value).value;
-                            res.codServClient = e.target.value; 
+                            res.codServClient = e.target.value;
                             this.$.priceServiceClientGrid.clearCache();
                         } else {
                             res.serviceDescription = "";
-                            res.codServClient = ""; 
+                            res.codServClient = "";
                             this.$.priceServiceClientGrid.clearCache();
                         }
                     }
@@ -754,11 +754,11 @@
                     if (res != null) {
                         if (e.target.value != "" && this.lResources != null && this.lResources != "") {
                             res.resourceDescription = this.lResources.find(x => x.id == e.detail.value).value;
-                            res.resource = e.target.value; 
+                            res.resource = e.target.value;
                             this.$.priceServiceClientGrid.clearCache();
                         } else {
                             res.resourceDescription = "";
-                            res.resource = ""; 
+                            res.resource = "";
                             this.$.priceServiceClientGrid.clearCache();
                         }
                     }
@@ -768,11 +768,11 @@
                     if (res != null) {
                         if (e.target.value != "" && this.MealTypesData != null && this.MealTypesData != "") {
                             res.typeMealDescription = this.MealTypesData.find(x => x.id == e.detail.value).description;
-                            res.typeMeal = e.target.value; 
+                            res.typeMeal = e.target.value;
                             this.$.priceServiceClientGrid.clearCache();
                         } else {
                             res.typeMealDescription = "";
-                            res.typeMeal = ""; 
+                            res.typeMeal = "";
                             this.$.priceServiceClientGrid.clearCache();
                         }
                     }
@@ -906,7 +906,7 @@
                 _ExportResponse: function (e) {
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload?sFileName=' + FileName;
-                   
+
                 },
                 _addExcel: function () {
                     var urlFile = "/Projetos/OnPostImport";
@@ -934,14 +934,13 @@
                             toastError.open();
                         }
                     });
-                    
+
                 },
                 _updateResponse: function (e) {
                     if (e.detail.status === 200) {
                         this.$.ajax_gridList.generateRequest();
                         this.$.priceServiceClientGrid.clearCache();
-                        if (this.result.eReasonCode === 1)
-                        {
+                        if (this.result.eReasonCode === 1) {
                             if (this.$.UploadRequest != null && this.$.UploadRequest != "") {
                                 this.$.UploadRequest.files = [];
                             }

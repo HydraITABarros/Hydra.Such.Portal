@@ -21,97 +21,97 @@
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 
 <dom-module id="x-invoice-autorization">
-<template>
-<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-<link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-<link rel="stylesheet" href="/css/main.css" />
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
 
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
         </div>
-    <br />
-    <style>
-        vaadin-combo-box {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
-
-        vaadin-date-picker {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
-
-        vaadin-text-field {
-            margin-top: 0px !important;
-            width: 100%;
-        }
-
-        paper-button {
-            margin-top: 10px;
-        }
-
-        .break_clear {
-            margin-top: 15px;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
-
-        .break_frm {
-            margin-top: 15px;
-        }
-
-        .label_custom {
-            color: var(--valo-contrast-60pct) !important;
-            font-weight: 500 !important;
-            font-size: var(--valo-font-size-s) !important;
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-            margin-bottom: var(--valo-space-xs) !important;
-            transition: color 0.4s !important;
-            line-height: 1 !important;
-            font-family: var(--valo-font-family) !important;
-        }
-
-        datetime-picker {
-            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-            background-color: var(--valo-contrast-5pct);
-            color: var(--valo-contrast-60pct) !important;
-            width: 100%;
-        }
-
-        .marginSpace {
-            margin: 0px !important;
-        }
-
-        textarea {
-            background-color: #f5f5f5;
-            border: none;
-            border-radius: 3px 4px;
-            align-self: baseline;
-            font-weight: 500;
-        }
-
-            textarea:hover {
-                background-color: #eeeeee;
+        <br />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
             }
 
-            textarea:focus {
-                background-color: white;
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
                 border: none;
-                outline: 1px solid #eeeeee;
                 border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
             }
 
-        datetime-picker {
-            --datetime-selected-background: #71BCC1 !important;
-            --datetime-background: #1f3133;
-            --datetime-color: #eeeeee;
-        }
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-        paper-collapse-item {
-            --paper-item: {
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
                        padding: 0 0;
                    };
-            --paper-collapse-item-header: {
+                --paper-collapse-item-header: {
                        padding: 0 15px;
                        color: #333;
                        background-color: #f5f5f5;
@@ -120,312 +120,327 @@
                        border-top-right-radius: 3px;
 
                    };
-        }
-
-        .panel-body {
-            padding-top: 0px !important;
-        }
-    </style>
-
-
-
-<iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
-           last-response="{{result}}"
-           method="post"
-           handle-as="json"
-           id="page_databound_ajax"
-           content-type="application/json">
-</iron-ajax>
-<iron-ajax url="/Projetos/InvoiceLinesAuthorize"
-           last-response="{{lines}}"
-           method="post"
-           handle-as="json"
-           id="page_autorizelines_ajax"
-           on-response="_CreateLinesResponse"
-           content-type="application/json">
-</iron-ajax>
-
-
-<iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
-           last-response="{{response2}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>
-
-<iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
-           last-response="{{response3}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>
-
-    
-<vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
-    <vaadin-grid-selection-column auto-select>
-    </vaadin-grid-selection-column>
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-            <vaadin-grid-filter path="projectNo" />
-        </template>
-        <template>
-            {{item.projectNo}}
-        </template>
-    </vaadin-grid-column>
-
-
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
-            <vaadin-grid-filter path="date" />
-        </template>
-        <template>
-            {{item.date}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
-            <vaadin-grid-filter path="movementType" />
-        </template>
-        <template>
-            <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}" disabled>
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-            <vaadin-grid-filter path="type" />
-        </template>
-        <template>
-            <vaadin-combo-box id="type[[index]]" items="[[response3]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-            <vaadin-grid-filter path="code" />
-        </template>
-        <template>
-            {{item.code}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-            <vaadin-grid-filter path="description" />
-        </template>
-        <template>
-            {{item.description}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
-            <vaadin-grid-filter path="measurementUnitCode" />
-        </template>
-        <template>
-            {{item.measurementUnitCode}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-            <vaadin-grid-filter path="quantity" />
-        </template>
-        <template>
-            {{item.quantity}}
-        </template>
-    </vaadin-grid-column>
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-            <vaadin-grid-filter path="unitCost" />
-        </template>
-        <template>
-            <span slot="suffix">{{item.unitCost}}€</span>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
-            <vaadin-grid-filter path="totalCost" />
-        </template>
-        <template>
-            <span slot="suffix">{{item.totalCost}}€</span>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-            <vaadin-grid-filter path="unitPrice" />
-        </template>
-        <template>
-            <span slot="suffix">{{item.unitPrice}}€</span>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
-            <vaadin-grid-filter path="totalPrice" />
-        </template>
-        <template>
-            <span slot="suffix">{{item.totalPrice}}€</span>
-        </template>
-    </vaadin-grid-column>
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
-            <vaadin-grid-filter path="invoiceToClientNo" />
-        </template>
-        <template>
-            {{item.invoiceToClientNo}}
-        </template>
-    </vaadin-grid-column>
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-            <vaadin-grid-filter path="clientName" />
-        </template>
-        <template>
-            {{item.clientName}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
-            <vaadin-grid-filter path="locationCode" />
-        </template>
-        <template>
-            {{item.locationCode}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
-            <vaadin-grid-filter path="regionCode" />
-        </template>
-        <template>
-            {{item.regionCode}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
-            <vaadin-grid-filter path="functionalAreaCode" />
-        </template>
-        <template>
-            {{item.functionalAreaCode}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
-            <vaadin-grid-filter path="responsabilityCenterCode" />
-        </template>
-        <template>
-            {{item.responsabilityCenterCode}}
-        </template>
-    </vaadin-grid-column>
-
-    <vaadin-grid-column width="15%" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
-            <vaadin-grid-filter path="commitmentNumber" />
-        </template>
-        <template>
-            {{item.commitmentNumber}}
-        </template>
-    </vaadin-grid-column>
-</vaadin-grid>
-    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-    <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-</template>
-    
-
-<script>
-    document.addEventListener('WebComponentsReady', function () {
-        Polymer({
-            is: 'x-invoice-autorization',
-            properties: {
-                _areaid: {
-                    type: Number,
-                    notify: true,
-                    value: 0
-                },
-                _projectno: {
-                    type: String,
-                    notify: true,
-                    value: ""
-                },
-
-                ddCGTOM_Type: {
-                    type: Number,
-                    notify: true,
-                    value: ""
-                },
-
-                ddCGTOM_FailType: {
-                    type: Number,
-                    notify: true,
-                    value: ""
-                },
-
-                selectedItem: {
-                    type: Array,
-                },
-
-                selectedItems: {
-                    type: Array,
-                }
-            },
-            ready: function () {
-                this.$.page_databound_ajax.body = JSON.stringify({ "areaId": this._areaid, "projectNo": this._projectno });
-                this.$.page_databound_ajax.generateRequest();
-            },
-            openToast: function (message) {
-                this.$.ToastMessageSuccess.text = message;
-                this.$.ToastMessageSuccess.open();
-            },
-            openToastError: function (message) {
-                this.$.ToastMessageError.text = message;
-                this.$.ToastMessageError.open();
-            },
-            _confirm: function (selectedItem, selectedItems) {
-                debugger;
-                this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
-                this.$.page_autorizelines_ajax.generateRequest();
-                //console.log(this.selectedItems);
-            },
-
-            _CreateLinesResponse: function (e) {
-                this.$.page_databound_ajax.generateRequest();
-                this.$.ToastMessageSuccess.text = 'Movimentos Autorizados criadas com sucesso';
-                this.$.ToastMessageSuccess.open();
             }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+
+
+        <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/InvoiceLinesAuthorize"
+                   last-response="{{lines}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_autorizelines_ajax"
+                   on-response="_CreateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
+                   last-response="{{response2}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
+                   last-response="{{response3}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+
+        <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
+            <vaadin-grid-selection-column auto-select>
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
+                </template>
+            </vaadin-grid-column>
+
+
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="date" />
+                </template>
+                <template>
+                    {{item.date}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}" disabled>
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" />
+                </template>
+                <template>
+                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    {{item.code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="measurementUnitCode" />
+                </template>
+                <template>
+                    {{item.measurementUnitCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" />
+                </template>
+                <template>
+                    {{item.quantity}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCost" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.unitCost}}€</span>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalCost" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.totalCost}}€</span>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitPrice" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.unitPrice}}€</span>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalPrice" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.totalPrice}}€</span>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceToClientNo" />
+                </template>
+                <template>
+                    {{item.invoiceToClientNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locationCode" />
+                </template>
+                <template>
+                    {{item.locationCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode" />
+                </template>
+                <template>
+                    {{item.functionalAreaCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode" />
+                </template>
+                <template>
+                    {{item.responsabilityCenterCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="commitmentNumber" />
+                </template>
+                <template>
+                    {{item.commitmentNumber}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-invoice-autorization',
+                properties: {
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_Type: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_FailType: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    selectedItem: {
+                        type: Array,
+                    },
+
+                    selectedItems: {
+                        type: Array,
+                    }
+                },
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "areaId": this._areaid, "projectNo": this._projectno });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.projectInvoiceAutorization);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _confirm: function (selectedItem, selectedItems) {
+                    debugger;
+                    this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
+                    this.$.page_autorizelines_ajax.generateRequest();
+                    //console.log(this.selectedItems);
+                },
+
+                _CreateLinesResponse: function (e) {
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.ToastMessageSuccess.text = 'Movimentos Autorizados criadas com sucesso';
+                    this.$.ToastMessageSuccess.open();
+                }
+            });
         });
-    });
-</script>
+    </script>
 </dom-module>

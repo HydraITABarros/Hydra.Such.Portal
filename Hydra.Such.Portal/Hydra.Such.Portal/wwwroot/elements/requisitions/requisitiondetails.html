@@ -124,6 +124,7 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+
             vaadin-grid.disabled:after {
                 content: "";
                 position: absolute;
@@ -157,7 +158,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" on-response="_gridpurchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -257,6 +258,8 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                 <paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
@@ -970,6 +973,7 @@
                                             <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
                                         </vaadin-grid-filter>
                                     </template>
+                                    </
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
@@ -977,6 +981,7 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
                                             {{item.localMarketStringValue}}
+                                            <
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1409,7 +1414,7 @@
                     if (!this.Flag) {
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                         if (this._requisitionstatus === 6) {
-                            this._isArchived = true; 
+                            this._isArchived = true;
                         }
                         this.$.requisition_datasource.generateRequest();
                     }
@@ -1464,7 +1469,7 @@
                         this.$.ReceptionReceptionResponsible.value = this.PlaceDataDelivery.responsiblerecept;
                     }
                 },
-                
+
                 _validateReqHeaderInput: function () {
                     if (true) {
                         return true;
@@ -1516,7 +1521,7 @@
                 _notImplemented() {
                     alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
                 },
-                
+
                 _sendReqRequest: function (url, data) {
                     this.$.requisition_datasource.url = url;
                     this.$.requisition_datasource.body = JSON.stringify(data);
@@ -1766,7 +1771,7 @@
                     if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
                         this.$.requesitionType.disabled = true;
 
-                        var elems = Polymer.dom(this.root).querySelectorAll('vaadin-checkbox'); 
+                        var elems = Polymer.dom(this.root).querySelectorAll('vaadin-checkbox');
                         elems.forEach(function (elem) {
                             elem.disabled = true;
                         });
@@ -2031,7 +2036,7 @@
                         this.CBPurchaseLineGrid = "";
                         line.openOrderLineNo = "";
 
-                        this.$.gridpurchaseheader_ajax.body = JSON.stringify( itemNo );
+                        this.$.gridpurchaseheader_ajax.body = JSON.stringify(itemNo);
                         this.$.gridpurchaseheader_ajax.generateRequest();
 
                         this.$.grdRequisitionLines.clearCache();
@@ -2069,7 +2074,12 @@
                 },
                 _redirectToStatOfPlay: function () {
                     window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

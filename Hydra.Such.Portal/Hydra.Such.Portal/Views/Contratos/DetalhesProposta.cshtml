@@ -7,13 +7,13 @@
 <link rel="import" href="~/elements/contracts/proposal_details.html">
 
 @*@if (ViewBag.ContractNo == "")
-{
-    <h1 class="title">Criar Proposta</h1>
-}
-else
-{
-    <h1 class="title">Proposta @ViewBag.ContractNo</h1>
-}*@
+    {
+        <h1 class="title">Criar Proposta</h1>
+    }
+    else
+    {
+        <h1 class="title">Proposta @ViewBag.ContractNo</h1>
+    }*@
 
 
 <x-proposalsdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-proposalsdetails>

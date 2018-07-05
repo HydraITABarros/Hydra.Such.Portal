@@ -108,6 +108,8 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button class="tablinks" on-tap="_redirectToNewItemForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
@@ -943,6 +945,10 @@
                             this.$.gridTemplateLines.clearCache();
                         }
                     }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
             });
         });

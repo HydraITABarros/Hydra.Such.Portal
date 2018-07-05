@@ -43,6 +43,7 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_openNewItemForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             <paper-button class="tablinks" on-tap="_redirectToRequisitionDetails"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Detalhes Requisição</paper-button>
         </div>
@@ -319,7 +320,7 @@
                         else {
                             this.$.btnConfirmReading.removeAttribute("hidden");
                             this.$.btnSaveQuestion.removeAttribute("hidden");
-                            
+
                             if (this.$.lblQuestionedBy.innerText == "@User.Identity.Name") {
                                 this.$.txtQuestion.removeAttribute("hidden");
                                 this.$.QuestionContainer.setAttribute("hidden", "true");
@@ -332,7 +333,12 @@
                         this.$.btnSaveResponse.removeAttribute("hidden");
                         this.$.txtAnswer.removeAttribute("disabled");
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

@@ -124,14 +124,14 @@
                     <vaadin-text-field value="{{item.inventory}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px" >
+            <vaadin-grid-column resizable width="160px">
                 <template class="header">
                     <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="blocked" />
                 </template>
-                <template>            
+                <template>
                     <div class="alignCenter">
-                       <vaadin-checkbox  id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>    
+                        <vaadin-checkbox id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -203,7 +203,7 @@
     </template>
 
     <script>
-      
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-unitstokkeeping',
@@ -212,6 +212,21 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                },
+                ready: function () {
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridUnitStockeeping);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _redirectToNewUnitForm: function (item) {
                     if (item != null) {
