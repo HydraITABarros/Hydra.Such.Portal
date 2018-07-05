@@ -48,8 +48,8 @@
           <DataField>Document_No</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Global_Dimension_2_Code">
-          <DataField>Global_Dimension_2_Code</DataField>
+        <Field Name="Dimension_Value">
+          <DataField>Dimension_Value</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Value">
@@ -626,7 +626,7 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Global_Dimension_2_Code.Value</Value>
+                                  <Value>=Fields!Dimension_Value.Value</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -795,7 +795,7 @@ Saldo</Value>
             <Top>0.25in</Top>
             <Left>0.3175cm</Left>
             <Height>0.60708in</Height>
-            <Width>7.11328in</Width>
+            <Width>7.11329in</Width>
             <Style />
           </Tablix>
         </ReportItems>
