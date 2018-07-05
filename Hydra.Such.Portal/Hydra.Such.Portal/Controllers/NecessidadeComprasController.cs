@@ -33,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Detalhes(int? id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.NecessidadeCompras);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.NecessidadeCompras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -387,7 +387,7 @@ namespace Hydra.Such.Portal.Controllers
                 foreach (RequisitionViewModel rpu in data)
                 {
                     List<LinhasRequisição> result = new List<LinhasRequisição>();
-                    result = DBRequestLine.GetAllByRequisiçãos(rpu.RequisitionNo);
+                    result = DBRequestLine.GetByRequisitionId(rpu.RequisitionNo);
                     if (result != null && result.Count > 0)
                     {
                         foreach (LinhasRequisição lr in result)
@@ -675,7 +675,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult NecessidadeCompraDireta(int? id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.NecessidadeComprasDireta);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.NecessidadeComprasDireta);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;

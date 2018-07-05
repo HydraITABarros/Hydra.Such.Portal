@@ -65,6 +65,17 @@
                 width: 100%;
             }
 
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
             .break_clear {
                 margin-top: 15px;
             }
@@ -372,6 +383,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/TerminarFolhaDeHoras"
+                   last-response="{{terminarFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="terminarfolhadehoras_ajax"
+                   on-response="_terminarfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/ValidarFolhaDeHoras"
                    last-response="{{validarFolhaDeHoras}}"
                    method="post"
@@ -400,12 +420,13 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
-            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
-            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
-            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
-            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}" title="Calcular Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj. Custo</paper-button>
+            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
+            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
+            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir Folha de Horas"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
+            <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#DADADA"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -450,24 +471,45 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                            <!--<vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>-->
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Início</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataPartidaTexto" name="dataPartidaTexto" value="{{data.dataPartidaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                            <!--<vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>-->
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                            <!--<vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>-->
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
-                            <!--<vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>-->
-                        </div>
-                    </div>
 
-                    <div class="row break_clear">
+                        <!--<div class="col-sm-3">
+                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                        </div>-->
+                        <!--<div class="col-sm-3">
+                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                        </div>-->
+
+                        <div class="col-sm-3">
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataChegadaTexto" name="dataChegadaTexto" value="{{data.dataChegadaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<div class="col-sm-3">
+                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                        </div>-->
+                        <!--<div class="col-sm-3">
+                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                        </div>-->
+
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
                                 <template>
@@ -481,7 +523,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo Kms">
+                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -491,7 +533,9 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+                    </div>
 
+                    <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-value-changed="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -506,14 +550,19 @@
 
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
+
+
+
+                        <!--<div class="col-sm-3" style="padding-top:20px">
+                            <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </div>-->
                     </div>
 
-                    <div class="marginSpace">
-                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    </div>
+                    <!--<div class="marginSpace">
+                    </div>-->
                 </div>
 
 
@@ -551,11 +600,18 @@
                                 </div>
 
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker id="percursoDataViagem" label="Data Viagem" on-blur="_PercursoDataValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="percursoDataViagem" label="Data Viagem" on-blur="_PercursoDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
                                 </div>
 
-                                <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}">Criar</paper-button>
+
+
+                                <!--<div class="col-sm-1" style="padding-top:23px">
+                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
+                                <div class="col-sm-1" style="padding-top:32px">
+                                    <center>
+                                        <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                    </center>
                                 </div>
                             </div>
                         </div>
@@ -567,7 +623,7 @@
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="noLinha" />
+                                <vaadin-grid-filter path="noLinha"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoLinhaNo" id="tabPercursoLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true"></vaadin-text-field>
@@ -577,7 +633,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codOrigem" style="text-align:center;">Código Origem</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codOrigem" />
+                                <vaadin-grid-filter path="codOrigem"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="true"></vaadin-text-field>
@@ -587,7 +643,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoOrigem" style="text-align:center;">Descrição Origem</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricaoOrigem" />
+                                <vaadin-grid-filter path="descricaoOrigem"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoOrigemDescricao" value="{{item.descricaoOrigem}}" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
@@ -597,7 +653,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codDestino" style="text-align:center;">Código Destino</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codDestino" />
+                                <vaadin-grid-filter path="codDestino"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="true"></vaadin-text-field>
@@ -607,7 +663,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoDestino" style="text-align:center;">Descrição Destino</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricaoDestino" />
+                                <vaadin-grid-filter path="descricaoDestino"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoDestinoDescricao" value="{{item.descricaoDestino}}" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
@@ -617,7 +673,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Viagem</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dataDespesaTexto" />
+                                <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="true" style="text-align:right;"></vaadin-date-picker>
@@ -627,7 +683,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="observacao" />
+                                <vaadin-grid-filter path="observacao"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoJustificacao" value="{{item.observacao}}" maxlength="200" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
@@ -637,11 +693,11 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distancia" style="text-align:center;">Distância Efectuada</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="distancia" />
+                                <vaadin-grid-filter path="distancia"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
-                                    <div slot="suffix">KM</div>
+                                    <div slot="suffix">km</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
@@ -649,11 +705,11 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distanciaPrevista" style="text-align:center;">Distância Prevista</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="distanciaPrevista" />
+                                <vaadin-grid-filter path="distanciaPrevista"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
-                                    <div slot="suffix">KM</div>
+                                    <div slot="suffix">km</div>
                                 </vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
@@ -661,10 +717,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoUnitario" />
+                                <vaadin-grid-filter path="custoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -673,10 +729,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoTotal" />
+                                <vaadin-grid-filter path="custoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -686,7 +742,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button id="btn_deletePercurso" class="btnRemove tableBtn" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
@@ -703,7 +762,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-change="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" ="_getAjudaCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -731,27 +790,29 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-date-picker>
                                 </div>
 
                                 <div class="col-sm-2" style="text-align:right">
                                     <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
 
-                                <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.create }}">Criar</paper-button>
+                                <div class="col-sm-1" style="padding-top:30px">
+                                    <center>
+                                        <paper-button id="btn_createAjuda" class="btnSave tableBtn" raised on-tap="_createAjuda" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                    </center>
                                 </div>
                             </div>
                         </div>
@@ -763,7 +824,7 @@
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="noLinha" />
+                                <vaadin-grid-filter path="noLinha"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabAjudaLinhaNo" id="tabAjudaLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
@@ -773,7 +834,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricaoTipoCusto" />
+                                <vaadin-grid-filter path="descricaoTipoCusto"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field id="tabAjudaTipoCusto" value="{{item.descricaoTipoCusto}}" maxlength="200" disabled="true"></vaadin-text-field>
@@ -783,7 +844,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricaoCodTipoCusto" />
+                                <vaadin-grid-filter path="descricaoCodTipoCusto"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field id="tabAjudaCodigoTipoCusto" value="{{item.descricaoCodTipoCusto}}" maxlength="200" disabled="true"></vaadin-text-field>
@@ -793,7 +854,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="quantidade" style="text-align:center;">Quantidade</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantidade" />
+                                <vaadin-grid-filter path="quantidade"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabAjudaQuantidade" value="{{item.quantidade}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -803,10 +864,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoUnitario" />
+                                <vaadin-grid-filter path="custoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" maxlength="12" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals">
+                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" type="number" maxlength="12" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -815,10 +876,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoTotal" />
+                                <vaadin-grid-filter path="custoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaCustoTotal" name="tabAjudaCustoTotal" value="{{item.custoTotal}}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" disabled="true" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaCustoTotal" name="tabAjudaCustoTotal" value="{{item.custoTotal}}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" disabled="true" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -827,10 +888,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoUnitario" style="text-align:center;">Preço Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="precoUnitario" />
+                                <vaadin-grid-filter path="precoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaPrecoUnitario" name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaPrecoUnitario" name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -839,10 +900,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoVenda" style="text-align:center;">Preço Venda</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="precoVenda" />
+                                <vaadin-grid-filter path="precoVenda"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaPrecoVenda" name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaPrecoVenda" name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -851,20 +912,20 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Despesa</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dataDespesaTexto" />
+                                <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="true" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="true" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="observacao" />
+                                <vaadin-grid-filter path="observacao"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaJustificacao" value="{{item.observacao}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:left;"></vaadin-text-field>
+                                <vaadin-text-field name="tabAjudaJustificacao" value="{{item.observacao}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="200" style="text-align:left;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -872,7 +933,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                 </div>
@@ -911,7 +975,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" on-blur="_MaoDeObraDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2">
                                     <such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
@@ -936,7 +1000,7 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1 alignPoga">
@@ -944,15 +1008,22 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
 
-                                <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}">Criar</paper-button>
+
+
+                                <!--<div class="col-sm-1 alignPoga">
+                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
+                                <div class="col-sm-1" style="padding-top:32px">
+                                    <center>
+                                        <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                    </center>
                                 </div>
                             </div>
                         </div>
@@ -964,7 +1035,7 @@
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="linhaNo" />
+                                <vaadin-grid-filter path="linhaNo"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabMaoDeObraLinhaNo" id="tabMaoDeObraLinhaNo" value="{{item.linhaNo}}" on-blur="_updateLinhaMaoDeObra" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
@@ -974,17 +1045,17 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dateTexto">Data</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dateTexto" />
+                                <vaadin-grid-filter path="dateTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabMaoDeObraDate" name="tabMaoDeObraDate" value="{{item.dateTexto}}" on-blur="_updateLinhaMaoDeObra" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="true"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabMaoDeObraDate" name="tabMaoDeObraDate" value="{{item.dateTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="true"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="projetoNo" style="text-align:center;">Nº Obra</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="projetoNo" />
+                                <vaadin-grid-filter path="projetoNo"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-combo-box items="[[LFolhaDeHoraNavProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="no" item-label-path="no" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
@@ -1002,7 +1073,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Cód. Tipo Trabalho</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codigoTipoTrabalho" />
+                                <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
@@ -1020,10 +1091,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Hora de Início</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="horaInicioTexto" />
+                                <vaadin-grid-filter path="horaInicioTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1039,10 +1110,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Hora de Fim</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="horaFimTexto" />
+                                <vaadin-grid-filter path="horaFimTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1058,7 +1129,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Nº Família Recurso</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codigoFamiliaRecurso" />
+                                <vaadin-grid-filter path="codigoFamiliaRecurso"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
@@ -1076,20 +1147,20 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horasNoTexto" style="text-align:center;">Nº Horas</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="horasNoTexto" />
+                                <vaadin-grid-filter path="horasNoTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" type="time" maxlength="8" disabled="true" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitarioDireto" style="text-align:center;">Custo Unit. Directo</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="custoUnitarioDireto" />
+                                <vaadin-grid-filter path="custoUnitarioDireto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -1098,7 +1169,7 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoCentroResponsabilidade" style="text-align:center;">Centro Responsabilidade</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                <vaadin-grid-filter path="codigoCentroResponsabilidade"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
@@ -1116,10 +1187,10 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoTotal" style="text-align:center;">Preço Total</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="precoTotal" />
+                                <vaadin-grid-filter path="precoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -1129,7 +1200,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
@@ -1161,31 +1235,38 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_PresencaDataValidar" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" on-blur="_PresencaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" type="time" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" type="time" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" type="time" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" type="time" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-5" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
 
-                                <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}">Criar</paper-button>
+
+
+                                <!--<div class="col-sm-1 alignPoga">
+                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
+                                <div class="col-sm-1" style="padding-top:32px">
+                                    <center>
+                                        <paper-button id="btn_createPresenca" class="btnSave tableBtn" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                    </center>
                                 </div>
                             </div>
                         </div>
@@ -1197,7 +1278,7 @@
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="folhaDeHorasNo" style="text-align:center;">Nº Folha de Horas</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="folhaDeHorasNo" />
+                                <vaadin-grid-filter path="folhaDeHorasNo"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field name="tabPresencaFolhaDeHorasNo" id="tabPresencaFolhaDeHorasNo" value="{{item.folhaDeHorasNo}}" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
@@ -1207,57 +1288,57 @@
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataTexto" style="text-align:center;">Data</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dataTexto" />
+                                <vaadin-grid-filter path="dataTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabPresencaDataTexto" name="tabPresencaDataTexto" value="{{item.dataTexto}}" disabled="true" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabPresencaDataTexto" name="tabPresencaDataTexto" value="{{item.dataTexto}}" disabled="true" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Entrada" style="text-align:center;">1ª Entrada</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="hora1Entrada" />
+                                <vaadin-grid-filter path="hora1Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Saida" style="text-align:center;">1ª Saída</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="hora1Saida" />
+                                <vaadin-grid-filter path="hora1Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Entrada" style="text-align:center;">2ª Entrada</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="hora2Entrada" />
+                                <vaadin-grid-filter path="hora2Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Saida" style="text-align:center;">2ª Saída</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="hora2Saida" />
+                                <vaadin-grid-filter path="hora2Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacoes" style="text-align:center;">Observações</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="observacoes" />
+                                <vaadin-grid-filter path="observacoes"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <vaadin-text-field id="tabPresencaObservacoes" name="tabPresencaObservacoes" value="{{item.observacoes}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" maxlength="200" style="text-align:left;"></vaadin-text-field>
@@ -1268,7 +1349,10 @@
                             <template class="header">
                             </template>
                             <template>
-                                <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                <center>
+                                    <!--<paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
                 </div>
@@ -1277,6 +1361,7 @@
 
 
             <!--DETALHE-->
+
 
 
 
@@ -1294,17 +1379,21 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataCriacaoTexto}}" id="dataCriacaoTexto" name="dataCriacaoTexto" disabled="true" label="Data Criação"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaCriacaoTexto}}" id="horaCriacaoTexto" name="horaCriacaoTexto" disabled="true" label="Hora Criação"></vaadin-text-field>
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Criação</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataCriacaoTexto" name="dataCriacaoTexto" value="{{data.dataCriacaoTexto}}" type="date" disabled="true"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field id="horaCriacaoTexto" name="horaCriacaoTexto" value="{{data.horaCriacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1318,7 +1407,6 @@
                                         </tr>
                                     </table>
                                 </template>
-
                             </vaadin-combo-box>
                         </div>
 
@@ -1332,7 +1420,6 @@
                                         </tr>
                                     </table>
                                 </template>
-
                             </vaadin-combo-box>
                         </div>
 
@@ -1356,15 +1443,16 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataTerminadoTexto}}" id="dataTerminadoTexto" name="dataTerminadoTexto" disabled="true" label="Data Terminado"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.validado}}" disabled="true">Validado</vaadin-checkbox>
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Terminado</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataTerminadoTexto" name="dataTerminadoTexto" value="{{data.dataTerminadoTexto}}" disabled="true"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field id="horaTerminadoTexto" name="horaTerminadoTexto" value="{{data.horaTerminadoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1377,16 +1465,25 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataValidacaoTexto}}" id="dataValidacaoTexto" name="dataValidacaoTexto" disabled="true" label="Data Validação"></vaadin-text-field>
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Validação</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataValidacaoTexto" name="dataValidacaoTexto" value="{{data.dataValidacaoTexto}}" disabled="true"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field id="horaValidacaoTexto" name="horaValidacaoTexto" value="{{data.horaValidacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaValidacaoTexto}}" id="horaValidacaoTexto" name="horaValidacaoTexto" disabled="true" label="Hora Validação"></vaadin-text-field>
+                        <div class="col-sm-3 alignPoga" style="padding-left:28px">
+                            <vaadin-checkbox checked="{{data.validado}}" id="validado" disabled="true">Validado</vaadin-checkbox>
                         </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradoresEmRH}}" id="integradoresEmRH" name="integradoresEmRH" disabled="true" label="Integradores Aj Custo"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradoresEmRH}}" id="integradoresEmRH" name="integradoresEmRH" disabled="true" label="Integradores Aj. Custo"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
@@ -1394,63 +1491,71 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHTexto}}" id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" disabled="true" label="Data Integ. Aj. Custo RH"></vaadin-text-field>
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Integrar Aj. Custo RH</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" value="{{data.dataIntegracaoEmRHTexto}}" disabled="true"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" value="{{data.horaIntegracaoEmRHTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHTexto}}" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" disabled="true" label="Hora Integ. Aj. Custo RH"></vaadin-text-field>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalHoras}}" id="custoTotalHoras" name="custoTotalHoras" type="number" disabled="true" class="alignRight" label="Custo Total Horas">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
                         </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores km RH"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador km RH"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. KMs RH"></vaadin-text-field>
+                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Integrar km RH</label>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-8" style="padding-right: 5px;">
+                                    <vaadin-date-picker id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" value="{{data.dataIntegracaoEmRHKMTexto}}" disabled="true"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-4" style="padding-left: 0px;">
+                                    <vaadin-text-field id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. KMs RH"></vaadin-text-field>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" type="number" disabled="true" class="alignRight" label="Nº Total km">
+                                    <div slot="suffix">km</div>
+                                </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
                         </div>
                     </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalAjudaCusto}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
-                        </div>
 
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Nº Total KM">
-                                <div slot="suffix">KM</div>
-                            </vaadin-text-field>
-                        </div>
-                    </div>
                     <div class="row break_clear">
                         <div class="col-sm-12">
-                            <vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></vaadin-text-field>
+                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></such-textarea>
                         </div>
-                    </div>
-
-                    <div class="marginSpace">
-                        <paper-button raised id="btn_updateFH2" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>
                 </div>
             </div>
@@ -1461,7 +1566,7 @@
 
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
-                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
@@ -1608,7 +1713,7 @@
                                                     }
                                                 }
                                                 else {
-                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo Kms.");
+                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo km.");
                                                     return false;
                                                 }
                                             }
@@ -1846,6 +1951,135 @@
                     }
                 },
 
+                _validacaoTerminada: function () {
+                    if (this.data.terminada == true)
+                        this.data.terminada = false;
+                    else if (this.data.terminada == false)
+                        this.data.terminada = true;
+
+                    var ok = 0;
+                    var ajax_request = this.$.terminarfolhadehoras_ajax;
+
+                    if (this.data.terminada == true) {
+                        if (this._validateFolhaHoras()) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    ok = 1;
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                ok = 1;
+                            }
+                        }
+                    }
+
+                    if (ok == 1) {
+                        var terminada_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
+                        var terminada_Area = this.data.codigoArea;
+                        var terminada_ProjetoNo = this.$.projetoNo.value;
+                        var terminada_EmpregadoNo = this.$.empregadoNo.value;
+                        var terminada_DataPartidaTexto = this.$.dataPartidaTexto.value;
+                        var terminada_HoraPartidaTexto = this.$.horaPartidaTexto.value;
+                        var terminada_DataChegadaTexto = this.$.dataChegadaTexto.value
+                        var terminada_HoraChegadaTexto = this.$.horaChegadaTexto.value;
+                        var terminada_TipoDeslocacao = this.$.tipoDeslocacao.value;
+                        var terminada_CodigoTipoKms = this.$.codigoTipoKms.value;
+                        var terminada_Matricula = this.$.matricula.value;
+                        var terminada_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
+                        var terminada_Terminada = null;
+                        var terminada_Estado = this.$.folhaDeHoraStatus.value;
+                        var terminada_CriadoPor = this.$.criadoPor.value;
+                        var terminada_CodigoRegiao = this.$.codigoRegiao.value;
+                        var terminada_CodigoAreaFuncional = this.$.codigoAreaFuncional.value;
+                        var terminada_CodigoCentroResponsabilidade = this.$.codigoCentroResponsabilidade.value;
+                        var terminada_Validado = this.data.validado;
+                        var terminada_Validadores = this.$.validadores.value;
+                        var terminada_Validador = this.$.validador.value;
+                        var terminada_DataValidacaoTexto = this.$.dataValidacaoTexto.value;
+                        var terminada_HoraValidacaoTexto = this.$.horaValidacaoTexto.value;
+                        var terminada_IntegradoresEmRH = this.$.integradoresEmRH.value;
+                        var terminada_IntegradorEmRH = this.$.integradorEmRH.value;
+                        var terminada_DataIntegracaoEmRHTexto = this.$.dataIntegracaoEmRHTexto.value;
+                        var terminada_HoraIntegracaoEmRHTexto = this.$.horaIntegracaoEmRHTexto.value;
+                        var terminada_IntegradoresEmRHKM = this.$.integradoresEmRHKM.value;
+                        var terminada_IntegradorEmRHKM = this.$.integradorEmRHKM.value;
+                        var terminada_DataIntegracaoEmRHKMTexto = this.$.dataIntegracaoEmRHKMTexto.value;
+                        var terminada_HoraIntegracaoEmRHKMTexto = this.$.horaIntegracaoEmRHKMTexto.value;
+                        var terminada_CustoTotalAjudaCusto = this.$.custoTotalAjudaCusto.value;
+                        var terminada_CustoTotalHoras = this.$.custoTotalHoras.value;
+                        var terminada_CustoTotalKM = this.$.custoTotalKM.value;
+                        var terminada_NumTotalKM = this.$.numTotalKM.value;
+                        var terminada_Observacoes = this.$.observacoes.value;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Terminar a Folha de Horas?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (terminarFolhaHoras) {
+                                if (terminarFolhaHoras) {
+                                    terminada_Terminada = true;
+                                }
+                                else {
+                                    terminada_Terminada = false;
+                                };
+
+                                ajax_request.body = JSON.stringify({
+                                    folhaDeHorasNo: terminada_FolhaDeHorasNo,
+                                    projetoNo: terminada_ProjetoNo,
+                                    empregadoNo: terminada_EmpregadoNo,
+                                    dataPartidaTexto: terminada_DataPartidaTexto,
+                                    horaPartidaTexto: terminada_HoraPartidaTexto,
+                                    dataChegadaTexto: terminada_DataChegadaTexto,
+                                    horaChegadaTexto: terminada_HoraChegadaTexto,
+                                    tipoDeslocacao: terminada_TipoDeslocacao,
+                                    codigoTipoKms: terminada_CodigoTipoKms,
+                                    matricula: terminada_Matricula,
+                                    deslocacaoForaConcelho: terminada_DeslocacaoForaConcelho,
+                                    terminada: terminada_Terminada,
+                                    estado: terminada_Estado,
+                                    criadoPor: terminada_CriadoPor,
+                                    codigoRegiao: terminada_CodigoRegiao,
+                                    codigoAreaFuncional: terminada_CodigoAreaFuncional,
+                                    codigoCentroResponsabilidade: terminada_CodigoCentroResponsabilidade,
+                                    validado: terminada_Validado,
+                                    validadores: terminada_Validadores,
+                                    validador: terminada_Validador,
+                                    dataValidacaoTexto: terminada_DataValidacaoTexto,
+                                    horaValidacaoTexto: terminada_HoraValidacaoTexto,
+                                    integradoresEmRH: terminada_IntegradoresEmRH,
+                                    integradorEmRH: terminada_IntegradorEmRH,
+                                    dataIntegracaoEmRHTexto: terminada_DataIntegracaoEmRHTexto,
+                                    horaIntegracaoEmRHTexto: terminada_HoraIntegracaoEmRHTexto,
+                                    integradoresEmRHKM: terminada_IntegradoresEmRHKM,
+                                    integradorEmRHKM: terminada_IntegradorEmRHKM,
+                                    dataIntegracaoEmRHKMTexto: terminada_DataIntegracaoEmRHKMTexto,
+                                    horaIntegracaoEmRHKMTexto: terminada_HoraIntegracaoEmRHKMTexto,
+                                    custoTotalAjudaCusto: terminada_CustoTotalAjudaCusto,
+                                    custoTotalHoras: terminada_CustoTotalHoras,
+                                    custoTotalKM: terminada_CustoTotalKM,
+                                    numTotalKM: terminada_NumTotalKM,
+                                    observacoes: terminada_Observacoes
+                                });
+                                ajax_request.generateRequest();
+                            }
+                        });
+                    }
+                    else {
+                        ajax_ready.generateRequest();
+                    }
+                },
+
                 _validarFolhaDeHoras: function () {
                     //debugger;
                     if (this._validateFolhaHoras()) {
@@ -1908,7 +2142,7 @@
                             }
                         }
                         else {
-                            this._showErrorMessage("A Integração dos KMs já foi feita.");
+                            this._showErrorMessage("A Integração dos km já foi feita.");
                         }
                     }
                 },
@@ -1937,7 +2171,17 @@
                                                     codCresp: this.$.codigoCentroResponsabilidade.value,
                                                     matricula: this.$.matricula.value
                                                 });
-                                                this.$.page_createpercurso_ajax.generateRequest();
+                                                //this.$.page_createpercurso_ajax.generateRequest();
+                                                //this.$.tabPercurso.clearCache();
+
+                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                var linha = this.$.page_createpercurso_ajax.generateRequest();
+
+                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                })
+
                                                 this.$.tabPercurso.clearCache();
                                             }
                                             else {
@@ -1957,7 +2201,7 @@
                                 }
                             }
                             else {
-                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo KMs.');
+                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
                             }
                         }
                         else {
@@ -1972,10 +2216,12 @@
                 _deletePercurso: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
-
                     var percursoFH = this.$.folhaDeHorasNo.value;
                     var percursoNoLinha = e.model.item.noLinha;
                     var ajax_request = this.$.page_deletepercurso_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o Percurso?",
@@ -1996,6 +2242,7 @@
                                     noLinha: percursoNoLinha
                                 });
                                 ajax_request.generateRequest();
+
                                 this.$.tabPercurso.clearCache();
                             }
                         }
@@ -2082,7 +2329,17 @@
                                                                         codArea: this.$.codigoAreaFuncional.value,
                                                                         codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
-                                                                    this.$.page_createajuda_ajax.generateRequest();
+                                                                    //this.$.page_createajuda_ajax.generateRequest();
+                                                                    //this.$.tabAjuda.clearCache();
+
+                                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                                    var linha = this.$.page_createajuda_ajax.generateRequest();
+
+                                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                                    })
+
                                                                     this.$.tabAjuda.clearCache();
                                                                 }
                                                                 else {
@@ -2137,10 +2394,12 @@
                 _deleteAjuda: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
-
                     var ajudaFH = this.$.folhaDeHorasNo.value;
                     var ajudaNoLinha = e.model.item.noLinha;
                     var ajax_request = this.$.page_deleteajuda_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Ajuda?",
@@ -2220,7 +2479,7 @@
                 },
 
                 _AjudaQuantidadeValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaQuantidade.value != "") {
                         var quant = parseInt(this.$.ajudaQuantidade.value);
                         if (quant < 0) {
@@ -2233,7 +2492,7 @@
                 },
 
                 _AjudaCustoUnitarioValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaCustoUnitario.value != "") {
                         var custo = parseInt(this.$.ajudaCustoUnitario.value);
                         if (custo < 0) {
@@ -2246,7 +2505,7 @@
                 },
 
                 _AjudaPrecoUnitarioValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.ajudaPrecoUnitario.value != "") {
                         var preco = parseInt(this.$.ajudaPrecoUnitario.value);
                         if (preco < 0) {
@@ -2306,7 +2565,17 @@
                                                     horaFim: this.$.maoDeObraHoraFim.value,
                                                     horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
                                                 });
-                                                this.$.page_createmaodeobra_ajax.generateRequest();
+                                                //this.$.page_createmaodeobra_ajax.generateRequest();
+                                                //this.$.tabMaoDeObra.clearCache();
+
+                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                var linha = this.$.page_createmaodeobra_ajax.generateRequest();
+
+                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                })
+
                                                 this.$.tabMaoDeObra.clearCache();
                                             }
                                             else {
@@ -2341,10 +2610,12 @@
                 _deleteMaoDeObra: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
-
                     var maoDeObraFH = this.$.folhaDeHorasNo.value;
                     var maoDeObraNoLinha = e.model.item.linhaNo;
                     var ajax_request = this.$.page_deletemaodeobra_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Mão de Obra?",
@@ -2567,7 +2838,17 @@
                                                         hora2Saida: this.$.presencaHora2Saida.value,
                                                         observacoes: this.$.presencaObservacoes.value
                                                     });
-                                                    this.$.page_createpresenca_ajax.generateRequest();
+                                                    //this.$.page_createpresenca_ajax.generateRequest();
+                                                    //this.$.tabPresenca.clearCache();
+
+                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+
+                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                    var linha = this.$.page_createpresenca_ajax.generateRequest();
+
+                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                    })
+
                                                     this.$.tabPresenca.clearCache();
                                                 }
                                                 else {
@@ -2606,10 +2887,12 @@
                 _deletePresenca: function (e) {
                     //debugger;
                     var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
-
                     var presencaFH = this.$.folhaDeHorasNo.value;
                     var presencaData = e.model.item.dataTexto;
                     var ajax_request = this.$.page_deletepresenca_ajax;
+
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover a Presença?",
@@ -3002,7 +3285,7 @@
                             this._showErrorMessage('Falta preencher o campo Tipo Deslocação.');
                         }
                         if (this.FolhaDeHorasUpdatedValidacao == 28) {
-                            this._showErrorMessage('Falta preencher o campo Tipo Kms.');
+                            this._showErrorMessage('Falta preencher o campo Tipo km.');
                         }
                         if (this.FolhaDeHorasUpdatedValidacao == 29) {
                             this._showErrorMessage('Falta preencher o campo Matrícula.');
@@ -3050,7 +3333,7 @@
 
                     if (this.FolhaDeHorasUpdated == 0) {
                         this._showMessage('Folha de Horas actualizada com sucesso.');
-
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         if (this.FolhaDeHorasUpdated == 1) {
                             this._showErrorMessage('Já existe uma Folha de Horas nesse período de tempo para empregado em questão.');
@@ -3071,122 +3354,53 @@
                     }
                 },
 
-                _validarfolhadehorasResponse: function (e) {
+                _terminarfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.validarFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas validada com sucesso.');
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.terminarFolhaDeHoras.eReasonCode == 0 || this.terminarFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.terminarFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.validarFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para validar esta Folha de Horas.');
+                    } else {
+                        if (this.terminarFolhaDeHoras.eReasonCode == 1) {
+                            this.$.page_databound_ajax.generateRequest();
                         }
                         else {
-                            if (this.validarFolhaDeHoras == 2) {
-                                this._showErrorMessage('O projecto definido na Folha de Horas não existe no eSUCH e/ou Evolution.');
-                            }
-                            else {
-                                if (this.validarFolhaDeHoras == 3) {
-                                    this._showErrorMessage('O projecto definido na Mão de Obra não existe no eSUCH e/ou Evolution.');
-                                }
-                                else {
-                                    if (this.validarFolhaDeHoras == 4) {
-                                        this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                                    }
-                                    else {
-                                        if (this.validarFolhaDeHoras == 5) {
-                                            this._showErrorMessage('Não pode validar esta Folha de Horas pois a mesma já se encontra Validada.');
-                                        }
-                                        else {
-                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha de Horas.');
-                                        }
-                                    }
-                                }
-                            }
+                            this._showErrorMessage(this.terminarFolhaDeHoras.eMessage);
                         }
-                    }
+                    };
+                },
+
+                _validarfolhadehorasResponse: function (e) {
+                    //debugger;
+                    if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.validarFolhaDeHoras.eMessage);
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
+                    };
                 },
 
                 _integraremrhfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.integrarEmRHFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas Integrada em RH com sucesso.');
+                    if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.integrarEmRHFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para Integrar em RH esta Folha de Horas.');
-                        }
-                        else {
-                            if (this.integrarEmRHFolhaDeHoras == 4) {
-                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                            }
-                            else {
-                                if (this.integrarEmRHFolhaDeHoras == 5) {
-                                    this._showErrorMessage('Não pode Integrar em RH esta Folha de Horas pois a mesma já se encontra Integrada em RH.');
-                                }
-                                else {
-                                    if (this.integrarEmRHFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
-                                    }
-                                    else {
-                                        if (this.integrarEmRHFolhaDeHoras == 7) {
-                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH no eSUCH.');
-                                        }
-                                        else {
-                                            if (this.integrarEmRHFolhaDeHoras == 8) {
-                                                this._showErrorMessage('A Folha de Horas tem que estar no estado Validado');
-                                            }
-                                            else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha de Horas.');
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    } else {
+                        this._showErrorMessage(this.integrarEmRHFolhaDeHoras.eMessage);
+                    };
                 },
 
                 _integraremrhkmfolhadehorasResponse: function (e) {
                     //debugger;
-                    if (this.integrarEmRHKMFolhaDeHoras == 0) {
-                        this._showMessage('Folha de Horas Integrada em RH KM com sucesso.');
+                    if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
+                        this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.integrarEmRHKMFolhaDeHoras == 1) {
-                            this._showErrorMessage('Não tem permissões para Integrar em RH KM esta Folha de Horas.');
-                        }
-                        else {
-                            if (this.integrarEmRHKMFolhaDeHoras == 4) {
-                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
-                            }
-                            else {
-                                if (this.integrarEmRHKMFolhaDeHoras == 5) {
-                                    this._showErrorMessage('Não pode Integrar em RH KM esta Folha de Horas pois a mesma já se encontra Integrada em RH KM.');
-                                }
-                                else {
-                                    if (this.integrarEmRHKMFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.');
-                                    }
-                                    else {
-                                        if (this.integrarEmRHKMFolhaDeHoras == 7) {
-                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH KM no eSUCH.');
-                                        }
-                                        else {
-                                            if (this.integrarEmRHKMFolhaDeHoras == 8) {
-                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
-                                            }
-                                            else {
-                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha de Horas.');
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    } else {
+                        this._showErrorMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
+                    };
                 },
 
 
@@ -3330,13 +3544,20 @@
                 //AJUDA DE CUSTOS
                 _updateCalcularAjudasCustoResponse: function (e) {
                     //debugger;
-                    if (this.CalcularAjudasCustoUpdated) {
-                        this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
+                    if (this.CalcularAjudasCustoUpdated.eReasonCode == 0) {
+                        this._showMessage(this.CalcularAjudasCustoUpdated.eMessage);
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
-                    }
+                    } else {
+                        this._showErrorMessage(this.CalcularAjudasCustoUpdated.eMessage);
+                    };
+
+                    //if (this.CalcularAjudasCustoUpdated) {
+                    //    this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
+                    //    this.$.page_databound_ajax.generateRequest();
+                    //}
+                    //else {
+                    //    this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
+                    //}
                 },
 
                 //MAODEOBRA
@@ -3584,8 +3805,12 @@
                 //EMPREGADO FUNÇÕES
                 _codeChange: function (e) {
                     //debugger;
-                    this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.getEmpoyeeNAV_ajax.generateRequest();
+                    //this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value, this.$.folhaDeHorasNo.value);
+                    if (e.detail.value != "") {
+                        this.data.empregadoNo = e.detail.value;
+                        this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
+                        this.$.getEmpoyeeNAV_ajax.generateRequest();
+                    };
                 },
 
                 _getEmpoyeeNAVResponse: function (e) {
@@ -3617,7 +3842,7 @@
 
                         if (this.getEmpoyeeNAV.integradoresEmRHKM == null | this.getEmpoyeeNAV.integradoresEmRHKM == "") {
                             this.$.integradoresEmRHKM.value = "";
-                            this._showErrorMessage('O Empregado não tem Integradore(s) KMs RH.');
+                            this._showErrorMessage('O Empregado não tem Integradore(s) km RH.');
                         }
                         else {
                             this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
@@ -3683,6 +3908,19 @@
                     var _self = this;
 
                     //BOTÕES
+                    if (data.terminada == true) { //TERMINADA
+                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                        $(_self.$.btn_updateFH1).addClass('disabled');
+                        $(_self.$.btn_updateFH2).addClass('disabled');
+                        $(_self.$.btn_createPercurso).addClass('disabled');
+                        $(_self.$.btn_createAjuda).addClass('disabled');
+                        if (_self.$.integradorEmRH.value != null) {
+                            $(_self.$.btn_integrarEmRH).addClass('disabled');
+                        }
+                        if (_self.$.integradorEmRHKM.value != null) {
+                            $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                        }
+                    };
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
@@ -3709,6 +3947,24 @@
                     };
 
                     //CAMPOS
+                    if (data.terminada == true) { //TERMINADA
+                        _self.$.projetoNo.disabled = true;
+                        _self.$.empregadoNo.disabled = true;
+                        _self.$.dataPartidaTexto.disabled = true;
+                        _self.$.horaPartidaTexto.disabled = true;
+                        _self.$.dataChegadaTexto.disabled = true;
+                        _self.$.horaChegadaTexto.disabled = true;
+                        _self.$.tipoDeslocacao.disabled = true;
+                        _self.$.codigoTipoKms.disabled = true;
+                        _self.$.matricula.disabled = true;
+                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        _self.$.terminada.disabled = true;
+
+                        _self.$.codigoRegiao.disabled = true;
+                        _self.$.codigoAreaFuncional.disabled = true;
+                        _self.$.codigoCentroResponsabilidade.disabled = true;
+                        _self.$.observacoes.disabled = true;
+                    };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
                         _self.$.empregadoNo.disabled = true;
@@ -3802,10 +4058,14 @@
                     };
 
                     //TABELAS
-                    //if (data.estado == 1) { //VALIDADO
-                    //    $(_self.$.tabPercurso).addClass('disabled');
-                    //    $(_self.$.tabAjuda).addClass('disabled');
-                    //};
+                    if (data.terminada == true) { //TERMINADA
+                        $(_self.$.tabPercurso).addClass('disabled');
+                        $(_self.$.tabAjuda).addClass('disabled');
+                    }
+                    if (data.estado == 1) { //VALIDADO
+                        $(_self.$.tabPercurso).addClass('disabled');
+                        $(_self.$.tabAjuda).addClass('disabled');
+                    };
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.tabPercurso).addClass('disabled');
                         $(_self.$.tabAjuda).addClass('disabled');

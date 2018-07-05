@@ -111,14 +111,14 @@
         </style>
 
 
-
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReq"
+                   auto
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   auto
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
@@ -137,8 +137,6 @@
                    id="SendReq_databound"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{CloseRequisition}}"
                    id="closereq_ajax"
@@ -147,10 +145,11 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
         </div>
-
         <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -164,11 +163,10 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="state" />
+                    <!--<vaadin-grid-filter path="state" />-->
                 </template>
                 <template>
                     [[ _clFormatState(item.state) ]]
-
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
@@ -347,21 +345,22 @@
                         value: 0
                     }
                 },
+                observers: [
+                    '_onCacheLoaded(CBStatus)'
+                ],
+                _onCacheLoaded: function (CBStatus) {
+
+                    if (!this.Flag) {
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+                },
                 _rowSelected: function (item) {
                     if (item != null) {
                         this.$.dialog.open();
                         this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
                         this.$.grid_datareqlines_ajax.generateRequest();
                     }
-                },
-                ready: function () {
-
-                },
-                _responsehead: function (data) {
-
-                    _clFormatState(this.result.state);
-
-                    debugger;;
                 },
                 _clFormatState: function (param) {
                     if (param != undefined) {
@@ -370,7 +369,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
 
                 _GoToReq: function (e) {
@@ -427,10 +426,10 @@
                         this._openToastError("Occorreu um erro ao atualizar.");
                     }
                 },
-                ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
-                    this.$.grid_databound_ajax.generateRequest();
-                }
+                //ready: function () {
+                //    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
+                //    this.$.grid_databound_ajax.generateRequest();
+                //}
             });
         });
     </script>

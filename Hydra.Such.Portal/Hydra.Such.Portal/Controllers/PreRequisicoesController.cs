@@ -36,18 +36,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult Index()
         {
-            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
-            //if (UPerm != null && UPerm.Read.Value)
-            //{
-
-            //    ViewBag.UPermissions = UPerm;
-            //    return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("AccessDenied", "Error");
-            //}
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UploadURL = _config.FileUploadFolder;
@@ -64,7 +53,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult RequisicoesPendentes()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Requisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -229,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 
@@ -636,7 +625,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult RequisiçõesModeloLista(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Compras, Enumerations.Features.PréRequisições);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreReqNo = id;
@@ -674,7 +663,7 @@ namespace Hydra.Such.Portal.Controllers
                 project = DBProjects.GetById(req.ProjectNo);
             }
 
-            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetAllByRequisiçãos(req.RequisitionNo).ParseToViewModel();
+            List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
             if (reqLines != null)
             {
                 List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
@@ -725,17 +714,15 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GetPendingReq([FromBody] JObject requestParams)
+        public JsonResult GetPendingReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Pending,
                 RequisitionStates.Rejected
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -749,7 +736,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
@@ -758,16 +745,14 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
-        public JsonResult GetHistoryReq([FromBody] JObject requestParams)
+        public JsonResult GetHistoryReq()
         {
-            int areaNo = int.Parse(requestParams["AreaNo"].ToString());
-
             List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, areaNo, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -781,7 +766,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 
@@ -978,8 +963,9 @@ namespace Hydra.Such.Portal.Controllers
                                 ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
                                 if (result.eReasonCode != 100)
                                 {
-                                    data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
+                                    data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
                                 }
+
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
@@ -1001,11 +987,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //if all items have been created delete pre-requisition lines
                         DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-                        data.eMessage += createdReqIds;
-                        if (data.eMessages.Count > 0)
-                        {
-                            data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
-                        }
+                        //data.eMessage += createdReqIds;
+                        //if (data.eMessages.Count > 0)
+                        //{
+                        //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                        //}
                     }
                     else
                     {
@@ -1030,7 +1016,11 @@ namespace Hydra.Such.Portal.Controllers
             Requisição createReq = DBRequest.GetById(ReqNo);
             ErrorHandler ApprovalMovResult = new ErrorHandler();
             string Error = "";
+
+            List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
+
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+
             if (result != null && result.Count >0)
             {
                 foreach (ApprovalMovementsViewModel req in result)
@@ -1135,7 +1125,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         throw;
                     }

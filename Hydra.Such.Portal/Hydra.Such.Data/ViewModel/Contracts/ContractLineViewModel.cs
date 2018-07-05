@@ -28,7 +28,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string VersionStartDate { get; set; }
         public string VersionEndDate { get; set; }
         public string ResponsibleNo { get; set; }
-        public int? ServiceClientNo { get; set; }
+        public string ServiceClientNo { get; set; }
         public int? InvoiceGroup { get; set; }
         public bool? CreateContract { get; set; }
         public DateTime? CreateDate { get; set; }

@@ -72,7 +72,7 @@ namespace Hydra.Such.Data.ViewModel
 
         public string ServiceData { get; set; }
         public string ClientRequest { get; set; }
-        public int? ServiceClientCode { get; set; }
+        public string ServiceClientCode { get; set; }
         public string RequestNo { get; set; }
         public int? RequestLineNo { get; set; }
         public string Driver { get; set; }
@@ -89,10 +89,6 @@ namespace Hydra.Such.Data.ViewModel
         public string EmployeeNo { get; set; }
         public decimal QuantityReturned { get; set; }
         public string Coin { get; set; }
-
-        public int eReasonCode { get; set; }
-        public string eMessage { get; set; }
-
-
+        public bool? PreRegistered { get; set; }
     }
 }

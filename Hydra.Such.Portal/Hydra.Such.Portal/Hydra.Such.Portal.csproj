@@ -5,16 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Database\**" />
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
     <Compile Remove="__Notes\**" />
-    <Content Remove="Database\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
     <Content Remove="__Notes\**" />
-    <EmbeddedResource Remove="Database\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
     <EmbeddedResource Remove="__Notes\**" />
-    <None Remove="Database\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
     <None Remove="__Notes\**" />
   </ItemGroup>
@@ -29,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetCore.NPOI" Version="1.0.2" />
     <PackageReference Include="EPPlus" Version="4.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />

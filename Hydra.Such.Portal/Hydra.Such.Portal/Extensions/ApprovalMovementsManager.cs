@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using System;
@@ -18,14 +19,15 @@ namespace Hydra.Such.Portal.Extensions
         {
             try
             {
-                ErrorHandler result = new ErrorHandler() {
+                ErrorHandler result = new ErrorHandler()
+                {
                     eReasonCode = 100,
                     eMessage = "Fluxo Iniciado com sucesso",
                     eMessages = new List<TraceInformation>()
                 };
 
                 //Get Compatible ApprovalConfigurations
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type,functionalArea,responsabilityCenter,region, value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
 
                 int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
                 ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
@@ -57,21 +59,21 @@ namespace Hydra.Such.Portal.Extensions
                     //ApprovalConfigurations.ForEach(x =>
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
-                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
-                        {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
-                        }
-                        else if (approvalConfiguration.GrupoAprovação.HasValue)
-                        {
-                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                    {
+                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                    }
+                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+                    {
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
 
-                            GUsers.ForEach(y =>
-                            {
-                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                                UsersToNotify.Add(y);
-                            });
-                        }
+                        GUsers.ForEach(y =>
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                            UsersToNotify.Add(y);
+                        });
+                    }
                     //});
 
 
@@ -114,7 +116,7 @@ namespace Hydra.Such.Portal.Extensions
                 else
                 {
                     result.eReasonCode = 101;
-                    result.eMessage = "Não existem configurações de numerações compativeis.";
+                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas. Solicite esta configuração submeta para aprovação nas suas requisições pendentes.";
                 }
                 return result;
             }
@@ -176,22 +178,22 @@ namespace Hydra.Such.Portal.Extensions
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
-                        {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
-                        }
-                        else if (approvalConfiguration.GrupoAprovação.HasValue)
-                        {
-                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                    {
+                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                    }
+                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+                    {
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
 
-                            GUsers.ForEach(y =>
-                            {
-                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                                UsersToNotify.Add(y);
-                            });
-                        }
+                        GUsers.ForEach(y =>
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                            UsersToNotify.Add(y);
+                        });
+                    }
                     //});
-                    
+
                     //Notify Users
                     UsersToNotify = UsersToNotify.Distinct().ToList();
                     UsersToNotify.ForEach(e =>
@@ -238,7 +240,7 @@ namespace Hydra.Such.Portal.Extensions
                         NomeDestinatário = ApprovalMovement.RequestUser,
                         Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
                         DataHoraEmail = DateTime.Now,
-                        TextoEmail = "A sua tarefa com o Nº "+ ApprovalMovement .Number+ " foi aprovada com sucesso!",
+                        TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi aprovada com sucesso!",
                         Enviado = false
                     };
 
@@ -264,7 +266,7 @@ namespace Hydra.Such.Portal.Extensions
                         eMessage = "A tarefa foi aprovada pelo ultimo nivel."
                     };
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -276,6 +278,508 @@ namespace Hydra.Such.Portal.Extensions
             }
         }
 
+        //100 - Fluxo Iniciado com suceso
+        //101 - Não existem configurações de numerações compativeis
+        //102 - Erro desconhecido
+        public static ErrorHandler StartApprovalMovement_FH(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
+        {
+            try
+            {
+                ErrorHandler result = new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Fluxo Iniciado com sucesso",
+                    eMessages = new List<TraceInformation>()
+                };
+
+                //Get Compatible ApprovalConfigurations
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
+
+                int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
+                {
+                    //Create ApprovalMovement
+                    ApprovalMovementsViewModel ApprovalMovement = new ApprovalMovementsViewModel()
+                    {
+                        Type = type,
+                        ResponsabilityCenter = responsabilityCenter,
+                        FunctionalArea = functionalArea,
+                        Region = region,
+                        Number = number,
+                        RequestUser = requestUser,
+                        Value = value,
+                        DateTimeCreate = DateTime.Now,
+                        UserCreate = requestUser,
+                        Status = 1,
+                        Level = lowLevel
+                    };
+
+                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, ApprovalMovement.MovementNo.ToString()));
+
+                    //Create User ApprovalMovements
+                    List<string> UsersToNotify = new List<string>();
+                    //ApprovalConfigurations.ForEach(x =>
+                    //{
+                    var approvalConfiguration = ApprovalConfigurations[0];
+                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                    {
+                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                    }
+                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+                    {
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                        GUsers.ForEach(y =>
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                            UsersToNotify.Add(y);
+                        });
+                    }
+                    //});
+
+
+                    string itemToApproveInfo = string.Empty;
+                    if (type == 3 && !string.IsNullOrEmpty(number))
+                        itemToApproveInfo += " - Folha de Horas " + number;
+
+                    UsersToNotify = UsersToNotify.Distinct().ToList();
+                    //Notify Users
+                    UsersToNotify.ForEach(e =>
+                    {
+                        EmailsAprovações EmailApproval = new EmailsAprovações()
+                        {
+                            NºMovimento = ApprovalMovement.MovementNo,
+                            EmailDestinatário = e,
+                            NomeDestinatário = e,
+                            Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                            DataHoraEmail = DateTime.Now,
+                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                            Enviado = false
+                        };
+
+
+                        SendEmailApprovals Email = new SendEmailApprovals
+                        {
+                            Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                            From = "plataforma@such.pt"
+                        };
+
+                        Email.To.Add(e);
+
+                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+
+                        Email.IsBodyHtml = true;
+                        Email.EmailApproval = EmailApproval;
+
+                        Email.SendEmail();
+                    });
+                }
+                else
+                {
+                    result.eReasonCode = 101;
+                    result.eMessage = "Não existem configurações de numerações compativeis.";
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 102,
+                    eMessage = "Ocorreu um erro desconhecido."
+                };
+            }
+        }
+
+        public static ErrorHandler ApproveMovement_FH(int movementNo, string ApproveUser)
+        {
+            try
+            {
+                //Update Old Movement
+                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                ApprovalMovement.Status = 2;
+                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                ApprovalMovement.UserUpdate = ApproveUser;
+                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                //Delete All User Approval Movements
+                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, ApproveUser);
+
+                FolhasDeHoras FolhaHoras = DBFolhasDeHoras.GetById(ApprovalMovement.Number);
+                int NoAjudasCusto = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == FolhaHoras.NºFolhaDeHoras.ToLower() && x.TipoCusto == 2).Count();
+                int Estado = 0;
+                int nivel = 99;
+                bool IntegradoEmRh = false;
+                bool IntegradoEmRhkm = false;
+
+                if (FolhaHoras.TipoDeslocação != 2 && NoAjudasCusto == 0)
+                {
+                    Estado = 2; // 2 = Registado FINAL
+                    nivel = 99;
+                }
+                else
+                {
+                    Estado = 1; //VALIDADO
+                    if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
+                    {
+                        IntegradoEmRh = true; //IntegracaoAjuda
+                        ApprovalMovement.Value = FolhaHoras.CustoTotalHoras;
+                        nivel = 2;
+                    }
+                    else
+                    {
+                        if ((FolhaHoras.IntegradoEmRhkm == false || FolhaHoras.IntegradoEmRhkm == null) && FolhaHoras.Estado == Estado && FolhaHoras.TipoDeslocação == 2)
+                        {
+                            IntegradoEmRhkm = true; //IntegracaoKMS
+                            ApprovalMovement.Value = FolhaHoras.CustoTotalKm;
+                            nivel = 3;
+                        }
+                        else
+                        {
+                            Estado = 2; // 2 = Registado FINAL
+                            nivel = 99;
+                        }
+                    }
+                }
+
+                if (Estado == 1)
+                {
+                    if (IntegradoEmRh)
+                    {
+                        //Get Next Level Configuration
+                        List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(ApprovalMovement.Type.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now, nivel);
+                        ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
+
+                        string itemToApproveInfo = string.Empty;
+                        if (ApprovalMovement != null)
+                        {
+                            if (ApprovalMovement.Type.Value == 3 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                                itemToApproveInfo += " - Folha de Horas " + ApprovalMovement.Number;
+                        }
+                        if (ApprovalConfigurations.Count > 0 && Estado != 2)
+                        {
+                            int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                            ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                            //Create New Approval Movement
+                            ApprovalMovement.Level = lowLevel;
+                            ApprovalMovement.DateTimeUpdate = null;
+                            ApprovalMovement.UserUpdate = null;
+                            ApprovalMovement.DateTimeCreate = DateTime.Now;
+                            ApprovalMovement.UserCreate = ApproveUser;
+                            ApprovalMovement.Status = 1;
+                            ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                            //Create User ApprovalMovements
+                            List<string> UsersToNotify = new List<string>();
+                            //ApprovalConfigurations.ForEach(x =>
+                            //{
+                            var approvalConfiguration = ApprovalConfigurations[0];
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                            else if (approvalConfiguration.GrupoAprovação.HasValue)
+                            {
+                                List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                                GUsers.ForEach(y =>
+                                {
+                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                    UsersToNotify.Add(y);
+                                });
+                            }
+                            //});
+
+                            //Notify Users
+                            UsersToNotify = UsersToNotify.Distinct().ToList();
+                            UsersToNotify.ForEach(e =>
+                            {
+                                EmailsAprovações EmailApproval = new EmailsAprovações()
+                                {
+                                    NºMovimento = ApprovalMovement.MovementNo,
+                                    EmailDestinatário = e,
+                                    NomeDestinatário = e,
+                                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                                    DataHoraEmail = DateTime.Now,
+                                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                                    Enviado = false
+                                };
+
+
+                                SendEmailApprovals Email = new SendEmailApprovals
+                                {
+                                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                                    From = "plataforma@such.pt"
+                                };
+
+                                Email.To.Add(e);
+
+                                Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+
+                                Email.IsBodyHtml = true;
+                                Email.EmailApproval = EmailApproval;
+
+                                Email.SendEmail();
+
+                                EmailApproval.Enviado = true;
+                                EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                                DBApprovalEmails.Create(EmailApproval);
+                            });
+                        }
+                        else
+                        {
+                            EmailsAprovações EmailApproval = new EmailsAprovações()
+                            {
+                                NºMovimento = ApprovalMovement.MovementNo,
+                                EmailDestinatário = ApprovalMovement.RequestUser,
+                                NomeDestinatário = ApprovalMovement.RequestUser,
+                                Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
+                                DataHoraEmail = DateTime.Now,
+                                TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi aprovada com sucesso!",
+                                Enviado = false
+                            };
+
+                            SendEmailApprovals Email = new SendEmailApprovals
+                            {
+                                Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
+                                From = "plataforma@such.pt"
+                            };
+
+                            Email.To.Add(ApprovalMovement.RequestUser);
+
+                            Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi aprovada com sucesso!");
+
+                            Email.IsBodyHtml = true;
+                            Email.EmailApproval = EmailApproval;
+
+                            Email.SendEmail();
+
+                            EmailApproval.Enviado = true;
+                            EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                            DBApprovalEmails.Create(EmailApproval);
+
+                            return new ErrorHandler()
+                            {
+                                eReasonCode = 353,
+                                eMessage = "A tarefa foi aprovada pelo ultimo nivel."
+                            };
+                        }
+                    }
+
+                    if (IntegradoEmRhkm)
+                    {
+                        //Get Next Level Configuration
+                        List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(ApprovalMovement.Type.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now, nivel);
+                        ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
+
+                        string itemToApproveInfo = string.Empty;
+                        if (ApprovalMovement != null)
+                        {
+                            if (ApprovalMovement.Type.Value == 3 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                                itemToApproveInfo += " - Folha de Horas " + ApprovalMovement.Number;
+                        }
+                        if (ApprovalConfigurations.Count > 0 && Estado != 2)
+                        {
+                            int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                            ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                            //Create New Approval Movement
+                            ApprovalMovement.Level = lowLevel;
+                            ApprovalMovement.DateTimeUpdate = null;
+                            ApprovalMovement.UserUpdate = null;
+                            ApprovalMovement.DateTimeCreate = DateTime.Now;
+                            ApprovalMovement.UserCreate = ApproveUser;
+                            ApprovalMovement.Status = 1;
+                            ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                            //Create User ApprovalMovements
+                            List<string> UsersToNotify = new List<string>();
+                            //ApprovalConfigurations.ForEach(x =>
+                            //{
+                            var approvalConfiguration = ApprovalConfigurations[0];
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                            else if (approvalConfiguration.GrupoAprovação.HasValue)
+                            {
+                                List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+
+                                GUsers.ForEach(y =>
+                                {
+                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                    UsersToNotify.Add(y);
+                                });
+                            }
+                            //});
+
+                            //Notify Users
+                            UsersToNotify = UsersToNotify.Distinct().ToList();
+                            UsersToNotify.ForEach(e =>
+                            {
+                                EmailsAprovações EmailApproval = new EmailsAprovações()
+                                {
+                                    NºMovimento = ApprovalMovement.MovementNo,
+                                    EmailDestinatário = e,
+                                    NomeDestinatário = e,
+                                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                                    DataHoraEmail = DateTime.Now,
+                                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                                    Enviado = false
+                                };
+
+
+                                SendEmailApprovals Email = new SendEmailApprovals
+                                {
+                                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                                    From = "plataforma@such.pt"
+                                };
+
+                                Email.To.Add(e);
+
+                                Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+
+                                Email.IsBodyHtml = true;
+                                Email.EmailApproval = EmailApproval;
+
+                                Email.SendEmail();
+
+                                EmailApproval.Enviado = true;
+                                EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                                DBApprovalEmails.Create(EmailApproval);
+                            });
+                        }
+                        else
+                        {
+                            EmailsAprovações EmailApproval = new EmailsAprovações()
+                            {
+                                NºMovimento = ApprovalMovement.MovementNo,
+                                EmailDestinatário = ApprovalMovement.RequestUser,
+                                NomeDestinatário = ApprovalMovement.RequestUser,
+                                Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
+                                DataHoraEmail = DateTime.Now,
+                                TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi aprovada com sucesso!",
+                                Enviado = false
+                            };
+
+                            SendEmailApprovals Email = new SendEmailApprovals
+                            {
+                                Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
+                                From = "plataforma@such.pt"
+                            };
+
+                            Email.To.Add(ApprovalMovement.RequestUser);
+
+                            Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi aprovada com sucesso!");
+
+                            Email.IsBodyHtml = true;
+                            Email.EmailApproval = EmailApproval;
+
+                            Email.SendEmail();
+
+                            EmailApproval.Enviado = true;
+                            EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                            DBApprovalEmails.Create(EmailApproval);
+
+                            return new ErrorHandler()
+                            {
+                                eReasonCode = 353,
+                                eMessage = "A tarefa foi aprovada pelo ultimo nivel."
+                            };
+                        }
+                    }
+                }
+
+                return new ErrorHandler()
+                {
+                    eReasonCode = 350,
+                    eMessage = "A tarefa foi aprovada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 351,
+                    eMessage = "Ocorreu um erro desconhecido ao aprovar a tarefa."
+                };
+            }
+        }
+
+        //100 - Tarefa rejeitada com sucesso
+        //101 - Erro desconhecido
+        public static ErrorHandler RejectMovement_FH(int movementNo, string rejectUser, string rejectReason)
+        {
+            try
+            {
+                //Update Old Movement
+                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(ApprovalMovement.Number);
+
+                ApprovalMovement.Status = 3;
+                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                ApprovalMovement.UserUpdate = rejectUser;
+                ApprovalMovement.ReproveReason = rejectReason;
+                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                //Delete All User Approval Movements
+                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, rejectUser);
+
+                string itemToApproveInfo = string.Empty;
+                if (ApprovalMovement.Type.Value == 3 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                    itemToApproveInfo += " - Folha de Horas " + ApprovalMovement.Number;
+
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = ApprovalMovement.MovementNo,
+                    EmailDestinatário = FH.CriadoPor, // ApprovalMovement.RequestUser,
+                    NomeDestinatário = FH.CriadoPor, // ApprovalMovement.RequestUser,
+                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    From = "plataforma@such.pt"
+                };
+
+                Email.To.Add(FH.CriadoPor); // ApprovalMovement.RequestUser);
+
+                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
+
+                Email.IsBodyHtml = true;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+                return new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Tarefa rejeitada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido."
+                };
+            }
+        }
 
         //100 - Tarefa rejeitada com sucesso
         //101 - Erro desconhecido
@@ -306,7 +810,7 @@ namespace Hydra.Such.Portal.Extensions
                     NomeDestinatário = ApprovalMovement.RequestUser,
                     Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
                     DataHoraEmail = DateTime.Now,
-                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \""+ ApprovalMovement.ReproveReason + "\"!",
+                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
                     Enviado = false
                 };
 
@@ -325,7 +829,8 @@ namespace Hydra.Such.Portal.Extensions
                 Email.EmailApproval = EmailApproval;
 
                 Email.SendEmail();
-                return new ErrorHandler() {
+                return new ErrorHandler()
+                {
                     eReasonCode = 100,
                     eMessage = "Tarefa rejeitada com sucesso."
                 };
@@ -340,7 +845,7 @@ namespace Hydra.Such.Portal.Extensions
             }
         }
 
-        
+
         public static string MakeEmailBodyContent(string BodyText)
         {
             string Body = @"<html>" +

@@ -17,7 +17,7 @@ namespace Hydra.Such.Portal.Controllers
     {
         public IActionResult Index()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Existencias);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Existencias);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -39,7 +39,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.Existencias);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Existencias);
 
             if (UPerm != null && UPerm.Read.Value)
             {

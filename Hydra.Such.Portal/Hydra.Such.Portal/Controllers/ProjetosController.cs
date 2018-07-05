@@ -17,6 +17,14 @@ using Newtonsoft.Json.Linq;
 using Hydra.Such.Data;
 using static Hydra.Such.Data.Enumerations;
 using System.Net;
+using Hydra.Such.Data.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using Microsoft.AspNetCore.Http;
+using System.Text;
+using NPOI.HSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -25,16 +33,17 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
-
-        public ProjetosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public ProjetosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -48,7 +57,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -63,7 +72,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
@@ -75,12 +84,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-
-
-
-
-
-
 
 
         #region Home
@@ -155,8 +158,9 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+
         #region Details
-        
+
 
         [HttpPost]
         public JsonResult GetProjectDetails([FromBody] ProjectDetailsViewModel data)
@@ -297,9 +301,9 @@ namespace Hydra.Such.Portal.Controllers
                             NossaProposta = data.OurProposal,
                             CódObjetoServiço = data.ServiceObjectCode,
                             NºCompromisso = data.CommitmentCode,
-                            GrupoContabObra = data.AccountWorkGroup,
+                            GrupoContabObra = "PROJETO",
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
-                            TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
                             DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
@@ -342,7 +346,7 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                                 if (TCreateNavProj.Exception != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                if(TCreateNavProj.Exception.InnerException != null)
+                                if (TCreateNavProj.Exception.InnerException != null)
                                     data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
@@ -410,9 +414,9 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.NossaProposta = data.OurProposal;
                     cProject.CódObjetoServiço = data.ServiceObjectCode;
                     cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = data.AccountWorkGroup;
+                    cProject.GrupoContabObra = "PROJETO";
                     cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
+                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
                     cProject.PedidoDoCliente = data.ClientRequest;
                     cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
                     cProject.ValidadeDoPedido = data.RequestValidity;
@@ -423,7 +427,7 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.ChefeProjeto = data.ProjectLeader;
                     cProject.ResponsávelProjeto = data.ProjectResponsible;
                     cProject.UtilizadorModificação = User.Identity.Name;
-                    
+
 
                     DBProjects.Update(cProject);
 
@@ -551,7 +555,7 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -565,8 +569,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]  JObject requestParams)
         {
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+           
             List<ProjectDiaryViewModel> dp = null;
             if (projectNo == null || projectNo == "")
             {
@@ -597,12 +616,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode = codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -640,12 +659,12 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
-                    ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCode =  codServiceGroup,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = x.CódServiçoCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
                 }).ToList();
                 //return Json(dp);
             }
@@ -930,8 +949,9 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
+
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
             string notCreatedLines = "";
@@ -939,7 +959,15 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
-                response.Items = dp;
+            {
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+              response.Items = dp;
+            }
+                
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Diário de Projeto atualizado.";
@@ -959,15 +987,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
@@ -1132,7 +1160,7 @@ namespace Hydra.Such.Portal.Controllers
                 catch
                 {
                     response.eReasonCode = 2;
-                    response.eMessage = "Occorreu um erro ao atualizar o Diário de Projeto.";
+                    response.eMessage = "Ocorreu um erro ao atualizar o Diário de Projeto.";
                 }
             }
             return Json(response);// dp);
@@ -1328,13 +1356,30 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(dp);
         }
+        
         [HttpPost]
-        public JsonResult GetMovements([FromBody] string projectNo)
+        public JsonResult GetMovements([FromBody]  JObject requestParams)
         {
+            string projectNo = "";
+            string dataReque = "";
+            string codServiceCliente = "";
+            int codServiceGroup = 0;
+            if (requestParams != null)
+            {
+                projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
+                dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
+                codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
+                if (requestParams["codGrupoServico"] != null)
+                {
+                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
+                }
+            }
+
+
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
-            List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
+            List<ProjectDiaryViewModel> projectDiaryItems = new List<ProjectDiaryViewModel>();
             if (!String.IsNullOrEmpty(projectNo))
             {
                 Projetos proj = DBProjects.GetById(projectNo);
@@ -1343,40 +1388,26 @@ namespace Hydra.Such.Portal.Controllers
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
-                            x => new DiárioDeProjeto()
-                            {
-                                NºProjeto = projectNo,
-                                Tipo = x.Tipo,
-                                Código = x.Código,
-                                Descrição = x.Descrição,
-                                Quantidade = 0,
-                                CódUnidadeMedida = x.CódUnidadeMedida,
-                                CódigoRegião = x.CódigoRegião,
-                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                PreçoUnitário = x.PreçoUnitário,
-                                Faturável = x.Faturável,
-                                Registado = false,
-                                PréRegisto = false
-                            }).ToList();
-                        if (dp.Count == 0)
+                        projectDiaryItems = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão)
+                            .Select(x => x.ParseToProjectDiary(projectNo, User.Identity.Name, dataReque, codServiceCliente, codServiceGroup))
+                            .ToList();
+
+                        if (projectDiaryItems.Count == 0)
                         {
                             result.eReasonCode = 4;
                             result.eMessage = "Este projeto não tem contrato com linhas associadas";
                         }
-                        foreach (var item in dp)
+                        foreach (var item in projectDiaryItems)
                         {
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
-                            item.UtilizadorCriação = User.Identity.Name;
-                            item.DataHoraCriação = DateTime.Now;
-                            dpValidation = DBProjectDiary.Create(item);
+                            item.CreateUser = User.Identity.Name;
+                            item.CreateDate = DateTime.Now;
+                            dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(item));
                             if (dpValidation == null)
                             {
                                 result.eReasonCode = 5;
-                                result.eMessage = "Occorreu um erro ao obter os movimentos";
+                                result.eMessage = "Ocorreu um erro ao obter os movimentos";
                             }
                         }
 
@@ -1419,7 +1450,7 @@ namespace Hydra.Such.Portal.Controllers
         //public IActionResult MovimentosDeProjeto(String id)
         public IActionResult MovimentosDeProjeto(string id, [FromQuery]string areaid)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Engenharia, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
 
             if (userAccesses != null && userAccesses.Read.Value)
             {
@@ -1475,7 +1506,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string Date, string ProjDiaryPrice)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice)
         {
 
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
@@ -1501,6 +1532,7 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
+                DocumentNo = x.NºDocumento,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
@@ -1511,10 +1543,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 dp = dp.Where(x => x.Code == Resources).ToList();
             }
-            if (!string.IsNullOrEmpty(Date))
-            {
-                dp = dp.Where(x => x.Date == Date).ToList();
-            }
+          
 
             return Json(dp);
         }
@@ -1532,6 +1561,7 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
+            ViewBag.projectNo = id;
             return View();
         }
 
@@ -1748,7 +1778,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Pre registo de Projetos
         public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Administração, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
@@ -1802,7 +1832,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         public IActionResult PreregistoProjetos(String id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreRegistos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -1815,7 +1845,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         [HttpPost]
-        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice)
+        public JsonResult CreatePDByMovPreProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
         {
             ProjectDiaryResponse response = new ProjectDiaryResponse();
             string proj = dp.First().ProjectNo;
@@ -1824,7 +1854,14 @@ namespace Hydra.Such.Portal.Controllers
             int OrderLine = 0;
             Projetos projecto = DBProjects.GetById(proj);
             if (dp != null)
+            {
                 response.Items = dp;
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    item.Date = Date;
+                }
+            }
+                
 
             response.eReasonCode = 1;
             response.eMessage = "Pré-Registo atualizado.";
@@ -1844,15 +1881,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     OrderLine++;
                                     bool newUnitCost = false;
-                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == 0)
+                                    if (pjD.ServiceClientCode == null || pjD.ServiceClientCode == "")
                                     {
-                                        pjD.ServiceClientCode = 0;
+                                        pjD.ServiceClientCode = "";
                                     }
                                     foreach (LinhasContratos lc in listContractLines)
                                     {
-                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == 0)
+                                        if (lc.CódServiçoCliente == null || lc.CódServiçoCliente == "")
                                         {
-                                            lc.CódServiçoCliente = 0;
+                                            lc.CódServiçoCliente = "";
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
@@ -2314,98 +2351,6 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
-                Guid transactID = Guid.NewGuid();
-                try
-                {
-                    //Create Lines in NAV
-                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
-                    TCreateNavDiaryLine.Wait();
-
-                    //Register Lines in NAV
-                    Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                    TRegisterNavDiaryLine.Wait();
-
-                    if (TRegisterNavDiaryLine == null)
-                    {
-                        Response.StatusCode = (int)HttpStatusCode.NoContent;
-                        return Json(dp);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.NoContent;
-                    return Json(dp);
-                }
-                var PreRegistGrouped = dp.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
-                 x => x,
-                 (Key, items) => new {
-                     ProjectNo = Key.ProjectNo,
-                     Code = Key.Code,
-                     ServiceGroupCode = Key.ServiceGroupCode,
-                     ServiceClientCode = Key.ServiceClientCode,
-                     Items = items,
-                 }).ToList();
-                foreach (var item in PreRegistGrouped)
-                {
-                    List<ProjectDiaryViewModel> nwl = new List<ProjectDiaryViewModel>();
-                    MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto();
-                    if (item.Items.ToList().Count > 0)
-                    {
-                        nwl = item.Items.ToList();
-                    }
-                    foreach (ProjectDiaryViewModel preReg in nwl)
-                    {
-                        ProjectMovement.NºProjeto = item.ProjectNo;
-                        ProjectMovement.Data = null;
-                        if (ProjectMovement.Quantidade == null)
-                        {
-                            ProjectMovement.Quantidade = 0;
-                        }
-                        if (preReg.Quantity == null)
-                        {
-                            preReg.Quantity = 0;
-                        }
-                        if (ProjectMovement.Quantidade == 0)
-                        {
-                            ProjectMovement.Quantidade = (decimal)preReg.Quantity;
-                        }
-                        else
-                        {
-                            ProjectMovement.Quantidade = ProjectMovement.Quantidade + (decimal)preReg.Quantity;
-                        }
-                        ProjectMovement.TipoMovimento = preReg.MovementType;
-                        ProjectMovement.Tipo = preReg.Type;
-                        ProjectMovement.Código = item.Code;
-                        ProjectMovement.Descrição = preReg.Description;
-                        ProjectMovement.CódUnidadeMedida = preReg.MeasurementUnitCode;
-                        ProjectMovement.CódLocalização = preReg.LocationCode;
-                        ProjectMovement.GrupoContabProjeto = preReg.ProjectContabGroup;
-                        ProjectMovement.CódigoRegião = preReg.RegionCode;
-                        ProjectMovement.CódigoÁreaFuncional = preReg.FunctionalAreaCode;
-                        ProjectMovement.CódigoCentroResponsabilidade = preReg.ResponsabilityCenterCode;
-                        ProjectMovement.Utilizador = User.Identity.Name;
-                        ProjectMovement.CustoUnitário = preReg.UnitCost;
-                        ProjectMovement.CustoTotal = ProjectMovement.Quantidade * preReg.UnitCost;
-                        ProjectMovement.PreçoUnitário = preReg.UnitPrice;
-                        ProjectMovement.PreçoTotal = ProjectMovement.Quantidade * preReg.UnitPrice;
-                        ProjectMovement.Faturável = preReg.Billable;
-                        ProjectMovement.Registado = true;
-                        ProjectMovement.Faturada = false;
-                        ProjectMovement.FaturaANºCliente = preReg.InvoiceToClientNo;
-                        ProjectMovement.Moeda = preReg.Coin;
-                        ProjectMovement.ValorUnitárioAFaturar = preReg.UnitValueToInvoice;
-                        ProjectMovement.TipoRefeição = preReg.MealType;
-                        ProjectMovement.CódGrupoServiço = item.ServiceGroupCode;
-                        ProjectMovement.NºGuiaResíduos = preReg.ResidueGuideNo;
-                        ProjectMovement.NºGuiaExterna = preReg.ExternalGuideNo;
-                        ProjectMovement.DataConsumo = preReg.ConsumptionDate != "" && preReg.ConsumptionDate != null ? DateTime.Parse(preReg.ConsumptionDate) : (DateTime?)null;
-                        ProjectMovement.CódServiçoCliente = item.ServiceClientCode;
-                        ProjectMovement.UtilizadorCriação = User.Identity.Name;
-                        ProjectMovement.DataHoraCriação = DateTime.Now;
-                        ProjectMovement.FaturaçãoAutorizada = false;
-                    }
-                    DBProjectMovements.Create(ProjectMovement);
-                }
                 dp.ForEach(x =>
                 {
                     if (x.Code != null)
@@ -2436,7 +2381,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PreçoUnitário = newdp.PreçoUnitário,
                                 PreçoTotal = newdp.PreçoTotal,
                                 Faturável = newdp.Faturável,
-                                Registado = true,
+                                Registado = false,
                                 Faturada = false,
                                 FaturaANºCliente = newdp.FaturaANºCliente,
                                 Moeda = newdp.Moeda,
@@ -2459,6 +2404,621 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(dp);
         }
+         [HttpPost]
+        public JsonResult RegisterPreMovements([FromBody]  List<ProjectDiaryViewModel> dp, string StartDate, string EndDate)
+        {
+            ErrorHandler erro = new ErrorHandler();
+            erro.eReasonCode = 1;
+            erro.eMessage = "Movimentos registados com Sucesso";
+            List<ProjectDiaryViewModel> premov = new List<ProjectDiaryViewModel>();
+
+            if (dp != null && dp.Count>0 && !string.IsNullOrEmpty(StartDate)  && !string.IsNullOrEmpty(EndDate))
+            {
+                foreach (ProjectDiaryViewModel item in dp)
+                {
+                    if (!string.IsNullOrEmpty(item.Date))
+                    {
+                        DateTime date = Convert.ToDateTime(item.Date);
+                        DateTime Sdate = Convert.ToDateTime(StartDate);
+                        DateTime Ddate = Convert.ToDateTime(EndDate);
+                        if (date >= Sdate && date <= Ddate)
+                        {
+                           if (item.Registered == false)
+                           {
+                                premov.Add(item);
+                           }
+                        }
+                    }
+                }
+                if (premov != null && premov.Count>0)
+                {
+                    Guid transactID = Guid.NewGuid();
+                    try
+                    {
+                        //Create Lines in NAV
+                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
+                        TCreateNavDiaryLine.Wait();
+
+                        //Register Lines in NAV
+                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                        TRegisterNavDiaryLine.Wait();
+
+                        if (TRegisterNavDiaryLine == null)
+                        {
+                             erro.eReasonCode = 3;
+                             erro.eMessage = "Não foi possivel criar as linhas no nav";
+                            Response.StatusCode = (int)HttpStatusCode.NoContent;
+                            return Json(premov);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        return Json(premov);
+                    }
+
+                    var PreRegistGrouped = premov.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
+                     x => x,
+                     (Key, items) => new {
+                         ProjectNo = Key.ProjectNo,
+                         Code = Key.Code,
+                         ServiceGroupCode = Key.ServiceGroupCode,
+                         ServiceClientCode = Key.ServiceClientCode,
+                         Items = items,
+                     }).ToList();
+                    foreach (var item in PreRegistGrouped)
+                    {
+                        List<ProjectDiaryViewModel> nwl = new List<ProjectDiaryViewModel>();
+                        MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto();
+                        if (item.Items.ToList().Count > 0)
+                        {
+                            nwl = item.Items.ToList();
+                        }
+                        List<int> premovId = new List<int>();
+                        foreach (ProjectDiaryViewModel preReg in nwl)
+                        {
+                            ProjectMovement.NºProjeto = item.ProjectNo;
+                            ProjectMovement.Data = Convert.ToDateTime(EndDate);
+                            if (ProjectMovement.Quantidade == null)
+                            {
+                                ProjectMovement.Quantidade = 0;
+                            }
+                            if (preReg.Quantity == null)
+                            {
+                                preReg.Quantity = 0;
+                            }
+                            if (ProjectMovement.Quantidade == 0)
+                            {
+                                ProjectMovement.Quantidade = (decimal)preReg.Quantity;
+                            }
+                            else
+                            {
+                                ProjectMovement.Quantidade = ProjectMovement.Quantidade + (decimal)preReg.Quantity;
+                            }
+                            ProjectMovement.TipoMovimento = preReg.MovementType;
+                            ProjectMovement.Tipo = preReg.Type;
+                            ProjectMovement.Código = item.Code;
+                            ProjectMovement.Descrição = preReg.Description;
+                            ProjectMovement.CódUnidadeMedida = preReg.MeasurementUnitCode;
+                            ProjectMovement.CódLocalização = preReg.LocationCode;
+                            ProjectMovement.GrupoContabProjeto = preReg.ProjectContabGroup;
+                            ProjectMovement.CódigoRegião = preReg.RegionCode;
+                            ProjectMovement.CódigoÁreaFuncional = preReg.FunctionalAreaCode;
+                            ProjectMovement.CódigoCentroResponsabilidade = preReg.ResponsabilityCenterCode;
+                            ProjectMovement.Utilizador = User.Identity.Name;
+                            ProjectMovement.CustoUnitário = preReg.UnitCost;
+                            ProjectMovement.CustoTotal = ProjectMovement.Quantidade * preReg.UnitCost;
+                            ProjectMovement.PreçoUnitário = preReg.UnitPrice;
+                            ProjectMovement.PreçoTotal = ProjectMovement.Quantidade * preReg.UnitPrice;
+                            ProjectMovement.Faturável = preReg.Billable;
+                            ProjectMovement.Registado = true;
+                            ProjectMovement.Faturada = false;
+                            ProjectMovement.FaturaANºCliente = preReg.InvoiceToClientNo;
+                            ProjectMovement.Moeda = preReg.Coin;
+                            ProjectMovement.ValorUnitárioAFaturar = preReg.UnitValueToInvoice;
+                            ProjectMovement.TipoRefeição = preReg.MealType;
+                            ProjectMovement.CódGrupoServiço = item.ServiceGroupCode;
+                            ProjectMovement.NºGuiaResíduos = preReg.ResidueGuideNo;
+                            ProjectMovement.NºGuiaExterna = preReg.ExternalGuideNo;
+                            ProjectMovement.DataConsumo = preReg.ConsumptionDate != "" && preReg.ConsumptionDate != null ? DateTime.Parse(preReg.ConsumptionDate) : (DateTime?)null;
+                            ProjectMovement.CódServiçoCliente = item.ServiceClientCode;
+                            ProjectMovement.UtilizadorCriação = User.Identity.Name;
+                            ProjectMovement.DataHoraCriação = DateTime.Now;
+                            ProjectMovement.FaturaçãoAutorizada = false;
+                            premovId.Add(preReg.LineNo);
+                        }
+                         MovimentosDeProjeto CreatedMovProj = DBProjectMovements.Create(ProjectMovement);
+                        if (CreatedMovProj.NºLinha > 0 && premovId.Count > 0)
+                        {
+                            foreach (int pmid in premovId)
+                            {
+                                PréMovimentosProjeto preMovLine = DBPreProjectMovements.GetByLine(pmid);
+                                if (preMovLine != null)
+                                {
+                                     preMovLine.Registado = true;
+                                     preMovLine.UtilizadorCriação = User.Identity.Name;
+                                     DBPreProjectMovements.Update(preMovLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (dp != null)
+                {
+                     erro.eReasonCode = 2;
+                     erro.eMessage = "Não existe Pré-Movimentos por registar no intervalo de tempo selecionado";
+                }
+            }
+            else
+            {
+                erro.eReasonCode = 2;
+                erro.eMessage = "A tabela Pré-Movimentos está vazia";
+            }
+            return Json(erro);
+        }
         #endregion
+
+        #region Preços Serviços Cliente
+        public IActionResult PreçosServiçosCliente()
+        {
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreçoServCliente);
+            if (userAccesses != null && userAccesses.Read.Value)
+            {
+                    return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        public JsonResult GetAllPriceServiceClient()
+        {
+            List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll());
+            return Json(dp);
+        }
+        [HttpPost]
+        public JsonResult UpdatePriceServiceClient([FromBody] List<PriceServiceClientViewModel> dp)
+        {
+            ErrorHandler responde = new ErrorHandler();
+            responde.eReasonCode = 1;
+            responde.eMessage = "Atualizado com sucesso";
+            if (dp != null)
+            {
+                List<PreçosServiçosCliente> getAllLines = DBPriceServiceClient.GetAll();
+                if (getAllLines != null && getAllLines.Count > 0)
+                {
+                    foreach (PreçosServiçosCliente psc in getAllLines)
+                    {
+                        if (!dp.Any(x => x.Client == psc.Cliente && x.CodServClient == psc.CodServCliente && x.Resource == psc.Recurso))
+                        {
+                            DBPriceServiceClient.Delete(psc);
+                        }
+                    }
+                    dp.ForEach(x =>
+                    {
+                        string nome1 = "", nome2 = "", resto = "";
+                        int n = 0, n2 = 0;
+                        List<PreçosServiçosCliente> dpObject = DBPriceServiceClient.GetByC_SC_R(x.Client, x.CodServClient, x.Resource);
+                        if (dpObject != null && dpObject.Count >0)
+                        {
+                            PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                            if (x.CompleteName != null && x.CompleteName.Length >0)
+                            {
+                                if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                                {
+                                    x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                                }
+                                if (x.CompleteName.Length > 80)
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 80);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome1[nome1.Length - 1] != ' ')
+                                    {
+                                        if (nome2[0] != ' ')
+                                        {
+                                            n = nome1.LastIndexOf(" ");
+                                            nome1 = x.CompleteName.Substring(0, n);
+                                            nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome1 = x.CompleteName.Substring(0, 79);
+                                        nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName;
+                                    nome2 = "";
+                                }
+                                newdp.Nome = nome1;
+                                newdp.Nome2 = nome2;
+                            }
+                           
+                            
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            DBPriceServiceClient.Update(newdp);
+                        }
+                        else
+                        {
+                            PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                            if (x.CompleteName != null && x.CompleteName.Length > 0)
+                            {
+                                if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                                {
+                                    x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                                }
+                                if (x.CompleteName.Length > 80)
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 80);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome1[nome1.Length - 1] != ' ')
+                                    {
+                                        if (nome2[0] != ' ')
+                                        {
+                                            n = nome1.LastIndexOf(" ");
+                                            nome1 = x.CompleteName.Substring(0, n);
+                                            nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                            if (nome2.Length > 50)
+                                            {
+                                                nome2 = nome2.Substring(0, 50);
+                                                resto = nome2.Substring(50, nome2.Length);
+                                                if (nome2[nome2.Length - 1] != ' ')
+                                                {
+                                                    if (resto[0] != ' ')
+                                                    {
+                                                        n2 = nome2.LastIndexOf(" ");
+                                                        nome2 = nome2.Substring(0, n2);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome1 = x.CompleteName.Substring(0, 79);
+                                        nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName;
+                                    nome2 = "";
+                                }
+                                newdp.Nome = nome1;
+                                newdp.Nome2 = nome2;
+                            }
+                            newdp.DataHoraCriação = DateTime.Now;
+                            newdp.UtilizadorCriação = User.Identity.Name;
+                            DBPriceServiceClient.Create(newdp);
+                        }
+                    });
+                }
+                else
+                {
+                    dp.ForEach(x=>{
+                        PreçosServiçosCliente newdp = DBPriceServiceClient.ParseToDatabase(x);
+                        string nome1 = "", nome2 = "", resto = "";
+                        int n = 0, n2 = 0;
+                        if (x.CompleteName != null && x.CompleteName.Length > 0)
+                        {
+                            if (x.CompleteName[x.CompleteName.Length - 1] == ' ')
+                            {
+                                x.CompleteName = x.CompleteName.Substring(0, x.CompleteName.Length - 1);
+                            }
+                            if (x.CompleteName.Length > 80)
+                            {
+                                nome1 = x.CompleteName.Substring(0, 80);
+                                nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                if (nome1[nome1.Length - 1] != ' ')
+                                {
+                                    if (nome2[0] != ' ')
+                                    {
+                                        n = nome1.LastIndexOf(" ");
+                                        nome1 = x.CompleteName.Substring(0, n);
+                                        nome2 = x.CompleteName.Substring(n + 1, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        nome2 = x.CompleteName.Substring(81, x.CompleteName.Length);
+                                        if (nome2.Length > 50)
+                                        {
+                                            nome2 = nome2.Substring(0, 50);
+                                            resto = nome2.Substring(50, nome2.Length);
+                                            if (nome2[nome2.Length - 1] != ' ')
+                                            {
+                                                if (resto[0] != ' ')
+                                                {
+                                                    n2 = nome2.LastIndexOf(" ");
+                                                    nome2 = nome2.Substring(0, n2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    nome1 = x.CompleteName.Substring(0, 79);
+                                    nome2 = x.CompleteName.Substring(80, x.CompleteName.Length);
+                                    if (nome2.Length > 50)
+                                    {
+                                        nome2 = nome2.Substring(0, 50);
+                                        resto = nome2.Substring(50, nome2.Length);
+                                        if (nome2[nome2.Length - 1] != ' ')
+                                        {
+                                            if (resto[0] != ' ')
+                                            {
+                                                n2 = nome2.LastIndexOf(" ");
+                                                nome2 = nome2.Substring(0, n2);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                nome1 = x.CompleteName;
+                                nome2 = "";
+                            }
+                            newdp.Nome = nome1;
+                            newdp.Nome2 = nome2;
+                        }
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBPriceServiceClient.Create(newdp);
+                    });
+                }
+                
+            }
+            else
+            {
+                responde.eReasonCode = 2;
+                responde.eMessage = "Ocorreu um erro ao atualizar";
+            }
+            return Json(responde);
+        }
+        #region Export Excel
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel([FromBody] List<PriceServiceClientViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Preços Serviços Cliente");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Cliente");
+                row.CreateCell(1).SetCellValue("Nome");
+                row.CreateCell(2).SetCellValue("Cod. Serv. Cliente");
+                row.CreateCell(3).SetCellValue("Descrição Serviço");
+                row.CreateCell(4).SetCellValue("Preço Venda");
+                row.CreateCell(5).SetCellValue("Preço de Custo");
+                row.CreateCell(6).SetCellValue("Data");
+                row.CreateCell(7).SetCellValue("Recurso");
+                row.CreateCell(8).SetCellValue("Descrição do Recurso");
+                row.CreateCell(9).SetCellValue("Unidade Medida");
+                row.CreateCell(10).SetCellValue("Tipo Refeição");
+                row.CreateCell(11).SetCellValue("Descrição Tipo Refeição");
+                row.CreateCell(12).SetCellValue("Codigo Região");
+                row.CreateCell(13).SetCellValue("Codigo Area");
+                row.CreateCell(14).SetCellValue("Codigo Centro Responsabilidade");
+                int count = 1;
+                foreach (PriceServiceClientViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.Client);
+                    row.CreateCell(1).SetCellValue(item.CompleteName);
+                    row.CreateCell(2).SetCellValue(item.CodServClient);
+                    row.CreateCell(3).SetCellValue(item.ServiceDescription);
+                    row.CreateCell(4).SetCellValue(item.SalePrice.HasValue ? item.SalePrice.ToString() : "");
+                    row.CreateCell(5).SetCellValue(item.PriceCost.HasValue ? item.PriceCost.ToString() : "");
+                    row.CreateCell(6).SetCellValue(item.Date);
+                    row.CreateCell(7).SetCellValue(item.Resource);
+                    row.CreateCell(8).SetCellValue(item.ResourceDescription);
+                    row.CreateCell(9).SetCellValue(item.UnitMeasure);
+                    row.CreateCell(10).SetCellValue(item.TypeMeal);
+                    row.CreateCell(11).SetCellValue(item.TypeMealDescription);
+                    row.CreateCell(12).SetCellValue(item.RegionCode);
+                    row.CreateCell(13).SetCellValue(item.FunctionalAreaCode);
+                    row.CreateCell(14).SetCellValue(item.ResponsabilityCenterCode);
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        public IActionResult ExportToExcelDownload(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Preços Serviços Cliente.xlsx");
+        }
+        #endregion
+        #region Upload Excel
+        [HttpPost]
+        public JsonResult OnPostImport()
+        {
+            var files = Request.Form.Files;
+            List<PriceServiceClientViewModel> ListToCreate = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll());
+            PriceServiceClientViewModel nrow = new PriceServiceClientViewModel();
+            for (int i = 0; i < files.Count; i++)
+            {
+                IFormFile file = files[i];
+                string folderName = "Upload";
+                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string newPath = Path.Combine(webRootPath, folderName);
+                StringBuilder sb = new StringBuilder();
+                if (!Directory.Exists(newPath))
+                {
+                    Directory.CreateDirectory(newPath);
+                }
+                if (file.Length > 0)
+                {
+                    string sFileExtension = Path.GetExtension(file.FileName).ToLower();
+                    ISheet sheet;
+                    string fullPath = Path.Combine(newPath, file.FileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                        stream.Position = 0;
+                        if (sFileExtension == ".xls")
+                        {
+                            HSSFWorkbook hssfwb = new HSSFWorkbook(stream); //This will read the Excel 97-2000 formats  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook  
+                        }
+                        else
+                        {
+                            XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook   
+                        }
+                        for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
+                        {
+                            IRow row = sheet.GetRow(j);
+                            if (row != null)
+                            {
+                                nrow = new PriceServiceClientViewModel();
+                                nrow.Client = row.GetCell(0).ToString();
+                                nrow.CompleteName = row.GetCell(1).ToString();
+                                nrow.CodServClient = row.GetCell(2).ToString();
+                                nrow.ServiceDescription = row.GetCell(3).ToString();
+                                nrow.strSalePrice = row.GetCell(4).ToString();
+                                nrow.strPriceCost = row.GetCell(5).ToString();
+                                nrow.Date = row.GetCell(6).ToString();
+                                nrow.Resource = row.GetCell(7).ToString();
+                                nrow.ResourceDescription = row.GetCell(8).ToString();
+                                nrow.UnitMeasure = row.GetCell(9).ToString();
+                                nrow.TypeMeal = row.GetCell(10).ToString();
+                                nrow.TypeMealDescription = row.GetCell(11).ToString();
+                                nrow.RegionCode = row.GetCell(12).ToString();
+                                nrow.FunctionalAreaCode = row.GetCell(13).ToString();
+                                nrow.ResponsabilityCenterCode = row.GetCell(14).ToString();
+                                ListToCreate.Add(nrow);
+                            }
+                        }
+                    }
+                }
+                if (ListToCreate.Count > 0)
+                {
+                    foreach (PriceServiceClientViewModel item in ListToCreate)
+                    {
+                        if (!string.IsNullOrEmpty(item.strPriceCost))
+                        {
+                            item.PriceCost = Convert.ToDecimal(item.strPriceCost);
+                            item.strPriceCost = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.strSalePrice))
+                        {
+                            item.SalePrice = Convert.ToDecimal(item.strSalePrice);
+                            item.strSalePrice = "";
+                        }
+                    }
+                }
+            }
+            return Json(ListToCreate);
+        }
+        #endregion
+        #endregion
+
     }
 }

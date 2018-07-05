@@ -20,6 +20,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string Fax_No { get; set; }
         public string Home_Page { get; set; }
         public string County { get; set; }
+        public WSClientNAV.Blocked Blocked { get; set; }
         public string VAT_Registration_No { get; set; }
         public bool? Cliente_Associado { get; set; }
         public string Associado_A_N { get; set; }

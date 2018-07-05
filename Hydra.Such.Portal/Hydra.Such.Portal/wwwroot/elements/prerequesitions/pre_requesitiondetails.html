@@ -2107,7 +2107,8 @@
                 _pendingreq: function (e) {
                     window.location.href = "/PreRequisicoes/RequisicoesPendentes";
                 },
-               _CleanPreRequesitionResponse: function(e) {
+                _CleanPreRequesitionResponse: function (e) {
+                    debugger;
                     if (this.ClPreReq.eReasonCode != null) {
                         this._openToastError(this.ClPreReq.eMessage);
                     }
@@ -2119,9 +2120,10 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
+                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
-
+                        
                         this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         var req = this.$.CleanPreRequesition_ajax;
 
@@ -2134,8 +2136,12 @@
 
                             setTimeout(
                                 function () {
-                                    //thisCtx._openToastError(errors);
-                                    req.generateRequest();
+                                    bootbox.alert({
+                                        message: errors,
+                                        callback: function () {
+                                            req.generateRequest();
+                                        }
+                                    });
                                 }, 4000);
                         }
                         else {

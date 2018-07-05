@@ -130,6 +130,10 @@ namespace Hydra.Such.Portal.Controllers
                 result.Regiao = CU.RegiãoPorDefeito;
                 result.Area = CU.AreaPorDefeito;
                 result.Cresp = CU.CentroRespPorDefeito;
+                result.EmployeeNo = CU.EmployeeNo;
+                result.ProcedimentosEmailEnvioParaCA = CU.ProcedimentosEmailEnvioParaCa;
+                result.ProcedimentosEmailEnvioParaArea = CU.ProcedimentosEmailEnvioParaArea;
+                result.ProcedimentosEmailEnvioParaArea2 = CU.ProcedimentosEmailEnvioParaArea2;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -168,6 +172,10 @@ namespace Hydra.Such.Portal.Controllers
                 RegiãoPorDefeito = data.Regiao,
                 AreaPorDefeito = data.Area,
                 CentroRespPorDefeito = data.Cresp,
+                EmployeeNo = data.EmployeeNo,
+                ProcedimentosEmailEnvioParaCa = data.ProcedimentosEmailEnvioParaCA,
+                ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea,
+                ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2,
                 UtilizadorCriação = User.Identity.Name,
             });
 
@@ -222,7 +230,11 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RegiãoPorDefeito = data.Regiao;
                 userConfig.AreaPorDefeito = data.Area;
                 userConfig.CentroRespPorDefeito = data.Cresp;
+                userConfig.EmployeeNo = data.EmployeeNo;
                 userConfig.DataHoraModificação = DateTime.Now;
+                userConfig.ProcedimentosEmailEnvioParaCa = data.ProcedimentosEmailEnvioParaCA;
+                userConfig.ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea;
+                userConfig.ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 DBUserConfigurations.Update(userConfig);
 
@@ -1186,6 +1198,18 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult GeAlltMealTypes()
+        {
+            List<MealTypesViewModel> result = DBMealTypes.GetAll().Select(x => new MealTypesViewModel()
+            {
+                id = Convert.ToString(x.Código),
+                Code = x.Código,
+                Description = x.Descrição,
+                GrupoContabProduto = x.GrupoContabProduto
+            }).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult UpdateMealTypes([FromBody] List<MealTypesViewModel> data)
@@ -1306,7 +1330,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<ProjectTypesModelView> result = DBServices.GetAll().Select(x => new ProjectTypesModelView()
+            List<ProjectTypesModelViewStr> result = DBServices.GetAll().Select(x => new ProjectTypesModelViewStr()
             {
                 Code = x.Código,
                 Description = x.Descrição
@@ -1315,7 +1339,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelView> data)
+        public JsonResult CreateServices([FromBody] ProjectTypesModelViewStr data)
+        {
+            List<Serviços> results = DBServices.GetAll();
+            Serviços result = DBServices.GetById(data.Code);
+            if (result == null) {
+                Serviços tpval = new Serviços();
+                tpval.Descrição = data.Description;
+                tpval.Código = data.Code;
+                tpval.UtilizadorCriação = User.Identity.Name;
+                tpval.DataHoraCriação = DateTime.Now;
+                DBServices.Create(tpval);
+            }
+
+           
+            return Json(result);
+        }
+        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelViewStr> data)
         {
             List<Serviços> results = DBServices.GetAll();
             results.RemoveAll(x => data.Any(u => u.Code == x.Código));
@@ -1326,7 +1366,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Descrição = x.Description
                 };
-                if (x.Code > 0)
+                if (x.Code != "" && x.Code !=null)
                 {
                     tpval.DataHoraModificação = DateTime.Now;
                     tpval.UtilizadorModificação = User.Identity.Name;
@@ -1460,7 +1500,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public bool CheckIfExist(string ClientNumber, int ServiceCode, bool? ServiceGroup, int param)
+        public bool CheckIfExist(string ClientNumber, string ServiceCode, bool? ServiceGroup, int param)
         {
             List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
             {
@@ -1918,9 +1958,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.ForEach(x =>
                 {
-                    x.Descricao = x.Code + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().Name;
-                    x.CodTipoTrabalhoTexto = x.CodTipoTrabalho + " - " + DBTipoTrabalhoFH.GetAll().Where(y => y.Codigo == x.CodTipoTrabalho).FirstOrDefault().Descricao;
-                    x.FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().ResourceGroup;
+                    x.Descricao = x.Code; // + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().Name;
+                    x.CodTipoTrabalhoTexto = x.CodTipoTrabalho; // + " - " + DBTipoTrabalhoFH.GetAll().Where(y => y.Codigo == x.CodTipoTrabalho).FirstOrDefault().Descricao;
+                    //x.FamiliaRecurso = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault().ResourceGroup;
                 });
             }
 
@@ -2265,12 +2305,12 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             if (Lista_Resources.Where(x => x.Code == CodFamiliaRecurso).Count() == 0)
-            //if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").Count() == 0)
+                //if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, CodFamiliaRecurso, "", 0, "").Count() == 0)
                 result_list[1] = true;
 
 
             if (Lista_TipoTrabalhoFh.Where(x => x.Codigo == CodTipoTrabalho).Count() == 0)
-            //if (DBTipoTrabalhoFH.GetAll().Where(x => x.Codigo == CodTipoTrabalho).Count() == 0)
+                //if (DBTipoTrabalhoFH.GetAll().Where(x => x.Codigo == CodTipoTrabalho).Count() == 0)
                 result_list[2] = true;
 
             if (PrecoUnitario != "")
@@ -2705,11 +2745,11 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             if (Lista_Employees.Where(x => x.No == Empregado).Count() == 0)
-            //if (DBNAV2009Employees.GetAll(Empregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Count() == 0)
+                //if (DBNAV2009Employees.GetAll(Empregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Count() == 0)
                 result_list[1] = true;
 
             if (Lista_Resources.Where(x => x.Code == Recurso).Count() == 0)
-            //if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Where(x => x.Code == Recurso).Count() == 0)
+                //if (DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Where(x => x.Code == Recurso).Count() == 0)
                 result_list[2] = true;
 
             if (DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == Empregado && x.Recurso == Recurso).Count() > 0)
@@ -3538,7 +3578,7 @@ namespace Hydra.Such.Portal.Controllers
             AcordoPrecos AP = DBAcordoPrecos.GetById(data.NoProcedimento);
 
             AcordoPrecosModelView result = new AcordoPrecosModelView();
-     
+
             if (AP != null)
             {
                 result.NoProcedimento = AP.NoProcedimento;
@@ -4126,15 +4166,15 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             if (Lista_AcordoPrecos.Where(x => x.NoProcedimento == NoProcedimento).Count() == 0 || FormularioNoProcedimento != NoProcedimento)
-            //if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0 || FormularioNoProcedimento != NoProcedimento)
+                //if (DBAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento).Count() == 0 || FormularioNoProcedimento != NoProcedimento)
                 result_list[1] = true;
 
             if (Lista_Vendor.Where(x => x.No_ == NoFornecedor).Count() == 0)
-            //if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
+                //if (DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == NoFornecedor).Count() == 0)
                 result_list[2] = true;
 
             if (Lista_Products.Where(x => x.Code == CodProduto).Count() == 0)
-            //if (DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).Count() == 0)
+                //if (DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, CodProduto).Count() == 0)
                 result_list[3] = true;
 
             if (!DateTime.TryParse(DtValidadeInicio, out currectDate))
@@ -4146,20 +4186,20 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Regiao != "")
                 if (Lista_Regioes.Where(x => x.Code == Regiao).Count() == 0)
-                //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
+                    //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(x => x.Code == Regiao).Count() == 0)
                     result_list[6] = true;
 
             if (Area != "")
                 if (Lista_Areas.Where(x => x.Code == Area).Count() == 0)
-                //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
+                    //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(x => x.Code == Area).Count() == 0)
                     result_list[7] = true;
 
             if (Lista_Cresp.Where(x => x.Code == Cresp).Count() == 0)
-            //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(x => x.Code == Cresp).Count() == 0)
+                //if (DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(x => x.Code == Cresp).Count() == 0)
                 result_list[8] = true;
 
             if (Lista_AcessosLocalizacoes.Where(x => x.Localizacao == Localizacao).Count() == 0)
-            //if (DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Where(x => x.Localizacao == Localizacao).Count() == 0)
+                //if (DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Where(x => x.Localizacao == Localizacao).Count() == 0)
                 result_list[9] = true;
 
             if (CustoUnitario != "")
@@ -4179,7 +4219,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (int.TryParse(FormaEntrega, out currectInt))
                 {
                     if (Lista_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
-                    //if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
+                        //if (EnumerablesFixed.AP_FormaEntrega.Where(x => x.Id == Convert.ToInt32(FormaEntrega)).Count() == 0)
                         result_list[13] = true;
                 }
                 else
@@ -4190,8 +4230,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (int.TryParse(TipoPreco, out currectInt))
                 {
-                    if(Lista_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
-                    //if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
+                    if (Lista_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
+                        //if (EnumerablesFixed.AP_TipoPreco.Where(x => x.Id == Convert.ToInt32(TipoPreco)).Count() == 0)
                         result_list[14] = true;
                 }
                 else
@@ -4246,7 +4286,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
         }
-        
+
 
         [HttpPost]
         public JsonResult DeleteAnexosErros([FromBody] AnexosErrosViewModel AnexoErro)
@@ -4267,7 +4307,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-        
+
         #endregion Acordo de Preços
 
 
@@ -4355,7 +4395,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
         {
 
-            data.ForEach(x => {
+            data.ForEach(x =>
+            {
                 x.UpdateUser = User.Identity.Name;
                 DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));
             });
@@ -4415,7 +4456,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateConfectionProcedure([FromBody] List<ProceduresConfectionViewModel> data)
         {
 
-            data.ForEach(x => {
+            data.ForEach(x =>
+            {
                 x.UpdateUser = User.Identity.Name;
                 ProceduresConfection.Update(ProceduresConfection.ParseToDatabase(x));
             });
@@ -4473,7 +4515,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateActionsConfection([FromBody] List<ActionsConfectionViewModel> data)
         {
 
-            data.ForEach(x => {
+            data.ForEach(x =>
+            {
                 x.UpdateUser = User.Identity.Name;
                 DBActionsConfection.Update(DBActionsConfection.ParseToDb(x));
             });
@@ -4483,7 +4526,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Localizacoes()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminExistencias);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -4498,7 +4541,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesLocalizacao(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Areas.Nutrição, Enumerations.Features.AdminExistencias);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminExistencias);
 
             if (UPerm != null && UPerm.Read.Value)
             {

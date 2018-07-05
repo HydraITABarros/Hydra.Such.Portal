@@ -24,6 +24,11 @@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
 <x-confignumerations></x-confignumerations>
 <dom-module id="x-confignumerations">
     <template>
@@ -39,20 +44,22 @@
             input {
                 font: inherit;
             }
-        </style>
 
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <h2 class="separator">Novo Registo</h2>
-            <div class="row">
-                <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
-                <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
-                <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
-                <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-                <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-                <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
-            </div>
-        </template>
-        <h2 class="separator">Numerações Ativas</h2>
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                        padding: 0 0;
+                    };
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
+            }
+        </style>
 
         <iron-ajax url="/Administracao/GetListConfigNumerations"
                    last-response="{{result}}"
@@ -61,11 +68,41 @@
                    method="post"
                    on-response="_updateResponse"
                    handle-as="json"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json">
+        </iron-ajax>
+
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                    <div class="panel-body">
+                        <div class="row break_clear">
+                            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+
+                            <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+
+                            <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+
+                            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+
+                            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+
+                            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
+                        </div>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
+        </template>
 
         <vaadin-grid id="numerationsTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
-
-            <vaadin-grid-column width="20%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Descrição
                 </template>
@@ -74,7 +111,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="6%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Auto
                 </template>
@@ -83,7 +120,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="6%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Manual
                 </template>
@@ -92,7 +129,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="16%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Prefixo
                 </template>
@@ -101,7 +138,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="12%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Nº Incrementar
                 </template>
@@ -110,7 +147,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="12%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Qt. Incrementar
                 </template>
@@ -119,7 +156,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="18%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     Último Nº Usado
                 </template>
@@ -129,22 +166,19 @@
             </vaadin-grid-column>
 
             <template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column width="10%">
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                     </template>
                     <template>
-                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                        <center>
+                            @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
                     </template>
                 </vaadin-grid-column>
             </template>
         </vaadin-grid>
 
-        <template is="dom-if" if="{{ _permissions.update }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -163,6 +197,25 @@
 	                    type: Array,
 	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
                     },
+                },
+
+                ready: function () {
+                    this.$.ajax_update.generateRequest();
+                    //this.$.gridAutorizacaoFHRH.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.numerationsTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 71;
+                    $(this.$.numerationsTable).height(height);
                 },
 
                 openToast: function (message) {
@@ -241,6 +294,10 @@
                             this.openToastError("Occorreu um erro ao atualizar as numerações.");
                         }
                     }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

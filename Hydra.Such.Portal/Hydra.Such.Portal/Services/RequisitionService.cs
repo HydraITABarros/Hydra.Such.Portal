@@ -164,7 +164,7 @@ namespace Hydra.Such.Portal.Services
                     if (requisition.eMessages.Any(x => x.Type == TraceType.Success))
                     {
                         //Refresh lines - Get from db
-                        var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                        var updatedLines = DBRequestLine.GetByRequisitionId(requisition.RequisitionNo);
                         if (updatedLines != null)
                         {
                             requisition.Lines = updatedLines.ParseToViewModel();
@@ -277,7 +277,7 @@ namespace Hydra.Such.Portal.Services
                     if (requisition.eMessages.Any(x => x.Type == TraceType.Success))
                     {
                         //Refresh lines - Get from db
-                        var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                        var updatedLines = DBRequestLine.GetByRequisitionId(requisition.RequisitionNo);
                         if (updatedLines != null)
                         {
                             requisition.Lines = updatedLines.ParseToViewModel();
@@ -350,7 +350,7 @@ namespace Hydra.Such.Portal.Services
                         var createdLines = DBPrePurchOrderLines.CreateAndUpdateReqLines(prePurchOrderLines.ParseToDB(), requisitionLines.ParseToDB());
                         if (createdLines != null)
                         {
-                            var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                            var updatedLines = DBRequestLine.GetByRequisitionId(requisition.RequisitionNo);
                             if (updatedLines != null)
                             {
                                 requisition.Lines = updatedLines.ParseToViewModel();
@@ -465,7 +465,7 @@ namespace Hydra.Such.Portal.Services
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchOrder, configws);
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {

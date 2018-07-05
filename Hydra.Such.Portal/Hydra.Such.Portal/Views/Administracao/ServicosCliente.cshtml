@@ -126,6 +126,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
@@ -142,6 +150,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 ">
                             <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -154,9 +163,11 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 alignPoga">
                             <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}" disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
                         </div>
+
                         <div class="col-lg-1 alignPoga">
                             <paper-button class="btnSave" on-tap="_createClientService" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
@@ -167,7 +178,7 @@
         <br />
 
         <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
                 </template>
@@ -183,7 +194,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
                 </template>
@@ -199,12 +211,13 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <p>
-                        <vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
+                        @*<vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
                             <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>
+                        </vaadin-grid-filter>*@
                         Grupo Serviços
                     </p>
                 </template>
@@ -212,25 +225,21 @@
                     <vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ !_permissionsDelete }}">
-                <vaadin-grid-column width="10%" resizable>
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                            @*<paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>
             </template>
         </vaadin-grid>
 
-        <template is="dom-if" if="{{ !_permissionsUpdate }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true" text="Este Serviço Cliente já existe."></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -277,6 +286,24 @@
                     type: Boolean,
                     value: true
                 }
+            },
+
+            ready: function () {
+                this.$.page_databound_ajax.generateRequest();
+
+                var _this = this;
+                $(window).resize(function () {
+                    _this.fixGridToBottom();
+                });
+                $(window).trigger('resize');
+            },
+
+            fixGridToBottom: function () {
+                var grid_el = $(this.$.gridClientServices);
+                var parentHeight = $(this).offsetParent().height();
+                var offsetTop = $(this).offset().top;
+                var height = parentHeight - offsetTop - 2;
+                $(this.$.gridClientServices ).height(height);
             },
 
             openToast: function (message) {
@@ -374,6 +401,9 @@
                 this.$.page_delete_ajax.body = JSON.stringify(this.result);
                 this.$.page_delete_ajax.generateRequest();
                 this.$.gridClientServices.clearCache();
+            },
+            _goBack: function (e) {
+                window.history.back();
             }
 
         });

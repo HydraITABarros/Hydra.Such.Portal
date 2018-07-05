@@ -89,5 +89,20 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+
+        public static List<AutorizarFaturaçãoContratos> GetPedding()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AutorizarFaturaçãoContratos.Where(x => x.Situação!="").ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -143,6 +143,47 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDateAndDimensionsAndNivel(int type, string functionalArea, string responsabiltyCenter, string region, decimal value, DateTime fDate, int nivel)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<ConfiguraçãoAprovações> approvalConfigs = ctx.ConfiguraçãoAprovações
+                        .Where(x => x.Tipo == type &&
+                                    //x.Área == area && 
+                                    (x.CódigoÁreaFuncional == functionalArea || x.CódigoÁreaFuncional == string.Empty) &&
+                                    (x.CódigoCentroResponsabilidade == responsabiltyCenter || x.CódigoCentroResponsabilidade == string.Empty) &&
+                                    (x.CódigoRegião == region || x.CódigoRegião == string.Empty) &&
+                                    (x.ValorAprovação >= value || x.ValorAprovação == 0 || !x.ValorAprovação.HasValue) &&
+                                    (x.DataInicial <= fDate && x.DataFinal >= fDate) &&
+                                    (x.NívelAprovação == nivel))
+                        .ToList();
+
+                    //Set empty to the max
+                    approvalConfigs
+                        .Where(x => !x.ValorAprovação.HasValue)
+                        .ToList()
+                        .ForEach(x => x.ValorAprovação = decimal.MaxValue);
+
+                    //Order by importance: approval limits first then dimension value strength
+                    List<DimensionStrengthItem> orderedItems = approvalConfigs
+                        .OrderBy(x => x.NívelAprovação).ThenBy(x => x.ValorAprovação)
+                        .Distinct()
+                        .Select(x => new DimensionStrengthItem(x))
+                        .OrderByDescending(x => x.DimensionsStrength)
+                        .ThenByDescending(x => x.DimensionsTypeStrength)
+                        .ToList();
+
+                    return orderedItems.ToList<ConfiguraçãoAprovações>();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #region Parses
         public static ApprovalConfigurationsViewModel ParseToViewModel(this ConfiguraçãoAprovações x)
         {
@@ -224,7 +265,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 this.UtilizadorCriação = item.UtilizadorCriação;
                 this.UtilizadorModificação = item.UtilizadorModificação;
                 this.ValorAprovação = item.ValorAprovação;
-                this.Área = item.Área;                
+                this.Área = item.Área;
             }
 
             public int DimensionsStrength

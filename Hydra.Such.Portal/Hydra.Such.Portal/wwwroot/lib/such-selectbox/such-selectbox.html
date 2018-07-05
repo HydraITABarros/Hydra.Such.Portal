@@ -478,7 +478,7 @@
 
                 _setSelected() {
                     var _this = this;
-                    if (typeof _this.items != 'undefined' && _this.items.length > 0) {
+                    if (_this.items && _this.items.length > 0) {
                         _this.items.forEach(function (item) {
                             if (_this.value == item[_this['value-path']]) {
                                 _this.activeItem = item;

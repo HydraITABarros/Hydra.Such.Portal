@@ -3387,7 +3387,7 @@
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
-                <div class="marginSpace">
+                <div id="botoes_accao" class="marginSpace">
                     <template is="dom-if" if="{{ _isCreate }}">
                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                     </template>
@@ -3915,7 +3915,18 @@
                             enviarEmail: this.chkSendMail
                         });
 
-                        this.$.ajax_createelementojuri.generateRequest();
+                        //this.$.ajax_createelementojuri.generateRequest();
+
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                        var sav = this.$.ajax_update_procedimento.generateRequest();
+                        var lin = this.$.ajax_createelementojuri.generateRequest();
+
+                        Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                            //var savReq = requests[0].result;
+                            //var linReq = requests[1].result;
+                        })
+
                         this.$.gridElementosJuri.clearCache();
                     }
                 },
@@ -4106,6 +4117,62 @@
                     }
                 },
 
+                // JPM.20180618.b
+                _confirmAutorizarImobilizado: function () {
+                    if (!this.__isElementCA) {
+                        this._openToast('Não está autorizado a utilizar esta opção!');
+                        return;
+                    }
+
+                    if (!this.data.imobilizado) {
+                        this._openToast('O Procedimento !' + this.data.no + ' não é de Imobilizado!');
+                        return;
+                    }
+
+                    if (this.data.estado != 8) {
+                        this._openToast('Neste estado não pode autorizar o processo!');
+                        return;
+                    }
+
+                    if (this.data.responsavelImobCA != "") {
+                        this._openToast('Este passo já foi Autorizado!');
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_confirmAutorizarImobilizado;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Autorização?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                    if (this.data.comentarioImobCA == "") {
+                        this.data.comentarioImobCA = "Autorizado.";
+                    }
+
+                    this.$.ajax_confirmAutorizarImobilizado.body = JSON.stringify(this.data);
+
+                },
+
+                _confirmAutorizarImobilizadoResponse: function (e) {
+                    if (this.ConfirmarAutorizarImobilizado.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " Autorizado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ProcedimentoConfirmed.eMessage);
+                    }
+                },
+                // JPM.20180618.e
+
                 //NR 20180307
                 _pedirAutorizacao: function () {
                     var ajax_request = this.$.ajax_pedirAutorizacao;
@@ -4235,11 +4302,23 @@
                         códigoÁreaFuncional: this.$.codigoAreaFuncional.value,
                         códigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value
                     });
-                    this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+                    //this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                        //var savReq = requests[0].result;
+                        //var linReq = requests[1].result;
+                    })
+
                     this.$.tabLinhaProdutos.clearCache();
                 },
                 _createLinhaProdutoServicoResponse: function (e) {
                     if (this.LinhaProdutoServicoCreated) {
+
                         this.$.page_databound_ajax.generateRequest();
                         this._showMessage('Adicionada Linha com sucesso.');
 
@@ -4800,7 +4879,18 @@
                         nºProcedimento: this.$.no.value,
                         nota: this.$._NovaNota.value
                     });
-                    this.$.page_createNota_ajax.generateRequest();
+                    //this.$.page_createNota_ajax.generateRequest();
+
+                    this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_procedimento.generateRequest();
+                    var lin = this.$.page_createNota_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                        //var savReq = requests[0].result;
+                        //var linReq = requests[1].result;
+                    })
+
                     this.$.tabNotas.clearCache();
                 },
                 _createNotaResponse: function (e) {
@@ -5583,251 +5673,279 @@
                     //}
                     // Disable controls
                     // 1. Procedimento status != 0.b
-                    if (data.estado != 0) {
+
+                    if (data.arquivado) {
+                        //grids
                         $(_self.$.gridElementosJuri).addClass('disabled');
                         $(_self.$.gridElementosJuri_4).addClass('disabled');
-                        $(_self.$.buttonCriarElementoJuri).addClass('disabled');
-                        $(_self.$.submitProcedimento).addClass('disabled');
-                        //$(_self.$.gridElementosJuri).addClass('disabled');
-                        //$(_self.$.buttonCriarElementoJuri).addClass('disabled');
+                        $(_self.$.tabLinhaProdutos).addClass('disabled');
+                        $(_self.$.tabNotas).addClass('disabled');
+
+                        //div
+                        $(_self.$.botoes_accao).addClass('hidden');
+
+                        //botões
+                        $(_self.$.buttonCriarElementoJuri).addClass('hidden');
+                        $(_self.$.submitProcedimento).addClass('hidden');
+                        $(_self.$.btnCriarLinhaProdutosServicos).addClass('hidden');
+                        $(_self.$.actionButtonContabilidade1).addClass('hidden');
+                        $(_self.$.actionButtonArea2).addClass('hidden');
+                        $(_self.$.actionButtonCompras).addClass('hidden');
+                        $(_self.$.actionButtonFinanceiros).addClass('hidden');
+                        $(_self.$.actionButtonPedidoAberturaProc).addClass('hidden');
+                        $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('hidden');
+                        $(_self.$.btnConfirmRecolhaPlataforma).addClass('hidden');
+                        $(_self.$.btnConfirmValidacaoRelatorio).addClass('hidden');
+                        $(_self.$.btnConfirmAudienciaPrevia).addClass('hidden');
+                        $(_self.$.btnConfirmRelatorioFinal).addClass('hidden');
+                        $(_self.$.btnSendToEvaluate).addClass('hidden');
+                        $(_self.$.actionButtonPedidoAberturaProc6).addClass('hidden');
+                        $(_self.$.actionButtonPedidoAberturaProc14).addClass('hidden');
+                        $(_self.$.btnEnviarParaArea).addClass('hidden');
+                        $(_self.$.btnSubmeterProcesso_16).addClass('hidden');
+                        $(_self.$.btnAutorizarImobilizadoConfirm).addClass('hidden');
+                        $(_self.$.btnAutorizarImobilizadoSuspend).addClass('hidden');
+                        $(_self.$.btnAutorizarImobilizadoReject).addClass('hidden');
+                        $(_self.$.btnAberturaProcedimentoConfirm).addClass('hidden');
+                        $(_self.$.btnAberturaProcedimentoSuspend).addClass('hidden');
+                        $(_self.$.btnAberturaProcedimentoReject).addClass('hidden');
+                        $(_self.$.btnAutorizacaoAdjudicacaoConfirm).addClass('hidden');
+                        $(_self.$.btnAutorizacaoAdjudicacaoSuspend).addClass('hidden');
+                        $(_self.$.btnAutorizacaoAdjudicacaoReject).addClass('hidden');
+                        $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('hidden');
+                        $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('hidden');
+                        $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('hidden');
+                        $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('hidden');
+                        $(_self.$.btnMudarEstado).addClass('hidden');
+                        $(_self.$.btnCriarNota).addClass('hidden');
+                        $(_self.$.btnCriarAta).addClass('hidden');
+                    }
+                    else {
+                        if (data.estado != 0) {
+                            $(_self.$.gridElementosJuri).addClass('disabled');
+                            $(_self.$.gridElementosJuri_4).addClass('disabled');
+                            $(_self.$.buttonCriarElementoJuri).addClass('disabled');
+                            $(_self.$.submitProcedimento).addClass('disabled');
+
+                            //NR 20180228
+                            $(_self.$.btnCriarLinhaProdutosServicos).addClass('disabled');
+                            $(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
+
+                            $(_self.$.tabLinhaProdutos).addClass('disabled');
+                        }
+
+                        _self.$.informacaoTecnica.disabled = (data.estado != 0);
+                        _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
+                        _self.$.precoBase.disabled = (data.estado != 0);
+                        _self.$.valorPrecoBase.disabled = (data.estado != 0);
+                        _self.$.negociacao.disabled = (data.estado != 0);
+                        _self.$.prazo.disabled = (data.estado != 0);
+                        _self.$.users.disabled = (data.estado != 0);
+                        _self.$._chkPresidente.disabled = (data.estado != 0);
+                        _self.$._chkVogal.disabled = (data.estado != 0);
+                        _self.$._chkSuplente.disabled = (data.estado != 0);
+                        _self.$._chkSendMail.disabled = (data.estado != 0);
+                        _self.$.comentarioAreaApresentar.disabled = (data.estado != 0);
+                        _self.$.precoMaisBaixo.disabled = (data.estado != 0);
+                        _self.$.descPrecoMaisBaixo.disabled = (data.estado != 0);
+                        _self.$.propostaEconMaisVantajosa.disabled = (data.estado != 0);
+                        _self.$.descPropostaEconMaisVantajosa.disabled = (data.estado != 0);
+                        _self.$.propostaVariante.disabled = (data.estado != 0);
+                        _self.$.descPropostaVariante.disabled = (data.estado != 0);
+                        _self.$.abertoFechadoAoMercado.disabled = (data.estado != 0);
+                        _self.$.descAbertoFechadoAoMercado.disabled = (data.estado != 0);
+                        _self.$.prazoEntrega.disabled = (data.estado != 0);
+                        _self.$.locaisEntrega.disabled = (data.estado != 0);
+                        _self.$.observacoesAdicionais.disabled = (data.estado != 0);
+                        _self.$.estimativaPreco.disabled = (data.estado != 0);
+                        _self.$.fornecedoresSugeridos.disabled = (data.estado != 0);
+                        _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
+                        _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
+                        _self.$.interlocutor.disabled = (data.estado != 0);
 
                         //NR 20180228
-                        $(_self.$.btnCriarLinhaProdutosServicos).addClass('disabled');
-                        $(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
+                        _self.$.linhaTipo.disabled = (data.estado != 0);
+                        _self.$._CBLocations.disabled = (data.estado != 0);
+                        _self.$._CBItems.disabled = (data.estado != 0);
+                        _self.$._DescricaoProduto.disabled = (data.estado != 0);
+                        _self.$._UnitMeasureCode.disabled = (data.estado != 0);
+                        _self.$._linhaQuantidadeRequerer.disabled = (data.estado != 0);
+                        _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
+                        _self.$.tabLinhaProdutos.disabled = (data.estado != 0);
 
-                        $(_self.$.tabLinhaProdutos).addClass('disabled');
+                        //NR 20180305
+                        _self.$.comentarioImobContabilidade.disabled = (data.estado != 1);
+                        _self.$.ImobilizadoSimNao.disabled = (data.estado != 1);
+                        if (data.estado != 1) {
+                            $(_self.$.actionButtonContabilidade1).addClass('disabled');
+                        }
+
+                        _self.$.comentarioImobArea.disabled = (data.estado != 2);
+                        if (data.estado != 2) {
+                            $(_self.$.actionButtonArea2).addClass('disabled');
+                        }
+
+                        _self.$.comentarioImobCA.disabled = (data.estado != 3);
+                        if (data.estado != 3) {
+                            $(_self.$.btnAutorizarImobilizadoConfirm).addClass('disabled');
+                            $(_self.$.btnAutorizarImobilizadoSuspend).addClass('disabled');
+                            $(_self.$.btnAutorizarImobilizadoReject).addClass('disabled');
+                        }
+
+                        //NR 20180301
+                        _self.$.criterioEscolhaProcedimento.disabled = (data.estado != 4);
+                        _self.$.descEscolhaProcedimento.disabled = (data.estado != 4);
+                        _self.$.juri.disabled = (data.estado != 4);
+                        _self.$.nomeProcesso.disabled = (data.estado != 4);
+                        _self.$.objetoDoContrato.disabled = (data.estado != 4);
+                        _self.$.condicoesDePagamento.disabled = (data.estado != 4);
+                        _self.$.gestorProcesso.disabled = (data.estado != 4);
+                        _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
+
+                        if (data.estado != 4) {
+                            $(_self.$.actionButtonCompras).addClass('disabled');
+                            $(_self.$.gridElementosJuri_4).addClass('disabled');
+                        }
+
+                        //NR 20180302
+                        _self.$.comentarioFundamentoFinanceiros.disabled = (data.estado != 5);
+                        if (data.estado != 5) {
+                            $(_self.$.actionButtonFinanceiros).addClass('disabled');
+                        }
+
+                        //NR 20180305
+                        _self.$.comentarioJuridico6.disabled = (data.estado != 6);
+                        if (data.estado != 6) {
+                            $(_self.$.actionButtonPedidoAberturaProc6).addClass('disabled');
+                        }
+
+                        //NR 20180302
+                        _self.$.fundamentacaoAreaComentario.disabled = (data.estado != 7);
+                        if (data.estado != 7) {
+                            $(_self.$.actionButtonPedidoAberturaProc).addClass('disabled');
+                        }
+
+                        //NR 20180305
+                        _self.$.comentarioCA8.disabled = (data.estado != 8);
+                        _self.$.ratificarCaAbertura.disabled = (data.estado != 8);
+                        _self.$.criticoAbertura.disabled = (data.estado != 8);
+                        if (data.estado != 8) {
+                            $(_self.$.btnAberturaProcedimentoReject).addClass('disabled');
+                            $(_self.$.btnAberturaProcedimentoConfirm).addClass('disabled');
+                            $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
+                        }
+
+                        //NR 20180305
+                        _self.$.comentarioPublicacao.disabled = (data.estado != 9);
+                        _self.$.dataPublicacao.disabled = (data.estado != 9);
+                        if (data.estado != 9) {
+                            $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('disabled');
+
+                            $(_self.$.dataPublicacao).addClass('hidden');
+                        } else {
+                            _self.$.dataPublicacao_Show.disabled = (data.estado = 9);
+                            $(_self.$.dataPublicacao_Show).addClass('hidden');
+                        }
+
+                        _self.$.recolhaComentario.disabled = (data.estado != 10);
+                        _self.$.dataRecolha.disabled = (data.estado != 10);
+                        if (data.estado != 10) {
+                            $(_self.$.btnConfirmRecolhaPlataforma).addClass('disabled');
+
+                            $(_self.$.dataRecolha).addClass('hidden');
+                        } else {
+                            _self.$.dataRecolha_Show.disabled = (data.estado = 10);
+                            $(_self.$.dataRecolha_Show).addClass('hidden');
+                        }
+
+                        _self.$.comentarioRelatorioPreliminar.disabled = (data.estado != 11);
+                        _self.$.dataValidRelatorioPreliminar.disabled = (data.estado != 11);
+                        if (data.estado != 11) {
+                            $(_self.$.btnConfirmValidacaoRelatorio).addClass('disabled');
+
+                            $(_self.$.dataValidRelatorioPreliminar).addClass('hidden');
+                        } else {
+                            _self.$.dataValidRelatorioPreliminar_Show.disabled = (data.estado = 11);
+                            $(_self.$.dataValidRelatorioPreliminar_Show).addClass('hidden');
+                        }
+
+                        _self.$.comentarioAudienciaPrevia.disabled = (data.estado != 12);
+                        _self.$.dataAudienciaPrevia.disabled = (data.estado != 12);
+                        if (data.estado != 12) {
+                            $(_self.$.btnConfirmAudienciaPrevia).addClass('disabled');
+
+                            $(_self.$.dataAudienciaPrevia).addClass('hidden');
+                        } else {
+                            _self.$.dataAudienciaPrevia_Show.disabled = (data.estado = 12);
+                            $(_self.$.dataAudienciaPrevia_Show).addClass('hidden');
+                        }
+
+                        _self.$.comentarioRelatorioFinal.disabled = (data.estado != 13);
+                        _self.$.dataRelatorioFinal.disabled = (data.estado != 13);
+                        if (data.estado != 13) {
+                            $(_self.$.btnConfirmRelatorioFinal).addClass('disabled');
+
+                            $(_self.$.dataRelatorioFinal).addClass('hidden');
+                        } else {
+                            _self.$.dataRelatorioFinal_Show.disabled = (data.estado = 13);
+                            $(_self.$.dataRelatorioFinal_Show).addClass('hidden');
+                        }
+
+                        if ((data.estado != 9) &&
+                            (data.estado != 10) &&
+                            (data.estado != 11) &&
+                            (data.estado != 12) &&
+                            (data.estado != 13)) {
+                            $(_self.$.btnSendToEvaluate).addClass('disabled');
+                        }
+
+                        _self.$.comentarioJuridico14.disabled = (data.estado != 14);
+                        if (data.estado != 14) {
+                            $(_self.$.actionButtonPedidoAberturaProc14).addClass('disabled');
+                        }
+
+                        _self.$.comentarioAdjudicacao15.disabled = (data.estado != 15);
+                        _self.$.valorDecisaoContratar.disabled = (data.estado != 15);
+                        _self.$.valorAdjudicacaoAnteriro.disabled = (data.estado != 15);
+                        _self.$.valorAdjudicacaoAtual.disabled = (data.estado != 15);
+                        _self.$.diferencaEuros.disabled = (data.estado != 15);
+                        _self.$.diferencaPercent.disabled = (data.estado != 15);
+                        if (data.estado != 15) {
+                            $(_self.$.btnEnviarParaArea).addClass('disabled');
+                        }
+
+                        _self.$.comentarioAdjudicacao16.disabled = (data.estado != 16);
+                        if (data.estado != 16) {
+                            $(_self.$.btnSubmeterProcesso_16).addClass('disabled');
+                        }
+
+
+                        _self.$.comentarioCA17.disabled = (data.estado != 17);
+                        _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);
+                        _self.$.criticoAdjudicacao.disabled = (data.estado != 17);
+                        if (data.estado != 17) {
+                            $(_self.$.btnAutorizacaoAdjudicacaoConfirm).addClass('disabled');
+                            $(_self.$.btnAutorizacaoAdjudicacaoSuspend).addClass('disabled');
+                            $(_self.$.btnAutorizacaoAdjudicacaoReject).addClass('disabled');
+                        }
+
+                        _self.$.comentarioNotificacao.disabled = (data.estado != 18);
+                        _self.$.dataNotificacao.disabled = (data.estado != 18);
+                        _self.$.prazoNotificacaoDias.disabled = (data.estado != 18);
+                        _self.$.utilizadorNotificacao.disabled = (data.estado != 18);
+                        if (data.estado != 18) {
+                            $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('disabled');
+
+                            $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('disabled');
+                            $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
+                            $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
+
+                            $(_self.$.dataNotificacao).addClass('hidden');
+                        } else {
+                            _self.$.dataNotificacao_Show.disabled = (data.estado = 18);
+                            $(_self.$.dataNotificacao_Show).addClass('hidden');
+                        }
                     }
-
-                    _self.$.informacaoTecnica.disabled = (data.estado != 0);
-                    _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
-                    _self.$.precoBase.disabled = (data.estado != 0);
-                    _self.$.valorPrecoBase.disabled = (data.estado != 0);
-                    _self.$.negociacao.disabled = (data.estado != 0);
-                    _self.$.prazo.disabled = (data.estado != 0);
-                    _self.$.users.disabled = (data.estado != 0);
-                    _self.$._chkPresidente.disabled = (data.estado != 0);
-                    _self.$._chkVogal.disabled = (data.estado != 0);
-                    _self.$._chkSuplente.disabled = (data.estado != 0);
-                    _self.$._chkSendMail.disabled = (data.estado != 0);
-                    _self.$.comentarioAreaApresentar.disabled = (data.estado != 0);
-                    _self.$.precoMaisBaixo.disabled = (data.estado != 0);
-                    _self.$.descPrecoMaisBaixo.disabled = (data.estado != 0);
-                    _self.$.propostaEconMaisVantajosa.disabled = (data.estado != 0);
-                    _self.$.descPropostaEconMaisVantajosa.disabled = (data.estado != 0);
-                    _self.$.propostaVariante.disabled = (data.estado != 0);
-                    _self.$.descPropostaVariante.disabled = (data.estado != 0);
-                    _self.$.abertoFechadoAoMercado.disabled = (data.estado != 0);
-                    _self.$.descAbertoFechadoAoMercado.disabled = (data.estado != 0);
-                    _self.$.prazoEntrega.disabled = (data.estado != 0);
-                    _self.$.locaisEntrega.disabled = (data.estado != 0);
-                    _self.$.observacoesAdicionais.disabled = (data.estado != 0);
-                    _self.$.estimativaPreco.disabled = (data.estado != 0);
-                    _self.$.fornecedoresSugeridos.disabled = (data.estado != 0);
-                    _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
-                    _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
-                    _self.$.interlocutor.disabled = (data.estado != 0);
-
-                    //NR 20180228
-                    _self.$.linhaTipo.disabled = (data.estado != 0);
-                    _self.$._CBLocations.disabled = (data.estado != 0);
-                    _self.$._CBItems.disabled = (data.estado != 0);
-                    _self.$._DescricaoProduto.disabled = (data.estado != 0);
-                    //_self.$._DescricaoProduto2.disabled = (data.estado != 0);
-                    _self.$._UnitMeasureCode.disabled = (data.estado != 0);
-                    _self.$._linhaQuantidadeRequerer.disabled = (data.estado != 0);
-                    _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
-                    _self.$.tabLinhaProdutos.disabled = (data.estado != 0);
-
-                    //NR 20180305
-                    _self.$.comentarioImobContabilidade.disabled = (data.estado != 1);
-                    _self.$.ImobilizadoSimNao.disabled = (data.estado != 1);
-                    if (data.estado != 1) {
-                        $(_self.$.actionButtonContabilidade1).addClass('disabled');
-                    }
-
-                    _self.$.comentarioImobArea.disabled = (data.estado != 2);
-                    if (data.estado != 2) {
-                        $(_self.$.actionButtonArea2).addClass('disabled');
-                    }
-
-                    _self.$.comentarioImobCA.disabled = (data.estado != 3);
-                    if (data.estado != 3) {
-                        $(_self.$.btnAutorizarImobilizadoConfirm).addClass('disabled');
-                        $(_self.$.btnAutorizarImobilizadoSuspend).addClass('disabled');
-                        $(_self.$.btnAutorizarImobilizadoReject).addClass('disabled');
-                    }
-
-                    //NR 20180301
-                    _self.$.criterioEscolhaProcedimento.disabled = (data.estado != 4);
-                    _self.$.descEscolhaProcedimento.disabled = (data.estado != 4);
-                    _self.$.juri.disabled = (data.estado != 4);
-                    _self.$.nomeProcesso.disabled = (data.estado != 4);
-                    _self.$.objetoDoContrato.disabled = (data.estado != 4);
-                    _self.$.condicoesDePagamento.disabled = (data.estado != 4);
-                    _self.$.gestorProcesso.disabled = (data.estado != 4);
-                    _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
-                    //_self.$.emailDestinoCA.disabled = (data.estado != 4);
-
-                    if (data.estado != 4) {
-                        $(_self.$.actionButtonCompras).addClass('disabled');
-                        $(_self.$.gridElementosJuri_4).addClass('disabled');
-                    }
-
-                    //NR 20180302
-                    _self.$.comentarioFundamentoFinanceiros.disabled = (data.estado != 5);
-                    if (data.estado != 5) {
-                        $(_self.$.actionButtonFinanceiros).addClass('disabled');
-                    }
-
-                    //NR 20180305
-                    _self.$.comentarioJuridico6.disabled = (data.estado != 6);
-                    if (data.estado != 6) {
-                        $(_self.$.actionButtonPedidoAberturaProc6).addClass('disabled');
-                    }
-
-                    //NR 20180302
-                    _self.$.fundamentacaoAreaComentario.disabled = (data.estado != 7);
-                    if (data.estado != 7) {
-                        $(_self.$.actionButtonPedidoAberturaProc).addClass('disabled');
-                    }
-
-                    //NR 20180305
-                    _self.$.comentarioCA8.disabled = (data.estado != 8);
-                    _self.$.ratificarCaAbertura.disabled = (data.estado != 8);
-                    _self.$.criticoAbertura.disabled = (data.estado != 8);
-                    if (data.estado != 8) {
-                        $(_self.$.btnAberturaProcedimentoReject).addClass('disabled');
-                        $(_self.$.btnAberturaProcedimentoConfirm).addClass('disabled');
-                        $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
-                    }
-
-                    //NR 20180305
-                    _self.$.comentarioPublicacao.disabled = (data.estado != 9);
-                    _self.$.dataPublicacao.disabled = (data.estado != 9);
-                    //_self.$.utilizadorPublicacao.disabled = (data.estado != 9);
-                    if (data.estado != 9) {
-                        $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('disabled');
-
-                        $(_self.$.dataPublicacao).addClass('hidden');
-                    } else {
-                        _self.$.dataPublicacao_Show.disabled = (data.estado = 9);
-                        $(_self.$.dataPublicacao_Show).addClass('hidden');
-                    }
-
-                    _self.$.recolhaComentario.disabled = (data.estado != 10);
-                    _self.$.dataRecolha.disabled = (data.estado != 10);
-                    //_self.$.utilizadorRecolha.disabled = (data.estado != 10);
-                    if (data.estado != 10) {
-                        $(_self.$.btnConfirmRecolhaPlataforma).addClass('disabled');
-
-                        $(_self.$.dataRecolha).addClass('hidden');
-                    } else {
-                        _self.$.dataRecolha_Show.disabled = (data.estado = 10);
-                        $(_self.$.dataRecolha_Show).addClass('hidden');
-                    }
-
-                    _self.$.comentarioRelatorioPreliminar.disabled = (data.estado != 11);
-                    _self.$.dataValidRelatorioPreliminar.disabled = (data.estado != 11);
-                    //_self.$.utilizadorValidRelatorioPreliminar.disabled = (data.estado != 11);
-                    if (data.estado != 11) {
-                        $(_self.$.btnConfirmValidacaoRelatorio).addClass('disabled');
-
-                        $(_self.$.dataValidRelatorioPreliminar).addClass('hidden');
-                    } else {
-                        _self.$.dataValidRelatorioPreliminar_Show.disabled = (data.estado = 11);
-                        $(_self.$.dataValidRelatorioPreliminar_Show).addClass('hidden');
-                    }
-
-                    _self.$.comentarioAudienciaPrevia.disabled = (data.estado != 12);
-                    _self.$.dataAudienciaPrevia.disabled = (data.estado != 12);
-                    //_self.$.utilizadorAudienciaPrevia.disabled = (data.estado != 12);
-                    if (data.estado != 12) {
-                        $(_self.$.btnConfirmAudienciaPrevia).addClass('disabled');
-
-                        $(_self.$.dataAudienciaPrevia).addClass('hidden');
-                    } else {
-                        _self.$.dataAudienciaPrevia_Show.disabled = (data.estado = 12);
-                        $(_self.$.dataAudienciaPrevia_Show).addClass('hidden');
-                    }
-
-                    _self.$.comentarioRelatorioFinal.disabled = (data.estado != 13);
-                    _self.$.dataRelatorioFinal.disabled = (data.estado != 13);
-                    //_self.$.utilizadorRelatorioFinal.disabled = (data.estado != 13);
-                    if (data.estado != 13) {
-                        $(_self.$.btnConfirmRelatorioFinal).addClass('disabled');
-
-                        $(_self.$.dataRelatorioFinal).addClass('hidden');
-                    } else {
-                        _self.$.dataRelatorioFinal_Show.disabled = (data.estado = 13);
-                        $(_self.$.dataRelatorioFinal_Show).addClass('hidden');
-                    }
-
-                    if ((data.estado != 9) &&
-                        (data.estado != 10) &&
-                        (data.estado != 11) &&
-                        (data.estado != 12) &&
-                        (data.estado != 13)) {
-                        $(_self.$.btnSendToEvaluate).addClass('disabled');
-                    }
-
-                    _self.$.comentarioJuridico14.disabled = (data.estado != 14);
-                    if (data.estado != 14) {
-                        $(_self.$.actionButtonPedidoAberturaProc14).addClass('disabled');
-                    }
-
-                    _self.$.comentarioAdjudicacao15.disabled = (data.estado != 15);
-                    _self.$.valorDecisaoContratar.disabled = (data.estado != 15);
-                    _self.$.valorAdjudicacaoAnteriro.disabled = (data.estado != 15);
-                    _self.$.valorAdjudicacaoAtual.disabled = (data.estado != 15);
-                    _self.$.diferencaEuros.disabled = (data.estado != 15);
-                    _self.$.diferencaPercent.disabled = (data.estado != 15);
-                    if (data.estado != 15) {
-                        $(_self.$.btnEnviarParaArea).addClass('disabled');
-                    }
-
-                    _self.$.comentarioAdjudicacao16.disabled = (data.estado != 16);
-                    if (data.estado != 16) {
-                        $(_self.$.btnSubmeterProcesso_16).addClass('disabled');
-                    }
-
-
-                    _self.$.comentarioCA17.disabled = (data.estado != 17);
-                    _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);
-                    _self.$.criticoAdjudicacao.disabled = (data.estado != 17);
-                    if (data.estado != 17) {
-                        $(_self.$.btnAutorizacaoAdjudicacaoConfirm).addClass('disabled');
-                        $(_self.$.btnAutorizacaoAdjudicacaoSuspend).addClass('disabled');
-                        $(_self.$.btnAutorizacaoAdjudicacaoReject).addClass('disabled');
-                    }
-
-                    _self.$.comentarioNotificacao.disabled = (data.estado != 18);
-                    _self.$.dataNotificacao.disabled = (data.estado != 18);
-                    _self.$.prazoNotificacaoDias.disabled = (data.estado != 18);
-                    _self.$.utilizadorNotificacao.disabled = (data.estado != 18);
-                    if (data.estado != 18) {
-                        $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('disabled');
-
-                        $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('disabled');
-                        $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
-                        $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
-
-                        $(_self.$.dataNotificacao).addClass('hidden');
-                    } else {
-                        _self.$.dataNotificacao_Show.disabled = (data.estado = 18);
-                        $(_self.$.dataNotificacao_Show).addClass('hidden');
-                    }
-
-                    // 1. Procedimento status != 0.e
-
-                    // 2. Procedimento status != 1.b
-                    //_self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
-                    // 1. Procedimento status != 1.e
-
-                    //esconder um campo
-                    //_self.$.codigoRegiao.hidden = true;
-
-                    //esconder uma seccao (adicionar id ao container da seccao)
-                    //_self.$.seccaoTeste.hidden = true;
 
                 },
 
