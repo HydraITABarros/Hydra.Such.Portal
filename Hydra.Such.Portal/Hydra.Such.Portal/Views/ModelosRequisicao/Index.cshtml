@@ -166,6 +166,19 @@
                     this.$.ajax_getgrid.generateRequest();
                 }
                 this.Flag = true;
+
+                var _this = this;
+                $(window).resize(function () {
+                    _this.fixGridToBottom();
+                });
+                $(window).trigger('resize');
+            },
+            fixGridToBottom: function () {
+                var grid_el = $(this.$.gridrequest);
+                var parentHeight = $(this).offsetParent().height();
+                var offsetTop = $(this).offset().top;
+                var height = parentHeight - offsetTop;
+                grid_el.height(height);
             },
             _rowSelected: function (item) {
                 if (item != null) {

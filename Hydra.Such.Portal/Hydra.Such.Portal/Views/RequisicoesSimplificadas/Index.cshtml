@@ -159,6 +159,19 @@
                         this.$.grid_datasource.body = JSON.stringify(option);
                     }
                     this.$.grid_datasource.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridrequisitionsimple);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _onRowSelected: function (item) {
                     if (item != null) {

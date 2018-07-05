@@ -57,7 +57,7 @@
         <div class="subMenu" hidden="{{ _permissionssubMenu }}">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
-            </template> 
+            </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -169,6 +169,26 @@
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
                 },
+
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridrequest);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
                 _openCreate: function (item) {
                     if (item != null) {
                         window.location.href = "/FichasTecnicasPratos/FichaTecnica";

@@ -119,10 +119,12 @@
         <iron-ajax url="/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_isCreate }}">
                     <paper-button class="tablinks" on-tap="_redirectToNewForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </Template>
+                </template>
             </template>
             <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Produtos p/ Criação de Encomendas</paper-button>
             <paper-button class="tablinks" on-tap="_PurchaseDirectNeeds"><i class="fa fa-get-pocket" aria-hidden="true"></i>Produtos p/ Criação de Encomendas de Compras Diretas</paper-button>
@@ -727,7 +729,7 @@
                 },
                 _deleteResponse: function (data) {
                     var self = this;
-                    
+
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 1) {
                             this._openToast("Unidade Produtiva removida com sucesso.");
@@ -740,6 +742,10 @@
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
             });
         });

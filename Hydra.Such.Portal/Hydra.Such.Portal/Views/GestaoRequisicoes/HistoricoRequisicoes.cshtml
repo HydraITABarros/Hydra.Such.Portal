@@ -41,8 +41,8 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-       
-      
+
+
         <h2 class="separator">Requisições</h2>
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -222,97 +222,110 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        </template>
-        <script>
-            document.addEventListener('WebComponentsReady', function () {
-                Polymer({
-                    is: 'x-requesthistoric',
-                    properties: {
-                        _filterActive: {
-                            type: Boolean,
-                            value: true
-                        },
-                        _SelectedLine: {
-                            observer: '_rowSelected'
-                        }
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-requesthistoric',
+                properties: {
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
                     },
-                    observers: [
-                        '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
-                    ],
-                    _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
-                        if (!this.Flag) {
-                            this.$.ajax_getgrid.generateRequest();
-                        }
-                        this.Flag = true;
-                    },
-                    _parsestate: function (param1) {
-                        if (param1 != undefined) {
-                            if (this.resultstatus != null) {
-                                var array = this.resultstatus;
-                                if (param1 != undefined) {
-                                    return array.find(x => x.id == param1).value;
-                                }
-                            }
-                        }
-                        return "";
+                    _SelectedLine: {
+                        observer: '_rowSelected'
+                    }
+                },
+                observers: [
+                    '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
+                ],
+                _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
+                    if (!this.Flag) {
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                    this.Flag = true;
 
-                    },
-                    _rowSelected: function (item) {
-                        if (item != null) {
-                            window.location.href = "/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + item.requisitionNo;
-                        }
-                    },
-                    _parseregion: function (param) {
-                        if (param != undefined && this.RegionData != undefined ) {
-                            var sel = this.RegionData.find(x => x.id == param);
-                            if (sel != undefined) {
-                                return sel.value;
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridrequest);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+                _parsestate: function (param1) {
+                    if (param1 != undefined) {
+                        if (this.resultstatus != null) {
+                            var array = this.resultstatus;
+                            if (param1 != undefined) {
+                                return array.find(x => x.id == param1).value;
                             }
                         }
-                        return "";
+                    }
+                    return "";
 
-                    },
-                    _parseArea: function (param) {
-                        if (param != undefined && this.FunctionalAreaCodeData != undefined ) {
-                            var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
-                            if (sel != undefined) {
-                                return sel.value;
-                            }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + item.requisitionNo;
+                    }
+                },
+                _parseregion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
                         }
-                        return "";
+                    }
+                    return "";
 
-                    },
-                    _parseDateFormat: function (date) {
-                        if (date != null && date != "") {
-                            var Date = date.split("T");
-                            if (Date != "" && Date != undefined) {
-                                var x = Date[0].split("-");
-                                return x[2] + "-" + x[1] + "-" + x[0];
-                            }
+                },
+                _parseArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
                         }
-                    },
-                    _parsecenterRespons: function (param) {
-                        if (param != undefined && this.ResponsabilityCenterData != undefined ) {
-                            var sel = this.ResponsabilityCenterData.find(x => x.id == param);
-                            if (sel != undefined) {
-                                return sel.value;
-                            }
+                    }
+                    return "";
+
+                },
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var Date = date.split("T");
+                        if (Date != "" && Date != undefined) {
+                            var x = Date[0].split("-");
+                            return x[2] + "-" + x[1] + "-" + x[0];
                         }
-                        return "";
-                    },
-                    _getLocalMarketRegionDescription: function (param) {
-                        if (param != undefined && this.LocalMarketRegions != undefined) {
-                            var sel = this.LocalMarketRegions.find(x => x.id == param);
-                            if (sel != undefined) {
-                                return sel.value;
-                            }
+                    }
+                },
+                _parsecenterRespons: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
                         }
-                        return "";
-                    },
-                });
+                    }
+                    return "";
+                },
+                _getLocalMarketRegionDescription: function (param) {
+                    if (param != undefined && this.LocalMarketRegions != undefined) {
+                        var sel = this.LocalMarketRegions.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
             });
+        });
 
-        </script>
+    </script>
 </dom-module>
 
 

@@ -192,7 +192,8 @@
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                            <!--<paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>-->
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>
@@ -278,8 +279,8 @@
                     var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop - 2;
-                    $(this.$.grid).height(height);
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {
@@ -333,7 +334,7 @@
                             this._showLevel = 1;
                         } else {
                             this._archived = 1;
-                            this._showLevel =3;
+                            this._showLevel = 3;
                         }
                         this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                         this.$.grid_databound_ajax.generateRequest();

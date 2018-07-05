@@ -246,7 +246,8 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>
+                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -254,7 +255,7 @@
 
         <paper-dialog id="dialog" class="dialgoBox">
             <h2>Linhas Requisição</h2>
-            <vaadin-grid aria-label="PendingReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
+            <vaadin-grid id="grdPendingReqLinesGrid" aria-label="PendingReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
                 <vaadin-grid-column width="120px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
@@ -354,6 +355,19 @@
                         this.$.grid_databound_ajax.generateRequest();
                     }
                     this.Flag = true;
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdPendingReqGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -383,8 +397,8 @@
                         this.$.SendReq_databound.generateRequest();
                     }
                 },
-                _goHistory: function(e) {
-                    window.location.href = "/GestaoRequisicoes/Arquivadas"; 
+                _goHistory: function (e) {
+                    window.location.href = "/GestaoRequisicoes/Arquivadas";
                 },
                 _closeRequisition: function (e) {
                     if (e.model.item.state == 5 | e.model.item.state == 5) {

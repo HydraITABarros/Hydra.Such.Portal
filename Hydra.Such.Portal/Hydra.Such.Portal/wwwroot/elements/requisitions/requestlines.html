@@ -32,87 +32,87 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <style>
-                    vaadin-combo-box {
-                        margin-top: 0px !important;
-                        width: 100% !important;
-                    }
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                    vaadin-date-picker {
-                        margin-top: 0px !important;
-                        width: 100% !important;
-                    }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                    vaadin-text-field {
-                        margin-top: 0px !important;
-                        width: 100%;
-                    }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-                    paper-button {
-                        margin-top: 10px;
-                    }
+            paper-button {
+                margin-top: 10px;
+            }
 
-                    .break_clear {
-                        margin-top: 15px;
-                        margin-right: 0px !important;
-                        margin-left: 0px !important;
-                    }
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
 
-                    .break_frm {
-                        margin-top: 15px;
-                    }
+            .break_frm {
+                margin-top: 15px;
+            }
 
-                    .label_custom {
-                        color: var(--valo-contrast-60pct) !important;
-                        font-weight: 500 !important;
-                        font-size: var(--valo-font-size-s) !important;
-                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-                        margin-bottom: var(--valo-space-xs) !important;
-                        transition: color 0.4s !important;
-                        line-height: 1 !important;
-                        font-family: var(--valo-font-family) !important;
-                    }
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
 
-                    datetime-picker {
-                        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-                        background-color: var(--valo-contrast-5pct);
-                        color: var(--valo-contrast-60pct) !important;
-                        width: 100%;
-                    }
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
 
-                    .marginSpace {
-                        margin: 0px !important;
-                    }
+            .marginSpace {
+                margin: 0px !important;
+            }
 
-                    textarea {
-                        background-color: #f5f5f5;
-                        border: none;
-                        border-radius: 3px 4px;
-                        align-self: baseline;
-                        font-weight: 500;
-                    }
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
 
-                        textarea:hover {
-                            background-color: #eeeeee;
-                        }
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-                        textarea:focus {
-                            background-color: white;
-                            border: none;
-                            outline: 1px solid #eeeeee;
-                            border-radius: 3px 4px;
-                        }
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
 
-                    datetime-picker {
-                        --datetime-selected-background: #71BCC1 !important;
-                        --datetime-background: #1f3133;
-                        --datetime-color: #eeeeee;
-                    }
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
 
-                    paper-collapse-item {
-                        --paper-item: {
+            paper-collapse-item {
+                --paper-item: {
                 padding: 0 0;
             };
-                        --paper-collapse-item-header: {
+                --paper-collapse-item-header: {
                  padding: 0 15px;
                  color: #333;
                  background-color: #f5f5f5;
@@ -121,11 +121,11 @@
                  border-top-right-radius: 3px;
 
              };
-                    }
+            }
 
-                    .panel-body {
-                        padding-top: 0px !important;
-                    }
+            .panel-body {
+                padding-top: 0px !important;
+            }
         </style>
         <paper-toast id="ToastError" style="background-color: red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -134,7 +134,7 @@
         <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllProjectDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{unitofmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" auto id="ajax_code_options" last-response="{{cboProdCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -513,52 +513,52 @@
                                 </vaadin-combo-box>
                             </div>
                             <!--<div class="col-lg-3">
-                            <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Região">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"><b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                                <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Região">
+                                    <template>
+                                        <table width="250px">
+                                            <tr>
+                                                <td width="20%">[[item.id]]</td>
+                                                <td width="80%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Área Funcional">
+                                    <template>
+                                        <table width="300px">
+                                            <tr>
+                                                <td width="20%">[[item.id]]</td>
+                                                <td width="80%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>-->
                         </div>
-                        <div class="col-lg-3">
-                            <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Área Funcional">
-                                <template>
-                                    <table width="300px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"><b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                        <!--<div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Centro Responsabilidade">
+                                    <template>
+                                        <table width="250px">
+                                            <tr>
+                                                <td width="20%">[[item.id]]</td>
+                                                <td width="80%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
                         </div>-->
-                        </div>
-                    <!--<div class="row">
-                        <div class="col-lg-3">
-                            <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Centro Responsabilidade">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"><b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                        <div class="row">
+                            <div class="marginSpace">
+                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                            </div>
                         </div>
 
-                    </div>-->
-                    <div class="row">
-                        <div class="marginSpace">
-                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                        </div>
-                    </div>
-                    
-                    <br />
+                        <br />
                         <div class="row">
                             <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
                                 <vaadin-grid-column width="160px" resizable>
@@ -848,179 +848,179 @@
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
-<script>
-    document.addEventListener('WebComponentsReady', function () {
-        Polymer({
-            is: 'x-requestlines',
-            properties: {
-                selected: {
-                    type: Number,
-                    value: 0
-                },
-                _permissions: {
-                    type: Array
-                },
-                _requisitionid: {
-                    type: String,
-                    notify: true,
-                    value: ""
-                },
-                _requisitionstatus: {
-                    type: Number,
-                    notify: true,
-                    value: 0
-                },
-                _isCreate: {
-                    type: Boolean,
-                    value: true
-                },
-                _filterActive: {
-                    type: Boolean,
-                    value: true
-                }
-            },
-            observers: [
-                '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,cboProdCode,unitofmeasureresult,cboSupplier,Requisition)'
-            ],
-            ready: function () {
-                    
-                this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
-                this.$.requisition_datasource.generateRequest();
-            },
-            isReadOnly: function () {
-                return this._requisitionstatus == 4 ? true : !this._permissions.update;
-            },
-            _onCacheLoaded: function (data,LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, cboProdCode, unitofmeasureresult, cboSupplier, Requisition) {
-                if (!this.Flag) {
-                    //this.$.ajax_getdata.body = JSON.stringify(this._requisitionid);
-                    this.$.ajax_getdata.generateRequest();
-                }
-                this.Flag = true;
-            },
-            _parsesupplierNo: function (param) {
-                if (param != undefined && this.cboSupplier != undefined) {
-                    var sel = this.cboSupplier.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-requestlines',
+                properties: {
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _requisitionid: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _requisitionstatus: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
                     }
-                }
-                return "";
-            },
-            _parseunitofmeasure: function (param) {
-                if (param != undefined && this.unitofmeasureresult != undefined) {
-                    var sel = this.unitofmeasureresult.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
-                    }
-                }
-                return "";
-            },
-            _parseprodCode: function (param) {
-                if (param != undefined && this.cboProdCode != undefined) {
-                    var sel = this.cboProdCode.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
-                    }
-                }
-                return "";
-            },
-            _parsecenterRespons: function (param) {
-                if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
-                    var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
-                    }
-                }
-                return "";
-            },
-            _parseregion: function (param) {
-                if (param != undefined && this.LProjectRegionCodes != undefined) {
-                    var sel = this.LProjectRegionCodes.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
-                    }
-                }
-                return "";
+                },
+                observers: [
+                    '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,cboProdCode,unitofmeasureresult,cboSupplier,Requisition)'
+                ],
+                ready: function () {
 
-            },
-            _parseArea: function (param) {
-                if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
-                    var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
+                },
+                isReadOnly: function () {
+                    return this._requisitionstatus == 4 ? true : !this._permissions.update;
+                },
+                _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, cboProdCode, unitofmeasureresult, cboSupplier, Requisition) {
+                    if (!this.Flag) {
+                        //this.$.ajax_getdata.body = JSON.stringify(this._requisitionid);
+                        this.$.ajax_getdata.generateRequest();
                     }
-                }
-                return "";
+                    this.Flag = true;
+                },
+                _parsesupplierNo: function (param) {
+                    if (param != undefined && this.cboSupplier != undefined) {
+                        var sel = this.cboSupplier.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseunitofmeasure: function (param) {
+                    if (param != undefined && this.unitofmeasureresult != undefined) {
+                        var sel = this.unitofmeasureresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseprodCode: function (param) {
+                    if (param != undefined && this.cboProdCode != undefined) {
+                        var sel = this.cboProdCode.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parsecenterRespons: function (param) {
+                    if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
+                        var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseregion: function (param) {
+                    if (param != undefined && this.LProjectRegionCodes != undefined) {
+                        var sel = this.LProjectRegionCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
 
-            },
-            _parseLocalCode: function (param) {
-                if (param != undefined && this.locationsresult != undefined) {
-                    var sel = this.locationsresult.find(x => x.id == param);
-                    if (sel != undefined) {
-                        return sel.value;
+                },
+                _parseArea: function (param) {
+                    if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
+                        var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
                     }
-                }
-                return "";
-            },
-            _create: function (){
-                debugger;
-                this.data.unshift({
-                    requestNo: this.$.requisitionNo.value,
-                    code: this.$.codeId.value,
-                    description: this.$.descriptionId.value,
-                    unitMeasureCode: this.$.unitMeasureCodeId.value,
-                    localCode: this.$.localCodeId.value,
-                    quantityToRequire: this.$.quantityToRequireId.value,
-                    quantityRequired: this.$.quantityRequiredId.value,
-                    quantityToProvide: this.$.quantityToProvideId.value,
-                    quantityAvailable: this.$.quantityAvailableId.value,
-                    quantityReceivable: this.$.quantityReceivableId.value,
-                    quantityReceived: this.$.quantityReceivedId.value,
-                    unitCost: this.$.unitCostId.value,
-                    regionCode: this.$.RegionCode.value,
-                    functionalAreaCode: this.$.FunctionalAreaCode.value,
-                    centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
-                    vehicle: this.$.vehicleId.value,
-                    unitCostsould: this.$.unitCostsouldId.value,
-                    budgetValue: this.$.budgetValueId.value,
-                    maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
-                    createMarketSearch: this.$.createMarketSearchId.value,
-                    submitPrePurchase: this.$.submitPrePurchaseId.value,
-                    sendPrePurchase: this.$.sendPrePurchaseId.value,
-                    supplierNo: this.$.supplierNoId.value,
-                    openOrderLineNo: this.$.openOrderLineNoId.value,
-                    queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
-                    projectNo: this.$.projectId.value
-                });
-                // Save to DB
-                this.$.ajax_updatedata.body = JSON.stringify(this.data);
-                this.$.ajax_updatedata.generateRequest();
-                this.$.requestGrid.clearCache();
-            },
-            _delete: function (e) {
-                var index = this.data.indexOf(e.model.item);
-                this.data.splice(index, 1);
-                // Save to DB
-                this.$.ajax_updatedata.body = JSON.stringify(this.data);
-                this.$.ajax_updatedata.generateRequest();
-                this.$.requestGrid.clearCache();
-            },
-            _onSearchLocalDataCollection: function (e) {
-                var placeId = this.$.CollectionLocal.value;
-                if (placeId != "" && placeId > 0) {
-                    this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
-                    this.$.ajax_getPlaceData.generateRequest();
-                }
-            },
-            _onSearchLocalDataDelivery: function (e) {
-                var placeId = this.$.DeliveryLocal.value;
-                if (placeId != "" && placeId > 0) {
-                    this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
-                    this.$.ajax_getPlaceDataDelivery.generateRequest();
-                }
-            },
+                    return "";
+
+                },
+                _parseLocalCode: function (param) {
+                    if (param != undefined && this.locationsresult != undefined) {
+                        var sel = this.locationsresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _create: function () {
+                    debugger;
+                    this.data.unshift({
+                        requestNo: this.$.requisitionNo.value,
+                        code: this.$.codeId.value,
+                        description: this.$.descriptionId.value,
+                        unitMeasureCode: this.$.unitMeasureCodeId.value,
+                        localCode: this.$.localCodeId.value,
+                        quantityToRequire: this.$.quantityToRequireId.value,
+                        quantityRequired: this.$.quantityRequiredId.value,
+                        quantityToProvide: this.$.quantityToProvideId.value,
+                        quantityAvailable: this.$.quantityAvailableId.value,
+                        quantityReceivable: this.$.quantityReceivableId.value,
+                        quantityReceived: this.$.quantityReceivedId.value,
+                        unitCost: this.$.unitCostId.value,
+                        regionCode: this.$.RegionCode.value,
+                        functionalAreaCode: this.$.FunctionalAreaCode.value,
+                        centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
+                        vehicle: this.$.vehicleId.value,
+                        unitCostsould: this.$.unitCostsouldId.value,
+                        budgetValue: this.$.budgetValueId.value,
+                        maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
+                        createMarketSearch: this.$.createMarketSearchId.value,
+                        submitPrePurchase: this.$.submitPrePurchaseId.value,
+                        sendPrePurchase: this.$.sendPrePurchaseId.value,
+                        supplierNo: this.$.supplierNoId.value,
+                        openOrderLineNo: this.$.openOrderLineNoId.value,
+                        queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
+                        projectNo: this.$.projectId.value
+                    });
+                    // Save to DB
+                    this.$.ajax_updatedata.body = JSON.stringify(this.data);
+                    this.$.ajax_updatedata.generateRequest();
+                    this.$.requestGrid.clearCache();
+                },
+                _delete: function (e) {
+                    var index = this.data.indexOf(e.model.item);
+                    this.data.splice(index, 1);
+                    // Save to DB
+                    this.$.ajax_updatedata.body = JSON.stringify(this.data);
+                    this.$.ajax_updatedata.generateRequest();
+                    this.$.requestGrid.clearCache();
+                },
+                _onSearchLocalDataCollection: function (e) {
+                    var placeId = this.$.CollectionLocal.value;
+                    if (placeId != "" && placeId > 0) {
+                        this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
+                        this.$.ajax_getPlaceData.generateRequest();
+                    }
+                },
+                _onSearchLocalDataDelivery: function (e) {
+                    var placeId = this.$.DeliveryLocal.value;
+                    if (placeId != "" && placeId > 0) {
+                        this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
+                        this.$.ajax_getPlaceDataDelivery.generateRequest();
+                    }
+                },
+            });
         });
-    });
-</script>
+    </script>
 </dom-module>
 

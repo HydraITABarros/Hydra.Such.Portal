@@ -158,8 +158,10 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
@@ -310,7 +312,7 @@
             Polymer({
                 is: 'x-unitstokkeeping',
                 properties: {
-    
+
                     selected: {
                         type: Number,
                         value: 0
@@ -325,10 +327,10 @@
                     this.$.page_databound_ajax.generateRequest();
                     //Inserir
                     if (@ViewBag.ButtonHide==1)
-                        this.$.ddmarginSpace2.style.display = 'none'; 
+                        this.$.ddmarginSpace2.style.display = 'none';
                     //Actualizar
                     else
-                      this.$.ddmarginSpace.style.display = 'none'; 
+                      this.$.ddmarginSpace.style.display = 'none';
 
                 },
                 openToast: function (message) {
@@ -343,7 +345,7 @@
                     this.result = null;
                     this.$.ddproductNo.disabled = false;
                     this.$.ddmarginSpace2.style.display = 'none';
-                    this.$.ddmarginSpace.style.display = 'inline'; 
+                    this.$.ddmarginSpace.style.display = 'inline';
                 },
                 _getDescriptionGroup: function (e) {
                     if (this.$.ddproductNo.value != null) {
@@ -373,11 +375,11 @@
                             PriceSale: this.$.ddpriceSales.value,
                             CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
-                     
+
                         this.$.ajax_update.url = "/UnidadeArmazenamento/CreateUnitStockeeping";
                             this.$.ajax_update.body = JSON.stringify(objectNew);
                             this.$.ajax_update.generateRequest();
-                   
+
                     }
                 },
                 _updateStockeepingUnit: function (e) {
@@ -433,7 +435,7 @@
                     }
                 },
                 _updateResponse: function (e) {
-               
+
                     if (this.result == "101") {
                         this.openToastError('Registo duplicado!');
                     } else if (this.result == "102") {
@@ -442,8 +444,8 @@
                         this.openToast('Registo eliminado');
                         this.result = null;
                         this.$.ddproductNo.disabled = false;
-                        this.$.ddmarginSpace2.style.display = 'none'; 
-                        this.$.ddmarginSpace.style.display = 'inline'; 
+                        this.$.ddmarginSpace2.style.display = 'none';
+                        this.$.ddmarginSpace.style.display = 'inline';
                     } else {
                         this.openToast("Actualizado com Sucesso!");
                         this.$.ddproductNo.value = "",
@@ -477,19 +479,22 @@
                 _goProductMovement: function (e) {
                     this.$.ajax_check.url = "/UnidadeArmazenamento/SetSessionMovimentoProduto";
                     this.$.ajax_check.body = JSON.stringify(this.result);
-                    this.$.ajax_check.generateRequest();                  
+                    this.$.ajax_check.generateRequest();
                 },
                 _sessionResponse: function (e) {
-                   
+
                     if (this.checkSession == true)
                         window.location.href = "/UnidadeArmazenamento/MovimentoProdutos";
                     else
                         this.openToastError('Necessita de Nº Produto');
                 },
                 _redirectToList: function (e) {
-                    window.location.href = "/UnidadeArmazenamento";                    
-                }
+                    window.location.href = "/UnidadeArmazenamento";
+                },
 
+                _goBack: function (e) {
+                    window.history.back();
+                },
             });
         });
     </script>

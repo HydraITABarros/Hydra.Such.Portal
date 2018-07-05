@@ -183,7 +183,8 @@
                     <vaadin-grid-filter path="totalProposalValue" />
                 </template>
                 <template>
-                    {{item.totalProposalValue}}€
+                    <p align="right"> {{item.totalProposalValue}}€</p>
+                   
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
@@ -275,7 +276,7 @@
                     var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop - paddingTop;
-                    $(this.$.grid).height(height);
+                    grid_el.height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {

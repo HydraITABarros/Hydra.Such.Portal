@@ -171,7 +171,7 @@
                     <vaadin-grid-filter path="actionNo" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ActionConfectionList]]" id="actionNo" item-value-path="id" item-label-path="value" value="{{item.actionNo}}" >
+                    <vaadin-combo-box items="[[ActionConfectionList]]" id="actionNo" item-value-path="id" item-label-path="value" value="{{item.actionNo}}">
                         <template>
                             <table width="200px">
                                 <tr>
@@ -252,6 +252,19 @@
                     var option="@ViewBag.Groups";
                     this.$.page_databound_ajax.body = JSON.stringify(option);
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridProceduresConfection);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _create: function () {
 

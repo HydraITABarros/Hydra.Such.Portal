@@ -232,20 +232,30 @@
                             <li>@Html.ActionLink("Cartões e Apólices", "CartoesEApolices", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
-                            
+
                             <li>@Html.ActionLink("Tipos Requisições", "TiposRequisicao", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Localizações", "Localizacoes", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Unidades de Prestação", "UnidadePrestacao", "Administracao", null, null)</li>
 
                             <!--FH-->
-                            <li>@Html.ActionLink("FH Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Autorização Empregado", "ConfiguracaoAutorizacaoFHRH", "Administracao", new { area = "", id = "Administracao" })</li>
-                            <li>@Html.ActionLink("FH Distância", "ConfiguracaoDistanciaFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Empregado Recursos", "ConfiguracaoRHRecursosFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Origem Destino", "ConfiguracaoOrigemDestinoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Folha de Horas</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("FH Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Autorização Empregado", "ConfiguracaoAutorizacaoFHRH", "Administracao", new { area = "", id = "Administracao" })</li>
+                                    <li>@Html.ActionLink("FH Distância", "ConfiguracaoDistanciaFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Empregado Recursos", "ConfiguracaoRHRecursosFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Origem Destino", "ConfiguracaoOrigemDestinoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                    <li>@Html.ActionLink("FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                </ul>
+                            </li>
+
                             <!--Projetos-->
                             <li>@Html.ActionLink("Tipos Projeto", "TiposProjetoDetalhes", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Tipos Grupo Contab. Projeto", "TiposGrupoContabProjeto", "Administracao", null, null)</li>

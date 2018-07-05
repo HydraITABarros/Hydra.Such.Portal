@@ -204,7 +204,7 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false});
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false });
                     this.$.grid_databound_ajax.generateRequest();
 
                     var _this = this;
@@ -222,7 +222,7 @@
                     var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop - paddingTop;
-                    $(this.$.grid).height(height);
+                    grid_el.height(height);
                 },
                 _showClosed: function (item) {
                     if (item != null) {

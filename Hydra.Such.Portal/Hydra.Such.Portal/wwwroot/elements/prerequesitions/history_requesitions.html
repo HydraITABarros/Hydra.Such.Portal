@@ -132,7 +132,8 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!--<paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>-->
-        <br> <br/>
+        <br>
+        <br />
         <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -207,15 +208,15 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-           <!-- <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>-->
+            <!-- <vaadin-grid-column width="160px" resizable>
+                 <template class="header">
+                 </template>
+                 <template>
+                     <center>
+                         <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                     </center>
+                 </template>
+             </vaadin-grid-column>-->
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -272,6 +273,19 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdHistoryReqGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 }
             });
         });
