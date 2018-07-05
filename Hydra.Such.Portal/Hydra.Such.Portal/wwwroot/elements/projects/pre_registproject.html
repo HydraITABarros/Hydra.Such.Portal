@@ -149,6 +149,7 @@
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+                <!--<paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>-->
             </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
@@ -1113,7 +1114,24 @@
             </div>
 
         </paper-dialog>
-
+        <paper-dialog id="dialogGetPriceServiceClient" class="dialgoBox">
+            <h2 class="dialogTitle">Obter Faturação</h2>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectDlg" name="projectDlg" value="{{projectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectDlgChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ProjDescription" label="Descrição" readonly></vaadin-text-field>
+                </div>
+               
+            </div>
+        </paper-dialog>
         <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
@@ -1207,6 +1225,11 @@
                     },
                     _permissions: {
                         type: Array
+                    },
+                    projectNoDlg: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
                     },
                     projectNo: {
                         type: String,
@@ -1397,6 +1420,9 @@
 
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
+                        this.$.projectDlg.value = this.paramprojno;
+                        this.$.projectDlg.valueText = this.paramprojno;
+                        
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
                     }
@@ -1640,7 +1666,17 @@
                     this.$.projectMovementTable.selectedItem = [];
                     this.$.projectMovementTable.clearCache();
                 },
+                _projectDlgChange: function (e) {
+                    debugger;
+                    if (e.detail.value != "" && this.response != null && this.response != "") {
+                        this.$.ProjDescription.value = this.response.find(x => x.id == e.detail.value).name;
+                    }
+                    else {
+                        this.$.ProjDescription.value = "";
+                    }
+                },
                 _projectChange: function (e) {
+                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1739,6 +1775,9 @@
                 },
                 _getMovementsProject: function () {
                     this.$.dialogGetProjetStart.open();
+                },
+                _getPriceServiceClient: function () {
+                    this.$.dialogGetPriceServiceClient.open();
                 },
                 _dlgNext: function () {
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
