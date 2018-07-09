@@ -519,7 +519,6 @@
 
                                                                 <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                                             </div>
-                                                            di
                                                         </div>
                                                     </div>
                                                 </paper-collapse-item>
@@ -1115,6 +1114,7 @@
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
+                                    </div>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
