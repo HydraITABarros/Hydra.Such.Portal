@@ -258,16 +258,16 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-
+            <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                 <paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
                 <such-dropdown-menu on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
                 <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
-                <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
-                <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             </template>
+            <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+            <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+            <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -962,6 +962,7 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <!--<vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>-->
                                             {{item.createMarketSearchStringValue}}
+                                            /t
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -973,7 +974,7 @@
                                             <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
                                         </vaadin-grid-filter>
                                     </template>
-                                    </
+                                    e>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
@@ -981,7 +982,7 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
                                             {{item.localMarketStringValue}}
-                                            <
+                                            te
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -993,6 +994,7 @@
                                             <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         </vaadin-grid-filter>
                                     </template>
+                                    em
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
@@ -1000,6 +1002,7 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <!--<vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>-->
                                             {{item.submitPrePurchaseStringValue}}
+                                            te
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1011,6 +1014,7 @@
                                             <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         </vaadin-grid-filter>
                                     </template>
+                                    pl
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
@@ -1018,6 +1022,7 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <!--<vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>-->
                                             {{item.sendPrePurchaseStringValue}}
+                                            mp
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1260,16 +1265,48 @@
             </template>
             <template is="dom-if" if="{{ _hasErrors }}">
                 <div style="text-align: right;">
-                    <paper-button horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                    <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
                 </div>
             </template>
         </paper-toast>
 
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
-                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                <paper-button class="btnRemove" id="btnClose" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+
+        <paper-dialog id="dlgChangeLog" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Requisition.changeLog]]" class="grid">
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="stateDescription">Estado</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.stateDescription}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="modifiedBy">Modificado Por</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.modifiedBy}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="modifiedAtAsString">Modificado Em</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.modifiedAtAsString}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnCloseChangeLogDlg" on-tap="_closeChangeLogDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
         </paper-dialog>
     </template>
     <script>
@@ -1771,6 +1808,8 @@
                     if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
                         this.$.requesitionType.disabled = true;
 
+                        var excludeItems = ["btnGoBack", "btnShowChangeLog", "btnCloseChangeLogDlg", "btnCloseMultipleToastMessageDlg", "btnClose", "btnPrint", "btnStatOfPlay"];
+
                         var elems = Polymer.dom(this.root).querySelectorAll('vaadin-checkbox');
                         elems.forEach(function (elem) {
                             elem.disabled = true;
@@ -1797,7 +1836,9 @@
                         });
                         elems = Polymer.dom(this.root).querySelectorAll('paper-button');
                         elems.forEach(function (elem) {
-                            elem.hidden = true;
+                            var foundItems = excludeItems.find(x => x == elem.id);
+                            if (foundItems == null)
+                                elem.hidden = true;
                         });
                         elems = Polymer.dom(this.root).querySelectorAll('such-dropdown-menu');
                         elems.forEach(function (elem) {
@@ -2046,8 +2087,13 @@
                     debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
-                        if (this.regist.state === 6) {
+                        this.Requisition = this.regist;
+                        if (this.regist.state === this._requisitionstatesenum.Archived) {
                             window.location.href = "/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                        }
+                        else {
+                            this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
+                            this.$.stateDescription_ajax.generateRequest();
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();
@@ -2075,11 +2121,15 @@
                 _redirectToStatOfPlay: function () {
                     window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
-
                 _goBack: function (e) {
                     window.history.back();
                 },
-
+                _showChangeLog: function () {
+                    this.$.dlgChangeLog.open();;
+                },
+                _closeChangeLogDlg: function () {
+                    this.$.dlgChangeLog.close();
+                },
             });
         });
     </script>

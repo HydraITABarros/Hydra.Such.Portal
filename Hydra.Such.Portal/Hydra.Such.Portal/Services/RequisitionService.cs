@@ -54,7 +54,7 @@ namespace Hydra.Such.Portal.Services
                         item.UpdateUser = this.changedByUserName;
                     });
 
-                    var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB());
+                    var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB(), true);
                     if (updatedReq != null)
                     {
                         requisition = updatedReq.ParseToViewModel();

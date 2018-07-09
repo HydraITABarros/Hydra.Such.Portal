@@ -95,6 +95,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<RegistoDeAtas> RegistoDeAtas { get; set; }
         public virtual DbSet<Requisição> Requisição { get; set; }
         public virtual DbSet<RequisiçõesClienteContrato> RequisiçõesClienteContrato { get; set; }
+        public virtual DbSet<RequisicoesRegAlteracoes> RequisicoesRegAlteracoes { get; set; }
         public virtual DbSet<RequisiçõesSimplificadas> RequisiçõesSimplificadas { get; set; }
         public virtual DbSet<RhRecursosFh> RhRecursosFh { get; set; }
         public virtual DbSet<Serviços> Serviços { get; set; }
@@ -6399,6 +6400,26 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ValorFatura).HasColumnName("Valor Fatura");
+            });
+
+            modelBuilder.Entity<RequisicoesRegAlteracoes>(entity =>
+            {
+                entity.Property(e => e.ModificadoEm).HasColumnType("datetime");
+
+                entity.Property(e => e.ModificadoPor)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NºRequisição)
+                    .IsRequired()
+                    .HasColumnName("Nº Requisição")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.RequisicoesRegAlteracoes)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RequisicoesRegAlteracoes_Requisição");
             });
 
             modelBuilder.Entity<RequisiçõesSimplificadas>(entity =>
