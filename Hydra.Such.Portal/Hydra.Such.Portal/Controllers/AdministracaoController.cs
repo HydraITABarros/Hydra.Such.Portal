@@ -2079,14 +2079,7 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
         }
 
-
-
-
-
-
-
-
-
+        //1
         [HttpPost]
         public async Task<JsonResult> ExportToExcel_PrecosVendaRecursosCliente([FromBody] List<PrecoVendaRecursoFHViewModel> dp)
         {
@@ -2104,33 +2097,32 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Preços Venda Recursos Cliente");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("CHAVE-Código - Fam. Recurso");
-                row.CreateCell(1).SetCellValue("CHAVE-Código - Tipo Trabalho");
-                row.CreateCell(2).SetCellValue("CHAVE-Data Início");
-                row.CreateCell(3).SetCellValue("Código - Fam. Recurso");
-                row.CreateCell(4).SetCellValue("Código - Tipo Trabalho");
-                row.CreateCell(5).SetCellValue("Preço Unitário");
-                row.CreateCell(6).SetCellValue("Custo Unitário");
-                row.CreateCell(7).SetCellValue("Data Início");
-                row.CreateCell(8).SetCellValue("Data Fim");
+
+                row.CreateCell(0).SetCellValue("Código - Fam. Recurso");
+                row.CreateCell(1).SetCellValue("Código - Tipo Trabalho");
+                row.CreateCell(2).SetCellValue("Preço Unitário");
+                row.CreateCell(3).SetCellValue("Custo Unitário");
+                row.CreateCell(4).SetCellValue("Data Início");
+                row.CreateCell(5).SetCellValue("Data Fim");
+                row.CreateCell(6).SetCellValue("Criado Por");
+                row.CreateCell(7).SetCellValue("Data-Hora Criação");
+
                 int count = 1;
                 foreach (PrecoVendaRecursoFHViewModel item in dp)
                 {
                     row = excelSheet.CreateRow(count);
+
                     row.CreateCell(0).SetCellValue(item.Code);
                     row.CreateCell(1).SetCellValue(item.CodTipoTrabalho);
-                    row.CreateCell(2).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
-                    row.CreateCell(3).SetCellValue(item.Code);
-                    row.CreateCell(4).SetCellValue(item.CodTipoTrabalho);
-                    row.CreateCell(5).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
-                    row.CreateCell(6).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(7).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
-                    row.CreateCell(8).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
+                    row.CreateCell(2).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
+                    row.CreateCell(3).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                    row.CreateCell(4).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
+                    row.CreateCell(5).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
+                    row.CreateCell(6).SetCellValue(item.UtilizadorCriacao);
+                    row.CreateCell(7).SetCellValue(item.DataHoraCriacao.ToString());
+
                     count++;
                 }
-                excelSheet.SetColumnHidden(0, true);
-                excelSheet.SetColumnHidden(1, true);
-                excelSheet.SetColumnHidden(2, true);
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
@@ -2140,13 +2132,13 @@ namespace Hydra.Such.Portal.Controllers
             memory.Position = 0;
             return Json(sFileName);
         }
-
+        //2
         public IActionResult ExportToExcelDownload_PrecosVendaRecursosCliente(string sFileName)
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Preços Venda Recursos Cliente.xlsx");
         }
-
+        //3
         [HttpPost]
         public JsonResult OnPostImport_PrecosVendaRecursosCliente()
         {
@@ -2189,16 +2181,15 @@ namespace Hydra.Such.Portal.Controllers
                             if (row != null)
                             {
                                 nrow = new PrecoVendaRecursoFHViewModel();
-                                nrow.ORIGINAL_Code = row.GetCell(0).ToString();
-                                nrow.ORIGINAL_CodTipoTrabalho = row.GetCell(1).ToString();
-                                nrow.ORIGINAL_StartingDateTexto = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
 
-                                nrow.Code = row.GetCell(3).ToString();
-                                nrow.CodTipoTrabalho = row.GetCell(4).ToString();
-                                nrow.PrecoUnitarioTexto = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
-                                nrow.CustoUnitarioTexto = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
-                                nrow.StartingDateTexto = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
-                                nrow.EndingDateTexto = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
+                                nrow.Code = row.GetCell(0) != null ? row.GetCell(0).ToString() : "";
+                                nrow.CodTipoTrabalho = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
+                                nrow.PrecoUnitarioTexto = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
+                                nrow.CustoUnitarioTexto = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
+                                nrow.StartingDateTexto = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
+                                nrow.EndingDateTexto = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
+                                nrow.UtilizadorCriacao = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+                                nrow.DataHoraCriacaoTexto = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -2209,11 +2200,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (PrecoVendaRecursoFHViewModel item in ListToCreate)
                     {
-                        if (!string.IsNullOrEmpty(item.ORIGINAL_StartingDateTexto))
-                        {
-                            item.ORIGINAL_StartingDate = Convert.ToDateTime(item.ORIGINAL_StartingDateTexto);
-                            item.ORIGINAL_StartingDateTexto = "";
-                        }
                         if (!string.IsNullOrEmpty(item.PrecoUnitarioTexto))
                         {
                             item.PrecoUnitario = Convert.ToDecimal(item.PrecoUnitarioTexto);
@@ -2234,66 +2220,86 @@ namespace Hydra.Such.Portal.Controllers
                             item.EndingDate = Convert.ToDateTime(item.EndingDateTexto);
                             item.EndingDateTexto = "";
                         }
+                        if (!string.IsNullOrEmpty(item.DataHoraCriacaoTexto))
+                        {
+                            item.DataHoraCriacao = Convert.ToDateTime(item.DataHoraCriacaoTexto);
+                            item.DataHoraCriacaoTexto = "";
+                        }
                     }
                 }
             }
             return Json(ListToCreate);
         }
-
+        //4
         [HttpPost]
         public JsonResult UpdateCreatePrecosVendaRecursosCliente([FromBody] List<PrecoVendaRecursoFHViewModel> data)
         {
-            //List<PrecoVendaRecursoFHViewModel> results = DBRHRecursosFH.GetAll();
+            List<PrecoVendaRecursoFh> results = DBPrecoVendaRecursoFH.GetAll();
 
-            //data.RemoveAll(x => DBRHRecursosFH.ParseListToViewModel(results).Any(
-            //    u =>
-            //        u.NoEmpregado == x.NoEmpregado &&
-            //        u.Recurso == x.Recurso &&
-            //        u.NomeRecurso == x.NomeRecurso &&
-            //        u.FamiliaRecurso == x.FamiliaRecurso &&
-            //        u.NomeEmpregado == x.NomeEmpregado &&
-            //        u.UtilizadorCriacao == x.UtilizadorCriacao &&
-            //        u.DataHoraCriacao == x.DataHoraCriacao
-            //));
+            data.RemoveAll(x => results.Any(
+                u =>
+                    u.Code == x.Code &&
+                    u.CodTipoTrabalho == x.CodTipoTrabalho &&
+                    u.PrecoUnitario == x.PrecoUnitario &&
+                    u.CustoUnitario == x.CustoUnitario &&
+                    u.StartingDate == x.StartingDate &&
+                    u.EndingDate == x.EndingDate
+            ));
 
             data.ForEach(x =>
             {
-                PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(x);
-                PrecoVendaRecursoFh toDelete = DBPrecoVendaRecursoFH.ParseToDB(x);
+                if (!string.IsNullOrEmpty(x.Code) && !string.IsNullOrWhiteSpace(x.CodTipoTrabalho) && x.StartingDate != null)
+                {
+                    PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(x);
+                    PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.ParseToDB(x);
+                    PrecoVendaRecursoFh toSearch = DBPrecoVendaRecursoFH.GetByID(x.Code, x.CodTipoTrabalho, (DateTime)x.StartingDate);
 
-                NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault();
+                    NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault();
 
-                toCreate.Code = x.Code;
-                toCreate.Descricao = resource.Name;
-                toCreate.CodTipoTrabalho = x.CodTipoTrabalho;
-                toCreate.PrecoUnitario = x.PrecoUnitario;
-                toCreate.CustoUnitario = x.CustoUnitario;
-                toCreate.StartingDate = (DateTime)x.StartingDate;
-                toCreate.EndingDate = x.EndingDate;
-                toCreate.FamiliaRecurso = resource.ResourceGroup;
-                toCreate.CriadoPor = User.Identity.Name;
-                toCreate.DataHoraCriacao = DateTime.Now;
+                    if (toSearch == null)
+                    {
+                        toCreate.Code = x.Code;
+                        toCreate.CodTipoTrabalho = x.CodTipoTrabalho;
+                        toCreate.PrecoUnitario = x.PrecoUnitario;
+                        toCreate.CustoUnitario = x.CustoUnitario;
+                        toCreate.StartingDate = (DateTime)x.StartingDate;
+                        toCreate.EndingDate = x.EndingDate;
+                        if (resource != null)
+                        {
+                            toCreate.Descricao = resource.Name;
+                            toCreate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        toCreate.CriadoPor = User.Identity.Name;
+                        toCreate.DataHoraCriacao = DateTime.Now;
 
-                toDelete.Code = x.ORIGINAL_Code;
-                toDelete.CodTipoTrabalho = x.ORIGINAL_CodTipoTrabalho;
-                toDelete.StartingDate = (DateTime)x.ORIGINAL_StartingDate;
+                        DBPrecoVendaRecursoFH.Create(toCreate);
+                    }
+                    else
+                    {
+                        toUpdate.Code = x.Code;
+                        toUpdate.CodTipoTrabalho = x.CodTipoTrabalho;
+                        toUpdate.PrecoUnitario = x.PrecoUnitario;
+                        toUpdate.CustoUnitario = x.CustoUnitario;
+                        toUpdate.StartingDate = (DateTime)x.StartingDate;
+                        toUpdate.EndingDate = x.EndingDate;
+                        if (resource != null)
+                        {
+                            toUpdate.Descricao = resource.Name;
+                            toUpdate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        toUpdate.CriadoPor = x.UtilizadorCriacao;
+                        toUpdate.DataHoraCriacao = x.DataHoraCriacao;
+                        toUpdate.AlteradoPor = User.Identity.Name;
+                        toUpdate.DataHoraUltimaAlteracao = DateTime.Now;
 
-                DBPrecoVendaRecursoFH.Delete(toDelete);
-
-                DBPrecoVendaRecursoFH.Create(toCreate);
-
-                //DBRHRecursosFH.Update(toUpdate);
+                        DBPrecoVendaRecursoFH.Update(toUpdate);
+                    }
+                }
             });
             return Json(data);
         }
 
-
-
-
-
-
-
-
+        //1
         [HttpPost]
         public async Task<JsonResult> ExportToExcel_AcordoPrecos([FromBody] AcordoPrecosModelView dp)
         {
@@ -2311,15 +2317,16 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Acordo de Preços");
                 IRow row = excelSheet.CreateRow(0);
+
                 row.CreateCell(0).SetCellValue("Nº Procedimento");
-                row.CreateCell(1).SetCellValue("Fornecedor");
+                row.CreateCell(1).SetCellValue("Nº Fornecedor");
                 row.CreateCell(2).SetCellValue("Cód. Produto");
                 row.CreateCell(3).SetCellValue("Data Validade Início");
                 row.CreateCell(4).SetCellValue("Data Validade Fim");
                 row.CreateCell(5).SetCellValue("Região");
                 row.CreateCell(6).SetCellValue("Área");
                 row.CreateCell(7).SetCellValue("Cresp");
-                row.CreateCell(8).SetCellValue("Localização");
+                row.CreateCell(8).SetCellValue("Cód. Localização");
                 row.CreateCell(9).SetCellValue("Custo Unitário");
                 row.CreateCell(10).SetCellValue("UM");
                 row.CreateCell(11).SetCellValue("Quantidade por UM");
@@ -2327,28 +2334,36 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(13).SetCellValue("Cód. Produto Fornecedor");
                 row.CreateCell(14).SetCellValue("Forma Entrega");
                 row.CreateCell(15).SetCellValue("Tipo Preço");
+                row.CreateCell(16).SetCellValue("Criado Por");
+                row.CreateCell(17).SetCellValue("Data-Hora Criação");
+
                 int count = 1;
                 foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
-                {
+                {   
                     row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.NoProcedimento);
-                    row.CreateCell(1).SetCellValue(item.NoFornecedor);
-                    row.CreateCell(2).SetCellValue(item.CodProduto);
-                    row.CreateCell(3).SetCellValue(item.DtValidadeInicio);
+
+                    row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
+                    row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
+                    row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
+                    row.CreateCell(3).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
                     row.CreateCell(4).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
-                    row.CreateCell(5).SetCellValue(item.Regiao);
-                    row.CreateCell(6).SetCellValue(item.Area);
-                    row.CreateCell(7).SetCellValue(item.Cresp);
-                    row.CreateCell(8).SetCellValue(item.Localizacao);
+                    row.CreateCell(5).SetCellValue(item.Regiao.ToString());
+                    row.CreateCell(6).SetCellValue(item.Area.ToString());
+                    row.CreateCell(7).SetCellValue(item.Cresp.ToString());
+                    row.CreateCell(8).SetCellValue(item.Localizacao.ToString());
                     row.CreateCell(9).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(10).SetCellValue(item.Um);
+                    row.CreateCell(10).SetCellValue(item.Um.ToString());
                     row.CreateCell(11).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
                     row.CreateCell(12).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
-                    row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor);
+                    row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor.ToString());
                     row.CreateCell(14).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
                     row.CreateCell(15).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
+                    row.CreateCell(16).SetCellValue(item.UserId.ToString());
+                    row.CreateCell(17).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+
                     count++;
                 }
+                excelSheet.SetColumnHidden(0, true);
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
@@ -2358,20 +2373,228 @@ namespace Hydra.Such.Portal.Controllers
             memory.Position = 0;
             return Json(sFileName);
         }
-
+        //2
         public IActionResult ExportToExcelDownload_AcordoPrecos(string sFileName)
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Acordo de Preços.xlsx");
         }
+        //3
+        [HttpPost]
+        public JsonResult OnPostImport_AcordoPrecos() //[FromBody] string NoProcedimento)
+        {
+            var files = Request.Form.Files;
+            List<LinhasAcordoPrecosViewModel> ListToCreate = new List<LinhasAcordoPrecosViewModel>(); // DBLinhasAcordoPrecos.GetAllByNoProcedimento(NoProcedimento);
+            LinhasAcordoPrecosViewModel nrow = new LinhasAcordoPrecosViewModel();
+            for (int i = 0; i < files.Count; i++)
+            {
+                IFormFile file = files[i];
+                string folderName = "Upload";
+                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string newPath = Path.Combine(webRootPath, folderName);
+                StringBuilder sb = new StringBuilder();
+                if (!Directory.Exists(newPath))
+                {
+                    Directory.CreateDirectory(newPath);
+                }
+                if (file.Length > 0)
+                {
+                    string sFileExtension = Path.GetExtension(file.FileName).ToLower();
+                    ISheet sheet;
+                    string fullPath = Path.Combine(newPath, file.FileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                        stream.Position = 0;
+                        if (sFileExtension == ".xls")
+                        {
+                            HSSFWorkbook hssfwb = new HSSFWorkbook(stream); //This will read the Excel 97-2000 formats  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook  
+                        }
+                        else
+                        {
+                            XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
+                            sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook   
+                        }
+                        for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
+                        {
+                            IRow row = sheet.GetRow(j);
+                            if (row != null)
+                            {
+                                nrow = new LinhasAcordoPrecosViewModel();
 
+                                nrow.NoProcedimento = row.GetCell(0) != null ? row.GetCell(0).ToString() : "";
+                                nrow.NoFornecedor = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
+                                nrow.CodProduto = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
+                                nrow.DtValidadeInicioTexto = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
+                                nrow.DtValidadeFimTexto = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
+                                nrow.Regiao = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
+                                nrow.Area = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+                                nrow.Cresp = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
+                                nrow.Localizacao = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
+                                nrow.CustoUnitarioTexto = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
+                                nrow.Um = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
+                                nrow.QtdPorUmTexto = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
+                                nrow.PesoUnitarioTexto = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
+                                nrow.CodProdutoFornecedor = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
+                                nrow.FormaEntregaTexto = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
+                                nrow.TipoPrecoTexto = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
+                                nrow.UserId = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
+                                nrow.DataCriacaoTexto = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
 
+                                ListToCreate.Add(nrow);
+                            }
+                        }
+                    }
+                }
+                if (ListToCreate.Count > 0)
+                {
+                    foreach (LinhasAcordoPrecosViewModel item in ListToCreate)
+                    {
+                        if (!string.IsNullOrEmpty(item.DtValidadeInicioTexto))
+                        {
+                            item.DtValidadeInicio = Convert.ToDateTime(item.DtValidadeInicioTexto);
+                            item.DtValidadeInicioTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.DtValidadeFimTexto))
+                        {
+                            item.DtValidadeFim = Convert.ToDateTime(item.DtValidadeFimTexto);
+                            item.DtValidadeFimTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.CustoUnitarioTexto))
+                        {
+                            item.CustoUnitario = Convert.ToDecimal(item.CustoUnitarioTexto);
+                            item.CustoUnitarioTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.QtdPorUmTexto))
+                        {
+                            item.QtdPorUm = Convert.ToDecimal(item.QtdPorUmTexto);
+                            item.QtdPorUmTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.PesoUnitarioTexto))
+                        {
+                            item.PesoUnitario = Convert.ToDecimal(item.PesoUnitarioTexto);
+                            item.PesoUnitarioTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.FormaEntregaTexto))
+                        {
+                            item.FormaEntrega = Convert.ToInt32(item.FormaEntregaTexto);
+                            item.FormaEntregaTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.TipoPrecoTexto))
+                        {
+                            item.TipoPreco = Convert.ToInt32(item.TipoPrecoTexto);
+                            item.TipoPrecoTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.DataCriacaoTexto))
+                        {
+                            item.DataCriacao = Convert.ToDateTime(item.DataCriacaoTexto);
+                            item.DataCriacaoTexto = "";
+                        }
+                    }
+                }
+            }
+            return Json(ListToCreate);
+        }
+        //4
+        [HttpPost]
+        public JsonResult UpdateCreate_AcordoPrecos([FromBody] List<LinhasAcordoPrecos> data)
+        {
+            List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
 
+            data.RemoveAll(x => results.Any(
+                u =>
+                    u.NoProcedimento == x.NoProcedimento &&
+                    u.NoFornecedor == x.NoFornecedor &&
+                    u.CodProduto == x.CodProduto &&
+                    u.DtValidadeInicio == x.DtValidadeInicio &&
+                    u.DtValidadeFim == x.DtValidadeFim &&
+                    u.Regiao == x.Regiao &&
+                    u.Area == x.Area &&
+                    u.Cresp == x.Cresp &&
+                    u.Localizacao == x.Localizacao &&
+                    u.CustoUnitario == x.CustoUnitario &&
+                    u.Um == x.Um &&
+                    u.QtdPorUm == x.QtdPorUm &&
+                    u.PesoUnitario == x.PesoUnitario &&
+                    u.CodProdutoFornecedor == x.CodProdutoFornecedor &&
+                    u.FormaEntrega == x.FormaEntrega &&
+                    u.TipoPreco == x.TipoPreco
+            ));
 
+            data.ForEach(x =>
+            {
+                if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
+                {
+                    LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
+                    LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
+                    LinhasAcordoPrecos toSearch = DBLinhasAcordoPrecos.GetById(x.NoProcedimento, x.NoFornecedor, x.CodProduto, x.DtValidadeInicio, x.Cresp, x.Localizacao);
 
+                    NAVVendorViewModel Vendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
+                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodProduto).FirstOrDefault();
 
+                    if (toSearch == null)
+                    {
+                        toCreate.NoProcedimento = x.NoProcedimento;
+                        toCreate.NoFornecedor = x.NoFornecedor;
+                        toCreate.CodProduto = x.CodProduto;
+                        toCreate.DtValidadeInicio = x.DtValidadeInicio;
+                        toCreate.DtValidadeFim = x.DtValidadeFim;
+                        toCreate.Regiao = x.Regiao;
+                        toCreate.Area = x.Area;
+                        toCreate.Cresp = x.Cresp;
+                        toCreate.Localizacao = x.Localizacao;
+                        toCreate.CustoUnitario = x.CustoUnitario;
+                        if (Vendor != null)
+                            toCreate.NomeFornecedor = Vendor.Name;
+                        if (Product != null)
+                            toCreate.DescricaoProduto = Product.Name;
+                        toCreate.Um = x.Um;
+                        toCreate.QtdPorUm = x.QtdPorUm;
+                        toCreate.PesoUnitario = x.PesoUnitario;
+                        toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                        toCreate.DescricaoProdFornecedor = "";
+                        toCreate.FormaEntrega = x.FormaEntrega;
+                        toCreate.UserId = User.Identity.Name;
+                        toCreate.DataCriacao = DateTime.Now;
+                        toCreate.TipoPreco = x.TipoPreco;
 
+                        DBLinhasAcordoPrecos.Create(toCreate);
+                    }
+                    else
+                    {
+                        toUpdate.NoProcedimento = x.NoProcedimento;
+                        toUpdate.NoFornecedor = x.NoFornecedor;
+                        toUpdate.CodProduto = x.CodProduto;
+                        toUpdate.DtValidadeInicio = x.DtValidadeInicio;
+                        toUpdate.DtValidadeFim = x.DtValidadeFim;
+                        toUpdate.Regiao = x.Regiao;
+                        toUpdate.Area = x.Area;
+                        toUpdate.Cresp = x.Cresp;
+                        toUpdate.Localizacao = x.Localizacao;
+                        toUpdate.CustoUnitario = x.CustoUnitario;
+                        if (Vendor != null)
+                            toUpdate.NomeFornecedor = Vendor.Name;
+                        if (Product != null)
+                            toUpdate.DescricaoProduto = Product.Name;
+                        toUpdate.Um = x.Um;
+                        toUpdate.QtdPorUm = x.QtdPorUm;
+                        toUpdate.PesoUnitario = x.PesoUnitario;
+                        toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                        toUpdate.DescricaoProdFornecedor = "";
+                        toUpdate.FormaEntrega = x.FormaEntrega;
+                        toUpdate.UserId = x.UserId;
+                        toUpdate.DataCriacao = x.DataCriacao;
+                        toUpdate.TipoPreco = x.TipoPreco;
 
+                        DBLinhasAcordoPrecos.Update(toUpdate);
+                    }
+                }
+            });
+            return Json(data);
+        }
+
+        //1
         [HttpPost]
         public async Task<JsonResult> ExportToExcel_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> dp)
         {
@@ -2389,31 +2612,20 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("FH Empregado Recursos");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("CHAVE-Nº Empregado");
-                row.CreateCell(1).SetCellValue("CHAVE-Recurso");
-                row.CreateCell(2).SetCellValue("Nº Empregado");
-                row.CreateCell(3).SetCellValue("Recurso");
-                row.CreateCell(4).SetCellValue("Recurso Família");
-                row.CreateCell(5).SetCellValue("Criado Por");
-                row.CreateCell(6).SetCellValue("Data-Hora Criação");
+                row.CreateCell(0).SetCellValue("Nº Empregado");
+                row.CreateCell(1).SetCellValue("Recurso");
+                row.CreateCell(2).SetCellValue("Criado Por");
+                row.CreateCell(3).SetCellValue("Data-Hora Criação");
                 int count = 1;
                 foreach (RHRecursosViewModel item in dp)
                 {
                     row = excelSheet.CreateRow(count);
                     row.CreateCell(0).SetCellValue(item.NoEmpregado);
                     row.CreateCell(1).SetCellValue(item.Recurso);
-                    row.CreateCell(2).SetCellValue(item.NoEmpregado);
-                    row.CreateCell(3).SetCellValue(item.Recurso);
-                    row.CreateCell(4).SetCellValue(item.FamiliaRecurso);
-                    row.CreateCell(5).SetCellValue(item.UtilizadorCriacao);
-                    row.CreateCell(6).SetCellValue(item.DataHoraCriacao.HasValue ? item.DataHoraCriacao.ToString() : "");
+                    row.CreateCell(2).SetCellValue(item.UtilizadorCriacao);
+                    row.CreateCell(3).SetCellValue(item.DataHoraCriacao.ToString());
                     count++;
                 }
-                excelSheet.SetColumnHidden(0, true);
-                excelSheet.SetColumnHidden(1, true);
-                excelSheet.SetColumnHidden(4, true);
-                excelSheet.SetColumnHidden(5, true);
-                excelSheet.SetColumnHidden(6, true);
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
@@ -2423,13 +2635,13 @@ namespace Hydra.Such.Portal.Controllers
             memory.Position = 0;
             return Json(sFileName);
         }
-
+        //2
         public IActionResult ExportToExcelDownload_EmpregadoRecursos(string sFileName)
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "FH Empregado Recursos.xlsx");
         }
-
+        //3
         [HttpPost]
         public JsonResult OnPostImport_EmpregadoRecursos()
         {
@@ -2472,13 +2684,12 @@ namespace Hydra.Such.Portal.Controllers
                             if (row != null)
                             {
                                 nrow = new RHRecursosViewModel();
-                                nrow.ORIGINAL_NoEmpregado = row.GetCell(0).ToString();
-                                nrow.ORIGINAL_Recurso = row.GetCell(1).ToString();
-                                nrow.NoEmpregado = row.GetCell(2).ToString();
-                                nrow.Recurso = row.GetCell(3).ToString();
-                                nrow.FamiliaRecurso = row.GetCell(4).ToString();
-                                nrow.UtilizadorCriacao = row.GetCell(5).ToString();
-                                nrow.DataHoraCriacaoTexto = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+
+                                nrow.NoEmpregado = row.GetCell(0) != null ? row.GetCell(0).ToString() : "";
+                                nrow.Recurso = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
+                                nrow.UtilizadorCriacao = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
+                                nrow.DataHoraCriacaoTexto = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
+
                                 ListToCreate.Add(nrow);
                             }
                         }
@@ -2493,6 +2704,17 @@ namespace Hydra.Such.Portal.Controllers
                             item.NomeEmpregado = DBNAV2009Employees.GetAll(item.NoEmpregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
                         }
 
+                        if (!string.IsNullOrEmpty(item.Recurso))
+                        {
+                            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Recurso, "", 0, "").FirstOrDefault();
+
+                            if (resource != null)
+                            {
+                                item.NomeRecurso = resource.Name;
+                                item.FamiliaRecurso = resource.ResourceGroup;
+                            }
+                        }
+
                         if (!string.IsNullOrEmpty(item.DataHoraCriacaoTexto))
                         {
                             item.DataHoraCriacao = Convert.ToDateTime(item.DataHoraCriacaoTexto);
@@ -2504,25 +2726,67 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ListToCreate);
         }
 
+        //4
+        [HttpPost]
+        public JsonResult UpdateCreate_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> data)
+        {
+            List<RhRecursosFh> results = DBRHRecursosFH.GetAll();
 
+            data.RemoveAll(x => results.Any(
+                u =>
+                    u.NoEmpregado == x.NoEmpregado &&
+                    u.Recurso == x.Recurso
+            ));
 
+            data.ForEach(x =>
+            {
+                if (!string.IsNullOrEmpty(x.NoEmpregado) && !string.IsNullOrWhiteSpace(x.Recurso))
+                {
+                    RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(x);
+                    RhRecursosFh toUpdate = DBRHRecursosFH.ParseToDB(x);
+                    RhRecursosFh toSearch = DBRHRecursosFH.GetByID(x.NoEmpregado, x.Recurso);
 
+                    NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Recurso, "", 0, "").FirstOrDefault();
+                    NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(x.NoEmpregado, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault();
 
+                    if (toSearch == null)
+                    {
+                        toCreate.NoEmpregado = x.NoEmpregado;
+                        toCreate.Recurso = x.Recurso;
+                        if (resource != null)
+                        {
+                            toCreate.NomeRecurso = resource.Name;
+                            toCreate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        if (employee != null)
+                            toCreate.NomeEmpregado = employee.Name;
+                        toCreate.CriadoPor = User.Identity.Name;
+                        toCreate.DataHoraCriacao = DateTime.Now;
 
+                        DBRHRecursosFH.Create(toCreate);
+                    }
+                    else
+                    {
+                        toCreate.NoEmpregado = x.NoEmpregado;
+                        toCreate.Recurso = x.Recurso;
+                        if (resource != null)
+                        {
+                            toCreate.NomeRecurso = resource.Name;
+                            toCreate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        if (employee != null)
+                            toCreate.NomeEmpregado = employee.Name;
+                        toUpdate.CriadoPor = x.UtilizadorCriacao;
+                        toUpdate.DataHoraCriacao = x.DataHoraCriacao;
+                        toUpdate.AlteradoPor = User.Identity.Name;
+                        toUpdate.DataHoraUltimaAlteracao = DateTime.Now;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        DBRHRecursosFH.Update(toUpdate);
+                    }
+                }
+            });
+            return Json(data);
+        }
 
         [HttpPost]
         [Route("Administracao/FileUpload_PrecoVendaRecursoFH")]
@@ -3010,9 +3274,6 @@ namespace Hydra.Such.Portal.Controllers
                 toCreate.DataHoraCriacao = x.DataHoraCriacao;
                 toCreate.AlteradoPor = User.Identity.Name;
                 toCreate.DataHoraUltimaAlteracao = DateTime.Now;
-
-                toDelete.NoEmpregado = x.ORIGINAL_NoEmpregado;
-                toDelete.Recurso = x.ORIGINAL_Recurso;
 
                 DBRHRecursosFH.Delete(toDelete);
 
@@ -4044,7 +4305,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAcordoPrecosConfigData([FromBody] AcordoPrecosModelView data)
         {
             //AMARO TEMP
-            data.NoProcedimento = "1";
+            //data.NoProcedimento = "1";
             //FIM
 
             AcordoPrecos AP = DBAcordoPrecos.GetById(data.NoProcedimento);
@@ -4079,11 +4340,11 @@ namespace Hydra.Such.Portal.Controllers
                     DtValidadeFim = x.DtValidadeFim,
                     DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
                     Cresp = x.Cresp,
-                    CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Where(y => y.Code == x.Cresp).SingleOrDefault().Name,
+                    CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault().Name,
                     Area = x.Area,
-                    AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Where(y => y.Code == x.Area).SingleOrDefault().Name,
+                    AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault().Name,
                     Regiao = x.Regiao,
-                    RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Where(y => y.Code == x.Regiao).SingleOrDefault().Name,
+                    RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault().Name,
                     Localizacao = x.Localizacao,
                     LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault().Name,
                     CustoUnitario = x.CustoUnitario,
@@ -4105,26 +4366,26 @@ namespace Hydra.Such.Portal.Controllers
 
                 //ORIGEM = 1 » Acordo Preços
                 //TIPO = 2 » ERRO
-                result.AnexosErros = DBAnexosErros.GetByOrigemAndCodigo(1, data.NoProcedimento).Select(x => new AnexosErrosViewModel()
-                {
-                    ID = x.Id,
-                    CodeTexto = x.Id.ToString(),
-                    Origem = (int)x.Origem,
-                    OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
-                    Tipo = (int)x.Tipo,
-                    TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
-                    Codigo = x.Codigo,
-                    NomeAnexo = x.NomeAnexo,
-                    Anexo = x.Anexo,
-                    CriadoPor = x.CriadoPor,
-                    CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
-                    DataHora_Criacao = x.DataHoraCriacao,
-                    DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
-                    AlteradoPor = x.AlteradoPor,
-                    AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
-                    DataHora_Alteracao = x.DataHoraAlteracao,
-                    DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
-                }).ToList();
+                //result.AnexosErros = DBAnexosErros.GetByOrigemAndCodigo(1, data.NoProcedimento).Select(x => new AnexosErrosViewModel()
+                //{
+                //    ID = x.Id,
+                //    CodeTexto = x.Id.ToString(),
+                //    Origem = (int)x.Origem,
+                //    OrigemTexto = x.Origem == 0 ? "" : EnumerablesFixed.AE_Origem.Where(y => y.Id == x.Origem).SingleOrDefault().Value,
+                //    Tipo = (int)x.Tipo,
+                //    TipoTexto = x.Tipo == 0 ? "" : EnumerablesFixed.AE_Tipo.Where(y => y.Id == x.Tipo).SingleOrDefault().Value,
+                //    Codigo = x.Codigo,
+                //    NomeAnexo = x.NomeAnexo,
+                //    Anexo = x.Anexo,
+                //    CriadoPor = x.CriadoPor,
+                //    CriadoPorNome = x.CriadoPor == null ? "" : DBUserConfigurations.GetById(x.CriadoPor).Nome,
+                //    DataHora_Criacao = x.DataHoraCriacao,
+                //    DataHora_CriacaoTexto = x.DataHoraCriacao == null ? "" : x.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                //    AlteradoPor = x.AlteradoPor,
+                //    AlteradoPorNome = x.AlteradoPor == null ? "" : DBUserConfigurations.GetById(x.AlteradoPor).Nome,
+                //    DataHora_Alteracao = x.DataHoraAlteracao,
+                //    DataHora_AlteracaoTexto = x.DataHoraAlteracao == null ? "" : x.DataHoraAlteracao.Value.ToString("yyyy-MM-dd")
+                //}).ToList();
             }
 
             return Json(result);
