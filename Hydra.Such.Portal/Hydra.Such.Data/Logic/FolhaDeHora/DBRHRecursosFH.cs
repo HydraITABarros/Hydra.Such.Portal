@@ -25,6 +25,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static RhRecursosFh GetByID(string NoEmpregado, string Recurso)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RhRecursosFh.Where(x => x.NoEmpregado == NoEmpregado && x.Recurso == Recurso).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static RhRecursosFh Create(RhRecursosFh ObjectToCreate)
         {
             try

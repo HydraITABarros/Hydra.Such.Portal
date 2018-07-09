@@ -25,6 +25,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static PrecoVendaRecursoFh GetByID(string Code, string CodTipoTrabalho, DateTime StartingDate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PrecoVendaRecursoFh.Where(x => x.Code == Code && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == StartingDate).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static PrecoVendaRecursoFh Create(PrecoVendaRecursoFh ObjectToCreate)
         {
             try

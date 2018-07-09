@@ -5,8 +5,6 @@ namespace Hydra.Such.Data.ViewModel.FH
 {
     public partial class RHRecursosViewModel : ErrorHandler
     {
-        public string ORIGINAL_NoEmpregado { get; set; }
-        public string ORIGINAL_Recurso { get; set; }
         public string NoEmpregado { get; set; }
         public string Recurso { get; set; }
         public string NomeRecurso { get; set; }
