@@ -200,6 +200,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         /*
          * Return Handlers categories:
          * -9 - Generic/Unkmown failure
+         * -2 - Record Already exists
          * -1 - Object is empty or null
          * 0 - Success
          * 1xx - Create errors
@@ -216,6 +217,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             eReasonCode = -9,
             eMessage = "Erro"
+        };
+        public static ErrorHandler ExistsData = new ErrorHandler
+        {
+            eReasonCode = -2,
+            eMessage = "Já existe um registo"
         };
         public static ErrorHandler NoData = new ErrorHandler
         {
