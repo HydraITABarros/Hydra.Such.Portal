@@ -5,6 +5,7 @@ using Hydra.Such.Data.ViewModel.ProjectView;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 
 namespace Hydra.Such.Data.Logic
@@ -51,6 +52,11 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<NAVProductsViewModel> GetProductsById(string navDatabaseName, string navCompanyName, List<string> productsId)
+        {
+            string productsIds = string.Join(",", productsId);
+            return GetAllProducts(navDatabaseName, navCompanyName, productsIds);
+        }
         public static List<NAVProductsViewModel> GetProductsForDimensions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType)
         {
             try
@@ -92,9 +98,31 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static ErrorHandler CheckProductsAvailability(RequisitionViewModel item, string nAVDatabaseName, string nAVCompanyName)
+        /// <summary>
+        /// Check for blocked or Nonexisting products for requisition
+        /// </summary>
+        /// <param name="requisition"></param>
+        /// <param name="navDatabaseName"></param>
+        /// <param name="navCompanyName"></param>
+        /// <returns></returns>
+        public static ErrorHandler CheckProductsAvailability(RequisitionViewModel requisition, string navDatabaseName, string navCompanyName)
         {
-            throw new NotImplementedException();
+            //garantir que todos os produtos estão desbloqueados
+            var productsIds = requisition.Lines.Select(x => x.Code).Distinct().ToList();
+            var products = GetProductsById(navDatabaseName, navCompanyName, productsIds);
+            ErrorHandler result = new ErrorHandler(1, "Os produtos não estão bloqueados.");
+            if (products != null)
+            {
+                if (products.Count < productsIds.Count)
+                {
+                    var existingIds = products.Select(x => x.Code).Distinct();
+                    var blockedOrUnexisting = requisition.Lines.Where(x => !existingIds.Contains(x.Code)).ToList();
+
+                    result.eReasonCode = 2;
+                    result.eMessage = "Os seguintes produtos não existem ou estão bloqueados: " + string.Join(", ", blockedOrUnexisting.Select(x => x.Code + " - " + x.Description).ToArray());
+                }
+            }
+            return result;
         }
     }
 }

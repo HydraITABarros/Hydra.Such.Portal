@@ -241,6 +241,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/UpdateCreate_AcordoPrecos"
+                   last-response="{{result}}"
+                   method="post"
+                   on-response="_updateCreateResponse"
+                   handle-as="json"
+                   id="ajax_updateCreate"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_export" disabled="{{ _permissions.update }}" title="Exportar Linhas"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
@@ -432,88 +441,24 @@
                                         <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                                     </div>
                                 </div>
+                            </div>
 
 
-                                <div class="row break_clear">
-                                    <div class="col-sm-10">
-                                        <vaadin-upload id="UploadRequest"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       accept=".xlsx"
-                                                       timeout=3000000>
-                                            <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
-                                        </vaadin-upload>
-                                    </div>
-                                    <div class="col-sm-2 alignPoga">
-                                        @*<a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>*@
-                                        @*<paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>*@
-                                        <paper-button class="btnSave" disabled="{{ _permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
-                                    </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-10">
+                                    <vaadin-upload id="UploadRequest"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   accept=".xlsx"
+                                                   timeout=3000000>
+                                        <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                                    </vaadin-upload>
                                 </div>
-
-                                @*<div class="row break_clear">
-                                    <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ data.anexosErros }}" class="editGrid" multi-sort="true">
-                                        <vaadin-grid-column hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="codeTexto" style="text-align:center;">Identificador</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="codeTexto" />
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field id="tabAnexosErroscodeTexto" value="{{item.codeTexto}}"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="tipoTexto" style="text-align:center;">Resultado</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="tipoTexto" />
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.tipoTexto}}" disabled></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="nomeAnexo" style="text-align:center;">Anexo</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="nomeAnexo" />
-                                            </template>
-                                            <template>
-                                                <a href="/Administracao/DownloadFileAnexosErros/{{item.codeTexto}}" target="_blank">{{item.nomeAnexo}}</a>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="criadoPorNome" style="text-align:center;">Criador</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="criadoPorNome" />
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field id="tabAnexosErroscriadoPorNome" value="{{item.criadoPorNome}}" disabled></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="dataHora_CriacaoTexto" style="text-align:center;">Data Criação</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataHora_CriacaoTexto" />
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field id="tabAnexosErrosdataHora_CriacaoTexto" value="{{item.dataHora_CriacaoTexto}}" disabled></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                            </template>
-                                            <template>
-                                                <center>
-                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                                </center>
-                                            </template>
-                                        </vaadin-grid-column>
-                                    </vaadin-grid>
-                                </div>*@
+                                <div class="col-sm-2 alignPoga">
+                                    @*<a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>*@
+                                    @*<paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>*@
+                                    <paper-button class="btnSave" disabled="{{ _permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
+                                </div>
                             </div>
                         </div>
                     </paper-collapse-item>
@@ -886,14 +831,18 @@
                         //debugger;
                         var polymerDom = Polymer.dom(this.$[container]);
                         var errors = 0;
-                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box, such-selectbox";
+                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
                         var formFields = polymerDom.querySelectorAll(formSelector);
 
                         formFields.forEach(function (element) {
-                            if (!element.validate()) errors++;
+                            if (!element.validate()) {
+                                debugger;
+                                errors++;
+                            }
                         });
 
                         if (errors > 0) {
+                            debugger;
                             this._showErrorMessage('Verifique os dados inseridos.');
                             return false;
                         }
@@ -930,7 +879,7 @@
 
                     _createLinhaAcordoPrecos: function () {
                         //debugger;
-                        if (this._validateData("linhaAcordoPrecosCreate")) {
+                        if (this._validateData("linhaAcordoPrecosCreate") & this.$.linhasNoFornecedor.value != "" & this.$.linhasCodProduto.value != "") {
                             this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
                                 noProcedimento: this.$.linhasNoProcedimento.value,
                                 noFornecedor: this.$.linhasNoFornecedor.value,
@@ -1210,7 +1159,7 @@
                     },
 
                     _export: function () {
-                        debugger;
+                        //debugger;
                         this.$.ajax_Export.body = JSON.stringify(this.data);
                         this.$.ajax_Export.generateRequest();
                         this.$.tabLinhas.clearCache();
@@ -1219,7 +1168,7 @@
                     _ExportResponse: function (e) {
                         debugger
                         var FileName = this.export;
-                        location.href = '../Administracao/ExportToExcelDownload_AcordoPrecos?sFileName=' + FileName;
+                        location.href = '../ExportToExcelDownload_AcordoPrecos?sFileName=' + FileName;
                     },
 
                     _addExcel: function () {
@@ -1228,7 +1177,7 @@
                         var toastError = this.$.ToastMessageError;
                         var data = new FormData();
                         var uploadFile = this.$.UploadRequest.files;
-                        var ajaxImport = this.$.ajax_update;
+                        var ajaxImport = this.$.ajax_updateCreate;
                         var vaadinGrid = this.$.tabLinhas;
                         for (var i = 0; i < uploadFile.length; i++) {
                             data.append(uploadFile[i].name, uploadFile[i]);
@@ -1256,6 +1205,18 @@
                     _refresh: function () {
                         this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
                         this.$.page_databound_ajax.generateRequest();
+                    },
+
+                    _updateCreateResponse: function (e) {
+                        debugger;
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_GetAll.generateRequest();
+                            this._showMessage("Tabela atualizada.");
+                        }
+                        else {
+                            this._showErrorMessage("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     },
 
                 });
