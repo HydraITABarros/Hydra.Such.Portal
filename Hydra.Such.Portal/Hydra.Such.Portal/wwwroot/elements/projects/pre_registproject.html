@@ -144,6 +144,7 @@
         </style>
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
@@ -2251,6 +2252,9 @@
                             this.$.projectDiaryProject.clearCache();
                         }
                     }
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 },
                 _parseDateFormat: function (date) {
                     if (date != null && date != "") {
