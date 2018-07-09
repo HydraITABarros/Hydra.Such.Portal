@@ -556,7 +556,6 @@
                     }
                 },
                 _update: function () {
-                    //debugger;
                     this.$.page_update_ajax.body = JSON.stringify(this.data);
                     this.$.page_update_ajax.generateRequest();
                 },
@@ -620,7 +619,6 @@
                 },
                 _destinationChange: function (e) {
                 var type = e.detail.value;
-                debugger;;
                 if (type==1){//interno
                     this._checkDestination = true;
                 } else {//externo
