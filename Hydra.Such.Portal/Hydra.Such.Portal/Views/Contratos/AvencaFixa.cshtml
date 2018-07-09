@@ -231,7 +231,7 @@
                     },
                     checked: {
                         type: Boolean,
-                        value: true 
+                        value: true
                     }
                 },
 
@@ -261,23 +261,38 @@
                     this._locked = true;
                     this.$.ajax_generate.body = JSON.stringify(this.result);
                     this.$.ajax_generate.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+
                     //}
                     //else {
                     //    this.openToastError("Não existem linhas disponiíveis para faturar.");
                     //}
                 },
 
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.avencaFixaTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
                 _invoiceGenResponse: function (e) {
                     if (e.returnValue == true) {
                         this.$.ajax_getall.generateRequest();
                         this.$.avencaFixaTable.clearCache();
-                        
+
                     }
                     else {
                         this.openToastError("Ocorreu um erro ao tentar gerar faturas.");
                     }
                 },
-                _gridListPedingResponse: function(e) {
+                _gridListPedingResponse: function (e) {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
@@ -338,7 +353,7 @@
 
                 },
                 _openPending: function (param) {
-                    this.$.ajax_getpeding.generateRequest();                    
+                    this.$.ajax_getpeding.generateRequest();
                 },
                 _openInvice: function (param) {
                     this.$.ajax_getall.generateRequest();

@@ -98,19 +98,19 @@
                 <h2 class="separator">Registos</h2>
             </div>
         </div>
-        <div class="row">             
-                <div class="col-lg-4" @ViewBag.Groups>
-                    <vaadin-combo-box items="[[GroupList]]" id="ddGroup" name="ddGroup" item-value-path="id" item-label-path="id"  label="Grupo" disabled="{{ _permissions.Create }}">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="30%"> <b>[[item.value]]</b></td>
-                                    <td width="70%">[[item.id]]</td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
+        <div class="row">
+            <div class="col-lg-4" @ViewBag.Groups>
+                <vaadin-combo-box items="[[GroupList]]" id="ddGroup" name="ddGroup" item-value-path="id" item-label-path="id" label="Grupo" disabled="{{ _permissions.Create }}">
+                    <template>
+                        <table width="350px">
+                            <tr>
+                                <td width="30%"> <b>[[item.value]]</b></td>
+                                <td width="70%">[[item.id]]</td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
             <div class="col-lg-2">
                 <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissions.Create }}"></vaadin-text-field>
             </div>
@@ -133,7 +133,7 @@
                     <vaadin-grid-sorter path="group">Grupo </vaadin-grid-sorter>
                     <vaadin-grid-filter path="group" />
                 </template>
-                <template >
+                <template>
                     <vaadin-combo-box items="[[GroupList]]" id="group" item-value-path="id" item-label-path="value" value="{{item.group}}" disabled="{{ _permissions.Update }}">
                         <template>
                             <table width="200px">
@@ -206,6 +206,19 @@
                     var option="@ViewBag.Option";
                     this.$.page_databound_ajax.body = JSON.stringify(option);
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridClassification);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _create: function () {
                     var type = 1;

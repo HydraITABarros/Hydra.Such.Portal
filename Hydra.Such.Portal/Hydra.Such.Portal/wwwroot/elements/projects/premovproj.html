@@ -213,7 +213,7 @@
             }
         </style>
         <div class="subMenu" hidden="{{ _permissions.update }}">
-                <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
+            <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <vaadin-grid aria-label="Pré Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
@@ -540,6 +540,20 @@
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                     }
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.projectMovementTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
 
                 openToastSuccess: function (message) {
@@ -589,7 +603,7 @@
                             this.openToastSuccess(this.data.eMessage);
                         } else {
                             this.openToastError(this.data.eMessage);
-                        } 
+                        }
                     }
                 },
                 _gridListResponse: function () {

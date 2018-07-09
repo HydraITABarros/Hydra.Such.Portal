@@ -108,6 +108,21 @@
                         observer: '_onItemSelected'
                     },
                 },
+                ready: function () {
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdItems);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
                 _onItemSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqid=" + item.requisitionNo + "&lineid=" + item.stateOfPlayId;

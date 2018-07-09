@@ -91,7 +91,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-       
+
 
         <div class="row">
             <div class="col-lg-2">
@@ -100,7 +100,7 @@
         </div>
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" item-value-path="id" item-label-path="value"  label="Nº Produto" >
+                <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" item-value-path="id" item-label-path="value" label="Nº Produto">
                     <template>
                         <table width="200px">
                             <tr>
@@ -113,7 +113,7 @@
 
             </div>
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[CodeList]]" id="ddCode" item-value-path="id" item-label-path="value"  label="Código" >
+                <vaadin-combo-box items="[[CodeList]]" id="ddCode" item-value-path="id" item-label-path="value" label="Código">
                     <template>
                         <table width="140px">
                             <tr>
@@ -126,25 +126,25 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddQtdUnitMeasure" type="number" label="Qtd. Unidade de Medida" ></vaadin-text-field>
+                <vaadin-text-field id="ddQtdUnitMeasure" type="number" label="Qtd. Unidade de Medida"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddLength" type="number" label="Cumprimento" ></vaadin-text-field>
+                <vaadin-text-field id="ddLength" type="number" label="Cumprimento"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <vaadin-text-field id="ddWidth" type="number" label="Largura"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddHeigth" type="number" label="Altura" ></vaadin-text-field>
+                <vaadin-text-field id="ddHeigth" type="number" label="Altura"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddCubage" type="number" label="Cubagem" ></vaadin-text-field>
+                <vaadin-text-field id="ddCubage" type="number" label="Cubagem"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddWeight" type="number" label="Peso" ></vaadin-text-field>
+                <vaadin-text-field id="ddWeight" type="number" label="Peso"></vaadin-text-field>
             </div>
             <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createUnitMeasure" >Criar</paper-button>
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createUnitMeasure">Criar</paper-button>
             </div>
         </div>
         <br />
@@ -174,7 +174,7 @@
                     <vaadin-grid-filter path="qtdUnitMeasure" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.qtdUnitMeasure}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.qtdUnitMeasure}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -183,7 +183,7 @@
                     <vaadin-grid-filter path="length" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.length}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.length}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -192,7 +192,7 @@
                     <vaadin-grid-filter path="width" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.width}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.width}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -201,7 +201,7 @@
                     <vaadin-grid-filter path="heigth" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.heigth}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.heigth}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -210,7 +210,7 @@
                     <vaadin-grid-filter path="cubage" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.cubage}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.cubage}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -219,7 +219,7 @@
                     <vaadin-grid-filter path="weight" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.weight}}" type="number" ></vaadin-text-field>
+                    <vaadin-text-field value="{{item.weight}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -227,28 +227,41 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" >Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
 
         <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" ><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" ><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
-       
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-unitofmeasure',
-                
+
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridUnitMeasureProduct);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -266,7 +279,7 @@
                     this.$.gridUnitMeasureProduct.clearCache();
                 },
                 _createUnitMeasure: function () {
-                    if (this.$.ddProductNo.value != null && this.$.ddCode.value !=null) {
+                    if (this.$.ddProductNo.value != null && this.$.ddCode.value != null) {
                         var line = {
                             productNo: this.$.ddProductNo.value,
                             code: this.$.ddCode.value,
@@ -308,10 +321,10 @@
                             this.$.ddWidth.value = "";
                             this.$.ddHeigth.value = "";
                             this.$.ddCubage.value = "";
-                            this.$.ddWeight.value = ""; 
+                            this.$.ddWeight.value = "";
                             this.openToast('Atualizado com sucesso!');
                             this.$.page_databound_ajax.generateRequest();
-                            this.$.gridUnitMeasureProduct.clearCache();                           
+                            this.$.gridUnitMeasureProduct.clearCache();
                         }
                     }
                     else {

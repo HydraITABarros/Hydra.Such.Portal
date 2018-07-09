@@ -21,8 +21,10 @@
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </div>
         </template>
@@ -81,7 +83,7 @@
                 <template is="dom-if" if="{{ _permissions.delete }}">
                     <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
-            </template>    
+            </template>
         </div>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -139,7 +141,7 @@
                     return false;
                 },
                 _createContact: function () {
-                    
+
                     if (this._validateUserInput()) {
                         this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
                         this.$.numValidation_contact_request.generateRequest();
@@ -232,6 +234,10 @@
                     });
 
 
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
             });
         });

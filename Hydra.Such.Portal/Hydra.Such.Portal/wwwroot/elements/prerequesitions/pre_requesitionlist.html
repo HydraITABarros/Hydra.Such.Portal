@@ -67,7 +67,7 @@
             </template>
         </template>
 
-        <vaadin-grid aria-label="PreReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdPreReqGrid" aria-label="PreReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
                     <vaadin-grid-sorter path="preRequesitionsNo">Nº Pré-Requisição</vaadin-grid-sorter>
@@ -84,7 +84,7 @@
                 </template>
                 <template>
                     {{item.requesitionType}}
-                    
+
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -146,7 +146,8 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <!--<paper-button class="btnRemove" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}">Eliminar</paper-button>-->
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -192,9 +193,21 @@
                     }
                 },
                 ready: function () {
-                    debugger;
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdPreReqGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
 
                 _responseDeleteProcessor: function (data) {

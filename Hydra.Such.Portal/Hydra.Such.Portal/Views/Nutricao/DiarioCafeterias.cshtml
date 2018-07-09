@@ -146,7 +146,7 @@
             <br />
         </iron-form>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
                     <vaadin-grid-sorter path="produtiveUnityNo">Unidade Produtiva</vaadin-grid-sorter>
@@ -265,6 +265,19 @@
             this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
             this.$.grid_databound_ajax.generateRequest();
 
+            var _this = this;
+            $(window).resize(function () {
+                _this.fixGridToBottom();
+            });
+            $(window).trigger('resize');
+        },
+
+        fixGridToBottom: function () {
+            var grid_el = $(this.$.grdContractsGrid);
+            var parentHeight = $(this).offsetParent().height();
+            var offsetTop = $(this).offset().top;
+            var height = parentHeight - offsetTop;
+            grid_el.height(height);
         },
 
         _createCoffeeShopDiary: function () {

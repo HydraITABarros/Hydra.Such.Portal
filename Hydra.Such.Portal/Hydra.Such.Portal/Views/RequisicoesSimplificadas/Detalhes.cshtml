@@ -195,6 +195,8 @@
                 <div class="col-lg-12">
 
                     <div class="subMenu">
+                        <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                         <template is="dom-if" if="{{ _permissions.create }}">
                             <paper-button class="tablinks" on-tap="_createNew"><i class="fa fa-plus-square" aria-hidden="true"></i> Nova Requisição</paper-button>
                         </template>
@@ -1519,7 +1521,11 @@
                        }
                    }
                    return "";
-               }
+               },
+
+               _goBack: function (e) {
+                   window.history.back();
+               },
             });
         });
     </script>

@@ -48,7 +48,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -184,7 +184,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/" + item.contractNo +"?version="+item.versionNo;
+                        window.location.href = "DetalhesContrato/" + item.contractNo + "?version=" + item.versionNo;
                     }
                 },
                 _create: function (item) {
@@ -199,6 +199,20 @@
 
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdContractsGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
             });
         });

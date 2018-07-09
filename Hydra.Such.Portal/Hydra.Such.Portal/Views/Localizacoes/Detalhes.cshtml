@@ -77,6 +77,8 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewLocation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
                 </template>
@@ -339,6 +341,10 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
             });
         });

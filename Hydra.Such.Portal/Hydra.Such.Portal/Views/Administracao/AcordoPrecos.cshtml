@@ -232,8 +232,19 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/ExportToExcel_AcordoPrecos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_ExportResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_export" disabled="{{ _permissions.update }}" title="Exportar Linhas"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+            <paper-button id="btnRefresh" class="tablinks" on-tap="_refresh" title="Atualizar"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -266,11 +277,11 @@
                         </div>
 
                         @if (ViewBag.NoProcedimento == "0")
-                        {
-                            <div class="col-sm-2">
-                                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-                            </div>
-                        }
+                    {
+                        <div class="col-sm-2">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                }
                     </div>
                 </div>
 
@@ -426,22 +437,21 @@
                                 <div class="row break_clear">
                                     <div class="col-sm-10">
                                         <vaadin-upload id="UploadRequest"
-                                                       target="/Administracao/FileUpload/{{data.noProcedimento}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
-                                                       max-files="1"
                                                        accept=".xlsx"
                                                        timeout=3000000>
                                             <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
                                         </vaadin-upload>
                                     </div>
-                                    <div class="col-sm-2">
-                                        <a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>
-                                        <paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>
+                                    <div class="col-sm-2 alignPoga">
+                                        @*<a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>*@
+                                        @*<paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>*@
+                                        <paper-button class="btnSave" disabled="{{ _permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
                                     </div>
                                 </div>
 
-                                <div class="row break_clear">
+                                @*<div class="row break_clear">
                                     <vaadin-grid id="tabAnexosErros" aria-label="TabelaAnexosErros" items="{{ data.anexosErros }}" class="editGrid" multi-sort="true">
                                         <vaadin-grid-column hidden>
                                             <template class="header">
@@ -498,13 +508,12 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    @*<paper-button class="btnRemove" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
                                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFileAnexosErros" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
-                                </div>
+                                </div>*@
                             </div>
                         </div>
                     </paper-collapse-item>
@@ -679,7 +688,7 @@
                                 <template>
                                     <center>
                                         @*<paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
-                                       <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                     </center>
                                 </template>
                             </vaadin-grid-column>
@@ -814,9 +823,14 @@
         window.addEventListener('WebComponentsReady', function () {
             var upload = document.querySelector('vaadin-upload#UploadRequest');
 
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
             upload.addEventListener('file-reject', function (event) {
                 this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
-                //window.alert(event.detail.file.name + ' erro: ' + event.detail.error);
             });
         });
 
@@ -1193,6 +1207,55 @@
 
                     _goBack: function (e) {
                         window.history.back();
+                    },
+
+                    _export: function () {
+                        debugger;
+                        this.$.ajax_Export.body = JSON.stringify(this.data);
+                        this.$.ajax_Export.generateRequest();
+                        this.$.tabLinhas.clearCache();
+                    },
+
+                    _ExportResponse: function (e) {
+                        debugger
+                        var FileName = this.export;
+                        location.href = '../Administracao/ExportToExcelDownload_AcordoPrecos?sFileName=' + FileName;
+                    },
+
+                    _addExcel: function () {
+                        var urlFile = "/Administracao/OnPostImport_AcordoPrecos";
+                        var toastSuccess = this.$.ToastMessageSuccess;
+                        var toastError = this.$.ToastMessageError;
+                        var data = new FormData();
+                        var uploadFile = this.$.UploadRequest.files;
+                        var ajaxImport = this.$.ajax_update;
+                        var vaadinGrid = this.$.tabLinhas;
+                        for (var i = 0; i < uploadFile.length; i++) {
+                            data.append(uploadFile[i].name, uploadFile[i]);
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: urlFile,
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (ListToCreate) {
+                                ajaxImport.body = JSON.stringify(ListToCreate);
+                                ajaxImport.generateRequest();
+                                vaadinGrid.clearCache();
+                                toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
+                                toastSuccess.open();
+                            },
+                            error: function () {
+                                toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
+                                toastError.open();
+                            }
+                        });
+                    },
+
+                    _refresh: function () {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
+                        this.$.page_databound_ajax.generateRequest();
                     },
 
                 });
