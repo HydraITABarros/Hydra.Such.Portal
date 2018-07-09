@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using System;
 using System.Collections.Generic;
@@ -89,6 +90,11 @@ namespace Hydra.Such.Data.Logic
             {
                 return null;
             }
+        }
+
+        public static ErrorHandler CheckProductsAvailability(RequisitionViewModel item, string nAVDatabaseName, string nAVCompanyName)
+        {
+            throw new NotImplementedException();
         }
     }
 }
