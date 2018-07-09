@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1015,6 +1016,14 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.NºProjeto,
                 value = x.Descrição
             }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectListDiaryDlg()
+        {
+            List<ProjectListItemViewModel> result = DBProjects.GetAllByAreaToList();
 
             return Json(result);
         }
