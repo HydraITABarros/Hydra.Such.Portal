@@ -15,6 +15,12 @@ namespace Hydra.Such.Data.ViewModel
         {
             eMessages = new List<TraceInformation>();
         }
+
+        public ErrorHandler(int reasonCode, string message) :base()
+        {
+            this.eReasonCode = reasonCode;
+            this.eMessage = message;
+        }
     }
     public struct TraceInformation
     {
