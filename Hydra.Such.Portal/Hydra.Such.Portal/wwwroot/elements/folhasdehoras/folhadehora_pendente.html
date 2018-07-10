@@ -85,7 +85,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHoras"
+        <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHoras_Pendentes"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -93,20 +93,16 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
-            </template>
-            <paper-button class="tablinks" id="showNovas" on-tap="_showNovas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Novas</paper-button>
-            <paper-button class="tablinks" id="showPorValidar" on-tap="_showPorValidar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Validar</paper-button>
-            <paper-button class="tablinks" id="showPorIntegrarAjCusto" on-tap="_showPorIntegrarAjCusto"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Integrar Aj. Custo RH</paper-button>
-            <paper-button class="tablinks" id="showPorIntegrarKm" on-tap="_showPorIntegrarKm"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Integrar km RH</paper-button>
-            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
-        </div>
+        <iron-ajax url="/FolhasDeHoras/ToHistoric"
+                   last-response="{{toHistoricResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="fh_toHistoric_ajax"
+                   on-response="_toHistoricResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
-        <br />
-
-        <vaadin-grid aria-label="FolhasDeHorasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grid_Pendentes" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="folhaDeHorasNo">Nº Folha Horas</vaadin-grid-sorter>
@@ -167,12 +163,12 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave" raised on-tap="_goToFolhaHoras" disabled="{{_permissionsCreate}}">Ver Folha de Horas</paper-button>
+                        <paper-button class="btnEditPending" raised on-tap="_toApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -182,21 +178,14 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove tableBtn" raised on-tap="_closeFolhaHoras" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_toHistoric" disabled="{{_permissionsCreate}}">Enviar para Histórico</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -207,78 +196,12 @@
                     activeItem: {
                         observer: '_rowSelected'
                     },
-                    _areaid: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _folhadehoraid: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
                     _permissions: {
                         type: Array
                     },
-                    _estado: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _validacao: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _integracaoajuda: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _integracaokms: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _filterDeslForaConcelho: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _filterTerminado: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _filterValidado: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _historico: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    }
-                },
-
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
-                    }
-                },
-
-                _create: function () {
-                    window.location.href = "/FolhasDeHoras/Detalhes/?area=" + this._areaid;
                 },
 
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(0),
-                        validacao: parseInt(0),
-                        integracaoajuda: parseInt(0),
-                        integracaokms: parseInt(0),
-                        historico: parseInt(0)
-                    });
                     this.$.grid_databound_ajax.generateRequest();
 
                     var _this = this;
@@ -289,80 +212,63 @@
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grid);
+                    var grid_el = $(this.$.grid_Pendentes);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
 
-                _showNovas: function (item) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(0),
-                        validacao: parseInt(0),
-                        integracaoajuda: parseInt(0),
-                        integracaokms: parseInt(0),
-                        historico: parseInt(0)
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
 
-                _showPorValidar: function (item) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(0),
-                        validacao: parseInt(1),
-                        integracaoajuda: parseInt(0),
-                        integracaokms: parseInt(0),
-                        historico: parseInt(0)
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
 
-                _showPorIntegrarAjCusto: function (item) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(1),
-                        validacao: parseInt(0),
-                        integracaoajuda: parseInt(1),
-                        integracaokms: parseInt(0),
-                        historico: parseInt(0)
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
+                    }
                 },
 
-                _showPorIntegrarKm: function (item) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(1),
-                        validacao: parseInt(0),
-                        integracaoajuda: parseInt(0),
-                        integracaokms: parseInt(1),
-                        historico: parseInt(0)
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                _toApproved: function (item) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    var folhaDeHorasNo = e.model.item.folhaDeHorasNo
+
+                    window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + folhaDeHorasNo;
                 },
 
-                _showHistory: function (item) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        area: parseInt(1),
-                        folhadehora: "",
-                        estado: parseInt(2),
-                        validacao: parseInt(0),
-                        integracaoajuda: parseInt(0),
-                        integracaokms: parseInt(0),
-                        historico: parseInt(1)
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                _toHistoric: function (e) {
+                    debugger;
+                    if (e != null) {
+                        var index = this.result.indexOf(e.model.item);
+                        this.result.splice(index, 1);
+                        var fhNo = e.model.item.folhaDeHorasNo
+
+                        this.$.fh_toHistoric_ajax.body = JSON.stringify({ folhaDeHorasNo: fhNo });
+                        this.$.fh_toHistoric_ajax.generateRequest();
+                        this.$.grid_Pendentes.clearCache();
+                    }
                 },
 
-                _goBack: function (e) {
-                    window.history.back();
+                _toHistoricResponse: function (e) {
+                    debugger;
+                    if (this.toHistoricResult) {
+                        this._showMessage('Folha de Horas transferida para Histórico com sucesso.');
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao transferir a Folha de Horas para Histórico.');
+                    }
                 },
             });
         });
