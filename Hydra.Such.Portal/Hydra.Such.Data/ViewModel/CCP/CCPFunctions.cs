@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.CCP;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.CCP;
@@ -283,7 +284,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             string temp = string.Empty;
 
             temp = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent" : "Transparent";
-
+            AcordoPrecos AP = DBAcordoPrecos.GetById(Procedimento.Nº);
 
             ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView()
             {
@@ -437,7 +438,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Procedimento.DataHoraCriação,
                 UtilizadorCriacao = Procedimento.UtilizadorCriação,
                 DataHoraModificacao = Procedimento.DataHoraModificação,
-                UtilizadorModificacao = Procedimento.UtilizadorModificação                
+                UtilizadorModificacao = Procedimento.UtilizadorModificação,
+
+                DtInicio_AcordoPreco_Show = AP != null ? AP.DtInicio.ToString() : string.Empty,
+                DtFim_AcordoPreco_Show = AP != null ? AP.DtFim.ToString() : string.Empty,
+                ValorTotal_AcordoPreco_Show = AP != null ? AP.ValorTotal.ToString() : string.Empty,
+                NoProcedimento_Show = AP != null ? AP.NoProcedimento : string.Empty
             };
 
             if (Procedimento.TemposPaCcp != null)

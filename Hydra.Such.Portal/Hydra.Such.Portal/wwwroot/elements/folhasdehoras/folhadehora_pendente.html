@@ -119,31 +119,11 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="projetoNo">Nº Ordem/Projecto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projetoNo" />
+                    <vaadin-grid-sorter path="estadotexto">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadotexto" />
                 </template>
                 <template>
-                    {{item.projetoNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="projetoDescricao">Projecto Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projetoDescricao" />
-                </template>
-                <template>
-                    {{item.projetoDescricao}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="empregadoNo">Nº Empregado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="empregadoNo" />
-                </template>
-                <template>
-                    {{item.empregadoNo}}
+                    {{item.estadotexto}}
                 </template>
             </vaadin-grid-column>
 
@@ -159,141 +139,61 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataPartidaTexto">Data Início</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPartidaTexto" />
+                    <vaadin-grid-sorter path="validadores">Validadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadores" />
                 </template>
                 <template>
-                    {{item.dataPartidaTexto}}
+                    {{item.validadores}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="horaPartidaTexto">Hora Início</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaPartidaTexto" />
+                    <vaadin-grid-sorter path="integradoresEmRH">Integradores Aj. Custo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="integradoresEmRH" />
                 </template>
                 <template>
-                    {{item.horaPartidaTexto}}
+                    {{item.integradoresEmRH}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataChegadaTexto">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataChegadaTexto" />
+                    <vaadin-grid-sorter path="integradoresEmRHKM">Integradores km</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="integradoresEmRHKM" />
                 </template>
                 <template>
-                    {{item.dataChegadaTexto}}
+                    {{item.integradoresEmRHKM}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column width="150px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="horaChegadaTexto">Hora Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaChegadaTexto" />
                 </template>
                 <template>
-                    {{item.horaChegadaTexto}}
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_goToFolhaHoras" disabled="{{_permissionsCreate}}">Ver Folha de Horas</paper-button>
+                    </center>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoDeslocacaoTexto">Tipo Deslocação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoDeslocacaoTexto" />
                 </template>
                 <template>
-                    {{item.tipoDeslocacaoTexto}}
+                    <center>
+                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
+                    </center>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoTipoKms">Tipo km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoTipoKms" />
                 </template>
                 <template>
-                    {{item.codigoTipoKms}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="matricula" />
-                </template>
-                <template>
-                    {{item.matricula}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="deslocacaoForaConcelhoTexto">Desloc. Fora do Concelho</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="deslocacaoForaConcelhoTexto" />
-                </template>
-                <template>
-                    {{item.deslocacaoForaConcelhoTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="terminadaTexto">Terminado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="terminadaTexto" />
-                </template>
-                <template>
-                    {{item.terminadaTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="custoTotalAjudaCusto">Custo Total Ajuda Custo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoTotalAjudaCusto" />
-                </template>
-                <template>
-                    {{item.custoTotalAjudaCusto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="custoTotalHoras">Custo Total Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoTotalHoras" />
-                </template>
-                <template>
-                    {{item.custoTotalHoras}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="custoTotalKM">Custo Total km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoTotalKM" />
-                </template>
-                <template>
-                    {{item.custoTotalKM}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numTotalKM" />
-                </template>
-                <template>
-                    {{item.numTotalKM}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="observacoes" />
-                </template>
-                <template>
-                    {{item.observacoes}}
+                    <center>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_closeFolhaHoras" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -434,7 +334,7 @@
                     });
                     this.$.grid_databound_ajax.generateRequest();
                 },
-                
+
                 _showPorIntegrarKm: function (item) {
                     this.$.grid_databound_ajax.body = JSON.stringify({
                         area: parseInt(1),
