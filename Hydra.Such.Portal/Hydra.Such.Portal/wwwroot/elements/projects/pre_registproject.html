@@ -143,21 +143,23 @@
             }
         </style>
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-
             <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
-                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Recursos Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
-                <!--<paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>-->
+                <paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>
             </template>
         </div><!--on-response="_gridListResponse"-->
+
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectListDiaryDlg" last-response="{{responseDlg}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectListDiary" last-response="{{response}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements" last-response="{{response2}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes" last-response="{{response3}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -170,6 +172,9 @@
         <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/CreateDiaryByPriceServiceCient" last-response="{{newDiaryPSClient}}" id="ajax_DiaryPSClient" on-response="_DiaryPSClientResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/UpdatePreRegistProject" last-response="{{diaryresult}}" id="ajax_updatediary" method="post" on-response="_updatediaryResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetProjDiary_Price" last-response="{{ProjDiary_Price}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Projetos/GetProjectDetails"
@@ -704,12 +709,10 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                    </vaadin-grid-filter>-->
+                    <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                </vaadin-grid-filter>-->
                 </template>
-                <
                 <template>
-                    in
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
@@ -845,15 +848,12 @@
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
                 <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <!--<paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>-->
-                >
-
+                >
             </div>
-            >
-
+            >
         </div>
 
-        >
-
+        >
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -987,7 +987,7 @@
                         <vaadin-grid-filter path="serviceObject" />
                     </template>
                     <template>
-                        {{item.serviceObjectCode}}
+                        {{item.serviceObject}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="160px" resizable>
@@ -1117,26 +1117,126 @@
             </div>
 
         </paper-dialog>
-        <paper-dialog id="dialogGetPriceServiceClient" class="dialgoBox">
+        <paper-dialog id="dialogGetPriceServiceClient" modal style="height:350px; width:900px">
             <h2 class="dialogTitle">Obter Faturação</h2>
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <such-selectbox id="projectDlg" name="projectDlg" value="{{projectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
-                                    items="[[response]]"
-                                    text-path="id"
-                                    value-path="id"
+                                    items="[[responseDlg]]"
+                                    text-path="projectNo"
+                                    value-path="projectNo"
                                     on-value-changed="_projectDlgChange"
+                                    fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="ProjDescription" label="Descrição" value="{{ProjDescriptionDlg}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piClient" value="{{ClientValueDlg}}" label="Cliente" on-value-changed="_clientChanged" disabled
+                                    items="[[LProjectClients]]"
+                                    text-path="no_"
+                                    value-path="no_"
+                                    fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piClientDescription" label="Nome Cliente" value="{{ClDescriptionValueDlg}}" readonly></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="piServiceClientCode" name="piCodeResponsabilityCenter" value="{{CServClientCodeValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceChanged"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'
+                                    disabled="{{ projSelected }}">
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piservicedescription" label="Descrição Cód. Serviço" value="{{CServClientDescValue}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piServiceGroupDlg" name="piServiceGroupDlg" value="{{ServiceGroupDlg}}" label="Grupo Serviço" disabled="{{ projSelected }}"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piserviceGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data Registo" id="idDateRegistDlg" name="DateRegistnameDlg" value="{{DateRegistDlg}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piCodeRegionDlg" name="piCodeRegionDlg" value="{{codeRegionDlg}}" label="Cód. Região" disabled
+                                    items="[[RegionData]]"
+                                    text-path="value"
+                                    value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-2">
-                    <vaadin-text-field id="ProjDescription" label="Descrição" readonly></vaadin-text-field>
+                <div class="col-lg-3">
+                    <such-selectbox id="piFuncAreaDlg" name="piFuncAreaDlg" value="{{codeFuncAreaDlg}}" label="Cód. Área Funcional" disabled
+                                    items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
-               
+                <div class="col-lg-3">
+                    <such-selectbox id="piCodeResponsabilityCenterDlg" name="piCodeResponsabilityCenterDlg" value="{{codeResponsabilityCenterDlg}}" label="Cód. Centro Respon." disabled
+                                    items="[[ResponsabilityCenterData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgGetPriceServClient"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient"dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="dialogGetMovements" modal style="height:150px; width:900px">
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="projectMovementDlg" name="projectMovementDlg" value="{{MovementprojectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[responseDlg]]"
+                                    text-path="projectNo"
+                                    value-path="projectNo"
+                                    on-value-changed="_projectMovementDlgChange"
+                                    fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piSClientMovement" name="piCodeMovement" value="{{SClientMovementValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceMovementChanged"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    disabled="{{ projMovementSelected }}"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piMovementSDescription" label="Descrição Cód. Serviço" value="{{MovementCServClient}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data" id="idDateMovementDlg" name="DateMovementnameDlg" value="{{DateMovementDlg}}"></vaadin-date-picker>
+                </div>
+
+            </div>
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgGetMovements"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgGetMovementsCancel" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
         <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
-            <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
@@ -1221,6 +1321,16 @@
                         notify: true,
                         value: ""
                     },
+                    CServClientCodeValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    CServClientDescValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     paramprojno: {
                         type: String,
                         notify: true,
@@ -1238,6 +1348,16 @@
                         type: String,
                         notifiy: true,
                         value: ""
+                    },
+                    projMovementSelected: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    projSelected: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
                     },
                     disabledProjectNo: {
                         type: Boolean,
@@ -1320,6 +1440,36 @@
 
                     selectedItems: {
                         type: Array,
+                    },
+                    ProjDescriptionDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeRegionDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeFuncAreaDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeResponsabilityCenterDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClientValueDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClDescriptionValueDlg: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
                     codeResponsabilityCenter: {
                         type: String,
@@ -1420,12 +1570,13 @@
                         this.$.projectList.value = this.paramprojno;
                         this.$.projectList.valueText = this.paramprojno;
                         this.disabledProjectNo = true;
-
+                        
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
                         this.$.projectDlg.value = this.paramprojno;
                         this.$.projectDlg.valueText = this.paramprojno;
-                        
+                        this.$.projectMovementDlg.value = this.paramprojno;
+                        this.$.projectMovementDlg.valueText = this.paramprojno;
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
                     }
@@ -1541,7 +1692,23 @@
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
+                _ServiceChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceClientData != null && this.ServiceClientData != "") {
+                        this.$.piservicedescription.value = this.ServiceClientData.find(x => x.serviceCode == e.detail.value).serviceDescription;
 
+                    } else {
+                        this.$.piservicedescription.value = "";
+                    }
+                },
+                _ServiceMovementChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceClientData != null && this.ServiceClientData != "") {
+                        this.$.piMovementSDescription.value = this.ServiceClientData.find(x => x.serviceCode == e.detail.value).serviceDescription;
+
+                    } else {
+                        this.$.piMovementSDescription.value = "";
+                    }
+                },
+                
                 _createmovprojResponse: function (e) {
                     if (e.detail.status === 200) {
                         this.$.projectSourceDlg.value = "";
@@ -1558,12 +1725,54 @@
 
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                        if (this.result.eReasonCode === 1) {
+                        if (this.result.eReasonCode === 1)
+                        {
                             this.openToastSuccess(this.result.eMessage);
-                        }
-                        else {
+                        } 
+                        else
+                        {
                             this.openToastError(this.result.eMessage);
                         }
+                    }                   
+                },
+                _updatediaryResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.diaryresult.eReasonCode === 1) {
+                            this.openToastSuccess(this.diaryresult.eMessage);
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.$.dialogGetPriceServiceClient.close();
+                            this.$.piServiceClientCode.value = "";
+                            this.$.piServiceClientCode.valueText = "";
+                            this.$.piservicedescription.value = "";
+                            this.$.piServiceGroupDlg.value = "";
+                            this.$.piServiceGroupDlg.valueText = "";
+                            this.$.piserviceGroupdescription.value = "";
+                            this.$.idDateRegistDlg.value = "";
+                        }
+                        else {
+                            this.openToastError(this.diaryresult.eMessage);
+                        }
+                    }
+                    else {
+                        this.openToastError("Occorreu ao criar Pré-Registos.");
+                    }
+                },
+                _DiaryPSClientResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.newDiaryPSClient.eReasonCode === 1) {
+                            if (this.newDiaryPSClient.items.length > 0) {
+                                this.$.ajax_updatediary.body = JSON.stringify(this.newDiaryPSClient.items);
+                                this.$.ajax_updatediary.generateRequest();
+                                this.$.projectDiaryProject.clearCache();
+                            } 
+                        }
+                        else {
+                            this.openToastError(this.newDiaryPSClient.eMessage);
+                        }
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao obter as linhas.");    
                     }
                 },
                 _updateResponse: function (e) {
@@ -1669,17 +1878,35 @@
                     this.$.projectMovementTable.selectedItem = [];
                     this.$.projectMovementTable.clearCache();
                 },
+                _projectMovementDlgChange: function (e) {
+                    if (e.detail.value != "") {
+                        this.projMovementSelected = false;
+                    }
+                    if (e.detail.value != "" && this.responseDlg != null && this.responseDlg != "") {
+                        this.$.projectTargetDlg.value = e.detail.value;
+                        this.$.projectTargetDlg.valueText = e.detail.value;
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                        this.$.ajax_related.generateRequest();
+                    }
+                    else {
+                        this.$.ProjDescription.value = "";
+                    }
+                },
                 _projectDlgChange: function (e) {
-                    debugger;
-                    if (e.detail.value != "" && this.response != null && this.response != "") {
-                        this.$.ProjDescription.value = this.response.find(x => x.id == e.detail.value).name;
+                    if (e.detail.value != "") {
+                        this.projSelected = false;
+                    }
+                    if (e.detail.value != "" && this.responseDlg != null && this.responseDlg != "") {
+                        this.$.projectTargetDlg.value = e.detail.value;
+                        this.$.projectTargetDlg.valueText = e.detail.value;
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                        this.$.ajax_related.generateRequest();
                     }
                     else {
                         this.$.ProjDescription.value = "";
                     }
                 },
                 _projectChange: function (e) {
-                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1687,7 +1914,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
@@ -1703,7 +1930,14 @@
                     }
 
                 },
+                _clientChanged: function (e) {
+                    if (e.detail.value != "" && this.LProjectClients != null && this.LProjectClients != "") {
+                        this.$.piClientDescription.value = this.LProjectClients.find(x => x.no_ == e.detail.value).name;
 
+                    } else {
+                        this.$.piClientDescription.value = "";
+                    }
+                },
                 _projectTypeChange: function (e) {
 
                     var type = e.detail.value;
@@ -1732,6 +1966,12 @@
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.invoiceClientNo = this.related.invoiceClientNo;
+                        this.ProjDescriptionDlg = this.related.description;
+                        this.ClientValueDlg = this.related.clientCod;
+                        this.codeRegionDlg = this.related.regionCode;
+                        this.codeFuncAreaDlg = this.related.funcAreaCode;
+                        this.codeResponsabilityCenterDlg = this.related.responsabilityCenter;
+                        this.ClDescriptionValueDlg = this.related.clientName;
                     }
                     if (this.invoiceClientNo != null) {
                         this.$.ajax_ServiceGroup.body = JSON.stringify(this.invoiceClientNo);
@@ -1767,13 +2007,8 @@
 
                 _getMovements: function () {
                     //Request
-                    if (this.$.projectList.value != null && this.$.projectList.value != "") {
-                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
-                        this.$.ajax_movementLines.generateRequest();
-                    }
-                    else {
-                        this.openToastError("Precisa de selecionar um projeto.");
-                    }
+                    this.$.dialogGetMovements.open();
+                  
 
                 },
                 _getMovementsProject: function () {
@@ -1783,7 +2018,7 @@
                     this.$.dialogGetPriceServiceClient.open();
                 },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
                         this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
                         this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
@@ -1793,12 +2028,64 @@
                     }
 
                 },
+                _dlgCancelPriceServClient: function () {
+                    this.$.piServiceClientCode.value = "";
+                    this.$.piServiceClientCode.valueText = "";
+                    this.$.piservicedescription.value = "";
+                    this.$.piServiceGroupDlg.value = "";
+                    this.$.piServiceGroupDlg.valueText = "";
+                    this.$.piserviceGroupdescription.value = "";
+                    this.$.idDateRegistDlg.value = "";
+                },
+                _dlgGetMovements: function () {
+                    debugger;
+                    if (this.$.projectMovementDlg.value != undefined && this.$.projectMovementDlg.value != "" &&
+                        this.$.idDateMovementDlg.value != undefined && this.$.idDateMovementDlg.value != "") {
+                        if (this.$.piSClientMovement.value == null) {
+                            this.$.piSClientMovement.value = "";
+                        }
+                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectMovementDlg.value);
+                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value };
+                        this.$.ajax_movementLines.generateRequest();
+                        }
+                        else {
+                            this.openToastError("É obrigatório escolher o Nº Projeto e a Data.");
+                        }
+                   
+                },
+                _dlgGetPriceServClient: function () {
+                    if (this.$.projectDlg.value != undefined && this.$.projectDlg.value != "" &&
+                        this.$.piClient.value != undefined && this.$.piClient.value != "" &&
+                        this.$.piServiceClientCode.value != undefined && this.$.piServiceClientCode.value != "" &&
+                        this.$.idDateRegistDlg.value != undefined && this.$.idDateRegistDlg.value != "") {
+                        if (this.$.piServiceGroupDlg.value == null) {
+                            this.$.piServiceGroupDlg.value = "";
+                        }
+                        this.$.ajax_DiaryPSClient.params = { "projectNo": this.$.projectDlg.value, "serviceCod": this.$.piServiceClientCode.value, "serviceGroup": this.$.piServiceGroupDlg.value, "dateRegist": this.$.idDateRegistDlg.value };
+                        this.$.ajax_DiaryPSClient.generateRequest();
+                    }
+                    else {
+                        this.openToastError("É obrigatório escolher o Nº Projeto, o Cliente, o Cód. Serviço Cliente, e a Data.");
+                    }
+
+                },
+                _dlgGetMovementsCancel: function () {
+                    this.$.piSClientMovement.value = "";
+                    this.$.piSClientMovement.valueText = "";
+                    this.$.piMovementSDescription.value = "";
+                    this.$.idDateMovementDlg.value = "";
+                },
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
                             this.openToastSuccess(this.movementLines.eMessage);
+                            this.$.dialogGetMovements.close();
+                            this.$.piSClientMovement.value = "";
+                            this.$.piSClientMovement.valueText = "";
+                            this.$.piMovementSDescription.value = "";
+                            this.$.idDateMovementDlg.value = "";
                         } else {
                             this.openToastError(this.movementLines.eMessage);
                         }
@@ -2072,17 +2359,15 @@
                         }
                     }
                 },
+                _goBack: function (e) {
+                    window.history.back();
+                },
                 _parseDateFormat: function (date) {
                     if (date != null && date != "") {
                         var x = date.split("-");
                         return x[2] + "-" + x[1] + "-" + x[0];
                     }
-                },
-
-                _goBack: function (e) {
-                    window.history.back();
-                },
-
+                }
             });
 
         });

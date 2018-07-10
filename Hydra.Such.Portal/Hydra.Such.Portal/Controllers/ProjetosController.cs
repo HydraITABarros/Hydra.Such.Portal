@@ -25,6 +25,8 @@ using NPOI.XSSF.UserModel;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using NPOI.HSSF.UserModel;
+using Hydra.Such.Data.ViewModel.ProjectDiary;
+using Hydra.Such.Data.Logic.ProjectDiary;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1174,9 +1176,22 @@ namespace Hydra.Such.Portal.Controllers
 
             if (proj != null)
             {
+                string ClientName ="";
+                if (!String.IsNullOrEmpty(proj.NºCliente))
+                {
+                    var getClient = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").FirstOrDefault(x => x.No_ == proj.NºCliente);
+                    if (getClient != null)
+                    {
+                        ClientName = getClient.Name;
+                    }
+                   
+                }
                 ProjectInfo pi = new ProjectInfo
                 {
                     //ProjectNo = proj.NºProjeto,
+                    ClientName = ClientName,
+                    ClientCod = proj.NºCliente,
+                    Description = proj.Descrição,
                     ContabGroup = proj.GrupoContabObra,
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
@@ -1443,6 +1458,8 @@ namespace Hydra.Such.Portal.Controllers
             public string ResponsabilityCenter { get; set; }
             public string InvoiceClientNo { get; set; }
             public string Currency { get; set; }
+            public string ClientCod { get; set; }
+            public string ClientName { get; set; }
         }
         #endregion
 
@@ -1837,6 +1854,11 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.UPermissions = UPerm;
                 ViewBag.ProjectNo = id ?? "";
+                ViewBag.ProjectDescription = "";
+                if (ViewBag.ProjectNo != "")
+                {
+                    ViewBag.ProjectDescription = DBProjects.GetById(id).Descrição;
+                }
                 return View();
             }
             else
@@ -2273,8 +2295,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult GetPreMovements([FromBody] string projectNo)
+        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
         {
+            DateTime? DataValue = null;
+            if (!String.IsNullOrEmpty(data))
+            {
+                DataValue = Convert.ToDateTime(data);
+            }
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -2285,26 +2312,58 @@ namespace Hydra.Such.Portal.Controllers
                 if (proj != null && !String.IsNullOrEmpty(proj.NºContrato))
                 {
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
+
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
-                            x => new DiárioDeProjeto()
-                            {
-                                NºProjeto = projectNo,
-                                Tipo = x.Tipo,
-                                Código = x.Código,
-                                Descrição = x.Descrição,
-                                Quantidade = 0,
-                                CódUnidadeMedida = x.CódUnidadeMedida,
-                                CódigoRegião = x.CódigoRegião,
-                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                PreçoUnitário = x.PreçoUnitário,
-                                Faturável = x.Faturável,
-                                Registado = false,
-                                PréRegisto = true
-                            }).ToList();
+                        if (!String.IsNullOrEmpty(codSClient))
+                        {
+                            dp = DBContractLines.GetAllBySClient(lcontracts.NºDeContrato, lcontracts.NºVersão, codSClient).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               Tipo = x.Tipo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                        else
+                        {
+                            dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               Tipo = x.Tipo,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                       
                         if (dp.Count == 0)
                         {
                             result.eReasonCode = 4;
@@ -2555,6 +2614,72 @@ namespace Hydra.Such.Portal.Controllers
                 erro.eMessage = "A tabela Pré-Movimentos está vazia";
             }
             return Json(erro);
+        }
+
+        [HttpPost]
+        public JsonResult CreateDiaryByPriceServiceCient(string projectNo, string serviceCod, string serviceGroup, string dateRegist) 
+        {
+            ProjectDiaryResponse response = new ProjectDiaryResponse();
+            try
+            {
+                Projetos proj = DBProjects.GetById(projectNo);
+                List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll()).Where(x => x.Client == proj.NºCliente && x.CodServClient == serviceCod).ToList();
+                int? sGroup = null;
+                if (serviceGroup != "" && serviceGroup != null)
+                {
+                    sGroup = Convert.ToInt32(serviceGroup);
+                }
+                if (dp != null && dp.Count > 0)
+                {
+                    List<ProjectDiaryViewModel> newRows = new List<ProjectDiaryViewModel>();
+
+                    foreach (PriceServiceClientViewModel item in dp)
+                    {
+                        ProjectDiaryViewModel newRow = new ProjectDiaryViewModel();
+                        newRow.Date = dateRegist;
+                        newRow.ProjectNo = projectNo;
+                        newRow.InvoiceToClientNo = proj.NºCliente;
+                        newRow.ServiceClientCode = serviceCod;
+                        newRow.ServiceGroupCode = sGroup;
+                        newRow.Type = 1;
+                        newRow.Code = item.Resource;
+                        newRow.Description = item.ResourceDescription;
+                        newRow.MeasurementUnitCode = item.UnitMeasure;
+                        newRow.UnitCost = item.PriceCost;
+                        newRow.UnitPrice = item.SalePrice;
+                        newRow.Billable = true;
+                        newRow.ProjectContabGroup = proj.GrupoContabObra;
+                        newRow.MovementType = 1;
+                        if (!String.IsNullOrEmpty(item.TypeMeal))
+                        {
+                            newRow.MealType = Convert.ToInt32(item.TypeMeal);
+                        }
+                        else
+                        {
+                            newRow.MealType = null;
+                        }
+                        newRow.RegionCode = proj.CódigoRegião;
+                        newRow.FunctionalAreaCode = proj.CódigoÁreaFuncional;
+                        newRow.ResponsabilityCenterCode = proj.CódigoCentroResponsabilidade;
+                        newRows.Add(newRow);
+                    }
+                    response.eReasonCode = 1;
+                    response.eMessage = "";
+                    response.Items = newRows;
+
+                }
+                else
+                {
+                    response.eReasonCode = 2;
+                    response.eMessage = "Tabela Preços Serviços Cliente não existe nenhuma linha com o Nº Cliente = " + proj.NºCliente + " e o Código Serviço Cliente = "+ serviceCod;
+                }
+            }
+            catch (Exception)
+            {
+                response.eReasonCode = 3;
+                response.eMessage = "Ocorreu algum erro ao Obter as linhas da Tabela Preços Serviços";
+            }
+            return Json(response);
         }
         #endregion
 

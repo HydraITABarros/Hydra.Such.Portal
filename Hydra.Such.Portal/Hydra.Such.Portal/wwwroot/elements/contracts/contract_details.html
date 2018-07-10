@@ -376,7 +376,7 @@
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
                                             <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
-                                            uc
+                                        
 
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
 
@@ -519,7 +519,6 @@
 
                                                                 <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                                             </div>
-                                                            di
                                                         </div>
                                                     </div>
                                                 </paper-collapse-item>
@@ -1116,6 +1115,7 @@
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
+                                    
                                     <div class="col-lg-2">
                                         <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
@@ -1159,6 +1159,7 @@
                                         </such-selectbox>
                                     </div>
                                 </div>
+
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">

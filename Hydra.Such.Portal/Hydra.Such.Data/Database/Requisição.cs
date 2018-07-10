@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.Database
             LinhasRequisição = new HashSet<LinhasRequisição>();
             MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
             PréMovimentosProjeto = new HashSet<PréMovimentosProjeto>();
+            RequisicoesRegAlteracoes = new HashSet<RequisicoesRegAlteracoes>();
         }
 
         public string NºRequisição { get; set; }
@@ -92,5 +93,6 @@ namespace Hydra.Such.Data.Database
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
         public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
+        public ICollection<RequisicoesRegAlteracoes> RequisicoesRegAlteracoes { get; set; }
     }
 }

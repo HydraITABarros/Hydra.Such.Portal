@@ -85,7 +85,6 @@
             </style>
         </custom-style>
 
-
         <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHoras"
                    last-response="{{result}}"
                    method="post"
@@ -98,7 +97,11 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
-            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+            <paper-button class="tablinks" id="showNovas" on-tap="_showNovas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Novas</paper-button>
+            <paper-button class="tablinks" id="showPorValidar" on-tap="_showPorValidar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Validar</paper-button>
+            <paper-button class="tablinks" id="showPorIntegrarAjCusto" on-tap="_showPorIntegrarAjCusto"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Integrar Aj. Custo RH</paper-button>
+            <paper-button class="tablinks" id="showPorIntegrarKm" on-tap="_showPorIntegrarKm"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Por Integrar km RH</paper-button>
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
         </div>
 
         <br />
@@ -113,16 +116,6 @@
                     {{item.folhaDeHorasNo}}
                 </template>
             </vaadin-grid-column>
-
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="areaTexto">Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="areaTexto" />
-                </template>
-                <template>
-                    {{item.areaTexto}}
-                </template>
-            </vaadin-grid-column>-->
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
@@ -254,214 +247,6 @@
                 </template>
             </vaadin-grid-column>
 
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="estadotexto">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estadotexto" />
-                </template>
-                <template>
-                    {{item.estadotexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="criadoPor" />
-                </template>
-                <template>
-                    {{item.criadoPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataCriacaoTexto" />
-                </template>
-                <template>
-                    {{item.dataCriacaoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="horaCriacaoTexto">Hora Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaCriacaoTexto" />
-                </template>
-                <template>
-                    {{item.horaCriacaoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoRegiao">Código - Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoRegiao" />
-                </template>
-                <template>
-                    {{item.codigoRegiao}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoAreaFuncional">Código - Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoAreaFuncional" />
-                </template>
-                <template>
-                    {{item.codigoAreaFuncional}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código - Centro Respon.</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
-                </template>
-                <template>
-                    {{item.codigoCentroResponsabilidade}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="terminadoPor">Terminado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="terminadoPor" />
-                </template>
-                <template>
-                    {{item.terminadoPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataTerminadoTexto">Data Terminado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataTerminadoTexto" />
-                </template>
-                <template>
-                    {{item.dataTerminadoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="horaTerminadoTexto">Hora Terminado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaTerminadoTexto" />
-                </template>
-                <template>
-                    {{item.horaTerminadoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="validadoTexto">Validado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadoTexto" />
-                </template>
-                <template>
-                    {{item.validadoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="validadores">Validadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadores" />
-                </template>
-                <template>
-                    {{item.validadores}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="validador">Validador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validador" />
-                </template>
-                <template>
-                    {{item.validador}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataValidacaoTexto">Data Validação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataValidacaoTexto" />
-                </template>
-                <template>
-                    {{item.dataValidacaoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="horaValidacaoTexto">Hora Validação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaValidacaoTexto" />
-                </template>
-                <template>
-                    {{item.horaValidacaoTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="integradoresEmRH">Integradores Aj. Custo RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="integradoresEmRH" />
-                </template>
-                <template>
-                    {{item.integradoresEmRH}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="integradorEmRH">Integrador Aj. Custo RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="integradorEmRH" />
-                </template>
-                <template>
-                    {{item.integradorEmRH}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataIntegracaoEmRHTexto">Data Integração Aj. Custo RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataIntegracaoEmRHTexto" />
-                </template>
-                <template>
-                    {{item.dataIntegracaoEmRHTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="horaIntegracaoEmRHTexto">Hora Integração Aj. Custo RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaIntegracaoEmRHTexto" />
-                </template>
-                <template>
-                    {{item.horaIntegracaoEmRHTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="integradoresEmRHKM">Integradores KMs RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="integradoresEmRHKM" />
-                </template>
-                <template>
-                    {{item.integradoresEmRHKM}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="integradorEmRHKM">Integrador KMs RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="integradorEmRHKM" />
-                </template>
-                <template>
-                    {{item.integradorEmRHKM}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataIntegracaoEmRHKMTexto">Data Integração KMs RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataIntegracaoEmRHKMTexto" />
-                </template>
-                <template>
-                    {{item.dataIntegracaoEmRHKMTexto}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="horaIntegracaoEmRHKMTexto">Hora Integração KMs RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaIntegracaoEmRHKMTexto" />
-                </template>
-                <template>
-                    {{item.horaIntegracaoEmRHKMTexto}}
-                </template>
-            </vaadin-grid-column>-->
-
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="custoTotalAjudaCusto">Custo Total Ajuda Custo</vaadin-grid-sorter>
@@ -511,7 +296,6 @@
                     {{item.observacoes}}
                 </template>
             </vaadin-grid-column>
-
         </vaadin-grid>
     </template>
 
@@ -568,17 +352,12 @@
                         type: Boolean,
                         value: false
                     },
-                    _showHistoryMessage: {
-                        type: String,
-                        value: "Mostrar Histórico"
-                    },
                     _historico: {
                         type: Number,
                         notify: true,
                         value: 0
                     }
                 },
-
 
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -591,7 +370,15 @@
                 },
 
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(0),
+                        validacao: parseInt(0),
+                        integracaoajuda: parseInt(0),
+                        integracaokms: parseInt(0),
+                        historico: parseInt(0)
+                    });
                     this.$.grid_databound_ajax.generateRequest();
 
                     var _this = this;
@@ -609,26 +396,69 @@
                     grid_el.height(height);
                 },
 
-                _showHistory: function (item) {
-                    if (item != null) {
-                        if (this._historico == 0) {
-                            this._historico = 1;
-                        } else {
-                            this._historico = 0;
-                        }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
-                        this.$.grid_databound_ajax.generateRequest();
-                        this._setButtonTexts();
-                    }
+                _showNovas: function (item) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(0),
+                        validacao: parseInt(0),
+                        integracaoajuda: parseInt(0),
+                        integracaokms: parseInt(0),
+                        historico: parseInt(0)
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
                 },
 
-                _setButtonTexts: function () {
-                    if (this._historico == 0) {
-                        this._showHistoryMessage = "Mostrar Histórico";
-                    }
-                    if (this._historico == 1) {
-                        this._showHistoryMessage = "Mostrar Ativas";
-                    }
+                _showPorValidar: function (item) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(0),
+                        validacao: parseInt(1),
+                        integracaoajuda: parseInt(0),
+                        integracaokms: parseInt(0),
+                        historico: parseInt(0)
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _showPorIntegrarAjCusto: function (item) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(1),
+                        validacao: parseInt(0),
+                        integracaoajuda: parseInt(1),
+                        integracaokms: parseInt(0),
+                        historico: parseInt(0)
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+                
+                _showPorIntegrarKm: function (item) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(1),
+                        validacao: parseInt(0),
+                        integracaoajuda: parseInt(0),
+                        integracaokms: parseInt(1),
+                        historico: parseInt(0)
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _showHistory: function (item) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        area: parseInt(1),
+                        folhadehora: "",
+                        estado: parseInt(2),
+                        validacao: parseInt(0),
+                        integracaoajuda: parseInt(0),
+                        integracaokms: parseInt(0),
+                        historico: parseInt(1)
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
                 },
 
                 _goBack: function (e) {

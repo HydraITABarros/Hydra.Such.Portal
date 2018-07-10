@@ -192,11 +192,13 @@
                             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                         </a>
                         <ul class="submenu">
-                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Folhas de Horas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Folhas de Horas Pendentes", "FolhaDeHoras_Pendentes", "FolhasDeHoras", null, null)</li>
+                            @*<li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar km RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
-                            @*<li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
+                            <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -256,10 +258,24 @@
                                 </ul>
                             </li>
 
+                            <!--CCP-->
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">CCP</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Configuração CCP", "ConfiguracaoCCP", "Administracao", null, null)</li>
+                                </ul>
+                            </li>
+
                             <!--Projetos-->
                             <li>@Html.ActionLink("Tipos Projeto", "TiposProjetoDetalhes", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Tipos Grupo Contab. Projeto", "TiposGrupoContabProjeto", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Tipos Grupo Contab OM Projet", "TiposGrupoContabOMProjeto", "Administracao", null, null)</li>
+
+                            <li>@Html.ActionLink("Acordo de Preços", "AcordoPrecos_List", "Administracao", null, null)</li>
                         </ul>
                     </li><!-- .menu-item -->
 

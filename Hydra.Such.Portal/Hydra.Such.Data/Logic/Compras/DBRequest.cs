@@ -50,6 +50,7 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
+                        .Include(x => x.RequisicoesRegAlteracoes)
                         .Where(x => stateValues.Contains(x.Estado.Value))
                         .ToList();
                 }
@@ -67,7 +68,8 @@ namespace Hydra.Such.Data.Logic.Request
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Requisição
-                        .Include("LinhasRequisição")
+                        .Include(x => x.LinhasRequisição)//("LinhasRequisição")
+                        .Include(x => x.RequisicoesRegAlteracoes)
                         .SingleOrDefault(x => x.NºRequisição == requestId);
                 }
             }
@@ -97,7 +99,7 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false)
+        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false, bool addLogEntry = false)
         {
             try
             {
@@ -105,10 +107,22 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     if (updateLines && objectToUpdate.LinhasRequisição != null)
                         DBRequestLine.Update(objectToUpdate.LinhasRequisição.ToList(), ctx);
-                    
+                    if (addLogEntry)
+                    {
+                        var logEntry = new RequisicoesRegAlteracoes();
+                        logEntry.ModificadoEm = DateTime.Now;
+                        logEntry.ModificadoPor = objectToUpdate.UtilizadorModificação;
+                        logEntry.NºRequisição = objectToUpdate.NºRequisição;
+                        if (objectToUpdate.Estado.HasValue)
+                            logEntry.Estado = objectToUpdate.Estado.Value;
+
+                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                    }
                     objectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.Requisição.Update(objectToUpdate);
                     ctx.SaveChanges();
+
+                    objectToUpdate = GetById(objectToUpdate.NºRequisição);
                 }
 
                 return objectToUpdate;
@@ -119,9 +133,9 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static Requisição UpdateHeaderAndLines(Requisição item)
+        public static Requisição UpdateHeaderAndLines(Requisição item, bool addLogEntry)
         {
-            return Update(item, true);
+            return Update(item, true, addLogEntry);
         }
 
         public static bool Delete(Requisição ObjectToDelete)
@@ -291,6 +305,7 @@ namespace Hydra.Such.Data.Logic.Request
                     //dimension = item.,
                     //Budget = item.,
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
+                    ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
                 };
             }
             return null;
@@ -382,6 +397,7 @@ namespace Hydra.Such.Data.Logic.Request
                     //dimension = item.,
                     //Budget = item.,
                     LinhasRequisição = item.Lines.ParseToDB(),
+                    RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                 };
             }
             return null;
@@ -390,6 +406,59 @@ namespace Hydra.Such.Data.Logic.Request
         public static List<Requisição> ParseToDB(this List<RequisitionViewModel> items)
         {
             List<Requisição> parsedItems = new List<Requisição>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+
+        
+        public static RequisitionChangeLog ParseToViewModel(this RequisicoesRegAlteracoes item)
+        {
+            if (item != null)
+            {
+                return new RequisitionChangeLog()
+                {
+                    Id = item.Id,
+                    RequisitionNo = item.NºRequisição,
+                    State = (RequisitionStates)item.Estado,
+                    StateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), item.Estado),
+                    ModifiedAt = item.ModificadoEm,
+                    ModifiedAtAsString = item.ModificadoEm.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ModifiedBy = item.ModificadoPor
+                };
+            }
+            return null;
+        }
+
+        public static List<RequisitionChangeLog> ParseToViewModel(this List<RequisicoesRegAlteracoes> items)
+        {
+            List<RequisitionChangeLog> parsedItems = new List<RequisitionChangeLog>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
+        }
+
+        public static RequisicoesRegAlteracoes ParseToDB(this RequisitionChangeLog item)
+        {
+            if (item != null)
+            {
+                return new RequisicoesRegAlteracoes()
+                {
+                    Id = item.Id,
+                    NºRequisição = item.RequisitionNo,
+                    Estado = (int)item.State,
+                    ModificadoEm = item.ModifiedAt,
+                    ModificadoPor = item.ModifiedBy
+                };
+            }
+            return null;
+        }
+
+        public static List<RequisicoesRegAlteracoes> ParseToDB(this List<RequisitionChangeLog> items)
+        {
+            List<RequisicoesRegAlteracoes> parsedItems = new List<RequisicoesRegAlteracoes>();
             if (items != null)
                 items.ForEach(x =>
                     parsedItems.Add(x.ParseToDB()));

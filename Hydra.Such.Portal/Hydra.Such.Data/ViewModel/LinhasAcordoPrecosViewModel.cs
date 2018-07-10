@@ -22,11 +22,14 @@ namespace Hydra.Such.Data.ViewModel
         public string Localizacao { get; set; }
         public string LocalizacaoNome { get; set; }
         public decimal? CustoUnitario { get; set; }
+        public string CustoUnitarioTexto { get; set; }
         public string NomeFornecedor { get; set; }
         public string DescricaoProduto { get; set; }
         public string Um { get; set; }
         public decimal? QtdPorUm { get; set; }
+        public string QtdPorUmTexto { get; set; }
         public decimal? PesoUnitario { get; set; }
+        public string PesoUnitarioTexto { get; set; }
         public string CodProdutoFornecedor { get; set; }
         public string DescricaoProdFornecedor { get; set; }
         public int? FormaEntrega { get; set; }

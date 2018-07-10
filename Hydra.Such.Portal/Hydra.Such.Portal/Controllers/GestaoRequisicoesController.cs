@@ -673,20 +673,41 @@ namespace Hydra.Such.Portal.Controllers
                     case "Disponibilizar":
                         if (item.State == RequisitionStates.Validated)
                         {
-                            foreach (RequisitionLineViewModel line in item.Lines)
+                            //Garantir que produtos existem e não estão bloqueados
+                            ErrorHandler result = new ErrorHandler();
+                            try
                             {
-                                List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                            }
+                            catch
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                            }
+
+                            if (result.eReasonCode != 1)
+                            {
+                                item.eReasonCode = result.eReasonCode;
+                                item.eMessage = result.eMessage;
+                                return Json(item);
+                            }
+
+                            //Apenas produtos em armazens de stock
+                            List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                            var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+                            
+                            var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                            var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                            foreach (RequisitionLineViewModel line in productsInStock)// item.Lines)
+                            {
+                                if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
+                                    continue;
+                                List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code);
                                 var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
                                 if (stockkeepingUnit == null)
                                 {
-                                    if (prodNotStockkeepUnit == "")
-                                    {
-                                        prodNotStockkeepUnit = line.Description;
-                                    }
-                                    else
-                                    {
-                                        prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + line.Description;
-                                    }
+                                    prodNotStockkeepUnit += line.Description + ";";
                                 }
                                 else
                                 {
@@ -699,24 +720,19 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     if (quantityInStock < line.QuantityToProvide)
                                     {
-                                        if (prodQuantityOverStock == "")
-                                        {
-                                            prodQuantityOverStock = line.Description;
-                                        }
-                                        else
-                                        {
-                                            prodQuantityOverStock = prodQuantityOverStock + " , " + line.Description;
-                                        }
+                                        prodQuantityOverStock += line.Description + ";";
                                     }
                                     else
                                     {
                                         line.QuantityAvailable = (line.QuantityAvailable.HasValue ? line.QuantityAvailable.Value : 0) + line.QuantityToProvide;
                                         line.QuantityReceivable = line.QuantityToProvide;
+                                        line.QuantityToProvide -= line.QuantityToProvide;  
                                         line.UpdateUser = User.Identity.Name;
                                         line.UpdateDateTime = DateTime.Now;
                                     }
                                 }
                             }
+
                             if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 6;
@@ -735,10 +751,12 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
+                                item.Lines = productsInStock;
+
                                 item.State = RequisitionStates.Available;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
-                                RequisitionViewModel updatedRequisition = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                                 if (updatedRequisition == null)
                                 {
                                     item.eReasonCode = 9;
@@ -760,169 +778,228 @@ namespace Hydra.Such.Portal.Controllers
                     case "Receber":
                         if (item.State == RequisitionStates.Available)
                         {
-                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
-                            List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
-                            foreach (RequisitionLineViewModel rlines in getrlines)
+                            //Garantir que produtos existem e não estão bloqueados
+                            ErrorHandler result = new ErrorHandler();
+                            try
                             {
-                                if (rlines.QuantityReceivable > 0)
-                                {
-                                    StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, rlines.Code).ToList();
-                                    if (StockkeepingUnit.Count == 0)
+                                result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                            }
+                            catch
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                            }
+
+                            if (result.eReasonCode != 1)
+                            {
+                                item.eReasonCode = result.eReasonCode;
+                                item.eMessage = result.eMessage;
+                                return Json(item);
+                            }
+
+                            //Apenas produtos em armazens de stock
+                            List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                            var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+
+                            var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                            var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                            var productsToHandle = productsInStock.Where(x => x.QuantityReceivable.HasValue && x.QuantityReceivable.Value > 0).ToList();
+
+                            foreach (RequisitionLineViewModel line in productsToHandle)//getrlines)
+                            {
+                                if (!line.QuantityReceivable.HasValue || line.QuantityReceivable.Value <= 0)
+                                    continue;
+
+                                //if (line.QuantityReceivable > 0)
+                                //{
+                                    var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                    var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+                                    if (stockkeepingUnits == null)
                                     {
-                                        if (prodNotStockkeepUnit == "")
+                                        prodNotStockkeepUnit += line.Description + ";";
+                                    }
+                                    else
+                                    {
+                                        decimal quantityInStock = 0;
+                                        Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                        quantityinStockTask.Wait();
+                                        if (quantityinStockTask.IsCompletedSuccessfully)
                                         {
-                                            prodNotStockkeepUnit = rlines.Description;
+                                            quantityInStock = quantityinStockTask.Result.return_value;
+                                        }
+
+                                        if (quantityInStock < line.QuantityReceivable)
+                                        {
+                                            prodQuantityOverStock += line.Description + ";";
                                         }
                                         else
                                         {
-                                            prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + rlines.Description;
+                                        
+                                            //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
+                                            //line.QuantityPending = line.QuantityReceivable;
+                                            line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
+                                            line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
+                                            line.QuantityReceivable -= line.QuantityReceivable;
+                                            line.UpdateUser = User.Identity.Name;
+                                            line.UpdateDateTime = DateTime.Now;
                                         }
                                     }
-                                    else
-                                    {
-                                        foreach (NAVStockKeepingUnitViewModel VAR in StockkeepingUnit)
-                                        {
-                                            if (VAR.SafetyStockQuantity < rlines.QuantityReceivable)
-                                            {
-                                                if (prodQuantityOverStock == "")
-                                                {
-                                                    prodQuantityOverStock = rlines.Description;
-                                                }
-                                                else
-                                                {
-                                                    prodQuantityOverStock =
-                                                        prodQuantityOverStock + " , " + rlines.Description;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                rlines.QuantityReceived = rlines.QuantityReceived + rlines.QuantityReceivable;
-                                                rlines.QuantityPending = rlines.QuantityReceivable;
-                                                rlines.UpdateUser = User.Identity.Name;
-                                                rlines.UpdateDateTime = DateTime.Now;
-                                                RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
-                                                if (rlinesValidation == null)
-                                                {
-                                                    item.eReasonCode = 5;
-                                                    item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
-                                                }
-                                                else
-                                                {
-                                                    item.State = RequisitionStates.Received;
-                                                    item.UpdateUser = User.Identity.Name;
-                                                    item.UpdateDate = DateTime.Now;
-                                                    RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
-                                                    if (rValidation == null)
-                                                    {
-                                                        item.eReasonCode = 9;
-                                                        item.eMessage = "Ocorreu um erro ao alterar a requisição";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (quantityInvalid == "")
-                                    {
-                                        quantityInvalid = rlines.Description;
-                                    }
-                                    else
-                                    {
-                                        quantityInvalid = quantityInvalid + " , " + rlines.Description;
-                                    }
-                                }
+                                //}
+                                //else
+                                //{
+                                //    quantityInvalid = line.Description + ";";
+                                //}
                             }
                             if (quantityInvalid != "")
                             {
                                 item.eReasonCode = 12;
-                                item.eMessage = "Os produtos" + quantityInvalid +
-                                                "têm a quantidade a Receber a 0";
+                                item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
                             }
                             else
                             {
-                                if (prodNotStockkeepUnit != "")
+                                Guid transactionId = Guid.NewGuid();
+                                try
                                 {
-                                    item.eReasonCode = 7;
-                                    item.eMessage = " O produtos " + prodNotStockkeepUnit +
-                                                    " não existem nas unidades de armazenamento do NAV";
-                                }
-                                else
-                                {
-                                    foreach (RequisitionLineViewModel RLItem in getrlines)
+                                    //Create Lines in NAV
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+                                    createNavDiaryLines.Wait();
+                                    if (createNavDiaryLines.IsCompletedSuccessfully)
                                     {
-                                        DiárioDeProjeto newRL = new DiárioDeProjeto();
-                                        DiárioDeProjeto newdp = new DiárioDeProjeto()
+                                        ////Register Lines in NAV
+                                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
+                                        registerNavDiaryLines.Wait();
+
+                                        if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
-                                            NºProjeto = item.ProjectNo,
-                                            Data = DateTime.Now,
-                                            Tipo = RLItem.Type,
-                                            Código = RLItem.Code,
-                                            Descrição = RLItem.Description,
-                                            Quantidade = RLItem.QuantityReceivable,
-                                            CódUnidadeMedida = RLItem.UnitMeasureCode,
-                                            CódLocalização = item.LocalCode,
-                                            CódigoRegião = item.RegionCode,
-                                            CódigoÁreaFuncional = item.FunctionalAreaCode,
-                                            CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
-                                            Utilizador =User.Identity.Name,
-                                            CustoUnitário = RLItem.UnitCost,
-                                            PreçoUnitário = RLItem.UnitCostsould,
-                                            Faturável = RLItem.Billable,
-                                            NºRequisição = item.RequisitionNo,
-                                            NºLinhaRequisição = RLItem.LineNo,
-                                            AcertoDePreços = false,
-                                            FaturaçãoAutorizada = false,
-                                            NºFuncionário = item.EmployeeNo,
-                                            Registado =false,
-                                            Faturada = false,
-                                        };
-                                        newdp.DataHoraCriação = DateTime.Now;
-                                        newdp.UtilizadorCriação = User.Identity.Name;
-                                        newRL = DBProjectDiary.Create(newdp);
-                                        if (newRL == null)
-                                        {
-                                            if (ReqLineNotCreateDP == "")
+                                            item.Lines = productsToHandle;
+
+                                            bool keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
+
+                                            item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
+
+                                            item.State = RequisitionStates.Received;
+                                            item.UpdateUser = User.Identity.Name;
+                                            item.UpdateDate = DateTime.Now;
+                                            RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                            if (updatedReq == null)
                                             {
-                                                ReqLineNotCreateDP = item.RequisitionNo;
-                                            }
-                                            else
-                                            {
-                                                ReqLineNotCreateDP = ReqLineNotCreateDP + " , " + item.RequisitionNo;
+                                                item.eReasonCode = 9;
+                                                item.eMessage = "Ocorreu um erro ao atualizar a requisição";
                                             }
                                         }
                                         else
                                         {
-                                            if ((RLItem.QuantityRequired - RLItem.QuantityReceived) == 0 )
-                                            {
-                                                ReqLinesToHistCount++;
-                                            }
+                                            throw new Exception("não foi possivel registar em diário.");
                                         }
-                                    }
-                                    if (ReqLineNotCreateDP != "")
-                                    {
-                                        item.eReasonCode = 15;
-                                        item.eMessage =
-                                            "As linhas " + ReqLineNotCreateDP +
-                                            " não passaram para os diarios de projeto";
                                     }
                                     else
                                     {
-                                        if (ReqLinesToHistCount == getrlines.Count)
-                                        {
-                                            item.State = RequisitionStates.Archived;
-                                            item.UpdateUser = User.Identity.Name;
-                                            item.UpdateDate = DateTime.Now;
-                                            RequisitionViewModel reqtoArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
-                                            if (reqtoArchived == null)
-                                            {
-                                                item.eReasonCode = 14;
-                                                item.eMessage = "Ocorreu um erro ao mandar para o histórico";
-                                            }
-                                        }
+                                        throw new Exception("não foi possivel criar as linhas de diário.");
                                     }
                                 }
+                                catch (Exception ex)
+                                {
+                                    item.eReasonCode = 9;
+                                    item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                }
+
+
+
+                                //item.Lines = productsInStock;
+
+                                //item.State = RequisitionStates.Received;
+                                //item.UpdateUser = User.Identity.Name;
+                                //item.UpdateDate = DateTime.Now;
+                                //RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                //if (rValidation == null)
+                                //{
+                                //    item.eReasonCode = 9;
+                                //    item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                //}
+
+                                //if (prodNotStockkeepUnit != "")
+                                //{
+                                //    item.eReasonCode = 7;
+                                //    item.eMessage = " O produtos " + prodNotStockkeepUnit +
+                                //                    " não existem nas unidades de armazenamento do NAV";
+                                //}
+                                //else
+                                //{
+                                //Criar diário de projeto. A aguardar especificação 
+                                //foreach (RequisitionLineViewModel RLItem in getrlines)
+                                //{
+                                //    DiárioDeProjeto newRL = new DiárioDeProjeto();
+                                //    DiárioDeProjeto newdp = new DiárioDeProjeto()
+                                //    {
+                                //        NºProjeto = item.ProjectNo,
+                                //        Data = DateTime.Now,
+                                //        Tipo = RLItem.Type,
+                                //        Código = RLItem.Code,
+                                //        Descrição = RLItem.Description,
+                                //        Quantidade = RLItem.QuantityReceivable,
+                                //        CódUnidadeMedida = RLItem.UnitMeasureCode,
+                                //        CódLocalização = item.LocalCode,
+                                //        CódigoRegião = item.RegionCode,
+                                //        CódigoÁreaFuncional = item.FunctionalAreaCode,
+                                //        CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                                //        Utilizador =User.Identity.Name,
+                                //        CustoUnitário = RLItem.UnitCost,
+                                //        PreçoUnitário = RLItem.UnitCostsould,
+                                //        Faturável = RLItem.Billable,
+                                //        NºRequisição = item.RequisitionNo,
+                                //        NºLinhaRequisição = RLItem.LineNo,
+                                //        AcertoDePreços = false,
+                                //        FaturaçãoAutorizada = false,
+                                //        NºFuncionário = item.EmployeeNo,
+                                //        Registado =false,
+                                //        Faturada = false,
+                                //    };
+                                //    newdp.DataHoraCriação = DateTime.Now;
+                                //    newdp.UtilizadorCriação = User.Identity.Name;
+                                //    newRL = DBProjectDiary.Create(newdp);
+                                //    if (newRL == null)
+                                //    {
+                                //        if (ReqLineNotCreateDP == "")
+                                //        {
+                                //            ReqLineNotCreateDP = item.RequisitionNo;
+                                //        }
+                                //        else
+                                //        {
+                                //            ReqLineNotCreateDP = ReqLineNotCreateDP + " , " + item.RequisitionNo;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        if ((RLItem.QuantityRequired - RLItem.QuantityReceived) == 0 )
+                                //        {
+                                //            ReqLinesToHistCount++;
+                                //        }
+                                //    }
+                                //}
+                                //if (ReqLineNotCreateDP != "")
+                                //{
+                                //    item.eReasonCode = 15;
+                                //    item.eMessage =
+                                //        "As linhas " + ReqLineNotCreateDP +
+                                //        " não passaram para os diarios de projeto";
+                                //}
+                                //else
+                                //{
+                                //    if (ReqLinesToHistCount == getrlines.Count)
+                                //    {
+                                //        item.State = RequisitionStates.Archived;
+                                //        item.UpdateUser = User.Identity.Name;
+                                //        item.UpdateDate = DateTime.Now;
+                                //        RequisitionViewModel reqtoArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                //        if (reqtoArchived == null)
+                                //        {
+                                //            item.eReasonCode = 14;
+                                //            item.eMessage = "Ocorreu um erro ao mandar para o histórico";
+                                //        }
+                                //    }
+                                //}
+                                //}
                             }
                         }
                         else
@@ -943,7 +1020,7 @@ namespace Hydra.Such.Portal.Controllers
                             item.ApprovalDate = null;
                             item.UpdateUser = User.Identity.Name;
                             item.UpdateDate = DateTime.Now;
-                            RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                            RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                             if (reqPend != null)
                             {
                                 List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
@@ -984,7 +1061,7 @@ namespace Hydra.Such.Portal.Controllers
                             item.ValidationDate = null;
                             item.UpdateUser = User.Identity.Name;
                             item.UpdateDate = DateTime.Now;
-                            RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                            RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                             if (reqAprov != null)
                             {
                                 List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
@@ -1021,7 +1098,7 @@ namespace Hydra.Such.Portal.Controllers
                         item.State = RequisitionStates.Archived;
                         item.UpdateUser = User.Identity.Name;
                         item.UpdateDate = DateTime.Now;
-                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                         if (reqArchived == null)
                         {
                             item.eReasonCode = 14;

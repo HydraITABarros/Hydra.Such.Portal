@@ -83,6 +83,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string PreRequisitionNo { get; set; }
 
         public List<RequisitionLineViewModel> Lines { get; set; }
+        public List<RequisitionChangeLog> ChangeLog { get; set; }
 
         public decimal GetTotalValue()
         {
@@ -95,5 +96,16 @@ namespace Hydra.Such.Data.ViewModel.Compras
             }
             return value;
         }
+    }
+
+    public partial class RequisitionChangeLog
+    {
+        public int Id { get; set; }
+        public string RequisitionNo { get; set; }
+        public RequisitionStates State { get; set; }
+        public string StateDescription { get; set; }
+        public DateTime ModifiedAt { get; set; }
+        public string ModifiedAtAsString { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }
