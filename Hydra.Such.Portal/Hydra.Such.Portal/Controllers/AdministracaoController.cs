@@ -2725,7 +2725,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(ListToCreate);
         }
-
+        
         //4
         [HttpPost]
         public JsonResult UpdateCreate_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> data)
