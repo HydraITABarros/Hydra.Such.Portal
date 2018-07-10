@@ -120,6 +120,23 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult FolhaDeHoras_Pendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         //Listagem das Folhas de Horas consoante o estado
         public JsonResult GetListFolhasDeHoras([FromBody] HTML_FHViewModel HTML)
@@ -340,6 +357,60 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(null);
         }
+        #endregion
+
+        #region PENDENTES
+        [HttpPost]
+        //Listagem das Folhas de Horas consoante o estado
+        public JsonResult GetListFolhasDeHoras_Pendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
+
+            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByPendentes(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
+            if (result != null)
+            {
+                result.ForEach(FH =>
+                {
+                    FH.FolhaDeHorasNo = string.IsNullOrEmpty(FH.FolhaDeHorasNo) ? "" : FH.FolhaDeHorasNo;
+                    FH.Estadotexto = "TESTE";
+                    FH.EmpregadoNome = string.IsNullOrEmpty(FH.EmpregadoNome) ? "" : FH.EmpregadoNome;
+                    FH.Validadores = string.IsNullOrEmpty(FH.Validadores) ? "" : FH.Validadores;
+                    FH.IntegradoresEmRH = string.IsNullOrEmpty(FH.IntegradoresEmRH) ? "" : FH.IntegradoresEmRH;
+                    FH.IntegradoresEmRHKM = string.IsNullOrEmpty(FH.IntegradoresEmRHKM) ? "" : FH.IntegradoresEmRHKM;
+                });
+            }
+
+            return Json(result.OrderByDescending(x => x.FolhaDeHorasNo));
+        }
+
+        [HttpPost] 
+        public JsonResult ToHistoric([FromBody] FolhaDeHorasViewModel FolhaHoras)
+        {
+            try
+            {
+                if (FolhaHoras != null)
+                {
+                    FolhasDeHoras FH = DBFolhasDeHoras.GetById(FolhaHoras.FolhaDeHorasNo);
+
+                    FH.Estado = 2;
+                    FH.DataHoraÚltimoEstado = DateTime.Now;
+                    FH.UtilizadorModificação = User.Identity.Name;
+                    FH.DataHoraModificação = DateTime.Now;
+
+                    if (DBFolhasDeHoras.Update(FH) != null)
+                        return Json(true);
+                    else
+                        return Json(false);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region Details
@@ -2625,7 +2696,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         FH.NºFolhaDeHoras = data.FolhaDeHorasNo;
                         FH.NºProjeto = data.ProjetoNo;
-                        FH.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo).Descrição;
+                        FH.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? DBProjects.GetById(data.ProjetoNo).Descrição : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
                         FH.NºEmpregado = data.EmpregadoNo;
                         FH.NomeEmpregado = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
                         FH.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
