@@ -2610,6 +2610,9 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost;
                         newRow.UnitPrice = item.SalePrice;
+                        newRow.Billable = true;
+                        newRow.ProjectContabGroup = proj.GrupoContabObra;
+                        newRow.MovementType = 1;
                         if (!String.IsNullOrEmpty(item.TypeMeal))
                         {
                             newRow.MealType = Convert.ToInt32(item.TypeMeal);
