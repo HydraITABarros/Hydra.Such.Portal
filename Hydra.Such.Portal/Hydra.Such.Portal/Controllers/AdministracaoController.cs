@@ -5339,5 +5339,61 @@ namespace Hydra.Such.Portal.Controllers
 
             //return UPerm;
         }
+
+        #region ConfiguracaoCCP
+        public IActionResult ConfiguracaoCCP()
+        {
+            //UserAccessesViewModel UPerm= GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoCCP()
+        {
+            ConfiguracaoCcp CCP = DBConfiguracaoCCP.GetById(1);
+
+            return Json(CCP);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfiguracaoCCP([FromBody] ConfiguracaoCcp data)
+        {
+            ConfiguracaoCcp CCP = new ConfiguracaoCcp();
+
+            CCP.Id = 1;
+            CCP.EmailJurididos = data.EmailJurididos;
+            CCP.Email2Juridicos = data.Email2Juridicos;
+            CCP.EmailFinanceiros = data.EmailFinanceiros;
+            CCP.Email2Financeiros = data.Email2Financeiros;
+            CCP.EmailCa = data.EmailCa;
+            CCP.EmailContabilidade = data.EmailContabilidade;
+            CCP.Email2Contabilidade = data.Email2Contabilidade;
+            CCP.Email3Contabilidade = data.Email3Contabilidade;
+            CCP.EmailCompras = data.EmailCompras;
+            CCP.Email2Compras = data.Email2Compras;
+            CCP.Email3Compras = data.Email3Compras;
+            CCP.Email4Compras = data.Email4Compras;
+            CCP.Email5Compras = data.Email5Compras;
+            CCP.Email6Compras = data.Email6Compras;
+            CCP.Email7Compras = data.Email7Compras;
+            CCP.Email8Compras = data.Email8Compras;
+            CCP.Email9Compras = data.Email9Compras;
+            CCP.Email10Compras = data.Email10Compras;
+            CCP.Email11Compras = data.Email11Compras;
+
+            DBConfiguracaoCCP.Update(CCP);
+
+            return Json(data);
+        }
+        #endregion
     }
 }
