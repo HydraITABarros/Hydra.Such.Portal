@@ -33,12 +33,15 @@
 
         <template is="dom-if" if="{{ _permissions.create }}">
             <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </div>
         </template>
 
-        <vaadin-grid aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="15%">
+        <br />
+
+        <vaadin-grid id="grid" aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
@@ -48,7 +51,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nome" />
@@ -58,7 +61,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="employeeNo">Nº Mecanográfico</vaadin-grid-sorter>
                     <vaadin-grid-filter path="employeeNo" />
@@ -67,8 +70,8 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column width="15%">
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoPorDefeito">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regiaoPorDefeito" />
@@ -78,7 +81,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="areaPorDefeito">Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="areaPorDefeito" />
@@ -88,7 +91,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="centroRespPorDefeito">CRESP</vaadin-grid-sorter>
                     <vaadin-grid-filter path="centroRespPorDefeito" />
@@ -98,7 +101,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="7%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
@@ -112,7 +115,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="8%">
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
                 </template>
@@ -123,9 +126,8 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-
     </template>
+
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -143,6 +145,26 @@
 	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
                     },
                 },
+
+                ready: function () {
+                    this.$.grid_databound.generateRequest();
+                    this.$.grid.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.grid).height(height);
+                },
+
                 _rowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + item.idUtilizador;
@@ -152,6 +174,9 @@
                     if (item != null) {
                         window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/0";
                     }
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

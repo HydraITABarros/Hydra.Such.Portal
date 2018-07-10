@@ -143,10 +143,13 @@
             }
         </style>
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+                <!--<paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>-->
             </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
@@ -225,7 +228,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
                                     items="[[ContabGroupData]]"
                                     text-path="value"
@@ -253,7 +256,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"  
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
                                     items="[[RegionData]]"
                                     text-path="value"
                                     value-path="id"
@@ -261,8 +264,16 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" 
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
                                     items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                                    items="[[ResponsabilityCenterData]]"
                                     text-path="value"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -270,14 +281,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2">
-                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}" 
-                                    items="[[ResponsabilityCenterData]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
-                </div>
+
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
@@ -293,11 +297,12 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
+
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
@@ -323,11 +328,12 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
+            </div>
+            <div class="row">
+
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
@@ -701,7 +707,9 @@
                         <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                     </vaadin-grid-filter>-->
                 </template>
+                <
                 <template>
+                    in
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
@@ -837,8 +845,12 @@
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
                 <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <!--<paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>-->
+                >
             </div>
+            >
         </div>
+
+        >
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1102,7 +1114,24 @@
             </div>
 
         </paper-dialog>
-
+        <paper-dialog id="dialogGetPriceServiceClient" class="dialgoBox">
+            <h2 class="dialogTitle">Obter Faturação</h2>
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectDlg" name="projectDlg" value="{{projectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectDlgChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ProjDescription" label="Descrição" readonly></vaadin-text-field>
+                </div>
+               
+            </div>
+        </paper-dialog>
         <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
@@ -1116,7 +1145,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino"  disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
@@ -1128,9 +1157,9 @@
                     <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso" 
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
                                     items="[[CBResourceCode]]"
-                                      on-value-changed="_projectChange"
+                                    on-value-changed="_projectChange"
                                     text-path="id"
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -1142,7 +1171,7 @@
                 </div>
 
                 <div class="col-lg-2">
-                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value"  on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value" on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
                         <template>
                             <table width="550px">
                                 <tr>
@@ -1196,6 +1225,11 @@
                     },
                     _permissions: {
                         type: Array
+                    },
+                    projectNoDlg: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
                     },
                     projectNo: {
                         type: String,
@@ -1383,9 +1417,12 @@
                         this.$.projectList.value = this.paramprojno;
                         this.$.projectList.valueText = this.paramprojno;
                         this.disabledProjectNo = true;
-                        
+
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
+                        this.$.projectDlg.value = this.paramprojno;
+                        this.$.projectDlg.valueText = this.paramprojno;
+                        
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
                     }
@@ -1518,15 +1555,13 @@
 
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                        if (this.result.eReasonCode === 1)
-                        {
+                        if (this.result.eReasonCode === 1) {
                             this.openToastSuccess(this.result.eMessage);
-                        } 
-                        else
-                        {
+                        }
+                        else {
                             this.openToastError(this.result.eMessage);
                         }
-                    }                   
+                    }
                 },
                 _updateResponse: function (e) {
                     var self = this;
@@ -1631,7 +1666,17 @@
                     this.$.projectMovementTable.selectedItem = [];
                     this.$.projectMovementTable.clearCache();
                 },
+                _projectDlgChange: function (e) {
+                    debugger;
+                    if (e.detail.value != "" && this.response != null && this.response != "") {
+                        this.$.ProjDescription.value = this.response.find(x => x.id == e.detail.value).name;
+                    }
+                    else {
+                        this.$.ProjDescription.value = "";
+                    }
+                },
                 _projectChange: function (e) {
+                    debugger;
                     if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
 
                         //Request Project Data
@@ -1639,7 +1684,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
@@ -1731,8 +1776,11 @@
                 _getMovementsProject: function () {
                     this.$.dialogGetProjetStart.open();
                 },
+                _getPriceServiceClient: function () {
+                    this.$.dialogGetPriceServiceClient.open();
+                },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
                         this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
                         this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
@@ -2026,7 +2074,12 @@
                         var x = date.split("-");
                         return x[2] + "-" + x[1] + "-" + x[0];
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
 
         });

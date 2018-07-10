@@ -85,6 +85,7 @@
 
 
         <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetServices" last-response="{{Services}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -207,6 +208,8 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
@@ -246,15 +249,15 @@
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
-                                            <template>
-                                                <table width="350px">
-                                                    <tr>
-                                                        <td width="20%">[[item.id]]</td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                                <template>
+                                                    <table width="350px">
+                                                        <tr>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>-->
 
                                             <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
                                                             items="[[CBClients]]"
@@ -373,6 +376,7 @@
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
                                             <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                            uc
 
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
 
@@ -515,6 +519,7 @@
 
                                                                 <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                                             </div>
+                                                            di
                                                         </div>
                                                     </div>
                                                 </paper-collapse-item>
@@ -701,7 +706,10 @@
                                                                 <template>
                                                                     <center>
                                                                         <template is="dom-if" if="{{ !_lockFields }}">
-                                                                            <paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>
+                                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>-->
+                                                                            <center>
+                                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteClientRequisition" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                            </center>
                                                                         </template>
                                                                     </center>
                                                                 </template>
@@ -942,7 +950,10 @@
                                                                 <template>
                                                                     <center>
                                                                         <template is="dom-if" if="{{ !_lockFields }}">
-                                                                            <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>-->
+                                                                            <center>
+                                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteInvoiceText" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                            </center>
                                                                         </template>
                                                                     </center>
                                                                 </template>
@@ -956,24 +967,27 @@
                                 </div>
                             </iron-pages>
 
-                            <div class="marginSpace" style="display: {{ _showButtons }};">
-                                <!--<template is="dom-if" if="{{ !_contractStatusLocked }}">-->
+                            <template is="dom-if" if="{{ !_isHistoricDiv }}">
+                                <div class="marginSpace" style="display: {{ _showButtons }}">
 
-                                <template is="dom-if" if="{{ _isCreate }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _showUpdateButtons }}">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+
                                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                         <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
+
                                     </template>
-                                </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
-                                <!--</template>-->
-                            </div>
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    </template>
+
+                                </div>
+                            </template>
                         </div>
+
+
                         <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
@@ -1160,8 +1174,10 @@
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
                                     </div>
-                                    <template is="dom-if" if="{{ _permissions.create }}">
-                                        <div class="col-lg-2">
+                                </div>
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                        <div class="col-lg-2" hidden="{{_isHistoricDiv}}">
                                             <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </template>
@@ -1524,17 +1540,22 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column resizable>
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <template is="dom-if" if="{{ _lockFields }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
-                                            </template>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _lockFields }}">
+                                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
+                                                    <center>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
@@ -1815,8 +1836,20 @@
                         type: Boolean,
                         value: false
                     },
+
+                    _ishistoric: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _isHistoricDiv: {
+                        type: Boolean,
+                        value: false
+                    }
                 },
                 ready: function () {
+                    debugger;
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
@@ -1825,6 +1858,10 @@
                     if (!this._permissions.update) {
                         this._lockFields = true;
                         this._contractStatusLocked = true;
+                    }
+
+                    if (this._ishistoric == "true") {
+                        this._isHistoricDiv = true;
                     }
 
                 },
@@ -1938,7 +1975,7 @@
                     });
                 },
                 _archive: function () {
-                    
+
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     var currentTime = new Date();
@@ -2037,7 +2074,8 @@
                         else if (data.detail.url.indexOf("SendContractToHistory") !== -1) {
                             if (this.data.eReasonCode == 1) {
                                 this._openToast("Enviado para Histórico com sucesso.");
-                                location.reload();
+                                window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + true;
+
                             }
                         }
                         else {
@@ -2045,7 +2083,7 @@
                         }
                     }
                 },
-                
+
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -2181,7 +2219,7 @@
                     this.$.get_proposalscontract_ajax.body = JSON.stringify(this.data.contractNo);
                     this.$.get_proposalscontract_ajax.generateRequest();
                 },
-                
+
                 _getProposalResponse: function (e) {
                     if (this.propContract == true) {
                         window.location.href = "../PropostasContrato/" + this.data.contractNo;
@@ -2245,17 +2283,17 @@
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
                             this._CLContractLineType = "";
-                            this._CLMeasureUnit._clearSelection();
+                            this.$._CLMeasureUnit._clearSelection();
                             this._CLFrequency = "";
-                            this._CLServiceClient._clearSelection();
-                            this._CLCode._clearSelection();
+                            this.$._CLServiceClient._clearSelection();
+                            this.$._CLCode._clearSelection();
                             this._CLUnitPrice = "";
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup = "";
                             this._CLDescription = "";
                             this._CLDiscountLine = "";
                             this._CLTotalTechnicians = "";
-                            this._CLResponsible._clearSelection();
+                            this.$._CLResponsible._clearSelection();
                             this._CLCreateContract = "";
                             this._CLQuantity = "";
                             this._CLBillable = true;
@@ -2285,6 +2323,7 @@
 
                 },
                 _createInvoiceResponseProcessor: function (data) {
+                    debugger;
                     var verifica = false;
                     var ListLines = [];
                     var Invoice;
@@ -2296,47 +2335,9 @@
                         if (this.ExitSalesHeader.eReasonCode == 2)
                             this._openToastError(this.ExitSalesHeader.eMessage);
                         else if (this.ExitSalesHeader.eReasonCode == 1) {
-                          
+
                             bootbox.confirm({
                                 message: this.ExitSalesHeader.eMessage,
-                                buttons: {
-                                    confirm: {
-                                        label: 'Sim',
-                                        className: 'btn-success'
-                                    },
-                                    cancel: {
-                                        label: 'Não',
-                                        className: 'btn-danger'
-                                    }
-                                },
-                                callback: function (result) {
-                                     if (result) {
-                                        if (t1 == "") {
-                                            ListLines = t2;
-                                        }
-                                        else {
-                                            for (var lines in t2) {
-                                                if (t2[lines].invoiceGroup == t1) {
-                                                    ListLines.push(t2[lines]);
-                                                }
-                                            }
-                                        }
-                                        Invoice = {
-                                            "Contrato": t3,
-                                            "LinhasContrato": ListLines,
-                                            "GrupoFatura": t1
-                                        };
-                                        ajax_request.body = JSON.stringify(Invoice);
-                                        ajax_request.generateRequest();
-                                    }
-                                }
-                            });
-                        
-                            
-                        }
-                        else {
-                            bootbox.confirm({
-                                message: "Deseja criar a(s) fatura(s) para este contrato?",
                                 buttons: {
                                     confirm: {
                                         label: 'Sim',
@@ -2369,11 +2370,51 @@
                                     }
                                 }
                             });
+
+
+                        }
+                        else {
+
+                            bootbox.confirm({
+                                message: "Deseja criar a(s) fatura(s) para este contrato?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    debugger;
+                                    if (result) {
+                                        if (t1 == "") {
+                                            ListLines = t2;
+                                        }
+                                        else {
+                                            for (var lines in t2) {
+                                                if (t2[lines].invoiceGroup == t1) {
+                                                    ListLines.push(t2[lines]);
+                                                }
+                                            }
+                                        }
+                                        Invoice = {
+                                            "Contrato": t3,
+                                            "LinhasContrato": ListLines,
+                                            "GrupoFatura": t1
+                                        };
+                                        ajax_request.body = JSON.stringify(Invoice);
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
                         }
                     }
                     return true;
                 },
-                
+
                 _clContractLineTypeChange: function (e) {
                     this.$.contractlinecodes_ajax.body = JSON.stringify(e.detail.value);
                     this.$.contractlinecodes_ajax.generateRequest();
@@ -2500,15 +2541,15 @@
                 },
                 _clFormatServiceClient: function (param) {
                     if (param != undefined) {
-                        while (this.CBServiceClients == undefined) {
+                        //while (this.CBServiceClients == undefined) {
 
-                        }
-                        var sel = this.CBServiceClients.find(x => x.id == param);
+                        //}
+                        var sel = this.Services.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
 
                 _createNewProposal: function (param) {
@@ -2530,7 +2571,7 @@
                     var contract = this.$.contractNo.value;
                     this.$.ExitSalesHeader_ajax.body = JSON.stringify({ "Contrato": contract });
                     this.$.ExitSalesHeader_ajax.generateRequest();
-               },
+                },
                 _createProposal: function () {
                     var contractId = this.data.contractNo;
                     var version = this.data.versionNo;
@@ -2547,7 +2588,7 @@
                 },
                 _openNewinvoiceDialog: function (param) {
                     if (this._validateData()) {
-                        if (this._ValidateInvoice()){
+                        if (this._ValidateInvoice()) {
                             this.$.dlgCreateInvoice.open();
                         }
                     }
@@ -2632,8 +2673,8 @@
                 },
                 _ValidateInvoice: function () {
                     var messageErro = "";
-                    if (this.$.mStatus.value != 4 && this.$.mStatus.value !=7) {
-                        messageErro= "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
+                    if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
+                        messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
                     }
                     if (this.$.mBillingTypes.value != 1 && this.$.mBillingTypes.value != 4) {
                         messageErro += "Para criar a fatura, o Tipo de Faturação deverá ser 'Mensal' ou 'Mensal + Consumo' \n";
@@ -2644,10 +2685,10 @@
                     if (this.$.mInvoicePeriods.value == null) {
                         messageErro += "O periodo de faturação tem de estar preenchido \n";
                     }
-                    if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value =="") {
+                    if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value == "") {
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
-                    if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value!=null)
+                    if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
                         messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
 
                     if (this.$.dueDate.value <= this.$.contractEndDate.value && this.$.dueDate.value != null)
@@ -2658,9 +2699,9 @@
                         for (var lines in this.dataLines.lines) {
                             if (this.dataLines.lines[lines].billable == true)
                                 exist = true;
-                    }
-                    if (exist == false)
-                        messageErro += "Não existe linhas de faturação no contrato";
+                        }
+                        if (exist == false)
+                            messageErro += "Não existe linhas de faturação no contrato";
                     }
                     if (messageErro != "")
                         this._openToastError(messageErro);
@@ -2726,6 +2767,10 @@
                             this._redirectToContractProposals();
                             break;
                     }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
             });
         });

@@ -181,7 +181,8 @@
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                            @*<paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>

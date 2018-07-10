@@ -14,6 +14,7 @@ using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Portal.Services;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -22,11 +23,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private BillingReceptionService billingRecService;
 
         public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            billingRecService = new BillingReceptionService();
         }
 
         public IActionResult RececaoFaturas()
@@ -61,40 +64,27 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptions()
         {
-            var billingReceptions = DBBillingReception.GetAll();
-
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
-            //FunctionalAreas
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
-            //ResponsabilityCenter
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
-
+            var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
 
         [HttpGet]
         public JsonResult GetBillingReception(string id)
         {
-            var billingReception = DBBillingReception.GetById(id);
-
-            //if (billingReception != null)
-            //{
-            //    List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == billingReception.CodRegiao))
-            //        return Json(null);
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == billingReception.CodAreaFuncional))
-            //        return Json(null);
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == billingReception.CodCentroResponsabilidade))
-            //        return Json(null);
-            //}
+            var billingReception = billingRecService.GetById(id);
             return Json(billingReception);
+        }
+
+        [HttpGet]
+        public JsonResult GetQuestions()
+        {
+            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
         }
 
         [HttpPost]
@@ -104,73 +94,17 @@ namespace Hydra.Such.Portal.Controllers
             if (item != null)
             {
                 item.CriadoPor = User.Identity.Name;
-                createdItem = DBBillingReception.Create(item);
-                createdItem.eReasonCode = 1;
-                createdItem.eMessage = "Registo criado com sucesso";
-            }
-            else
-            {
-                createdItem = new BillingReceptionModel
+                createdItem = billingRecService.Create(item);
+                if (createdItem != null)
                 {
-                    eReasonCode = 2,
-                    eMessage = "O registo não pode ser nulo",
-                };
-            }
-            return Json(createdItem);
-        }
-
-        [HttpPost]
-        public JsonResult UpdateBillingReception([FromBody] BillingReceptionModel item)
-        {
-            BillingReceptionModel updatedItem = null;
-            //if (item != null)
-            if (updatedItem != null)
-            {
-            item.ModificadoPor = User.Identity.Name;
-            updatedItem = DBBillingReception.Update(item);
-            updatedItem.eReasonCode = 1;
-            updatedItem.eMessage = "Registo atualizado com sucesso";
-            }
-            else
-            {
-                updatedItem = new BillingReceptionModel
+                    createdItem.eReasonCode = 1;
+                    createdItem.eMessage = "Registo criado com sucesso";
+                    item = createdItem;
+                }
+                else
                 {
-                    eReasonCode = 2,
-                    eMessage = "O registo não pode ser nulo",
-                };
-            }
-            return Json(updatedItem);
-        }
-
-        [HttpPost]
-        public JsonResult PostDocument([FromBody] BillingReceptionModel item)
-        {
-            if (item != null)
-            {
-                if (ValidateForPosting(item))
-                {
-                    Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
-                    createPurchHeaderTask.Wait();
-                    if (createPurchHeaderTask.IsCompletedSuccessfully)
-                    {
-                        string typeDescription = EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
-
-                        //createPurchHeaderTask.Result.WSPrePurchaseDocs
-                        RececaoFaturacaoWorkflow rfws = new RececaoFaturacaoWorkflow();
-                        rfws.IdRecFaturacao = item.Id;
-                        rfws.Descricao = "Contabilização da " + typeDescription;
-                        rfws.Estado = (int)BillingReceptionStates.Contabilizado;
-                        rfws.Data = DateTime.Now;
-                        rfws.Utilizador = User.Identity.Name;
-                        rfws.CriadoPor = User.Identity.Name;
-
-                        var createdItem = DBBillingReceptionWf.Create(rfws);
-                        if (createdItem != null)
-                        {
-                            item.eReasonCode = 1;
-                            item.eMessage = "Documento criado com sucesso.";
-                        }
-                    }
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar o registo";
                 }
             }
             else
@@ -181,65 +115,51 @@ namespace Hydra.Such.Portal.Controllers
             return Json(item);
         }
 
-        private bool ValidateForPosting(BillingReceptionModel item)
+        [HttpPost]
+        public JsonResult UpdateBillingReception([FromBody] BillingReceptionModel item)
         {
-            bool isValid = true;
-            if (item.Estado != BillingReceptionStates.Rececao || item.Estado != BillingReceptionStates.Pendente)
+            BillingReceptionModel updatedItem = null;
+            if (item != null)
             {
-                string stateDescription = EnumHelper.GetDescriptionFor(typeof(BillingReceptionStates), (int)item.Estado);
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "Este documento já se encontra no estado: " + stateDescription));
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(item.CodFornecedor))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O Fornecedor tem que estar preenchido."));
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(item.NumDocFornecedor))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O Nº Documento do Fornecedor tem que estar preenchido."));
-                isValid = false;
-            }
-            else
-            {
-                var purchItemInfo = DBNAV2017Purchases.GetByExternalDocNo(_config.NAVDatabaseName, _config.NAVCompanyName, (PurchaseDocumentTypes)item.TipoDocumento, item.NumDocFornecedor);
-                if (purchItemInfo != null)
+                item.ModificadoPor = User.Identity.Name;
+                updatedItem = billingRecService.Update(item);
+                if (updatedItem != null)
                 {
-                    string typeDescription = EnumHelper.GetDescriptionFor(typeof(BillingReceptionStates), (int)item.Estado);
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "Já foi criada " + typeDescription + " para este RF."));
-                    isValid = false;
-                }
-            }
-            if (!item.Valor.HasValue)
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O valor tem que estar preenchido."));
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(item.CodRegiao))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "Tem que selecionar a Região."));
-                isValid = false;
-            }
-            if (!string.IsNullOrEmpty(item.NumEncomenda))
-            {
-                var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomenda);
-                if (purchOrderInfo.No != item.NumEncomenda)
-                {
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda " + item.NumEncomenda + " não existe ou já está registada."));
-                    isValid = false;
+                    updatedItem.eReasonCode = 1;
+                    updatedItem.eMessage = "Registo atualizado com sucesso";
+                    item = updatedItem;
                 }
             }
             else
             {
-                var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
-                if (purchOrderInfo.No != item.NumEncomendaManual)
-                {
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada."));
-                    isValid = false;
-                }
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
             }
+            return Json(updatedItem);
+        }
 
-            return isValid;
+        [HttpPost]
+        public JsonResult PostDocument([FromBody] BillingReceptionModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    var postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                    item = postedDocument;
+                }
+                catch
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar o documento.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
         }
 
         [HttpPost]

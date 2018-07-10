@@ -99,6 +99,8 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
@@ -134,15 +136,15 @@
                     </div>
                     <div class="col-lg-3">
                         <!--<vaadin-combo-box items="[[LProjectClients]]" id="ProjectClient" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>-->
+                            <template>
+                                <table width="350px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"><b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         <such-selectbox id="ProjectClient" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged"
                                         items="[[LProjectClients]]"
                                         text-path="name"
@@ -192,11 +194,11 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço" on-value-changed="_clientChanged"
+                        <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço"
                                         items="[[LProjectServiceObjects]]"
                                         text-path="value"
                                         value-path="id"
-                                        fields='[{"field":"id", "name":"Nº Objecto"}, {"field":"value", "name":"Nome Serviço"}]'
+                                        fields='[{"field":"value", "name":"Nome Serviço"}]'
                                         disabled="{{ !_permissions.update }}">
                         </such-selectbox>
                     </div>
@@ -264,28 +266,28 @@
                         </vaadin-combo-box>
                     </div>
                     <!--<div class="col-lg-3">
-            <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra" disabled="{{ !_permissions.update }}">
-                <template>
-                    <table width="200px">
-                        <tr>
-                            <td width="40%">[[item.id]]</td>
-                            <td width="60%"> <b>[[item.value]]</b></td>
-                        </tr>
-                    </table>
-                </template>
-            </vaadin-combo-box>
-        </div>
+                            <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-        <div class="col-lg-3">
-              <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto" disabled="{{ !_permissions.update }}">
-                <template>
-                    <b>[[item.value]]</b>
-                </template>
-            </vaadin-combo-box>
-           
-        </div>
-          </div>
-    <div class="row break_clear">-->
+                        <div class="col-lg-3">
+                              <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <b>[[item.value]]</b>
+                                </template>
+                            </vaadin-combo-box>
+
+                        </div>
+                          </div>
+                    <div class="row break_clear">-->
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
                             <template>
@@ -360,43 +362,43 @@
             <!--AEC-->
             <div>
                 <div class="row">
-                       <div class="col-lg-3">
-                            <such-selectbox id="ProjectType" value="{{data.projectTypeCode}}" label="Tipo Projeto"
-                                            items="[[LProjectTypes]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"value", "name":"Descrição"}]'
-                                            disabled="{{ !_permissions.update }}">
-                            </such-selectbox>
-                        </div>
-                        <div class="col-lg-3">
-                            <vaadin-combo-box items="[[LProjectCategories]]" item-value-path="id" item-label-path="value" value="{{data.projectCategory}}" label="Categoria Projeto" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-lg-3">
-                            <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <table width="350px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"><b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.internalProject}}" disabled="{{ !_permissions.update }}">Projeto Interno</vaadin-checkbox>
-                        </div>
+                    <div class="col-lg-3">
+                        <such-selectbox id="ProjectType" value="{{data.projectTypeCode}}" label="Tipo Projeto"
+                                        items="[[LProjectTypes]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"value", "name":"Descrição"}]'
+                                        disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        </such-selectbox>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCategories]]" item-value-path="id" item-label-path="value" value="{{data.projectCategory}}" label="Categoria Projeto" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="350px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"><b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3 alignPoga">
+                        <vaadin-checkbox checked="{{data.internalProject}}" disabled="{{ !_permissions.update }}">Projeto Interno</vaadin-checkbox>
                     </div>
                 </div>
+            </div>
         </iron-pages>
 
         <div class="marginSpace">
@@ -418,307 +420,321 @@
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
-        <script>
-            document.addEventListener('WebComponentsReady', function () {
-                Polymer({
-                    is: 'x-projectdetails',
-                    properties: {
-                        _permissions: {
-                            type: Array
-                        },
-                        _projectid: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        _coderegion: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        _funcarea: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        _respcode: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        _codeclient: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        _contractno: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        selected: {
-                            type: Number,
-                            value: 0
-                        },
-                        _isCreate: {
-                            type: Boolean,
-                            value: false
-                        },
-                        _projectClosed: {
-                            type: Boolean,
-                            value: false
-                        },
-
-                        _coderegion: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-
-                        _funcarea: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-
-                        _respcode: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-
-                        _codeclient: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-projectdetails',
+                properties: {
+                    _permissions: {
+                        type: Array
                     },
-                    ready: function () {
-                        //GET PROJECT DATA
-                            this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
-                            this.$.page_databound_ajax.generateRequest();
-
-                            if (this._projectid == "") {
-                                this._isCreate = true;
-                            }
-
-                            if (this._contractno != "") {
-                                this.$.RegionCode.value = this._coderegion;
-                            }
+                    _projectid: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _coderegion: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _funcarea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _respcode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _codeclient: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _contractno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _projectClosed: {
+                        type: Boolean,
+                        value: false
                     },
 
-
-                    _openToast: function (message) {
-                        this.$.ToastMessageSuccess.text = message;
-                        this.$.ToastMessageSuccess.open();
+                    _coderegion: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
-                    _openToastError: function (message) {
-                        this.$.ToastMessageError.text = message;
-                        this.$.ToastMessageError.open();
-                    },
-                    _validateData: function () {
-                        this.$.ProjectClient.validate();
-                        if (this.$.Description.validate() &
-                            this.$.ProjectLeader.validate() &
-                            this.$.ProjectResponsible.validate() &
-                            this.$.ContractNo.validate() &
-                            this.$.ProjectType.validate() &
-                            this.$.RegionCode.validate() &
-                            this.$.FunctionalAreaCode.validate() &
-                            this.$.ResponsabilityCenterCode.validate()) {
 
-                            if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
-                                return true;
-                            } 
+                    _funcarea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _respcode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _codeclient: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                },
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._projectid == "") {
+                        this._isCreate = true;
+                    }
+
+                    if (this._contractno != "") {
+                        this.$.RegionCode.value = this._coderegion;
+                    }
+                },
+
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function () {
+                    this.$.ProjectClient.validate();
+                    this.$.ProjectType.validate();
+                    if (this.$.Description.validate() &
+                        this.$.ProjectLeader.validate() &
+                        this.$.ProjectResponsible.validate() &
+                        this.$.ContractNo.validate() &
+                        this.$.RegionCode.validate() &
+                        this.$.FunctionalAreaCode.validate() &
+                        this.$.ResponsabilityCenterCode.validate()) {
+
+                        //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
+                        //    return true;
+                        //}
+                        if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Nº Cliente.");
+                            return false;
                         }
-                        this._openToastError("Verifique os dados inseridos.");
-                        return false;
-                    },
-                    _createNewProject: function () {
-                        window.location.href = "../Detalhes";
-                    },
+                        if (this.$.ProjectType.value == "" || this.$.ProjectType.value == undefined) {
+                            this._openToastError("É obrigatória seleção do Tipo de Projeto.");
+                            return false;
+                        }
+                        return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _createNewProject: function () {
+                    window.location.href = "../Detalhes";
+                },
 
-                    //CRUDS
-                    _create: function () {
-                        if (this._validateData()) {
-                            this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                            this.$.page_validator_ajax.generateRequest();
-                        }
-                    },
-                    _update: function () {
-                        if (this._validateData()) {
-                            this._executeRequest("/Projetos/UpdateProject", this.data)
-                        }
-                    },
-                    _delete: function () {
-                        var Project = this.data;
-                        var ajax_request = this.$.ajax_delete_project;
-                        bootbox.confirm({
-                            message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
-                            buttons: {
-                                confirm: {
-                                    label: 'Sim',
-                                    className: 'btn-success'
-                                },
-                                cancel: {
-                                    label: 'Não',
-                                    className: 'btn-danger'
-                                }
+                //CRUDS
+                _create: function () {
+                    if (this._validateData()) {
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Projetos/UpdateProject", this.data)
+                    }
+                },
+                _delete: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_delete_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
                             },
-                            callback: function (result) {
-                                if (result) {
-                                    ajax_request.body = JSON.stringify(Project);
-                                    ajax_request.generateRequest();
-                                }
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
                             }
-                        });
-                    },
-
-                    //Responses Processors
-                    _responseProcessor: function (data) {
-                        var self = this;
-
-                        if (this.data.projectNo == "" || this.data.projectNo == undefined) {
-                            this.data.status = 1;
-                        } else {
-                            if (this.data.status == 4 || this.data.status == 5) {
-                                this._projectClosed = true;
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
                             }
                         }
+                    });
+                },
 
-                        if (data.detail.status === 200) {
-                            if (data.detail.url.indexOf("GetProject") !== -1) {
-                                if (this.data.ProjectNo == "") {
-                                    this._isCreate = true;
-                                } else {
-                                    if (this._contractno != "" && this._coderegion != "" && this._funcarea != "" && this._codeclient != "" && this._respcode != "" && (this.data.ProjectNo == "" || this.data.ProjectNo == undefined)) {
-                                        this.$.FunctionalAreaCode.value = this._funcarea;
-                                        this.$.RegionCode.value = this._coderegion;
-                                        this.$.ResponsabilityCenterCode.value = this._respcode;
-                                        this.$.ProjectClient.value = this._codeclient;
-                                        this.$.ContractNo.value = this._contractno;
-                                        this.data.clientNo = this._codeclient;
-                                    }
+                //Responses Processors
+                _responseProcessor: function (data) {
+                    var self = this;
 
-                                    this.$.projects_ajax.body = JSON.stringify(this.data.clientNo);
-                                    this.$.projects_ajax.generateRequest();
-                                    
-                                    this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
-                                    this.$.shippinhAddress_ajax.generateRequest();
-
-                                    
-                                    //JP this._shippingAddressCode = this.data.shippingAddressCode;
-                                }
-                            } else if (data.detail.url.indexOf("Create") !== -1) {
-                                this._createResponseProcessor();
-                            } else if (data.detail.url.indexOf("Update") !== -1) {
-                                if (this.data.eReasonCode != 1) {
-                                    this._openToastError(this.data.eMessage);
-                                } else {
-                                    this._openToast("Projeto atualizado com sucesso.")
-                                }
-                            }
-                        } else {
-                            this._openToastError("Ocorreu um erro.")
+                    if (this.data.projectNo == "" || this.data.projectNo == undefined) {
+                        this.data.status = 1;
+                    } else {
+                        if (this.data.status == 4 || this.data.status == 5) {
+                            this._projectClosed = true;
                         }
-                    },
-                    _createResponseProcessor: function () {
-                        if (this.data.eReasonCode == 1) {
-                            this._isCreate = false;
-                            this._openToast("Projeto criado com sucesso.");
-                        } else {
-                            this._openToastError(this.data.eMessage);
-                        }
-                    },
-                    _responseValidatorProcessor: function (data) {
-                        var self = this;
-                        if (data.detail.status === 200) {
-                            if (this.validateResponse == "") {
-                                this._executeRequest("/Projetos/CreateProject", this.data)
+                    }
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetProject") !== -1) {
+                            if (this.data.ProjectNo == "") {
+                                this._isCreate = true;
                             } else {
-                                this._openToastError(this.validateResponse);
+                                if (this._contractno != "" && this._coderegion != "" && this._funcarea != "" && this._codeclient != "" && this._respcode != "" && (this.data.ProjectNo == "" || this.data.ProjectNo == undefined)) {
+                                    this.$.FunctionalAreaCode.value = this._funcarea;
+                                    this.$.RegionCode.value = this._coderegion;
+                                    this.$.ResponsabilityCenterCode.value = this._respcode;
+                                    this.$.ProjectClient.value = this._codeclient;
+                                    this.$.ContractNo.value = this._contractno;
+                                    this.data.clientNo = this._codeclient;
+                                }
+
+                                this.$.projects_ajax.body = JSON.stringify(this.data.clientNo);
+                                this.$.projects_ajax.generateRequest();
+
+                                this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
+                                this.$.shippinhAddress_ajax.generateRequest();
+
+
+                                //JP this._shippingAddressCode = this.data.shippingAddressCode;
                             }
-                        }
-                    },
-                    _responseDeleteProcessor: function (data) {
-                        var self = this;
-                        if (data.detail.status === 200) {
-                            if (this.deletedData.eReasonCode != 0) {
-                                this._openToastError(this.deletedData.eMessage);
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._createResponseProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
                             } else {
-                                this._openToast(this.deletedData.eMessage);
-                                setTimeout(
-                                    function () {
-                                        window.location.href = "/";
-                                    }, 2500);
+                                this._openToast("Projeto atualizado com sucesso.")
                             }
                         }
-                    },
-
-                    _OpenInvoice: function (data) {
-                        window.location.href = "../AutorizacaoFaturacao/" + this.data.projectNo;
-                    },
-
-                    //Address Functions
-                    _getAddressByCode: function (e) {                        
-                        var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
-                        if (selItem != null) {
-                            //Fill Data
-                            this.$.ShippingName.value = selItem.name;
-                            this.$.ShippingAddress.value = selItem.address;
-                            this.$.ShippingPostalCode.value = selItem.zipCode;
-                            this.$.ShippingLocality.value = selItem.city;
-                            this.$.ShippingContact.value = selItem.contact;
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Projeto criado com sucesso.");
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            this._executeRequest("/Projetos/CreateProject", this.data)
+                        } else {
+                            this._openToastError(this.validateResponse);
                         }
-                        else {
-
-                            this.$.ShippingName.value = "";
-                            this.$.ShippingAddress.value = "";
-                            this.$.ShippingPostalCode.value = "";
-                            this.$.ShippingLocality.value = "";
-                            this.$.ShippingContact.value = "";
+                    }
+                },
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode != 0) {
+                            this._openToastError(this.deletedData.eMessage);
+                        } else {
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
                         }
-                    },
+                    }
+                },
 
-                    //Helpers
-                    _executeRequest: function (url, data) {
-                        this.$.page_databound_ajax.url = url;
-                        this.$.page_databound_ajax.body = JSON.stringify(data);
-                        this.$.page_databound_ajax.generateRequest();
-                    },
-                    //BUTTONS
-                    _OpenProjectMovements: function (url, data) {
-                        window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
-                    },
-                    _OpenPreProjectMovements: function (url, data) {
-                        window.location.href = "/Projetos/PreMovimentosProjetos/" + this.data.projectNo;
-                    },
-                    _OpenProjectPreRegistration: function (url, data) {
-                        window.location.href = "/Projetos/PreregistoProjetos/" + this.data.projectNo;
-                    },
-                    _OpenProjectDiary: function (url, data) {
-                        window.location.href = "../DiarioProjeto/" + this.data.projectNo;
-                    },
+                _OpenInvoice: function (data) {
+                    window.location.href = "../AutorizacaoFaturacao/" + this.data.projectNo;
+                },
+
+                //Address Functions
+                _getAddressByCode: function (e) {
+                    var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
+                    if (selItem != null) {
+                        //Fill Data
+                        this.$.ShippingName.value = selItem.name;
+                        this.$.ShippingAddress.value = selItem.address;
+                        this.$.ShippingPostalCode.value = selItem.zipCode;
+                        this.$.ShippingLocality.value = selItem.city;
+                        this.$.ShippingContact.value = selItem.contact;
+                    }
+                    else {
+
+                        this.$.ShippingName.value = "";
+                        this.$.ShippingAddress.value = "";
+                        this.$.ShippingPostalCode.value = "";
+                        this.$.ShippingLocality.value = "";
+                        this.$.ShippingContact.value = "";
+                    }
+                },
+
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                //BUTTONS
+                _OpenProjectMovements: function (url, data) {
+                    window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
+                },
+                _OpenPreProjectMovements: function (url, data) {
+                    window.location.href = "/Projetos/PreMovimentosProjetos/" + this.data.projectNo;
+                },
+                _OpenProjectPreRegistration: function (url, data) {
+                    window.location.href = "/Projetos/PreregistoProjetos/" + this.data.projectNo;
+                },
+                _OpenProjectDiary: function (url, data) {
+                    window.location.href = "../DiarioProjeto/" + this.data.projectNo;
+                },
 
 
-                    //Client Change
-                    _clientChanged: function (e) {
-                        if (e.detail.value != "") {
-                            this.$.projects_ajax.body = JSON.stringify(e.detail.value);
-                            this.$.projects_ajax.generateRequest();
-                            this.$.ContractNo.value = "";
-                            
-                            this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
-                            this.$.shippinhAddress_ajax.generateRequest();
-                            this.data.shippingAddressCode = "";
-                            this.$.sbClientShippingAddresses._clearSelection();
-                        }
-                    },
-                });
+                //Client Change
+                _clientChanged: function (e) {
+                    if (e.detail.value != "") {
+                        this.$.projects_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.projects_ajax.generateRequest();
+                        this.$.ContractNo.value = "";
+
+                        this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.shippinhAddress_ajax.generateRequest();
+                        this.data.shippingAddressCode = "";
+                        this.$.sbClientShippingAddresses._clearSelection();
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
-        </script>
+        });
+    </script>
 
-</dom-module> 
+</dom-module>
 
 

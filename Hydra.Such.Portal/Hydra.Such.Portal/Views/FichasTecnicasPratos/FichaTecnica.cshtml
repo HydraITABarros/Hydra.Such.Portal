@@ -59,8 +59,8 @@
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLPlatesTechnicalFilesType" last-response="{{CBOType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{ProductCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
-        
+
+
         <iron-ajax url="/PopulateDropdowns/GetCookingTechnique" last-response="{{CBOCookingTechnique}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -593,19 +593,19 @@
                                     <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Glícidos" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Glícidos"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado">
@@ -624,7 +624,7 @@
                                     <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual" disabled > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual" disabled> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <such-selectbox id="LineLocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
@@ -638,47 +638,47 @@
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas/Kg"> </vaadin-text-field>
                                 </div>
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibersByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineFibersByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras/Kg"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergeticValue2}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 1" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEnergeticValue2}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 1"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -687,25 +687,25 @@
                                     <vaadin-text-field value="{{LineEdivel}}" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel" on-value-changed="_AllLinesCalculation"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol/Kg"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potássio/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potássio/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIronByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro/Kg" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineIronByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro/Kg"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineCalciumByQuantity}}" disabled maxlength="20" on-value-changed="_AllLinesCalculation" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio/Kg"> </vaadin-text-field>
@@ -714,16 +714,16 @@
                             <div class="row break_clear">
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal" > </vaadin-text-field>
+                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20"  pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato" on-value-changed="_AllLinesCalculation" disabled> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato" on-value-changed="_AllLinesCalculation" disabled> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -764,43 +764,45 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable hidden="{{ _NotShowProductGrid }}">>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="code" />
-                                </template>
-                                <template>
-                                    <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box id="GridCodeid" name="GridCodeName" items="[[ProductCode]]" item-value-path="code" value="{{item.code}}" item-label-path="code" disabled="{{ !_permissionsVal.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.code]]</td>
-                                                        <td width="60%"> <b>[[item.name]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
+                                <vaadin-grid-column width="160px" resizable hidden="{{ _NotShowProductGrid }}">
+                                    >
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="code" />
                                     </template>
-                                    <template is="dom-if" if="{{ !item.selected }}">
-                                        {{item.code}}
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box id="GridCodeid" name="GridCodeName" items="[[ProductCode]]" item-value-path="code" value="{{item.code}}" item-label-path="code" disabled="{{ !_permissionsVal.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="40%">[[item.code]]</td>
+                                                            <td width="60%"> <b>[[item.name]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.code}}
+                                        </template>
                                     </template>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable hidden="{{ _NotShowPlateGrid }}">>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="code" />
-                                </template>
-                                <template>
-                                    <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-text-field value="{{item.code}}" maxlength="20" id="GridCodeTxtid" name="GridCodeTxtName" disabled="true"> </vaadin-text-field>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable hidden="{{ _NotShowPlateGrid }}">
+                                    >
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="code" />
                                     </template>
-                                    <template is="dom-if" if="{{ !item.selected }}">
-                                        {{item.code}}
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.code}}" maxlength="20" id="GridCodeTxtid" name="GridCodeTxtName" disabled="true"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.code}}
+                                        </template>
                                     </template>
-                                </template>
-                            </vaadin-grid-column>
+                                </vaadin-grid-column>
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description">Descrição </vaadin-grid-sorter>
@@ -1417,7 +1419,7 @@
                 },
                 _NotShowPlate: {
                     type: Boolean,
-                    value: true 
+                    value: true
                 },
                 _NotShowProductGrid: {
                     type: Boolean,
@@ -1457,7 +1459,7 @@
                     notify: true,
                     value: ""
                 },
-                
+
                 GroupValue: {
                     type: String,
                     notify: true,
@@ -1492,77 +1494,77 @@
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 VitaminD: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Cholesterol: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Sodium: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Potassium: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Calcium: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Iron: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Proteins: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Carbohydrates: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Lipids: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 FoodFiber: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 PriceCostExpected: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 PriceCostCurrent: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Energeticvalue: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 Energeticvalue2: {
                     type: String,
                     notify: true,
                     value: ""
-                }, 
+                },
                 ClassFt1Value: {
                     type: String,
                     notify: true,
@@ -1918,15 +1920,15 @@
                             this.$.GridRecTecOfPlatesLines.clearCache();
                         }
                     }
-                } 
+                }
                 else if (_GridTypeid === 3) {
                     //Type Prato
                     this._NotShowProductGrid = true;
                     this._NotShowPlateGrid = false;
-                } 
+                }
             },
             _TypeChaged: function (e) {
-               
+
                 var typeId = e.target.value;
                 if (typeId === 1) {
                     //Type Produto
@@ -1945,12 +1947,12 @@
                     this.LineFibers = this.FoodFiber;
                     this.LineExpectedCostPrice = this.PriceCostExpected;
                     this.LineCurrentCostPrice = this.PriceCostCurrent;
-                } 
+                }
                 else if (typeId === 3) {
                     //Type Prato
                     this._NotShowProduct = true;
                     this._NotShowPlate = false;
-                } 
+                }
             },
             _ConvertDecimals: function (e) {
 
@@ -2004,7 +2006,7 @@
                 }
                 return "";
             },
-            
+
             _parseType: function (param) {
 
                 if (param != undefined && this.CBOType != undefined) {
@@ -2366,7 +2368,7 @@
                         this.LineTimeCurrentCostPrice = e.detail.value.replace(",", ".");
                         break;
                     case "ExpectedCostPriceid":
-                        //Preço Custo Esperado 
+                        //Preço Custo Esperado
                         this.LineExpectedCostPrice = e.detail.value.replace(",", ".");
                         break;
                     case "TimeExpectedCostPriceid":
@@ -2374,23 +2376,23 @@
                         this.LineTimeExpectedCostPrice = e.detail.value.replace(",", ".");
                         break;
                     case "Ironid":
-                        //Ferro 
+                        //Ferro
                         this.LineIron = e.detail.value.replace(",", ".");
                         break;
                     case "IronByQuantityid":
-                        //Ferro/kG 
+                        //Ferro/kG
                         this.LineIronByQuantity = e.detail.value.replace(",", ".");
                         break;
                     case "Calciumid":
-                        //Calcio 
+                        //Calcio
                         this.LineCalcium = e.detail.value.replace(",", ".");
                         break;
                     case "CalciumByQuantityid":
-                        //Calcio/Kg 
+                        //Calcio/Kg
                         this.LineCalciumByQuantity = e.detail.value.replace(",", ".");
                         break;
                     case "Potassiumid":
-                        //Potassio 
+                        //Potassio
                         this.LinePotassium = e.detail.value.replace(",", ".");
                         break;
                     case "PotassiumByQuantityid":
@@ -2398,7 +2400,7 @@
                         this.LinePotassiumByQuantity = e.detail.value.replace(",", ".");
                         break;
                     case "Sodiumid":
-                        //Sodio 
+                        //Sodio
                         this.LineSodium = e.detail.value.replace(",", ".");
                         break;
                     case "SodiumByQuantityid":
@@ -2434,7 +2436,7 @@
                         this.LineEnergeticValue2 = e.detail.value.replace(",", ".");
                         break;
                     case "Fibersid":
-                        //Fibras 
+                        //Fibras
                         this.LineFibers = e.detail.value.replace(",", ".");
                         break;
                     case "FibersByQuantityid":
@@ -2458,7 +2460,7 @@
                         this.LineProteinsByQuantity = e.detail.value.replace(",", ".");
                         break;
                     case "Lipidsid":
-                        //Lípidos 
+                        //Lípidos
                         this.LineLipids = e.detail.value.replace(",", ".");
                         break;
                     case "LipidsByQuantityid":
@@ -2487,52 +2489,52 @@
                     this.LineExpectedCostPrice != null && this.LineExpectedCostPrice != "") {
                     this.LineTimeExpectedCostPrice = this.LineQuantityOfProduction * this.LineExpectedCostPrice;
                 }
-                //Calcula Ferro/kG 
+                //Calcula Ferro/kG
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineIron != null && this.LineIron != "") {
                     this.LineIronByQuantity = this.LineQuantityPlates * this.LineIron;
                 }
-                //Calcula Calcio/Kg 
+                //Calcula Calcio/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineCalcium != null && this.LineCalcium != "") {
                     this.LineCalciumByQuantity = this.LineQuantityPlates * this.LineCalcium;
                 }
-                //Calcula Potasio/Kg 
+                //Calcula Potasio/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LinePotassium != null && this.LinePotassium != "") {
                     this.LinePotassiumByQuantity = this.LineQuantityPlates * this.LinePotassium;
                 }
-                //Calcula Sodio/Kg 
+                //Calcula Sodio/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineSodium != null && this.LineSodium != "") {
                     this.LineSodiumByQuantity = this.LineQuantityPlates * this.LineSodium;
                 }
-                //Calcula Colesterol/Kg 
+                //Calcula Colesterol/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineCholesterol != null && this.LineCholesterol != "") {
                     this.LineCholesterolByQuantity = this.LineQuantityPlates * this.LineCholesterol;
                 }
-                //Calcula Vitamina D/Kg 
+                //Calcula Vitamina D/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineVitaminD != null && this.LineVitaminD != "") {
                     this.LineVitaminDByQuantity = this.LineQuantityPlates * this.LineVitaminD;
                 }
-                //Calcula Vitamina A/Kg 
+                //Calcula Vitamina A/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineVitaminA != null && this.LineVitaminA != "") {
                     this.LineVitaminAByQuantity = this.LineQuantityPlates * this.LineVitaminA;
                 }
-                //Calcula Fibras/Kg 
+                //Calcula Fibras/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineFibers != null && this.LineFibers != "") {
                     this.LineFibersByQuantity = this.LineQuantityPlates * this.LineFibers;
                 }
-                //Calcula Glícidos/Kg 
+                //Calcula Glícidos/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineHydratesOfCarbont != null && this.LineHydratesOfCarbont != "") {
                     this.LineGlicansByQuantity = this.LineQuantityPlates * this.LineHydratesOfCarbont;
                 }
-                //Calcula Proteínas/Kg 
+                //Calcula Proteínas/Kg
                 if (this.LineQuantityPlates != null && this.LineQuantityPlates != "" &&
                     this.LineProteins != null && this.LineProteins != "") {
                     this.LineProteinsByQuantity = this.LineQuantityPlates * this.LineProteins;
@@ -2564,7 +2566,7 @@
                         var tCurrentCostPrice = res.timeCurrentCostPrice;
                         var expCostPrice = res.expectedCostPrice;
                         var tExpCostPrice = res.timeExpectedCostPrice;
-                        var iron = res.iron; 
+                        var iron = res.iron;
                         var qtyIron = res.ironByQuantity;
                         var calcium = res.calcium;
                         var qtyCalcium = res.calciumByQuantity;
@@ -2591,7 +2593,7 @@
                             case "GridQuantityOfProductionid":
                                 qtyOfPruduction = param.target.value.replace(",", ".");
                                 res.quantityOfProduction = qtyOfPruduction;
-                            break; 
+                            break;
                             case "GridEdivelid":
                                 edivel = param.target.value.replace(",", ".");
                                 res.edivel = edivel;
@@ -2732,54 +2734,54 @@
                             expCostPrice != null && expCostPrice != "") {
                             res.timeExpectedCostPrice = qtyOfPruduction * expCostPrice;
                         }
-                        //Calcula Ferro/kG 
+                        //Calcula Ferro/kG
                         if (qtyPlates != null && qtyPlates != "" &&
                             iron != null && iron != "") {
                             res.ironByQuantity = qtyPlates * iron;
                         }
-                        //Calcula Calcio/Kg 
+                        //Calcula Calcio/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             calcium != null && calcium != "") {
                             res.calciumByQuantity = qtyPlates * calcium;
                         }
-                        //Calcula Potassio/Kg 
+                        //Calcula Potassio/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             potassium != null && potassium != "") {
                             res.potassiumByQuantity = qtyPlates * potassium;
                         }
-                        //Calcula Sodio/Kg 
+                        //Calcula Sodio/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             sodium != null && sodium != "") {
                             res.sodiumByQuantity = qtyPlates * sodium;
                         }
-                        //Calcula Colesterol/Kg 
+                        //Calcula Colesterol/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             cholesterol != null && cholesterol != "") {
                             res.cholesterolByQuantity = qtyPlates * cholesterol;
                         }
-                        //Calcula Vitamina D/Kg 
+                        //Calcula Vitamina D/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             vitaminD != null && vitaminD != "") {
                             res.vitaminDByQuantity = qtyPlates * vitaminD;
                         }
-                        //Calcula Vitamina A/Kg 
+                        //Calcula Vitamina A/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             vitaminA != null && vitaminA != "") {
                             res.vitaminAByQuantity = qtyPlates * vitaminA;
                         }
-                        //Calcula Fibras/Kg 
+                        //Calcula Fibras/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             fibers != null && fibers != "") {
                             res.fibersByQuantity = qtyPlates * fibers;
                             qtyFibers = res.fibersByQuantity;
                         }
-                        //Calcula Glícidos/Kg 
+                        //Calcula Glícidos/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             glicans != null && glicans != "") {
                             res.glicansByQuantity = qtyPlates * glicans;
                             qtyGlicans = res.glicansByQuantity;
                         }
-                        //Calcula Proteínas/Kg 
+                        //Calcula Proteínas/Kg
                         if (qtyPlates != null && qtyPlates != "" &&
                             proteins != null && proteins != "") {
                             res.proteinsByQuantity = qtyPlates * proteins;
@@ -2972,7 +2974,7 @@
                         this.BasedLupineChecked = this.getAllRecTecPlatResult[0].basedLupine;
                         this.BasedMolluscsChecked = this.getAllRecTecPlatResult[0].basedMolluscs;
                         this.BasedSulfSulphChecked = this.getAllRecTecPlatResult[0].basedSulfurDioxeAndSulphites;
-                        this.VitaminA = this.getAllRecTecPlatResult[0].vitaminA; 
+                        this.VitaminA = this.getAllRecTecPlatResult[0].vitaminA;
                         this.VitaminD = this.getAllRecTecPlatResult[0].vitaminD;
                         this.Cholesterol = this.getAllRecTecPlatResult[0].cholesterol;
                         this.Sodium = this.getAllRecTecPlatResult[0].sodium;

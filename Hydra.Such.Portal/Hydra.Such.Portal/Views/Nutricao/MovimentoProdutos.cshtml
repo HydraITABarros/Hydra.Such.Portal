@@ -97,7 +97,7 @@
                     <vaadin-grid-filter path="dateRegister" />
                 </template>
                 <template>
-                    <vaadin-text-field  value="{{item.dateRegister}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.dateRegister}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="160px">
@@ -244,6 +244,19 @@
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridMovement);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -253,9 +266,9 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-              
 
-               
+
+
             });
         });
     </script>

@@ -95,11 +95,20 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
                         <div class="col-lg-2">
                             <vaadin-combo-box items="[[RegionData]]" id="ddRegions" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -112,6 +121,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2">
                             <vaadin-combo-box items="[[FunctionalAreaCodeData]]" id="ddFunctionalAreas" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -124,6 +134,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-2 ">
                             <vaadin-combo-box items="[[ResponsabilityCenterData]]" id="ddResponsabilityCenters" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -136,14 +147,17 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+
                         <div class="col-lg-1 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupType" disabled="{{ _permissionsCreate }}">Criar</paper-button> </div>
                     </div>
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
+
         <br />
+
         <vaadin-grid id="gridContabGroupTypes" aria-label="gridContabGroupTypesTable" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column width="200px" resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="id">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
@@ -152,7 +166,8 @@
                     <vaadin-text-field id="piDescription" value="{{item.id}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -161,7 +176,8 @@
                     <vaadin-text-field id="description" value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="region">Código Região</vaadin-grid-sorter>
                 </template>
@@ -178,7 +194,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                 </template>
@@ -195,7 +212,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="250px" resizable>
+
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenter">Código Centro Responsabilidade</vaadin-grid-sorter>
                 </template>
@@ -212,24 +230,21 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ !_permissionsDelete }}">
-                <vaadin-grid-column width="200px">
+                <vaadin-grid-column resizable width="150px">
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                            @*<paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>
             </template>
         </vaadin-grid>
-        <template is="dom-if" if="{{ !_permissionsUpdate }}">
-            <div class="marginSpace">
-                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-            </div>
-        </template>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -283,7 +298,21 @@
             ready: function () {
                 //this.$.page_databound_ajax.generateRequest();
 
+                var _this = this;
+                $(window).resize(function () {
+                    _this.fixGridToBottom();
+                });
+                $(window).trigger('resize');
             },
+
+            fixGridToBottom: function () {
+                var grid_el = $(this.$.gridContabGroupTypes);
+                var parentHeight = $(this).offsetParent().height();
+                var offsetTop = $(this).offset().top;
+                var height = parentHeight - offsetTop;
+                $(this.$.gridContabGroupTypes).height(height);
+            },
+
             openToast: function (message) {
                 this.$.ToastMessageSuccess.text = message;
                 this.$.ToastMessageSuccess.open();
@@ -347,6 +376,9 @@
                 this.$.page_databound_ajax.url = "/Administracao/UpdateTiposGrupoContabProjeto";
                 this.$.page_databound_ajax.body = JSON.stringify(this.result);
                 this.$.gridContabGroupTypes.clearCache();
+            },
+            _goBack: function (e) {
+                window.history.back();
             }
 
         });

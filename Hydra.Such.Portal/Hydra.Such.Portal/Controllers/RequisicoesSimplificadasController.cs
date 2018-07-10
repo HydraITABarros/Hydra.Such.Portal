@@ -12,6 +12,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -27,10 +28,10 @@ namespace Hydra.Such.Portal.Controllers
         private ErrorHandler mensage = new ErrorHandler();
 
 
-        public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             this.configws = NAVWSConfigs.Value;
-            register = new ProjetosController(appSettings, NAVWSConfigs);
+            register = new ProjetosController(appSettings, NAVWSConfigs, _hostingEnvironment);
         }
 
         public IActionResult Index(int option)
@@ -686,7 +687,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (item.QuantityReceipt == 0 || item.QuantityReceipt== null)
                 {
-                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> TGetNavLocationProduct = WSGeneric.GetALLNavLocationProduct(item.Code, item.LocationCode, configws);
+                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> TGetNavLocationProduct = WSGeneric.GetNAVProductQuantityInStockFor(item.Code, item.LocationCode, configws);
                     TGetNavLocationProduct.Wait();
                     if (TGetNavLocationProduct.IsCompletedSuccessfully)
                     {

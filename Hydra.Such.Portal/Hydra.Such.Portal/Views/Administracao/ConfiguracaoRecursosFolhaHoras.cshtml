@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Recursos Folha de Horas";
+    ViewData["Title"] = "FH Recursos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -127,12 +127,16 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
-
                     <div class="row" id="configuracaoRecursosFolhaHoras">
-
                         <div class="col-lg-3">
                             <vaadin-combo-box id="tipo" items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{tipo}}" label="Tipo" disabled="{{ _permissionsCreate }}">
                                 <template>
@@ -151,11 +155,6 @@
                                     </paper-icon-item>
                                 </template>
                             </vaadin-combo-box>
-                            @*<vaadin-combo-box id="codigoRecurso" items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{codigoRecurso}}" label="Código Recurso" disabled="{{ _permissionsCreate }}">
-                                <template>
-                                    <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
-                                </template>
-                            </vaadin-combo-box>*@
                         </div>
 
                         <div class="col-lg-3"><vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" maxlength="200" disabled></vaadin-text-field></div>
@@ -168,7 +167,6 @@
 
                         <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
                     </div>
-
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
@@ -176,38 +174,27 @@
         <br />
 
         <vaadin-grid id="gridConfiguracaoRecursosFolhaHoras" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
-
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoText" disabled>Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="tipoText" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.tipoText}}" disabled="true"></vaadin-text-field>
-                    @*<vaadin-combo-box items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{ item.tipo }}" disabled>
-                        <template>
-                            <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
-                        </template>
-                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRecurso">Código Recurso</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRecurso" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.codigoRecurso}}" disabled="true"></vaadin-text-field>
-                    @*<vaadin-combo-box items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="id" value="{{item.codigoRecurso}}" disabled>
-                        <template>
-                            <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
-                        </template>
-                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao" />
@@ -217,7 +204,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="unidMedida">Unidade de Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unidMedida" />
@@ -227,7 +214,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="precoUnitarioCusto">Preço Unitário Custo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="precoUnitarioCusto" />
@@ -237,8 +224,7 @@
                 </template>
             </vaadin-grid-column>
 
-
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="precoUnitarioVenda">Preço Unitário Venda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="precoUnitarioVenda" />
@@ -248,8 +234,7 @@
                 </template>
             </vaadin-grid-column>
 
-
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="rubricaSalarial">Rúbrica Salarial</vaadin-grid-sorter>
                     <vaadin-grid-filter path="rubricaSalarial" />
@@ -259,24 +244,18 @@
                 </template>
             </vaadin-grid-column>
 
-
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                        @*<paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_delete" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
 
-
-        <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
@@ -322,8 +301,23 @@
                         this.$.codigoRecurso.addEventListener('value-changed', function () {
                             _self.$.descricao.value = _self.$.codigoRecurso.__data.selectedItem.value;
                             _self.$.unidMedida.value = _self.$.codigoRecurso.__data.selectedItem.extra;
-                        });;
+                        });
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
                     },
+
+                    fixGridToBottom: function () {
+                        var grid_el = $(this.$.gridConfiguracaoRecursosFolhaHoras);
+                        var parentHeight = $(this).offsetParent().height();
+                        var offsetTop = $(this).offset().top;
+                        var height = parentHeight - offsetTop;
+                        $(this.$.gridConfiguracaoRecursosFolhaHoras).height(height);
+                    },
+
                     openToast: function (message) {
                         this.$.ToastMessage.text = message;
                         this.$.ToastMessage.open();
@@ -466,7 +460,6 @@
                         }
                     },
                     _goBack: function (e) {
-                        //window.location = "../";
                         window.history.back();
                     }
                 });

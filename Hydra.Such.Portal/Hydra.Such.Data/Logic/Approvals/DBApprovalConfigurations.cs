@@ -265,7 +265,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 this.UtilizadorCriação = item.UtilizadorCriação;
                 this.UtilizadorModificação = item.UtilizadorModificação;
                 this.ValorAprovação = item.ValorAprovação;
-                this.Área = item.Área;                
+                this.Área = item.Área;
             }
 
             public int DimensionsStrength

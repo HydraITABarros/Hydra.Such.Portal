@@ -23,13 +23,13 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class GestaoRequisicoesController : Controller
     {
-        private readonly NAVConfigurations _config;
-        private readonly NAVWSConfigurations _configws;
+        private readonly NAVConfigurations config;
+        private readonly NAVWSConfigurations configws;
 
         public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
-            _config = appSettings.Value;
-            _configws = NAVWSConfigs.Value;
+            config = appSettings.Value;
+            configws = NAVWSConfigs.Value;
         }
 
         
@@ -91,7 +91,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.RequisitionId = id;
                 ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Approved;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
-                ViewBag.ReportServerURL = _config.ReportServerURL;
+                ViewBag.ReportServerURL = config.ReportServerURL;
                 return View();
             }
             else
@@ -112,7 +112,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.RequisitionId = id;
                 ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
-                ViewBag.ReportServerURL = _config.ReportServerURL;
+                ViewBag.ReportServerURL = config.ReportServerURL;
 
                 return View();
             }
@@ -148,7 +148,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.RequisitionId = id;
                 ViewBag.ArchivedRequisitionEnumValue = (int)RequisitionStates.Archived;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
-                ViewBag.ReportServerURL = _config.ReportServerURL;
+                ViewBag.ReportServerURL = config.ReportServerURL;
 
                 return View();
             }
@@ -558,7 +558,7 @@ namespace Hydra.Such.Portal.Controllers
                 status = int.Parse(requestParams["status"].ToString());
             }
 
-            bool statusIsValid = Configurations.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
+            bool statusIsValid = Data.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
 
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
@@ -673,65 +673,48 @@ namespace Hydra.Such.Portal.Controllers
                     case "Disponibilizar":
                         if (item.State == RequisitionStates.Validated)
                         {
-                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
-                            List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
-                            foreach (RequisitionLineViewModel rlines in getrlines)
+                            foreach (RequisitionLineViewModel line in item.Lines)
                             {
-                                StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, rlines.Code).ToList();
-                                if (StockkeepingUnit.Count == 0)
+                                List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+                                if (stockkeepingUnit == null)
                                 {
                                     if (prodNotStockkeepUnit == "")
                                     {
-                                        prodNotStockkeepUnit = rlines.Description;
+                                        prodNotStockkeepUnit = line.Description;
                                     }
                                     else
                                     {
-                                        prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + rlines.Description;
+                                        prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + line.Description;
                                     }
                                 }
                                 else
                                 {
-                                    foreach (NAVStockKeepingUnitViewModel VAR in StockkeepingUnit)
+                                    decimal quantityInStock = 0;
+                                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                    quantityinStockTask.Wait();
+                                    if (quantityinStockTask.IsCompletedSuccessfully)
                                     {
-                                        if (VAR.SafetyStockQuantity < rlines.QuantityToProvide)
+                                        quantityInStock = quantityinStockTask.Result.return_value;
+                                    }
+                                    if (quantityInStock < line.QuantityToProvide)
+                                    {
+                                        if (prodQuantityOverStock == "")
                                         {
-                                            if (prodQuantityOverStock == "")
-                                            {
-                                                prodQuantityOverStock = rlines.Description;
-                                            }
-                                            else
-                                            {
-                                                prodQuantityOverStock =
-                                                    prodQuantityOverStock + " , " + rlines.Description;
-                                            }
+                                            prodQuantityOverStock = line.Description;
                                         }
                                         else
                                         {
-                                            rlines.QuantityAvailable = rlines.QuantityAvailable + rlines.QuantityToProvide;
-                                            rlines.QuantityReceivable = rlines.QuantityToProvide;
-                                            rlines.UpdateUser = User.Identity.Name;
-                                            rlines.UpdateDateTime = DateTime.Now;
-                                            RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
-                                            if (rlinesValidation == null)
-                                            {
-                                                item.eReasonCode = 5;
-                                                item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
-                                            }
-                                            else
-                                            {
-                                                item.State = RequisitionStates.Available;
-                                                item.UpdateUser = User.Identity.Name;
-                                                item.UpdateDate = DateTime.Now;
-                                                RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
-                                                if (rValidation == null)
-                                                {
-                                                    item.eReasonCode = 9;
-                                                    item.eMessage = "Ocorreu um erro ao alterar a requisição";
-                                                }
-                                            }
+                                            prodQuantityOverStock = prodQuantityOverStock + " , " + line.Description;
                                         }
                                     }
-
+                                    else
+                                    {
+                                        line.QuantityAvailable = (line.QuantityAvailable.HasValue ? line.QuantityAvailable.Value : 0) + line.QuantityToProvide;
+                                        line.QuantityReceivable = line.QuantityToProvide;
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
+                                    }
                                 }
                             }
                             if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
@@ -750,27 +733,40 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eReasonCode = 8;
                                 item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
+                            else
+                            {
+                                item.State = RequisitionStates.Available;
+                                item.UpdateUser = User.Identity.Name;
+                                item.UpdateDate = DateTime.Now;
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                if (updatedRequisition == null)
+                                {
+                                    item.eReasonCode = 9;
+                                    item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                }
+                                else
+                                {
+                                    item.eReasonCode = 1;
+                                    item.eMessage = "A Requisição está disponivel";
+                                }
+                            }
                         }
                         else
                         {
                             item.eReasonCode = 3;
                             item.eMessage = "Esta requisição não está validada.";
                         }
-                        if (item.eReasonCode == 1)
-                        {
-                            item.eMessage = "A Requisição está disponivel";
-                        }
                         break;
                     case "Receber":
-                        if (item.State == RequisitionStates.Validated)
+                        if (item.State == RequisitionStates.Available)
                         {
-                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
                             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
                             foreach (RequisitionLineViewModel rlines in getrlines)
                             {
                                 if (rlines.QuantityReceivable > 0)
                                 {
-                                    StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, rlines.Code).ToList();
+                                    StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, rlines.Code).ToList();
                                     if (StockkeepingUnit.Count == 0)
                                     {
                                         if (prodNotStockkeepUnit == "")
@@ -950,7 +946,7 @@ namespace Hydra.Such.Portal.Controllers
                             RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
                             if (reqPend != null)
                             {
-                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
                                 foreach (RequisitionLineViewModel rlines in getrlines)
                                 {
                                     rlines.QuantityRequired = null;
@@ -991,7 +987,7 @@ namespace Hydra.Such.Portal.Controllers
                             RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
                             if (reqAprov != null)
                             {
-                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
                                 foreach (RequisitionLineViewModel rlines in getrlines)
                                 {
                                     rlines.QuantityAvailable = null;
@@ -1053,7 +1049,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     item = serv.ValidateLocalMarketFor(item);
                 }
                 catch (Exception ex)
@@ -1081,7 +1077,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     item = serv.ValidateRequisition(item);
                 }
                 catch (Exception ex)
@@ -1109,7 +1105,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
@@ -1137,7 +1133,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
                 }
                 catch (Exception ex)
@@ -1206,7 +1202,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (!string.IsNullOrEmpty(requisitionId))
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     GenericResult result = serv.CreateTransferShipmentFor(requisitionId);
                     if (result.CompletedSuccessfully)
                     {
@@ -1232,7 +1228,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                     item = serv.SendPrePurchaseFor(item);
                 }
                 catch (Exception ex)
@@ -1475,7 +1471,7 @@ namespace Hydra.Such.Portal.Controllers
             string ReqNo = requestParams["ReqNo"].ToString();
 
             List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
 

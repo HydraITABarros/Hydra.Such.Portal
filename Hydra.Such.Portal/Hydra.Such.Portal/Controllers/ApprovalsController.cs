@@ -368,7 +368,34 @@ namespace Hydra.Such.Portal.Controllers
                         //Rejeitar
                         else if (movementStatus == 2)
                         {
+                            //Reject Movement
+                            ErrorHandler approveResult = ApprovalMovementsManager.RejectMovement_FH(approvalMovement.MovementNo, User.Identity.Name, rejectionComments);
 
+                            //Check Approve Status
+                            if (approveResult.eReasonCode == 100)
+                            {
+                                //Update Folha de Horas Data
+                                FolhaHoras.Estado = 0;
+                                FolhaHoras.Terminada = false;
+                                FolhaHoras.TerminadoPor = null;
+                                FolhaHoras.DataHoraTerminado = null;
+                                FolhaHoras.Validado = false;
+                                FolhaHoras.Validador = null;
+                                FolhaHoras.DataHoraValidação = null;
+                                FolhaHoras.Observações = FolhaHoras.Observações + "\r\nRejeição: " + rejectionComments + " - Data: " + DateTime.Now.ToString() + " - Utilizador: " + User.Identity.Name;
+                                FolhaHoras.DataHoraÚltimoEstado = DateTime.Now;
+                                FolhaHoras.UtilizadorModificação = User.Identity.Name;
+                                FolhaHoras.DataHoraModificação = DateTime.Now;
+                                DBFolhasDeHoras.Update(FolhaHoras);
+
+                                result.eReasonCode = 100;
+                                result.eMessage = "A Folha de Horas foi rejeitada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 199;
+                                result.eMessage = "Ocorreu um erro desconhecido ao rejeitar a Folha de Horas.";
+                            }
                         }
                     }
                 }
@@ -502,7 +529,8 @@ namespace Hydra.Such.Portal.Controllers
                         //Rejeitar
                         else if (movementStatus == 2)
                         {
-
+                            result.eReasonCode = 101;
+                            result.eMessage = "A Folha de Horas não pode ser rejeitada neste nível.";
                         }
                     }
                 }
@@ -639,7 +667,8 @@ namespace Hydra.Such.Portal.Controllers
                         //Rejeitar
                         else if (movementStatus == 2)
                         {
-
+                            result.eReasonCode = 101;
+                            result.eMessage = "A Folha de Horas não pode ser rejeitada neste nível.";
                         }
                     }
                 }

@@ -14,12 +14,12 @@ namespace Hydra.Such.Data.Logic
     {
         public static List<PurchaseHeader> GetOrdersBySupplier(string NAVDatabaseName, string NAVCompanyName, string supplierId)
         {
-            return GetPurchasesBy(NAVDatabaseName, NAVCompanyName, PurchaseDocumentTypes.Encomenda, supplierId, string.Empty, string.Empty);
+            return GetPurchasesBy(NAVDatabaseName, NAVCompanyName, NAVBaseDocumentTypes.Encomenda, supplierId, string.Empty, string.Empty);
         }
 
         public static PurchaseHeader GetOrderById(string NAVDatabaseName, string NAVCompanyName, string orderId)
         {
-            var items = GetPurchasesBy(NAVDatabaseName, NAVCompanyName, PurchaseDocumentTypes.Encomenda, string.Empty, orderId, string.Empty);
+            var items = GetPurchasesBy(NAVDatabaseName, NAVCompanyName, NAVBaseDocumentTypes.Encomenda, string.Empty, orderId, string.Empty);
             if (items != null)
             {
                 return items.FirstOrDefault();
@@ -27,7 +27,7 @@ namespace Hydra.Such.Data.Logic
             return null;
         }
 
-        public static PurchaseHeader GetByExternalDocNo(string NAVDatabaseName, string NAVCompanyName, PurchaseDocumentTypes type, string externalDocNo)
+        public static PurchaseHeader GetByExternalDocNo(string NAVDatabaseName, string NAVCompanyName, NAVBaseDocumentTypes type, string externalDocNo)
         {
             var items = GetPurchasesBy(NAVDatabaseName, NAVCompanyName, type, string.Empty, string.Empty, externalDocNo);
             if (items != null)
@@ -37,7 +37,7 @@ namespace Hydra.Such.Data.Logic
             return null;
         }
 
-        private static List<PurchaseHeader> GetPurchasesBy(string NAVDatabaseName, string NAVCompanyName, PurchaseDocumentTypes type, string supplierId, string orderId, string externalDocNo)
+        private static List<PurchaseHeader> GetPurchasesBy(string NAVDatabaseName, string NAVCompanyName, NAVBaseDocumentTypes type, string supplierId, string orderId, string externalDocNo)
         {
             try
             {

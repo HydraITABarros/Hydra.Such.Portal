@@ -42,7 +42,7 @@
                    content-type="application/json"></iron-ajax>
 
 
-        <vaadin-grid aria-label="ApprovalsTable" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="60px">
                 <template class="header">
                     <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -106,30 +106,14 @@
                     {{item.level}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column width="140px">
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave" on-tap="_showDetails">Detalhes</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnEdit" on-tap="_Approve">Aprovar</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove" on-tap="_Reject">Rejeitar</paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -144,6 +128,24 @@
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-approvals',
+                ready: function () {
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    grid_el.height(height);
+                },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -164,6 +166,13 @@
                         var TMessage = this.$.ToastMessage;
                         var TMessageError = this.$.ToastError;
                         var ARequest = this.$.action_databound;
+
+                        if (e.model.item.type == 3 & (e.model.item.level == 2 | e.model.item.level == 3)) {
+                            TMessageError.text = "Não é possível rejeitar a Folha de Horas neste nível.";
+                            TMessageError.open();
+                            return false;
+                        };
+
                         bootbox.prompt({
                             title: "Introduza o motivo de rejeição!",
                             inputType: 'textarea',
@@ -183,7 +192,7 @@
                                     TMessageError.open();
                                     return false;
                                 } else {
-                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status : 2, rejectReason: result });
+                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 2, rejectReason: result });
                                     ARequest.generateRequest();
                                 }
                             }

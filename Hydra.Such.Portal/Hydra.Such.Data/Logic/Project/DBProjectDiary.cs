@@ -430,7 +430,8 @@ namespace Hydra.Such.Data.Logic.Project
                 Faturada = x.Billed,
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser,
-        };
+                PréRegisto = x.PreRegistered,
+            };
         }
 
         public static List<DiárioDeProjeto> ParseToDatabase(this List<ProjectDiaryViewModel> items)

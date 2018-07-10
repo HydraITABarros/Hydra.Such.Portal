@@ -128,6 +128,8 @@ namespace Hydra.Such.Data
             Clientes = 47,
             [Description("Pré-Registos")]
             PreRegistos = 48,
+            [Description("Preços Serviços Cliente")]
+            PreçoServCliente = 49,
             [Description("Administração Geral")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]
@@ -192,12 +194,12 @@ namespace Hydra.Such.Data
 
         public enum BillingDocumentTypes
         {
-            Fatura = PurchaseDocumentTypes.Fatura,
+            Fatura = NAVBaseDocumentTypes.Fatura,
             [Description("Nota de Crédito")]
-            NotaCredito = PurchaseDocumentTypes.NotaCredito
+            NotaCredito = NAVBaseDocumentTypes.NotaCredito
         }
 
-        public enum PurchaseDocumentTypes
+        public enum NAVBaseDocumentTypes
         {
             Proposta,
             Encomenda,
@@ -208,6 +210,36 @@ namespace Hydra.Such.Data
             EncomendaAberta,
             [Description("Devolução")]
             Devolucao
+        }
+
+        public enum BillingReceptionAreas
+        {
+            Contabilidade,
+            Aprovisionamento,
+            [Description("Unidades Produtivas")]
+            UnidadesProdutivas,
+            [Description("Unidades de Apoio e Suporte")]
+            UnidadesApoioESuporte,
+        }
+
+        public enum ContractLineTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Recurso,
+            Produto,
+            [Description("Conta CG")]
+            ContaCG,
+        }
+
+        public enum ProjectDiaryTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Produto,
+            Recurso,            
+            [Description("Conta CG")]
+            ContaCG,
         }
     }
 }

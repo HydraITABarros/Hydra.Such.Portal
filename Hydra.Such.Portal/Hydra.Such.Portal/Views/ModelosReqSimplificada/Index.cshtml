@@ -49,7 +49,7 @@
             </template>
         </div>
 
-        <vaadin-grid aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdCoffeeShopsTable" aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionTemplateId">Nº Modelo</vaadin-grid-sorter>
@@ -133,6 +133,19 @@
                 _onCacheLoaded: function (functionalAreas, responsabilityCenters, regions, products) {
                     //If necessary, remove auto attribute from iron-ajax and make the request
                     this.$.grid_databound.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdCoffeeShopsTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _rowSelected: function (item) {
                     if (item != null) {

@@ -29,7 +29,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(Hydra.Such.Data.Enumerations.Areas));
+                var items = Data.EnumHelper.GetItemsFor(typeof(Data.Enumerations.Areas));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );
@@ -42,7 +42,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(Features));
+                var items = Data.EnumHelper.GetItemsFor(typeof(Features));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );
@@ -1150,17 +1150,17 @@ namespace Hydra.Such.Portal.Configurations
             new EnumDataString()
             {
                 Id = "KM",
-                Value = "Kilómetros"
+                Value = "quilómetros"
             },
             new EnumDataString()
             {
                 Id = "KMC",
-                Value = "Kilómetros (Coimbra)"
+                Value = "quilómetros (Coimbra)"
             },
             new EnumDataString()
             {
                 Id = "KMP",
-                Value = "Kilómetros (Porto)"
+                Value = "quilómetros (Porto)"
             }
         };
 
@@ -1552,7 +1552,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 1,
-                Value = "Km"
+                Value = "km"
             },
             new EnumData
             {
@@ -1591,7 +1591,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 3,
-                Value = "Kilometros"
+                Value = "quilómetros"
             }
         };
 
@@ -1891,7 +1891,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(RequisitionStates));
+                var items = Data.EnumHelper.GetItemsFor(typeof(RequisitionStates));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );
@@ -2089,7 +2089,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Tipo_Cliente));
+                var items = Data.EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Tipo_Cliente));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );
@@ -2102,7 +2102,7 @@ namespace Hydra.Such.Portal.Configurations
             get
             {
                 List<EnumData> enumData = new List<EnumData>();
-                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Natureza_Cliente));
+                var items = Data.EnumHelper.GetItemsFor(typeof(Data.ViewModel.Clients.Natureza_Cliente));
                 items.ForEach(x =>
                     enumData.Add(new EnumData(x.Key, x.Value))
                 );

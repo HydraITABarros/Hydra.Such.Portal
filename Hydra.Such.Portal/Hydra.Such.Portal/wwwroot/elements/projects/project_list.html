@@ -56,7 +56,7 @@
             <paper-button id="btnContractHistory" class="tablinks" on-tap="_showClosed"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showEndedMessage}}</paper-button>
         </div>
 
-        <vaadin-grid aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ProjectsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -204,8 +204,25 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false});
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    grid_el.height(height);
                 },
                 _showClosed: function (item) {
                     if (item != null) {
