@@ -2295,8 +2295,10 @@ namespace Hydra.Such.Portal.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult GetPreMovements([FromBody] string projectNo)
+        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
         {
+            
+            DateTime DataValue = Convert.ToDateTime(data);
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -2307,26 +2309,58 @@ namespace Hydra.Such.Portal.Controllers
                 if (proj != null && !String.IsNullOrEmpty(proj.NºContrato))
                 {
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
+
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
-                            x => new DiárioDeProjeto()
-                            {
-                                NºProjeto = projectNo,
-                                Tipo = x.Tipo,
-                                Código = x.Código,
-                                Descrição = x.Descrição,
-                                Quantidade = 0,
-                                CódUnidadeMedida = x.CódUnidadeMedida,
-                                CódigoRegião = x.CódigoRegião,
-                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                PreçoUnitário = x.PreçoUnitário,
-                                Faturável = x.Faturável,
-                                Registado = false,
-                                PréRegisto = true
-                            }).ToList();
+                        if (!String.IsNullOrEmpty(codSClient))
+                        {
+                            dp = DBContractLines.GetAllBySClient(lcontracts.NºContrato, lcontracts.NºVersão, codSClient).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               Tipo = x.Tipo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                        else
+                        {
+                            dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               Tipo = x.Tipo,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                       
                         if (dp.Count == 0)
                         {
                             result.eReasonCode = 4;

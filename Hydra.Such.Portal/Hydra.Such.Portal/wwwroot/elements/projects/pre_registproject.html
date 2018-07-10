@@ -146,7 +146,7 @@
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
                 <paper-button class="tablinks" on-tap="_registerPreRegist"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Pré-Movimentos</paper-button>
-                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+                <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Recursos Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
                 <paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>
             </template>
@@ -1199,8 +1199,40 @@
                 <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient"dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
+        <paper-dialog id="dialogGetMovements" modal style="height:350px; width:900px">
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="projectMovementDlg" name="projectMovementDlg" value="{{MovementprojectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[responseDlg]]"
+                                    text-path="projectNo"
+                                    value-path="projectNo"
+                                    on-value-changed="_projectMovementDlgChange"
+                                    fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piSClientMovement" name="piCodeMovement" value="{{SClientMovementValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceMovementChanged"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    disabled="{{ projMovementSelected }}"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piMovementSDescription" label="Descrição Cód. Serviço" value="{{MovementCServClient}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data" id="idDateMovementDlg" name="DateMovementnameDlg" value="{{DateMovementDlg}}"></vaadin-date-picker>
+                </div>
+
+            </div>
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgGetMovements"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgGetMovementsCancel" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+        </paper-dialog>
         <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
-            <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
@@ -1312,6 +1344,11 @@
                         type: String,
                         notifiy: true,
                         value: ""
+                    },
+                    projMovementSelected: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
                     },
                     projSelected: {
                         type: Boolean,
@@ -1534,6 +1571,8 @@
                         this.$.projectTargetDlg.valueText = this.paramprojno;
                         this.$.projectDlg.value = this.paramprojno;
                         this.$.projectDlg.valueText = this.paramprojno;
+                        this.$.projectMovementDlg.value = this.paramprojno;
+                        this.$.projectMovementDlg.valueText = this.paramprojno;
                     } else {
                         this.disabledProjectNo = !this._permissions.create;
                     }
@@ -1657,6 +1696,15 @@
                         this.$.piservicedescription.value = "";
                     }
                 },
+                _ServiceMovementChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceClientData != null && this.ServiceClientData != "") {
+                        this.$.piMovementSDescription.value = this.ServiceClientData.find(x => x.serviceCode == e.detail.value).serviceDescription;
+
+                    } else {
+                        this.$.piMovementSDescription.value = "";
+                    }
+                },
+                
                 _createmovprojResponse: function (e) {
                     if (e.detail.status === 200) {
                         this.$.projectSourceDlg.value = "";
@@ -1707,7 +1755,6 @@
                     }
                 },
                 _DiaryPSClientResponse: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         if (this.newDiaryPSClient.eReasonCode === 1) {
                             if (this.newDiaryPSClient.items.length > 0) {
@@ -1827,6 +1874,20 @@
                     this.$.projectMovementTable.selectedItem = [];
                     this.$.projectMovementTable.clearCache();
                 },
+                _projectMovementDlgChange: function (e) {
+                    if (e.detail.value != "") {
+                        this.projMovementSelected = false;
+                    }
+                    if (e.detail.value != "" && this.responseDlg != null && this.responseDlg != "") {
+                        this.$.projectTargetDlg.value = e.detail.value;
+                        this.$.projectTargetDlg.valueText = e.detail.value;
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
+                        this.$.ajax_related.generateRequest();
+                    }
+                    else {
+                        this.$.ProjDescription.value = "";
+                    }
+                },
                 _projectDlgChange: function (e) {
                     if (e.detail.value != "") {
                         this.projSelected = false;
@@ -1942,13 +2003,8 @@
 
                 _getMovements: function () {
                     //Request
-                    if (this.$.projectList.value != null && this.$.projectList.value != "") {
-                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
-                        this.$.ajax_movementLines.generateRequest();
-                    }
-                    else {
-                        this.openToastError("Precisa de selecionar um projeto.");
-                    }
+                    this.$.dialogGetMovements.open();
+                  
 
                 },
                 _getMovementsProject: function () {
@@ -1977,6 +2033,22 @@
                     this.$.piserviceGroupdescription.value = "";
                     this.$.idDateRegistDlg.value = "";
                 },
+                _dlgGetMovements: function () {
+                    debugger;
+                    if (this.$.projectMovementDlg.value != undefined && this.$.projectMovementDlg.value != "" &&
+                        this.$.idDateMovementDlg.value != undefined && this.$.idDateMovementDlg.value != "") {
+                        if (this.$.piSClientMovement.value == null) {
+                            this.$.piSClientMovement.value = "";
+                        }
+                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectMovementDlg.value);
+                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value };
+                        this.$.ajax_movementLines.generateRequest();
+                        }
+                        else {
+                            this.openToastError("É obrigatório escolher o Nº Projeto e a Data.");
+                        }
+                   
+                },
                 _dlgGetPriceServClient: function () {
                     if (this.$.projectDlg.value != undefined && this.$.projectDlg.value != "" &&
                         this.$.piClient.value != undefined && this.$.piClient.value != "" &&
@@ -1993,12 +2065,23 @@
                     }
 
                 },
+                _dlgGetMovementsCancel: function () {
+                    this.$.piSClientMovement.value = "";
+                    this.$.piSClientMovement.valueText = "";
+                    this.$.piMovementSDescription.value = "";
+                    this.$.idDateMovementDlg.value = "";
+                },
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
                             this.openToastSuccess(this.movementLines.eMessage);
+                            this.$.dialogGetMovements.close();
+                            this.$.piSClientMovement.value = "";
+                            this.$.piSClientMovement.valueText = "";
+                            this.$.piMovementSDescription.value = "";
+                            this.$.idDateMovementDlg.value = "";
                         } else {
                             this.openToastError(this.movementLines.eMessage);
                         }
