@@ -2297,8 +2297,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
         {
-            
-            DateTime DataValue = Convert.ToDateTime(data);
+            DateTime? DataValue = null;
+            if (!String.IsNullOrEmpty(data))
+            {
+                DataValue = Convert.ToDateTime(data);
+            }
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -2314,7 +2317,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!String.IsNullOrEmpty(codSClient))
                         {
-                            dp = DBContractLines.GetAllBySClient(lcontracts.NºContrato, lcontracts.NºVersão, codSClient).Select(
+                            dp = DBContractLines.GetAllBySClient(lcontracts.NºDeContrato, lcontracts.NºVersão, codSClient).Select(
                            x => new DiárioDeProjeto()
                            {
                                Data = DataValue,
@@ -2338,7 +2341,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
+                            dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
                            x => new DiárioDeProjeto()
                            {
                                Data = DataValue,
