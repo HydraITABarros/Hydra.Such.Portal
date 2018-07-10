@@ -845,12 +845,15 @@
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
                 <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <!--<paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>-->
-                >
+                >
+
             </div>
-            >
+            >
+
         </div>
 
-        >
+        >
+
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -984,7 +987,7 @@
                         <vaadin-grid-filter path="serviceObject" />
                     </template>
                     <template>
-                        {{item.serviceObject}}
+                        {{item.serviceObjectCode}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="160px" resizable>

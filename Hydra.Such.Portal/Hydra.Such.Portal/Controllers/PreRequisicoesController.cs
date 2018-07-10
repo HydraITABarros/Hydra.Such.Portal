@@ -828,10 +828,80 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
 
-                    List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+                   
+                    List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
+                    PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
+                    List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
+                        x => x.OpenOrderLineNo,
+                        x => x,
+                        (key, items) => new RequisitionViewModel
+                        {
+                            RequestReclaimNo = data.ClaimedRequesitionNo,
+                            Urgent = data.Urgent,
+                            Area = data.Area,
+                            Immobilized = data.Immobilized,
+                            Exclusive = data.Exclusive,
+                            AlreadyPerformed = data.AlreadyExecuted,
+                            Sample = data.Sample,
+                            Equipment = data.Equipment,
+                            BuyCash = data.MoneyBuy,
+                            StockReplacement = data.StockReplacement,
+                            Reclamation = data.Complaint,
+                            RegionCode = data.RegionCode,
+                            FunctionalAreaCode = data.FunctionalAreaCode,
+                            CenterResponsibilityCode = data.ResponsabilityCenterCode,
+                            Vehicle = data.Vehicle,
+                            ProjectNo = data.ProjectNo,
+                            ReceivedDate = data.ReceptionDate,
+                            Comments = data.Notes,
+                            RepairWithWarranty = data.WarrantyRepair,
+                            Emm = data.EMM,
+                            WarehouseDeliveryDate = data.DeliveryWarehouseDate,
+                            LocalCollection = data.CollectionLocal,
+                            CollectionAddress = data.CollectionAddress,
+                            CollectionPostalCode = data.CollectionPostalCode,
+                            CollectionLocality = data.CollectionLocality,
+                            CollectionContact = data.CollectionContact,
+                            CollectionResponsibleReception = data.CollectionReceptionResponsible,
+                            LocalDelivery = data.DeliveryLocal,
+                            DeliveryAddress = data.DeliveryAddress,
+                            DeliveryPostalCode = data.DeliveryPostalCode,
+                            LocalityDelivery = data.DeliveryLocality,
+                            ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
+                            InvoiceNo = data.InvoiceNo,
+                            State = RequisitionStates.Pending,
+                            CreateUser = User.Identity.Name,
 
-                    PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+                            Lines = items.Select(line => new RequisitionLineViewModel()
+                            {
+
+                                LocalCode = line.LocalCode,
+                                Code = line.Code,
+                                Description = line.Description,
+                                UnitMeasureCode = line.UnitMeasureCode,
+                                QuantityToRequire = line.QuantityToRequire,
+                                UnitCost = line.UnitCost,
+                                ProjectNo = line.ProjectNo,
+                                MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
+                                Vehicle = line.Vehicle,
+                                SupplierNo = line.SupplierNo,
+                                RegionCode = line.RegionCode,
+                                FunctionalAreaCode = line.FunctionalAreaCode,
+                                CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                OpenOrderNo = line.OpenOrderNo,
+                                OpenOrderLineNo = line.OpenOrderLineNo,
+                            }).ToList()
+                        }).ToList();
+                    
+                    //Criar anexos                  
+                    if (CopyAttachments(newlistOpenOrder, data).eMessage != null && CopyAttachments(newlistOpenOrder, data).eMessage != "")
+                    {
+                        data = CopyAttachments(newlistOpenOrder, data);
+                    }
+
+                    List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
+                    PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto ==0|| x.NºLinhaEncomendaAberto==null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
                     List<RequisitionViewModel> newlist = GroupedList.GroupBy(
                         x => x.ArmazemCDireta,
@@ -895,109 +965,12 @@ namespace Hydra.Such.Portal.Controllers
                             }).ToList()
                         }).ToList();
 
-                    int totalItems = 0;
-                    string createdReqIds = ": ";
-
-                    foreach (var req in newlist)
+                    //Criar Anexos
+                    if (CopyAttachments(newlist, data).eMessage != null && CopyAttachments(newlistOpenOrder, data).eMessage != "")
                     {
-                        //Get Contract Numeration
-                        Configuração Configs = DBConfigurations.GetById(1);
-                        int ProjectNumerationConfigurationId = 0;
-                        ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
-
-                        string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
-                        if (!string.IsNullOrEmpty(RequisitionNo))
-                        {
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
-                            req.RequisitionNo = RequisitionNo;
-                            Requisição createReq = DBRequest.ParseToDB(req);
-
-                            createReq = DBRequest.Create(createReq);
-                            if(createReq != null)
-                            {
-                                //copy files
-                                var preReq = data.PreRequesitionsNo;
-                                List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
-                                foreach(var file in FilesLoaded)
-                                {
-                                    try
-                                    {
-                                        string FileName = file.UrlAnexo;
-                                        string NewFileName = FileName.Substring(FileName.IndexOf('_'));
-                                        try
-                                        {
-                                            System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao copiar anexo " + FileName + ": " + ex.Message));
-                                        }
-
-                                        AttachmentsViewModel CopyFile = new AttachmentsViewModel();
-                                        CopyFile.DocNumber = createReq.NºRequisição;
-                                        CopyFile.CreateUser = User.Identity.Name;
-                                        CopyFile.DocType = 2;
-                                        CopyFile.Url = NewFileName;
-                                        DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        data.eReasonCode = 0;
-                                        data.eMessage = "Ocorreu um erro ao copiar os anexos.";
-                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao guardar anexo: " + ex.Message));
-                                        //throw;
-                                    }
-                                    
-                                }
-
-                                //count successful items for later validation
-                                totalItems++;
-                                createdReqIds += RequisitionNo + "; ";
-                                var totalValue = req.GetTotalValue();
-                                //Start Approval
-                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
-                                if (result.eReasonCode != 100)
-                                {
-                                    data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
-                                }
-
-
-                                data.eReasonCode = 1;
-                                data.eMessage = "Requisições criadas com sucesso";
-                                
-                            }
-                            else
-                            {
-                                data.eReasonCode = 0;
-                                data.eMessage = "Ocorreu um erro ao criar a requisição.";
-                            }
-                        }
-                        else
-                        {
-                            data.eReasonCode = 0;
-                            data.eMessage = "A numeração configurada não é compativel com a inserida.";
-                        }
+                        data = CopyAttachments(newlistOpenOrder, data);
                     }
-                    if (totalItems == newlist.Count)
-                    {
-                        //if all items have been created delete pre-requisition lines
-                        DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-                        //data.eMessage += createdReqIds;
-                        //if (data.eMessages.Count > 0)
-                        //{
-                        //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
-                        //}
-                    }
-                    else
-                    {
-                        data.eReasonCode = 0;
-                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
-                    }
+
                 }
             }
             catch (Exception ex)
@@ -1008,6 +981,117 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
+
+        public PreRequesitionsViewModel CopyAttachments(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
+        {
+            int totalItems = 0;
+            string createdReqIds = ": ";
+
+            foreach (var req in newlist)
+            {
+                //Get Contract Numeration
+                Configuração Configs = DBConfigurations.GetById(1);
+                int ProjectNumerationConfigurationId = 0;
+                ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+
+                string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                if (!string.IsNullOrEmpty(RequisitionNo))
+                {
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                    ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
+                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                    DBNumerationConfigurations.Update(ConfigNumerations);
+
+                    req.RequisitionNo = RequisitionNo;
+                    Requisição createReq = DBRequest.ParseToDB(req);
+
+                    createReq = DBRequest.Create(createReq);
+                    if (createReq != null)
+                    {
+                        //copy files
+                        var preReq = data.PreRequesitionsNo;
+                        List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
+                        foreach (var file in FilesLoaded)
+                        {
+                            try
+                            {
+                                string FileName = file.UrlAnexo;
+                                string NewFileName = FileName.Substring(FileName.IndexOf('_'));
+                                try
+                                {
+                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao copiar anexo " + FileName + ": " + ex.Message));
+                                }
+
+                                AttachmentsViewModel CopyFile = new AttachmentsViewModel();
+                                CopyFile.DocNumber = createReq.NºRequisição;
+                                CopyFile.CreateUser = User.Identity.Name;
+                                CopyFile.DocType = 2;
+                                CopyFile.Url = NewFileName;
+                                DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                            }
+                            catch (Exception ex)
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "Ocorreu um erro ao copiar os anexos.";
+                                data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao guardar anexo: " + ex.Message));
+                                //throw;
+                            }
+
+                        }
+
+                        //count successful items for later validation
+                        totalItems++;
+                        createdReqIds += RequisitionNo + "; ";
+                        var totalValue = req.GetTotalValue();
+                        //Start Approval
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                        if (result.eReasonCode != 100)
+                        {
+                            data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
+                        }
+
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "Requisições criadas com sucesso";
+
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 0;
+                    data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                }
+               
+            }
+            if (totalItems == newlist.Count)
+            {
+                //if all items have been created delete pre-requisition lines
+                DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                //data.eMessage += createdReqIds;
+                //if (data.eMessages.Count > 0)
+                //{
+                //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                //}
+            }
+            else
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
+            }
+
+            return data;
+        }
+
 
         [HttpPost]
         public JsonResult SendReqForApproval([FromBody] JObject requestParams)

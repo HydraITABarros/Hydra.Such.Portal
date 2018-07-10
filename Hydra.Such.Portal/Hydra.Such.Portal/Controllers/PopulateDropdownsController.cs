@@ -348,17 +348,20 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
         {
+            DateTime date = DateTime.Now;
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
-                List<DDMessage> result = new List<DDMessage>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).Select(x => new DDMessage()
+                List<DDMessageRelated> result = new List<DDMessageRelated>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, PurchaseHeaderNo).Select(x => new DDMessageRelated()
                 {
-                    id = x.Line_No,
-                    value = x.Description
+                    id = x.Line_No.ToString(),
+                    value = x.BuyFromVendorNo,
+                    extra = x.OutstandingQtyBase.ToString("n2"),
+                    extra2 = x.ProdOrderNo
                 }).ToList(); ;
-
                 return Json(result);
+
             }
             catch (Exception e)
             {
@@ -366,6 +369,8 @@ namespace Hydra.Such.Portal.Controllers
             }
 
         }
+
+        
 
         [HttpPost]
         public JsonResult getSupplier([FromBody] string suppliercode)
