@@ -104,7 +104,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-
+        
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -298,7 +298,6 @@
                     </template>
                 </div>
             </div>
-
             <template is="dom-if" if="{{ _showWorkflowData }}">
                 <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
                 <div class="panel-body">
@@ -320,7 +319,7 @@
                             <vaadin-text-field label="Área Pendente" type="text" value="{{data.AreaPendenteDescricao}}" id="txtAreaPendente" disabled></vaadin-text-field>
                         </div>
                         <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDestination" name="txtDestination" label="Destinatário" disabled></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{ data.id }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                         </div>
                         <div class="col-sm-2">
                             <vaadin-date-picker value="{{data.id}}" id="txtData" label="Data" disabled></vaadin-date-picker>
@@ -390,7 +389,7 @@
                             </template>
                             <template>
                                 <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatário" name="txtDestinatário" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
                                     {{item.utilizador}}
@@ -446,7 +445,7 @@
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatario" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
+                        <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatarios" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -457,14 +456,14 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-6">
-                        <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" disabled></vaadin-text-field>
+                        <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3" hidden="{{ !_checkDestination }}">
+                    <div class="col-sm-3" hidden="{{ !_isInternalDestination }}">
                         <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
                     </div>
-                    <div class="row break_clear" hidden="{{ _checkDestination }}">
+                    <div class="row break_clear" hidden="{{ _isInternalDestination }}">
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="value" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
                                 <template>
@@ -480,7 +479,7 @@
                             <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
                         </div>
                     </div>
-                    <div class="row break_clear" hidden="{{ _checkDestination }}">
+                    <div class="row break_clear" hidden="{{ _isInternalDestination }}">
                         <div class="col-sm-3">
                             <vaadin-text-field label="Área" type="text" value="{{data.valor}}" id="txtAreadgl"></vaadin-text-field>
                         </div>
@@ -528,7 +527,7 @@
                     },
                     TiposDestinatarios: {
                         type: Array,
-                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }],
+                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }], 
                     },
                     _isCreate: {
                         type: Boolean,
@@ -542,7 +541,7 @@
                         type: Boolean,
                         value: false,
                    },
-                    _checkDestination: {
+                    _isInternalDestination: {
                         type: Boolean,
                         value: true,
                     },
@@ -728,10 +727,11 @@
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
                     if (type == 0) //interno
-                        this._checkDestination = true;
+                        this._isInternalDestination = true;
                     else {//externo
-                        this._checkDestination = false;
-                        this.$.txtFornecedor.value = this.data.codFornecedor;
+                        this._isInternalDestination = false;
+                        var vendor = this.Vendors.find(x => x.no_ = this.data.codFornecedor);
+                        this.$.txtFornecedor.value = vendor != null ? this.data.codFornecedor + " - " + vendor.name : this.data.codFornecedor;
                     }
                 },
                 _sendPending: function () {

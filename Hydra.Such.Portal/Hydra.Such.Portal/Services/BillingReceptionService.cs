@@ -240,6 +240,11 @@ namespace Hydra.Such.Portal.Services
             return repo.GetQuestions();
         }
 
+        public List<RecFacturasProblemas> GetAreas()
+        {
+            return null;// repo.GetQuestions();
+        }
+
         #endregion
     }
 }

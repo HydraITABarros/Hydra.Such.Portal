@@ -121,6 +121,8 @@ namespace Hydra.Such.Data.Logic.Request
                     objectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.Requisição.Update(objectToUpdate);
                     ctx.SaveChanges();
+
+                    objectToUpdate = GetById(objectToUpdate.NºRequisição);
                 }
 
                 return objectToUpdate;
