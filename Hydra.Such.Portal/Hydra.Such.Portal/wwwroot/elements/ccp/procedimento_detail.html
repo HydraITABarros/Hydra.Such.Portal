@@ -832,6 +832,9 @@
                    content-type="application/json">
         </iron-ajax>
 
+        
+
+
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
@@ -843,46 +846,72 @@
                             <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
+
+                            <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
+                                            items="[[CBRegions]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                            required error-message="Este campo é obrigatório">
+
+                            </such-selectbox>
+
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="30%">[[item.id]]</td>
-                                            <td width="70%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="30%">[[item.id]]</td>
+                                        <td width="70%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
+
+
+                            <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
+                                            items="[[CBFunctionalAreas]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                            </such-selectbox>
+
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
+
+                            <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
+                                            items="[[CBResponsabilityCenterCodes]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                            </such-selectbox>
                         </div>
                     </div>
                 </div>
@@ -2459,8 +2488,8 @@
                                                     <vaadin-text-field value="{{data.dtFim_AcordoPreco_Show}}" id="dtFim_acordoPreco_Show" name="dtFim_acordoPreco_Show" label="Data Fim" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-xs-4">
-                                                    <vaadin-text-field type="number" id="valorTotal_acordoPreco" name="valorTotal_acordoPreco" label="Valor Total"> </vaadin-text-field>
-                                                    <vaadin-text-field value="{{data.valorTotal_AcordoPreco_Show}}" id="valorTotal_AcordoPreco_Show" name="valorTotal_AcordoPreco_Show" label="Valor Total" disabled="true"> </vaadin-text-field>
+                                                    <vaadin-text-field type="number" id="valorTotal_acordoPreco" name="valorTotal_acordoPreco" label="Valor Total"> <div slot="suffix">€</div> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorTotal_AcordoPreco_Show}}" id="valorTotal_AcordoPreco_Show" name="valorTotal_AcordoPreco_Show" label="Valor Total" disabled="true"> <div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -5553,6 +5582,9 @@
                     }
                 },
 
+                _btnVerAcordoPreco: function () {
+                    window.location.href = "/Administracao/AcordoPrecos/" + this.data.noProcedimento_Show;
+                },
 
 
                 //NR 20180313
@@ -6031,7 +6063,7 @@
                         } else {
                             $(_self.$.dtIni_acordoPreco_Show).addClass('hidden');
                             $(_self.$.dtFim_acordoPreco_Show).addClass('hidden');
-                            $(_self.$.valorTotal_acordoPreco_Show).addClass('hidden');
+                            $(_self.$.valorTotal_AcordoPreco_Show).addClass('hidden');
 
                             $(_self.$.btnVerAcordoPreco).addClass('hidden');
                         }
