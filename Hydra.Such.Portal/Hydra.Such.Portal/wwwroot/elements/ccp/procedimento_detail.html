@@ -266,6 +266,10 @@
                 cursor: not-allowed;
                 pointer-events: none;
             }
+
+            fullwidth {
+                width: 100%;
+            }
         </style>
 
         <!-- Dropdowns populate.b -->
@@ -816,6 +820,15 @@
                    handle-as="json"
                    id="ajax_enviarParaCompras_13"
                    on-response="_enviarParaCompras_13Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/ProcedimentosCcps/InsertAcordoPreco_Procedimentos"
+                   last-response="{{ _btnCriarAcordoPreco }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_btnCriarAcordoPreco"
+                   on-response="ajax_btnCriarAcordoPrecoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -2398,33 +2411,64 @@
                                     </div>
                                 </div>
                             </div>
+                            <!--<div class="col-xs-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Acordos c/ fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Acordos c/ fornecedores</div>
+                                    <div class="panel-heading">Acordo de Preços</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
+                                                <div class="col-xs-4">
+                                                    <vaadin-date-picker id="dtIni_acordoPreco" name="dtIni_acordoPreco" label="Data Inicio"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dtInicio_AcordoPreco_Show}}" id="dtIni_acordoPreco_Show" name="dtIni_acordoPreco_Show" label="Data Inicio" disabled="true"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <vaadin-date-picker id="dtFim_acordoPreco" name="dtFim_acordoPreco" label="Data Fim"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dtFim_AcordoPreco_Show}}" id="dtFim_acordoPreco_Show" name="dtFim_acordoPreco_Show" label="Data Fim" disabled="true"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <vaadin-text-field type="number" id="valorTotal_acordoPreco" name="valorTotal_acordoPreco" label="Valor Total"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorTotal_AcordoPreco_Show}}" id="valorTotal_AcordoPreco_Show" name="valorTotal_AcordoPreco_Show" label="Valor Total" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
+                                                    <paper-button raised id="btnCriarAcordoPreco" class="btn--confirm pull-right" on-tap="_btnCriarAcordoPreco">Criar Acordo Preços</paper-button>
                                                 </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
+                                                <div class="col-sm-6">
+                                                    <paper-button raised id="btnVerAcordoPreco" class="btn--confirm pull-right" on-tap="_btnVerAcordoPreco">Ver Acordo Preços</paper-button>
                                                 </div>
                                             </div>
                                         </div>
@@ -2432,43 +2476,43 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Contratos Fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
-                                                </div>
+                            <!--<div class="col-xs-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Contratos Fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
 
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
-                                                </div>
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -3351,7 +3395,7 @@
                                             <vaadin-progress-bar class="in-range" id="CBDefault_diasGastos_verde" value="{{data.temposPaCcp.somaEstadosGastos_percentagem}}" min="0" max="100" visible="false"></vaadin-progress-bar>
                                         </div>
                                         <div class="col-sm-2">
-                                            
+
                                         </div>
                                     </div>
 
@@ -5479,6 +5523,38 @@
                     }
                 },
 
+
+
+                _btnCriarAcordoPreco: function () {
+                    var ajax_request = this.$.ajax_btnCriarAcordoPreco;
+                    ajax_request.body = JSON.stringify({ "NoProcedimento": this.data.no, "dtIni": this.$.dtIni_acordoPreco.__data.value, "dtFim": this.$.dtFim_acordoPreco.__data.value, "valorTotal": this.$.valorTotal_acordoPreco.__data.value });
+                    
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a criação de Acordo de Preços?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    //this.$.ajax_btnCriarAcordoPreco.body = JSON.stringify(this.data);
+                    //this.$.ajax_btnCriarAcordoPreco.body = ajax_request.body;
+                    //this.$.ajax_btnCriarAcordoPreco.generateRequest();
+                },
+                ajax_btnCriarAcordoPrecoResponse: function (e) {
+                    debugger
+                    if (this._btnCriarAcordoPreco.eReasonCode == 0) {
+                        this._openToast("Criado Acordo de Preços!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                    }
+                    else {
+                        this._openToast(this._btnCriarAcordoPreco.eMessage);
+                    }
+                },
+
+
+
                 //NR 20180313
                 _mnuAccao1_ItemSelected: function (e) {
                     if (this.$.id_Estado.value != 1) {
@@ -5714,7 +5790,7 @@
                         $(_self.$.btnAutorizacaoAdjudicacaoReject).addClass('hidden');
                         $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('hidden');
                         $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('hidden');
-                        $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('hidden');
+                        //$(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('hidden');
                         $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('hidden');
                         $(_self.$.btnMudarEstado).addClass('hidden');
                         $(_self.$.btnCriarNota).addClass('hidden');
@@ -5937,13 +6013,27 @@
                             $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('disabled');
 
                             $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('disabled');
-                            $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
+                            //$(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
                             $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
 
                             $(_self.$.dataNotificacao).addClass('hidden');
                         } else {
                             _self.$.dataNotificacao_Show.disabled = (data.estado = 18);
                             $(_self.$.dataNotificacao_Show).addClass('hidden');
+                        }
+                        
+                        if (data.noProcedimento_Show != '') {
+                            $(_self.$.dtIni_acordoPreco).addClass('hidden');
+                            $(_self.$.dtFim_acordoPreco).addClass('hidden');
+                            $(_self.$.valorTotal_acordoPreco).addClass('hidden');
+
+                            $(_self.$.btnCriarAcordoPreco).addClass('hidden');
+                        } else {
+                            $(_self.$.dtIni_acordoPreco_Show).addClass('hidden');
+                            $(_self.$.dtFim_acordoPreco_Show).addClass('hidden');
+                            $(_self.$.valorTotal_acordoPreco_Show).addClass('hidden');
+
+                            $(_self.$.btnVerAcordoPreco).addClass('hidden');
                         }
                     }
 

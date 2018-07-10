@@ -173,7 +173,7 @@
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/CreateDiaryByPriceServiceCient" last-response="{{newDiaryPSClient}}" id="ajax_DiaryPSClient" on-response="_DiaryPSClientResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Projetos/UpdateProjectDiary" last-response="{{diaryresult}}" id="ajax_updatediary" method="post" on-response="_updatediaryResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/UpdatePreRegistProject" last-response="{{diaryresult}}" id="ajax_updatediary" method="post" on-response="_updatediaryResponse" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetProjDiary_Price" last-response="{{ProjDiary_Price}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -1196,7 +1196,7 @@
             </div>
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_dlgGetPriceServClient"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient"dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
         <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
@@ -1686,15 +1686,24 @@
                 _updatediaryResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.diaryresult.eReasonCode === 1) {
-                            this.openToastSuccess("Atualizado com sucesso. Pagina atual será redirecionada para a página dos Diários");
-                            window.location.href = "/Projetos/DiarioProjeto";
+                            this.openToastSuccess(this.diaryresult.eMessage);
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.$.dialogGetPriceServiceClient.close();
+                            this.$.piServiceClientCode.value = "";
+                            this.$.piServiceClientCode.valueText = "";
+                            this.$.piservicedescription.value = "";
+                            this.$.piServiceGroupDlg.value = "";
+                            this.$.piServiceGroupDlg.valueText = "";
+                            this.$.piserviceGroupdescription.value = "";
+                            this.$.idDateRegistDlg.value = "";
                         }
                         else {
                             this.openToastError(this.diaryresult.eMessage);
                         }
                     }
                     else {
-                        this.openToastError("Occorreu ao criar linhas nos Diários.");
+                        this.openToastError("Occorreu ao criar Pré-Registos.");
                     }
                 },
                 _DiaryPSClientResponse: function (e) {
@@ -1704,6 +1713,7 @@
                             if (this.newDiaryPSClient.items.length > 0) {
                                 this.$.ajax_updatediary.body = JSON.stringify(this.newDiaryPSClient.items);
                                 this.$.ajax_updatediary.generateRequest();
+                                this.$.projectDiaryProject.clearCache();
                             } 
                         }
                         else {
@@ -1957,6 +1967,15 @@
                         this.openToastError("É obrigatório escolher o projeto de origem, de destino e a Data.");
                     }
 
+                },
+                _dlgCancelPriceServClient: function () {
+                    this.$.piServiceClientCode.value = "";
+                    this.$.piServiceClientCode.valueText = "";
+                    this.$.piservicedescription.value = "";
+                    this.$.piServiceGroupDlg.value = "";
+                    this.$.piServiceGroupDlg.valueText = "";
+                    this.$.piserviceGroupdescription.value = "";
+                    this.$.idDateRegistDlg.value = "";
                 },
                 _dlgGetPriceServClient: function () {
                     if (this.$.projectDlg.value != undefined && this.$.projectDlg.value != "" &&

@@ -291,5 +291,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string Cor_Folder { get; set; }
 
         public ICollection<RequisitionViewModel> ListaReq_Show { get; set; }
+
+        public string DtInicio_AcordoPreco_Show { get; set; }
+        public string DtFim_AcordoPreco_Show { get; set; }
+        public string ValorTotal_AcordoPreco_Show { get; set; }
+        public string NoProcedimento_Show { get; set; }
     }
 }
