@@ -2021,5 +2021,22 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        public JsonResult GetInvoiceHeaderList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
+            result = DBNAV2017ContractDetails.GetContractInvoiceHeaderByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+
+        public JsonResult GetInvoiceLinesList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
+            result = DBNAV2017ContractDetails.GetContractInvoiceLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+        
     }
 }

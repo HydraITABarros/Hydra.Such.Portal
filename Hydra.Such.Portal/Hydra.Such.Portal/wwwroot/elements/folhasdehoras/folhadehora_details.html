@@ -32,6 +32,9 @@
 
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 
+<link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
+<link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -133,9 +136,12 @@
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LFolhaDeHoraRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LFolhaDeHoraRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraStatus" last-response="{{LFolhaDeHoraStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -172,13 +178,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
-                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatefolhadehorasvalidacao_ajax"
-                   on-response="_updatefolhadehorasvalidacaoResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{FolhaDeHorasUpdatedValidacao}}"
+               method="post"
+               handle-as="json"
+               id="page_updatefolhadehorasvalidacao_ajax"
+               on-response="_updatefolhadehorasvalidacaoResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
@@ -186,6 +192,15 @@
                    handle-as="json"
                    id="page_updatefolhadehoras_ajax"
                    on-response="_updatefolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/DeleteFolhaDeHoras"
+                   last-response="{{FolhaDeHorasDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deletefolhadehoras_ajax"
+                   on-response="_deletefolhadehorasResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -208,13 +223,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
-                   last-response="{{validateResponse}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_validator_ajax"
-                   on-response="_responseValidatorProcessor"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{validateResponse}}"
+               method="post"
+               handle-as="json"
+               id="page_validator_ajax"
+               on-response="_responseValidatorProcessor"
+               content-type="application/json">
+    </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -235,13 +250,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
-                   last-response="{{PercursoUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatepercurso_ajax"
-                   on-response="_updatePercursoResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{PercursoUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatepercurso_ajax"
+               on-response="_updatePercursoResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -273,13 +288,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
-                   last-response="{{AjudaUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updateajuda_ajax"
-                   on-response="_updateAjudaResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{AjudaUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updateajuda_ajax"
+               on-response="_updateAjudaResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
@@ -310,13 +325,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
-                   last-response="{{MaoDeObraUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatemaodeobra_ajax"
-                   on-response="_updateMaoDeObraResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{MaoDeObraUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatemaodeobra_ajax"
+               on-response="_updateMaoDeObraResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -356,13 +371,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
-                   last-response="{{PresencaUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updatepresenca_ajax"
-                   on-response="_updatePresencaResponse"
-                   content-type="application/json">
-        </iron-ajax>-->
+               last-response="{{PresencaUpdated}}"
+               method="post"
+               handle-as="json"
+               id="page_updatepresenca_ajax"
+               on-response="_updatePresencaResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -426,7 +441,8 @@
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
             <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir Folha de Horas"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
-            <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#DADADA"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button id="btn_delete" class="tablinks" on-tap="_deleteFH" disabled="{{ !_permissions.delete }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -484,11 +500,11 @@
                         </div>
 
                         <!--<div class="col-sm-3">
-                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                        </div>-->
+                        <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                    </div>-->
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                    </div>-->
 
                         <div class="col-sm-3">
                             <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
@@ -504,11 +520,11 @@
                         </div>
 
                         <!--<div class="col-sm-3">
-                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                        </div>-->
+                        <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                    </div>-->
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                    </div>-->
 
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
@@ -554,15 +570,13 @@
                             <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
 
-
-
                         <!--<div class="col-sm-3" style="padding-top:20px">
-                            <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </div>-->
+                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </div>-->
                     </div>
 
                     <!--<div class="marginSpace">
-                    </div>-->
+                </div>-->
                 </div>
 
 
@@ -606,8 +620,8 @@
 
 
                                 <!--<div class="col-sm-1" style="padding-top:23px">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1018,8 +1032,8 @@
 
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1261,8 +1275,8 @@
 
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPresenca" class="btnSave tableBtn" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1398,42 +1412,61 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="300px">
-                                        <tr>
-                                            <td width="15%">[[item.id]]</td>
-                                            <td width="85%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Região" disabled="{{ !_permissions.update }}"
+                                            items="[[CBRegions]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                            required error-message="Este campo é obrigatório">
+                            </such-selectbox>
+                            <!--<vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="15%">[[item.id]]</td>
+                                        <td width="85%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="400px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Área Funcional" disabled="{{ !_permissions.update }}"
+                                            items="[[CBFunctionalAreas]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                            </such-selectbox>
+                            <!--<vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="400px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="350px">
-                                        <tr>
-                                            <td width="10%">[[item.id]]</td>
-                                            <td width="90%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Centro Respon." disabled="{{ !_permissions.update }}"
+                                            items="[[CBResponsabilityCenterCodes]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                            </such-selectbox>
+                            <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
+                            <template>
+                                <table width="350px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
                     </div>
 
@@ -1890,6 +1923,106 @@
                     this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
                 },
 
+                _deleteFH: function () {
+                    debugger;
+                    var ajax_request = this.$.page_deletefolhadehoras_ajax;
+
+                    var delete_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
+                    var delete_Area = this.data.codigoArea;
+                    var delete_ProjetoNo = this.$.projetoNo.value;
+                    var delete_EmpregadoNo = this.$.empregadoNo.value;
+                    var delete_DataPartidaTexto = this.$.dataPartidaTexto.value;
+                    var delete_HoraPartidaTexto = this.$.horaPartidaTexto.value;
+                    var delete_DataChegadaTexto = this.$.dataChegadaTexto.value
+                    var delete_HoraChegadaTexto = this.$.horaChegadaTexto.value;
+                    var delete_TipoDeslocacao = this.$.tipoDeslocacao.value;
+                    var delete_CodigoTipoKms = this.$.codigoTipoKms.value;
+                    var delete_Matricula = this.$.matricula.value;
+                    var delete_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
+                    var delete_Terminada = this.data.terminada;
+                    var delete_Estado = this.$.folhaDeHoraStatus.value;
+                    var delete_CriadoPor = this.$.criadoPor.value;
+                    var delete_CodigoRegiao = this.$.codigoRegiao.value;
+                    var delete_CodigoAreaFuncional = this.$.codigoAreaFuncional.value;
+                    var delete_CodigoCentroResponsabilidade = this.$.codigoCentroResponsabilidade.value;
+                    var delete_Validado = this.data.validado;
+                    var delete_Validadores = this.$.validadores.value;
+                    var delete_Validador = this.$.validador.value;
+                    var delete_DataValidacaoTexto = this.$.dataValidacaoTexto.value;
+                    var delete_HoraValidacaoTexto = this.$.horaValidacaoTexto.value;
+                    var delete_IntegradoresEmRH = this.$.integradoresEmRH.value;
+                    var delete_IntegradorEmRH = this.$.integradorEmRH.value;
+                    var delete_DataIntegracaoEmRHTexto = this.$.dataIntegracaoEmRHTexto.value;
+                    var delete_HoraIntegracaoEmRHTexto = this.$.horaIntegracaoEmRHTexto.value;
+                    var delete_IntegradoresEmRHKM = this.$.integradoresEmRHKM.value;
+                    var delete_IntegradorEmRHKM = this.$.integradorEmRHKM.value;
+                    var delete_DataIntegracaoEmRHKMTexto = this.$.dataIntegracaoEmRHKMTexto.value;
+                    var delete_HoraIntegracaoEmRHKMTexto = this.$.horaIntegracaoEmRHKMTexto.value;
+                    var delete_CustoTotalAjudaCusto = this.$.custoTotalAjudaCusto.value;
+                    var delete_CustoTotalHoras = this.$.custoTotalHoras.value;
+                    var delete_CustoTotalKM = this.$.custoTotalKM.value;
+                    var delete_NumTotalKM = this.$.numTotalKM.value;
+                    var delete_Observacoes = this.$.observacoes.value;
+                    var delete_Eliminada = true;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Eliminar a Folha de Horas?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteFolhaHoras) {
+                            if (deleteFolhaHoras) {
+                                ajax_request.body = JSON.stringify({
+                                    folhaDeHorasNo: delete_FolhaDeHorasNo,
+                                    projetoNo: delete_ProjetoNo,
+                                    empregadoNo: delete_EmpregadoNo,
+                                    dataPartidaTexto: delete_DataPartidaTexto,
+                                    horaPartidaTexto: delete_HoraPartidaTexto,
+                                    dataChegadaTexto: delete_DataChegadaTexto,
+                                    horaChegadaTexto: delete_HoraChegadaTexto,
+                                    tipoDeslocacao: delete_TipoDeslocacao,
+                                    codigoTipoKms: delete_CodigoTipoKms,
+                                    matricula: delete_Matricula,
+                                    deslocacaoForaConcelho: delete_DeslocacaoForaConcelho,
+                                    terminada: delete_Terminada,
+                                    estado: delete_Estado,
+                                    criadoPor: delete_CriadoPor,
+                                    codigoRegiao: delete_CodigoRegiao,
+                                    codigoAreaFuncional: delete_CodigoAreaFuncional,
+                                    codigoCentroResponsabilidade: delete_CodigoCentroResponsabilidade,
+                                    validado: delete_Validado,
+                                    validadores: delete_Validadores,
+                                    validador: delete_Validador,
+                                    dataValidacaoTexto: delete_DataValidacaoTexto,
+                                    horaValidacaoTexto: delete_HoraValidacaoTexto,
+                                    integradoresEmRH: delete_IntegradoresEmRH,
+                                    integradorEmRH: delete_IntegradorEmRH,
+                                    dataIntegracaoEmRHTexto: delete_DataIntegracaoEmRHTexto,
+                                    horaIntegracaoEmRHTexto: delete_HoraIntegracaoEmRHTexto,
+                                    integradoresEmRHKM: delete_IntegradoresEmRHKM,
+                                    integradorEmRHKM: delete_IntegradorEmRHKM,
+                                    dataIntegracaoEmRHKMTexto: delete_DataIntegracaoEmRHKMTexto,
+                                    horaIntegracaoEmRHKMTexto: delete_HoraIntegracaoEmRHKMTexto,
+                                    custoTotalAjudaCusto: delete_CustoTotalAjudaCusto,
+                                    custoTotalHoras: delete_CustoTotalHoras,
+                                    custoTotalKM: delete_CustoTotalKM,
+                                    numTotalKM: delete_NumTotalKM,
+                                    observacoes: delete_Observacoes,
+                                    eliminada: delete_Eliminada
+                                });
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _validacaoDataPartidaChegada: function () {
                     //debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
@@ -2014,6 +2147,7 @@
                         var terminada_CustoTotalKM = this.$.custoTotalKM.value;
                         var terminada_NumTotalKM = this.$.numTotalKM.value;
                         var terminada_Observacoes = this.$.observacoes.value;
+                        var terminada_Eliminada = false;
 
                         bootbox.confirm({
                             message: "Tem a certeza que pretende Terminar a Folha de Horas?",
@@ -2070,7 +2204,8 @@
                                     custoTotalHoras: terminada_CustoTotalHoras,
                                     custoTotalKM: terminada_CustoTotalKM,
                                     numTotalKM: terminada_NumTotalKM,
-                                    observacoes: terminada_Observacoes
+                                    observacoes: terminada_Observacoes,
+                                    eliminada: terminada_Eliminada
                                 });
                                 ajax_request.generateRequest();
                             }
@@ -3355,6 +3490,28 @@
                     }
                 },
 
+                _deletefolhadehorasResponse: function (e) {
+                    //debugger;
+                    var self = this;
+
+                    if (this.FolhaDeHorasDeleted == 0) {
+                        this._showMessage('Folha de Horas eliminada com sucesso.');
+                        window.history.back();
+                    } else {
+                        if (this.FolhaDeHorasDeleted == 1) {
+                            this._showErrorMessage('A Folha de Horas não pode ser Eliminada pois já se encontra Validada.');
+                        }
+                        else {
+                            if (this.FolhaDeHorasDeleted == 2) {
+                                this._showErrorMessage('Ocorreu um erro ao Eliminar a Folha de Horas.');
+                            }
+                            else {
+                                this._showErrorMessage('Ocorreu um erro.');
+                            }
+                        }
+                    }
+                },
+
                 _terminarfolhadehorasResponse: function (e) {
                     //debugger;
                     setTimeout(function () {
@@ -3925,6 +4082,7 @@
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
+                        $(_self.$.btn_delete).addClass('disabled');
                         $(_self.$.btn_createPercurso).addClass('disabled');
                         $(_self.$.btn_createAjuda).addClass('disabled');
                         if (_self.$.integradorEmRH.value != null) {
@@ -3940,12 +4098,16 @@
                         $(_self.$.btn_integrarEmRH).addClass('disabled');
                         $(_self.$.btn_integrarEmRHKM).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
+                        $(_self.$.btn_delete).addClass('disabled');
                         $(_self.$.btn_createPercurso).addClass('disabled');
                         $(_self.$.btn_createAjuda).addClass('disabled');
                         $(_self.$.btn_createMaoDeObra).addClass('disabled');
                         $(_self.$.btn_createPresenca).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
                     };
+                    if (data.validador != null) {
+                        $(_self.$.btn_delete).addClass('disabled');
+                    }
 
                     //CAMPOS
                     if (data.terminada == true) { //TERMINADA

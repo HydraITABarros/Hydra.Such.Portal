@@ -2529,6 +2529,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValidadoresRhKm)
                     .HasColumnName("Validadores RH KM")
                     .HasMaxLength(200);
+
+                entity.Property(e => e.Eliminada).HasColumnName("Eliminada");
+
             });
 
             modelBuilder.Entity<FornecedoresAcordoPrecos>(entity =>

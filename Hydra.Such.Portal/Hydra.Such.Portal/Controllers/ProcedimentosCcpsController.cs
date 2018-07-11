@@ -61,9 +61,9 @@ namespace Hydra.Such.Portal.Controllers
                         CCAddress = "";
                         break;
                     default:
-                        if (Convert.ToInt32(AreaFuncionalCode.Substring(0, 2)) == 72)
+                        if (Convert.ToInt32(AreaFuncionalCode.Substring(0, 2)) == 32)
                         {
-                            AreaID = 72;
+                            AreaID = 32;
                             AreaName = "Gestão de Parques de Estacionamento";
                             ToAddress = Addresses.Email7Compras;
                             CCAddress = Addresses.Email8Compras;
@@ -201,6 +201,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
+        public IActionResult QuadroBordoCA()
+        {
+            return View();
+        }
         #endregion
 
         [HttpPost]
@@ -307,6 +311,23 @@ namespace Hydra.Such.Portal.Controllers
             //estado_processos_suspensos equivale a autorizados nos Procedimentos Simplificados, apenas para não alterar a class!!!!
             model.estado_processos_suspensos = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoProcessosAutorizadosToList();
 
+            return Json(model);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentosCA_Estados()
+        {
+            var model = new CCP_QuadroBordo();
+            model.estado_3 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(3);
+            model.estado_8 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(8);
+            model.estado_17 = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoEstadoToList(17);
+            model.estado_ratificarCA = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoRatificarCAToList();
+
+            //Estes são usados para obter os Simplificados, mas que têm os mesmos estados que os PA's
+            model.estado_7 = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoEstadoToList(17);
+            model.estado_processos_suspensos = DBProcedimentosCCP.GetAllProcedimentosSimplificadosViewByProcedimentoRatificarCAToList();
+            
             return Json(model);
         }
 
