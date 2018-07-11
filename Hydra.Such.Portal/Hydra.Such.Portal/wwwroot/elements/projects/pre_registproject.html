@@ -1937,11 +1937,11 @@
                 _projectTypeChange: function (e) {
 
                     var type = e.detail.value;
-                    if (type == "1") {
+                    if (type == "2") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
                         this.$.ajax_code_options.generateRequest();
                     }
-                    else if (type == "2") {
+                    else if (type == "1") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
                         this.$.ajax_code_options.generateRequest();
                     }
@@ -2034,7 +2034,6 @@
                     this.$.idDateRegistDlg.value = "";
                 },
                 _dlgGetMovements: function () {
-                    debugger;
                     if (this.$.projectMovementDlg.value != undefined && this.$.projectMovementDlg.value != "" &&
                         this.$.idDateMovementDlg.value != undefined && this.$.idDateMovementDlg.value != "") {
                         if (this.$.piSClientMovement.value == null) {
@@ -2253,6 +2252,7 @@
                     return "";
                 },
                 _parseServiceClient: function (param1, param2) {
+                    debugger;
                     //refinar array c/ param2
                     //retornar valor c/ param1
                     if (param2 != undefined) {
