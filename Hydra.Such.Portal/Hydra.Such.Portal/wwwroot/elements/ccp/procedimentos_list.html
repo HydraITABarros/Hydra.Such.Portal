@@ -93,7 +93,7 @@
         </div>-->
 
         <vaadin-grid aria-label="ProcedimentosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -102,7 +102,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estado" />
@@ -111,15 +111,59 @@
                     <!--{{item.estado}}-->
                     [[_displayState(item.estado)]]
                 </template>
-                em
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeProcesso" />
                 </template>
                 <template>
                     {{item.nomeProcesso}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="gestorProcesso">Gestor Processo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="gestorProcesso" />
+                </template>
+                <template>
+                    {{item.gestorProcesso}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="valorPrecoBase">Valor Preço Base</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorPrecoBase" />
+                </template>
+                <template>
+                    {{item.valorPrecoBase}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" />
+                </template>
+                <template>
+                    {{item.codigoRegiao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" />
+                </template>
+                <template>
+                    {{item.codigoAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codigoCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

@@ -107,7 +107,7 @@
                         <paper-button raised id="btnViaturaAdd" class="" on-tap="_goToNewViatura"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     </template>
                 </template>
-                <paper-button raised id="btnViaturaArchive" class="" on-tap="_goToViatutras"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de Viaturas</paper-button>
+                <paper-button raised id="btnViaturaArchive" class="" on-tap="_goToViaturas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de Viaturas</paper-button>
             </div>
         </div>
 
@@ -537,7 +537,7 @@
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
-                                    self._goToViatutras();
+                                    self._goToViaturas();
                                 }, 2500);
                         }
                     }
@@ -549,8 +549,8 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 //BUTTONS
-                _goToViatutras: function () {
-                    window.location.href = "/Apoio/Viaturas";
+                _goToViaturas: function () {
+                    window.location.href = "/Viaturas/Viaturas";
                 },
                 _goToNewViatura: function () {
                     window.location.href = "../DetalhesViatura/";
