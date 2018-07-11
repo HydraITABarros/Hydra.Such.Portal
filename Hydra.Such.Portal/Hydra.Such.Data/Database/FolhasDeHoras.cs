@@ -59,6 +59,8 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraÚltimoEstado { get; set; }
         public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
+        public bool? Eliminada { get; set; }
+
 
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<MãoDeObraFolhaDeHoras> MãoDeObraFolhaDeHoras { get; set; }

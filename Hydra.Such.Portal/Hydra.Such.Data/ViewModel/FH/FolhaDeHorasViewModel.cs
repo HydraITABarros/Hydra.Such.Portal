@@ -79,6 +79,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public DateTime? DataHoraModificacao { get; set; }
         public string DataModificacaoTexto { get; set; }
         public string HoraModificacaoTexto { get; set; }
+        public bool? Eliminada { get; set; }
 
 
 
