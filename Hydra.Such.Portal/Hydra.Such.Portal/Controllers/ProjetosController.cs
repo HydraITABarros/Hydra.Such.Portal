@@ -1515,7 +1515,7 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
-                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
 
             }).ToList();
 
@@ -2295,8 +2295,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult GetPreMovements([FromBody] string projectNo)
+        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
         {
+            DateTime? DataValue = null;
+            if (!String.IsNullOrEmpty(data))
+            {
+                DataValue = Convert.ToDateTime(data);
+            }
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -2307,26 +2312,58 @@ namespace Hydra.Such.Portal.Controllers
                 if (proj != null && !String.IsNullOrEmpty(proj.NºContrato))
                 {
                     Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
+
                     if (lcontracts != null)
                     {
-                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
-                            x => new DiárioDeProjeto()
-                            {
-                                NºProjeto = projectNo,
-                                Tipo = x.Tipo,
-                                Código = x.Código,
-                                Descrição = x.Descrição,
-                                Quantidade = 0,
-                                CódUnidadeMedida = x.CódUnidadeMedida,
-                                CódigoRegião = x.CódigoRegião,
-                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                PreçoUnitário = x.PreçoUnitário,
-                                Faturável = x.Faturável,
-                                Registado = false,
-                                PréRegisto = true
-                            }).ToList();
+                        if (!String.IsNullOrEmpty(codSClient))
+                        {
+                            dp = DBContractLines.GetAllBySClient(lcontracts.NºDeContrato, lcontracts.NºVersão, codSClient).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               Tipo = x.Tipo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                        else
+                        {
+                            dp = DBContractLines.GetAllByActiveContract(lcontracts.NºDeContrato, lcontracts.NºVersão).Select(
+                           x => new DiárioDeProjeto()
+                           {
+                               Data = DataValue,
+                               NºProjeto = projectNo,
+                               CódServiçoCliente = x.CódServiçoCliente,
+                               Tipo = x.Tipo,
+                               TipoMovimento = 1,
+                               Código = x.Código,
+                               Descrição = x.Descrição,
+                               Quantidade = 0,
+                               CódUnidadeMedida = x.CódUnidadeMedida,
+                               CódigoRegião = x.CódigoRegião,
+                               CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                               CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                               Utilizador = User.Identity.Name,
+                               PreçoUnitário = x.PreçoUnitário,
+                               Faturável = x.Faturável,
+                               Registado = false,
+                               PréRegisto = true
+                           }).ToList();
+                        }
+                       
                         if (dp.Count == 0)
                         {
                             result.eReasonCode = 4;
@@ -2610,6 +2647,9 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost;
                         newRow.UnitPrice = item.SalePrice;
+                        newRow.Billable = true;
+                        newRow.ProjectContabGroup = proj.GrupoContabObra;
+                        newRow.MovementType = 1;
                         if (!String.IsNullOrEmpty(item.TypeMeal))
                         {
                             newRow.MealType = Convert.ToInt32(item.TypeMeal);

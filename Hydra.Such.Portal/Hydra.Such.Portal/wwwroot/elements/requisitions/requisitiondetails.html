@@ -1808,7 +1808,7 @@
                     if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
                         this.$.requesitionType.disabled = true;
 
-                        var excludeItems = ["btnGoBack", "btnShowChangeLog", "btnCloseChangeLogDlg", "btnCloseMultipleToastMessageDlg", "btnClose", "btnPrint", "btnStatOfPlay"];
+                        var elementsToIgnore = ["btnGoBack", "btnShowChangeLog", "btnCloseChangeLogDlg", "btnCloseMultipleToastMessageDlg", "btnClose", "btnPrint", "btnStatOfPlay"];
 
                         var elems = Polymer.dom(this.root).querySelectorAll('vaadin-checkbox');
                         elems.forEach(function (elem) {
@@ -1836,7 +1836,7 @@
                         });
                         elems = Polymer.dom(this.root).querySelectorAll('paper-button');
                         elems.forEach(function (elem) {
-                            var foundItems = excludeItems.find(x => x == elem.id);
+                            var foundItems = elementsToIgnore.find(x => x == elem.id);
                             if (foundItems == null)
                                 elem.hidden = true;
                         });

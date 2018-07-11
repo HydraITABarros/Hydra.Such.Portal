@@ -87,6 +87,18 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpGet]
+        public JsonResult GetAreas()
+        {
+            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {

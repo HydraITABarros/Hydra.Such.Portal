@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +124,61 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<RequisitionLineViewModel> items, Guid transactionId, NAVWSConfigurations WSConfigurations)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            List<WSCreateProjectDiaryLine.WSJobJournalLine> jobJournalLines = new List<WSCreateProjectDiaryLine.WSJobJournalLine>();
+            int lineNo = 0;
+            foreach (var item in items)
+            {
+                WSCreateProjectDiaryLine.WSJobJournalLine line = new WSCreateProjectDiaryLine.WSJobJournalLine();
+                line.Line_No = lineNo += 1000;
+                line.Line_NoSpecified = true;
+                line.Document_No = "ES_" + item.ProjectNo;
+                line.Job_No = item.ProjectNo;
+                line.Document_Date = item.CreateDateTime.HasValue ? item.CreateDateTime.Value : DateTime.Now;
+                line.Document_DateSpecified = true;
+                line.Posting_Date = DateTime.Now;
+                line.Posting_DateSpecified = true;
+                line.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Usage;
+                line.Entry_TypeSpecified = true;
+                line.Type = WSCreateProjectDiaryLine.Type.Item;
+                line.TypeSpecified = true;
+                line.No = item.Code;
+                line.Description = item.Description;
+                line.Quantity = item.QuantityReceived.Value;
+                line.QuantitySpecified = true;
+                line.Unit_of_Measure_Code = item.UnitMeasureCode;
+                line.Location_Code = item.LocalCode;
+                line.RegionCode20 = item.RegionCode;
+                line.FunctionAreaCode20 = item.FunctionalAreaCode;
+                line.Portal_Transaction_No = transactionId.ToString();
+                jobJournalLines.Add(line);
+            }
+
+            WSCreateProjectDiaryLine.CreateMultiple navCreate = new WSCreateProjectDiaryLine.CreateMultiple(jobJournalLines.ToArray());
+
+
+            //Configure NAV Client
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_JobJournalLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateProjectDiaryLine.WSJobJournalLine_PortClient ws_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            //try
+            //{
+            WSCreateProjectDiaryLine.CreateMultiple_Result result = await ws_Client.CreateMultipleAsync(navCreate);
+            return result;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw;
+            //}
+
+        }
+
         public static async Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> RegsiterNavDiaryLines(Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
             //Configure NAV Client
@@ -131,18 +187,18 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
+            //try
+            //{
                 WSGenericCodeUnit.FxPostJobJrnlLines_Result result = await WS_Client.FxPostJobJrnlLinesAsync(TransactID.ToString());
 
                 return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
-
+        
         private static WSCreateProjectDiaryLine.Entry_Type getMoveType(int moveType)
         {
             switch (moveType)

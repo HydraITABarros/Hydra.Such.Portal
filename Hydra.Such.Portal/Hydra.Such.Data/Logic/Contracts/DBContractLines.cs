@@ -171,7 +171,21 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+        public static List<LinhasContratos> GetAllBySClient(string contractNo, int versionNo, string SClient)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == contractNo && x.NºVersão == versionNo && x.CódServiçoCliente == SClient).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
 
+                return null;
+            }
+        }
         public static bool DeleteAllFromContract(string contractNo)
         {
             try

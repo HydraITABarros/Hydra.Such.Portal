@@ -225,6 +225,41 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult InsertAcordoPreco_Procedimentos([FromBody] JObject requestParams)
+        {
+            string _NoProc = requestParams["NoProcedimento"].ToString();
+            DateTime? _DtIni = requestParams["dtIni"].ToString() != string.Empty ? DateTime.Parse(requestParams["dtIni"].ToString()) : (DateTime?)null;
+            DateTime? _DtFim = requestParams["dtFim"].ToString() != string.Empty ? DateTime.Parse(requestParams["dtFim"].ToString()) : (DateTime?)null;
+            decimal? _ValorTotal = requestParams["valorTotal"].ToString() != string.Empty ? decimal.Parse(requestParams["valorTotal"].ToString()) : (decimal?)null;
+
+            AcordoPrecos AP = DBAcordoPrecos.GetById(_NoProc);
+
+            if (AP == null)
+            {
+                AcordoPrecos toCreate = DBAcordoPrecos.Create(new AcordoPrecos()
+                {
+                    NoProcedimento = _NoProc,
+                    DtInicio = _DtIni,
+                    DtFim = _DtFim,
+                    ValorTotal = _ValorTotal
+                });
+
+                if (toCreate != null)
+                    return Json(ReturnHandlers.Success);
+                else
+                    return Json(ReturnHandlers.NoData);
+            }
+            else
+            {
+                return Json(ReturnHandlers.ExistsData);
+            }
+
+
+            //return DetalhePedidoAquisicao(_NoProc,false);
+        }
+
+
+        [HttpPost]
         public JsonResult GetAllProcedimentos_Estados()
         {
             var model = new CCP_QuadroBordo();

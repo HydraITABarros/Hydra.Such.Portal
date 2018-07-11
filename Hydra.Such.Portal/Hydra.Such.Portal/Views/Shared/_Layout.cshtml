@@ -192,11 +192,13 @@
                             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                         </a>
                         <ul class="submenu">
-                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Folhas de Horas", "Index", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Folhas de Horas Pendentes", "FolhaDeHoras_Pendentes", "FolhasDeHoras", null, null)</li>
+                            @*<li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar km RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
-                            @*<li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
+                            <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -253,6 +255,18 @@
                                     <li>@Html.ActionLink("FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
                                     <li>@Html.ActionLink("FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
                                     <li>@Html.ActionLink("FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
+                                </ul>
+                            </li>
+
+                            <!--CCP-->
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">CCP</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Configuração CCP", "ConfiguracaoCCP", "Administracao", null, null)</li>
                                 </ul>
                             </li>
 
