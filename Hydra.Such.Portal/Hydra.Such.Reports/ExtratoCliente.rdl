@@ -664,6 +664,7 @@ Saldo</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
+                                    <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -683,6 +684,7 @@ Saldo</Value>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
                             <PaddingBottom>2pt</PaddingBottom>
+                            <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -700,6 +702,7 @@ Saldo</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
+                                    <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -718,6 +721,7 @@ Saldo</Value>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
                             <PaddingBottom>2pt</PaddingBottom>
+                            <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -1130,6 +1134,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>12.97806cm</Left>
               <Height>0.6cm</Height>
               <Width>2.50037cm</Width>
@@ -1154,6 +1159,7 @@ Contribuite Nº</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <FontWeight>Bold</FontWeight>
+                        <Format>#,0.00 '€';(#,0.00 '€')</Format>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -1163,6 +1169,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>15.61955cm</Left>
               <Height>0.6cm</Height>
               <Width>2.16701cm</Width>
@@ -1175,10 +1182,39 @@ Contribuite Nº</Value>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
                 <PaddingBottom>2pt</PaddingBottom>
+                <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox15">
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value />
+                      <Style />
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox13</rd:DefaultName>
+              <Top>0.81817cm</Top>
+              <Left>0.3175cm</Left>
+              <Height>0.6cm</Height>
+              <Width>7.17995cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
             <Textbox Name="Textbox13">
-              <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
@@ -1202,7 +1238,10 @@ Contribuite Nº</Value>
               <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>7.17995cm</Width>
-              <ZIndex>2</ZIndex>
+              <ZIndex>3</ZIndex>
+              <Visibility>
+                <Hidden>=Parameters!Movimentos.Value = 1</Hidden>
+              </Visibility>
               <Style>
                 <Border>
                   <Style>None</Style>
