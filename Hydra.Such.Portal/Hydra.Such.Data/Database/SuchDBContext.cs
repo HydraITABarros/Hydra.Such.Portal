@@ -92,6 +92,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<RececaoFaturacao> RececaoFaturacao { get; set; }
         public virtual DbSet<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
         public virtual DbSet<RecFacturasProblemas> RecFacturasProblemas { get; set; }
+        public virtual DbSet<RecFaturacaoConfigDestinatarios> RecFaturacaoConfigDestinatarios { get; set; }
         public virtual DbSet<RegistoDeAtas> RegistoDeAtas { get; set; }
         public virtual DbSet<Requisição> Requisição { get; set; }
         public virtual DbSet<RequisiçõesClienteContrato> RequisiçõesClienteContrato { get; set; }
@@ -123,10 +124,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-        // Unable to generate entity type for table 'dbo.RecFaturacaoConfigDestinatarios'. Please see the warning messages.
-
-      
-
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -2536,9 +2534,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValidadoresRhKm)
                     .HasColumnName("Validadores RH KM")
                     .HasMaxLength(200);
-
-                entity.Property(e => e.Eliminada).HasColumnName("Eliminada");
-
             });
 
             modelBuilder.Entity<FornecedoresAcordoPrecos>(entity =>
@@ -6094,6 +6089,23 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.EnvioAreas).HasMaxLength(60);
             });
 
+            modelBuilder.Entity<RecFaturacaoConfigDestinatarios>(entity =>
+            {
+                entity.HasKey(e => e.Codigo);
+
+                entity.Property(e => e.Codigo)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CodArea).HasMaxLength(30);
+
+                entity.Property(e => e.CodCentroResponsabilidade).HasMaxLength(20);
+
+                entity.Property(e => e.Destinatario).HasMaxLength(50);
+
+                entity.Property(e => e.Notas).HasMaxLength(250);
+            });
+
             modelBuilder.Entity<RegistoDeAtas>(entity =>
             {
                 entity.HasKey(e => new { e.NºProcedimento, e.NºAta });
@@ -6843,6 +6855,14 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Alteracao")
                     .HasColumnType("date");
 
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("Data_Hora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("Data_Hora_Modificacao")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.DataRecepcao)
                     .HasColumnName("Data_Recepcao")
                     .HasColumnType("date");
@@ -6883,6 +6903,15 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Utilizador)
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .IsRequired()
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(60);
             });
 
             modelBuilder.Entity<TemposPaCcp>(entity =>
