@@ -93,6 +93,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/EnviarParaAprovacao"
+                   last-response="{{resultAprovacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_EnviarParaAprovacao_ajax"
+                   on-response="_toApprovedResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
@@ -296,6 +305,13 @@
                     {{item.observacoes}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column id="opcao" hidden>
+                <template class="header">
+                </template>
+                <template>
+                    FolhaDeHoras
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
 
@@ -314,7 +330,7 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="estadotexto">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="estadotexto">Motivo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estadotexto" />
                 </template>
                 <template>
@@ -367,11 +383,22 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnEditPending tableBtn" raised on-tap="_toApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnEditPending tableBtn" on-tap="_toApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column id="opcao" hidden>
+                <template class="header">
+                </template>
+                <template>
+                    Pendentes
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -442,13 +469,14 @@
                 },
 
                 _rowSelected: function (item) {
+                    //debugger;
                     if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
+                        if (item.estadotexto != "Não está Terminada") {
+                            if (item.estadotexto != "Faltam Validadores") {
+                                window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
+                            }
+                        }
                     }
-                },
-
-                _create: function () {
-                    window.location.href = "/FolhasDeHoras/Detalhes/?area=1";
                 },
 
                 ready: function () {
@@ -483,6 +511,34 @@
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
+                },
+
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _create: function () {
+                    window.location.href = "/FolhasDeHoras/Detalhes/?area=1";
+                },
+
+                _showDetails: function (e) {
+                    //debugger;
+                    var index = this.result.indexOf(e.model.item);
+                    var noFH = e.model.item.folhaDeHorasNo;
+
+                    if (noFH != null) {
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + noFH;
+                    }
                 },
 
                 //_showTodas: function (item) {
@@ -778,6 +834,53 @@
                     } else {
                         this._showHistoryMessage = "Mostrar Todas";
                     }
+                },
+
+                _toApproved: function (e) {
+                    //debugger;
+                    var index = this.result.indexOf(e.model.item);
+                    var noFH = e.model.item.folhaDeHorasNo;
+
+                    if (noFH != null) {
+                        var ajax_request = this.$.grid_EnviarParaAprovacao_ajax;
+                        ajax_request.body = JSON.stringify(noFH)
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Enviar para Aprovação a Folha de Horas?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (toApprovedFH) {
+                                if (toApprovedFH) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+
+                _toApprovedResponse: function (e) {
+                    //debugger;
+                    var self = this;
+
+                    if (this._toApprovedResponse.eReasonCode == 0) {
+                        this._showMessage(this._toApprovedResponse.eMessage);
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this._toApprovedResponse.eMessage);
+                    };
+
+                        //setTimeout(
+                        //    function () {
+                        //        window.location.replace("/");
+                        //    }, 2500);
                 },
 
             });
