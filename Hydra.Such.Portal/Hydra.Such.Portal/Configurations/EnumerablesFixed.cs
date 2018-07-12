@@ -661,12 +661,12 @@ namespace Hydra.Such.Portal.Configurations
         {
              new EnumData()
             {
-                Id = 2,
+                Id = 1,
                 Value = "Produto"
             },
             new EnumData()
             {
-                Id = 1,
+                Id = 2,
                 Value = "Recurso"
             },
             new EnumData()

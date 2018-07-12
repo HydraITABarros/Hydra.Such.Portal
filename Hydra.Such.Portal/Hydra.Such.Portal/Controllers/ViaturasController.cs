@@ -17,12 +17,43 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class ViaturasController : Controller
     {
+        public IActionResult Viaturas()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Viaturas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesViatura(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Viaturas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.Matricula = id == null ? "" : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
         [HttpPost]
         public JsonResult GetList()
@@ -52,11 +83,11 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        
 
         [HttpPost]
         public JsonResult GetViaturaDetails([FromBody] ViaturasViewModel data)
         {
-
             if (data != null)
             {
                 Viaturas viatura = DBViatura.GetByMatricula(data.Matricula);

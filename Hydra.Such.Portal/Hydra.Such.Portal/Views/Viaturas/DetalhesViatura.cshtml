@@ -1,16 +1,18 @@
-﻿
+﻿@model Hydra.Such.Data.Database.Viaturas
+
 @{
-    ViewData["Title"] = "Detalhes Projeto - Apoio - Such";
+    ViewData["Title"] = "Detalhes Viatura " + ViewBag.Matricula;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (ViewBag.ProjectNo == "")
-{
-    <h2>Criar novo projeto</h2>
-}
-else
-{
-    <h2>Viatura @ViewBag.Matricula</h2>
-}
+
+@*@if (ViewBag.ProjectNo == "")
+    {
+        <h2>Criar novo projeto</h2>
+    }
+    else
+    {
+        <h2>Viatura @ViewBag.Matricula</h2>
+    }*@
 
 
 <link rel="import" href="/elements/viaturas/viatura_details.html">

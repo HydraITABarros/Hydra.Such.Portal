@@ -283,7 +283,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             string temp = string.Empty;
 
-            temp = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent" : "Transparent";
+            temp = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : Procedimento.CódigoÁreaFuncional.StartsWith("31") ? "transporte" : Procedimento.CódigoÁreaFuncional.StartsWith("32") ? "parque" : Procedimento.CódigoÁreaFuncional.StartsWith("33") ? "arquivo" : "Transparent" : "Transparent";
             AcordoPrecos AP = DBAcordoPrecos.GetById(Procedimento.Nº);
 
             ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView()
@@ -293,7 +293,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 
                 Tipo_Show = Procedimento.Tipo == 0 ? "" : Procedimento.Tipo == 1 ? "AD" : Procedimento.Tipo == 2 ? "CP" : Procedimento.Tipo == 3 ? "CLPQ" : Procedimento.Tipo == 4 ? "PN" : Procedimento.Tipo == 5 ? "DC" : Procedimento.Tipo == 6 ? "CPI" : "",
 
-                Cor_Folder = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : "Transparent" : "Transparent",
+                Cor_Folder = Procedimento.CódigoÁreaFuncional != null ? Procedimento.CódigoÁreaFuncional.StartsWith("0") ? "orange" : Procedimento.CódigoÁreaFuncional.StartsWith("1") ? "red" : Procedimento.CódigoÁreaFuncional.StartsWith("22") ? "blue" : Procedimento.CódigoÁreaFuncional.StartsWith("5") ? "tomato" : Procedimento.CódigoÁreaFuncional.StartsWith("23") ? "green" : Procedimento.CódigoÁreaFuncional.StartsWith("27") ? "purple" : Procedimento.CódigoÁreaFuncional.StartsWith("31") ? "transporte" : Procedimento.CódigoÁreaFuncional.StartsWith("32") ? "parque" : Procedimento.CódigoÁreaFuncional.StartsWith("33") ? "arquivo" : "Transparent" : "Transparent",
 
                 Ano = Procedimento.Ano,
                 Referencia = Procedimento.Referência,

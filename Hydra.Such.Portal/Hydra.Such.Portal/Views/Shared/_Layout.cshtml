@@ -142,6 +142,18 @@
                                     <li>@Html.ActionLink("Histórico Requisições Simplificadas", "Index", "RequisicoesSimplificadas", new { area = "", option = 2 }, null)</li>
                                 </ul>
                             </li>
+
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Gestão Viaturas</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Viaturas", "Viaturas", "Viaturas", null, null)</li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -180,6 +192,7 @@
                                     <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", null, null)</li>
                                     <li>@Html.ActionLink("Quadro de bordo", "QuadroBordo", "ProcedimentosCcps", null, null)</li>
                                     <li>@Html.ActionLink("Quadro de bordo Simplificado", "QuadroBordoSimplificado", "ProcedimentosCcps", null, null)</li>
+                                    <li>@Html.ActionLink("Quadro de bordo CA", "QuadroBordoCA", "ProcedimentosCcps", null, null)</li>
                                 </ul>
                             </li>
                         </ul>
@@ -193,8 +206,8 @@
                         </a>
                         <ul class="submenu">
                             <li>@Html.ActionLink("Folhas de Horas", "Index", "FolhasDeHoras", null, null)</li>
-                            <li>@Html.ActionLink("Folhas de Horas Pendentes", "FolhaDeHoras_Pendentes", "FolhasDeHoras", null, null)</li>
-                            @*<li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
+                            @*<li>@Html.ActionLink("Folhas de Horas Pendentes", "FolhaDeHoras_Pendentes", "FolhasDeHoras", null, null)</li>
+                            <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
                             <li>@Html.ActionLink("Por Integrar km RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
