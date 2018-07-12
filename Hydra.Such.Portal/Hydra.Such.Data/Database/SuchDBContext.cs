@@ -6883,6 +6883,24 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Utilizador)
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("Data_Hora_Criacao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("Data_Hora_Modificacao")
+                    .HasColumnType("date");
             });
 
             modelBuilder.Entity<TemposPaCcp>(entity =>
