@@ -92,7 +92,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
             {
-                id = x.Tipo,
+                id = x.Codigo,
                 value = x.Descricao
             }).ToList();
 
@@ -141,6 +141,11 @@ namespace Hydra.Such.Portal.Controllers
                     updatedItem.eMessage = "Registo atualizado com sucesso";
                     item = updatedItem;
                 }
+                else
+                {
+                    item.eReasonCode = 2;
+                    updatedItem = item;
+                }
             }
             else
             {
@@ -150,6 +155,32 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
+        [HttpPost]
+        public JsonResult BillingReceptionCP([FromBody] BillingReceptionModel item)
+        {
+            BillingReceptionModel updatedItem = null;
+            if (item != null)
+            {
+                if (updatedItem != null)
+                {
+                    updatedItem.eReasonCode = 1;
+                    updatedItem.eMessage = "Registo atualizado com sucesso";
+                    item = updatedItem;
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao registar a factura  CP";
+                    item.Estado = Enumerations.BillingReceptionStates.Pendente;
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
+        }
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)
         {
