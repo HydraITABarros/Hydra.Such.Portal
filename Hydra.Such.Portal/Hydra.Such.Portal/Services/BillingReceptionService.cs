@@ -235,14 +235,17 @@ namespace Hydra.Such.Portal.Services
 
         #region Problems
 
-        public List<RecFacturasProblemas> GetQuestions()
+        public List<RecFacturasProblemas> GetProblem()
         {
-            return repo.GetQuestions();
+            return repo.GetQuestionsProblem();
         }
-
-        public List<RecFacturasProblemas> GetAreas()
+        public List<RecFacturasProblemas> GetReason()
         {
-            return null;// repo.GetQuestions();
+            return repo.GetQuestionsReason();
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetAreas()
+        {
+            return repo.GetAreas();
         }
 
         #endregion

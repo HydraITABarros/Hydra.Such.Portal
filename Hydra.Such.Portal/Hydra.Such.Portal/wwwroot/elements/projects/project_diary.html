@@ -1704,11 +1704,11 @@
                 _projectTypeChange: function (e) {
 
                     var type = e.detail.value;
-                    if (type == "1") {
+                    if (type == "2") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
                         this.$.ajax_code_options.generateRequest();
                     }
-                    else if (type == "2") {
+                    else if (type == "1") {
                         this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
                         this.$.ajax_code_options.generateRequest();
                     }
