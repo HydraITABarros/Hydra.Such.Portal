@@ -1268,5 +1268,71 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             return FH;
         }
 
+        public static FolhasDeHoras ParseToFolhaHoras(FolhaDeHorasViewModel FHViewModel)
+        {
+            try
+            {
+                if (FHViewModel != null)
+                {
+                    FolhasDeHoras FH = new FolhasDeHoras();
+
+                    FH.NºFolhaDeHoras = FHViewModel.FolhaDeHorasNo;
+                    FH.Área = FHViewModel.Area;
+                    FH.NºProjeto = FHViewModel.ProjetoNo;
+                    FH.ProjetoDescricao = FHViewModel.ProjetoDescricao;
+                    FH.NºEmpregado = FHViewModel.EmpregadoNo;
+                    FH.NomeEmpregado = FHViewModel.EmpregadoNome;
+                    FH.DataHoraPartida = FHViewModel.DataHoraPartida;
+                    FH.DataHoraChegada = FHViewModel.DataHoraChegada;
+                    FH.TipoDeslocação = FHViewModel.TipoDeslocacao;
+                    FH.CódigoTipoKmS = FHViewModel.CodigoTipoKms;
+                    FH.Matrícula = FHViewModel.Matricula;
+                    FH.DeslocaçãoForaConcelho = FHViewModel.DeslocacaoForaConcelho;
+                    FH.DeslocaçãoPlaneada = FHViewModel.DeslocacaoPlaneada;
+                    FH.Terminada = FHViewModel.Terminada;
+                    FH.Estado = FHViewModel.Estado;
+                    FH.CriadoPor = FHViewModel.CriadoPor;
+                    FH.DataHoraCriação = FHViewModel.DataHoraCriacao;
+                    FH.CódigoRegião = FHViewModel.CodigoRegiao;
+                    FH.CódigoÁreaFuncional = FHViewModel.CodigoAreaFuncional;
+                    FH.CódigoCentroResponsabilidade = FHViewModel.CodigoCentroResponsabilidade;
+                    FH.TerminadoPor = FHViewModel.TerminadoPor;
+                    FH.DataHoraTerminado = FHViewModel.DataHoraTerminado;
+                    FH.Validado = FHViewModel.Validado;
+                    FH.Validadores = FHViewModel.Validadores;
+                    FH.Validador = FHViewModel.Validador;
+                    FH.DataHoraValidação = FHViewModel.DataHoraValidacao;
+                    FH.IntegradoEmRh = FHViewModel.IntegradoEmRh;
+                    FH.IntegradoresEmRh = FHViewModel.IntegradoresEmRH;
+                    FH.IntegradorEmRh = FHViewModel.IntegradorEmRH;
+                    FH.DataIntegraçãoEmRh = FHViewModel.DataIntegracaoEmRH;
+                    FH.IntegradoEmRhkm = FHViewModel.IntegradoEmRhKm;
+                    FH.IntegradoresEmRhkm = FHViewModel.IntegradoresEmRHKM;
+                    FH.IntegradorEmRhKm = FHViewModel.IntegradorEmRHKM;
+                    FH.DataIntegraçãoEmRhKm = FHViewModel.DataIntegracaoEmRHKM;
+                    FH.CustoTotalAjudaCusto = FHViewModel.CustoTotalAjudaCusto;
+                    FH.CustoTotalHoras = FHViewModel.CustoTotalHoras;
+                    FH.CustoTotalKm = FHViewModel.CustoTotalKM;
+                    FH.NumTotalKm = FHViewModel.NumTotalKM;
+                    FH.Observações = FHViewModel.Observacoes;
+                    FH.NºResponsável1 = FHViewModel.Responsavel1No;
+                    FH.NºResponsável2 = FHViewModel.Responsavel2No;
+                    FH.NºResponsável3 = FHViewModel.Responsavel3No;
+                    FH.ValidadoresRhKm = FHViewModel.ValidadoresRHKM;
+                    FH.DataHoraÚltimoEstado = FHViewModel.DataHoraUltimoEstado;
+                    FH.UtilizadorModificação = FHViewModel.UtilizadorModificacao;
+                    FH.DataHoraModificação = FHViewModel.DataHoraModificacao;
+                    FH.Eliminada = FHViewModel.Eliminada;
+
+                    return FH;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
