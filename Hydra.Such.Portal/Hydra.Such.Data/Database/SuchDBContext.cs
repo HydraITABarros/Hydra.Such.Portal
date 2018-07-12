@@ -104,6 +104,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Tarifários> Tarifários { get; set; }
         public virtual DbSet<Telefones> Telefones { get; set; }
         public virtual DbSet<Telemóveis> Telemóveis { get; set; }
+        public virtual DbSet<TelemoveisEquipamentos> TelemoveisEquipamentos { get; set; }
         public virtual DbSet<TemposPaCcp> TemposPaCcp { get; set; }
         public virtual DbSet<TextoFaturaContrato> TextoFaturaContrato { get; set; }
         public virtual DbSet<TipoDeProjeto> TipoDeProjeto { get; set; }
@@ -121,6 +122,10 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
+
+        // Unable to generate entity type for table 'dbo.RecFaturacaoConfigDestinatarios'. Please see the warning messages.
+
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -2459,6 +2464,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DeslocaçãoForaConcelho).HasColumnName("Deslocação Fora Concelho");
 
                 entity.Property(e => e.DeslocaçãoPlaneada).HasColumnName("Deslocação Planeada");
+
+                entity.Property(e => e.Eliminada).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.IntegradoEmRh).HasColumnName("IntegradoEmRH");
 
@@ -6816,6 +6823,66 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.Telemóveis)
                     .HasForeignKey(d => d.Marca)
                     .HasConstraintName("FK_Telemóveis_Marcas");
+            });
+
+            modelBuilder.Entity<TelemoveisEquipamentos>(entity =>
+            {
+                entity.HasKey(e => new { e.Tipo, e.Imei });
+
+                entity.ToTable("Telemoveis_Equipamentos");
+
+                entity.Property(e => e.Imei)
+                    .HasMaxLength(16)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Cor)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataAlteracao)
+                    .HasColumnName("Data_Alteracao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataRecepcao)
+                    .HasColumnName("Data_Recepcao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DevolvidoBk).HasColumnName("Devolvido_bk");
+
+                entity.Property(e => e.Documento)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocumentoRecepcao)
+                    .HasColumnName("Documento_Recepcao")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Marca)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Modelo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NomeComprador)
+                    .HasColumnName("Nome_Comprador")
+                    .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumEmpregadoComprador)
+                    .HasColumnName("Num_Empregado_Comprador")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Observacoes)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Utilizador)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TemposPaCcp>(entity =>

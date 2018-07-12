@@ -123,6 +123,7 @@ namespace Hydra.Such.Data.Logic.Compras
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "P").ToList();
         }
 
+      
         #endregion
 
         void IDisposable.Dispose()
