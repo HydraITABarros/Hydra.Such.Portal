@@ -2308,7 +2308,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
+        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient, string codSGroupClient)
         {
             DateTime? DataValue = null;
             if (!String.IsNullOrEmpty(data))
@@ -2388,6 +2388,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                            if (!String.IsNullOrEmpty(codSGroupClient))
+                            {
+                                item.CódGrupoServiço = Convert.ToInt32(codSGroupClient);
+                            }
                             item.UtilizadorCriação = User.Identity.Name;
                             item.DataHoraCriação = DateTime.Now;
                             dpValidation = DBProjectDiary.Create(item);

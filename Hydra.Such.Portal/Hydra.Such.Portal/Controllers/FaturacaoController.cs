@@ -76,9 +76,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetQuestions()
+        public JsonResult GetProblems()
         {
-            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            List<DDMessageString> result = billingRecService.GetProblem().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+        [HttpGet]
+        public JsonResult GetReasons()
+        {
+            List<DDMessageString> result = billingRecService.GetReason().Select(x => new DDMessageString()
             {
                 id = x.Tipo,
                 value = x.Descricao
@@ -90,10 +101,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetAreas()
         {
-            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = billingRecService.GetAreas().Select(x => new DDMessageRelated()
             {
                 id = x.Codigo,
-                value = x.Descricao
+                value = x.CodArea,
+                extra=x.Destinatario
             }).ToList();
 
             return Json(result);
