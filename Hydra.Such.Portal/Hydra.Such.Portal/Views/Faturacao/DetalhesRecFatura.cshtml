@@ -72,7 +72,8 @@
         <iron-ajax auto url="/PopulateDropdowns/GetBillingReceptionStates" last-response="{{ States }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetBillingDocumentTypes" last-response="{{ DocumentTypes }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ Vendors }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax auto url="/Faturacao/GetQuestions" last-response="{{ TiposProblemas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ TiposProblemas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/GetBillingReception/"
@@ -476,12 +477,23 @@
                         <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
                     </div>
                 </div>
+
                 <div class="row break_clear">
+
                     <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
-                        <vaadin-text-field label="Motivo" type="text" value="{{data.valor}}" id="txtMotivo"></vaadin-text-field>
+                        <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-sm-6" hidden="{{ _isInternalDestination }}">
-                        <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt"></vaadin-text-field>
+                        <vaadin-text-field label=" " type="text" value="" id="txtmotivo"></vaadin-text-field>
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
@@ -502,7 +514,7 @@
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" value="{{data.valor}}" label="Área" on-value-changed="_problemTypeChanged">
+                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" value="{{data.valor}}" label="Área" on-value-changed="_areaChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -513,10 +525,10 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt1"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtdestinatario"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" value="{{data.valor}}" id="txt2"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txt2"></vaadin-text-field>
                         </div>
                     </div>
                 </div>
@@ -527,14 +539,24 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-checkbox id="txtAnexo">Anexo</vaadin-checkbox>
+                        <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="text" id="txtNomeFicheiro"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1" hidden="{{ !_isAnexarFicheiro }}">
+                        <paper-button class="btn-default" on-click="_fileinput">&nbsp;...</paper-button>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
                 </div>
-                <div class="buttons">
-                    <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                    <paper-button class="btnSave" raised on-tap="_dlgNextMov">&nbsp; Enviar</paper-button>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgNextMov">&nbsp; Enviar</paper-button>
+                    </div>
                 </div>
-
             </paper-dialog>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -565,6 +587,10 @@
                     _isCreate: {
                         type: Boolean,
                         value: true,
+                    },
+                    _isAnexarFicheiro: {
+                        type: Boolean,
+                        value: false,
                     },
                    _destinatario: {
                         type: Number,
@@ -777,10 +803,43 @@
                 },
                 _problemTypeChanged: function (e) {
                     var id = this.$.cmbProblemas.value;
-                    if (id != undefined) {
-                        var problem = this.TiposProblemas.find(x => x.id = id);
+                    if (id != undefined && id!="") {
+                        var problem = this.TiposProblemas.find(x => x.id == id);
                         this._descricaoProblema = problem.value;
                     }
+                },
+                _reasonTypeChanged: function (e) {
+                    var id = this.$.cmbMotivos.value;
+                    if (id != undefined && id != "") {
+                        var motivos = this.TiposMotivos.find(x => x.id == id);
+                        this.$.txtmotivo.value = motivos.value;
+                    }
+                },
+                _areaChanged: function (e) {
+                    var id = e.detail.value;
+                    if (id != undefined && id != "") {
+                        var areas = this.Areas.find(x => x.id == id);
+                        this.$.txtdestinatario.value = areas.extra;
+                    }
+                },
+                _anexoChanged: function (e) {
+                    if (this.$.txtAnexo.checked == true) {                        
+                        this._isAnexarFicheiro = false;
+                    }
+                    else
+                        this._isAnexarFicheiro = true;
+                },
+                _fileinput: function (e) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var contents = e.target.result;
+                        // Display file content
+                        displayContents(contents);
+                    };
+                },
+                displayContents: function(contents) {
+                    var element = document.getElementById('file-content');
+                    element.innerHTML = contents;
                 },
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
@@ -793,6 +852,19 @@
                     }
                 },
                 _sendPending: function () {
+                    if (this.data.codFornecedor == "") {
+                        this._openToastError("O Fornecedor tem que estar preenchido.");
+                    }
+                    else if (this.data.numDocFornecedor == "") {
+                        this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
+                    }
+                    else if (this.data.valor == "" || this.data.valor == 0) {
+                        this._openToastError("O valor tem que estar preenchido.");
+                    }
+                    else if (this.data.dataRececao == "") {
+                        this._openToastError("Data do Documento tem de estar preenchida.");
+                    }
+                    else
                     this.$.dialogSendPeding.open();
                 },
                 _postInvoiceCF: function () {
