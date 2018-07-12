@@ -2034,7 +2034,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
             result = DBNAV2017ContractDetails.GetContractInvoiceLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-
+            foreach(var temp in result)
+            {
+                if(temp.DataRegistoDiario != null)
+                {
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd");
+                }
+            }
             return Json(result);
         }
         

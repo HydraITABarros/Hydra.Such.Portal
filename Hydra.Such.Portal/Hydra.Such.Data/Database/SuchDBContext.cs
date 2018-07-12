@@ -105,7 +105,9 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Tarifários> Tarifários { get; set; }
         public virtual DbSet<Telefones> Telefones { get; set; }
         public virtual DbSet<Telemóveis> Telemóveis { get; set; }
+        public virtual DbSet<TelemoveisCartoes> TelemoveisCartoes { get; set; }
         public virtual DbSet<TelemoveisEquipamentos> TelemoveisEquipamentos { get; set; }
+        public virtual DbSet<TelemoveisMovimentos> TelemoveisMovimentos { get; set; }
         public virtual DbSet<TemposPaCcp> TemposPaCcp { get; set; }
         public virtual DbSet<TextoFaturaContrato> TextoFaturaContrato { get; set; }
         public virtual DbSet<TipoDeProjeto> TipoDeProjeto { get; set; }
@@ -124,7 +126,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -6837,6 +6838,127 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Telemóveis_Marcas");
             });
 
+            modelBuilder.Entity<TelemoveisCartoes>(entity =>
+            {
+                entity.HasKey(e => e.NumCartao);
+
+                entity.ToTable("Telemoveis_Cartoes");
+
+                entity.Property(e => e.NumCartao)
+                    .HasColumnName("Num_Cartao")
+                    .HasMaxLength(9)
+                    .IsUnicode(false)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Barramentos)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ChamadasInternacionais).HasColumnName("Chamadas_Internacionais");
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ContaSuch)
+                    .HasColumnName("Conta_SUCH")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ContaUtilizador)
+                    .HasColumnName("Conta_Utilizador")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataAlteracao)
+                    .HasColumnName("Data_Alteracao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataAtribuicao)
+                    .HasColumnName("Data_Atribuicao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataEstado)
+                    .HasColumnName("Data_Estado")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.EquipamentoNaoDevolvido).HasColumnName("Equipamento_Nao_Devolvido");
+
+                entity.Property(e => e.ExtensaoVpn)
+                    .HasColumnName("Extensao_VPN")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FimFidelizacao)
+                    .HasColumnName("Fim_Fidelizacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Gprs).HasColumnName("GPRS");
+
+                entity.Property(e => e.Grupo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Imei)
+                    .HasMaxLength(16)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nome)
+                    .IsRequired()
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumFuncionario)
+                    .HasColumnName("Num_Funcionario")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Observacoes)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Plafond100percUtilizador).HasColumnName("Plafond_100perc_Utilizador");
+
+                entity.Property(e => e.PlafondDados).HasColumnName("Plafond_Dados");
+
+                entity.Property(e => e.PlafondExtra).HasColumnName("Plafond_Extra");
+
+                entity.Property(e => e.PlafondFr).HasColumnName("Plafond_FR");
+
+                entity.Property(e => e.TarifarioDados)
+                    .HasColumnName("Tarifario_Dados")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TarifarioVoz)
+                    .HasColumnName("Tarifario_Voz")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoServico).HasColumnName("Tipo_Servico");
+
+                entity.Property(e => e.Utilizador)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ValorMensalidadeDados)
+                    .HasColumnName("Valor_Mensalidade_Dados")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.WhiteList)
+                    .HasColumnName("White_List")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<TelemoveisEquipamentos>(entity =>
             {
                 entity.HasKey(e => new { e.Tipo, e.Imei });
@@ -6905,13 +7027,77 @@ namespace Hydra.Such.Data.Database
                     .IsUnicode(false);
 
                 entity.Property(e => e.UtilizadorCriacao)
-                    .IsRequired()
                     .HasColumnName("Utilizador_Criacao")
                     .HasMaxLength(60);
 
                 entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("Utilizador_Modificacao")
                     .HasMaxLength(60);
+            });
+
+            modelBuilder.Entity<TelemoveisMovimentos>(entity =>
+            {
+                entity.HasKey(e => e.NumMovimento);
+
+                entity.ToTable("Telemoveis_Movimentos");
+
+                entity.Property(e => e.NumMovimento).HasColumnName("Num_Movimento");
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .IsRequired()
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Data)
+                    .IsRequired()
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataFactura)
+                    .HasColumnName("Data_Factura")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataRegisto)
+                    .HasColumnName("Data_Registo")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NumCartao)
+                    .IsRequired()
+                    .HasColumnName("Num_Cartao")
+                    .HasMaxLength(12)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumDocumento)
+                    .HasColumnName("Num_Documento")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumFactura)
+                    .IsRequired()
+                    .HasColumnName("Num_Factura")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Utilizador)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Valor).HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.ValorComIva)
+                    .HasColumnName("Valor_Com_IVA")
+                    .HasColumnType("decimal(, 20)");
             });
 
             modelBuilder.Entity<TemposPaCcp>(entity =>

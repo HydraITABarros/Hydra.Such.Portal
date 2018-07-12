@@ -17,6 +17,8 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? AmountIncludingVAT { get; set; }
         public string JobNo { get; set; }
         public string ExternalShipmentNo_ { get; set; }
-        public string DataRegistoDiario { get; set; }
+        public DateTime? DataRegistoDiario { get; set; }
+        public string DataRegistoDiarioSTR { get; set; }
+        
     }
 }

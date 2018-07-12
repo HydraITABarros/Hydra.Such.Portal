@@ -112,7 +112,7 @@ namespace Hydra.Such.Data.Logic
                             AmountIncludingVAT = (decimal?)temp.AmountIncludingVAT,
                             JobNo = (string)temp.JobNo,
                             ExternalShipmentNo_ = (string)temp.ExternalShipmentNo_,
-                            DataRegistoDiario = (string)temp.DataRegistoDiario,
+                            DataRegistoDiario = (DateTime?)temp.DataRegistoDiario
                         });
                     }
                 }

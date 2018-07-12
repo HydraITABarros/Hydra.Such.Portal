@@ -740,7 +740,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="serviceGroupCode"></vaadin-grid-filter>
@@ -1154,7 +1154,7 @@
                     <vaadin-text-field id="piservicedescription" label="Descrição Cód. Serviço" value="{{CServClientDescValue}}" readonly></vaadin-text-field>
                 </div>
                 <div class="col-lg-3">
-                    <such-selectbox id="piServiceGroupDlg" name="piServiceGroupDlg" value="{{ServiceGroupDlg}}" label="Grupo Serviço" disabled="{{ projSelected }}"
+                    <such-selectbox id="piServiceGroupDlg" name="piServiceGroupDlg" value="{{ServiceGroupDlg}}" label="Grupo Serviço" disabled="{{ projSelected }}" on-value-changed="_ServiceGroupChanged"
                                     items="[[ServiceGroupData]]"
                                     text-path="serviceCode"
                                     value-path="serviceCode"
@@ -1199,9 +1199,9 @@
                 <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient"dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
-        <paper-dialog id="dialogGetMovements" modal style="height:150px; width:900px">
+        <paper-dialog id="dialogGetMovements" modal style="height:250px; width:600px">
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <such-selectbox id="projectMovementDlg" name="projectMovementDlg" value="{{MovementprojectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
                                     items="[[responseDlg]]"
                                     text-path="projectNo"
@@ -1210,7 +1210,7 @@
                                     fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <such-selectbox id="piSClientMovement" name="piCodeMovement" value="{{SClientMovementValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceMovementChanged"
                                     items="[[ServiceClientData]]"
                                     text-path="serviceCode"
@@ -1219,10 +1219,23 @@
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <vaadin-text-field id="piMovementSDescription" label="Descrição Cód. Serviço" value="{{MovementCServClient}}" readonly></vaadin-text-field>
                 </div>
-                <div class="col-lg-3">
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <such-selectbox id="piSGroupDlg" name="piSGroupDlg" value="{{SGroupDlg}}" label="Grupo Serviço" disabled="{{ projMovementSelected }}" on-value-changed="_SGroupChanged"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-text-field id="piSGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-4">
                     <vaadin-date-picker label="Data" id="idDateMovementDlg" name="DateMovementnameDlg" value="{{DateMovementDlg}}"></vaadin-date-picker>
                 </div>
 
@@ -1696,6 +1709,22 @@
                         this.$.piservicedescription.value = "";
                     }
                 },
+                _ServiceGroupChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceGroupData != null && this.ServiceGroupData != "") {
+                        this.$.piserviceGroupdescription.value = this.ServiceGroupData.find(x => x.serviceCode == e.detail.value).serviceDescription;
+
+                    } else {
+                        this.$.piserviceGroupdescription.value = "";
+                    }
+                },
+                _SGroupChanged: function (e) {
+                    if (e.detail.value != "" && this.ServiceGroupData != null && this.ServiceGroupData != "") {
+                        this.$.piSGroupdescription.value = this.ServiceGroupData.find(x => x.serviceCode == e.detail.value).serviceDescription;
+
+                    } else {
+                        this.$.piSGroupdescription.value = "";
+                    }
+                },
                 _ServiceMovementChanged: function (e) {
                     if (e.detail.value != "" && this.ServiceClientData != null && this.ServiceClientData != "") {
                         this.$.piMovementSDescription.value = this.ServiceClientData.find(x => x.serviceCode == e.detail.value).serviceDescription;
@@ -2039,8 +2068,11 @@
                         if (this.$.piSClientMovement.value == null) {
                             this.$.piSClientMovement.value = "";
                         }
+                        if (this.$.piSGroupDlg.value == null) {
+                            this.$.piSGroupDlg.value = "";
+                        }
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectMovementDlg.value);
-                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value };
+                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value, "codSGroupClient": this.$.piSGroupDlg.value};
                         this.$.ajax_movementLines.generateRequest();
                         }
                         else {
@@ -2069,6 +2101,9 @@
                     this.$.piSClientMovement.valueText = "";
                     this.$.piMovementSDescription.value = "";
                     this.$.idDateMovementDlg.value = "";
+                    this.$.piSGroupDlg.valueText = "";
+                    this.$.piSGroupDlg.value = "";
+                    
                 },
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -2079,6 +2114,8 @@
                             this.$.dialogGetMovements.close();
                             this.$.piSClientMovement.value = "";
                             this.$.piSClientMovement.valueText = "";
+                            this.$.piSGroupDlg.valueText = "";
+                            this.$.piSGroupDlg.value = "";
                             this.$.piMovementSDescription.value = "";
                             this.$.idDateMovementDlg.value = "";
                         } else {
