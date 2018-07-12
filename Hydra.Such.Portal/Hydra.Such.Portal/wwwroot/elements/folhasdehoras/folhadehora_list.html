@@ -870,11 +870,11 @@
                     //debugger;
                     var self = this;
 
-                    if (this._toApprovedResponse.eReasonCode == 0) {
-                        this._showMessage(this._toApprovedResponse.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
+                    if (self.resultAprovacao.eReasonCode == 0) {
+                        self._showMessage(self.resultAprovacao.eMessage);
+                        self.$.grid_databound_ajax.generateRequest();
                     } else {
-                        this._showErrorMessage(this._toApprovedResponse.eMessage);
+                        this._showErrorMessage(self.resultAprovacao.eMessage);
                     };
 
                         //setTimeout(
