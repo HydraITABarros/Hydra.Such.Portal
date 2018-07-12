@@ -5568,14 +5568,25 @@
                     //this.$.ajax_btnCriarAcordoPreco.body = JSON.stringify(this.data);
                     //this.$.ajax_btnCriarAcordoPreco.body = ajax_request.body;
                     //this.$.ajax_btnCriarAcordoPreco.generateRequest();
+                    
+
+
                 },
                 ajax_btnCriarAcordoPrecoResponse: function (e) {
-                    debugger
+                    var _self = this;
+
                     if (this._btnCriarAcordoPreco.eReasonCode == 0) {
                         this._openToast("Criado Acordo de Preços!");
                         setTimeout(
                             function () {
                             }, 3000);
+
+                        _self.$.dtIni_acordoPreco.disabled = true;
+                        _self.$.dtFim_acordoPreco.disabled = true;
+                        _self.$.valorTotal_acordoPreco.disabled = true;
+                        $(_self.$.btnCriarAcordoPreco).addClass('hidden');
+                        $(_self.$.btnVerAcordoPreco).removeClass('hidden');
+                        _self.$.btnVerAcordoPreco.disabled = false;
                     }
                     else {
                         this._openToast(this._btnCriarAcordoPreco.eMessage);
@@ -5583,7 +5594,7 @@
                 },
 
                 _btnVerAcordoPreco: function () {
-                    window.location.href = "/Administracao/AcordoPrecos/" + this.data.noProcedimento_Show;
+                    window.location.href = "/Administracao/AcordoPrecos/" + this.data.no;
                 },
 
 
