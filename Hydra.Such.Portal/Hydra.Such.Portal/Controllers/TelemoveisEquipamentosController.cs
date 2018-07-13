@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic.Telemoveis;
 using Microsoft.AspNetCore.Mvc;
 using static Hydra.Such.Data.Enumerations;
 using Newtonsoft.Json.Linq;
+using Hydra.Such.Data.ViewModel.Telemoveis;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -50,8 +51,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllEquipamentos()
         {
             List<TelemoveisEquipamentos> result = DBTelemoveis.GetAllTelemoveisEquipamentosToList();
+            List<TelemoveisEquipamentosView> list = new List<TelemoveisEquipamentosView>();
 
-            return Json(result);
+            foreach (TelemoveisEquipamentos tel in result)
+            {
+                list.Add(DBTelemoveis.CastTelemoveisEquipamentosToView(tel));
+            }
+
+            //return Json(result);
+            return Json(list);
         }
 
         [HttpPost]
