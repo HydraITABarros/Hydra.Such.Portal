@@ -64,7 +64,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     result.ForEach(Compras =>
                     {
-                        Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
+                        //Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
                         Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name;
                     });
                 }
