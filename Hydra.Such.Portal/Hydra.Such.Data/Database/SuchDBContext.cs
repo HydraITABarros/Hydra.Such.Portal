@@ -125,7 +125,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        public virtual DbSet<ComprasModel> Compras { get; set; }
+        public virtual DbSet<MercadoLocal> Compras { get; set; }
         public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
 
 
@@ -7965,7 +7965,7 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
             });
 
-            modelBuilder.Entity<ComprasModel>(entity =>
+            modelBuilder.Entity<MercadoLocal>(entity =>
             {
                 entity.HasKey(e => new { e.ID });
 
@@ -8015,11 +8015,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Responsaveis)
                     .HasColumnName("Responsaveis")
-                    .HasMaxLength(100);
+                    .HasMaxLength(200);
 
                 entity.Property(e => e.NoProjeto)
                     .HasColumnName("NoProjeto")
@@ -8051,7 +8051,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorValidacao)
                     .HasColumnName("UtilizadorValidacao")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.DataRecusa)
                     .HasColumnName("DataRecusa")
@@ -8059,7 +8059,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorRecusa)
                     .HasColumnName("UtilizadorRecusa")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.DataTratado)
                     .HasColumnName("DataTratado")
@@ -8067,7 +8067,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorTratado)
                     .HasColumnName("UtilizadorTratado")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Recusada)
                     .HasColumnName("Recusada");
@@ -8083,15 +8083,15 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Responsavel1)
                     .HasColumnName("Responsavel1")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Responsavel2)
                     .HasColumnName("Responsavel2")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Responsavel3)
                     .HasColumnName("Responsavel3")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
             });
         }
     }

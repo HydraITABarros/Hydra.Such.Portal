@@ -320,7 +320,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.DataHoraPartida = null;
                     FH.DataHoraChegada = null;
                     FH.TipoDeslocação = 0;
-                    FH.CódigoTipoKmS = "KM";
+                    FH.CódigoTipoKmS = "AJC0003";
                     FH.Matrícula = "";
                     FH.DeslocaçãoForaConcelho = false;
                     FH.DeslocaçãoPlaneada = false;
@@ -890,6 +890,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data.Validado == null || data.Validado == false)
                 {
+                    data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                    data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
                     data.Eliminada = true; //ELIMINADA
                     data.UtilizadorModificacao = User.Identity.Name; //ELIMINADA
                     data.DataHoraModificacao = DateTime.Now; //ELIMINADA
@@ -935,6 +938,9 @@ namespace Hydra.Such.Portal.Controllers
             int result = 0;
             try
             {
+                data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
                 data.UtilizadorModificacao = User.Identity.Name; //UPDATE
                 data.DataHoraModificacao = DateTime.Now; //UPDATE
 
@@ -2380,6 +2386,9 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (data.Terminada == true)
                     {
+                        data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                        data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
                         data.Terminada = true; //TERMINADA
                         data.TerminadoPor = User.Identity.Name; //TERMINADA
                         data.DataHoraTerminado = DateTime.Now; //TERMINADA

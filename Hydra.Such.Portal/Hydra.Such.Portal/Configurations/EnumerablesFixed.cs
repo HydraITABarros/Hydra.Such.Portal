@@ -2154,6 +2154,36 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Insucesso"
             }
         };
+
+        public static readonly List<EnumData> ComprasEstado = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Validado"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Recusado"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Tratado"
+            }
+        };
+
     }
 
     public class EnumDataString
