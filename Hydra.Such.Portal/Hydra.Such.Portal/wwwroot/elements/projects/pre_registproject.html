@@ -483,7 +483,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            <vaadin-grid-column width="200px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
@@ -740,8 +740,8 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden>
-                <template class="header">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header" hidden>
                     <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="serviceGroupCode"></vaadin-grid-filter>
                 </template>

@@ -717,16 +717,18 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetPendingReq()
         {
             List<Requisição> requisition = null;
-            List<RequisitionStates> states = new List<RequisitionStates>()
-            {
-                RequisitionStates.Pending,
-                RequisitionStates.Rejected
-            };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
-            
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUser(User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
             requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+            List<RequisitionViewModel> teste = result.Where(x => x.Approvers != null).ToList();
+
 
             return Json(result);
         }
