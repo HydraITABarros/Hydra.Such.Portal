@@ -30,7 +30,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Detalhe(int tipo, string imei)
+        public IActionResult DetalheTelemoveisEquipamentos(int tipo, string imei)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Telemoveis);
 
@@ -39,6 +39,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UPermissions = UPerm;
                 ViewBag.tipo = tipo;
                 ViewBag.imei = imei;
+                ViewBag.tipo_desc = tipo == 0 ? "Equipamento" : "Placa de Rede";
                 return View();
             }
             else

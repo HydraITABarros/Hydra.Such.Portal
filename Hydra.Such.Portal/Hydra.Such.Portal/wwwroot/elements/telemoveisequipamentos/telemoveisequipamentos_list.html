@@ -177,13 +177,14 @@
                     },
                 },
                 _rowSelected: function (item) {
+                    debugger
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/" + item.tipo + "?imei=" + item.imei;
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/" + item.tipo + "?imei=" + item.imei;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/";
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/";
                     }
                 },
                 ready: function () {
