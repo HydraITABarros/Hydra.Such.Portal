@@ -52,7 +52,43 @@ namespace Hydra.Such.Portal.Services
             }
             return item;
         }
+        public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast)
+        {
+            //Update Header
+            item.DataModificacao = DateTime.Now;
+            item.DataUltimaInteracao = DateTime.Now.ToString();
+            item.Estado = BillingReceptionStates.Pendente;
+            //•	Preenche campo “Data passou pendente” com a data de sistema
+            //•	Tipo Problema[NP] Preenche com o código do motivo
+            
+            item = repo.Update(item);
 
+            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
+            wfItem.IdRecFaturacao = item.Id;           
+            wfItem.Estado = (int)BillingReceptionStates.Pendente;//TODO: Identificar estados possivels “Receção/Conferência”        
+            wfItem.AreaWorkflow = item.AreaPendenteDescricao;
+            wfItem.CriadoPor = item.CriadoPor;
+            wfItem.Data = item.DataCriacao;
+            wfItem.DataCriacao = DateTime.Now;
+       
+            wfItem.Utilizador = wfItemLast.Utilizador;
+            wfItem.CodTipoProblema = wfItemLast.CodTipoProblema;
+            wfItem.Descricao = wfItemLast.Descricao;
+            wfItem.Comentario = wfItemLast.Comentario;
+
+            repo.Create(wfItem);
+          
+            try
+            {
+                repo.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return item;
+        }
+        
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
             item.DataModificacao = DateTime.Now;
@@ -125,7 +161,7 @@ namespace Hydra.Such.Portal.Services
         {
             if (item != null)
             {
-                if (ValidateForPosting(item, _config))
+                if (ValidateForPosting(ref item, _config))
                 {
                     Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
                     createPurchHeaderTask.Wait();
@@ -172,7 +208,7 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
-        private bool ValidateForPosting(BillingReceptionModel item, NAVConfigurations _config)
+        private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;
             if (item.Estado != BillingReceptionStates.Rececao || item.Estado != BillingReceptionStates.Pendente)

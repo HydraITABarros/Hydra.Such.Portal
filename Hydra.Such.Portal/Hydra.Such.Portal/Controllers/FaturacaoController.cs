@@ -151,7 +151,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    item = updatedItem;
                 }
                 else
                 {
@@ -161,38 +160,44 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
             }
             return Json(updatedItem);
         }
 
         [HttpPost]
-        public JsonResult BillingReceptionCP([FromBody] BillingReceptionModel item)
+        public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
+
             BillingReceptionModel updatedItem = null;
             if (item != null)
             {
+                item.ModificadoPor = User.Identity.Name;
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                updatedItem = billingRecService.CreateWorkFlowSend(item, workflow);
                 if (updatedItem != null)
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    item = updatedItem;
                 }
                 else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao registar a factura  CP";
-                    item.Estado = Enumerations.BillingReceptionStates.Pendente;
+                    updatedItem = item;
                 }
             }
             else
             {
-                item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
             }
-            return Json(item);
+            return Json(updatedItem);
         }
+
+
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)
         {
@@ -211,6 +216,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                item = new BillingReceptionModel();
                 item.eReasonCode = 2;
                 item.eMessage = "O registo não pode ser nulo";
             }
