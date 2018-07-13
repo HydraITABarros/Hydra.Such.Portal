@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -11,10 +10,13 @@
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
 
 <dom-module id="x-telemoveisequipamentoslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
@@ -49,12 +51,116 @@
                    content-type="application/json">
         </iron-ajax>
 
-
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
         </div>
+
+        <vaadin-grid aria-label="TelemoveisGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="imei">IMEI / Nº Série</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="imei" />
+                </template>
+                <template>
+                    {{item.imei}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipo" />
+                </template>
+                <template>
+                    {{item.tipo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipo_Show" />
+                </template>
+                <template>
+                    {{item.tipo_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marca" />
+                </template>
+                <template>
+                    {{item.marca}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="modelo" />
+                </template>
+                <template>
+                    {{item.modelo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado_Show" />
+                </template>
+                <template>
+                    {{item.estado_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="cor">Cor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cor" />
+                </template>
+                <template>
+                    {{item.cor}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="observacoes" />
+                </template>
+                <template>
+                    {{item.observacoes}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="devolvido_Show">Devolvido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="devolvido_Show" />
+                </template>
+                <template>
+                    {{item.devolvido_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizador" />
+                </template>
+                <template>
+                    {{item.utilizador}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataAlteracao_Show">Data Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAlteracao_Show" />
+                </template>
+                <template>
+                    {{item.dataAlteracao_Show}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
 
@@ -71,13 +177,14 @@
                     },
                 },
                 _rowSelected: function (item) {
+                    debugger
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/" + item.tipo + "?imei=" + item.imei;
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/" + item.tipo + "?imei=" + item.imei;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/";
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/";
                     }
                 },
                 ready: function () {

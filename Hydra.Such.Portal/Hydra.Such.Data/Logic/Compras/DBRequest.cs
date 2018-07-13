@@ -226,7 +226,21 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+        public static List<Requisição> GetReqByUser(string UserName)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
 
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {

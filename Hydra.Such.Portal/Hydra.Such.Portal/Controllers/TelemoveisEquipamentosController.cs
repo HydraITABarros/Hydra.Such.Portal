@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic.Telemoveis;
 using Microsoft.AspNetCore.Mvc;
 using static Hydra.Such.Data.Enumerations;
 using Newtonsoft.Json.Linq;
+using Hydra.Such.Data.ViewModel.Telemoveis;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -29,7 +30,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Detalhe(int tipo, string imei)
+        public IActionResult DetalheTelemoveisEquipamentos(int tipo, string imei)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Telemoveis);
 
@@ -38,6 +39,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UPermissions = UPerm;
                 ViewBag.tipo = tipo;
                 ViewBag.imei = imei;
+                ViewBag.tipo_desc = tipo == 0 ? "Equipamento" : "Placa de Rede";
                 return View();
             }
             else
@@ -50,8 +52,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllEquipamentos()
         {
             List<TelemoveisEquipamentos> result = DBTelemoveis.GetAllTelemoveisEquipamentosToList();
+            List<TelemoveisEquipamentosView> list = new List<TelemoveisEquipamentosView>();
 
-            return Json(result);
+            foreach (TelemoveisEquipamentos tel in result)
+            {
+                list.Add(DBTelemoveis.CastTelemoveisEquipamentosToView(tel));
+            }
+
+            //return Json(result);
+            return Json(list);
         }
 
         [HttpPost]

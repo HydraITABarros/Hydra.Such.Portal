@@ -2155,35 +2155,79 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> ComprasEstado = new List<EnumData>()
+        //Tipo de Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Tipo = new List<EnumData>()
         {
-            new EnumData()
+            new EnumData
+            {
+                Id = 0,
+                Value = "Equipamento"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Placa de Rede"
+            }
+        };
+
+        //Estado do Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Estado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Novo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Usado"
+            }
+        };
+
+        public static readonly List<EnumData> Telemoveis_Devolvido = new List<EnumData>()
+        {
+            new EnumData
             {
                 Id = 0,
                 Value = ""
             },
-            new EnumData()
+            new EnumData
             {
                 Id = 1,
-                Value = "Aprovado"
+                Value = "Devolvido"
             },
-            new EnumData()
+            new EnumData
             {
                 Id = 2,
-                Value = "Validado"
+                Value = "Abate TMN"
             },
-            new EnumData()
+            new EnumData
             {
                 Id = 3,
-                Value = "Recusado"
+                Value = "Vendido"
             },
-            new EnumData()
+            new EnumData
             {
                 Id = 4,
-                Value = "Tratado"
+                Value = "Perdido"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Roubado"
+            },
+            new EnumData
+            {
+                Id = 6,
+                Value = "Empréstimo"
+            },
+            new EnumData
+            {
+                Id = 7,
+                Value = "Não Devolvido"
             }
         };
-
     }
 
     public class EnumDataString
