@@ -24,44 +24,45 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
-            WSCreateProjectDiaryLine.CreateMultiple NAVCreate = new WSCreateProjectDiaryLine.CreateMultiple()
-            {
-                WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
+          
+                WSCreateProjectDiaryLine.CreateMultiple NAVCreate = new WSCreateProjectDiaryLine.CreateMultiple()
                 {
-                    Job_No = y.ProjectNo,
-                    Document_DateSpecified = string.IsNullOrEmpty(y.Date) ? false : true,
-                    Document_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
-                    //Entry_TypeSpecified = true,
-                    //Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
-                    Document_No = "ES_" + y.ProjectNo,
-                    TypeSpecified = true,
-                    Type = getType(Convert.ToInt32(y.Type)),
-                    Description100 = y.Description,
-                    FunctionAreaCode20 = y.FunctionalAreaCode,
-                    ResponsabilityCenterCode20 = y.ResponsabilityCenterCode,
-                    RegionCode20 = y.RegionCode,
-                    Location_Code = y.LocationCode,
-                    No = y.Code,
-                    Posting_DateSpecified = true,
-                    Posting_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
-                    Unit_of_Measure_Code = y.MeasurementUnitCode,
-                    ChargeableSpecified = true,
-                    Chargeable = Convert.ToBoolean(y.Billable),
-                    QuantitySpecified = true,
-                    Quantity = Convert.ToDecimal(y.Quantity),
-                    Unit_CostSpecified = true,
-                    Unit_Cost = Convert.ToDecimal(y.UnitCost),
-                    //Total_CostSpecified = true,
-                    //Total_Cost = Convert.ToDecimal(y.TotalCost),
-                    Unit_PriceSpecified = true,
-                    Unit_Price = (decimal)y.UnitPrice,
-                    //Total_PriceSpecified = true,
-                    //Total_Price = Convert.ToDecimal(y.TotalPrice),
-                    Portal_Transaction_No = TransactID.ToString()
-                }).ToArray()
-            };
+                    WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
+                    {
+                        Job_No = y.ProjectNo,
+                        Document_DateSpecified = string.IsNullOrEmpty(y.Date) ? false : true,
+                        Document_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
+                        //Entry_TypeSpecified = true,
+                        //Entry_Type = getMoveType(Convert.ToInt32(y.MovementType)),
+                        Document_No = "ES_" + y.ProjectNo,
+                        TypeSpecified = true,
+                        Type = getType(Convert.ToInt32(y.Type)),
+                        Description100 = y.Description,
+                        FunctionAreaCode20 = y.FunctionalAreaCode,
+                        ResponsabilityCenterCode20 = y.ResponsabilityCenterCode,
+                        RegionCode20 = y.RegionCode,
+                        Location_Code = y.LocationCode,
+                        No = y.Code,
+                        Posting_DateSpecified = true,
+                        Posting_Date = string.IsNullOrEmpty(y.Date) ? DateTime.Now : DateTime.Parse(y.Date),
+                        Unit_of_Measure_Code = y.MeasurementUnitCode,
+                        ChargeableSpecified = true,
+                        Chargeable = Convert.ToBoolean(y.Billable),
+                        QuantitySpecified = true,
+                        Quantity = Convert.ToDecimal(y.Quantity),
+                        Unit_CostSpecified = true,
+                        Unit_Cost = Convert.ToDecimal(y.UnitCost),
+                        //Total_CostSpecified = true,
+                        //Total_Cost = Convert.ToDecimal(y.TotalCost),
+                        Unit_PriceSpecified = true,
+                        Unit_Price = Convert.ToDecimal(y.UnitPrice),
+                        //Total_PriceSpecified = true,
+                        //Total_Price = Convert.ToDecimal(y.TotalPrice),
+                        Portal_Transaction_No = TransactID.ToString()
+                    }).ToArray()
+                };
 
-            //Configure NAV Client
+           
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_JobJournalLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
             WSCreateProjectDiaryLine.WSJobJournalLine_PortClient WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
@@ -79,7 +80,7 @@ namespace Hydra.Such.Data.NAV
                     {
                         WSCreateProjectDiaryLine.Update toUpdate = new WSCreateProjectDiaryLine.Update()
                         {
-                            WSJobJournalLine =  new WSCreateProjectDiaryLine.WSJobJournalLine()
+                            WSJobJournalLine = new WSCreateProjectDiaryLine.WSJobJournalLine()
                             {
                                 Key = result.WSJobJournalLine.Key,
                                 Line_No = result.WSJobJournalLine.Line_No,
@@ -109,18 +110,18 @@ namespace Hydra.Such.Data.NAV
                                 Unit_PriceSpecified = true,
                             }
                         };
-                        WS_Client =  new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
+                        WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
                         WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
                         WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
                         WSCreateProjectDiaryLine.Update_Result resultUpdate = await WS_Client.UpdateAsync(toUpdate);
-                    
+
                     }
                 }
                 return null;
             }
             catch (Exception ex)
             {
-                return null;
+                throw ex;
             }
         }
 
@@ -187,16 +188,16 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            //try
-            //{
+            try
+            {
                 WSGenericCodeUnit.FxPostJobJrnlLines_Result result = await WS_Client.FxPostJobJrnlLinesAsync(TransactID.ToString());
 
                 return result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    return null;
-            //}
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
         
         private static WSCreateProjectDiaryLine.Entry_Type getMoveType(int moveType)
