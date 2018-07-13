@@ -53,6 +53,15 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
+
+        public string CreateNumeration(BillingReceptionModel item)
+        {
+
+            return "";
+        }
+
+
+
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
             item.DataModificacao = DateTime.Now;
