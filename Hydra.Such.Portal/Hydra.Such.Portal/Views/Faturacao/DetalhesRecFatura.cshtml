@@ -542,11 +542,9 @@
                         <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="text" id="txtNomeFicheiro"></vaadin-text-field>
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-1" hidden="{{ !_isAnexarFicheiro }}">
-                        <paper-button class="btn-default" on-click="_fileinput">&nbsp;...</paper-button>
-                    </div>
+                   
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
@@ -828,18 +826,6 @@
                     }
                     else
                         this._isAnexarFicheiro = true;
-                },
-                _fileinput: function (e) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var contents = e.target.result;
-                        // Display file content
-                        displayContents(contents);
-                    };
-                },
-                displayContents: function(contents) {
-                    var element = document.getElementById('file-content');
-                    element.innerHTML = contents;
                 },
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
