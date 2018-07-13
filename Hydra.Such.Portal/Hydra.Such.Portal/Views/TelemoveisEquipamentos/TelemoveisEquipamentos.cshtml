@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.TelemoveisEquipamentos>
+
+@{
+    ViewData["Title"] = "Telemóveis - Equipamentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/telemoveisequipamentos/telemoveisequipamentos_list.html">
+
+<x-telemoveisequipamentoslist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-telemoveisequipamentoslist>

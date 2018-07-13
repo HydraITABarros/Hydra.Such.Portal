@@ -2154,6 +2154,80 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Insucesso"
             }
         };
+
+        //Tipo de Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Tipo = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Equipamento"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Placa de Rede"
+            }
+        };
+
+        //Estado do Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Estado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Novo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Usado"
+            }
+        };
+
+        public static readonly List<EnumData> Telemoveis_Devolvido = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Devolvido"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Abate TMN"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Vendido"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Perdido"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Roubado"
+            },
+            new EnumData
+            {
+                Id = 6,
+                Value = "Empréstimo"
+            },
+            new EnumData
+            {
+                Id = 7,
+                Value = "Não Devolvido"
+            }
+        };
     }
 
     public class EnumDataString

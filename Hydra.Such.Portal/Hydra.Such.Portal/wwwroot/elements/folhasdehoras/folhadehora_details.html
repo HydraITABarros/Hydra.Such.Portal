@@ -139,9 +139,6 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <!--<iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LFolhaDeHoraRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraStatus" last-response="{{LFolhaDeHoraStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -176,15 +173,6 @@
                    on-response="_updatefolhadehorasvalidacaoResponse"
                    content-type="application/json">
         </iron-ajax>
-
-        <!--<iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
-               last-response="{{FolhaDeHorasUpdatedValidacao}}"
-               method="post"
-               handle-as="json"
-               id="page_updatefolhadehorasvalidacao_ajax"
-               on-response="_updatefolhadehorasvalidacaoResponse"
-               content-type="application/json">
-    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
@@ -222,14 +210,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
-               last-response="{{validateResponse}}"
-               method="post"
-               handle-as="json"
-               id="page_validator_ajax"
-               on-response="_responseValidatorProcessor"
-               content-type="application/json">
-    </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -248,15 +228,6 @@
                    on-response="_deletePercursoResponse"
                    content-type="application/json">
         </iron-ajax>
-
-        <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
-               last-response="{{PercursoUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepercurso_ajax"
-               on-response="_updatePercursoResponse"
-               content-type="application/json">
-    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -287,15 +258,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
-               last-response="{{AjudaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updateajuda_ajax"
-               on-response="_updateAjudaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
-
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
                    method="post"
@@ -323,15 +285,6 @@
                    on-response="_deleteMaoDeObraResponse"
                    content-type="application/json">
         </iron-ajax>
-
-        <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
-               last-response="{{MaoDeObraUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatemaodeobra_ajax"
-               on-response="_updateMaoDeObraResponse"
-               content-type="application/json">
-    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -369,15 +322,6 @@
                    on-response="_deletePresencaResponse"
                    content-type="application/json">
         </iron-ajax>
-
-        <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
-               last-response="{{PresencaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepresenca_ajax"
-               on-response="_updatePresencaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -455,129 +399,139 @@
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div class="panel panel-default">
-                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
-                <div class="panel-body">
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
-                        </div>
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>
 
-                        <div class="col-sm-3">
-                            <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
-                                            items="[[LFolhaDeHoraNavProjectNo]]"
-                                            text-path="no"
-                                            value-path="no"
-                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
-                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            </such-selectbox>
-                        </div>
-
-                        <div class="col-sm-6">
-                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado - Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Início</label>
-                            <br />
-                            <div class="row">
-                                <div class="col-sm-8" style="padding-right: 5px;">
-                                    <vaadin-date-picker id="dataPartidaTexto" name="dataPartidaTexto" value="{{data.dataPartidaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                        <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
+                        <div class="panel-body">
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
                                 </div>
-                                <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+
+                                <div class="col-sm-3">
+                                    <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
+                                                    items="[[LFolhaDeHoraNavProjectNo]]"
+                                                    text-path="no"
+                                                    value-path="no"
+                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                    disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado - Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                             </div>
-                        </div>
 
-                        <!--<div class="col-sm-3">
-                        <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                    </div>-->
-                        <!--<div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                    </div>-->
-
-                        <div class="col-sm-3">
-                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
-                            <br />
-                            <div class="row">
-                                <div class="col-sm-8" style="padding-right: 5px;">
-                                    <vaadin-date-picker id="dataChegadaTexto" name="dataChegadaTexto" value="{{data.dataChegadaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Início</label>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-sm-8" style="padding-right: 5px;">
+                                            <vaadin-date-picker id="dataPartidaTexto" name="dataPartidaTexto" value="{{data.dataPartidaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-sm-4" style="padding-left: 0px;">
+                                            <vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+
+
+
+                                <!--<div class="col-sm-3">
+                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                                </div>-->
+                                <!--<div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                                </div>-->
+
+                                <div class="col-sm-3">
+                                    <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-sm-8" style="padding-right: 5px;">
+                                            <vaadin-date-picker id="dataChegadaTexto" name="dataChegadaTexto" value="{{data.dataChegadaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-sm-4" style="padding-left: 0px;">
+                                            <vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!--<div class="col-sm-3">
+                                    <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                                </div>-->
+                                <!--<div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                                </div>-->
+
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                             </div>
+
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-value-changed="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-sm-3 alignPoga">
+                                    <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
+                                    <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
+                                    <!--<vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>-->
+                                    <vaadin-checkbox checked="{{chkTerminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
+                                </div>
+
+                                <!--<div class="col-sm-3" style="padding-top:20px">
+                                    <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </div>-->
+                            </div>
+
+                            <!--<div class="marginSpace">
+                            </div>-->
                         </div>
-
-                        <!--<div class="col-sm-3">
-                        <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                    </div>-->
-                        <!--<div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
-                    </div>-->
-
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-value-changed="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-
-                        <div class="col-sm-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
-                        </div>
-
-                        <!--<div class="col-sm-3" style="padding-top:20px">
-                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    </div>-->
-                    </div>
-
-                    <!--<div class="marginSpace">
-                </div>-->
-                </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
 
 
 
@@ -620,8 +574,9 @@
 
 
                                 <!--<div class="col-sm-1" style="padding-top:23px">
-                                <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
+                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
+                                st
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -963,7 +918,7 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+                <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1032,8 +987,8 @@
 
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
+                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1231,7 +1186,7 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading" style="font-size:16px">Cabeçalho</div>
+                <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-6">
@@ -1275,8 +1230,8 @@
 
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
+                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                                </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPresenca" class="btnSave tableBtn" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1420,15 +1375,15 @@
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="300px">
-                                    <tr>
-                                        <td width="15%">[[item.id]]</td>
-                                        <td width="85%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                <template>
+                                    <table width="300px">
+                                        <tr>
+                                            <td width="15%">[[item.id]]</td>
+                                            <td width="85%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1439,15 +1394,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="400px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                <template>
+                                    <table width="400px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1458,15 +1413,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="10%">[[item.id]]</td>
-                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                <template>
+                                    <table width="350px">
+                                        <tr>
+                                            <td width="10%">[[item.id]]</td>
+                                            <td width="90%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
                         </div>
                     </div>
 
@@ -1653,6 +1608,11 @@
                         notify: true,
                         value: ""
                     },
+                    chkTerminada: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                     chkAlmoco: {
                         type: Boolean,
                         notify: true,
@@ -1713,20 +1673,38 @@
                                         if (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "") {
                                             if (this.$.tipoDeslocacao.validate() & this.$.tipoDeslocacao.value != "") {
                                                 if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
-                                                    if (this.$.codigoRegiao.validate() & this.$.codigoRegiao.value != "") {
-                                                        if (this.$.codigoAreaFuncional.validate() & this.$.codigoAreaFuncional.value != "") {
-                                                            if (this.$.codigoCentroResponsabilidade.validate() & this.$.codigoCentroResponsabilidade.value != "") {
-                                                                if (this._validacaoDataPartidaChegada()) {
-                                                                    if (this._validacaoHoraPartidaChegada()) {
-                                                                        return true;
+                                                    if (this.$.codigoRegiao.value != "") {
+                                                        if (this.$.codigoAreaFuncional.value != "") {
+                                                            if (this.$.codigoCentroResponsabilidade.value != "") {
+                                                                if (this.$.validadores.validate() & this.$.validadores.value != "") {
+                                                                    if (this.$.integradoresEmRH.validate() & this.$.integradoresEmRH.value != "") {
+                                                                        if (this.$.integradoresEmRHKM.validate() & this.$.integradoresEmRHKM.value != "") {
+                                                                            if (this._validacaoDataPartidaChegada()) {
+                                                                                if (this._validacaoHoraPartidaChegada()) {
+                                                                                    return true;
+                                                                                }
+                                                                                else {
+                                                                                    this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                                                                    return false;
+                                                                                }
+                                                                            }
+                                                                            else {
+                                                                                this._showErrorMessage('A data Início ou a data Fim no cabeçalho não está correta.');
+                                                                                return false;
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            this._showErrorMessage("Falta os Integradores km RH.");
+                                                                            return false;
+                                                                        }
                                                                     }
                                                                     else {
-                                                                        this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                                                        this._showErrorMessage("Falta os Integradores Aj. Custo.");
                                                                         return false;
                                                                     }
                                                                 }
                                                                 else {
-                                                                    this._showErrorMessage('A data Início ou a data Fim no cabeçalho não está correta.');
+                                                                    this._showErrorMessage("Falta os Validadores.");
                                                                     return false;
                                                                 }
                                                             }
@@ -1924,46 +1902,9 @@
                 },
 
                 _deleteFH: function () {
-                    debugger;
+                    //debugger;
                     var ajax_request = this.$.page_deletefolhadehoras_ajax;
-
-                    var delete_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
-                    var delete_Area = this.data.codigoArea;
-                    var delete_ProjetoNo = this.$.projetoNo.value;
-                    var delete_EmpregadoNo = this.$.empregadoNo.value;
-                    var delete_DataPartidaTexto = this.$.dataPartidaTexto.value;
-                    var delete_HoraPartidaTexto = this.$.horaPartidaTexto.value;
-                    var delete_DataChegadaTexto = this.$.dataChegadaTexto.value
-                    var delete_HoraChegadaTexto = this.$.horaChegadaTexto.value;
-                    var delete_TipoDeslocacao = this.$.tipoDeslocacao.value;
-                    var delete_CodigoTipoKms = this.$.codigoTipoKms.value;
-                    var delete_Matricula = this.$.matricula.value;
-                    var delete_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
-                    var delete_Terminada = this.data.terminada;
-                    var delete_Estado = this.$.folhaDeHoraStatus.value;
-                    var delete_CriadoPor = this.$.criadoPor.value;
-                    var delete_CodigoRegiao = this.$.codigoRegiao.value;
-                    var delete_CodigoAreaFuncional = this.$.codigoAreaFuncional.value;
-                    var delete_CodigoCentroResponsabilidade = this.$.codigoCentroResponsabilidade.value;
-                    var delete_Validado = this.data.validado;
-                    var delete_Validadores = this.$.validadores.value;
-                    var delete_Validador = this.$.validador.value;
-                    var delete_DataValidacaoTexto = this.$.dataValidacaoTexto.value;
-                    var delete_HoraValidacaoTexto = this.$.horaValidacaoTexto.value;
-                    var delete_IntegradoresEmRH = this.$.integradoresEmRH.value;
-                    var delete_IntegradorEmRH = this.$.integradorEmRH.value;
-                    var delete_DataIntegracaoEmRHTexto = this.$.dataIntegracaoEmRHTexto.value;
-                    var delete_HoraIntegracaoEmRHTexto = this.$.horaIntegracaoEmRHTexto.value;
-                    var delete_IntegradoresEmRHKM = this.$.integradoresEmRHKM.value;
-                    var delete_IntegradorEmRHKM = this.$.integradorEmRHKM.value;
-                    var delete_DataIntegracaoEmRHKMTexto = this.$.dataIntegracaoEmRHKMTexto.value;
-                    var delete_HoraIntegracaoEmRHKMTexto = this.$.horaIntegracaoEmRHKMTexto.value;
-                    var delete_CustoTotalAjudaCusto = this.$.custoTotalAjudaCusto.value;
-                    var delete_CustoTotalHoras = this.$.custoTotalHoras.value;
-                    var delete_CustoTotalKM = this.$.custoTotalKM.value;
-                    var delete_NumTotalKM = this.$.numTotalKM.value;
-                    var delete_Observacoes = this.$.observacoes.value;
-                    var delete_Eliminada = true;
+                    ajax_request.body = JSON.stringify(this.data)
 
                     bootbox.confirm({
                         message: "Tem a certeza que pretende Eliminar a Folha de Horas?",
@@ -1979,44 +1920,6 @@
                         },
                         callback: function (deleteFolhaHoras) {
                             if (deleteFolhaHoras) {
-                                ajax_request.body = JSON.stringify({
-                                    folhaDeHorasNo: delete_FolhaDeHorasNo,
-                                    projetoNo: delete_ProjetoNo,
-                                    empregadoNo: delete_EmpregadoNo,
-                                    dataPartidaTexto: delete_DataPartidaTexto,
-                                    horaPartidaTexto: delete_HoraPartidaTexto,
-                                    dataChegadaTexto: delete_DataChegadaTexto,
-                                    horaChegadaTexto: delete_HoraChegadaTexto,
-                                    tipoDeslocacao: delete_TipoDeslocacao,
-                                    codigoTipoKms: delete_CodigoTipoKms,
-                                    matricula: delete_Matricula,
-                                    deslocacaoForaConcelho: delete_DeslocacaoForaConcelho,
-                                    terminada: delete_Terminada,
-                                    estado: delete_Estado,
-                                    criadoPor: delete_CriadoPor,
-                                    codigoRegiao: delete_CodigoRegiao,
-                                    codigoAreaFuncional: delete_CodigoAreaFuncional,
-                                    codigoCentroResponsabilidade: delete_CodigoCentroResponsabilidade,
-                                    validado: delete_Validado,
-                                    validadores: delete_Validadores,
-                                    validador: delete_Validador,
-                                    dataValidacaoTexto: delete_DataValidacaoTexto,
-                                    horaValidacaoTexto: delete_HoraValidacaoTexto,
-                                    integradoresEmRH: delete_IntegradoresEmRH,
-                                    integradorEmRH: delete_IntegradorEmRH,
-                                    dataIntegracaoEmRHTexto: delete_DataIntegracaoEmRHTexto,
-                                    horaIntegracaoEmRHTexto: delete_HoraIntegracaoEmRHTexto,
-                                    integradoresEmRHKM: delete_IntegradoresEmRHKM,
-                                    integradorEmRHKM: delete_IntegradorEmRHKM,
-                                    dataIntegracaoEmRHKMTexto: delete_DataIntegracaoEmRHKMTexto,
-                                    horaIntegracaoEmRHKMTexto: delete_HoraIntegracaoEmRHKMTexto,
-                                    custoTotalAjudaCusto: delete_CustoTotalAjudaCusto,
-                                    custoTotalHoras: delete_CustoTotalHoras,
-                                    custoTotalKM: delete_CustoTotalKM,
-                                    numTotalKM: delete_NumTotalKM,
-                                    observacoes: delete_Observacoes,
-                                    eliminada: delete_Eliminada
-                                });
                                 ajax_request.generateRequest();
                             }
                         }
@@ -2086,22 +1989,25 @@
 
                 _validacaoTerminada: function () {
                     //debugger;
-                    if (this.data.terminada == true)
-                        this.data.terminada = false;
-                    else if (this.data.terminada == false)
-                        this.data.terminada = true;
-
+                    var _self = this;
                     var ok = 0;
-                    var ajax_request = this.$.terminarfolhadehoras_ajax;
 
-                    if (this.data.terminada == true) {
-                        if (this._validateFolhaHoras()) {
-                            if (this.$.tipoDeslocacao.value == 1) {
-                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                    if (_self.chkTerminada == true) {
+                        _self.chkTerminada = false;
+                    } else {
+                        if (_self.chkTerminada == false) {
+                            _self.chkTerminada = true;
+                        }
+                    }
+
+                    if (_self.chkTerminada == true) {
+                        if (_self._validateFolhaHoras()) {
+                            if (_self.$.tipoDeslocacao.value == 1) {
+                                if (_self.$.matricula.validate() & _self.$.matricula.value != "") {
                                     ok = 1;
                                 }
                                 else {
-                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                    _self._showErrorMessage("Falta preencher o campo Matrícula.");
                                 }
                             }
                             else {
@@ -2111,43 +2017,10 @@
                     }
 
                     if (ok == 1) {
-                        var terminada_FolhaDeHorasNo = this.$.folhaDeHorasNo.value;
-                        var terminada_Area = this.data.codigoArea;
-                        var terminada_ProjetoNo = this.$.projetoNo.value;
-                        var terminada_EmpregadoNo = this.$.empregadoNo.value;
-                        var terminada_DataPartidaTexto = this.$.dataPartidaTexto.value;
-                        var terminada_HoraPartidaTexto = this.$.horaPartidaTexto.value;
-                        var terminada_DataChegadaTexto = this.$.dataChegadaTexto.value
-                        var terminada_HoraChegadaTexto = this.$.horaChegadaTexto.value;
-                        var terminada_TipoDeslocacao = this.$.tipoDeslocacao.value;
-                        var terminada_CodigoTipoKms = this.$.codigoTipoKms.value;
-                        var terminada_Matricula = this.$.matricula.value;
-                        var terminada_DeslocacaoForaConcelho = this.data.deslocacaoForaConcelho;
-                        var terminada_Terminada = null;
-                        var terminada_Estado = this.$.folhaDeHoraStatus.value;
-                        var terminada_CriadoPor = this.$.criadoPor.value;
-                        var terminada_CodigoRegiao = this.$.codigoRegiao.value;
-                        var terminada_CodigoAreaFuncional = this.$.codigoAreaFuncional.value;
-                        var terminada_CodigoCentroResponsabilidade = this.$.codigoCentroResponsabilidade.value;
-                        var terminada_Validado = this.data.validado;
-                        var terminada_Validadores = this.$.validadores.value;
-                        var terminada_Validador = this.$.validador.value;
-                        var terminada_DataValidacaoTexto = this.$.dataValidacaoTexto.value;
-                        var terminada_HoraValidacaoTexto = this.$.horaValidacaoTexto.value;
-                        var terminada_IntegradoresEmRH = this.$.integradoresEmRH.value;
-                        var terminada_IntegradorEmRH = this.$.integradorEmRH.value;
-                        var terminada_DataIntegracaoEmRHTexto = this.$.dataIntegracaoEmRHTexto.value;
-                        var terminada_HoraIntegracaoEmRHTexto = this.$.horaIntegracaoEmRHTexto.value;
-                        var terminada_IntegradoresEmRHKM = this.$.integradoresEmRHKM.value;
-                        var terminada_IntegradorEmRHKM = this.$.integradorEmRHKM.value;
-                        var terminada_DataIntegracaoEmRHKMTexto = this.$.dataIntegracaoEmRHKMTexto.value;
-                        var terminada_HoraIntegracaoEmRHKMTexto = this.$.horaIntegracaoEmRHKMTexto.value;
-                        var terminada_CustoTotalAjudaCusto = this.$.custoTotalAjudaCusto.value;
-                        var terminada_CustoTotalHoras = this.$.custoTotalHoras.value;
-                        var terminada_CustoTotalKM = this.$.custoTotalKM.value;
-                        var terminada_NumTotalKM = this.$.numTotalKM.value;
-                        var terminada_Observacoes = this.$.observacoes.value;
-                        var terminada_Eliminada = false;
+                        _self.chkTerminada = true;
+                        _self.data.terminada = true;
+                        var ajax_request = _self.$.terminarfolhadehoras_ajax;
+                        ajax_request.body = JSON.stringify(_self.data)
 
                         bootbox.confirm({
                             message: "Tem a certeza que pretende Terminar a Folha de Horas?",
@@ -2163,56 +2036,19 @@
                             },
                             callback: function (terminarFolhaHoras) {
                                 if (terminarFolhaHoras) {
-                                    terminada_Terminada = true;
+                                    ajax_request.generateRequest();
                                 }
                                 else {
-                                    terminada_Terminada = false;
-                                };
-
-                                ajax_request.body = JSON.stringify({
-                                    folhaDeHorasNo: terminada_FolhaDeHorasNo,
-                                    projetoNo: terminada_ProjetoNo,
-                                    empregadoNo: terminada_EmpregadoNo,
-                                    dataPartidaTexto: terminada_DataPartidaTexto,
-                                    horaPartidaTexto: terminada_HoraPartidaTexto,
-                                    dataChegadaTexto: terminada_DataChegadaTexto,
-                                    horaChegadaTexto: terminada_HoraChegadaTexto,
-                                    tipoDeslocacao: terminada_TipoDeslocacao,
-                                    codigoTipoKms: terminada_CodigoTipoKms,
-                                    matricula: terminada_Matricula,
-                                    deslocacaoForaConcelho: terminada_DeslocacaoForaConcelho,
-                                    terminada: terminada_Terminada,
-                                    estado: terminada_Estado,
-                                    criadoPor: terminada_CriadoPor,
-                                    codigoRegiao: terminada_CodigoRegiao,
-                                    codigoAreaFuncional: terminada_CodigoAreaFuncional,
-                                    codigoCentroResponsabilidade: terminada_CodigoCentroResponsabilidade,
-                                    validado: terminada_Validado,
-                                    validadores: terminada_Validadores,
-                                    validador: terminada_Validador,
-                                    dataValidacaoTexto: terminada_DataValidacaoTexto,
-                                    horaValidacaoTexto: terminada_HoraValidacaoTexto,
-                                    integradoresEmRH: terminada_IntegradoresEmRH,
-                                    integradorEmRH: terminada_IntegradorEmRH,
-                                    dataIntegracaoEmRHTexto: terminada_DataIntegracaoEmRHTexto,
-                                    horaIntegracaoEmRHTexto: terminada_HoraIntegracaoEmRHTexto,
-                                    integradoresEmRHKM: terminada_IntegradoresEmRHKM,
-                                    integradorEmRHKM: terminada_IntegradorEmRHKM,
-                                    dataIntegracaoEmRHKMTexto: terminada_DataIntegracaoEmRHKMTexto,
-                                    horaIntegracaoEmRHKMTexto: terminada_HoraIntegracaoEmRHKMTexto,
-                                    custoTotalAjudaCusto: terminada_CustoTotalAjudaCusto,
-                                    custoTotalHoras: terminada_CustoTotalHoras,
-                                    custoTotalKM: terminada_CustoTotalKM,
-                                    numTotalKM: terminada_NumTotalKM,
-                                    observacoes: terminada_Observacoes,
-                                    eliminada: terminada_Eliminada
-                                });
-                                ajax_request.generateRequest();
+                                    debugger;
+                                    _self.chkTerminada = false;
+                                    _self.data.terminada = false;
+                                }
                             }
                         });
                     }
                     else {
-                        ajax_ready.generateRequest();
+                        _self.chkTerminada = false;
+                        _self.data.terminada = false;
                     }
                 },
 
@@ -3280,6 +3116,8 @@
                                 this._isCreate = true;
                             }
 
+                            self.chkTerminada = self.data.terminada;
+
                             self._setFieldsEditability(self.data);
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
@@ -3520,15 +3358,16 @@
 
                     if (this.terminarFolhaDeHoras.eReasonCode == 0 || this.terminarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.terminarFolhaDeHoras.eMessage);
-                        this.$.page_databound_ajax.generateRequest();
+                        //this.$.page_databound_ajax.generateRequest();
                     } else {
                         if (this.terminarFolhaDeHoras.eReasonCode == 1) {
-                            this.$.page_databound_ajax.generateRequest();
+                            //this.$.page_databound_ajax.generateRequest();
                         }
                         else {
                             this._showErrorMessage(this.terminarFolhaDeHoras.eMessage);
                         }
                     };
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _validarfolhadehorasResponse: function (e) {
@@ -4056,7 +3895,6 @@
 
                 _goBack: function (e) {
                     //debugger;
-                    //window.location = "../";
                     window.history.back();
                 },
 
