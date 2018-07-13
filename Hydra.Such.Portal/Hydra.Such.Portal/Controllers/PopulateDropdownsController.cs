@@ -1825,6 +1825,28 @@ namespace Hydra.Such.Portal.Controllers
             List<Data.ViewModel.Compras.PurchaseHeader> result = DBNAV2017Purchases.GetOrdersBySupplier(_config.NAVDatabaseName, _config.NAVCompanyName, supplierId);
             return Json(result);
         }
+
+        //TELEMÓVEIS
+        [HttpPost]
+        public JsonResult Get_Telemoveis_Tipo()
+        {
+            List<EnumData> result = EnumerablesFixed.Telemoveis_Tipo;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Telemoveis_Estado()
+        {
+            List<EnumData> result = EnumerablesFixed.Telemoveis_Estado;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Telemoveis_Devolvido()
+        {
+            List<EnumData> result = EnumerablesFixed.Telemoveis_Devolvido;
+            return Json(result);
+        }
     }
 
 

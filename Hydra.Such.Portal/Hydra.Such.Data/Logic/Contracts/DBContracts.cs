@@ -397,8 +397,8 @@ namespace Hydra.Such.Data.Logic.Contracts
             if (result.DataHoraHabilitaçãoDocumental != null)
             {
                 result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Date;
-                if(!string.IsNullOrEmpty(x.PreviousHearingTime))
-                    result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                if(!string.IsNullOrEmpty(x.DocumentationHabilitationTime))
+                    result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.DocumentationHabilitationTime));
                 Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
             }
 

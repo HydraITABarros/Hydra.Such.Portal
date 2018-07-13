@@ -2341,6 +2341,7 @@ namespace Hydra.Such.Portal.Controllers
                                Código = x.Código,
                                Descrição = x.Descrição,
                                Quantidade = 0,
+                               GrupoContabProjeto = proj.GrupoContabObra,
                                CódUnidadeMedida = x.CódUnidadeMedida,
                                CódigoRegião = x.CódigoRegião,
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
@@ -2366,6 +2367,7 @@ namespace Hydra.Such.Portal.Controllers
                                Código = x.Código,
                                Descrição = x.Descrição,
                                Quantidade = 0,
+                               GrupoContabProjeto = proj.GrupoContabObra,
                                CódUnidadeMedida = x.CódUnidadeMedida,
                                CódigoRegião = x.CódigoRegião,
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
@@ -2517,8 +2519,19 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         //Create Lines in NAV
-                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
-                        TCreateNavDiaryLine.Wait();
+                        try
+                        {
+                            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
+                            TCreateNavDiaryLine.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            erro.eReasonCode = 3;
+                            erro.eMessage = ex.Message;
+                            //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                            return Json(erro);
+                        }
+                       
 
                         //Register Lines in NAV
                         Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);

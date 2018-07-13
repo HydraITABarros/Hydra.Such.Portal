@@ -154,6 +154,17 @@
                                 </ul>
                             </li>
 
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Telemóveis</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Equipamentos", "TelemoveisEquipamentos", "TelemoveisEquipamentos", null, null)</li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </li><!-- .menu-item -->
 
@@ -195,6 +206,7 @@
                                     <li>@Html.ActionLink("Quadro de bordo CA", "QuadroBordoCA", "ProcedimentosCcps", null, null)</li>
                                 </ul>
                             </li>
+                            <li>@Html.ActionLink("Mercado Local", "MercadoLocalList", "MercadoLocal", null, null)</li>
                         </ul>
                     </li><!-- .menu-item -->
 
