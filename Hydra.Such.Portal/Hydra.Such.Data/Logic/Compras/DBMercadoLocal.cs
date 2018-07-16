@@ -215,7 +215,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocal Create(MercadoLocal ObjectToCreate)
+        public static Database.Compras Create(Database.Compras ObjectToCreate)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocal Update(MercadoLocal ObjectToUpdate)
+        public static Database.Compras Update(Database.Compras ObjectToUpdate)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static bool Delete(MercadoLocal ObjectToDelete)
+        public static bool Delete(Database.Compras ObjectToDelete)
         {
             try
             {
@@ -278,7 +278,7 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     MercadoLocalViewModel ComprasVM = new MercadoLocalViewModel();
 
-                    ComprasVM.ID = Compras.ID;
+                    ComprasVM.ID = Compras.Id;
                     ComprasVM.CodigoProduto = Compras.CodigoProduto;
                     ComprasVM.Descricao = Compras.Descricao;
                     ComprasVM.Descricao2 = Compras.Descricao2;

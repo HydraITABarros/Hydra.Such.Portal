@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public class MercadoLocal
+    public partial class MercadoLocal
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string CodigoProduto { get; set; }
         public string Descricao { get; set; }
         public string Descricao2 { get; set; }
