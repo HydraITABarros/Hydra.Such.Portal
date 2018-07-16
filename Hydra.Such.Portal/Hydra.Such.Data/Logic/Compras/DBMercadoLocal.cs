@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     return ctx.Compras.Select(Compras => new MercadoLocalViewModel()
                     {
-                        ID = Compras.Id,
+                        ID = Compras.ID,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
@@ -84,10 +84,10 @@ namespace Hydra.Such.Data.Logic.Compras
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Compras.Where(x =>
-                        (x.Id == ID)
+                        (x.ID == ID)
                     ).Select(Compras => new MercadoLocalViewModel()
                     {
-                        ID = Compras.Id,
+                        ID = Compras.ID,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
@@ -156,7 +156,7 @@ namespace Hydra.Such.Data.Logic.Compras
                         (x.Estado == Estado)
                     ).Select(Compras => new MercadoLocalViewModel()
                     {
-                        ID = Compras.Id,
+                        ID = Compras.ID,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
