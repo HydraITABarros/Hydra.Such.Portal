@@ -33,5 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Telemoveis
         public string Devolvido_Show { get; set; }
         public string DataRecepcao_Show { get; set; }
         public string DataAlteracao_Show { get; set; }
+        public string NomeUtilizadorCartao_Show { get; set; }
+        public string DataAtribuicaoUtilizadorCartao_Show { get; set; }
     }
 }
