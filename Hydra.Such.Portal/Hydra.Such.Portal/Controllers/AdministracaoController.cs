@@ -481,7 +481,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 AcessosUtilizador userAccess = new AcessosUtilizador();
                 userAccess.IdUtilizador = data.IdUser;
-                //userAccess.Área = data.Area;
+                userAccess.Área = 1;
                 userAccess.Funcionalidade = data.Feature;
                 userAccess.Eliminação = data.Delete;
                 userAccess.Inserção = data.Create;

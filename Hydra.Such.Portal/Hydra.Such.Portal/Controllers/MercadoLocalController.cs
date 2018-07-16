@@ -64,7 +64,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     result.ForEach(Compras =>
                     {
-                        //Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
+                        Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
                         Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name;
                     });
                 }
@@ -74,5 +74,47 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(null);
         }
+
+        public JsonResult AprovadoToTratado([FromBody] List<MercadoLocal> Mercados)
+        {
+            if (Mercados != null)
+            {
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MercadoLocal);
+                if (UPerm.Update == true)
+                {
+                    Mercados.ForEach(Mercado =>
+                    {
+                        Mercado.Estado = 2;
+                        Mercado.DataValidacao = DateTime.Now;
+                        Mercado.UtilizadorValidacao = User.Identity.Name;
+
+                        DBMercadoLocal.Update(Mercado);
+                    });
+                }
+            }
+
+            return Json(null);
+        }
+
+        public JsonResult AprovadoToValidar([FromBody] List<MercadoLocal> data)
+        {
+            return Json(null);
+        }
+
+        public JsonResult AprovadoToRecusar([FromBody] List<MercadoLocal> data)
+        {
+            return Json(null);
+        }
+
+        public JsonResult ValidadoToTratado([FromBody] List<MercadoLocal> data)
+        {
+            return Json(null);
+        }
+
+        public JsonResult RecusadoToTratado([FromBody] List<MercadoLocal> data)
+        {
+            return Json(null);
+        }
+
     }
 }
