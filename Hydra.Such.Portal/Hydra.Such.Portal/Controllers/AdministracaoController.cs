@@ -184,6 +184,7 @@ namespace Hydra.Such.Portal.Controllers
                 ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea,
                 ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2,
                 UtilizadorCriação = User.Identity.Name,
+                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -243,6 +244,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea;
                 userConfig.ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2;
                 userConfig.UtilizadorModificação = User.Identity.Name;
+                userConfig.PerfilNumeraçãoRecDocCompras = data.ReceptionConfig;
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses

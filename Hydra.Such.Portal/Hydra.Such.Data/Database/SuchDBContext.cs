@@ -22,6 +22,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<CartõesTelemóveis> CartõesTelemóveis { get; set; }
         public virtual DbSet<CatálogoManutenção> CatálogoManutenção { get; set; }
         public virtual DbSet<ClassificaçãoFichasTécnicas> ClassificaçãoFichasTécnicas { get; set; }
+        public virtual DbSet<Compras> Compras { get; set; }
+        public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
         public virtual DbSet<Configuração> Configuração { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
         public virtual DbSet<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
@@ -125,9 +127,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        public virtual DbSet<MercadoLocal> Compras { get; set; }
-        public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -783,6 +782,75 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.InverseGrupoNavigation)
                     .HasForeignKey(d => d.Grupo)
                     .HasConstraintName("FK_Classificação Fichas Técnicas_Classificação Fichas Técnicas");
+            });
+
+            modelBuilder.Entity<Compras>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CodigoProduto).HasMaxLength(20);
+
+                entity.Property(e => e.CodigoUnidadeMedida).HasMaxLength(10);
+
+                entity.Property(e => e.DataConsultaMercado).HasColumnType("datetime");
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DataEncomenda).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRecusa).HasColumnType("datetime");
+
+                entity.Property(e => e.DataTratado).HasColumnType("datetime");
+
+                entity.Property(e => e.DataValidacao).HasColumnType("datetime");
+
+                entity.Property(e => e.Descricao).HasMaxLength(50);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(50);
+
+                entity.Property(e => e.NoConsultaMercado).HasMaxLength(20);
+
+                entity.Property(e => e.NoEncomenda).HasMaxLength(20);
+
+                entity.Property(e => e.NoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.NoProjeto).HasMaxLength(20);
+
+                entity.Property(e => e.NoRequisicao).HasMaxLength(20);
+
+                entity.Property(e => e.RegiaoMercadoLocal).HasMaxLength(20);
+
+                entity.Property(e => e.Responsaveis).HasMaxLength(200);
+
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorRecusa).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorTratado).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorValidacao).HasMaxLength(50);
+
+                entity.HasOne(d => d.RegiaoMercadoLocalNavigation)
+                    .WithMany(p => p.Compras)
+                    .HasForeignKey(d => d.RegiaoMercadoLocal)
+                    .HasConstraintName("FK_Compras_Config Mercado Local");
+            });
+
+            modelBuilder.Entity<ConfigMercadoLocal>(entity =>
+            {
+                entity.HasKey(e => e.RegiaoMercadoLocal);
+
+                entity.ToTable("Config Mercado Local");
+
+                entity.Property(e => e.RegiaoMercadoLocal)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Responsavel1).HasMaxLength(50);
+
+                entity.Property(e => e.Responsavel2).HasMaxLength(50);
+
+                entity.Property(e => e.Responsavel3).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Configuração>(entity =>
@@ -7963,135 +8031,6 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
-            });
-
-            modelBuilder.Entity<MercadoLocal>(entity =>
-            {
-                entity.HasKey(e => new { e.ID });
-
-                entity.Property(e => e.ID)
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.CodigoProduto)
-                    .HasColumnName("CodigoProduto")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Descricao)
-                    .HasColumnName("Descricao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Descricao2)
-                    .HasColumnName("Descricao2")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CodigoUnidadeMedida)
-                    .HasColumnName("CodigoUnidadeMedida")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.Quantidade)
-                    .HasColumnName("Quantidade")
-                    .HasColumnType("decimal(, 2)");
-
-                entity.Property(e => e.NoRequisicao)
-                    .HasColumnName("NoRequisicao")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.NoLinhaRequisicao)
-                    .HasColumnName("NoLinhaRequisicao");
-
-                entity.Property(e => e.Urgente)
-                    .HasColumnName("Urgente");
-
-                entity.Property(e => e.RegiaoMercadoLocal)
-                    .HasColumnName("RegiaoMercadoLocal")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Estado)
-                    .HasColumnName("Estado");
-
-                entity.Property(e => e.DataCriacao)
-                    .HasColumnName("DataCriacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.UtilizadorCriacao)
-                    .HasColumnName("UtilizadorCriacao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Responsaveis)
-                    .HasColumnName("Responsaveis")
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.NoProjeto)
-                    .HasColumnName("NoProjeto")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.NoFornecedor)
-                    .HasColumnName("NoFornecedor")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.NoEncomenda)
-                    .HasColumnName("NoEncomenda")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.DataEncomenda)
-                    .HasColumnName("DataEncomenda")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.NoConsultaMercado)
-                    .HasColumnName("NoConsultaMercado")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.DataConsultaMercado)
-                    .HasColumnName("DataConsultaMercado")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataValidacao)
-                    .HasColumnName("DataValidacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.UtilizadorValidacao)
-                    .HasColumnName("UtilizadorValidacao")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataRecusa)
-                    .HasColumnName("DataRecusa")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.UtilizadorRecusa)
-                    .HasColumnName("UtilizadorRecusa")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataTratado)
-                    .HasColumnName("DataTratado")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.UtilizadorTratado)
-                    .HasColumnName("UtilizadorTratado")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Recusada)
-                    .HasColumnName("Recusada");
-            });
-
-            modelBuilder.Entity<ConfigMercadoLocal>(entity =>
-            {
-                entity.HasKey(e => new { e.RegiaoMercadoLocal });
-
-                entity.Property(e => e.RegiaoMercadoLocal)
-                    .HasColumnName("RegiaoMercadoLocal")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Responsavel1)
-                    .HasColumnName("Responsavel1")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Responsavel2)
-                    .HasColumnName("Responsavel2")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Responsavel3)
-                    .HasColumnName("Responsavel3")
-                    .HasMaxLength(50);
             });
         }
     }
