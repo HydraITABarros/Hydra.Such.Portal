@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 {
     public class DBTelemoveis
     {
+        #region TELEMOVEIS EQUIPAMENTOS
         #region CRUD
         /// <summary>
         /// Lista de todos os registos (Telemóveis e placas de rede)
@@ -119,8 +120,32 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 return null;
             }
         }
-        #endregion
 
+
+        /// <summary>
+        /// Eliminação do registo
+        /// </summary>
+        /// <param name="ObjectToDelete"></param>
+        /// <returns></returns>
+        public static TelemoveisEquipamentos Delete(TelemoveisEquipamentos ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.TelemoveisEquipamentos.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        #endregion
 
         public static List<TelemoveisEquipamentosView> GetAllTelemoveisEquipamentosViewToList()
         {
@@ -166,6 +191,20 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 
         public static TelemoveisEquipamentosView CastTelemoveisEquipamentosToView(TelemoveisEquipamentos ObjectToTransform)
         {
+            TelemoveisCartoes telemoveisCartoes = new TelemoveisCartoes();
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    telemoveisCartoes = ctx.TelemoveisCartoes.Where(p => p.Imei == ObjectToTransform.Imei).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+            
             TelemoveisEquipamentosView view = new TelemoveisEquipamentosView()
             {
                 Tipo = ObjectToTransform.Tipo,
@@ -192,10 +231,106 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Novo" : "Usado",
                 Devolvido_Show = ObjectToTransform.Devolvido == 0 ? "" : ObjectToTransform.Devolvido == 1 ? "Devolvido" : ObjectToTransform.Devolvido == 2 ? "Abate TMN" : ObjectToTransform.Devolvido == 3 ? "Vendido" : ObjectToTransform.Devolvido == 4 ? "Perdido" : ObjectToTransform.Devolvido == 5 ? "Roubado" : ObjectToTransform.Devolvido == 6 ? "Empréstimo" : ObjectToTransform.Devolvido == 7 ? "Não Devolvido" : "",
                 DataRecepcao_Show = ObjectToTransform.DataRecepcao == null ? "" : ObjectToTransform.DataRecepcao.Value.ToString("yyyy-MM-dd"),
-                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd")
+                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd"),
+                NomeUtilizadorCartao_Show = telemoveisCartoes != null ? telemoveisCartoes.Nome : string.Empty,
+                DataAtribuicaoUtilizadorCartao_Show = telemoveisCartoes != null ? telemoveisCartoes.DataAtribuicao.Value.ToString("yyyy-MM-dd") : string.Empty
             };
 
             return view;
         }
+        #endregion
+
+        #region TELEMOVEIS CARTÕES
+        #region CRUD
+        /// <summary>
+        /// Lista de todos os registos (Cartões)
+        /// </summary>
+        /// <returns></returns>
+        public static List<TelemoveisCartoes> GetAllTelemoveisCartoesToList()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.TelemoveisCartoes.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Devolve os dados de um registo da tabela Telemoveis_Cartoes
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <param name="imei"></param>
+        /// <returns></returns>
+        public static TelemoveisCartoes GetTelemoveisCartoes(string numCartao)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.TelemoveisCartoes.Where(p => p.NumCartao == numCartao).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        
+        #endregion
+
+        public static TelemoveisCartoesView CastTelemoveisCartoesToView(TelemoveisCartoes ObjectToTransform)
+        {
+            TelemoveisCartoesView view = new TelemoveisCartoesView()
+            {
+                NumCartao = ObjectToTransform.NumCartao,
+                TipoServico = ObjectToTransform.TipoServico,
+                ContaSuch = ObjectToTransform.ContaSuch,
+                ContaUtilizador = ObjectToTransform.ContaUtilizador,
+                Barramentos = ObjectToTransform.Barramentos,
+                TarifarioVoz = ObjectToTransform.TarifarioVoz,
+                TarifarioDados = ObjectToTransform.TarifarioDados,
+                ExtensaoVpn = ObjectToTransform.ExtensaoVpn,
+                PlafondFr = ObjectToTransform.PlafondFr,
+                PlafondExtra = ObjectToTransform.PlafondExtra,
+                FimFidelizacao = ObjectToTransform.FimFidelizacao,
+                Gprs = ObjectToTransform.Gprs,
+                Estado = ObjectToTransform.Estado,
+                DataEstado = ObjectToTransform.DataEstado,
+                Observacoes = ObjectToTransform.Observacoes,
+                NumFuncionario = ObjectToTransform.NumFuncionario,
+                Nome = ObjectToTransform.Nome,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                Grupo = ObjectToTransform.Grupo,
+                Imei = ObjectToTransform.Imei,
+                DataAtribuicao = ObjectToTransform.DataAtribuicao,
+                ChamadasInternacionais = ObjectToTransform.ChamadasInternacionais,
+                Roaming = ObjectToTransform.Roaming,
+                Internet = ObjectToTransform.Internet,
+                Declaracao = ObjectToTransform.Declaracao,
+                Utilizador = ObjectToTransform.Utilizador,
+                DataAlteracao = ObjectToTransform.DataAlteracao,
+                Plafond100percUtilizador = ObjectToTransform.Plafond100percUtilizador,
+                WhiteList = ObjectToTransform.WhiteList,
+                ValorMensalidadeDados = ObjectToTransform.ValorMensalidadeDados,
+                PlafondDados = ObjectToTransform.PlafondDados,
+                EquipamentoNaoDevolvido = ObjectToTransform.EquipamentoNaoDevolvido,
+
+                TipoServico_Show = ObjectToTransform.TipoServico == 0 ? "Voz" : "Dados",
+                Estado_Show = ObjectToTransform.Estado == 0 ? "Activo" : ObjectToTransform.Estado == 1 ? "Bloqueado" : ObjectToTransform.Estado == 2 ? "Cancelado" : ObjectToTransform.Estado == 3 ? "Alteração de Titular" : ObjectToTransform.Estado == 4 ? "Por Activar" : string.Empty
+            };
+
+            return view;
+        }
+
+        #endregion
+
     }
 }

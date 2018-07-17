@@ -111,7 +111,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (item.RequisitionNo == "" || item.RequisitionNo == null)
                 {
                     autoGenId = true;
-                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 }
                 if (item.RequisitionNo != null)
                 {

@@ -178,12 +178,12 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/" + item.tipo + "?imei=" + item.imei;
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/?tipo=" + item.tipo + "&imei=" + item.imei;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisEquipamentos/Detalhe/";
+                        window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/";
                     }
                 },
                 ready: function () {
@@ -198,7 +198,7 @@
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grdViaturasGrid);
+                    var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;

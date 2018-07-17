@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public class ComprasModel
+    public partial class Compras
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string CodigoProduto { get; set; }
         public string Descricao { get; set; }
         public string Descricao2 { get; set; }
@@ -32,5 +32,8 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataTratado { get; set; }
         public string UtilizadorTratado { get; set; }
         public bool? Recusada { get; set; }
+        public DateTime? DataMercadoLocal { get; set; }
+
+        public ConfigMercadoLocal RegiaoMercadoLocalNavigation { get; set; }
     }
 }

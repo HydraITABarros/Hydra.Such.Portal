@@ -274,7 +274,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
                         autoGenId = true;
-                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId, false);
                         data.ProjectNo = projNoAuto;
                     }
 

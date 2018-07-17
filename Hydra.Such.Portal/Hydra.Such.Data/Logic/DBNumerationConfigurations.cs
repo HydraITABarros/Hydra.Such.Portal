@@ -111,7 +111,7 @@ namespace Hydra.Such.Data.Logic
 
 
      
-        public static string GetNextNumeration(int id, bool isAuto)
+        public static string GetNextNumeration(int id, bool isAuto, bool isRec)
         {
             try
             {
@@ -130,12 +130,30 @@ namespace Hydra.Such.Data.Logic
                             int LastUsedNumber = int.Parse(ConfNumeration.ÚltimoNºUsado.Replace(ConfNumeration.Prefixo, ""));
 
                             LastUsedNumber += ConfNumeration.QuantidadeIncrementar.Value;
+                            if (isRec)
+                            {
+                                int year = DateTime.Today.Year % 100;
 
-                            NextNumeration += LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                                NextNumeration += year + LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            }
+                            else
+                            {
+                                NextNumeration += LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            }
+                            
                         }
                         else
                         {
-                            NextNumeration += "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            if (isRec)
+                            {
+                                int year = DateTime.Today.Year % 100;
+
+                                NextNumeration += year + "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            }
+                            else
+                            {
+                                NextNumeration += "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            }
                         }
 
                         //ConfNumeration.ÚltimoNºUsado = NextNumeration;

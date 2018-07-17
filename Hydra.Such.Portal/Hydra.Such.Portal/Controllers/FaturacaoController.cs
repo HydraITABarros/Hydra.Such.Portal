@@ -15,6 +15,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -151,7 +152,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    item = updatedItem;
                 }
                 else
                 {
@@ -161,56 +161,83 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
             }
             return Json(updatedItem);
         }
 
         [HttpPost]
-        public JsonResult BillingReceptionCP([FromBody] BillingReceptionModel item)
+        public JsonResult ValidateNumeration([FromBody] BillingReceptionModel data)
         {
+            //Get Project Numeration
+            int Cfg = (int)DBUserConfigurations.GetById(User.Identity.Name).PerfilNumeraçãoRecDocCompras;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
+
+            //Validate if ProjectNo is valid
+            if (!(data.Id == "" || data.Id == null) && !CfgNumeration.Manual.Value)
+            {
+                return Json("A numeração configurada para contratos não permite inserção manual.");
+            }
+            else if (data.Id == "" && !CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº de Contrato.");
+            }
+
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
+        {
+
             BillingReceptionModel updatedItem = null;
             if (item != null)
             {
+                item.ModificadoPor = User.Identity.Name;
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
+                item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                workflow.DataCriacao = DateTime.Now;
+                workflow.AreaWorkflow = item.AreaPendenteDescricao;
+                item.WorkflowItems.Add(workflow);
+
+                updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                 if (updatedItem != null)
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    item = updatedItem;
+                    
                 }
                 else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao registar a factura  CP";
-                    item.Estado = Enumerations.BillingReceptionStates.Pendente;
+                    updatedItem = item;
                 }
             }
             else
             {
-                item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
             }
-            return Json(item);
+            return Json(updatedItem);
         }
+    
+        //CF ou CP ou CC opc
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)
         {
+            BillingReceptionModel postedDocument;
             if (item != null)
-            {
-                try
-                {
-                    var postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
-                    item = postedDocument;
-                }
-                catch
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao criar o documento.";
-                }
+            {               
+                postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                item = postedDocument;            
             }
             else
             {
+                item = new BillingReceptionModel();
                 item.eReasonCode = 2;
                 item.eMessage = "O registo não pode ser nulo";
             }
