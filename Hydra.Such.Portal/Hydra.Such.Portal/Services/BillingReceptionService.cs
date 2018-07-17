@@ -1,6 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;

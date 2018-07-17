@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class MercadoLocalViewModel
+    public class ComprasViewModel
     {
         public int ID { get; set; }
         public string CodigoProduto { get; set; }

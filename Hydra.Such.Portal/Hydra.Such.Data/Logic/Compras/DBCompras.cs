@@ -1,22 +1,22 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
-    public class DBMercadoLocal
+    public class DBCompras
     {
-        public static List<MercadoLocalViewModel> GetAll()
+        public static List<ComprasViewModel> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Compras.Select(Compras => new MercadoLocalViewModel()
+                    return ctx.Compras.Select(Compras => new ComprasViewModel()
                     {
                         ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
@@ -77,7 +77,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocalViewModel GetByID(int ID)
+        public static ComprasViewModel GetByID(int ID)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     return ctx.Compras.Where(x =>
                         (x.Id == ID)
-                    ).Select(Compras => new MercadoLocalViewModel()
+                    ).Select(Compras => new ComprasViewModel()
                     {
                         ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
@@ -146,7 +146,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static List<MercadoLocalViewModel> GetAllByEstado(int Estado)
+        public static List<ComprasViewModel> GetAllByEstado(int Estado)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     return ctx.Compras.Where(x =>
                         (x.Estado == Estado)
-                    ).Select(Compras => new MercadoLocalViewModel()
+                    ).Select(Compras => new ComprasViewModel()
                     {
                         ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
@@ -215,7 +215,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static Database.Compras Create(Database.Compras ObjectToCreate)
+        public static Compras Create(Compras ObjectToCreate)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static Database.Compras Update(Database.Compras ObjectToUpdate)
+        public static Compras Update(Compras ObjectToUpdate)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static bool Delete(Database.Compras ObjectToDelete)
+        public static bool Delete(Compras ObjectToDelete)
         {
             try
             {
@@ -270,15 +270,14 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocalViewModel ParseToComprasViewModel(MercadoLocal Compras)
+        public static ComprasViewModel ParseToComprasViewModel(Compras Compras)
         {
             try
             {
                 if (Compras != null)
                 {
-                    MercadoLocalViewModel ComprasVM = new MercadoLocalViewModel();
+                    ComprasViewModel ComprasVM = new ComprasViewModel();
 
-                    ComprasVM.ID = Compras.Id;
                     ComprasVM.CodigoProduto = Compras.CodigoProduto;
                     ComprasVM.Descricao = Compras.Descricao;
                     ComprasVM.Descricao2 = Compras.Descricao2;
