@@ -1159,77 +1159,85 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    List<LinhasRequisição> LinhasRequisicao = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x =>
-                        x.MercadoLocal == true &&
-                        x.ValidadoCompras == false &&
-                        x.QuantidadeRequerida > 0).ToList();
-
-                    if (LinhasRequisicao != null && LinhasRequisicao.Count() > 0)
+                    if (!string.IsNullOrEmpty(item.LocalMarketRegion))
                     {
-                        LinhasRequisicao.ForEach(Linha =>
+                        List<LinhasRequisição> LinhasRequisicao = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x =>
+                            x.MercadoLocal == true &&
+                            x.ValidadoCompras == false &&
+                            x.QuantidadeRequerida > 0).ToList();
+
+                        if (LinhasRequisicao != null && LinhasRequisicao.Count() > 0)
                         {
-                            string Responsaveis = "";
-                            string Responsavel1 = "";
-                            string Responsavel2 = "";
-                            string Responsavel3 = "";
-                            ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(Linha.RegiãoMercadoLocal);
-                            if (ConfigMercadoLocal != null)
+                            LinhasRequisicao.ForEach(Linha =>
                             {
-                                if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel1))
-                                    Responsavel1 = ConfigMercadoLocal.Responsavel1;
-                                if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel2))
-                                    Responsavel2 = ConfigMercadoLocal.Responsavel2;
-                                if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
-                                    Responsavel3 = ConfigMercadoLocal.Responsavel3;
-                                Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-";
-                            }
-
-                            Compras Compra = new Compras
-                            {
-                                CodigoProduto = Linha.CódigoProdutoFornecedor,
-                                Descricao = Linha.Descrição,
-                                CodigoUnidadeMedida = Linha.CódigoUnidadeMedida,
-                                Quantidade = Linha.QuantidadeRequerida,
-                                NoRequisicao = Linha.NºRequisição,
-                                NoLinhaRequisicao = Linha.NºLinha,
-                                Urgente = Linha.Urgente,
-                                NoProjeto = Linha.NºProjeto,
-                                RegiaoMercadoLocal = Linha.RegiãoMercadoLocal,
-                                Estado = 1, //APROVADO
-                                DataCriacao = DateTime.Now,
-                                UtilizadorCriacao = User.Identity.Name,
-                                DataMercadoLocal = DateTime.Now,
-                                Responsaveis = Responsaveis
-                            };
-
-                            Compras CompraReq = DBCompras.Create(Compra);
-                            if (CompraReq != null)
-                            {
-                                Linha.IdCompra = CompraReq.Id;
-
-                                if (DBRequestLine.Update(Linha) == null)
+                                string Responsaveis = "";
+                                string Responsavel1 = "";
+                                string Responsavel2 = "";
+                                string Responsavel3 = "";
+                                ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(item.LocalMarketRegion);
+                                if (ConfigMercadoLocal != null)
                                 {
-                                    result.eReasonCode = 6;
-                                    result.eMessage = "Ocorreu um erro ao atualizar a linha da Requisição.";
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel1))
+                                        Responsavel1 = ConfigMercadoLocal.Responsavel1;
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel2))
+                                        Responsavel2 = ConfigMercadoLocal.Responsavel2;
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
+                                        Responsavel3 = ConfigMercadoLocal.Responsavel3;
+                                    Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-";
                                 }
-                            }
-                            else
-                            {
-                                result.eReasonCode = 5;
-                                result.eMessage = "Ocorreu um erro ao criar a Compra.";
-                            }
-                        });
 
+                                Compras Compra = new Compras
+                                {
+                                    CodigoProduto = Linha.CódigoProdutoFornecedor,
+                                    Descricao = Linha.Descrição,
+                                    CodigoUnidadeMedida = Linha.CódigoUnidadeMedida,
+                                    Quantidade = Linha.QuantidadeRequerida,
+                                    NoRequisicao = Linha.NºRequisição,
+                                    NoLinhaRequisicao = Linha.NºLinha,
+                                    Urgente = Linha.Urgente,
+                                    NoProjeto = Linha.NºProjeto,
+                                    RegiaoMercadoLocal = Linha.RegiãoMercadoLocal,
+                                    Estado = 1, //APROVADO
+                                    DataCriacao = DateTime.Now,
+                                    UtilizadorCriacao = User.Identity.Name,
+                                    DataMercadoLocal = DateTime.Now,
+                                    Responsaveis = Responsaveis
+                                };
+
+                                Compras CompraReq = DBCompras.Create(Compra);
+                                if (CompraReq != null)
+                                {
+                                    Linha.IdCompra = CompraReq.Id;
+
+                                    if (DBRequestLine.Update(Linha) == null)
+                                    {
+                                        result.eReasonCode = 6;
+                                        result.eMessage = "Ocorreu um erro ao atualizar a linha da Requisição.";
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Ocorreu um erro ao criar a Compra.";
+                                }
+                            });
+
+                        }
+                        else
+                        {
+                            result.eReasonCode = 4;
+                            result.eMessage = "Não foram encontradas linhas para Validar.";
+                        }
                     }
                     else
                     {
                         result.eReasonCode = 4;
-                        result.eMessage = "Não foram encontradas linhas para Validar.";
+                        result.eMessage = "Preencha o campo Região Mercado Local no Cabeçalho.";
                     }
                 }
                 catch (Exception ex)
                 {
-                    result.eReasonCode = 3;
+                    result.eReasonCode = 7;
                     result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
             }
