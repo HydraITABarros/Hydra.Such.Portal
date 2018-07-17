@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 {
     public class DBTelemoveis
     {
+        #region TELEMOVEIS EQUIPAMENTOS
         #region CRUD
         /// <summary>
         /// Lista de todos os registos (Telemóveis e placas de rede)
@@ -121,7 +122,6 @@ namespace Hydra.Such.Data.Logic.Telemoveis
         }
         #endregion
 
-
         public static List<TelemoveisEquipamentosView> GetAllTelemoveisEquipamentosViewToList()
         {
             try
@@ -213,5 +213,11 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 
             return view;
         }
+        #endregion
+
+        #region TELEMOVEIS CARTÕES
+
+        #endregion
+
     }
 }

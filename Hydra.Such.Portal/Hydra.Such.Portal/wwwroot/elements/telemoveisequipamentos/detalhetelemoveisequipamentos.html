@@ -73,6 +73,14 @@
                    on-response="_createResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/TelemoveisEquipamentos/UpdateTelemoveisEquipamentos"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_updateprocedimento"
+                   on-response="_updateResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
         </div>
@@ -81,7 +89,7 @@
             <div class="panel-body">
                 <div class="row break_clear">
                     <div class="col-md-3 ">
-                        <vaadin-combo-box items="[[Tipo_Equipamento]]" id="tipo" item-value-path="id" item-label-path="value" label="Tipo" value="{{data.tipo}}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[Tipo_Equipamento]]" id="tipo" item-value-path="id" item-label-path="value" label="Tipo" value="{{data.tipo}}" required error-message="Este campo é obrigatório" disabled="{{ !_isCreate }}">
                             <template>
                                 <table>
                                     <tr>
@@ -94,7 +102,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-md-3 ">
-                        <vaadin-text-field id="imei" name="imei" maxlength="16" label="Imei / Nº Série" value="{{data.imei}}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                        <vaadin-text-field id="imei" name="imei" maxlength="16" label="Imei / Nº Série" value="{{data.imei}}" required error-message="Este campo é obrigatório" disabled="{{ !_isCreate }}"></vaadin-text-field>
                     </div>
                     <div class="col-md-3 ">
                         <vaadin-text-field value="{{data.marca}}" maxlength="30" id="marca" name="marca" label="Marca"> </vaadin-text-field>
@@ -118,7 +126,16 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-md-6 ">
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.cor}}" maxlength="80" id="cor" name="cor" label="Cor"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.documento}}" maxlength="10" id="documento" name="documento" label="Documento"></vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="row break_clear">
+                    <div class="col-md-9 ">
                         <vaadin-text-field value="{{data.nomeUtilizadorCartao_Show}}" maxlength="80" id="nomeUtilizadorCartao_Show" name="nomeUtilizadorCartao_Show" label="Nome" disabled="true"> </vaadin-text-field>
                     </div>
                     <div class="col-md-3 ">
@@ -128,7 +145,7 @@
 
                 <div class="row break_clear">
                     <div class="col-md-3 ">
-                        <vaadin-combo-box items="[[Devolvido_Equipamento]]" id="devolvido" item-value-path="id" item-label-path="value" label="Devolvido" value="{{data.devolvido}}">
+                        <vaadin-combo-box items="[[Devolvido_Equipamento]]" id="devolvido" item-value-path="id" item-label-path="value" label="Devolvido" value="{{data.devolvido}}" on-value-changed="_muda_devolvido">
                             <template>
                                 <table>
                                     <tr>
@@ -145,7 +162,7 @@
                     </div>
                 </div>
 
-                <div class="row break_clear">
+                <div class="row break_clear" id="divComprador">
                     <div class="col-md-3 ">
                         <vaadin-text-field value="{{data.numEmpregadoComprador}}" maxlength="10" id="numEmpregadoComprador" name="numEmpregadoComprador" label="Nº Empregado"> </vaadin-text-field>
                     </div>
@@ -166,8 +183,6 @@
                         <vaadin-date-picker value="{{data.dataAlteracao_Show}}" id="dataAlteracao_Show" name="dataAlteracao_Show" label="Data Alteração" disabled="true"></vaadin-date-picker>
                     </div>
                 </div>
-
-
             </div>
 
             <!-- Save and Create Buttons -->
@@ -224,22 +239,9 @@
 
                 _responseProcessor: function (data) {
                     var self = this;
-                    //debugger
-                    //if (data.detail.status === 200) {
-                    //    if (data.detail.url.indexOf("GetEquipamentoDetails") !== -1) {
-                    //        if (self.data.No == "") {
-                    //            self._isCreate = true;
-                    //            return;
-                    //        }
 
-                    //    } else {
-                    //        self._createResponseProcessor();
-                    //    }
-                    //} else {
-                    //    self._openToast("Ocorreu um erro ao criar o Procedimento.")
-                    //}
+                    self._setFieldsEditability(self.data);
                 },
-
 
                 _create: function () {
                     if (this._validateData()) {
@@ -250,27 +252,52 @@
                             "marca": this.$.marca.value,
                             "modelo": this.$.modelo.value,
                             "estado": this.$.estado.value,
-                            "observacoes": this.$.observacoes.value
+                            "observacoes": this.$.observacoes.value,
+                            "cor": this.$.cor.value,
+                            "documento": this.$.documento.value,
+                            "devolvido": this.$.devolvido.value,
+                            "numEmpregadoComprador": this.$.numEmpregadoComprador.value,
+                            "nomeComprador": this.$.nomeComprador.value
                         });
                         this.$.ajax_createprocedimento.generateRequest();
                     }
-
                 },
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast(this.data.eMessage);
+                        this._showMessage(this.data.eMessage);
                     } else {
-                        this._openToast(this.data.eMessage);
+                        this._showErrorMessage(this.data.eMessage);
                     }
                 },
 
+                _update: function () {
+                    if (this._validateData()) {
 
+                        this.$.ajax_updateprocedimento.body = JSON.stringify({
+                            "tipo": this.$.tipo.value,
+                            "imei": this.$.imei.value,
+                            "marca": this.$.marca.value,
+                            "modelo": this.$.modelo.value,
+                            "estado": this.$.estado.value,
+                            "observacoes": this.$.observacoes.value,
+                            "cor": this.$.cor.value,
+                            "documento": this.$.documento.value,
+                            "devolvido": this.$.devolvido.value,
+                            "numEmpregadoComprador": this.$.numEmpregadoComprador.value,
+                            "nomeComprador": this.$.nomeComprador.value
+                        });
+                        this.$.ajax_updateprocedimento.generateRequest();
+                    }
 
-
-
-
-
+                },
+                _updateResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
 
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -307,7 +334,6 @@
                 },
 
                 _validateData: function () {
-                    debugger
                     if (this.$.tipo.validate() & this.$.tipo.value >= 0) {
                         if (this.$.imei.validate() & this.$.imei.value != "") {
                             if (this.$.estado.validate() & this.$.estado.value >= 0) {
@@ -329,24 +355,6 @@
                         this._showErrorMessage("Falta preencher o campo Tipo.");
                         return false;
                     }
-
-                    
-
-
-
-
-
-
-                    //if ((this.$.tipo.value == "" || this.$.tipo.value == undefined)) {
-                    //    this._showErrorMessage("O Tipo é obrigatório");
-                    //    return false;
-                    //}
-
-                    //if ((this.$.imei.value == "" || this.$.imei.value == undefined)) {
-                    //    this._showErrorMessage("");
-                    //    return false;
-                    //}
-
                     
                     return true;
                 },
@@ -354,7 +362,22 @@
                 _setFieldsEditability(data) {
                     var _self = this;
 
+                    //3-Vendido
+                    if (data.devolvido == 3) {
+                        $(_self.$.divComprador).removeClass('hidden');
+                    } else {
+                        $(_self.$.divComprador).addClass('hidden');
+                    }
+                },
 
+                _muda_devolvido: function (e) {
+                    var _self = this;
+
+                    if (this.$.devolvido.value == 3) {
+                        $(_self.$.divComprador).removeClass('hidden');
+                    } else {
+                        $(_self.$.divComprador).addClass('hidden');
+                    }
                 },
 
                 //Helpers
