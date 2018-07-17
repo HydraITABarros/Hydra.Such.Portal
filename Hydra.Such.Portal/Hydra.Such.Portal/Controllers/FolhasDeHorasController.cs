@@ -302,7 +302,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Folha de Horas Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
+                    id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true, false);
 
                     //Update Last Numeration Used
                     ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);

@@ -108,7 +108,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (item.Id == "" || item.Id == null)
                 {
                     autoGenId = true;
-                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 }
 
                 if (item.Id != null)

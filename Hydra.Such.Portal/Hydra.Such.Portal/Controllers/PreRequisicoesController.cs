@@ -391,7 +391,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null)
                     {
                         autoGenId = true;
-                        data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                        data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                     }
                     if (data.PreRequesitionsNo != null)
                     {
@@ -996,7 +996,7 @@ namespace Hydra.Such.Portal.Controllers
                 int ProjectNumerationConfigurationId = 0;
                 ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
 
-                string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true, false);
                 if (!string.IsNullOrEmpty(RequisitionNo))
                 {
                     //Update Last Numeration Used

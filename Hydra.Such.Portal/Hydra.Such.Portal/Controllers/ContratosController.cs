@@ -285,7 +285,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ContractNo == "" || data.ContractNo == null)
                     {
                         autoGenId = true;
-                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
+                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId, false);
                     }
 
                     if (data.ContractNo != null)
@@ -1810,7 +1810,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (thisHeader != null)
                 {
-                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
+                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true, false);
                     try
                     {
                         thisHeader.Arquivado = false;

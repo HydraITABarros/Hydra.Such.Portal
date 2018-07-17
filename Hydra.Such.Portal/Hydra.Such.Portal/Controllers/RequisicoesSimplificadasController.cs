@@ -229,7 +229,7 @@ namespace Hydra.Such.Portal.Controllers
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoRequisiçõesSimplificada.Value;
                 autoGenId = true;
-                entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 result.RequisitionNo = entityId;
 
             }

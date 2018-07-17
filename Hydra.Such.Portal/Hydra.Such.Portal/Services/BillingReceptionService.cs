@@ -24,11 +24,26 @@ namespace Hydra.Such.Portal.Services
 
         public BillingReceptionModel Create(BillingReceptionModel item)
         {
+            bool autoGenId = false;
+            bool isRec = true;
+            int Cfg = (int)DBUserConfigurations.GetById(item.CriadoPor).PerfilNumeraçãoRecDocCompras;
+
             item.DataCriacao = DateTime.Now;
             item.AreaPendente = (int)BillingReceptionAreas.Contabilidade;
             item.Estado = BillingReceptionStates.Rececao;
             item.DataCriacao = DateTime.Now;
             item.DataUltimaInteracao = DateTime.Now.ToString();
+            
+
+            if(item.Id == "" || item.Id == null)
+            {
+                ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
+
+                autoGenId = true;
+
+                item.Id = DBNumerationConfigurations.GetNextNumeration(Cfg, autoGenId, isRec);
+            }
+
             item = repo.Create(item);
 
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
@@ -45,11 +60,19 @@ namespace Hydra.Such.Portal.Services
             try
             {
                 repo.SaveChanges();
+
+                //Update Last Numeration Used
+                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(Cfg);
+                ConfigNumerations.ÚltimoNºUsado = wfItem.IdRecFaturacao;
+                ConfigNumerations.UtilizadorModificação = item.CriadoPor;
+                DBNumerationConfigurations.Update(ConfigNumerations);
+               
             }
             catch (Exception ex)
             {
                 return null;
             }
+
             return item;
         }
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast)

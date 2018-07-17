@@ -168,6 +168,27 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ValidateNumeration([FromBody] BillingReceptionModel data)
+        {
+            //Get Project Numeration
+            int Cfg = (int)DBUserConfigurations.GetById(User.Identity.Name).PerfilNumeraçãoRecDocCompras;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
+
+            //Validate if ProjectNo is valid
+            if (!(data.Id == "" || data.Id == null) && !CfgNumeration.Manual.Value)
+            {
+                return Json("A numeração configurada para contratos não permite inserção manual.");
+            }
+            else if (data.Id == "" && !CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº de Contrato.");
+            }
+
+            return Json("");
+        }
+
+        [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
 
