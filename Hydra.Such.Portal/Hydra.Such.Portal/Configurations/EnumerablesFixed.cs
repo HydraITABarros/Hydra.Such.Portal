@@ -2229,6 +2229,66 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //Tipo de Serviço, nos cartões
+        public static readonly List<EnumData> Cartoes_TipoServico = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Voz"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Dados"
+            }
+        };
+
+        //Estado, nos cartões
+        public static readonly List<EnumData> Cartoes_Estado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Bloqueado"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Cancelado"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Alteração de Titular"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Por Activar"
+            }
+        };
+
+        //GPRS, nos cartões
+        public static readonly List<EnumData> Cartoes_GPRS = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Desactivo"
+            }
+        };
+
         public static readonly List<EnumData> ComprasEstado = new List<EnumData>(){
             new EnumData()
             {
