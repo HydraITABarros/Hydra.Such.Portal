@@ -216,5 +216,41 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(item);
         }
+
+
+        [HttpPost]
+        public JsonResult DeleteTelemoveisEquipamentos([FromBody] TelemoveisEquipamentosView item)
+        {
+            if (item != null)
+            {
+                //Verificar se existe chave única tipo + imei
+                TelemoveisEquipamentos telemoveisEquipamentos = DBTelemoveis.GetTelemoveisEquipamentos(item.Tipo, item.Imei);
+
+                if (telemoveisEquipamentos != null)
+                {
+                    try
+                    {
+                        DBTelemoveis.Delete(telemoveisEquipamentos);
+                        
+                        item.eReasonCode = 1;
+                        item.eMessage = "Equipamento eliminado com sucesso!";
+                    }
+                    catch
+                    {
+                        item.eReasonCode = -1;
+                        item.eMessage = "Ocorreu um erro ao eliminar o Equipamento!";
+                        return Json(item);
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = -1;
+                    item.eMessage = "Ocorreu um erro!";
+                    return Json(item);
+                }
+            }
+
+            return Json(item);
+        }
     }
 }

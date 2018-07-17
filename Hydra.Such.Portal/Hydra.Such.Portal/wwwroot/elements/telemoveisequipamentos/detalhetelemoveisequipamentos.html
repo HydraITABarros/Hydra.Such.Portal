@@ -81,8 +81,19 @@
                    on-response="_updateResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/TelemoveisEquipamentos/DeleteTelemoveisEquipamentos"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_deleteprocedimento"
+                   on-response="_deleteResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnCreate" raised class="tablinks" on-tap="_create" disabled="{{ !_isCreate }}" title="Criar" style="background-color:#71BCC1"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
         </div>
 
         <div class="panel panel-default">
@@ -184,16 +195,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Save and Create Buttons -->
-            <div id="botoes_accao" class="marginSpace">
-                <template is="dom-if" if="{{ _isCreate }}">
-                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                </template>
-                <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                </template>
-            </div>
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -212,6 +213,11 @@
                         value: ""
                     },
                     _imei: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _tipo_DESC: {
                         type: String,
                         notify: true,
                         value: ""
@@ -294,6 +300,39 @@
                 _updateResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _delete: function () {
+                    if (this._validateData()) {
+                        var ajax_request = this.$.ajax_deleteprocedimento;
+                        ajax_request.body = JSON.stringify({
+                            "tipo": this.$.tipo.value,
+                            "imei": this.$.imei.value,
+                            "marca": this.$.marca.value,
+                            "modelo": this.$.modelo.value,
+                            "estado": this.$.estado.value,
+                            "observacoes": this.$.observacoes.value,
+                            "cor": this.$.cor.value,
+                            "documento": this.$.documento.value,
+                            "devolvido": this.$.devolvido.value,
+                            "numEmpregadoComprador": this.$.numEmpregadoComprador.value,
+                            "nomeComprador": this.$.nomeComprador.value
+                        });
+                        //this.$.ajax_deleteprocedimento.generateRequest();
+
+                        this._confirmAndExecuteActionToast(
+                            "Confirma a eliminação do equipamento?",
+                            ajax_request
+                        );
+                    }
+                },
+                _deleteResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                        window.history.back();
                     } else {
                         this._showErrorMessage(this.data.eMessage);
                     }
