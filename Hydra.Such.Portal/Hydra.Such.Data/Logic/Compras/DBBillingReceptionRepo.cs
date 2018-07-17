@@ -122,7 +122,10 @@ namespace Hydra.Such.Data.Logic.Compras
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();
         }
-
+        public List<RecFacturasProblemas> GetQuestionsID(string id,string Cod)
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Cod && x.Tipo == id).ToList();
+        }
         public List<RecFacturasProblemas> GetQuestionsReason()
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF4P").ToList();

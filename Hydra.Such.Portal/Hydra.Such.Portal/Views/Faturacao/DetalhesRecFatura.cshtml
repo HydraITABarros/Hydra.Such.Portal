@@ -22,7 +22,6 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-
 <x-rececaofaturasdetails></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
@@ -101,7 +100,7 @@
         </iron-ajax>
         <iron-ajax url="/Faturacao/PostDocument"
                    last-response="{{ updatedItem }}"
-                   id="page_billingCP_ajax"
+                   id="page_billing_ajax"
                    on-response="_billingCPResponse"
                    method="post"
                    handle-as="json"
@@ -116,12 +115,12 @@
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Faturacao/SendBillingReception"
-           last-response="{{ updatedItem }}"
-           id="page_send_ajax"
-           on-response="_updateResponse"
-           method="post"
-           handle-as="json"
-           content-type="application/json">
+                    last-response="{{ updatedItem }}"
+                    id="page_send_ajax"
+                    on-response="_updateResponse"
+                    method="post"
+                    handle-as="json"
+                    content-type="application/json">
        </iron-ajax>
 
 
@@ -349,21 +348,21 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-1">
-                            <vaadin-text-field type="text" value="{{_codWorkFlow}}" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
+                            <vaadin-text-field type="text" value="" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
                         </div>
                         <div class="col-sm-9">
                             <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{_descricaoWorkFlow}}" disabled></vaadin-text-field>
                         </div>
                         <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                            <vaadin-text-field type="text" value="" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-10">
-                            <such-textarea rows="3" id="txtComment"  label="Comentário"></such-textarea>
+                            <such-textarea rows="3" id="txtComment"  label="Comentário" disabled></such-textarea>
                         </div>
                         <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                            <vaadin-text-field type="text" value="" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -389,7 +388,7 @@
 
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.data}}
+                                    [[ _clFormatDateWorkflow(item.dataCriacao) ]] 
                                 </template>
                             </template>
                         </vaadin-grid-column>
@@ -667,6 +666,17 @@
                         if (this.data.estado==2){
                             this._checkPending = false;
                         }
+                        //Ponto de situação
+                        var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
+                        this.$.txtComment.value = workFlow.comentario;
+                        this.$.codDescricao.value = workFlow.codTipoProblema;
+                        this.$.txtDescription.value = workFlow.descricao;
+                        var data = new Date(workFlow.dataCriacao);
+                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                        if (dataFormatada != undefined) {
+                            this.$.txtDatePeding.value = dataFormatada;
+                        }
+                        this.$.txtDestProblema.value = workFlow.utilizador;
                     }
                 },
                 _supplierSelected: function (e) {
@@ -681,6 +691,16 @@
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
+                },
+                _clFormatDateWorkflow: function (param) {
+                    if (param != undefined) {
+                        var data = new Date(param);
+                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                        if (dataFormatada != undefined) {
+                            return dataFormatada;
+                        }
+                    }
+                    return "";
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
@@ -755,8 +775,8 @@
                     }
                 },
                 _updateResponse: function (e) {
+                    debugger;;
                     if (e.detail.status === 200) {
-                        debugger;;
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
@@ -764,7 +784,12 @@
                             this.$.txtComment.value = workFlow.comentario;
                             this.$.codDescricao.value = workFlow.codTipoProblema;
                             this.$.txtDescription.value = workFlow.descricao;
-                            this.$.txtArea.value = workFlow.areaWorkflow;
+                            var data = new Date(workFlow.dataCriacao);
+                            var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                            if (dataFormatada != undefined) {
+                                this.$.txtDatePeding.value =dataFormatada;
+                            }
+                            this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -786,7 +811,6 @@
                 _orderSelected: function (e) {
                     var order = this.$.sbOrders.activeItem;
                     if (order != null) {
-
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
 
@@ -860,49 +884,58 @@
                 },
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
-                        this.$.page_update_ajax.body = JSON.stringify(this.data);
-                        this.$.page_update_ajax.generateRequest();
+                        this.data.id = "CF" + this.data.id;
+                        this.$.page_billing_ajax.body = JSON.stringify(this.data);
+                        this.$.page_billing_ajax.generateRequest();
                     }
                 },
                 _postInvoiceCP: function () {
                     if (this._validateInputForAccounting()) {
-                        this.$.page_billingCP_ajax.body = JSON.stringify(this.data);
-                        this.$.page_billingCP_ajax.generateRequest();
+                        this.data.id = "CP" + this.data.id;
+                        this.$.page_billing_ajax.body = JSON.stringify(this.data);
+                        this.$.page_billing_ajax.generateRequest();
                     }
                 },
                 _postDocument: function () {
                     if (this._validateInputForAccounting()) {
-                        //callPostDocument
+                        this.data.id = "CC" + this.data.id;
+                        this.$.page_billing_ajax.body = JSON.stringify(this.data);
+                        this.$.page_billing_ajax.generateRequest();
                     }
                 },
                 _dlgSend: function () {
                     if (this._validateInputForAccounting()) {
                         var workflow = null;;
-                        var idWork = this.data.workflowItems[this.data.workflowItems.length -1];
+                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         if (this._isInternalDestination == true) {                          
                             workflow = {
                                 id: idWork.id+1,
                                 idRecFaturacao: this.data.id,
-                                codTipoProblema:this.$.cmbProblemas.value,
+                                codTipoProblema: this.$.cmbProblemas.value,
+                                codProblema: "RF1P",
                                 descricao: this.$.txtdescricaoProblema.value,
                                 utilizador: this.$.txtdestinatario.value,
-                                comentario: this.$.txtCommentdgl.value
-                           };
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email    
+                            };
                         }
                         else {
                             workflow = {
                                 id: idWork.id + 1,
                                 idRecFaturacao: this.data.id,
                                 codTipoProblema: this.$.cmbMotivos.value,
+                                codProblema: "RF4P",
                                 descricao: this.$.txtmotivo.value,
                                 utilizador: this.$.txtFornecedor.value,
-                                comentario: this.$.txtCommentdgl.value
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email                           
                             };
                         }
                         this.data.workflowItems.push(workflow);
                         this.$.page_send_ajax.body = JSON.stringify(this.data);
                         this.$.page_send_ajax.generateRequest();
-                        this.$.dialogSendPeding.close();
+                        this.$.dialogSendPeding.close();                   
 
                     }
                 },
