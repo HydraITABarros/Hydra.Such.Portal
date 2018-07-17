@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class Compras
+    public partial class ComprasModel
     {
         public int Id { get; set; }
         public string CodigoProduto { get; set; }

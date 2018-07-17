@@ -46,7 +46,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         //Listagem das Folhas de Horas consoante o estado
-        public JsonResult GetListComprasByEstado([FromBody] MercadoLocal ML)
+        public JsonResult GetListComprasByEstado([FromBody] ComprasModel ML)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MercadoLocal);
 
@@ -54,11 +54,11 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.UPermissions = UPerm;
 
-                List<MercadoLocalViewModel> result = new List<MercadoLocalViewModel>();
+                List<ComprasViewModel> result = new List<ComprasViewModel>();
                 if (ML.Estado == 0)
-                    result = DBMercadoLocal.GetAll();
+                    result = DBCompras.GetAll();
                 else
-                    result = DBMercadoLocal.GetAllByEstado((int)ML.Estado);
+                    result = DBCompras.GetAllByEstado((int)ML.Estado);
 
                 if (result != null)
                 {
@@ -75,7 +75,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
-        public JsonResult AprovadoToTratado([FromBody] List<MercadoLocal> Mercados)
+        public JsonResult AprovadoToTratado([FromBody] List<ComprasModel> Mercados)
         {
             if (Mercados != null)
             {
@@ -88,7 +88,7 @@ namespace Hydra.Such.Portal.Controllers
                         Mercado.DataValidacao = DateTime.Now;
                         Mercado.UtilizadorValidacao = User.Identity.Name;
 
-                        DBMercadoLocal.Update(Mercado);
+                        DBCompras.Update(Mercado);
                     });
                 }
             }
@@ -96,22 +96,22 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
-        public JsonResult AprovadoToValidar([FromBody] List<MercadoLocal> data)
+        public JsonResult AprovadoToValidar([FromBody] List<ComprasModel> data)
         {
             return Json(null);
         }
 
-        public JsonResult AprovadoToRecusar([FromBody] List<MercadoLocal> data)
+        public JsonResult AprovadoToRecusar([FromBody] List<ComprasModel> data)
         {
             return Json(null);
         }
 
-        public JsonResult ValidadoToTratado([FromBody] List<MercadoLocal> data)
+        public JsonResult ValidadoToTratado([FromBody] List<ComprasModel> data)
         {
             return Json(null);
         }
 
-        public JsonResult RecusadoToTratado([FromBody] List<MercadoLocal> data)
+        public JsonResult RecusadoToTratado([FromBody] List<ComprasModel> data)
         {
             return Json(null);
         }

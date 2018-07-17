@@ -22,7 +22,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<CartõesTelemóveis> CartõesTelemóveis { get; set; }
         public virtual DbSet<CatálogoManutenção> CatálogoManutenção { get; set; }
         public virtual DbSet<ClassificaçãoFichasTécnicas> ClassificaçãoFichasTécnicas { get; set; }
-        public virtual DbSet<Compras> Compras { get; set; }
+        public virtual DbSet<ComprasModel> Compras { get; set; }
         public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
         public virtual DbSet<Configuração> Configuração { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
@@ -784,7 +784,7 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Classificação Fichas Técnicas_Classificação Fichas Técnicas");
             });
 
-            modelBuilder.Entity<Compras>(entity =>
+            modelBuilder.Entity<ComprasModel>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 

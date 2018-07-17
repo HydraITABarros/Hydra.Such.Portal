@@ -7,7 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public ConfigMercadoLocal()
         {
-            Compras = new HashSet<Compras>();
+            Compras = new HashSet<ComprasModel>();
         }
 
         public string RegiaoMercadoLocal { get; set; }
@@ -15,6 +15,6 @@ namespace Hydra.Such.Data.Database
         public string Responsavel2 { get; set; }
         public string Responsavel3 { get; set; }
 
-        public ICollection<Compras> Compras { get; set; }
+        public ICollection<ComprasModel> Compras { get; set; }
     }
 }
