@@ -115,14 +115,22 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Faturacao/SendBillingReception"
-           last-response="{{ updatedItem }}"
-           id="page_send_ajax"
-           on-response="_updateResponse"
-           method="post"
-           handle-as="json"
-           content-type="application/json">
-       </iron-ajax>
+                   last-response="{{ updatedItem }}"
+                   id="page_send_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
 
         <div class="subMenu">
@@ -317,157 +325,157 @@
                     </template>
                 </div>
             </div>
-            
-                <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
-                <div class="panel-body">
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-sm-3">
-                            <template is="dom-if" if="{{ !_checkPending }}">
-                                <vaadin-text-field label=" " type="text" value="{{data.id}}" id="txtid" disabled></vaadin-text-field>
-                            </template>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field label="Área" type="text" value="{{data.areaPendenteDescricao}}" id="txtArea" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ _destinatarioWorkFlow }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-1">
-                            <vaadin-text-field type="text" value="{{_codWorkFlow}}" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-9">
-                            <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{_descricaoWorkFlow}}" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-10">
-                            <such-textarea rows="3" id="txtComment"  label="Comentário"></such-textarea>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-9">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </div>
-                        <div class="col-sm-3">
-                            <template is="dom-if" if="{{ _checkPending }}">
-                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
-                            </template>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                    </div>
-                    <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="data"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
 
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.data}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
-                            </template>
+            <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
                             <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.areaWorkflow}}
-                                </template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
                             </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.utilizador}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codTipoProblema" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.codTipoProblema}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.descricao}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="comentario" />
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.comentario}}
-                                </template>
-                            </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <template is="dom-if" if="{{ !_checkPending }}">
+                            <vaadin-text-field label=" " type="text" value="{{data.id}}" id="txtid" disabled></vaadin-text-field>
+                        </template>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendenteDescricao}}" id="txtArea" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{ _destinatarioWorkFlow }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                    </div>
                 </div>
-         
+                <div class="row break_clear">
+                    <div class="col-sm-1">
+                        <vaadin-text-field type="text" value="{{_codWorkFlow}}" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-9">
+                        <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{_descricaoWorkFlow}}" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{ }}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-10">
+                        <such-textarea rows="3" id="txtComment" label="Comentário"></such-textarea>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-3">
+                        <template is="dom-if" if="{{ _checkPending }}">
+                            <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
+                        </template>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                </div>
+                <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="data"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.data}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.areaWorkflow}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.utilizador}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codTipoProblema" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.codTipoProblema}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.descricao}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="comentario" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.comentario}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
@@ -713,8 +721,8 @@
                 },
                 _create: function () {
                     if (this._validateInputForNew()) {
-                        this.$.page_create_ajax.body = JSON.stringify(this.data);
-                        this.$.page_create_ajax.generateRequest();
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _createResponse: function (e) {
@@ -775,6 +783,19 @@
                     }
                     this.$.dialogSendPeding.close();
                 },
+
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            this.$.page_create_ajax.body = JSON.stringify(this.data);
+                            this.$.page_create_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    }
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();

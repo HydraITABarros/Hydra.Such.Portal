@@ -227,7 +227,7 @@ namespace Hydra.Such.Portal.Services
             Configuração conf = DBConfigurations.GetById(1);
             int entityNumerationConfId = conf.NumeraçãoPropostas.Value;
 
-            string proposalId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+            string proposalId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true, false);
 
             if (!string.IsNullOrEmpty(proposalId) && contract != null)
             {

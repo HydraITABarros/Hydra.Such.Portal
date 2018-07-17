@@ -141,6 +141,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProcedimentosEmailEnvioParaCA = CU.ProcedimentosEmailEnvioParaCa;
                 result.ProcedimentosEmailEnvioParaArea = CU.ProcedimentosEmailEnvioParaArea;
                 result.ProcedimentosEmailEnvioParaArea2 = CU.ProcedimentosEmailEnvioParaArea2;
+                result.ReceptionConfig = CU.PerfilNumeraçãoRecDocCompras;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
