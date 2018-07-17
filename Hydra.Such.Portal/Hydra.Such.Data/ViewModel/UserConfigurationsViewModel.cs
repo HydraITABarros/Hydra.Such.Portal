@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.ViewModel
         public string ProcedimentosEmailEnvioParaCA { get; set; }
         public string ProcedimentosEmailEnvioParaArea { get; set; }
         public string ProcedimentosEmailEnvioParaArea2 { get; set; }
-        public int ReceptionConfig { get; set; }
+        public int? ReceptionConfig { get; set; }
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }

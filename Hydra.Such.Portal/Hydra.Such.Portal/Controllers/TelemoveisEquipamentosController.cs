@@ -168,8 +168,50 @@ namespace Hydra.Such.Portal.Controllers
             if (item != null)
             {
                 //Verificar se existe chave única tipo + imei
+                TelemoveisEquipamentos telemoveisEquipamentos = DBTelemoveis.GetTelemoveisEquipamentos(item.Tipo, item.Imei);
 
+                if (telemoveisEquipamentos != null)
+                {
+                    telemoveisEquipamentos.Marca = item.Marca;
+                    telemoveisEquipamentos.Modelo = item.Modelo;
+                    telemoveisEquipamentos.Estado = item.Estado;
+                    telemoveisEquipamentos.Cor = item.Cor;
+                    telemoveisEquipamentos.Observacoes = item.Observacoes;
+                    telemoveisEquipamentos.DataRecepcao = item.DataRecepcao;
+                    telemoveisEquipamentos.Documento = item.Documento;
+                    telemoveisEquipamentos.DocumentoRecepcao = item.DocumentoRecepcao;
+                    telemoveisEquipamentos.Utilizador = User.Identity.Name;
+                    telemoveisEquipamentos.DataAlteracao = DateTime.Now;
+                    telemoveisEquipamentos.DevolvidoBk = item.DevolvidoBk;
+                    telemoveisEquipamentos.NumEmpregadoComprador = item.NumEmpregadoComprador;
+                    telemoveisEquipamentos.NomeComprador = item.NomeComprador;
+                    telemoveisEquipamentos.Devolvido = item.Devolvido;
+                    telemoveisEquipamentos.UtilizadorModificacao = User.Identity.Name;
+                    telemoveisEquipamentos.DataHoraModificacao = DateTime.Now;
 
+                    try
+                    {
+                        DBTelemoveis.Update(telemoveisEquipamentos);
+
+                        telemoveisEquipamentos = DBTelemoveis.GetTelemoveisEquipamentos(item.Tipo, item.Imei);
+                        item = DBTelemoveis.CastTelemoveisEquipamentosToView(telemoveisEquipamentos);
+
+                        item.eReasonCode = 1;
+                        item.eMessage = "Equipamento actualizado com sucesso!";
+                    }
+                    catch
+                    {
+                        item.eReasonCode = -1;
+                        item.eMessage = "Ocorreu um erro ao gravar o Equipamento!";
+                        return Json(item);
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = -1;
+                    item.eMessage = "Ocorreu um erro!";
+                    return Json(item);
+                }
             }
 
             return Json(item);

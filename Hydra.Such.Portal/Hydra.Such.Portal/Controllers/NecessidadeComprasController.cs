@@ -550,7 +550,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 // CREATE requisition
                                 resultRq.NºRequisição =
-                                    DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+                                    DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true, false);
 
                                 if (resultRq.NºRequisição != null)
                                 {
@@ -863,7 +863,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (ProductivityUnitDB != null)
                             {
                                 // CREATE requisition
-                                resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+                                resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true, false);
                                 if (resultRq.NºRequisição != null)
                                 {
 
