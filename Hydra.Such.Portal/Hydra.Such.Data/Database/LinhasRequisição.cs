@@ -67,6 +67,7 @@ namespace Hydra.Such.Data.Database
         public string RegiãoMercadoLocal { get; set; }
         public string NºCliente { get; set; }
         public string Aprovadores { get; set; }
+        public bool? Urgente { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Requisição NºRequisiçãoNavigation { get; set; }

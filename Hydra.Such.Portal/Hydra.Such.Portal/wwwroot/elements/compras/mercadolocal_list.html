@@ -109,6 +109,7 @@
                    method="post"
                    handle-as="json"
                    id="mercadolocal_AprovadoToTratado_ajax"
+                   on-response="_aprovadoToTratadoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -117,6 +118,7 @@
                    method="post"
                    handle-as="json"
                    id="mercadolocal_AprovadoToValidar_ajax"
+                   on-response="_aprovadoToValidarResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -125,6 +127,7 @@
                    method="post"
                    handle-as="json"
                    id="mercadolocal_AprovadoToRecusar_ajax"
+                   on-response="_aprovadoToRecusarResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -133,6 +136,7 @@
                    method="post"
                    handle-as="json"
                    id="mercadolocal_ValidadoToTratado_ajax"
+                   on-response="_validadoToTratadoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -141,36 +145,37 @@
                    method="post"
                    handle-as="json"
                    id="mercadolocal_RecusadoToTratado_ajax"
+                   on-response="_recusadoToTratadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/MercadoLocal/ExportToExcel_MercadoLocal"
+                   last-response="{{result_ExportExcel}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_ExportExcel_ajax"
+                   on-response="_exportExcelResponse"
                    content-type="application/json">
         </iron-ajax>
 
         <div class="subMenu">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
-            </template>
-            <!--<paper-button class="tablinks" id="showTodas" on-tap="_showTodas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showTodasMessage }}</paper-button>-->
-            <paper-button class="tablinks" id="showAprovadas" on-tap="_showAprovadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showAprovadassMessage }}</paper-button>
             <paper-button class="tablinks" id="showValidadas" on-tap="_showValidadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showValidadasMessage }}</paper-button>
             <paper-button class="tablinks" id="showRecusadas" on-tap="_showRecusadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showRecusadasMessage }}</paper-button>
             <paper-button class="tablinks" id="showTratadas" on-tap="_showTratadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showTratadasMessage }}</paper-button>
-            <paper-button class="tablinks" id="btnExport" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Exportar Excel</paper-button>
-
             <paper-button class="tablinks" id="btn_AprovadoToTratado" on-tap="_aprovadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
             <paper-button class="tablinks" id="btn_AprovadoToValidar" on-tap="_aprovadoToValidar" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Validar</paper-button>
             <paper-button class="tablinks" id="btn_AprovadoToRecusar" on-tap="_aprovadoToRecusar" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Recusar</paper-button>
-
             <paper-button class="tablinks" id="btn_ValidadoToTratado" on-tap="_validadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
-
             <paper-button class="tablinks" id="btn_RecusadoToTratado" on-tap="_recusadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
+            <paper-button class="tablinks" id="btnExport" on-tap="_exportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Exportar Excel</paper-button>
         </div>
-
 
         <vaadin-grid aria-label="Mercado Local" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="gridCompras" items="[[result]]">
 
             <vaadin-grid-selection-column auto-select>
             </vaadin-grid-selection-column>
 
-            <vaadin-grid-column id="grid_opcoesteste" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column id="grid_GoRequisicao" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
@@ -300,7 +305,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataValidacaoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_dataValidacaoTexto" resizable width="150px" hidden="{{ _hideDataValidacao }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataValidacaoTexto">Data Validação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataValidacaoTexto" />
@@ -310,7 +315,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorValidacaoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_utilizadorValidacaoTexto" resizable width="150px" hidden="{{ _hideUtilizadorValidacao }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorValidacaoTexto">Utilizador Validador</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorValidacaoTexto" />
@@ -320,7 +325,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px" hidden="{{ _hideDataRecusa }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRecusaTexto">Data Recusa</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataRecusaTexto" />
@@ -330,7 +335,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorRecusaTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_utilizadorRecusaTexto" resizable width="150px" hidden="{{ _hideUtilizadorRecusa }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorRecusaTexto">Utilizador Recusou</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorRecusaTexto" />
@@ -340,10 +345,19 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px">
-                dt
+            <vaadin-grid-column id="grid_recusadoComprasTexto" resizable width="150px" hidden="{{ _hideRecusadoCompras }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataTratadoTexto">atData Tratado</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="recusadoComprasTexto">Recusado Compras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="recusadoComprasTexto" />
+                </template>
+                <template>
+                    {{item.recusadoComprasTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px" hidden="{{ _hideDataTratado }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataTratadoTexto">Data Tratado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataTratadoTexto" />
                 </template>
                 <template>
@@ -351,7 +365,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorTratadoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_utilizadorTratadoTexto" resizable width="150px" hidden="{{ _hideUtilizadorTratado }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorTratadoTexto">Utilizador Tratado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorTratadoTexto" />
@@ -410,6 +424,41 @@
                     selectedItem: {
                         type: Array
                     },
+                    _hideDataValidacao: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideUtilizadorValidacao: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideDataRecusa: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideUtilizadorRecusa: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideRecusadoCompras: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideDataTratado: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    _hideUtilizadorTratado: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
                     _aprovadas: {
                         type: Boolean,
                         notify: true,
@@ -430,34 +479,27 @@
                         notify: true,
                         value: false
                     },
-                    _showAprovadassMessage: {
-                        type: String,
-                        value: "Mostrar Aprovadas"
-                    },
                     _showValidadasMessage: {
                         type: String,
-                        value: "Mostrar Validadas"
+                        value: "Compras Validadas"
                     },
                     _showRecusadasMessage: {
                         type: String,
-                        value: "Mostrar Recusadas"
+                        value: "Compras Recusadas"
                     },
                     _showTratadasMessage: {
                         type: String,
-                        value: "Mostrar Tratadas"
+                        value: "Compras Tratadas"
                     },
                 },
 
                 ready: function () {
                     //debugger;
                     var _self = this;
-                    $(_self.$.btn_AprovadoToTratado).addClass('hidden');
-                    $(_self.$.btn_AprovadoToValidar).addClass('hidden');
-                    $(_self.$.btn_AprovadoToRecusar).addClass('hidden');
                     $(_self.$.btn_ValidadoToTratado).addClass('hidden');
                     $(_self.$.btn_RecusadoToTratado).addClass('hidden');
 
-                    this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
+                    this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                     this.$.compras_databound_ajax.generateRequest();
                     this.$.gridCompras.clearCache();
 
@@ -469,6 +511,7 @@
                 },
 
                 fixGridToBottom: function () {
+                    //debugger;
                     var grid_el = $(this.$.gridCompras);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
@@ -490,39 +533,11 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _showAprovadas: function (item) {
-                    //debugger;
-                    var _self = this;
-
-                    if (item != null) {
-                        if (this._aprovadas == true) {
-                            this._aprovadas = false;
-                            this._validadas = false;
-                            this._recusadas = false;
-                            this._tratadas = false;
-                        } else {
-                            this._aprovadas = true;
-                            this._validadas = false;
-                            this._recusadas = false;
-                            this._tratadas = false;
-                        }
-
-                        this._setButtonTexts();
-
-                        if (this._aprovadas == true) {
-                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
-                        } else {
-                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
-                        }
-                        this.$.compras_databound_ajax.generateRequest();
-                        this.$.gridCompras.clearCache();
-                    }
-                },
-
                 _showValidadas: function (item) {
+                    //debugger;
                     if (item != null) {
                         if (this._validadas == true) {
-                            this._aprovadas = false;
+                            this._aprovadas = true;
                             this._validadas = false;
                             this._recusadas = false;
                             this._tratadas = false;
@@ -538,7 +553,7 @@
                         if (this._validadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(2) });
                         } else {
-                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
+                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
@@ -546,9 +561,10 @@
                 },
 
                 _showRecusadas: function (item) {
+                    //debugger;
                     if (item != null) {
                         if (this._recusadas == true) {
-                            this._aprovadas = false;
+                            this._aprovadas = true;
                             this._validadas = false;
                             this._recusadas = false;
                             this._tratadas = false;
@@ -564,7 +580,7 @@
                         if (this._recusadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(3) });
                         } else {
-                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
+                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
@@ -572,9 +588,10 @@
                 },
 
                 _showTratadas: function (item) {
+                    //debugger;
                     if (item != null) {
                         if (this._tratadas == true) {
-                            this._aprovadas = false;
+                            this._aprovadas = true;
                             this._validadas = false;
                             this._recusadas = false;
                             this._tratadas = false;
@@ -590,7 +607,7 @@
                         if (this._tratadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(4) });
                         } else {
-                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
+                            this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
@@ -601,42 +618,62 @@
                     //debugger;
                     var _self = this;
 
+                    //BOTÕES
                     $(_self.$.btn_AprovadoToTratado).addClass('hidden');
                     $(_self.$.btn_AprovadoToValidar).addClass('hidden');
                     $(_self.$.btn_AprovadoToRecusar).addClass('hidden');
                     $(_self.$.btn_ValidadoToTratado).addClass('hidden');
                     $(_self.$.btn_RecusadoToTratado).addClass('hidden');
 
-                    if (this._aprovadas == true) {
-                        this._showAprovadassMessage = "Mostrar Todas";
+                    //BOTÕES TEXTO
+                    this._showValidadasMessage = "Compras Validadas";
+                    this._showRecusadasMessage = "Compras Recusadas";
+                    this._showTratadasMessage = "Compras Tratadas";
 
+                    //COLUNAS
+                    this._hideDataValidacao = true;
+                    this._hideUtilizadorValidacao = true;
+                    this._hideDataRecusa = true;
+                    this._hideUtilizadorRecusa = true;
+                    this._hideRecusadoCompras = true;
+                    this._hideDataTratado = true;
+                    this._hideUtilizadorTratado = true;
+
+                    if (this._aprovadas == true) {
                         $(_self.$.btn_AprovadoToTratado).removeClass('hidden');
                         $(_self.$.btn_AprovadoToValidar).removeClass('hidden');
                         $(_self.$.btn_AprovadoToRecusar).removeClass('hidden');
                     } else {
-                        this._showAprovadassMessage = "Mostrar Aprovadas";
-                    }
+                        if (this._validadas == true) {
+                            this._showValidadasMessage = "Compras Aprovadas";
 
-                    if (this._validadas == true) {
-                        this._showValidadasMessage = "Mostrar Todas";
+                            this._hideDataValidacao = false;
+                            this._hideUtilizadorValidacao = false;
 
-                        $(_self.$.btn_ValidadoToTratado).removeClass('hidden');
-                    } else {
-                        this._showValidadasMessage = "Mostrar Validadas";
-                    }
+                            $(_self.$.btn_ValidadoToTratado).removeClass('hidden');
+                        } else {
+                            if (this._recusadas == true) {
+                                this._showRecusadasMessage = "Compras Aprovadas";
 
-                    if (this._recusadas == true) {
-                        this._showRecusadasMessage = "Mostrar Todas";
+                                this._hideDataRecusa = false;
+                                this._hideUtilizadorRecusa = false;
 
-                        $(_self.$.btn_RecusadoToTratado).removeClass('hidden');
-                    } else {
-                        this._showRecusadasMessage = "Mostrar Recusadas";
-                    }
+                                $(_self.$.btn_RecusadoToTratado).removeClass('hidden');
+                            }
+                            else {
+                                if (this._tratadas == true) {
+                                    this._showTratadasMessage = "Compras Aprovadas";
 
-                    if (this._tratadas == true) {
-                        this._showTratadasMessage = "Mostrar Todas";
-                    } else {
-                        this._showTratadasMessage = "Mostrar Tratadas";
+                                    this._hideDataValidacao = false;
+                                    this._hideUtilizadorValidacao = false;
+                                    this._hideDataRecusa = false;
+                                    this._hideUtilizadorRecusa = false;
+                                    this._hideRecusadoCompras = false;
+                                    this._hideDataTratado = false;
+                                    this._hideUtilizadorTratado = false;
+                                }
+                            }
+                        }
                     }
                 },
 
@@ -651,53 +688,159 @@
                 },
 
                 _aprovadoToTratado: function (selectedItem, selectedItems) {
+                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_AprovadoToTratado_ajax.body = JSON.stringify(selItms);
                         this.$.mercadolocal_AprovadoToTratado_ajax.generateRequest();
+                        this.$.gridCompras.clearCache();
                     } else {
-                        this._openToastError("Não foi selecionada nenhuma linha.");
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
                     }
                 },
 
+                _aprovadoToTratadoResponse: function () {
+                    //debugger;
+                    if (this.result_AprovadoToTratado.eReasonCode == 0) {
+                        this._showMessage(this.result_AprovadoToTratado.eMessage);
+                        this.$.compras_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_AprovadoToTratado.eMessage);
+                    }
+                },
+
+
                 _aprovadoToValidar: function (selectedItem, selectedItems) {
+                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_AprovadoToValidar_ajax.body = JSON.stringify(selItms);
                         this.$.mercadolocal_AprovadoToValidar_ajax.generateRequest();
+                        this.$.gridCompras.clearCache();
                     } else {
-                        this._openToastError("Não foi selecionada nenhuma linha.");
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _aprovadoToValidarResponse: function () {
+                    //debugger;
+                    if (this.result_AprovadoToValidar.eReasonCode == 0) {
+                        this._showMessage(this.result_AprovadoToValidar.eMessage);
+                        this.$.compras_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_AprovadoToValidar.eMessage);
                     }
                 },
 
                 _aprovadoToRecusar: function (selectedItem, selectedItems) {
+                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
-                        this.$.mercadolocal_AprovadoToRecusar_ajax.body = JSON.stringify(selItms);
-                        this.$.mercadolocal_AprovadoToRecusar_ajax.generateRequest();
+
+                        var TMessage = this.$.ToastMessageSuccess;
+                        var TMessageError = this.$.ToastMessageError;
+                        var ARequest = this.$.mercadolocal_AprovadoToRecusar_ajax;
+                        var Tab = this.$.gridCompras;
+
+                        bootbox.prompt({
+                            title: "Introduza o motivo de rejeição!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Rejeitar',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Cancelar',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result == "") {
+                                    TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                    TMessageError.open();
+                                    return false;
+                                } else {
+                                    ARequest.body = JSON.stringify({ mercados: selItms, rejectReason: result });
+                                    ARequest.generateRequest();
+                                    Tab.clearCache();
+                                }
+                            }
+                        });
                     } else {
-                        this._openToastError("Não foi selecionada nenhuma linha.");
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _aprovadoToRecusarResponse: function () {
+                    //debugger;
+                    if (this.result_AprovadoToRecusar.eReasonCode == 0) {
+                        this._showMessage(this.result_AprovadoToRecusar.eMessage);
+                        this.$.compras_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_AprovadoToRecusar.eMessage);
                     }
                 },
 
                 _validadoToTratado: function (selectedItem, selectedItems) {
+                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_ValidadoToTratado_ajax.body = JSON.stringify(selItms);
                         this.$.mercadolocal_ValidadoToTratado_ajax.generateRequest();
+                        this.$.gridCompras.clearCache();
                     } else {
-                        this._openToastError("Não foi selecionada nenhuma linha.");
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _validadoToTratadoResponse: function () {
+                    //debugger;
+                    if (this.result_ValidadoToTratado.eReasonCode == 0) {
+                        this._showMessage(this.result_ValidadoToTratado.eMessage);
+                        this.$.compras_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_ValidadoToTratado.eMessage);
                     }
                 },
 
                 _recusadoToTratado: function (selectedItem, selectedItems) {
+                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_RecusadoToTratado_ajax.body = JSON.stringify(selItms);
                         this.$.mercadolocal_RecusadoToTratado_ajax.generateRequest();
+                        this.$.gridCompras.clearCache();
                     } else {
-                        this._openToastError("Não foi selecionada nenhuma linha.");
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
                     }
+                },
+
+                _recusadoToTratadoResponse: function () {
+                    //debugger;
+                    if (this.result_RecusadoToTratado.eReasonCode == 0) {
+                        this._showMessage(this.result_RecusadoToTratado.eMessage);
+                        this.$.compras_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_RecusadoToTratado.eMessage);
+                    }
+                },
+
+                _exportExcel: function (selectedItem, selectedItems) {
+                    //debugger;
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_ExportExcel_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_ExportExcel_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _exportExcelResponse: function (e) {
+                    //debugger;
+                    var FileName = this.result_ExportExcel;
+                    location.href = '../MercadoLocal/ExportToExcelDownload_MercadoLocal?sFileName=' + FileName;
                 },
 
             });

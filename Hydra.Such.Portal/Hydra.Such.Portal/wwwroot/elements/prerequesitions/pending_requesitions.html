@@ -114,7 +114,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReq"
-                   auto
+                
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -237,7 +237,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
+                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -440,10 +440,7 @@
                         this._openToastError("Occorreu um erro ao atualizar.");
                     }
                 },
-                //ready: function () {
-                //    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
-                //    this.$.grid_databound_ajax.generateRequest();
-                //}
+               
             });
         });
     </script>

@@ -57,7 +57,7 @@ namespace Hydra.Such.Data.Logic
             string productsIds = string.Join(",", productsId);
             return GetAllProducts(navDatabaseName, navCompanyName, productsIds);
         }
-        public static List<NAVProductsViewModel> GetProductsForDimensions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType)
+        public static List<NAVProductsViewModel> GetProductsForDimensions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType, string locationCode)
         {
             try
             {
@@ -68,10 +68,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@AllowedDimensions", allowedDimensions),
-                        new SqlParameter("@RequisitionType", requisitionType)
+                        new SqlParameter("@RequisitionType", requisitionType),
+                        new SqlParameter("@LocationCode", locationCode)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosDaArea @DBName, @CompanyName, @AllowedDimensions, @RequisitionType", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosDaArea @DBName, @CompanyName, @AllowedDimensions, @RequisitionType, @LocationCode", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -85,7 +86,9 @@ namespace Hydra.Such.Data.Logic
                             VendorProductNo = (string)temp.Vendor_Item_No_,
                             LastCostDirect = (decimal)temp.Last_Direct_Cost,
                             VendorNo = (string)temp.Vendor_No_,
-                            UnitCost = (decimal)temp.UnitCost
+                            UnitCost = (decimal)temp.UnitCost,
+                            LocationCode = (string)temp.Location_Code,
+
                         });
                     }
                 }

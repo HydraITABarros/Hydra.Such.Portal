@@ -55,5 +55,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string UtilizadorTratadoTexto { get; set; }
         public bool? Recusada { get; set; }
         public string RecusadaTexto { get; set; }
+        public string RecusadoComprasTexto { get; set; }
+        public DateTime? DataMercadoLocal { get; set; }
+        public string DataMercadoLocalTexto { get; set; }
+        public string HoraMercadoLocalTexto { get; set; }
     }
 }

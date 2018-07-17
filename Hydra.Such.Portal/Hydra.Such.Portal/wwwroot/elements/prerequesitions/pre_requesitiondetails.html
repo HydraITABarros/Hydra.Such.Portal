@@ -769,7 +769,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}" on-change="_GridLocationChange"> 
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -1408,6 +1408,10 @@
                         var locationId = e.detail.value;
                         var sel = this.CBLocations.find(x => x.id == locationId);
                         this.$._CBItemsCDirect.value = sel.extra;
+                        if (this._areaid != null && this.$.requesitionType.value != null && locationId != null) {
+                            this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": locationId });
+                            this.$.filteredProducts_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -1423,7 +1427,6 @@
                     this.$.page_getProject2_ajax.generateRequest();
                 },
                 _setPurchaseLine: function (e) {
-                    debugger;;
                     if (e.detail.value != "") {
                         var line = e.detail.value;
                         var proj = this.CBPurchaseLine.find(x => x.id == line);
@@ -1631,8 +1634,8 @@
                     }
                 },
                 _loadProductsByAreaAndType: function (requisitionType) {
-                    if (this._areaid != null && requisitionType != null) {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
+                    if (this._areaid != null && requisitionType != null && this._LocalCode != null && this._LocalCode !="") {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType, "locationCode": this._LocalCode});
                         this.$.filteredProducts_ajax.generateRequest();
                     }
                 },
@@ -2033,6 +2036,7 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _lineSelected: function (item) {
+                    debugger;
                     if (item != null) {
                         var oSel = this.dataLines.lines.find(x => x.selected);
                         if (oSel != undefined) {
@@ -2047,7 +2051,11 @@
                             var PurchaseNo = item.openOrderNo;
                             this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselinesgrid_ajax.generateRequest();
-
+                            if (sel.localCode != null && sel.localCode != "" && this._areaid != null && this.$.requesitionType.value) {
+                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": sel.localCode });
+                                    this.$.filteredProducts_ajax.generateRequest();
+                            }
+                            
                             this.$.grid_prereqlines.clearCache();
                             if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
                                 this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
@@ -2056,7 +2064,12 @@
                         }
                     }
                 },
-
+                _GridLocationChange: function (e) {
+                    if (e.target.value != null && e.target.value != "" && this._areaid != null && this.$.requesitionType.value) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": e.target.value });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
@@ -2130,7 +2143,6 @@
                     window.location.href = "/PreRequisicoes/RequisicoesPendentes";
                 },
                 _CleanPreRequesitionResponse: function (e) {
-                    debugger;
                     if (this.ClPreReq.eReasonCode != null) {
                         this._openToastError(this.ClPreReq.eMessage);
                     }
@@ -2142,7 +2154,6 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
-                    debugger;;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 

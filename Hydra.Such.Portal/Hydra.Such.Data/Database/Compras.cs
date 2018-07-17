@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataTratado { get; set; }
         public string UtilizadorTratado { get; set; }
         public bool? Recusada { get; set; }
+        public DateTime? DataMercadoLocal { get; set; }
 
         public ConfigMercadoLocal RegiaoMercadoLocalNavigation { get; set; }
     }

@@ -725,10 +725,42 @@ namespace Hydra.Such.Portal.Controllers
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             requisition = DBRequest.GetReqByUser(User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo)
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
 
-            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
-            List<RequisitionViewModel> teste = result.Where(x => x.Approvers != null).ToList();
-
+            }
+            
+         
+          
 
             return Json(result);
         }
