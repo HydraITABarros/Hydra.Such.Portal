@@ -15,6 +15,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -196,12 +197,18 @@ namespace Hydra.Such.Portal.Controllers
             if (item != null)
             {
                 item.ModificadoPor = User.Identity.Name;
-                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
-                updatedItem = billingRecService.CreateWorkFlowSend(item, workflow);
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
+                item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                workflow.DataCriacao = DateTime.Now;
+                workflow.AreaWorkflow = item.AreaPendenteDescricao;
+                item.WorkflowItems.Add(workflow);
+
+                updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                 if (updatedItem != null)
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
+                    
                 }
                 else
                 {
@@ -217,23 +224,16 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
-
-
+    
+        //CF ou CP ou CC opc
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)
         {
+            BillingReceptionModel postedDocument;
             if (item != null)
-            {
-                try
-                {
-                    var postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
-                    item = postedDocument;
-                }
-                catch
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao criar o documento.";
-                }
+            {               
+                postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                item = postedDocument;            
             }
             else
             {

@@ -67,7 +67,10 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         UtilizadorTratado = Compras.UtilizadorTratado,
                         UtilizadorTratadoTexto = Compras.UtilizadorTratado == null ? "" : DBUserConfigurations.GetById(Compras.UtilizadorTratado).Nome,
                         Recusada = Compras.Recusada,
-                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim"
+                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim",
+                        DataMercadoLocal = Compras.DataMercadoLocal,
+                        DataMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("yyyy-MM-dd"),
+                        HoraMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("HH:mm:ss")
                     }).ToList();
                 }
             }
@@ -136,7 +139,10 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         UtilizadorTratado = Compras.UtilizadorTratado,
                         UtilizadorTratadoTexto = Compras.UtilizadorTratado == null ? "" : DBUserConfigurations.GetById(Compras.UtilizadorTratado).Nome,
                         Recusada = Compras.Recusada,
-                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim"
+                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim",
+                        DataMercadoLocal = Compras.DataMercadoLocal,
+                        DataMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("yyyy-MM-dd"),
+                        HoraMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("HH:mm:ss")
                     }).FirstOrDefault();
                 }
             }
@@ -205,7 +211,10 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         UtilizadorTratado = Compras.UtilizadorTratado,
                         UtilizadorTratadoTexto = Compras.UtilizadorTratado == null ? "" : DBUserConfigurations.GetById(Compras.UtilizadorTratado).Nome,
                         Recusada = Compras.Recusada,
-                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim"
+                        RecusadaTexto = Compras.Recusada == null ? "" : Compras.Recusada == false ? "Não" : "Sim",
+                        DataMercadoLocal = Compras.DataMercadoLocal,
+                        DataMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("yyyy-MM-dd"),
+                        HoraMercadoLocalTexto = Compras.DataMercadoLocal == null ? "" : Compras.DataMercadoLocal.Value.ToString("HH:mm:ss")
                     }).ToList();
                 }
             }
@@ -270,42 +279,108 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<ComprasViewModel> ToListComprasViewModel(List<Compras> ComprasList)
+        {
+            try
+            {
+                List<ComprasViewModel> ComprasViewModel = null;
+
+                return ComprasViewModel;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static ComprasViewModel ParseToComprasViewModel(Compras Compras)
         {
             try
             {
                 if (Compras != null)
                 {
-                    ComprasViewModel ComprasVM = new ComprasViewModel();
-
-                    ComprasVM.CodigoProduto = Compras.CodigoProduto;
-                    ComprasVM.Descricao = Compras.Descricao;
-                    ComprasVM.Descricao2 = Compras.Descricao2;
-                    ComprasVM.CodigoUnidadeMedida = Compras.CodigoUnidadeMedida;
-                    ComprasVM.Quantidade = Compras.Quantidade;
-                    ComprasVM.NoRequisicao = Compras.NoRequisicao;
-                    ComprasVM.NoLinhaRequisicao = Compras.NoLinhaRequisicao;
-                    ComprasVM.Urgente = Compras.Urgente;
-                    ComprasVM.RegiaoMercadoLocal = Compras.RegiaoMercadoLocal;
-                    ComprasVM.Estado = Compras.Estado;
-                    ComprasVM.DataCriacao = Compras.DataCriacao;
-                    ComprasVM.UtilizadorCriacao = Compras.UtilizadorCriacao;
-                    ComprasVM.Responsaveis = Compras.Responsaveis;
-                    ComprasVM.NoProjeto = Compras.NoProjeto;
-                    ComprasVM.NoFornecedor = Compras.NoFornecedor;
-                    ComprasVM.NoEncomenda = Compras.NoEncomenda;
-                    ComprasVM.DataEncomenda = Compras.DataEncomenda;
-                    ComprasVM.NoConsultaMercado = Compras.NoConsultaMercado;
-                    ComprasVM.DataConsultaMercado = Compras.DataConsultaMercado;
-                    ComprasVM.DataValidacao = Compras.DataValidacao;
-                    ComprasVM.UtilizadorValidacao = Compras.UtilizadorValidacao;
-                    ComprasVM.DataRecusa = Compras.DataRecusa;
-                    ComprasVM.UtilizadorRecusa = Compras.UtilizadorRecusa;
-                    ComprasVM.DataTratado = Compras.DataTratado;
-                    ComprasVM.UtilizadorTratado = Compras.UtilizadorTratado;
-                    ComprasVM.Recusada = Compras.Recusada;
+                    ComprasViewModel ComprasVM = new ComprasViewModel
+                    {
+                        ID = Compras.Id,
+                        CodigoProduto = Compras.CodigoProduto,
+                        Descricao = Compras.Descricao,
+                        Descricao2 = Compras.Descricao2,
+                        CodigoUnidadeMedida = Compras.CodigoUnidadeMedida,
+                        Quantidade = Compras.Quantidade,
+                        NoRequisicao = Compras.NoRequisicao,
+                        NoLinhaRequisicao = Compras.NoLinhaRequisicao,
+                        Urgente = Compras.Urgente,
+                        RegiaoMercadoLocal = Compras.RegiaoMercadoLocal,
+                        Estado = Compras.Estado,
+                        DataCriacao = Compras.DataCriacao,
+                        UtilizadorCriacao = Compras.UtilizadorCriacao,
+                        Responsaveis = Compras.Responsaveis,
+                        NoProjeto = Compras.NoProjeto,
+                        NoFornecedor = Compras.NoFornecedor,
+                        NoEncomenda = Compras.NoEncomenda,
+                        DataEncomenda = Compras.DataEncomenda,
+                        NoConsultaMercado = Compras.NoConsultaMercado,
+                        DataConsultaMercado = Compras.DataConsultaMercado,
+                        DataValidacao = Compras.DataValidacao,
+                        UtilizadorValidacao = Compras.UtilizadorValidacao,
+                        DataRecusa = Compras.DataRecusa,
+                        UtilizadorRecusa = Compras.UtilizadorRecusa,
+                        DataTratado = Compras.DataTratado,
+                        UtilizadorTratado = Compras.UtilizadorTratado,
+                        Recusada = Compras.Recusada,
+                        DataMercadoLocal = Compras.DataMercadoLocal
+                    };
 
                     return ComprasVM;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static Compras ParseToCompras(ComprasViewModel ComprasVM)
+        {
+            try
+            {
+                if (ComprasVM != null)
+                {
+                    Compras ComprasModel = new Compras
+                    {
+                        Id = ComprasVM.ID,
+                        CodigoProduto = ComprasVM.CodigoProduto,
+                        Descricao = ComprasVM.Descricao,
+                        Descricao2 = ComprasVM.Descricao2,
+                        CodigoUnidadeMedida = ComprasVM.CodigoUnidadeMedida,
+                        Quantidade = ComprasVM.Quantidade,
+                        NoRequisicao = ComprasVM.NoRequisicao,
+                        NoLinhaRequisicao = ComprasVM.NoLinhaRequisicao,
+                        Urgente = ComprasVM.Urgente,
+                        RegiaoMercadoLocal = ComprasVM.RegiaoMercadoLocal,
+                        Estado = ComprasVM.Estado,
+                        DataCriacao = ComprasVM.DataCriacao,
+                        UtilizadorCriacao = ComprasVM.UtilizadorCriacao,
+                        Responsaveis = ComprasVM.Responsaveis,
+                        NoProjeto = ComprasVM.NoProjeto,
+                        NoFornecedor = ComprasVM.NoFornecedor,
+                        NoEncomenda = ComprasVM.NoEncomenda,
+                        DataEncomenda = ComprasVM.DataEncomenda,
+                        NoConsultaMercado = ComprasVM.NoConsultaMercado,
+                        DataConsultaMercado = ComprasVM.DataConsultaMercado,
+                        DataValidacao = ComprasVM.DataValidacao,
+                        UtilizadorValidacao = ComprasVM.UtilizadorValidacao,
+                        DataRecusa = ComprasVM.DataRecusa,
+                        UtilizadorRecusa = ComprasVM.UtilizadorRecusa,
+                        DataTratado = ComprasVM.DataTratado,
+                        UtilizadorTratado = ComprasVM.UtilizadorTratado,
+                        Recusada = ComprasVM.Recusada,
+                        DataMercadoLocal = ComprasVM.DataMercadoLocal
+                    };
+
+                    return ComprasModel;
                 }
                 else
                     return null;

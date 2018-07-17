@@ -178,7 +178,7 @@
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/GestaoRequisicoes/ValidateLocalMarketForRequisition"
+        <iron-ajax url="/GestaoRequisicoes/ValidacaoMercadoLocal"
                    last-response="{{Requisition}}"
                    id="validateLocalMarket_datasource"
                    on-response="_validateLocalMarketResponse"

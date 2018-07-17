@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -8,6 +9,7 @@ using Hydra.Such.Portal.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using static Hydra.Such.Data.Enumerations;
 
@@ -75,44 +77,7 @@ namespace Hydra.Such.Portal.Services
 
             return item;
         }
-        public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast)
-        {
-            //Update Header
-            item.DataModificacao = DateTime.Now;
-            item.DataUltimaInteracao = DateTime.Now.ToString();
-            item.Estado = BillingReceptionStates.Pendente;
-            //•	Preenche campo “Data passou pendente” com a data de sistema
-            //•	Tipo Problema[NP] Preenche com o código do motivo
-            
-            item = repo.Update(item);
-
-            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
-            wfItem.IdRecFaturacao = item.Id;           
-            wfItem.Estado = (int)BillingReceptionStates.Pendente;//TODO: Identificar estados possivels “Receção/Conferência”        
-            wfItem.AreaWorkflow = item.AreaPendenteDescricao;
-            wfItem.CriadoPor = item.CriadoPor;
-            wfItem.Data = item.DataCriacao;
-            wfItem.DataCriacao = DateTime.Now;
-       
-            wfItem.Utilizador = wfItemLast.Utilizador;
-            wfItem.CodTipoProblema = wfItemLast.CodTipoProblema;
-            wfItem.Descricao = wfItemLast.Descricao;
-            wfItem.Comentario = wfItemLast.Comentario;
-
-            repo.Create(wfItem);
-          
-            try
-            {
-                repo.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            return item;
-        }
-        
-
+         
 
         public string CreateNumeration(BillingReceptionModel item)
         {
@@ -190,31 +155,102 @@ namespace Hydra.Such.Portal.Services
             return true;
         }
 
+        public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
+        {
+            //Update Header
+            item.Estado = BillingReceptionStates.Pendente;
+            item.DataUltimaInteracao = DateTime.Now.ToString();
+            
+            //item.AreaPendente;
+            //item.AreaPendenteDescricao;
+            item.Destinatario = wfItemLast.Utilizador;
+            // descrição problea
+            item.DataModificacao = DateTime.Now;
+            //area ultima interação
+            //user ultima interação
+
+            item = repo.Update(item);
+            
+
+            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
+            wfItem.IdRecFaturacao = item.Id;
+            wfItem.Estado = (int)BillingReceptionStates.Pendente;//TODO: Identificar estados possivels “Receção/Conferência”        
+            wfItem.AreaWorkflow = wfItemLast.AreaWorkflow;
+            wfItem.ModificadoPor = item.ModificadoPor;
+            wfItem.Data = item.DataCriacao;
+            wfItem.DataCriacao = DateTime.Now;
+            wfItem.EnderecoEnvio = postedByUserName;
+            wfItem.EnderecoFornecedor = wfItemLast.EnderecoFornecedor;
+            wfItem.Utilizador = wfItemLast.Utilizador;
+            wfItem.CodTipoProblema = wfItemLast.CodTipoProblema;
+            wfItem.CodProblema = wfItemLast.CodProblema;
+            wfItem.Descricao = wfItemLast.Descricao;
+            wfItem.Comentario = wfItemLast.Comentario;
+
+            repo.Create(wfItem);
+
+            try
+            {
+                repo.SaveChanges();
+                
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            RecFacturasProblemas question = null;
+           if ( wfItem.CodProblema== "RF1P")
+                question = GetQuestionID(wfItem.CodTipoProblema, "RF1P");
+           else
+                question = GetQuestionID(wfItem.CodTipoProblema, "RF4P");
+            if (question != null)
+            {
+                //Rever o Envio de Areas
+                if (question.EnvioAreas != "1" && wfItem.EnderecoFornecedor != "")
+                {
+
+                    SendEmailBillingReception Email = new SendEmailBillingReception
+                    {
+                        Subject = "eSUCH - Recepção da Factura :" + item.Id,
+                        From = "plataforma@such.pt"
+                    };
+
+                    Email.To.Add("rui.santos99@hotmail.com");
+
+                    Email.Body = MakeEmailBodyContent("Solicita-se a validação da fatura enviada em anexo:", item.Id, item.Destinatario, item.DataUltimaInteracao, item.Valor.ToString(), postedByUserName);
+
+                    Email.IsBodyHtml = true;
+
+                    Email.SendEmail();
+                    try
+                    {
+                        item.eReasonCode = 1;
+                        item.eMessage = "Resposta enviada com sucesso.";
+                    }
+                    catch
+                    {
+                        item.eReasonCode = 2;
+                        item.eMessage = "Não foi possível enviar email ao utilizador que criou o pedido (" + item.Id + ")";
+                    }
+                   
+                }
+            }
+            return item;
+        }
+
         public BillingReceptionModel PostDocument(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
         {
             if (item != null)
             {
                 if (ValidateForPosting(ref item, _config))
                 {
+                    item.DocumentoCriadoEm = DateTime.Now;
+                    item.DocumentoCriadoPor = postedByUserName;
                     Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
                     createPurchHeaderTask.Wait();
                     if (createPurchHeaderTask.IsCompletedSuccessfully)
                     {
-                        string typeDescription = Data.EnumHelper.GetDescriptionFor(item.TipoDocumento.GetType(), (int)item.TipoDocumento);
-
-                        //createPurchHeaderTask.Result.WSPrePurchaseDocs
-                        RececaoFaturacaoWorkflow rfws = new RececaoFaturacaoWorkflow();
-                        rfws.IdRecFaturacao = item.Id;
-                        rfws.Descricao = "Contabilização da " + typeDescription;
-                        rfws.Estado = (int)BillingReceptionStates.Contabilizado;
-                        rfws.Data = DateTime.Now;
-                        rfws.Utilizador = postedByUserName;
-                        rfws.CriadoPor = postedByUserName;
-
-                        repo.Create(rfws);
-
-                        item.DocumentoCriadoEm = DateTime.Now;
-                        item.DocumentoCriadoPor = postedByUserName;
+                        item.Id = item.Id.Remove(0, 2);                     
                         repo.Update(item);
 
                         try
@@ -222,7 +258,7 @@ namespace Hydra.Such.Portal.Services
                             repo.SaveChanges();
 
                             item.eReasonCode = 1;
-                            item.eMessage = "Documento criado com sucesso.";
+                            item.eMessage = "Fatura criada com sucesso.";
                         }
                         catch
                         {
@@ -231,10 +267,15 @@ namespace Hydra.Such.Portal.Services
                             item.eMessage = "Fatura rececionada mas não foi possivel atualizar os dados da receção.";
                         }
                     }
+                    else
+                    {
+                        item.Id = item.Id.Remove(0, 2);
+                       
+                    }
                 }
             }
             else
-            {
+            {                
                 item.eReasonCode = 2;
                 item.eMessage = "O registo não pode ser nulo";
             }
@@ -244,43 +285,12 @@ namespace Hydra.Such.Portal.Services
         private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;
-            if (item.Estado != BillingReceptionStates.Rececao || item.Estado != BillingReceptionStates.Pendente)
+            if(Convert.ToDateTime(item.DataDocFornecedor)>item.DataModificacao)
             {
-                string stateDescription = Data.EnumHelper.GetDescriptionFor(typeof(BillingReceptionStates), (int)item.Estado);
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "Este documento já se encontra no estado: " + stateDescription));
+                item.eMessages.Add(new TraceInformation(TraceType.Error, "A data do documento: " + item.DataDocFornecedor + " é maior que a data do registo: " + item.DataModificacao));
                 isValid = false;
             }
-            if (string.IsNullOrEmpty(item.CodFornecedor))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O Fornecedor tem que estar preenchido."));
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(item.NumDocFornecedor))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O Nº Documento do Fornecedor tem que estar preenchido."));
-                isValid = false;
-            }
-            else
-            {
-                var purchItemInfo = DBNAV2017Purchases.GetByExternalDocNo(_config.NAVDatabaseName, _config.NAVCompanyName, (NAVBaseDocumentTypes)item.TipoDocumento, item.NumDocFornecedor);
-                if (purchItemInfo != null)
-                {
-                    string typeDescription = Data.EnumHelper.GetDescriptionFor(typeof(BillingReceptionStates), (int)item.Estado);
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "Já foi criada " + typeDescription + " para este RF."));
-                    isValid = false;
-                }
-            }
-            if (!item.Valor.HasValue)
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "O valor tem que estar preenchido."));
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(item.CodRegiao))
-            {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "Tem que selecionar a Região."));
-                isValid = false;
-            }
-            if (!string.IsNullOrEmpty(item.NumEncomenda))
+            else if (!string.IsNullOrEmpty(item.NumEncomenda))
             {
                 var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomenda);
                 if (purchOrderInfo.No != item.NumEncomenda)
@@ -289,13 +299,16 @@ namespace Hydra.Such.Portal.Services
                     isValid = false;
                 }
             }
-            else
+            else 
             {
-                var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
-                if (purchOrderInfo.No != item.NumEncomendaManual)
+                if (!string.IsNullOrEmpty(item.NumEncomendaManual))
                 {
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada."));
-                    isValid = false;
+                    var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
+                    if (purchOrderInfo.No != item.NumEncomendaManual)
+                    {
+                        item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada."));
+                        isValid = false;
+                    }
                 }
             }
 
@@ -308,6 +321,17 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetQuestionsProblem();
         }
+        public RecFacturasProblemas GetQuestionID(string id,string Cod)
+        {
+            if (id != null && id != "")
+            {
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
+                return problem;
+            }
+            else
+                return null;
+        }
+       
         public List<RecFacturasProblemas> GetReason()
         {
             return repo.GetQuestionsReason();
@@ -316,7 +340,74 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetAreas();
         }
+        public static string MakeEmailBodyContent(string Into, string IfFactura, string Fornecedor, string Data, string Valor, string Utilizador)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                Into +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                         "<tr>" +
+                                            "<td>" +
+                                               "NºFactura...: " + IfFactura +
+                                            "</td>" +
+                                        "</tr>" +
+                                         "<tr>" +
+                                            "<td>" +
+                                                "Fornecedor..: " + Fornecedor +
+                                            "</td>" +
+                                        "</tr>" +
+                                         "<tr>" +
+                                            "<td>" +
+                                                "Data..........: " + Data +
+                                            "</td>" +
+                                        "</tr>" +
+                                         "<tr>" +
+                                            "<td>" +
+                                                "Valor.........: " + Valor +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH -" + Utilizador + "</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
 
+            return Body;
+        }
         #endregion
     }
 }
