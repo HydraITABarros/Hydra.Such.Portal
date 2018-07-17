@@ -367,7 +367,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-10">
-                            <such-textarea rows="3" id="txtComment"  label="Comentário" disabled></such-textarea>
+                            <such-textarea rows="3" id="txtComment"  label="Comentário" disabled="{{_isNotes}}"></such-textarea>
                         </div>
                         <div class="col-sm-2">
                             <vaadin-text-field type="text" value="" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
@@ -605,6 +605,10 @@
                         type: Boolean,
                         value: false,
                     },
+                    _isNotes: {
+                        type: Boolean,
+                        value: true,
+                    },
                    _destinatario: {
                         type: Number,
                         value: 0,
@@ -783,7 +787,6 @@
                     }
                 },
                 _updateResponse: function (e) {
-                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
@@ -963,7 +966,12 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
-
+                _notes: function (e) {
+                    if (this._isNotes == false)
+                        this._isNotes = true;
+                    else
+                        this._isNotes = false;
+                },
             });
         });
     </script>
