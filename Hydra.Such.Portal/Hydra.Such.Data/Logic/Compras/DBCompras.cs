@@ -1,12 +1,12 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
     public class DBCompras
     {
@@ -215,7 +215,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static ComprasModel Create(ComprasModel ObjectToCreate)
+        public static Compras Create(Compras ObjectToCreate)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static ComprasModel Update(ComprasModel ObjectToUpdate)
+        public static Compras Update(Compras ObjectToUpdate)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static bool Delete(ComprasModel ObjectToDelete)
+        public static bool Delete(Compras ObjectToDelete)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static ComprasViewModel ParseToComprasViewModel(ComprasModel Compras)
+        public static ComprasViewModel ParseToComprasViewModel(Compras Compras)
         {
             try
             {

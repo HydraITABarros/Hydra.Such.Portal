@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Logic;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -46,7 +46,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         //Listagem das Folhas de Horas consoante o estado
-        public JsonResult GetListComprasByEstado([FromBody] ComprasModel ML)
+        public JsonResult GetListComprasByEstado([FromBody] Compras ML)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MercadoLocal);
 
@@ -75,7 +75,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
-        public JsonResult AprovadoToTratado([FromBody] List<ComprasModel> Mercados)
+        public JsonResult AprovadoToTratado([FromBody] List<Compras> Mercados)
         {
             if (Mercados != null)
             {
@@ -96,22 +96,22 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
-        public JsonResult AprovadoToValidar([FromBody] List<ComprasModel> data)
+        public JsonResult AprovadoToValidar([FromBody] List<Compras> data)
         {
             return Json(null);
         }
 
-        public JsonResult AprovadoToRecusar([FromBody] List<ComprasModel> data)
+        public JsonResult AprovadoToRecusar([FromBody] List<Compras> data)
         {
             return Json(null);
         }
 
-        public JsonResult ValidadoToTratado([FromBody] List<ComprasModel> data)
+        public JsonResult ValidadoToTratado([FromBody] List<Compras> data)
         {
             return Json(null);
         }
 
-        public JsonResult RecusadoToTratado([FromBody] List<ComprasModel> data)
+        public JsonResult RecusadoToTratado([FromBody] List<Compras> data)
         {
             return Json(null);
         }
