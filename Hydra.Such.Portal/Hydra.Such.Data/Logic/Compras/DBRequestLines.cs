@@ -25,6 +25,22 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static LinhasRequisição GetByRequisicaoNoAndLineNo(string RequisicaoNo, int LineNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisição.Where(x => x.NºRequisição == RequisicaoNo && x.NºLinha == LineNo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<LinhasRequisição> GetAll()
         {
             try
