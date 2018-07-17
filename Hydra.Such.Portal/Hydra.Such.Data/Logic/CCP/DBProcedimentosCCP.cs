@@ -226,7 +226,7 @@ namespace Hydra.Such.Data.Logic.CCP
                     NumeracaoProcedimento = config.NumeraçãoProcedimentoSimplificado.Value;
                 }
 
-                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
+                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true, false);
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
                 proc.Arquivado = false;

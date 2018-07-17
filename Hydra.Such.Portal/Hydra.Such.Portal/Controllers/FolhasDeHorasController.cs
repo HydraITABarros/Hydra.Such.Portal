@@ -302,7 +302,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Folha de Horas Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
+                    id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true, false);
 
                     //Update Last Numeration Used
                     ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);
@@ -656,6 +656,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (!string.IsNullOrEmpty(folhaDeHorasNo))
                 {
                     FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee);
+                    FH.EmpregadoNo = idEmployee;
                     FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
                 }
             }
@@ -932,6 +933,53 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Verifica se já existe alguma Folha de Horas no mesmo períoda para o mesmo Empregado
+        public JsonResult ToHistoricFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            int result = 0;
+            try
+            {
+                if (data.Estado == 1)
+                {
+                    data.Estado = 2; //HISTÓRICO
+                    data.UtilizadorModificacao = User.Identity.Name; //HISTÓRICO
+                    data.DataHoraModificacao = DateTime.Now; //HISTÓRICO
+
+                    FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
+
+                    if (DBFolhasDeHoras.Update(FH) == null)
+                    {
+                        result = 2;
+                    };
+
+                    if (result == 0)
+                    {
+                        List<MovimentosDeAprovação> Aprovacoes = DBApprovalMovements.GetAll().Where(x => x.Número == data.FolhaDeHorasNo).ToList();
+
+                        if (Aprovacoes.Count > 0)
+                        {
+                            Aprovacoes.ForEach(Aprovacao =>
+                            {
+                                Aprovacao.Estado = 3;
+
+                                DBApprovalMovements.Update(Aprovacao);
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    result = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
         //Atualiza a Folha de Horas na Base de Dados
         public JsonResult UpdateFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
@@ -943,6 +991,9 @@ namespace Hydra.Such.Portal.Controllers
 
                 data.UtilizadorModificacao = User.Identity.Name; //UPDATE
                 data.DataHoraModificacao = DateTime.Now; //UPDATE
+
+                if (!string.IsNullOrEmpty(data.ProjetoNo))
+                    data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? DBProjects.GetById(data.ProjetoNo).Descrição : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
 
                 FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 

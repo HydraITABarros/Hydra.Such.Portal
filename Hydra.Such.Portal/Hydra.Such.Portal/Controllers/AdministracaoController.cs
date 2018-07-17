@@ -20,7 +20,7 @@ using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel.Compras;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Microsoft.Extensions.Options;
@@ -141,6 +141,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProcedimentosEmailEnvioParaCA = CU.ProcedimentosEmailEnvioParaCa;
                 result.ProcedimentosEmailEnvioParaArea = CU.ProcedimentosEmailEnvioParaArea;
                 result.ProcedimentosEmailEnvioParaArea2 = CU.ProcedimentosEmailEnvioParaArea2;
+                result.ReceptionConfig = CU.PerfilNumeraçãoRecDocCompras;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -184,6 +185,7 @@ namespace Hydra.Such.Portal.Controllers
                 ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea,
                 ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2,
                 UtilizadorCriação = User.Identity.Name,
+                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -243,6 +245,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea;
                 userConfig.ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2;
                 userConfig.UtilizadorModificação = User.Identity.Name;
+                userConfig.PerfilNumeraçãoRecDocCompras = data.ReceptionConfig;
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses
@@ -481,7 +484,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 AcessosUtilizador userAccess = new AcessosUtilizador();
                 userAccess.IdUtilizador = data.IdUser;
-                //userAccess.Área = data.Area;
+                userAccess.Área = 1;
                 userAccess.Funcionalidade = data.Feature;
                 userAccess.Eliminação = data.Delete;
                 userAccess.Inserção = data.Create;

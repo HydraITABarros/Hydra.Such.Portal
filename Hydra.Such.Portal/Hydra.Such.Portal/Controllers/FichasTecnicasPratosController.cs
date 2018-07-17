@@ -210,7 +210,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.PlateNo == "" || data.PlateNo == null)
                 {
                     autoGenId = true;
-                    data.PlateNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    data.PlateNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 }
                 if (data.PlateNo != null)
                 {

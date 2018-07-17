@@ -137,7 +137,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     if (item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null)
                     {
                         autoGenId = true;
-                        item.RequisitionTemplateId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                        item.RequisitionTemplateId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                     }
                     if (item.RequisitionTemplateId != null)
                     {

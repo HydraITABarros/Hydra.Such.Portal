@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class MercadoLocal
+    public partial class Compras
     {
         public int Id { get; set; }
         public string CodigoProduto { get; set; }
@@ -32,5 +32,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataTratado { get; set; }
         public string UtilizadorTratado { get; set; }
         public bool? Recusada { get; set; }
+
+        public ConfigMercadoLocal RegiaoMercadoLocalNavigation { get; set; }
     }
 }

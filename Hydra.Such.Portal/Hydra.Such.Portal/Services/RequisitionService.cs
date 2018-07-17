@@ -1,4 +1,4 @@
-﻿using Hydra.Such.Data.Logic.Compras;
+﻿using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;

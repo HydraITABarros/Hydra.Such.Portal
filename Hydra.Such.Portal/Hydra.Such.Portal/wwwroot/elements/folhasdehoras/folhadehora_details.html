@@ -26,6 +26,7 @@
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
@@ -189,6 +190,15 @@
                    handle-as="json"
                    id="page_deletefolhadehoras_ajax"
                    on-response="_deletefolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/ToHistoricFolhaDeHoras"
+                   last-response="{{FolhaDeHorasToHistoric}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tohistoricfolhadehoras_ajax"
+                   on-response="_tohistoricfolhadehorasResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -384,9 +394,10 @@
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
-            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir Folha de Horas"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btn_delete" class="tablinks" on-tap="_deleteFH" disabled="{{ !_permissions.delete }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <paper-button id="btn_toHistoric" class="tablinks" on-tap="_toHistoricFH" disabled="{{ !_permissions.update }}" title="Enviar para Histórico" style="background-color:#DADADA"><i class="fa fa-history" aria-hidden="true"></i>&nbsp; Enviar para Histórico</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -441,19 +452,19 @@
                                             <vaadin-date-picker id="dataPartidaTexto" name="dataPartidaTexto" value="{{data.dataPartidaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-sm-4" style="padding-left: 0px;">
-                                            <vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <!--<vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                            <vaadin-time-picker step="1800" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                                         </div>
                                     </div>
                                 </div>
 
 
-
                                 <!--<div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                                </div>-->
+                                <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                            </div>-->
                                 <!--<div class="col-sm-3">
-                                    <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                                </div>-->
+                                <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            </div>-->
 
                                 <div class="col-sm-3">
                                     <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
@@ -463,7 +474,8 @@
                                             <vaadin-date-picker id="dataChegadaTexto" name="dataChegadaTexto" value="{{data.dataChegadaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-sm-4" style="padding-left: 0px;">
-                                            <vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <!--<vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                            <vaadin-time-picker step="1800" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                                         </div>
                                     </div>
                                 </div>
@@ -471,11 +483,11 @@
 
 
                                 <!--<div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                                </div>-->
+                                <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                            </div>-->
                                 <!--<div class="col-sm-3">
-                                    <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
-                                </div>-->
+                                <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            </div>-->
 
                                 <div class="col-sm-3">
                                     <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
@@ -523,12 +535,12 @@
                                 </div>
 
                                 <!--<div class="col-sm-3" style="padding-top:20px">
-                                    <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </div>-->
+                                <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </div>-->
                             </div>
 
                             <!--<div class="marginSpace">
-                            </div>-->
+                        </div>-->
                         </div>
                     </paper-collapse-item>
                 </paper-collapse-group>
@@ -574,9 +586,8 @@
 
 
                                 <!--<div class="col-sm-1" style="padding-top:23px">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
-                                st
+                                <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -969,7 +980,8 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-1 alignPoga">
@@ -977,18 +989,17 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
 
-
-
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1063,7 +1074,8 @@
                                 <vaadin-grid-filter path="horaInicioTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1082,7 +1094,8 @@
                                 <vaadin-grid-filter path="horaFimTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1119,7 +1132,8 @@
                                 <vaadin-grid-filter path="horasNoTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" type="time" maxlength="8" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" type="time" maxlength="8" disabled="true" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="true"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1141,7 +1155,7 @@
                                 <vaadin-grid-filter path="codigoCentroResponsabilidade"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1149,7 +1163,13 @@
                                             </paper-item-body>
                                         </paper-icon-item>
                                     </template>
-                                </vaadin-combo-box>
+                                </vaadin-combo-box>-->
+                                <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="margin-top:-20px"
+                                                items="[[CBResponsabilityCenterCodes]]"
+                                                text-path="value"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                </such-selectbox>
                             </template>
                         </vaadin-grid-column>
 
@@ -1208,30 +1228,32 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" type="time" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" type="time" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="presencaHora1Entrada" label="1ª Entrada" on-blur="_presencaHora1EntradaValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" type="time" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="presencaHora1Saida" label="1ª Saída" type="time" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="presencaHora1Saida" label="1ª Saída" on-blur="_presencaHora1SaidaValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" type="time" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" type="time" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="presencaHora2Entrada" label="2ª Entrada" on-blur="_presencaHora2EntradaValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" type="time" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="presencaHora2Saida" label="2ª Saída" type="time" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="presencaHora2Saida" label="2ª Saída" on-blur="_presencaHora2SaidaValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
                                 <div class="col-sm-5" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
 
-
-
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPresenca" class="btnSave tableBtn" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1270,7 +1292,8 @@
                                 <vaadin-grid-filter path="hora1Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1280,7 +1303,8 @@
                                 <vaadin-grid-filter path="hora1Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1290,7 +1314,8 @@
                                 <vaadin-grid-filter path="hora2Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1300,7 +1325,8 @@
                                 <vaadin-grid-filter path="hora2Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
+                                <vaadin-time-picker step="1800" id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1360,7 +1386,8 @@
                                     <vaadin-date-picker id="dataCriacaoTexto" name="dataCriacaoTexto" value="{{data.dataCriacaoTexto}}" type="date" disabled="true"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field id="horaCriacaoTexto" name="horaCriacaoTexto" value="{{data.horaCriacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="horaCriacaoTexto" name="horaCriacaoTexto" value="{{data.horaCriacaoTexto}}" type="time" disabled="true"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="horaCriacaoTexto" name="horaCriacaoTexto" value="{{data.horaCriacaoTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
@@ -1375,15 +1402,15 @@
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="300px">
-                                        <tr>
-                                            <td width="15%">[[item.id]]</td>
-                                            <td width="85%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="15%">[[item.id]]</td>
+                                        <td width="85%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1394,15 +1421,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="400px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="400px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1413,15 +1440,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="350px">
-                                        <tr>
-                                            <td width="10%">[[item.id]]</td>
-                                            <td width="90%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="350px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
                     </div>
 
@@ -1438,7 +1465,8 @@
                                     <vaadin-date-picker id="dataTerminadoTexto" name="dataTerminadoTexto" value="{{data.dataTerminadoTexto}}" disabled="true"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field id="horaTerminadoTexto" name="horaTerminadoTexto" value="{{data.horaTerminadoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="horaTerminadoTexto" name="horaTerminadoTexto" value="{{data.horaTerminadoTexto}}" type="time" disabled="true"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="horaTerminadoTexto" name="horaTerminadoTexto" value="{{data.horaTerminadoTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
@@ -1460,7 +1488,8 @@
                                     <vaadin-date-picker id="dataValidacaoTexto" name="dataValidacaoTexto" value="{{data.dataValidacaoTexto}}" disabled="true"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field id="horaValidacaoTexto" name="horaValidacaoTexto" value="{{data.horaValidacaoTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="horaValidacaoTexto" name="horaValidacaoTexto" value="{{data.horaValidacaoTexto}}" type="time" disabled="true"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="horaValidacaoTexto" name="horaValidacaoTexto" value="{{data.horaValidacaoTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
@@ -1486,7 +1515,8 @@
                                     <vaadin-date-picker id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" value="{{data.dataIntegracaoEmRHTexto}}" disabled="true"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" value="{{data.horaIntegracaoEmRHTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" value="{{data.horaIntegracaoEmRHTexto}}" type="time" disabled="true"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" value="{{data.horaIntegracaoEmRHTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
@@ -1521,7 +1551,8 @@
                                     <vaadin-date-picker id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" value="{{data.dataIntegracaoEmRHKMTexto}}" disabled="true"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <vaadin-text-field id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" type="time" disabled="true"></vaadin-text-field>
+                                    <!--<vaadin-text-field id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" type="time" disabled="true"></vaadin-text-field>-->
+                                    <vaadin-time-picker step="1800" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
@@ -1926,6 +1957,31 @@
                     });
                 },
 
+                _toHistoricFH: function () {
+                    //debugger;
+                    var ajax_request = this.$.page_tohistoricfolhadehoras_ajax;
+                    ajax_request.body = JSON.stringify(this.data)
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Enviar Folha de Horas para Histórico?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (tohistoricFolhaHoras) {
+                            if (tohistoricFolhaHoras) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _validacaoDataPartidaChegada: function () {
                     //debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
@@ -2039,7 +2095,6 @@
                                     ajax_request.generateRequest();
                                 }
                                 else {
-                                    debugger;
                                     _self.chkTerminada = false;
                                     _self.data.terminada = false;
                                 }
@@ -2515,7 +2570,7 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    //debugger;
+                    debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
@@ -3350,6 +3405,28 @@
                     }
                 },
 
+                _tohistoricfolhadehorasResponse: function (e) {
+                    //debugger;
+                    var self = this;
+
+                    if (this.FolhaDeHorasToHistoric == 0) {
+                        this._showMessage('Folha de Horas enviada para Histórico com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        if (this.FolhaDeHorasToHistoric == 1) {
+                            this._showErrorMessage('A Folha de Horas não pode ser Enviada para Histórico pois não se encontra Validada.');
+                        }
+                        else {
+                            if (this.FolhaDeHorasToHistoric == 2) {
+                                this._showErrorMessage('Ocorreu um erro ao Enviar a Folha de Horas para Histórico.');
+                            }
+                            else {
+                                this._showErrorMessage('Ocorreu um erro.');
+                            }
+                        }
+                    }
+                },
+
                 _terminarfolhadehorasResponse: function (e) {
                     //debugger;
                     setTimeout(function () {
@@ -3565,7 +3642,7 @@
                         this.$.page_databound_ajax.generateRequest();
 
                         this.$.maoDeObraDate.value = "";
-                        this.$.maoDeObraProjetoNo.value = "";
+                        this.$.maoDeObraProjetoNo.valueText = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "";
                         this.$.maoDeObraHorarioAlmoco.value = "";
@@ -3813,37 +3890,91 @@
                 _getEmpoyeeNAVResponse: function (e) {
                     //debugger;
 
-                    this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
-                    this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;
-                    this.$.codigoCentroResponsabilidade.value = this.getEmpoyeeNAV.codigoCentroResponsabilidade;
+                    if (this.getEmpoyeeNAV.empregadoNo == null | this.getEmpoyeeNAV.empregadoNo == "") {
+                        this.data.empregadoNo = "";
+                        this.$.empregadoNo.value = "";
+                        this.$.maodeobraempregadoNo.value = "";
+                        this.$.presencaempregadoNo.value = "";
+                        this._showErrorMessage('O Empregado não tem Nº de Empregado.');
+                    }
+                    else {
+                        this.data.empregadoNo = this.getEmpoyeeNAV.empregadoNo;
+                        this.$.empregadoNo.value = this.getEmpoyeeNAV.empregadoNo;
+                        this.$.maodeobraempregadoNo.value = this.getEmpoyeeNAV.empregadoNo;
+                        this.$.presencaempregadoNo.value = this.getEmpoyeeNAV.empregadoNo;
+                    }
 
-                    if (this.getEmpoyeeNAV.empregadoNome != null) {
+                    if (this.getEmpoyeeNAV.empregadoNome == null | this.getEmpoyeeNAV.empregadoNome == "") {
+                        this.data.empregadoNome = "";
+                        this.$.maodeobraempregadoNome.value = "";
+                        this.$.empregadoNome.value = "";
+                        this._showErrorMessage('Falta o Nome do Empregado.');
+                    }
+                    else {
+                        this.data.empregadoNome = this.getEmpoyeeNAV.empregadoNome;
+                        this.$.maodeobraempregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
                         this.$.empregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
 
+                    }
 
-                        if (this.getEmpoyeeNAV.validadores == null | this.getEmpoyeeNAV.validadores == "") {
-                            this.$.validadores.value = "";
-                            this._showErrorMessage('O Empregado não tem validadore(s).');
-                        }
-                        else {
-                            this.$.validadores.value = this.getEmpoyeeNAV.validadores;
-                        }
+                    if (this.getEmpoyeeNAV.codigoRegiao == null | this.getEmpoyeeNAV.codigoRegiao == "") {
+                        this.data.codigoRegiao = "";
+                        this.$.codigoRegiao.valueText = "";
+                        this._showErrorMessage('O Empregado não tem Código da Região.');
+                    }
+                    else {
+                        this.data.codigoRegiao = this.getEmpoyeeNAV.codigoRegiao;
+                        this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
+                    }
 
-                        if (this.getEmpoyeeNAV.integradoresEmRH == null | this.getEmpoyeeNAV.integradoresEmRH == "") {
-                            this.$.integradoresEmRH.value = "";
-                            this._showErrorMessage('O Empregado não tem Integradore(s) Aj Custo.');
-                        }
-                        else {
-                            this.$.integradoresEmRH.value = this.getEmpoyeeNAV.integradoresEmRH;
-                        }
+                    if (this.getEmpoyeeNAV.codigoAreaFuncional == null | this.getEmpoyeeNAV.codigoAreaFuncional == "") {
+                        this.data.codigoAreaFuncional = "";
+                        this.$.codigoAreaFuncional.valueText = "";
+                        this._showErrorMessage('O Empregado não tem Código da Área Funcional.');
+                    }
+                    else {
+                        this.data.codigoAreaFuncional = this.getEmpoyeeNAV.codigoAreaFuncional;
+                        this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;
+                    }
 
-                        if (this.getEmpoyeeNAV.integradoresEmRHKM == null | this.getEmpoyeeNAV.integradoresEmRHKM == "") {
-                            this.$.integradoresEmRHKM.value = "";
-                            this._showErrorMessage('O Empregado não tem Integradore(s) km RH.');
-                        }
-                        else {
-                            this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
-                        }
+                    if (this.getEmpoyeeNAV.codigoCentroResponsabilidade == null | this.getEmpoyeeNAV.codigoCentroResponsabilidade == "") {
+                        this.data.codigoCentroResponsabilidade = "";
+                        this.$.codigoCentroResponsabilidade.valueText = "";
+                        this._showErrorMessage('O Empregado não tem Código do Centro de Responsabilidade.');
+                    }
+                    else {
+                        this.data.codigoCentroResponsabilidade = this.getEmpoyeeNAV.codigoCentroResponsabilidade;
+                        this.$.codigoCentroResponsabilidade.value = this.getEmpoyeeNAV.codigoCentroResponsabilidade;
+                    }
+
+                    if (this.getEmpoyeeNAV.validadores == null | this.getEmpoyeeNAV.validadores == "") {
+                        this.data.validadores = "";
+                        this.$.validadores.value = "";
+                        this._showErrorMessage('O Empregado não tem validadore(s).');
+                    }
+                    else {
+                        this.data.validadores = this.getEmpoyeeNAV.validadores;
+                        this.$.validadores.value = this.getEmpoyeeNAV.validadores;
+                    }
+
+                    if (this.getEmpoyeeNAV.integradoresEmRH == null | this.getEmpoyeeNAV.integradoresEmRH == "") {
+                        this.data.integradoresEmRH = "";
+                        this.$.integradoresEmRH.value = "";
+                        this._showErrorMessage('O Empregado não tem Integradore(s) Aj Custo.');
+                    }
+                    else {
+                        this.data.integradoresEmRH = this.getEmpoyeeNAV.integradoresEmRH;
+                        this.$.integradoresEmRH.value = this.getEmpoyeeNAV.integradoresEmRH;
+                    }
+
+                    if (this.getEmpoyeeNAV.integradoresEmRHKM == null | this.getEmpoyeeNAV.integradoresEmRHKM == "") {
+                        this.data.integradoresEmRHKM = "";
+                        this.$.integradoresEmRHKM.value = "";
+                        this._showErrorMessage('O Empregado não tem Integradore(s) km RH.');
+                    }
+                    else {
+                        this.data.integradoresEmRHKM = this.getEmpoyeeNAV.integradoresEmRHKM;
+                        this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
                     }
                 },
 
@@ -3943,8 +4074,12 @@
                         $(_self.$.btn_createPresenca).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
                     };
-                    if (data.validador != null) {
+                    if (data.validador != null & data.validador != "") {
                         $(_self.$.btn_delete).addClass('disabled');
+                    };
+
+                    if (data.estado == 0 | data.estado == 2) {
+                        $(_self.$.btn_toHistoric).addClass('disabled');
                     }
 
                     //CAMPOS

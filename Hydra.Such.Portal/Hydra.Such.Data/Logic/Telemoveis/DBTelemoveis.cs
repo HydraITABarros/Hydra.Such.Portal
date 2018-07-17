@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 {
     public class DBTelemoveis
     {
+        #region TELEMOVEIS EQUIPAMENTOS
         #region CRUD
         /// <summary>
         /// Lista de todos os registos (Telemóveis e placas de rede)
@@ -121,7 +122,6 @@ namespace Hydra.Such.Data.Logic.Telemoveis
         }
         #endregion
 
-
         public static List<TelemoveisEquipamentosView> GetAllTelemoveisEquipamentosViewToList()
         {
             try
@@ -166,6 +166,20 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 
         public static TelemoveisEquipamentosView CastTelemoveisEquipamentosToView(TelemoveisEquipamentos ObjectToTransform)
         {
+            TelemoveisCartoes telemoveisCartoes = new TelemoveisCartoes();
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    telemoveisCartoes = ctx.TelemoveisCartoes.Where(p => p.Imei == ObjectToTransform.Imei).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+            
             TelemoveisEquipamentosView view = new TelemoveisEquipamentosView()
             {
                 Tipo = ObjectToTransform.Tipo,
@@ -192,10 +206,18 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Novo" : "Usado",
                 Devolvido_Show = ObjectToTransform.Devolvido == 0 ? "" : ObjectToTransform.Devolvido == 1 ? "Devolvido" : ObjectToTransform.Devolvido == 2 ? "Abate TMN" : ObjectToTransform.Devolvido == 3 ? "Vendido" : ObjectToTransform.Devolvido == 4 ? "Perdido" : ObjectToTransform.Devolvido == 5 ? "Roubado" : ObjectToTransform.Devolvido == 6 ? "Empréstimo" : ObjectToTransform.Devolvido == 7 ? "Não Devolvido" : "",
                 DataRecepcao_Show = ObjectToTransform.DataRecepcao == null ? "" : ObjectToTransform.DataRecepcao.Value.ToString("yyyy-MM-dd"),
-                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd")
+                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd"),
+                NomeUtilizadorCartao_Show = telemoveisCartoes != null ? telemoveisCartoes.Nome : string.Empty,
+                DataAtribuicaoUtilizadorCartao_Show = telemoveisCartoes != null ? telemoveisCartoes.DataAtribuicao.Value.ToString("yyyy-MM-dd") : string.Empty
             };
 
             return view;
         }
+        #endregion
+
+        #region TELEMOVEIS CARTÕES
+
+        #endregion
+
     }
 }

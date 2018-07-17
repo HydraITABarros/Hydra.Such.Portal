@@ -4,14 +4,19 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/iron-form/iron-form.html" />
 
 <dom-module id="x-detalhetelemoveisequipamentos">
     <template>
@@ -19,11 +24,176 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/Get_Telemoveis_Tipo" last-response="{{Tipo_Equipamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Telemoveis_Estado" last-response="{{Estado_Equipamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Telemoveis_Devolvido" last-response="{{Devolvido_Equipamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/TelemoveisEquipamentos/GetEquipamentoDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/TelemoveisEquipamentos/CreateTelemoveisEquipamentos"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createprocedimento"
+                   on-response="_createResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/TelemoveisEquipamentos/UpdateTelemoveisEquipamentos"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_updateprocedimento"
+                   on-response="_updateResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        </div>
 
         <div class="panel panel-default">
-        
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-md-3 ">
+                        <vaadin-combo-box items="[[Tipo_Equipamento]]" id="tipo" item-value-path="id" item-label-path="value" label="Tipo" value="{{data.tipo}}" required error-message="Este campo é obrigatório" disabled="{{ !_isCreate }}">
+                            <template>
+                                <table>
+                                    <tr>
+                                        <td width="100%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field id="imei" name="imei" maxlength="16" label="Imei / Nº Série" value="{{data.imei}}" required error-message="Este campo é obrigatório" disabled="{{ !_isCreate }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.marca}}" maxlength="30" id="marca" name="marca" label="Marca"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.modelo}}" maxlength="30" id="modelo" name="modelo" label="Modelo"> </vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="row break_clear">
+                    <div class="col-md-3 ">
+                        <vaadin-combo-box items="[[Estado_Equipamento]]" id="estado" item-value-path="id" item-label-path="value" label="Estado" value="{{data.estado}}" required error-message="Este campo é obrigatório">
+                            <template>
+                                <table>
+                                    <tr>
+                                        <td width="100%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.cor}}" maxlength="80" id="cor" name="cor" label="Cor"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.documento}}" maxlength="10" id="documento" name="documento" label="Documento"></vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="row break_clear">
+                    <div class="col-md-9 ">
+                        <vaadin-text-field value="{{data.nomeUtilizadorCartao_Show}}" maxlength="80" id="nomeUtilizadorCartao_Show" name="nomeUtilizadorCartao_Show" label="Nome" disabled="true"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-date-picker value="{{data.dataAtribuicaoUtilizadorCartao_Show}}" id="dataAtribuicaoUtilizadorCartao_Show" name="dataAtribuicaoUtilizadorCartao_Show" label="Data Atribuição" disabled="true"></vaadin-date-picker>
+                    </div>
+                </div>
+
+                <div class="row break_clear">
+                    <div class="col-md-3 ">
+                        <vaadin-combo-box items="[[Devolvido_Equipamento]]" id="devolvido" item-value-path="id" item-label-path="value" label="Devolvido" value="{{data.devolvido}}" on-value-changed="_muda_devolvido">
+                            <template>
+                                <table>
+                                    <tr>
+                                        <td width="100%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-md-9 ">
+                        <vaadin-text-field value="{{data.observacoes}}" maxlength="200" id="observacoes" name="observacoes" label="Observações"> </vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="row break_clear" id="divComprador">
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.numEmpregadoComprador}}" maxlength="10" id="numEmpregadoComprador" name="numEmpregadoComprador" label="Nº Empregado"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-6 ">
+                        <vaadin-text-field value="{{data.nomeComprador}}" maxlength="60" id="nomeComprador" name="nomeComprador" label="Nome Comprador"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <br />
+                        <paper-button class="btn--confirm pull-left" id="btnAnexarFactura" raised on-tap="_btnAnexarFactura" disabled="{{ _isCreate }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anexar Factura</paper-button>
+                    </div>
+                </div>
+
+                <div class="row break_clear">
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.utilizador}}" maxlength="20" id="utilizador" name="utilizador" label="Utilizador" disabled="true"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-3 ">
+                        <vaadin-date-picker value="{{data.dataAlteracao_Show}}" id="dataAlteracao_Show" name="dataAlteracao_Show" label="Data Alteração" disabled="true"></vaadin-date-picker>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save and Create Buttons -->
+            <div id="botoes_accao" class="marginSpace">
+                <template is="dom-if" if="{{ _isCreate }}">
+                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+            </div>
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -37,8 +207,9 @@
                 is: 'x-detalhetelemoveisequipamentos',
                 properties: {
                     _tipo: {
-                        type: Number,
-                        value: 0
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
                     _imei: {
                         type: String,
@@ -49,14 +220,85 @@
                         type: Boolean,
                         value: false
                     },
+                    _isUpdate: {
+                        type: Boolean,
+                        value: false
+                    },
                     userAllowed: {
                         type: Boolean,
                         value: true
                     }
                 },
                 ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "tipo": this._tipo, "imei": this._imei });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._imei == "")
+                        this._isCreate = true;
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    self._setFieldsEditability(self.data);
+                },
+
+                _create: function () {
+                    if (this._validateData()) {
+
+                        this.$.ajax_createprocedimento.body = JSON.stringify({
+                            "tipo": this.$.tipo.value,
+                            "imei": this.$.imei.value,
+                            "marca": this.$.marca.value,
+                            "modelo": this.$.modelo.value,
+                            "estado": this.$.estado.value,
+                            "observacoes": this.$.observacoes.value,
+                            "cor": this.$.cor.value,
+                            "documento": this.$.documento.value,
+                            "devolvido": this.$.devolvido.value,
+                            "numEmpregadoComprador": this.$.numEmpregadoComprador.value,
+                            "nomeComprador": this.$.nomeComprador.value
+                        });
+                        this.$.ajax_createprocedimento.generateRequest();
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _update: function () {
+                    if (this._validateData()) {
+
+                        this.$.ajax_updateprocedimento.body = JSON.stringify({
+                            "tipo": this.$.tipo.value,
+                            "imei": this.$.imei.value,
+                            "marca": this.$.marca.value,
+                            "modelo": this.$.modelo.value,
+                            "estado": this.$.estado.value,
+                            "observacoes": this.$.observacoes.value,
+                            "cor": this.$.cor.value,
+                            "documento": this.$.documento.value,
+                            "devolvido": this.$.devolvido.value,
+                            "numEmpregadoComprador": this.$.numEmpregadoComprador.value,
+                            "nomeComprador": this.$.nomeComprador.value
+                        });
+                        this.$.ajax_updateprocedimento.generateRequest();
+                    }
 
                 },
+                _updateResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -69,7 +311,7 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                
+
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
                         message: _message,
@@ -92,24 +334,61 @@
                 },
 
                 _validateData: function () {
-                    if (false) {
-                        this._openToast(validate);
+                    if (this.$.tipo.validate() & this.$.tipo.value >= 0) {
+                        if (this.$.imei.validate() & this.$.imei.value != "") {
+                            if (this.$.estado.validate() & this.$.estado.value >= 0) {
+                                return true;
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Estado.");
+                                return false;
+                            }
+                            return true;
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Imei.");
+                            return false;
+                        }
+                        return true;
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Tipo.");
                         return false;
                     }
+                    
                     return true;
                 },
 
                 _setFieldsEditability(data) {
                     var _self = this;
-                    
 
+                    //3-Vendido
+                    if (data.devolvido == 3) {
+                        $(_self.$.divComprador).removeClass('hidden');
+                    } else {
+                        $(_self.$.divComprador).addClass('hidden');
+                    }
                 },
-                
+
+                _muda_devolvido: function (e) {
+                    var _self = this;
+
+                    if (this.$.devolvido.value == 3) {
+                        $(_self.$.divComprador).removeClass('hidden');
+                    } else {
+                        $(_self.$.divComprador).addClass('hidden');
+                    }
+                },
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

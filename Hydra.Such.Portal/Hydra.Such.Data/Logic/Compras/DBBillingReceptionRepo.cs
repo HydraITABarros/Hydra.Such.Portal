@@ -8,7 +8,7 @@ using Hydra.Such.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
     public class BillingReceptionRepo : IDisposable
     {

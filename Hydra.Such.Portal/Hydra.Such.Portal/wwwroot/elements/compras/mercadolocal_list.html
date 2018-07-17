@@ -1,9 +1,12 @@
 ﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -11,6 +14,7 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
 
 <dom-module id="x-compraslist">
     <template>
@@ -100,6 +104,46 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/MercadoLocal/AprovadoToTratado"
+                   last-response="{{result_AprovadoToTratado}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_AprovadoToTratado_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/MercadoLocal/AprovadoToValidar"
+                   last-response="{{result_AprovadoToValidar}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_AprovadoToValidar_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/MercadoLocal/AprovadoToRecusar"
+                   last-response="{{result_AprovadoToRecusar}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_AprovadoToRecusar_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/MercadoLocal/ValidadoToTratado"
+                   last-response="{{result_ValidadoToTratado}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_ValidadoToTratado_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/MercadoLocal/RecusadoToTratado"
+                   last-response="{{result_RecusadoToTratado}}"
+                   method="post"
+                   handle-as="json"
+                   id="mercadolocal_RecusadoToTratado_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
@@ -111,22 +155,22 @@
             <paper-button class="tablinks" id="showTratadas" on-tap="_showTratadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showTratadasMessage }}</paper-button>
             <paper-button class="tablinks" id="btnExport" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Exportar Excel</paper-button>
 
-            <paper-button class="tablinks" id="btn_Aprovado_toTratado" on-tap="_aprovado_toTratado" disabled="{{_permissionsCreate}}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
-            <paper-button class="tablinks" id="btn_Aprovado_toValidar" on-tap="_aprovado_toValidar" disabled="{{_permissionsCreate}}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Validar</paper-button>
-            <paper-button class="tablinks" id="btn_Aprovado_toRecusar" on-tap="_aprovado_toRecusar" disabled="{{_permissionsCreate}}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Recusar</paper-button>
+            <paper-button class="tablinks" id="btn_AprovadoToTratado" on-tap="_aprovadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
+            <paper-button class="tablinks" id="btn_AprovadoToValidar" on-tap="_aprovadoToValidar" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+            <paper-button class="tablinks" id="btn_AprovadoToRecusar" on-tap="_aprovadoToRecusar" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Recusar</paper-button>
 
-            <paper-button class="tablinks" id="btn_Validado_toTratado" on-tap="_validado_toTratado" disabled="{{_permissionsCreate}}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
+            <paper-button class="tablinks" id="btn_ValidadoToTratado" on-tap="_validadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
 
-            <paper-button class="tablinks" id="btn_Recusado_toTratado" on-tap="_recusado_toTratado" disabled="{{_permissionsCreate}}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
+            <paper-button class="tablinks" id="btn_RecusadoToTratado" on-tap="_recusadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
         </div>
 
 
-        <vaadin-grid aria-label="gridCompras" id="gridCompras" items="[[result]]" class="editDialogGrid" selected-items={{activeItem}} active-item="{{activeItem}}">
+        <vaadin-grid aria-label="Mercado Local" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="gridCompras" items="[[result]]">
 
             <vaadin-grid-selection-column auto-select>
             </vaadin-grid-selection-column>
 
-            <vaadin-grid-column id="grid_opcoesteste" width="150px" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column id="grid_opcoesteste" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
@@ -296,22 +340,10 @@
                 </template>
             </vaadin-grid-column>
 
-
-
-            <!--<vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px">
-        <template class="header">
-            <vaadin-grid-sorter path="dataRecusaTexto">Data Recusa</vaadin-grid-sorter>
-            <vaadin-grid-filter path="dataRecusaTexto" />
-        </template>
-        <template>
-            {{item.dataRecusaTexto}}
-        </template>
-    </vaadin-grid-column>-->
-
             <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px">
                 dt
                 <template class="header">
-                    <vaadin-grid-sorter path="dataTratadoTexto">Data Tratado</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dataTratadoTexto">atData Tratado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataTratadoTexto" />
                 </template>
                 <template>
@@ -358,8 +390,6 @@
                     {{item.noConsultaMercado}}
                 </template>
             </vaadin-grid-column>
-
-
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -372,6 +402,12 @@
                 is: 'x-compraslist',
                 properties: {
                     _permissions: {
+                        type: Array
+                    },
+                    selectedItems: {
+                        type: Array
+                    },
+                    selectedItem: {
                         type: Array
                     },
                     _aprovadas: {
@@ -414,6 +450,13 @@
 
                 ready: function () {
                     //debugger;
+                    var _self = this;
+                    $(_self.$.btn_AprovadoToTratado).addClass('hidden');
+                    $(_self.$.btn_AprovadoToValidar).addClass('hidden');
+                    $(_self.$.btn_AprovadoToRecusar).addClass('hidden');
+                    $(_self.$.btn_ValidadoToTratado).addClass('hidden');
+                    $(_self.$.btn_RecusadoToTratado).addClass('hidden');
+
                     this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(0) });
                     this.$.compras_databound_ajax.generateRequest();
                     this.$.gridCompras.clearCache();
@@ -448,7 +491,7 @@
                 },
 
                 _showAprovadas: function (item) {
-                    debugger;
+                    //debugger;
                     var _self = this;
 
                     if (item != null) {
@@ -464,11 +507,7 @@
                             this._tratadas = false;
                         }
 
-                        if (this._aprovadas == true) {
-                            this.$.gridCompras.columns["grid_opcoesteste"].hidden.value = false;
-                        } else {
-                            this.$.gridCompras.columns["grid_opcoesteste"].hidden.value = true;
-                        }
+                        this._setButtonTexts();
 
                         if (this._aprovadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
@@ -477,8 +516,6 @@
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
-
-                        this._setButtonTexts();
                     }
                 },
 
@@ -496,6 +533,8 @@
                             this._tratadas = false;
                         }
 
+                        this._setButtonTexts();
+
                         if (this._validadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(2) });
                         } else {
@@ -503,8 +542,6 @@
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
-
-                        this._setButtonTexts();
                     }
                 },
 
@@ -522,6 +559,8 @@
                             this._tratadas = false;
                         }
 
+                        this._setButtonTexts();
+
                         if (this._recusadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(3) });
                         } else {
@@ -529,8 +568,6 @@
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
-
-                        this._setButtonTexts();
                     }
                 },
 
@@ -548,6 +585,8 @@
                             this._tratadas = true;
                         }
 
+                        this._setButtonTexts();
+
                         if (this._tratadas == true) {
                             this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(4) });
                         } else {
@@ -555,27 +594,41 @@
                         }
                         this.$.compras_databound_ajax.generateRequest();
                         this.$.gridCompras.clearCache();
-
-                        this._setButtonTexts();
                     }
                 },
 
                 _setButtonTexts: function () {
                     //debugger;
+                    var _self = this;
+
+                    $(_self.$.btn_AprovadoToTratado).addClass('hidden');
+                    $(_self.$.btn_AprovadoToValidar).addClass('hidden');
+                    $(_self.$.btn_AprovadoToRecusar).addClass('hidden');
+                    $(_self.$.btn_ValidadoToTratado).addClass('hidden');
+                    $(_self.$.btn_RecusadoToTratado).addClass('hidden');
+
                     if (this._aprovadas == true) {
                         this._showAprovadassMessage = "Mostrar Todas";
+
+                        $(_self.$.btn_AprovadoToTratado).removeClass('hidden');
+                        $(_self.$.btn_AprovadoToValidar).removeClass('hidden');
+                        $(_self.$.btn_AprovadoToRecusar).removeClass('hidden');
                     } else {
                         this._showAprovadassMessage = "Mostrar Aprovadas";
                     }
 
                     if (this._validadas == true) {
                         this._showValidadasMessage = "Mostrar Todas";
+
+                        $(_self.$.btn_ValidadoToTratado).removeClass('hidden');
                     } else {
                         this._showValidadasMessage = "Mostrar Validadas";
                     }
 
                     if (this._recusadas == true) {
                         this._showRecusadasMessage = "Mostrar Todas";
+
+                        $(_self.$.btn_RecusadoToTratado).removeClass('hidden');
                     } else {
                         this._showRecusadasMessage = "Mostrar Recusadas";
                     }
@@ -596,6 +649,57 @@
                         window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + noRequisicao;
                     }
                 },
+
+                _aprovadoToTratado: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_AprovadoToTratado_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_AprovadoToTratado_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _aprovadoToValidar: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_AprovadoToValidar_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_AprovadoToValidar_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _aprovadoToRecusar: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_AprovadoToRecusar_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_AprovadoToRecusar_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _validadoToTratado: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_ValidadoToTratado_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_ValidadoToTratado_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _recusadoToTratado: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.mercadolocal_RecusadoToTratado_ajax.body = JSON.stringify(selItms);
+                        this.$.mercadolocal_RecusadoToTratado_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
             });
         });
     </script>

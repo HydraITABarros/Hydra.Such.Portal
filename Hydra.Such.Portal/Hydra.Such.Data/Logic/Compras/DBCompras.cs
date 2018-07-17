@@ -1,24 +1,24 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
-    public class DBMercadoLocal
+    public class DBCompras
     {
-        public static List<MercadoLocalViewModel> GetAll()
+        public static List<ComprasViewModel> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Compras.Select(Compras => new MercadoLocalViewModel()
+                    return ctx.Compras.Select(Compras => new ComprasViewModel()
                     {
-                        ID = Compras.ID,
+                        ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
@@ -77,17 +77,17 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocalViewModel GetByID(int ID)
+        public static ComprasViewModel GetByID(int ID)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Compras.Where(x =>
-                        (x.ID == ID)
-                    ).Select(Compras => new MercadoLocalViewModel()
+                        (x.Id == ID)
+                    ).Select(Compras => new ComprasViewModel()
                     {
-                        ID = Compras.ID,
+                        ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
@@ -146,7 +146,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static List<MercadoLocalViewModel> GetAllByEstado(int Estado)
+        public static List<ComprasViewModel> GetAllByEstado(int Estado)
         {
             try
             {
@@ -154,9 +154,9 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     return ctx.Compras.Where(x =>
                         (x.Estado == Estado)
-                    ).Select(Compras => new MercadoLocalViewModel()
+                    ).Select(Compras => new ComprasViewModel()
                     {
-                        ID = Compras.ID,
+                        ID = Compras.Id,
                         CodigoProduto = Compras.CodigoProduto,
                         Descricao = Compras.Descricao,
                         Descricao2 = Compras.Descricao2,
@@ -215,7 +215,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocal Create(MercadoLocal ObjectToCreate)
+        public static Compras Create(Compras ObjectToCreate)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocal Update(MercadoLocal ObjectToUpdate)
+        public static Compras Update(Compras ObjectToUpdate)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static bool Delete(MercadoLocal ObjectToDelete)
+        public static bool Delete(Compras ObjectToDelete)
         {
             try
             {
@@ -270,15 +270,14 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static MercadoLocalViewModel ParseToComprasViewModel(MercadoLocal Compras)
+        public static ComprasViewModel ParseToComprasViewModel(Compras Compras)
         {
             try
             {
                 if (Compras != null)
                 {
-                    MercadoLocalViewModel ComprasVM = new MercadoLocalViewModel();
+                    ComprasViewModel ComprasVM = new ComprasViewModel();
 
-                    ComprasVM.ID = Compras.ID;
                     ComprasVM.CodigoProduto = Compras.CodigoProduto;
                     ComprasVM.Descricao = Compras.Descricao;
                     ComprasVM.Descricao2 = Compras.Descricao2;

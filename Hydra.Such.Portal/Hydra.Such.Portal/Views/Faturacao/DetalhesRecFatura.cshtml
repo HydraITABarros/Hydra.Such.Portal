@@ -114,13 +114,21 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Faturacao/SendBillingReception"
-                    last-response="{{ updatedItem }}"
-                    id="page_send_ajax"
-                    on-response="_updateResponse"
-                    method="post"
-                    handle-as="json"
-                    content-type="application/json">
+           last-response="{{ updatedItem }}"
+           id="page_send_ajax"
+           on-response="_updateResponse"
+           method="post"
+           handle-as="json"
+           content-type="application/json">
        </iron-ajax>
 
 
@@ -388,85 +396,85 @@
 
                                 </template>
                                 <template is="dom-if" if="{{ !item.selected }}">
-                                    [[ _clFormatDateWorkflow(item.dataCriacao) ]] 
+                                    {{item.data}}
                                 </template>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
 
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.areaWorkflow}}
-                                </template>
                             </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.areaWorkflow}}
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.utilizador}}
-                                </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codTipoProblema" />
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.utilizador}}
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.codTipoProblema}}
-                                </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codTipoProblema" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
                             </template>
-                        </vaadin-grid-column>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.codTipoProblema}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.descricao}}
-                                </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.descricao}}
                             </template>
-                        </vaadin-grid-column>
+                        </template>
+                    </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="comentario" />
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="comentario" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.comentario}}
-                                </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.comentario}}
                             </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
-                </div>
-         
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
@@ -733,8 +741,8 @@
                 },
                 _create: function () {
                     if (this._validateInputForNew()) {
-                        this.$.page_create_ajax.body = JSON.stringify(this.data);
-                        this.$.page_create_ajax.generateRequest();
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _createResponse: function (e) {
@@ -800,6 +808,19 @@
                     }
                     this.$.dialogSendPeding.close();
                 },
+
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            this.$.page_create_ajax.body = JSON.stringify(this.data);
+                            this.$.page_create_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    }
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
