@@ -1196,7 +1196,7 @@ namespace Hydra.Such.Portal.Controllers
                                     NoLinhaRequisicao = Linha.NºLinha,
                                     Urgente = Linha.Urgente,
                                     NoProjeto = Linha.NºProjeto,
-                                    RegiaoMercadoLocal = Linha.RegiãoMercadoLocal,
+                                    RegiaoMercadoLocal = item.LocalMarketRegion,
                                     Estado = 1, //APROVADO
                                     DataCriacao = DateTime.Now,
                                     UtilizadorCriacao = User.Identity.Name,
@@ -1211,13 +1211,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                     if (DBRequestLine.Update(Linha) == null)
                                     {
-                                        result.eReasonCode = 6;
+                                        result.eReasonCode = 7;
                                         result.eMessage = "Ocorreu um erro ao atualizar a linha da Requisição.";
                                     }
                                 }
                                 else
                                 {
-                                    result.eReasonCode = 5;
+                                    result.eReasonCode = 6;
                                     result.eMessage = "Ocorreu um erro ao criar a Compra.";
                                 }
                             });
@@ -1225,7 +1225,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            result.eReasonCode = 4;
+                            result.eReasonCode = 5;
                             result.eMessage = "Não foram encontradas linhas para Validar.";
                         }
                     }
@@ -1237,7 +1237,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 catch (Exception ex)
                 {
-                    result.eReasonCode = 7;
+                    result.eReasonCode = 3;
                     result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
             }
