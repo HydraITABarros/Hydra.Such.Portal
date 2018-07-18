@@ -24,7 +24,7 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-
+        
         public static ConfigUtilizadores GetByEmployeeNo(string EmployeeNo)
         {
             try

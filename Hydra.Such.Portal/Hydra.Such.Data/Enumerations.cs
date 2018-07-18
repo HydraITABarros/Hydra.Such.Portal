@@ -224,6 +224,13 @@ namespace Hydra.Such.Data
             UnidadesApoioESuporte,
         }
 
+        public enum BillingReceptionUserProfiles
+        {
+            Perfil,
+            Utilizador,
+            Tudo
+        }
+
         public enum ContractLineTypes
         {
             [Description("")]
