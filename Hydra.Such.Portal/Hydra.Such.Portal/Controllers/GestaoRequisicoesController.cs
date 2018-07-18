@@ -877,8 +877,6 @@ namespace Hydra.Such.Portal.Controllers
                                             bool keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
-
-                                            item.State = RequisitionStates.Received;
                                             item.UpdateUser = User.Identity.Name;
                                             item.UpdateDate = DateTime.Now;
                                             RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
