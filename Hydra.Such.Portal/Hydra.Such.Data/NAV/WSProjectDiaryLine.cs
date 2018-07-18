@@ -217,9 +217,9 @@ namespace Hydra.Such.Data.NAV
             switch (type)
             {
                 case 1:
-                    return WSCreateProjectDiaryLine.Type.Resource;
-                case 2:
                     return WSCreateProjectDiaryLine.Type.Item;
+                case 2:
+                    return WSCreateProjectDiaryLine.Type.Resource;
                 case 3:
                     return WSCreateProjectDiaryLine.Type.G_L_Account;
                 default:
