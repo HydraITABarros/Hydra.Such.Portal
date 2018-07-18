@@ -599,20 +599,20 @@
                 },
 
                 _export: function () {
-                    debugger;
+                    //debugger;
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                     this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _ExportResponse: function (e) {
-                    debugger
+                    //debugger
                     var FileName = this.export;
                     location.href = '../ExportToExcelDownload_EmpregadoRecursos?sFileName=' + FileName;
                 },
 
                 _addExcel: function () {
-                    debugger;
+                    //debugger;
                     var urlFile = "/Administracao/OnPostImport_EmpregadoRecursos";
                     var toastSuccess = this.$.ToastMessage;
                     var toastError = this.$.ToastError;

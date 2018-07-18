@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.Database
         public string Responsavel1 { get; set; }
         public string Responsavel2 { get; set; }
         public string Responsavel3 { get; set; }
+        public string Responsavel4 { get; set; }
 
         public ICollection<Compras> Compras { get; set; }
     }

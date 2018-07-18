@@ -1,0 +1,426 @@
+﻿
+@{
+    ViewData["Title"] = "Config. Mercado Local Responsáveis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
+<x-group-cont-product></x-group-cont-product>
+
+<dom-module id="x-group-cont-product">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                        padding: 0 0;
+                    };
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
+            }
+        </style>
+
+        <iron-ajax url="/Administracao/GetConfigML"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetAllML"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateConfigML"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_ajax"
+                   on-response="_createResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/UpdateLinhaConfigML"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatelinha_ajax"
+                   on-response="_updateLinhaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteLinhaConfigML"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deletelinha_ajax"
+                   on-response="_deleteLinhaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores"
+                   last-response="{{UserApprovalList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions"
+                   last-response="{{CBLocalMarketRegions}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ !_permissions.update }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="ddRegiaoML" item-value-path="id" item-label-path="value" value="{{item.regiaoMercadoLocal}}" label="Região Mercado Local" disabled="{{ !_permissions.create }}">
+                                <template>
+                                    <div>[[item.value]]</div>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[UserApprovalList]]" id="ddResponsavel1" item-value-path="id" item-label-path="value" value="{{item.responsavel1}}" label="Responsável 1" disabled="{{ !_permissions.create }}">
+                                <template>
+                                    <div>[[item.value]] - <b>[[item.id]]</b></div>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[UserApprovalList]]" id="ddResponsavel2" item-value-path="id" item-label-path="value" value="{{item.responsavel2}}" label="Responsável 2" disabled="{{ !_permissions.create }}">
+                                <template>
+                                    <div>[[item.value]] - <b>[[item.id]]</b></div>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[UserApprovalList]]" id="ddResponsavel3" item-value-path="id" item-label-path="value" value="{{item.responsavel3}}" label="Responsável 3" disabled="{{ !_permissions.create }}">
+                                <template>
+                                    <div>[[item.value]] - <b>[[item.id]]</b></div>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[UserApprovalList]]" id="ddResponsavel4" item-value-path="id" item-label-path="value" value="{{item.responsavel4}}" label="Responsável 4" disabled="{{ !_permissions.create }}">
+                                <template>
+                                    <div>[[item.value]] - <b>[[item.id]]</b></div>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3" style="padding-top: 25px;">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <vaadin-grid id="gridConfigML" aria-label="gridConfigML" items="[[data]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoMercadoLocal">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoMercadoLocal" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="gridRegiaoML" item-value-path="id" item-label-path="value" value="{{item.regiaoMercadoLocal}}" disabled="true">
+                        <template>
+                            <div>[[item.value]]</div>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel1">Responsável 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel1" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[UserApprovalList]]" id="gridResponsavel1" item-value-path="id" item-label-path="value" value="{{item.responsavel1}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                        <template>
+                            <div>[[item.value]] - <b>[[item.id]]</b></div>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel2">Responsável 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel2" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[UserApprovalList]]" id="gridResponsavel2" item-value-path="id" item-label-path="value" value="{{item.responsavel2}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                        <template>
+                            <div>[[item.value]] - <b>[[item.id]]</b></div>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel3">Responsável 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel3" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[UserApprovalList]]" id="gridResponsavel3" item-value-path="id" item-label-path="value" value="{{item.responsavel3}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                        <template>
+                            <div>[[item.value]] - <b>[[item.id]]</b></div>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel4">Responsável 4</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel4" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[UserApprovalList]]" id="gridResponsavel4" item-value-path="id" item-label-path="value" value="{{item.responsavel4}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                        <template>
+                            <div>[[item.value]] - <b>[[item.id]]</b></div>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady',
+        function () {
+            Polymer({
+                is: 'x-group-cont-product',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                },
+
+                ready: function () {
+                    this.$.ajax_GetAllML.generateRequest();
+                    this.$.gridConfigML.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridConfigML);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _showMessage: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _showErrorMessage: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _create: function (e) {
+                    //debugger;
+                    this.$.page_create_ajax.body = JSON.stringify({
+                        regiaoMercadoLocal: this.$.ddRegiaoML.value,
+                        responsavel1: this.$.ddResponsavel1.value,
+                        responsavel2: this.$.ddResponsavel2.value,
+                        responsavel3: this.$.ddResponsavel3.value,
+                        responsavel4: this.$.ddResponsavel4.value
+                    });
+                    this.$.page_create_ajax.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _createResponse: function (e) {
+                    //debugger;
+                    if (this.result.eReasonCode == 0) {
+                        this._showMessage(this.result.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.result.eMessage);
+                    }
+                    this.$.ajax_GetAllML.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _updateLinha: function (e) {
+                    //debugger;
+                    var index = this.data.indexOf(e.model.item);
+
+                    this.$.page_updatelinha_ajax.body = JSON.stringify({
+                        regiaoMercadoLocal: e.model.item.regiaoMercadoLocal,
+                        responsavel1: e.model.item.responsavel1,
+                        responsavel2: e.model.item.responsavel2,
+                        responsavel3: e.model.item.responsavel3,
+                        responsavel4: e.model.item.responsavel4
+                    });
+                    this.$.page_updatelinha_ajax.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _updateLinhaResponse: function (e) {
+                    //debugger;
+                    if (this.result.eReasonCode == 0) {
+                        this._showMessage(this.result.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.result.eMessage);
+                    }
+                    this.$.ajax_GetAllML.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _deleteLinha: function (e) {
+                    //debugger;
+                    var index = this.data.indexOf(e.model.item);
+                    var ajax_request = this.$.page_deletelinha_ajax;
+                    ajax_request.body =JSON.stringify({
+                        regiaoMercadoLocal: e.model.item.regiaoMercadoLocal,
+                        responsavel1: e.model.item.responsavel1,
+                        responsavel2: e.model.item.responsavel2,
+                        responsavel3: e.model.item.responsavel3,
+                        responsavel4: e.model.item.responsavel4
+                    });
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Eliminar a linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteLinha) {
+                            if (deleteLinha) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _deleteLinhaResponse: function (e) {
+                    //debugger;
+                    if (this.result.eReasonCode == 0) {
+                        this._showMessage(this.result.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.result.eMessage);
+                    }
+                    this.$.ajax_GetAllML.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _cancel: function (e) {
+                    //debugger;
+                    this.$.ajax_GetAllML.generateRequest();
+                    this.$.gridConfigML.clearCache();
+                },
+
+                _goBack: function (e) {
+                    //debugger;
+                    window.history.back();
+                },
+
+            });
+        });
+    </script>
+</dom-module>
