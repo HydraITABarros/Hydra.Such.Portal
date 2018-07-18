@@ -1353,7 +1353,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<Serviços> results = DBServices.GetAll();
             Serviços result = DBServices.GetById(data.Code);
-            if (result == null) {
+            if (result == null)
+            {
                 Serviços tpval = new Serviços();
                 tpval.Descrição = data.Description;
                 tpval.Código = data.Code;
@@ -1362,7 +1363,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBServices.Create(tpval);
             }
 
-           
+
             return Json(result);
         }
         public JsonResult UpdateServices([FromBody] List<ProjectTypesModelViewStr> data)
@@ -1376,7 +1377,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Descrição = x.Description
                 };
-                if (x.Code != "" && x.Code !=null)
+                if (x.Code != "" && x.Code != null)
                 {
                     tpval.DataHoraModificação = DateTime.Now;
                     tpval.UtilizadorModificação = User.Identity.Name;
@@ -2342,7 +2343,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 int count = 1;
                 foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
-                {   
+                {
                     row = excelSheet.CreateRow(count);
 
                     row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
@@ -2728,7 +2729,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(ListToCreate);
         }
-        
+
         //4
         [HttpPost]
         public JsonResult UpdateCreate_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> data)
@@ -5396,6 +5397,107 @@ namespace Hydra.Such.Portal.Controllers
             DBConfiguracaoCCP.Update(CCP);
 
             return Json(data);
+        }
+        #endregion
+
+        #region Config. Mercado Local
+        public IActionResult ConfiguracaoMLResponsaveis()
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfigML()
+        {
+            List<ConfigMercadoLocal> result = DBConfigMercadoLocal.GetAll();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi Criada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Create(linha) == null)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao Criar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi atualizada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Update(linha) == null)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao atualizar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLinhaConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi Eliminada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Delete(linha) == false)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao Eliminar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
         }
         #endregion
     }

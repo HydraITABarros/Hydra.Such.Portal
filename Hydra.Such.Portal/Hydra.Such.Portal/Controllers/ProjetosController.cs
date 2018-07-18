@@ -3139,21 +3139,21 @@ namespace Hydra.Such.Portal.Controllers
                             if (row != null)
                             {
                                 nrow = new PriceServiceClientViewModel();
-                                nrow.Client = row.GetCell(0).ToString();
-                                nrow.CompleteName = row.GetCell(1).ToString();
-                                nrow.CodServClient = row.GetCell(2).ToString();
-                                nrow.ServiceDescription = row.GetCell(3).ToString();
-                                nrow.strSalePrice = row.GetCell(4).ToString();
-                                nrow.strPriceCost = row.GetCell(5).ToString();
-                                nrow.Date = row.GetCell(6).ToString();
-                                nrow.Resource = row.GetCell(7).ToString();
-                                nrow.ResourceDescription = row.GetCell(8).ToString();
-                                nrow.UnitMeasure = row.GetCell(9).ToString();
-                                nrow.TypeMeal = row.GetCell(10).ToString();
-                                nrow.TypeMealDescription = row.GetCell(11).ToString();
-                                nrow.RegionCode = row.GetCell(12).ToString();
-                                nrow.FunctionalAreaCode = row.GetCell(13).ToString();
-                                nrow.ResponsabilityCenterCode = row.GetCell(14).ToString();
+                                nrow.Client = row.GetCell(0) == null ? "" : row.GetCell(0).ToString();
+                                nrow.CompleteName = row.GetCell(1) == null ? "" : row.GetCell(1).ToString();
+                                nrow.CodServClient = row.GetCell(2) == null ? "" : row.GetCell(2).ToString();
+                                nrow.ServiceDescription = row.GetCell(3) == null ? "" : row.GetCell(3).ToString();
+                                nrow.strSalePrice = row.GetCell(4) == null ? "" : row.GetCell(4).ToString();
+                                nrow.strPriceCost = row.GetCell(5) == null ? "" : row.GetCell(5).ToString();
+                                nrow.Date = row.GetCell(6) == null ? "" : row.GetCell(6).ToString();
+                                nrow.Resource = row.GetCell(7) == null ? "" : row.GetCell(7).ToString();
+                                nrow.ResourceDescription = row.GetCell(8) == null ? "" : row.GetCell(8).ToString();
+                                nrow.UnitMeasure = row.GetCell(9) == null ? "" : row.GetCell(9).ToString();
+                                nrow.TypeMeal = row.GetCell(10) == null ? "" : row.GetCell(10).ToString();
+                                nrow.TypeMealDescription = row.GetCell(11) == null ? "" : row.GetCell(11).ToString();
+                                nrow.RegionCode = row.GetCell(12) == null ? "" : row.GetCell(12).ToString();
+                                nrow.FunctionalAreaCode = row.GetCell(13) == null ? "" : row.GetCell(13).ToString();
+                                nrow.ResponsabilityCenterCode = row.GetCell(14) == null ? "" : row.GetCell(14).ToString();
                                 ListToCreate.Add(nrow);
                             }
                         }
