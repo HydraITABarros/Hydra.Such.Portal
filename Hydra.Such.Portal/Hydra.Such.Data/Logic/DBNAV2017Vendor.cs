@@ -29,6 +29,7 @@ namespace Hydra.Such.Data.Logic
                         {
                             No_ = (string)temp.No_,
                             Name = (string)temp.Name,
+                            Email=(string)temp.Email,
                             Address = (string)temp.Address,
                             VATRegistrationNo = (string)temp.VATRegistrationNo,
                             PostCode = (string)temp.PostCode

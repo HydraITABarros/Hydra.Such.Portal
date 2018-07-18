@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
     public class DBPreRequesition
     {

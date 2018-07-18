@@ -94,6 +94,20 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+
+        public static List<ProcedimentosCcp> GetAllProcedimentosSimplificadosByProcedimentoRatificarCAToList()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ProcedimentosCcp.Where(p => p.CaRatificar == true).Where(p => p.TipoProcedimento == 2).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         //NR20180529
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoProcessosSuspensosToList()
         {
@@ -212,7 +226,7 @@ namespace Hydra.Such.Data.Logic.CCP
                     NumeracaoProcedimento = config.NumeraçãoProcedimentoSimplificado.Value;
                 }
 
-                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
+                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true, false);
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
                 proc.Arquivado = false;
@@ -1384,6 +1398,32 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+
+        public static List<ProcedimentoCCPView> GetAllProcedimentosSimplificadosViewByProcedimentoRatificarCAToList()
+        {
+            List<ProcedimentosCcp> ProcList = GetAllProcedimentosSimplificadosByProcedimentoRatificarCAToList();
+            List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
+
+            if (ProcList == null)
+                return null;
+
+            try
+            {
+                foreach (var x in ProcList)
+                {
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
+                }
+
+                return ProcViewList;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        
+
 
         //NR20180529
         public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoProcessosSuspensosToList()

@@ -285,7 +285,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ContractNo == "" || data.ContractNo == null)
                     {
                         autoGenId = true;
-                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
+                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId, false);
                     }
 
                     if (data.ContractNo != null)
@@ -1810,7 +1810,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (thisHeader != null)
                 {
-                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
+                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true, false);
                     try
                     {
                         thisHeader.Arquivado = false;
@@ -2021,5 +2021,28 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        public JsonResult GetInvoiceHeaderList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
+            result = DBNAV2017ContractDetails.GetContractInvoiceHeaderByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+
+        public JsonResult GetInvoiceLinesList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
+            result = DBNAV2017ContractDetails.GetContractInvoiceLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            foreach(var temp in result)
+            {
+                if(temp.DataRegistoDiario != null)
+                {
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd");
+                }
+            }
+            return Json(result);
+        }
+        
     }
 }

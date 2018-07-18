@@ -1,0 +1,1256 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<!--<link rel="import" href="/lib/paper-menu/paper-menu.html" />-->
+<!--<link rel="import" href="/lib/paper-item/paper-item.html" />-->
+<!-- NR 20180226 -->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-dialog/vaadin-dialog.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/vaadin-progress-bar/vaadin-progress-bar.html">
+
+<dom-module id="x-quadrobordo">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            .blue {
+                color: blue;
+            }
+
+            .red {
+                color: red;
+            }
+
+            .yellow {
+                color: yellow;
+            }
+
+            .orange {
+                color: orange;
+            }
+
+            .tomato {
+                color: tomato;
+            }
+
+            .green {
+                color: limegreen;
+            }
+
+            .purple {
+                color: rebeccapurple;
+            }
+
+            .transporte {
+                color: darkviolet;
+            }
+
+            .parque {
+                color: hotpink;
+            }
+
+            .arquivo {
+                color: olive;
+            }
+
+            .mb-15 {
+                margin-bottom: 15px;
+            }
+
+            .mb-7 {
+                margin-bottom: 7px;
+            }
+
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+            }
+
+            hr {
+                line-height: 5px;
+            }
+
+            .customHr {
+                line-height: 1px;
+                background-color: black;
+            }
+
+            paper-tooltip {
+                padding: 11px;
+                right: 5px;
+                opacity: 1;
+                box-sizing: border-box;
+                pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
+                white-space: initial;
+                --paper-tooltip: {
+                                  font-size: 13px;
+                                  background: #f5f5f5;
+                                  background: white;
+                                  color: #2A2A2A;
+                                  padding: 10px;
+                                  line-height: 1.3em;
+                                  -webkit-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  -moz-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                             }
+            }
+
+            [part="label"] {
+                color: rgba(48, 64, 84, 0.52);
+                margin-bottom: 1px;
+            }
+
+            .title--bgblue {
+                border: none;
+                border-radius: 6px;
+                color: white !important;
+                background-color: cornflowerblue;
+                border: none !important;
+            }
+
+            .title--bgyellow {
+                border: none;
+                border-radius: 6px;
+                color: dimgrey !important;
+                background-color: yellow;
+                border: none !important;
+            }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
+
+            #paper3 {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            #paper7 {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            #paper8 {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            #paper17 {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            #paper_ratificarCA {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            #paper_ratificarCA_Simplificado {
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: red;
+                        --background-color: red;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+                    }
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
+            .btn--sendtoevaluate {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+            }
+
+            .btn--remove {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #D5662F;
+            }
+            /*zpgm*/
+            .btn--return {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #9E21FF;
+            }
+
+            .btn--cntxt-menu {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #FF7259;
+            }
+
+            /*NR20180313*/
+            .subMenu {
+                background-color: #D5662F !important;
+                padding: 0px !important;
+                min-width: 50px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+            }
+
+            .tablinks {
+                text-transform: none;
+                border: none;
+                margin: 0 5px;
+                padding: 5px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                background-color: transparent;
+                color: black;
+            }
+
+            vaadin-grid.disabled:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                cursor: not-allowed;
+            }
+
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+        </style>
+
+        <iron-ajax url="/ProcedimentosCcps/GetAllProcedimentosCA_Estados"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   on-response="_responseResult"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType"
+                   last-response="{{LType}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="panel panel-default">
+            <span class="glyphicon glyphicon-folder-open orange"></span> Apoio &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open red"></span> Engenharia &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open blue"></span> Lavandarias &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open tomato"></span> Nutrição &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open green"></span> Residuos &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open purple"></span> Esterilização &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open transporte"></span> Serviços de Transporte &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open parque"></span> Parques &nbsp;&nbsp;
+            <span class="glyphicon glyphicon-folder-open arquivo"></span> Arquivo e Armazéns &nbsp;&nbsp;
+            <hr />
+            <div class="panel-body">
+                <div class="col-sm-6">
+                    <div style="text-align:center; background-color:red; color:white">Pedidos de Aquisição</div>
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="3 - Autorização Imobilizado CA" id="paper3">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper3" items="[[result.estado_3]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <!--<button class="glyphicon glyphicon-folder-open red"></button>-->
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="8 - Autorização Abertura CA" id="paper8">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper8" items="[[result.estado_8]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="17 - Autorização Adjudicação CA" id="paper17">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper17" items="[[result.estado_17]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Ratificar CA" id="paper_ratificarCA">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper_ratificarCA" items="[[result.estado_ratificarCA]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div style="text-align:center; background-color:forestgreen; color:white">Pedidos Simplificados</div>
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="17 - Autorização Adjudicação CA" id="paper7">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper7" items="[[result.estado_7]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Ratificar CA" id="paper_ratificarCA_Simplificado">
+                                <div class="panel-body">
+                                    <vaadin-grid aria-label="paper_processos_suspensos" items="[[result.estado_processos_suspensos]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                        <vaadin-grid-column width="50px">
+                                            <template class="header">
+                                                ...
+                                            </template>
+                                            <template>
+                                                <button class$="glyphicon glyphicon-folder-open {{item.cor_Folder}}" on-tap="_openDetail"></button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                {{item.no}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeProcesso" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeProcesso}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataCriacao">Data Criação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataCriacao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataCriacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="informacaoTecnica">Informação Técnica</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="informacaoTecnica" />
+                                            </template>
+                                            <template>
+                                                {{item.informacaoTecnica}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="300px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacaoAquisicao">Fundamento de Aquisição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacaoAquisicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacaoAquisicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estimativaPreco">Estimativa Preço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estimativaPreco" />
+                                            </template>
+                                            <template>
+                                                {{item.estimativaPreco}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoBase_Show">Preço Base</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoBase_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.precoBase_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo_Show" />
+                                            </template>
+                                            <template>
+                                                {{item.tipo_Show}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="ano">Ano Ref. Proc.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="ano" />
+                                            </template>
+                                            <template>
+                                                {{item.ano}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="referencia">Referência</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="referencia" />
+                                            </template>
+                                            <template>
+                                                {{item.referencia}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="250px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-quadrobordo',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _procedimentotypeid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        _procedimentotypeid = item.no;
+                    }
+                },
+                _openToast: function (message) {
+                    ;
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _displayState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.LProcedimentoState.find(x => x.id == param);
+                        if (sel != undefined)
+                            return sel.value;
+                    }
+                },
+                _displayTipo: function (param) {
+                    if (param != undefined) {
+                        var sel = this.LType.find(x => x.id == param);
+                        if (sel != undefined)
+                            return sel.value;
+                    }
+                },
+                _openDetail: function (e) {
+                    if (e.model.item.tipoProcedimento == 1)
+                        window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/" + e.model.item.no;
+                    else
+                        window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + e.model.item.no;
+                },
+                _responseResult: function () {
+                    var _self = this;
+
+                    _self.$.paper3.header = '3 - Autorização Imobilizado CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_3.length + ')';
+                    _self.$.paper8.header = '8 - Autorização Abertura CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_8.length + ')';
+                    _self.$.paper17.header = '17 - Autorização Adjudicação CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_17.length + ')';
+                    _self.$.paper_ratificarCA.header = 'Ratificar CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_ratificarCA.length + ')';
+                    
+                    _self.$.paper7.header = '17 - Autorização Adjudicação CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_7.length + ')';
+                    _self.$.paper_ratificarCA_Simplificado.header = 'Ratificar CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_processos_suspensos.length + ')';
+                }
+            });
+        });
+    </script>
+</dom-module>

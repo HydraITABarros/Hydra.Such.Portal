@@ -490,6 +490,24 @@
                     {{item.folhaHoras}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="user">Cód. Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="user" />
+                </template>
+                <template>
+                    {{item.serviceClientCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="user">Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="user" />
+                </template>
+                <template>
+                    {{item.serviceClientDescription}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
         <paper-dialog id="dlg_registerPreMov" modal style="height:180px; width:400px">
             <div class="row break_clear">

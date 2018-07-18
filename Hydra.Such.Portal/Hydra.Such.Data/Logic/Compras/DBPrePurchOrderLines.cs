@@ -5,7 +5,7 @@ using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Database;
 using System.Linq;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
     public static class DBPrePurchOrderLines
     {

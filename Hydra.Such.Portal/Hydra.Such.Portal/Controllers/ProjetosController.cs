@@ -274,7 +274,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
                         autoGenId = true;
-                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId, false);
                         data.ProjectNo = projNoAuto;
                     }
 
@@ -1418,6 +1418,7 @@ namespace Hydra.Such.Portal.Controllers
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
                             item.CreateUser = User.Identity.Name;
                             item.CreateDate = DateTime.Now;
+                            item.InvoiceToClientNo = proj.NºCliente;
                             dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(item));
                             if (dpValidation == null)
                             {
@@ -1515,7 +1516,7 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
-                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
 
             }).ToList();
 
@@ -1841,10 +1842,22 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
+                ServiceClientCode = x.CódServiçoCliente,
                 ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
 
             }).ToList();
-
+            foreach (ProjectDiaryViewModel item in dp)
+            {
+                if (!String.IsNullOrEmpty(item.ServiceClientCode))
+                {
+                    Serviços GetService = DBServices.GetById(item.ServiceClientCode);
+                    if (GetService != null)
+                    {
+                        item.ServiceClientDescription = GetService.Descrição;
+                    }
+                    
+                }
+            }
             return Json(dp);
         }
         public IActionResult PreregistoProjetos(String id)
@@ -2295,7 +2308,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(response);
         }
         [HttpPost]
-        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient)
+        public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient, string codSGroupClient)
         {
             DateTime? DataValue = null;
             if (!String.IsNullOrEmpty(data))
@@ -2328,6 +2341,7 @@ namespace Hydra.Such.Portal.Controllers
                                Código = x.Código,
                                Descrição = x.Descrição,
                                Quantidade = 0,
+                               GrupoContabProjeto = proj.GrupoContabObra,
                                CódUnidadeMedida = x.CódUnidadeMedida,
                                CódigoRegião = x.CódigoRegião,
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
@@ -2336,7 +2350,8 @@ namespace Hydra.Such.Portal.Controllers
                                PreçoUnitário = x.PreçoUnitário,
                                Faturável = x.Faturável,
                                Registado = false,
-                               PréRegisto = true
+                               PréRegisto = true,
+                               FaturaANºCliente = proj.NºCliente,
                            }).ToList();
                         }
                         else
@@ -2352,6 +2367,7 @@ namespace Hydra.Such.Portal.Controllers
                                Código = x.Código,
                                Descrição = x.Descrição,
                                Quantidade = 0,
+                               GrupoContabProjeto = proj.GrupoContabObra,
                                CódUnidadeMedida = x.CódUnidadeMedida,
                                CódigoRegião = x.CódigoRegião,
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
@@ -2360,7 +2376,8 @@ namespace Hydra.Such.Portal.Controllers
                                PreçoUnitário = x.PreçoUnitário,
                                Faturável = x.Faturável,
                                Registado = false,
-                               PréRegisto = true
+                               PréRegisto = true,
+                               FaturaANºCliente = proj.NºCliente,
                            }).ToList();
                         }
                        
@@ -2373,6 +2390,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                            if (!String.IsNullOrEmpty(codSGroupClient))
+                            {
+                                item.CódGrupoServiço = Convert.ToInt32(codSGroupClient);
+                            }
                             item.UtilizadorCriação = User.Identity.Name;
                             item.DataHoraCriação = DateTime.Now;
                             dpValidation = DBProjectDiary.Create(item);
@@ -2418,52 +2439,55 @@ namespace Hydra.Such.Portal.Controllers
                         if (newdp != null)
                         {
                             DBProjectDiary.Delete(newdp);
-
-                            PréMovimentosProjeto ProjectMovement = new PréMovimentosProjeto()
+                            if (newdp.Quantidade != null && newdp.Quantidade > 0)
                             {
-                                NºProjeto = newdp.NºProjeto,
-                                Data = newdp.Data,
-                                TipoMovimento = newdp.TipoMovimento,
-                                Tipo = newdp.Tipo,
-                                Código = newdp.Código,
-                                Descrição = newdp.Descrição,
-                                Quantidade = newdp.Quantidade,
-                                CódUnidadeMedida = newdp.CódUnidadeMedida,
-                                CódLocalização = newdp.CódLocalização,
-                                GrupoContabProjeto = newdp.GrupoContabProjeto,
-                                CódigoRegião = newdp.CódigoRegião,
-                                CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                CustoUnitário = newdp.CustoUnitário,
-                                CustoTotal = newdp.CustoTotal,
-                                PreçoUnitário = newdp.PreçoUnitário,
-                                PreçoTotal = newdp.PreçoTotal,
-                                Faturável = newdp.Faturável,
-                                Registado = false,
-                                Faturada = false,
-                                FaturaANºCliente = newdp.FaturaANºCliente,
-                                Moeda = newdp.Moeda,
-                                ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
-                                TipoRefeição = newdp.TipoRefeição,
-                                CódGrupoServiço = newdp.CódGrupoServiço,
-                                NºGuiaResíduos = newdp.NºGuiaResíduos,
-                                NºGuiaExterna = newdp.NºGuiaExterna,
-                                DataConsumo = newdp.DataConsumo,
-                                CódServiçoCliente = newdp.CódServiçoCliente,
-                                UtilizadorCriação = User.Identity.Name,
-                                DataHoraCriação = DateTime.Now,
-                                FaturaçãoAutorizada = false
-                            };
 
-                            DBPreProjectMovements.CreatePreRegist(ProjectMovement);
+                                PréMovimentosProjeto ProjectMovement = new PréMovimentosProjeto()
+                                {
+                                    NºProjeto = newdp.NºProjeto,
+                                    Data = newdp.Data,
+                                    TipoMovimento = newdp.TipoMovimento,
+                                    Tipo = newdp.Tipo,
+                                    Código = newdp.Código,
+                                    Descrição = newdp.Descrição,
+                                    Quantidade = newdp.Quantidade,
+                                    CódUnidadeMedida = newdp.CódUnidadeMedida,
+                                    CódLocalização = newdp.CódLocalização,
+                                    GrupoContabProjeto = newdp.GrupoContabProjeto,
+                                    CódigoRegião = newdp.CódigoRegião,
+                                    CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
+                                    CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
+                                    Utilizador = User.Identity.Name,
+                                    CustoUnitário = newdp.CustoUnitário,
+                                    CustoTotal = newdp.CustoTotal,
+                                    PreçoUnitário = newdp.PreçoUnitário,
+                                    PreçoTotal = newdp.PreçoTotal,
+                                    Faturável = newdp.Faturável,
+                                    Registado = false,
+                                    Faturada = false,
+                                    FaturaANºCliente = newdp.FaturaANºCliente,
+                                    Moeda = newdp.Moeda,
+                                    ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
+                                    TipoRefeição = newdp.TipoRefeição,
+                                    CódGrupoServiço = newdp.CódGrupoServiço,
+                                    NºGuiaResíduos = newdp.NºGuiaResíduos,
+                                    NºGuiaExterna = newdp.NºGuiaExterna,
+                                    DataConsumo = newdp.DataConsumo,
+                                    CódServiçoCliente = newdp.CódServiçoCliente,
+                                    UtilizadorCriação = User.Identity.Name,
+                                    DataHoraCriação = DateTime.Now,
+                                    FaturaçãoAutorizada = false
+                                };
+
+                                DBPreProjectMovements.CreatePreRegist(ProjectMovement);
+                            }
                         }
                     }
                 });
             }
             return Json(dp);
         }
-         [HttpPost]
+        [HttpPost]
         public JsonResult RegisterPreMovements([FromBody]  List<ProjectDiaryViewModel> dp, string StartDate, string EndDate)
         {
             ErrorHandler erro = new ErrorHandler();
@@ -2495,8 +2519,19 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         //Create Lines in NAV
-                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
-                        TCreateNavDiaryLine.Wait();
+                        try
+                        {
+                            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
+                            TCreateNavDiaryLine.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            erro.eReasonCode = 3;
+                            erro.eMessage = ex.Message;
+                            //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                            return Json(erro);
+                        }
+                       
 
                         //Register Lines in NAV
                         Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
@@ -2512,8 +2547,10 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Response.StatusCode = (int)HttpStatusCode.NoContent;
-                        return Json(premov);
+                        erro.eReasonCode = 3;
+                        erro.eMessage = "Não foi possivel criar as linhas no nav";
+                        //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        return Json(erro);
                     }
 
                     var PreRegistGrouped = premov.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
@@ -2615,7 +2652,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(erro);
         }
-
         [HttpPost]
         public JsonResult CreateDiaryByPriceServiceCient(string projectNo, string serviceCod, string serviceGroup, string dateRegist) 
         {
@@ -2641,7 +2677,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.InvoiceToClientNo = proj.NºCliente;
                         newRow.ServiceClientCode = serviceCod;
                         newRow.ServiceGroupCode = sGroup;
-                        newRow.Type = 1;
+                        newRow.Type = 2;
                         newRow.Code = item.Resource;
                         newRow.Description = item.ResourceDescription;
                         newRow.MeasurementUnitCode = item.UnitMeasure;

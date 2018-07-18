@@ -47,5 +47,82 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+
+
+        public static List<NAVContractInvoiceHeaderViewModel> GetContractInvoiceHeaderByNo(string ContractNo, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoContrato", ContractNo)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009FaturasContrato @DBName, @CompanyName, @NoContrato", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVContractInvoiceHeaderViewModel()
+                        {
+                            No_ = (string)temp.No_,
+                            ValorContrato = (decimal?)temp.ValorContrato
+                        });
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAVContractInvoiceLinesViewModel> GetContractInvoiceLinesByNo(string ContractNo, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoContrato", ContractNo)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009LinhasFaturaContrato @DBName, @CompanyName, @NoContrato", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVContractInvoiceLinesViewModel()
+                        {
+                            No_ = (string)temp.No_,
+                            DocNo = (string)temp.DocNo,
+                            Description = (string)temp.Description,
+                            Description2 = (string)temp.Description2,
+                            UnitOfMeasure = (string)temp.UnitOfMeasure,
+                            Quantity = (decimal?)temp.Quantity,
+                            UnitPrice = (decimal?)temp.UnitPrice,
+                            Amount = (decimal?)temp.Amount,
+                            AmountIncludingVAT = (decimal?)temp.AmountIncludingVAT,
+                            JobNo = (string)temp.JobNo,
+                            ExternalShipmentNo_ = (string)temp.ExternalShipmentNo_,
+                            DataRegistoDiario = (DateTime?)temp.DataRegistoDiario
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -299,7 +299,9 @@
                     <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
                     <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Copiar Requisição Modelo</paper-button>
-                    <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>
+                    <!--<paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>-->
+                    <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i>  As minhas requisições</paper-button>
+                   
                     <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
                 </div>
             </template>
@@ -620,8 +622,8 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                    </div>-->
+            <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+        </div>-->
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBLocations]]" on-value-changed="_getCDirect" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -638,7 +640,15 @@
                                     <div class="col-lg-2" hidden>
                                         <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
-
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Encomenda Aberto" on-value-changed="_setPurchaseLine"
+                                                        items="[[CBPurchaseLine]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Nº Linha Aberta"}, {"field":"value", "name":"Fornecedor"}, {"field":"extra", "name":"Quantidade Disponível"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
                                     <div class="col-sm-2">
                                         <such-selectbox id="_CBItems" value="{{_CBItems}}" label="Cód. Produto"
                                                         items="[[CBItems]]"
@@ -665,13 +675,16 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_QuantityToOpen}}" id="_QuantityToOpen" name="_QuantityToOpen" label="Qt. Disponivel" disabled="true" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                    </div>
+                                </div>                              
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_QuantityToRequire}}"  on-value-changed="_onChangeQuantity" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" > </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-sm-2">
                                         <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto" on-value-changed="_setProjectDim2"
                                                         items="[[CBJobNo]]"
@@ -700,6 +713,8 @@
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[data.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -724,9 +739,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -734,29 +746,6 @@
                                                     <tr>
                                                         <td width="20%">[[item.id]]</td>
                                                         <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBPurchaseHeader]]" id="_CBPurchaseHeader" item-value-path="id" item-label-path="id" value="{{_CBPurchaseHeader}}" label="Nº Encomenda Aberto" on-change="_PopulatePurchaseLines" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="60%"> <b>[[item.id]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBPurchaseLine]]" id="_CBPurchaseLine" item-value-path="id" item-label-path="value" value="{{_CBPurchaseLine}}" label="Nº Linha Encomenda Aberto" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -780,7 +769,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}" on-change="_GridLocationChange"> 
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -1419,6 +1408,10 @@
                         var locationId = e.detail.value;
                         var sel = this.CBLocations.find(x => x.id == locationId);
                         this.$._CBItemsCDirect.value = sel.extra;
+                        if (this._areaid != null && this.$.requesitionType.value != null && locationId != null) {
+                            this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": locationId });
+                            this.$.filteredProducts_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -1433,7 +1426,31 @@
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
                 },
-
+                _setPurchaseLine: function (e) {
+                    if (e.detail.value != "") {
+                        var line = e.detail.value;
+                        var proj = this.CBPurchaseLine.find(x => x.id == line);
+                        this._QuantityToOpen = proj.extra;
+                        this._CBVendor=proj.value;
+                        if (proj.extra2 != "" && this.CBItems != undefined) {
+                            var item = this.CBItems.find(x => x.code == proj.extra2);
+                            if (item != null) {
+                                this._CBItems = item.code;
+                            }
+                        }
+                    }
+                },
+                _onChangeQuantity: function (e) {                   
+                    if (e != undefined) {
+                        if (this._QuantityToOpen != "") {
+                            if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
+                                this._QuantityToRequire = 0;
+                                this.$._QuantityToRequire.value = 0;
+                                this._openToastError("A quantidade a requerer é maior do que a disponivel!");
+                            }
+                        }
+                    }
+                },
                 _getProjectDimsResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.ProjectDims != null) {
@@ -1617,8 +1634,8 @@
                     }
                 },
                 _loadProductsByAreaAndType: function (requisitionType) {
-                    if (this._areaid != null && requisitionType != null) {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
+                    if (this._areaid != null && requisitionType != null && this._LocalCode != null && this._LocalCode !="") {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType, "locationCode": this._LocalCode});
                         this.$.filteredProducts_ajax.generateRequest();
                     }
                 },
@@ -1822,7 +1839,7 @@
                         this.$._UnitCost.value = item.unitCost;
                     }
                 },
-
+              
                 _GridItemChange: function (e, _selected) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
@@ -2019,6 +2036,7 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _lineSelected: function (item) {
+                    debugger;
                     if (item != null) {
                         var oSel = this.dataLines.lines.find(x => x.selected);
                         if (oSel != undefined) {
@@ -2033,7 +2051,11 @@
                             var PurchaseNo = item.openOrderNo;
                             this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselinesgrid_ajax.generateRequest();
-
+                            if (sel.localCode != null && sel.localCode != "" && this._areaid != null && this.$.requesitionType.value) {
+                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": sel.localCode });
+                                    this.$.filteredProducts_ajax.generateRequest();
+                            }
+                            
                             this.$.grid_prereqlines.clearCache();
                             if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
                                 this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
@@ -2042,7 +2064,12 @@
                         }
                     }
                 },
-
+                _GridLocationChange: function (e) {
+                    if (e.target.value != null && e.target.value != "" && this._areaid != null && this.$.requesitionType.value) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": e.target.value });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
@@ -2116,7 +2143,6 @@
                     window.location.href = "/PreRequisicoes/RequisicoesPendentes";
                 },
                 _CleanPreRequesitionResponse: function (e) {
-                    debugger;
                     if (this.ClPreReq.eReasonCode != null) {
                         this._openToastError(this.ClPreReq.eMessage);
                     }
@@ -2128,7 +2154,6 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
-                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 

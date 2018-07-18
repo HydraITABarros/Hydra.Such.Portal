@@ -661,12 +661,12 @@ namespace Hydra.Such.Portal.Configurations
         {
              new EnumData()
             {
-                Id = 2,
+                Id = 1,
                 Value = "Produto"
             },
             new EnumData()
             {
-                Id = 1,
+                Id = 2,
                 Value = "Recurso"
             },
             new EnumData()
@@ -2152,6 +2152,168 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Insucesso"
+            }
+        };
+
+        //Tipo de Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Tipo = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Equipamento"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Placa de Rede"
+            }
+        };
+
+        //Estado do Equipamento, nos telemóveis
+        public static readonly List<EnumData> Telemoveis_Estado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Novo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Usado"
+            }
+        };
+
+        public static readonly List<EnumData> Telemoveis_Devolvido = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Devolvido"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Abate TMN"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Vendido"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Perdido"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Roubado"
+            },
+            new EnumData
+            {
+                Id = 6,
+                Value = "Empréstimo"
+            },
+            new EnumData
+            {
+                Id = 7,
+                Value = "Não Devolvido"
+            }
+        };
+
+        //Tipo de Serviço, nos cartões
+        public static readonly List<EnumData> Cartoes_TipoServico = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Voz"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Dados"
+            }
+        };
+
+        //Estado, nos cartões
+        public static readonly List<EnumData> Cartoes_Estado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Bloqueado"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Cancelado"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Alteração de Titular"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Por Activar"
+            }
+        };
+
+        //GPRS, nos cartões
+        public static readonly List<EnumData> Cartoes_GPRS = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Desactivo"
+            }
+        };
+
+        public static readonly List<EnumData> ComprasEstado = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Validado"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Recusado"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Tratado"
             }
         };
     }

@@ -8,7 +8,7 @@ using Hydra.Such.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hydra.Such.Data.Logic.Compras
+namespace Hydra.Such.Data.Logic.ComprasML
 {
     public class BillingReceptionRepo : IDisposable
     {
@@ -118,11 +118,23 @@ namespace Hydra.Such.Data.Logic.Compras
 
         #region Problems
 
-        public List<RecFacturasProblemas> GetQuestions()
+        public List<RecFacturasProblemas> GetQuestionsProblem()
         {
-            return ctx.RecFacturasProblemas.Where(x => x.Codigo == "P").ToList();
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();
+        }
+        public List<RecFacturasProblemas> GetQuestionsID(string id,string Cod)
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Cod && x.Tipo == id).ToList();
+        }
+        public List<RecFacturasProblemas> GetQuestionsReason()
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF4P").ToList();
         }
 
+        public List<RecFaturacaoConfigDestinatarios> GetAreas()
+        {
+            return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Mostra == true).ToList();
+        }
         #endregion
 
         void IDisposable.Dispose()

@@ -15,6 +15,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -76,9 +77,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetQuestions()
+        public JsonResult GetProblems()
         {
-            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            List<DDMessageString> result = billingRecService.GetProblem().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+        [HttpGet]
+        public JsonResult GetReasons()
+        {
+            List<DDMessageString> result = billingRecService.GetReason().Select(x => new DDMessageString()
             {
                 id = x.Tipo,
                 value = x.Descricao
@@ -90,10 +102,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetAreas()
         {
-            List<DDMessageString> result = billingRecService.GetQuestions().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = billingRecService.GetAreas().Select(x => new DDMessageRelated()
             {
-                id = x.Tipo,
-                value = x.Descricao
+                id = x.Codigo,
+                value = x.CodArea,
+                extra=x.Destinatario
             }).ToList();
 
             return Json(result);
@@ -139,35 +152,92 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    item = updatedItem;
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    updatedItem = item;
                 }
             }
             else
             {
-                item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
             }
             return Json(updatedItem);
         }
 
         [HttpPost]
-        public JsonResult PostDocument([FromBody] BillingReceptionModel item)
+        public JsonResult ValidateNumeration([FromBody] BillingReceptionModel data)
         {
+            //Get Project Numeration
+            int Cfg = (int)DBUserConfigurations.GetById(User.Identity.Name).PerfilNumeraçãoRecDocCompras;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
+
+            //Validate if ProjectNo is valid
+            if (!(data.Id == "" || data.Id == null) && !CfgNumeration.Manual.Value)
+            {
+                return Json("A numeração configurada para contratos não permite inserção manual.");
+            }
+            else if (data.Id == "" && !CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº de Contrato.");
+            }
+
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
+        {
+
+            BillingReceptionModel updatedItem = null;
             if (item != null)
             {
-                try
+                item.ModificadoPor = User.Identity.Name;
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
+                item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                workflow.DataCriacao = DateTime.Now;
+                workflow.AreaWorkflow = item.AreaPendenteDescricao;
+                item.WorkflowItems.Add(workflow);
+
+                updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
+                if (updatedItem != null)
                 {
-                    var postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
-                    item = postedDocument;
+                    updatedItem.eReasonCode = 1;
+                    updatedItem.eMessage = "Registo atualizado com sucesso";
+                    
                 }
-                catch
+                else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao criar o documento.";
+                    updatedItem = item;
                 }
             }
             else
             {
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(updatedItem);
+        }
+    
+        //CF ou CP ou CC opc
+        [HttpPost]
+        public JsonResult PostDocument([FromBody] BillingReceptionModel item)
+        {
+            BillingReceptionModel postedDocument;
+            if (item != null)
+            {               
+                postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                item = postedDocument;            
+            }
+            else
+            {
+                item = new BillingReceptionModel();
                 item.eReasonCode = 2;
                 item.eMessage = "O registo não pode ser nulo";
             }
