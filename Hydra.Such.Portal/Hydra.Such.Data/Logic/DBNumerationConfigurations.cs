@@ -133,8 +133,10 @@ namespace Hydra.Such.Data.Logic
                             if (isRec)
                             {
                                 int year = DateTime.Today.Year % 100;
-
-                                NextNumeration += year + LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                                string lastNum = year + LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                                lastNum = lastNum.Substring(2);
+                                NextNumeration += lastNum;
+                                
                             }
                             else
                             {
