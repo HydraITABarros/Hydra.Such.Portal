@@ -33,7 +33,7 @@ namespace Hydra.Such.Portal.Controllers
             configws = NAVWSConfigs.Value;
         }
 
-        
+
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions =
@@ -49,7 +49,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+
         public IActionResult Detalhes()
         {
             UserAccessesViewModel userPermissions =
@@ -65,7 +65,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+
         public IActionResult RequisicoesAprovadas()
         {
             UserAccessesViewModel userPermissions =
@@ -81,7 +81,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+
         public IActionResult DetalhesReqAprovada(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -101,7 +101,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+
         public IActionResult LinhasRequisicao(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -210,7 +210,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Descrição = x.Description;
                             newdp.CódigoUnidadeMedida = x.UnitMeasureCode;
                             newdp.CódigoLocalização = x.LocalCode;
-                            newdp.MercadoLocal =x.LocalMarket != null ? x.LocalMarket : false;
+                            newdp.MercadoLocal = x.LocalMarket != null ? x.LocalMarket : false;
                             newdp.QuantidadeARequerer = x.QuantityToRequire;
                             newdp.QuantidadeRequerida = x.QuantityRequired;
                             newdp.QuantidadeADisponibilizar = x.QuantityToProvide;
@@ -258,7 +258,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Aprovadores = x.Approvers;
                             newdp.Faturável = x.Billable != null ? x.Billable : false;
                             DBRequestLine.Update(newdp);
-                            
+
                         }
                         else
                         {
@@ -336,7 +336,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult CreateRequisition([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -392,7 +392,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult UpdateRequisition([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -422,7 +422,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult DeleteRequisition([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -455,7 +455,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult ValidateNumeration([FromBody] RequisitionViewModel item)
         {
             //Get Project Numeration
@@ -484,7 +484,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult GetApprovedRequisitions()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
@@ -503,7 +503,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         [HttpPost]
-        
+
         public JsonResult GetValidatedRequisitions()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -529,14 +529,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         [HttpPost]
-        
+
         public JsonResult GetAllRequisitionshistoric()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            
+
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
@@ -547,7 +547,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         [HttpPost]
-        
+
         public JsonResult GetRequisition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
             string requisitionId = string.Empty;
@@ -573,7 +573,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult CreateRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
             if (item != null)
@@ -603,7 +603,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult UpdateRequisitionLines([FromBody] RequisitionViewModel item)
         {
             try
@@ -630,7 +630,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult DeleteRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
             if (item != null)
@@ -658,7 +658,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        
+
         public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType)
         {
             if (item != null)
@@ -696,7 +696,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Apenas produtos em armazens de stock
                             List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
                             var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
-                            
+
                             var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
                             var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
 
@@ -727,7 +727,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         line.QuantityAvailable = (line.QuantityAvailable.HasValue ? line.QuantityAvailable.Value : 0) + line.QuantityToProvide;
                                         line.QuantityReceivable = line.QuantityToProvide;
-                                        line.QuantityToProvide -= line.QuantityToProvide;  
+                                        line.QuantityToProvide -= line.QuantityToProvide;
                                         line.UpdateUser = User.Identity.Name;
                                         line.UpdateDateTime = DateTime.Now;
                                     }
@@ -814,38 +814,38 @@ namespace Hydra.Such.Portal.Controllers
 
                                 //if (line.QuantityReceivable > 0)
                                 //{
-                                    var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
-                                    var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
-                                    if (stockkeepingUnits == null)
+                                var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+                                if (stockkeepingUnits == null)
+                                {
+                                    prodNotStockkeepUnit += line.Description + ";";
+                                }
+                                else
+                                {
+                                    decimal quantityInStock = 0;
+                                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                    quantityinStockTask.Wait();
+                                    if (quantityinStockTask.IsCompletedSuccessfully)
                                     {
-                                        prodNotStockkeepUnit += line.Description + ";";
+                                        quantityInStock = quantityinStockTask.Result.return_value;
+                                    }
+
+                                    if (quantityInStock < line.QuantityReceivable)
+                                    {
+                                        prodQuantityOverStock += line.Description + ";";
                                     }
                                     else
                                     {
-                                        decimal quantityInStock = 0;
-                                        Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
-                                        quantityinStockTask.Wait();
-                                        if (quantityinStockTask.IsCompletedSuccessfully)
-                                        {
-                                            quantityInStock = quantityinStockTask.Result.return_value;
-                                        }
 
-                                        if (quantityInStock < line.QuantityReceivable)
-                                        {
-                                            prodQuantityOverStock += line.Description + ";";
-                                        }
-                                        else
-                                        {
-                                        
-                                            //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
-                                            //line.QuantityPending = line.QuantityReceivable;
-                                            line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
-                                            line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
-                                            line.QuantityReceivable -= line.QuantityReceivable;
-                                            line.UpdateUser = User.Identity.Name;
-                                            line.UpdateDateTime = DateTime.Now;
-                                        }
+                                        //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
+                                        //line.QuantityPending = line.QuantityReceivable;
+                                        line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
+                                        line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
+                                        line.QuantityReceivable -= line.QuantityReceivable;
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
                                     }
+                                }
                                 //}
                                 //else
                                 //{
@@ -1103,7 +1103,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (reqArchived == null)
                         {
                             item.eReasonCode = 14;
-                        item.eMessage = "Ocorreu Um erro ao fechar";
+                            item.eMessage = "Ocorreu Um erro ao fechar";
                         }
                         if (item.eReasonCode == 1)
                         {
@@ -1174,6 +1174,7 @@ namespace Hydra.Such.Portal.Controllers
                                 string Responsavel1 = "";
                                 string Responsavel2 = "";
                                 string Responsavel3 = "";
+                                string Responsavel4 = "";
                                 ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(item.LocalMarketRegion);
                                 if (ConfigMercadoLocal != null)
                                 {
@@ -1183,7 +1184,9 @@ namespace Hydra.Such.Portal.Controllers
                                         Responsavel2 = ConfigMercadoLocal.Responsavel2;
                                     if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
                                         Responsavel3 = ConfigMercadoLocal.Responsavel3;
-                                    Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-";
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel4))
+                                        Responsavel4 = ConfigMercadoLocal.Responsavel4;
+                                    Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-" + Responsavel4 + "-";
                                 }
 
                                 Compras Compra = new Compras
@@ -1277,7 +1280,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -1305,7 +1308,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -1352,8 +1355,8 @@ namespace Hydra.Such.Portal.Controllers
         //    catch { }
         //    return RedirectToAction("InternalServerError", "Error", new { area = "" });
         //}
-        
-        
+
+
         public JsonResult CreateTransferShipment([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
             string requisitionId = string.Empty;
@@ -1400,7 +1403,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult SendPrePurchase([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -1428,7 +1431,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult SubmitForApproval([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
             string requisitionId = string.Empty;
@@ -1437,13 +1440,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 requisitionId = requestParams["requisitionId"].ToString();
             }
-            
+
             ErrorHandler result = new ErrorHandler();
             if (!string.IsNullOrEmpty(requisitionId))
             {
                 Requisição reqDB = DBRequest.GetById(requisitionId);
                 var requisition = reqDB.ParseToViewModel();
-                
+
                 if (requisition != null)
                 {
                     var totalValue = requisition.GetTotalValue();
@@ -1463,7 +1466,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         #region Pontos de Situação
-        
+
         public IActionResult PontosSituacao()
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -1480,8 +1483,8 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
-        public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId,[FromQuery] string lineId)
+
+        public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             if (userPermissions != null && userPermissions.Read.Value)
@@ -1499,7 +1502,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult GetStatesOfPlay(string id)
         {
             List<StateOfPlayViewModel> items;
@@ -1511,7 +1514,7 @@ namespace Hydra.Such.Portal.Controllers
                     .ToList();
             }
             else
-            { 
+            {
                 items = DBStateOfPlay.GetForRequisition(id)
                     .ParseToViewModel()
                     .OrderBy(x => x.Read)
@@ -1521,7 +1524,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult ConfirmStateOfPlayReading([FromBody] StateOfPlayViewModel item)
         {
             ErrorHandler result = new ErrorHandler();
@@ -1544,7 +1547,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult AddStateOfPlay([FromBody] StateOfPlayViewModel item)
         {
             ErrorHandler result = new ErrorHandler();
@@ -1571,7 +1574,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
+
         public JsonResult SendResponse([FromBody] StateOfPlayViewModel item)
         {
             ErrorHandler result = new ErrorHandler();
@@ -1588,7 +1591,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (createdItem != null)
                 {
                     item = createdItem.ParseToViewModel();
-                    
+
                     SMTPEmailSender mailSender = new SMTPEmailSender();
                     string htmlTemplateMessage = "Caro utilizador,<br /><br />Foram adicionados os comentários ao seu pedido de ponto de situação da requisição {0} ({1}):<br />\"<i>{2}</i>\"<h3>Comentários</h3><p>{3}</p>";
                     string emailBody = string.Format(htmlTemplateMessage, item.RequisitionNo, item.QuestionDate.ToShortDateString(), item.Question, item.Answer);
@@ -1613,7 +1616,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        
+
         public IActionResult HistoricoRequisicoes()
         {
             UserAccessesViewModel userPermissions =

@@ -820,7 +820,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.RegiaoMercadoLocal).HasMaxLength(20);
 
-                entity.Property(e => e.Responsaveis).HasMaxLength(200);
+                entity.Property(e => e.Responsaveis).HasMaxLength(250);
 
                 entity.Property(e => e.UtilizadorCriacao).HasMaxLength(50);
 
@@ -851,6 +851,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Responsavel2).HasMaxLength(50);
 
                 entity.Property(e => e.Responsavel3).HasMaxLength(50);
+
+                entity.Property(e => e.Responsavel4).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Configuração>(entity =>
