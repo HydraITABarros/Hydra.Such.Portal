@@ -138,15 +138,9 @@
                     _permissions: {
                         type: Array
                     },
-                    _numCartao: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        _numCartao = item.numCartao;
                         window.location.href = "/TelemoveisCartoes/DetalheTelemoveisCartoes/?numCartao=" + item.numCartao;
                     }
                 },

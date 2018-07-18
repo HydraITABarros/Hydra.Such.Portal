@@ -30,14 +30,14 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalheTelemoveisCartoes([FromQuery] string numCartao)
+        public IActionResult DetalheTelemoveisCartoes(string numCartao)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Telemoveis);
 
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
-                ViewBag.numCartao = numCartao;
+                ViewBag.No = numCartao == null ? "" : numCartao;
                 return View();
             }
             else
@@ -73,8 +73,8 @@ namespace Hydra.Such.Portal.Controllers
                     if (telemoveisCartoes != null)
                     {
                         TelemoveisCartoesView telemoveisCartoesView = DBTelemoveis.CastTelemoveisCartoesToView(telemoveisCartoes);
-
-                        return Json(telemoveisCartoes);
+                        
+                        return Json(telemoveisCartoesView);
                     }
 
                     return Json(new TelemoveisEquipamentosView());

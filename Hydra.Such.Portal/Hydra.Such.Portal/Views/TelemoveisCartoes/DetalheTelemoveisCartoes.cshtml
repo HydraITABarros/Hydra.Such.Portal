@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Hydra.Such.Data.Database.TelemoveisCartoes>
+﻿@model Hydra.Such.Data.Database.TelemoveisCartoes
 
 @{
-    ViewData["Title"] = "Telemóveis - Cartões [Nº Cartão: " + ViewBag.numCartao + "]";
+    ViewData["Title"] = "Telemóveis - Cartões [ " + ViewBag.No + " ]";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link rel="import" href="~/elements/telemoveiscartoes/detalhetelemoveiscartoes.html">
 
-<x-detalhetelemoveiscartoes _numCartao="@ViewBag.numCartao" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-detalhetelemoveiscartoes>
+<x-detalhetelemoveiscartoes _numcartao="@ViewBag.No" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-detalhetelemoveiscartoes>
