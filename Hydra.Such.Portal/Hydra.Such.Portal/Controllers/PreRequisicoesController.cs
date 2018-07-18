@@ -927,12 +927,9 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-                    
+
                     //Criar anexos                  
-                    if (CopyAttachments(newlistOpenOrder, data).eMessage != null && CopyAttachments(newlistOpenOrder, data).eMessage != "")
-                    {
-                        data = CopyAttachments(newlistOpenOrder, data);
-                    }
+                    data = CopyAttachments(newlistOpenOrder, data);
 
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto ==0|| x.NºLinhaEncomendaAberto==null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
@@ -1000,11 +997,7 @@ namespace Hydra.Such.Portal.Controllers
                         }).ToList();
 
                     //Criar Anexos
-                    if (CopyAttachments(newlist, data).eMessage != null && CopyAttachments(newlistOpenOrder, data).eMessage != "")
-                    {
-                        data = CopyAttachments(newlistOpenOrder, data);
-                    }
-
+                    data = CopyAttachments(newlistOpenOrder, data);
                 }
             }
             catch (Exception ex)
