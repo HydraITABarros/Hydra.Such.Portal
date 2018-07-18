@@ -92,5 +92,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return false;
             }
         }
+
     }
 }

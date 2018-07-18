@@ -43,5 +43,8 @@ namespace Hydra.Such.Data.ViewModel.Telemoveis
 
         public string TipoServico_Show { get; set; }
         public string Estado_Show { get; set; }
+        public string DataEstado_Show { get; set; }
+        public string FimFidelizacao_Show { get; set; }
+        public bool Plafond100percUtilizador_Show { get; set; }
     }
 }

@@ -3094,7 +3094,7 @@ namespace Hydra.Such.Portal.Controllers
                     result.eMessage = "Não foi possivel ler o Nº da Folha de Horas.";
                 }
                 else
-                { 
+                {
                     if (FH == null)
                     {
                         result.eReasonCode = 2;

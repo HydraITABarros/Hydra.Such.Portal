@@ -138,6 +138,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUtilizadores_NumMec()
+        {
+            List<DDMessageString> result = DBUserConfigurations.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.EmployeeNo,
+                value = x.Nome
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectTypes()
         {
             List<DDMessage> result = DBProjectTypes.GetAll().Select(x => new DDMessage()
@@ -1856,6 +1867,41 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get_Telemoveis_Devolvido()
         {
             List<EnumData> result = EnumerablesFixed.Telemoveis_Devolvido;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Cartoes_TipoServico()
+        {
+            List<EnumData> result = EnumerablesFixed.Cartoes_TipoServico;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Cartoes_Estado()
+        {
+            List<EnumData> result = EnumerablesFixed.Cartoes_Estado;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Cartoes_GPRS()
+        {
+            List<EnumData> result = EnumerablesFixed.Cartoes_GPRS;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Cartoes_BarramentoVoz()
+        {
+            List<EnumData> result = EnumerablesFixed.Cartoes_BarramentoVoz;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Cartoes_TarifarioDados()
+        {
+            List<EnumData> result = EnumerablesFixed.Cartoes_TarifariosDados;
             return Json(result);
         }
     }

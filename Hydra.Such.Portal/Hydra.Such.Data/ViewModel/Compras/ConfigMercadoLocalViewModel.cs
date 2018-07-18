@@ -10,5 +10,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Responsavel1 { get; set; }
         public string Responsavel2 { get; set; }
         public string Responsavel3 { get; set; }
+        public string Responsavel4 { get; set; }
     }
 }

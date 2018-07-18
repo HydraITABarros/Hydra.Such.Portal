@@ -2289,6 +2289,46 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //Barramento de Voz, nos cartões
+        public static readonly List<EnumData> Cartoes_BarramentoVoz = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "OFFNET"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Sem Restrições"
+            }
+        };
+
+        //Tarifarios de Dados, nos cartões
+        public static readonly List<EnumData> Cartoes_TarifariosDados = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "*BLOQUEADO"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Banda Larga"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Internet no Telemóvel"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "IPAD"
+            }
+        };
+
         public static readonly List<EnumData> ComprasEstado = new List<EnumData>(){
             new EnumData()
             {
