@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.Database
         public string Descricao { get; set; }
         public string EnvioAreas { get; set; }
         public bool? Devolvido { get; set; }
+        public bool? EnvioEmail { get; set; }
         public int? CodModeloEmail { get; set; }
         public bool? Bloqueado { get; set; }
 

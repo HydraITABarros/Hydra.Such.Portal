@@ -10,7 +10,10 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string IdRecFaturacao { get; set; }
         public Enumerations.BillingReceptionStates Estado { get; set; }
         public string AreaWorkflow { get; set; }
+        public string Area { get; set; }
         public string Descricao { get; set; }
+        public string CodDestino { get; set; }
+        public string Destinatario { get; set; }
         public string Comentario { get; set; }
         public DateTime? Data { get; set; }
         public string Utilizador { get; set; }

@@ -31,7 +31,7 @@ namespace Hydra.Such.Portal.Services
             int Cfg = (int)DBUserConfigurations.GetById(item.CriadoPor).PerfilNumeraçãoRecDocCompras;
 
             item.DataCriacao = DateTime.Now;
-            item.AreaPendente = (int)BillingReceptionAreas.Contabilidade;
+            item.IdAreaPendente = (int)BillingReceptionAreas.Contabilidade;
             item.Estado = BillingReceptionStates.Rececao;
             item.DataCriacao = DateTime.Now;
             item.DataUltimaInteracao = DateTime.Now.ToString();
@@ -155,36 +155,55 @@ namespace Hydra.Such.Portal.Services
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             //Update Header
+            RecFacturasProblemas questao = null;
+            questao = GetQuestionID(wfItemLast.CodTipoProblema, wfItemLast.CodProblema);
+
+            if (questao.Devolvido == true)
+                item.Estado = BillingReceptionStates.Devolvido;
+            else
+            {
+                item.Estado = BillingReceptionStates.Pendente;
+                if (item.DataPassaPendente == null)
+                    item.DataPassaPendente = DateTime.Now;
+            }
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
-            
-            //item.AreaPendente;
-            //item.AreaPendenteDescricao;
-            item.Destinatario = wfItemLast.Utilizador;
-            // descrição problea
+            item.TipoProblema = wfItemLast.CodTipoProblema;
+            item.AreaPendente = wfItemLast.AreaWorkflow;
+            item.AreaPendente2 = wfItemLast.Area;
+            item.Destinatario = wfItemLast.Destinatario;
+            item.Descricao = wfItemLast.Comentario;
+            item.DescricaoProblema = wfItemLast.Descricao;
             item.DataModificacao = DateTime.Now;
             //area ultima interação
             //user ultima interação
 
             item = repo.Update(item);
-            
+
+           
 
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
             wfItem.IdRecFaturacao = item.Id;
-            wfItem.Estado = (int)BillingReceptionStates.Pendente;//TODO: Identificar estados possivels “Receção/Conferência”        
+            if(questao.Devolvido==true)
+                wfItem.Estado = (int)BillingReceptionStates.Devolvido;      
+            else
+                wfItem.Estado = (int)BillingReceptionStates.Pendente;       
+            wfItem.Area = wfItemLast.Area;
             wfItem.AreaWorkflow = wfItemLast.AreaWorkflow;
             wfItem.ModificadoPor = item.ModificadoPor;
             wfItem.Data = item.DataCriacao;
             wfItem.DataCriacao = DateTime.Now;
             wfItem.EnderecoEnvio = postedByUserName;
             wfItem.EnderecoFornecedor = wfItemLast.EnderecoFornecedor;
-            wfItem.Utilizador = wfItemLast.Utilizador;
+            wfItem.CodDestino = wfItemLast.CodDestino;
+            wfItem.Destinatario = wfItemLast.Destinatario;
             wfItem.CodTipoProblema = wfItemLast.CodTipoProblema;
             wfItem.CodProblema = wfItemLast.CodProblema;
             wfItem.Descricao = wfItemLast.Descricao;
             wfItem.Comentario = wfItemLast.Comentario;
+            wfItem.Utilizador = postedByUserName;
 
-            repo.Create(wfItem);
+           // repo.Create(wfItem);
 
             try
             {
@@ -195,15 +214,13 @@ namespace Hydra.Such.Portal.Services
             {
                 return null;
             }
-            RecFacturasProblemas question = null;
+           RecFaturacaoConfigDestinatarios destino = null;
            if ( wfItem.CodProblema== "RF1P")
-                question = GetQuestionID("RF1P", wfItem.CodTipoProblema);
-           else
-                question = GetQuestionID("RF4P", wfItem.CodTipoProblema);
-            if (question != null)
+                destino = GetDestinationAreaDest(wfItemLast.CodDestino);
+            if (destino != null)
             {
                 //Rever o Envio de Areas
-                if (question.EnvioAreas != "1" && wfItem.EnderecoFornecedor != "")
+                if (destino.EnviaEmail == true && wfItem.EnderecoFornecedor != "")
                 {
 
                     SendEmailBillingReception Email = new SendEmailBillingReception
@@ -212,9 +229,10 @@ namespace Hydra.Such.Portal.Services
                         From = "plataforma@such.pt"
                     };
 
+                    //Email.To.Add(wfItem.EnderecoFornecedor);
                     Email.To.Add("rui.santos99@hotmail.com");
 
-                    Email.Body = MakeEmailBodyContent("Solicita-se a validação da fatura enviada em anexo:", item.Id, item.Destinatario, item.DataUltimaInteracao, item.Valor.ToString(), postedByUserName);
+                    Email.Body = MakeEmailBodyContent("Solicita-se a validação da fatura enviada em anexo:", item.Id, item.CodFornecedor, item.DataUltimaInteracao, item.Valor.ToString(), postedByUserName);
 
                     Email.IsBodyHtml = true;
 
@@ -313,16 +331,31 @@ namespace Hydra.Such.Portal.Services
         }
 
         #region Problems
+        public List<RecFaturacaoConfigDestinatarios> GetDestination()
+        {
+            return repo.GetDestination();
+        }
+
+        public RecFaturacaoConfigDestinatarios GetDestinationAreaDest(string id)
+        {
+            if (id != null && id != "")
+            {
+                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
+                return destino;
+            }
+            else
+                return null;
+        }
 
         public List<RecFacturasProblemas> GetProblem()
         {
             return repo.GetQuestionsProblem();
         }
-        public RecFacturasProblemas GetQuestionID(string id,string type)
+        public RecFacturasProblemas GetQuestionID(string id,string Cod)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(Cod))
             {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
                 return problem;
             }
             else
