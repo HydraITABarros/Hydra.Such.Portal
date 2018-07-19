@@ -51,12 +51,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-
+            
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Id = id;
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
+                ViewBag.RFPerfil = userConfig.RFPerfil;
                 return View();
             }
             else

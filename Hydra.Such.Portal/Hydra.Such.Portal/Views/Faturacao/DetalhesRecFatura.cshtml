@@ -22,7 +22,8 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-<x-rececaofaturasdetails></x-rececaofaturasdetails>
+
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -382,7 +383,7 @@
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _checkPending }}">
                             <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
-                            <paper-button raised id="btnSendAnswer" class="btnSave" on-tap="_sendaAnswer">Resposta</paper-button>
+                            <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
                     </div>
                 </div>
@@ -699,6 +700,14 @@
                         type: Boolean,
                         value: false,
                     },
+                    _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _hiddeAnswerButton: {
+                        type: Boolean,
+                        value: true,
+                    }
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -739,6 +748,23 @@
                             this.$.txtDatePeding.value = dataFormatada;
                         }
                         this.$.txtDestProblema.value = workFlow.utilizador;
+
+                        //Botão Resposta
+                        debugger;
+                        if (this.data.estado == 1) {
+                            if (this.data.AreaPendente == 0) {
+                                this._hiddeAnswerButton = true;
+                            } else if (this.data.AreaPendente == 1) {
+                                if (this._rfperfil == "Aprovisionamento") {
+                                    this._hiddeAnswerButton = true;
+                                }
+                            } else {
+                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+
+                                    this._hiddeAnswerButton = false;
+                                }
+                            }
+                        }
                     }
                 },
                 _supplierSelected: function (e) {
