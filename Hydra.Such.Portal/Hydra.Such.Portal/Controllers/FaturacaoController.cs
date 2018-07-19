@@ -50,11 +50,14 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhesRecFatura(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Id = id;
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
+                ViewBag.RFPerfil = userConfig.RFPerfil;
                 return View();
             }
             else
@@ -76,7 +79,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-       
+        [HttpGet]
+        public JsonResult GetProblems()
+        {
+            List<DDMessageString> result = billingRecService.GetProblem().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+        [HttpGet]
+        public JsonResult GetReasons()
+        {
+            List<DDMessageString> result = billingRecService.GetReason().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
 
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)

@@ -22,7 +22,8 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-<x-rececaofaturasdetails></x-rececaofaturasdetails>
+
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -75,7 +76,9 @@
         <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
+        
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -584,6 +587,49 @@
                     </div>
                 </div>
             </paper-dialog>
+
+            <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ ProblemasPorPerfil ]]" id="cmbProblemasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
+                    </div>
+
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgValidateAnswer">&nbsp; Enviar</paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -615,6 +661,10 @@
                         value: true,
                     },
                     _isAnexarFicheiro: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _isAnexarFicheiroResposta: {
                         type: Boolean,
                         value: false,
                     },
@@ -662,6 +712,14 @@
                         type: Boolean,
                         value: false,
                     },
+                    _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _hiddeAnswerButton: {
+                        type: Boolean,
+                        value: true,
+                    }
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -691,17 +749,17 @@
                         if (this.data.estado==2){
                             this._checkPending = false;
                         }
-                        ////Ponto de situação
-                        //var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        //this.$.txtComment.value = workFlow.comentario;
-                        //this.$.codDescricao.value = workFlow.codTipoProblema;
-                        //this.$.txtDescription.value = workFlow.descricao;
-                        //var data = new Date(workFlow.dataCriacao);
-                        //var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                        //if (dataFormatada != undefined) {
-                        //    this.$.txtDatePeding.value = dataFormatada;
-                        //}
-                        //this.$.txtDestProblema.value = workFlow.utilizador;
+                        //Ponto de situação
+                        var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
+                        this.$.txtComment.value = workFlow.comentario;
+                        this.$.codDescricao.value = workFlow.codTipoProblema;
+                        this.$.txtDescription.value = workFlow.descricao;
+                        var data = new Date(workFlow.dataCriacao);
+                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                        if (dataFormatada != undefined) {
+                            this.$.txtDatePeding.value = dataFormatada;
+                        }
+                        this.$.txtDestProblema.value = workFlow.utilizador;
                     }
                 },
                 _supplierSelected: function (e) {
@@ -755,6 +813,30 @@
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
+                },
+
+                _validateInputForAnswer: function () {
+                    if (this.data.estado == null || this.data.estado == "") {
+                        this._openToastError("O Estado tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.areaPendenteDescricao == "" || this.data.areaPendenteDescricao == null) {
+                        this._openToastError("Área Pendente tem que estar preenchida.");
+                        return false;
+                    }
+                    if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
+                        this._openToastError("Destinatário tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
+                        this._openToastError("Cód. Descrição tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                        this._openToastError("Descrição tem que estar preenchida.");
+                        return false;
+                    }
+                    return true;
                 },
                 _create: function () {
                     if (this._validateInputForNew()) {
@@ -893,6 +975,16 @@
                         this.$.txtmotivo.value = motivos.value;
                     }
                 },
+
+                _answerChange: function () {
+                    var id = this.$.cmbProblemasPorPerfil.value;
+                    if (id != undefined && id != "") {
+                        var resposta = this.ProblemasPorPerfil.find(x => x.id == id);
+                        this.$.txtdescricaoResposta.value = resposta.value;
+                    }
+                },
+
+
                 _areaChanged: function (e) {
                     var idArea = this.$.txtAreadgl.value;
                     var idProblema = this.$.cmbProblemas.value;
@@ -940,6 +1032,16 @@
                     else
                         this._isAnexarFicheiro = true;
                 },
+
+                _anexoAnswerChanged: function (e) {
+                    if (this.$.txtAnexoResposta.checked == true) {
+                        this._isAnexarFicheiroResposta = false;
+                    }
+                    else
+                        this._isAnexarFicheiroResposta = true;
+
+                },
+
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
                     if (type == 0) //interno
@@ -953,6 +1055,15 @@
                 _sendPending: function () {
                     this.$.dialogSendPeding.open();
                 },
+
+                _sendaAnswer: function () {
+                    this.$.dialogSendAnswer.open();
+
+                    //this.$.RespostasPerfil_ajax.body = JSON.stringify(this.data);
+                    this.$.RespostasPerfil_ajax.generateRequest();
+                },
+
+
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
                         this.data.id = "CF" + this.data.id;

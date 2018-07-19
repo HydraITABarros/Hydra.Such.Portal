@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetUserConfigData([FromBody] UserConfigurationsViewModel data)
         {
-            ConfigUtilizadores CU = DBUserConfigurations.GetById(data.IdUser);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(data.IdUser);
             UserConfigurationsViewModel result = new UserConfigurationsViewModel()
             {
                 IdUser = "",
@@ -128,20 +128,24 @@ namespace Hydra.Such.Portal.Controllers
                 UserProfiles = new List<ProfileModelsViewModel>()
             };
 
-            if (CU != null)
+            if (userConfig != null)
             {
-                result.IdUser = CU.IdUtilizador;
-                result.Name = CU.Nome;
-                result.Active = CU.Ativo;
-                result.Administrator = CU.Administrador;
-                result.Regiao = CU.RegiãoPorDefeito;
-                result.Area = CU.AreaPorDefeito;
-                result.Cresp = CU.CentroRespPorDefeito;
-                result.EmployeeNo = CU.EmployeeNo;
-                result.ProcedimentosEmailEnvioParaCA = CU.ProcedimentosEmailEnvioParaCa;
-                result.ProcedimentosEmailEnvioParaArea = CU.ProcedimentosEmailEnvioParaArea;
-                result.ProcedimentosEmailEnvioParaArea2 = CU.ProcedimentosEmailEnvioParaArea2;
-                result.ReceptionConfig = CU.PerfilNumeraçãoRecDocCompras;
+                result.IdUser = userConfig.IdUtilizador;
+                result.Name = userConfig.Nome;
+                result.Active = userConfig.Ativo;
+                result.Administrator = userConfig.Administrador;
+                result.Regiao = userConfig.RegiãoPorDefeito;
+                result.Area = userConfig.AreaPorDefeito;
+                result.Cresp = userConfig.CentroRespPorDefeito;
+                result.EmployeeNo = userConfig.EmployeeNo;
+                result.ProcedimentosEmailEnvioParaCA = userConfig.ProcedimentosEmailEnvioParaCa;
+                result.ProcedimentosEmailEnvioParaArea = userConfig.ProcedimentosEmailEnvioParaArea;
+                result.ProcedimentosEmailEnvioParaArea2 = userConfig.ProcedimentosEmailEnvioParaArea2;
+                result.ReceptionConfig = userConfig.PerfilNumeraçãoRecDocCompras;
+                if(userConfig.Rfperfil.HasValue)
+                    result.RFPerfil = (Enumerations.BillingReceptionAreas)userConfig.Rfperfil;
+                if (userConfig.RfperfilVisualizacao.HasValue)
+                    result.RFPerfilVisualizacao = (Enumerations.BillingReceptionUserProfiles)userConfig.RfperfilVisualizacao;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -185,7 +189,9 @@ namespace Hydra.Such.Portal.Controllers
                 ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea,
                 ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2,
                 UtilizadorCriação = User.Identity.Name,
-                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig
+                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig,
+                Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null,
+                RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null,
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -246,6 +252,8 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 userConfig.PerfilNumeraçãoRecDocCompras = data.ReceptionConfig;
+                userConfig.Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null;
+                userConfig.RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null;
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses
@@ -1353,7 +1361,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<Serviços> results = DBServices.GetAll();
             Serviços result = DBServices.GetById(data.Code);
-            if (result == null) {
+            if (result == null)
+            {
                 Serviços tpval = new Serviços();
                 tpval.Descrição = data.Description;
                 tpval.Código = data.Code;
@@ -1362,7 +1371,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBServices.Create(tpval);
             }
 
-           
+
             return Json(result);
         }
         public JsonResult UpdateServices([FromBody] List<ProjectTypesModelViewStr> data)
@@ -1376,7 +1385,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Descrição = x.Description
                 };
-                if (x.Code != "" && x.Code !=null)
+                if (x.Code != "" && x.Code != null)
                 {
                     tpval.DataHoraModificação = DateTime.Now;
                     tpval.UtilizadorModificação = User.Identity.Name;
@@ -2342,7 +2351,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 int count = 1;
                 foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
-                {   
+                {
                     row = excelSheet.CreateRow(count);
 
                     row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
@@ -2728,7 +2737,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(ListToCreate);
         }
-        
+
         //4
         [HttpPost]
         public JsonResult UpdateCreate_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> data)
@@ -5396,6 +5405,164 @@ namespace Hydra.Such.Portal.Controllers
             DBConfiguracaoCCP.Update(CCP);
 
             return Json(data);
+        }
+        #endregion
+
+        #region Config. Mercado Local
+        public IActionResult ConfiguracaoMLResponsaveis()
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfigML()
+        {
+            List<ConfigMercadoLocal> result = DBConfigMercadoLocal.GetAll();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi Criada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Create(linha) == null)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao Criar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi atualizada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Update(linha) == null)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao atualizar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLinhaConfigML([FromBody] ConfigMercadoLocal linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "A linha foi Eliminada com sucesso.";
+
+            try
+            {
+                if (DBConfigMercadoLocal.Delete(linha) == false)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ocorreu um erro ao Eliminar a linha Config Mercado Local.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+        }
+        #endregion
+
+        #region Receção Faturação - Conf. Problemas
+        public IActionResult ConfigProblemas()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetProblemConfigurations()
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var result = billingReceptionService.GetAllProblems();
+            return Json(result);
+        }
+
+        public IActionResult ConfigProblemasDetalhes([FromQuery] string id, [FromQuery] string type)
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.ProblemId = id;
+                ViewBag.ProblemType = type;
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetProblemConfigDetails([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
+        {
+            string problemId = string.Empty;
+            string problemType = string.Empty;
+
+            if (requestParams != null)
+            {
+                problemId = requestParams["id"].ToString();
+                problemType = requestParams["type"].ToString();
+            }
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var result = billingReceptionService.GetQuestionID(problemId, problemType);
+            return Json(result);
         }
         #endregion
     }

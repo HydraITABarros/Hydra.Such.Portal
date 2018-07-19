@@ -122,13 +122,17 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();
         }
-        public List<RecFacturasProblemas> GetQuestionsID(string id,string Cod)
+        public List<RecFacturasProblemas> GetQuestionsID(string id,string type)
         {
-            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Cod && x.Tipo == id).ToList();
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == id && x.Tipo == type).ToList();
         }
         public List<RecFacturasProblemas> GetQuestionsReason()
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF4P").ToList();
+        }
+        public List<RecFacturasProblemas> GetAllProblems()
+        {
+            return ctx.RecFacturasProblemas.ToList();
         }
         public List<RecFaturacaoConfigDestinatarios> GetAreas()
         {
@@ -138,11 +142,18 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFaturacaoConfigDestinatarios.ToList();
         }
+
+        public RecFacturasProblemas Update(RecFacturasProblemas item)
+        {
+            ctx.RecFacturasProblemas.Update(item);
+            return item;
+        }
         #endregion
 
         void IDisposable.Dispose()
         {
-            ctx.Dispose();
+            if(ctx != null)
+                ctx.Dispose();
         }
     }
 }

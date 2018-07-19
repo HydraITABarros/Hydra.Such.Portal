@@ -8,8 +8,10 @@
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
@@ -17,6 +19,11 @@
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <dom-module id="x-detalhetelemoveiscartoes">
     <template>
@@ -52,6 +59,16 @@
         </style>
 
         <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/Get_Cartoes_TipoServico" last-response="{{TipoServico_Cartao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Cartoes_Estado" last-response="{{Estado_Cartao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Cartoes_GPRS" last-response="{{GPRS_Cartao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Cartoes_BarramentoVoz" last-response="{{BarramentoVoz_Cartao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_Cartoes_TarifarioDados" last-response="{{TarifarioDados_Cartao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores_NumMec" last-response="{{UserApprovalList}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/TelemoveisCartoes/GetCartoesDetails"
                    last-response="{{data}}"
@@ -91,71 +108,204 @@
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
         </div>
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Equipamento</paper-tab>
+                            <paper-tab>Detalhe</paper-tab>
+                        </paper-tabs>
 
-        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-            <paper-tab>Geral</paper-tab>
-            <paper-tab>Equipamento</paper-tab>
-            <paper-tab>Detalhe</paper-tab>
-        </paper-tabs>
+                        <iron-pages selected="{{selected}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.numCartao}}" maxlength="30" id="numCartao" name="numCartao" label="Nº Cartão"> </vaadin-text-field>
+                                            </div>
 
-        <iron-pages selected="{{selected}}">
-            <!--Geral-->
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-combo-box items="[[TipoServico_Cartao]]" id="tipoServico" item-value-path="id" item-label-path="value" label="Tipo Serviço" value="{{data.tipoServico}}" required error-message="Este campo é obrigatório">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="100%">
+                                                                    <b>[[item.value]]</b>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
 
+                                            <div class="col-sm-3">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <vaadin-combo-box items="[[Estado_Cartao]]" id="estado" item-value-path="id" item-label-path="value" label="Estado" value="{{data.estado}}" required error-message="Este campo é obrigatório">
+                                                            <template>
+                                                                <table>
+                                                                    <tr>
+                                                                        <td width="100%">
+                                                                            <b>[[item.value]]</b>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        <br />
+                                                        <vaadin-text-field value="{{ data.dataEstado_Show }}" maxlength="10" id="dataEstado" name="dataEstado"> </vaadin-text-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.fimFidelizacao_Show}}" maxlength="10" id="fimFidelizacao_Show" name="fimFidelizacao_Show" label="Fim Fidelização"> </vaadin-text-field>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.contaSuch}}" maxlength="10" id="contaSuch" name="contaSuch" label="Conta SUCH"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <p>&nbsp;</p>
+                                                <vaadin-checkbox style="align-items:center" checked="{{data.plafond100percUtilizador_Show}}" id="plafond100percUtilizador_Show" required>Plafond 100% Utilizador</vaadin-checkbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field type="number" value="{{data.plafondFr}}" id="plafondFr" name="plafondFr" label="Plafond FR"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field type="number" value="{{data.plafondExtra}}" id="plafondExtra" name="plafondExtra" label="Extra Plafond"> </vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="numFuncionario" name="numFuncionario" value="{{data.numFuncionario}}" label="Funcionário" disabled="{{ !_permissions.update }}"
+                                                                items="[[UserApprovalList]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Nº Mec."}, {"field":"value", "name":"Nome"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="codRegiao" name="codRegiao" value="{{data.codRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
+                                                                items="[[CBRegions]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="codAreaFuncional" name="codAreaFuncional" value="{{data.codAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
+                                                                items="[[CBFunctionalAreas]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="codCentroResponsabilidade" name="codCentroResponsabilidade" value="{{data.codCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
+                                                                items="[[CBResponsabilityCenterCodes]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-combo-box items="[[BarramentoVoz_Cartao]]" id="barramentos" item-value-path="value" item-label-path="value" label="Barramentos" value="{{data.barramentos}}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="100%">
+                                                                    <b>[[item.value]]</b>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-combo-box items="[[TarifarioDados_Cartao]]" id="tarifarioDados" item-value-path="value" item-label-path="value" label="Tarifário Dados" value="{{data.tarifarioDados}}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="100%">
+                                                                    <b>[[item.value]]</b>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                
+                                            </div>
+                                            <div class="col-sm-3">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Equipamentos-->
+                            <div>
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+
+                                        <div class="row break_clear">
+
+                                        </div>
+
+                                        <div class="row break_clear">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Detalhe-->
+                            <div>
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="row break_clear">
+
+                                        </div>
+                                        <div class="row break_clear">
+
+                                        </div>
+
+                                        <div class="row break_clear">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </iron-pages>
+
+
+                        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+                        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+                        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
                     </div>
-                    <div class="row break_clear">
-
-                    </div>
-
-                    <div class="row break_clear">
-
-                    </div>
-
                 </div>
             </div>
-
-            <!--Equipamentos-->
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="row break_clear">
-
-                    </div>
-                    <div class="row break_clear">
-
-                    </div>
-
-                    <div class="row break_clear">
-
-                    </div>
-
-                </div>
-            </div>
-
-            <!--Detalhe-->
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="row break_clear">
-
-                    </div>
-                    <div class="row break_clear">
-
-                    </div>
-
-                    <div class="row break_clear">
-
-                    </div>
-
-                </div>
-            </div>
-
-        </iron-pages>
-
-
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        </div>
     </template>
 
     <script>
@@ -163,10 +313,14 @@
             Polymer({
                 is: 'x-detalhetelemoveiscartoes',
                 properties: {
-                    _numCartao: {
+                    _numcartao: {
                         type: String,
                         notify: true,
                         value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
                     },
                     _isCreate: {
                         type: Boolean,
@@ -179,11 +333,13 @@
                     userAllowed: {
                         type: Boolean,
                         value: true
+                    },
+                    _permissions: {
+                        type: Array
                     }
                 },
                 ready: function () {
-                    debugger
-                    this.$.page_databound_ajax.body = JSON.stringify({ "numCartao": this._numCartao });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "numCartao": this._numcartao });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this._numCartao == "")
@@ -197,7 +353,7 @@
                 },
 
                 _create: function () {
-                    
+
                 },
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -209,7 +365,7 @@
                 },
 
                 _update: function () {
-                    
+
                 },
                 _updateResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -220,7 +376,7 @@
                 },
 
                 _delete: function () {
-                    
+
                 },
                 _deleteResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -266,7 +422,7 @@
                 },
 
                 _validateData: function () {
-                    
+
 
                     return true;
                 },
@@ -274,9 +430,9 @@
                 _setFieldsEditability(data) {
                     var _self = this;
 
-                    
+
                 },
-                
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;

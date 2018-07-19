@@ -324,7 +324,10 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 EquipamentoNaoDevolvido = ObjectToTransform.EquipamentoNaoDevolvido,
 
                 TipoServico_Show = ObjectToTransform.TipoServico == 0 ? "Voz" : "Dados",
-                Estado_Show = ObjectToTransform.Estado == 0 ? "Activo" : ObjectToTransform.Estado == 1 ? "Bloqueado" : ObjectToTransform.Estado == 2 ? "Cancelado" : ObjectToTransform.Estado == 3 ? "Alteração de Titular" : ObjectToTransform.Estado == 4 ? "Por Activar" : string.Empty
+                Estado_Show = ObjectToTransform.Estado == 0 ? "Activo" : ObjectToTransform.Estado == 1 ? "Bloqueado" : ObjectToTransform.Estado == 2 ? "Cancelado" : ObjectToTransform.Estado == 3 ? "Alteração de Titular" : ObjectToTransform.Estado == 4 ? "Por Activar" : string.Empty,
+                DataEstado_Show = ObjectToTransform.DataEstado.ToString("yyyy-MM-dd"),
+                FimFidelizacao_Show = ObjectToTransform.FimFidelizacao == null ? "" : ObjectToTransform.FimFidelizacao.Value.ToString("yyyy-MM-dd"),
+                Plafond100percUtilizador_Show = ObjectToTransform.Plafond100percUtilizador == 0 ? false : true
             };
 
             return view;

@@ -78,8 +78,8 @@ namespace Hydra.Such.Portal.Controllers
                     });
                 }
 
-                    return Json(result.OrderByDescending(x => x.ID));
-                }
+                return Json(result.OrderByDescending(x => x.ID));
+            }
 
             return Json(null);
         }

@@ -77,15 +77,12 @@ namespace Hydra.Such.Portal.Services
 
             return item;
         }
-         
-
+        
         public string CreateNumeration(BillingReceptionModel item)
         {
 
             return "";
         }
-
-
 
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
@@ -354,18 +351,16 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetQuestionsProblem();
         }
-
         public RecFacturasProblemas GetQuestionID(string id,string Cod)
         {
-            if (id != null && id != "")
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
             {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
                 return problem;
             }
             else
                 return null;
         }
-       
         public List<RecFacturasProblemas> GetReason()
         {
             return repo.GetQuestionsReason();
@@ -441,6 +436,11 @@ namespace Hydra.Such.Portal.Services
                             "</html>";
 
             return Body;
+        }
+
+        public List<RecFacturasProblemas> GetAllProblems()
+        {
+            return repo.GetAllProblems();
         }
         #endregion
     }
