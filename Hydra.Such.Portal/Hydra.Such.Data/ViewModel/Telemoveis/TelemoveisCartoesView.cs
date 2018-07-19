@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Telemoveis
 {
-    public class TelemoveisCartoesView
+    public class TelemoveisCartoesView : ErrorHandler
     {
         public string NumCartao { get; set; }
         public int TipoServico { get; set; }
@@ -41,10 +41,19 @@ namespace Hydra.Such.Data.ViewModel.Telemoveis
         public int PlafondDados { get; set; }
         public byte EquipamentoNaoDevolvido { get; set; }
 
+        //Campos tratados
         public string TipoServico_Show { get; set; }
         public string Estado_Show { get; set; }
         public string DataEstado_Show { get; set; }
         public string FimFidelizacao_Show { get; set; }
         public bool Plafond100percUtilizador_Show { get; set; }
+        public bool ChamadasInternacionais_Show { get; set; }
+        public bool Roaming_Show { get; set; }
+        public string Consumos_Show { get; set; }
+        public decimal Consumos { get; set; }
+        public string DataAtribuicao_Show { get; set; }
+        public bool EquipamentoNaoDevolvido_Show { get; set; }
+        public string Marca_Show { get; set; }
+        public string DataAlteracao_Show { get; set; }
     }
 }

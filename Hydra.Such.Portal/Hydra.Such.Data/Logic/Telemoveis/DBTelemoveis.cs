@@ -281,11 +281,106 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 return null;
             }
         }
-        
+
+        /// <summary>
+        /// Criação de registo
+        /// </summary>
+        /// <param name="ObjectToCreate"></param>
+        /// <returns></returns>
+        public static TelemoveisCartoes Create(TelemoveisCartoes ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToCreate.DataEstado = DateTime.Now;
+                    ctx.TelemoveisCartoes.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Actualização de registo
+        /// </summary>
+        /// <param name="ObjectToUpdate"></param>
+        /// <returns></returns>
+        public static TelemoveisCartoes Update(TelemoveisCartoes ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToUpdate.DataAlteracao = DateTime.Now;
+                    ctx.TelemoveisCartoes.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Eliminação do registo
+        /// </summary>
+        /// <param name="ObjectToDelete"></param>
+        /// <returns></returns>
+        public static TelemoveisCartoes Delete(TelemoveisCartoes ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.TelemoveisCartoes.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         public static TelemoveisCartoesView CastTelemoveisCartoesToView(TelemoveisCartoes ObjectToTransform)
         {
+            decimal _Consumo = 0;
+            string _Marca = string.Empty;
+
+            if (ObjectToTransform != null)
+            {
+                SuchDBContext _context = new SuchDBContext();
+                try
+                {
+                    List<TelemoveisMovimentos> list = _context.TelemoveisMovimentos.Where(m => m.NumCartao == ObjectToTransform.NumCartao).ToList();
+
+                    foreach (var mov in list)
+                    {
+                        _Consumo += mov.ValorComIva;
+                    }
+
+                    _Marca = _context.TelemoveisEquipamentos.Where(e => e.Imei == ObjectToTransform.Imei).FirstOrDefault().Marca.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+
             TelemoveisCartoesView view = new TelemoveisCartoesView()
             {
                 NumCartao = ObjectToTransform.NumCartao,
@@ -327,7 +422,15 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Activo" : ObjectToTransform.Estado == 1 ? "Bloqueado" : ObjectToTransform.Estado == 2 ? "Cancelado" : ObjectToTransform.Estado == 3 ? "Alteração de Titular" : ObjectToTransform.Estado == 4 ? "Por Activar" : string.Empty,
                 DataEstado_Show = ObjectToTransform.DataEstado.ToString("yyyy-MM-dd"),
                 FimFidelizacao_Show = ObjectToTransform.FimFidelizacao == null ? "" : ObjectToTransform.FimFidelizacao.Value.ToString("yyyy-MM-dd"),
-                Plafond100percUtilizador_Show = ObjectToTransform.Plafond100percUtilizador == 0 ? false : true
+                Plafond100percUtilizador_Show = ObjectToTransform.Plafond100percUtilizador == 0 ? false : true,
+                ChamadasInternacionais_Show = ObjectToTransform.ChamadasInternacionais == 0 ? false : true,
+                Roaming_Show = ObjectToTransform.Roaming == 0 ? false : true,
+                Consumos_Show = _Consumo.ToString(),
+                Consumos = _Consumo,
+                DataAtribuicao_Show = ObjectToTransform.DataAtribuicao == null ? "" : ObjectToTransform.DataAtribuicao.Value.ToString("yyyy-MM-dd"),
+                EquipamentoNaoDevolvido_Show = ObjectToTransform.EquipamentoNaoDevolvido == 0 ? false : true,
+                Marca_Show = _Marca,
+                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd")
             };
 
             return view;
