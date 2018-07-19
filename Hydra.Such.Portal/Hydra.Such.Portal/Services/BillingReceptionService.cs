@@ -156,7 +156,7 @@ namespace Hydra.Such.Portal.Services
         {
             //Update Header
             RecFacturasProblemas questao = null;
-            questao = GetQuestionID(wfItemLast.CodTipoProblema, wfItemLast.CodProblema);
+            questao = GetQuestionID(wfItemLast.CodProblema, wfItemLast.CodTipoProblema);
 
             if (questao.Devolvido == true)
                 item.Estado = BillingReceptionStates.Devolvido;
@@ -203,7 +203,7 @@ namespace Hydra.Such.Portal.Services
             wfItem.Comentario = wfItemLast.Comentario;
             wfItem.Utilizador = postedByUserName;
 
-           // repo.Create(wfItem);
+           repo.Create(wfItem);
 
             try
             {
@@ -351,11 +351,11 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetQuestionsProblem();
         }
-        public RecFacturasProblemas GetQuestionID(string id,string Cod)
+        public RecFacturasProblemas GetQuestionID(string id,string type)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(Cod))
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
             {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
                 return problem;
             }
             else

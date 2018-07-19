@@ -28,7 +28,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Local { get; set; }
         public string NumAcordoFornecedor { get; set; }
         public string Destinatario { get; set; }
-        public BillingReceptionAreas IdAreaPendente { get; set; }
+        public BillingReceptionAreas? IdAreaPendente { get; set; }
         public string DataUltimaInteracao { get; set; }
         public DateTime? DocumentoCriadoEm { get; set; }
         public string DocumentoCriadoPor { get; set; }
