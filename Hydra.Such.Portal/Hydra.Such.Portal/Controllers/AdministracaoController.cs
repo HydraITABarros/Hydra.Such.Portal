@@ -146,6 +146,11 @@ namespace Hydra.Such.Portal.Controllers
                     result.RFPerfil = (Enumerations.BillingReceptionAreas)userConfig.Rfperfil;
                 if (userConfig.RfperfilVisualizacao.HasValue)
                     result.RFPerfilVisualizacao = (Enumerations.BillingReceptionUserProfiles)userConfig.RfperfilVisualizacao;
+                result.RFFiltroArea = userConfig.RffiltroArea;
+                result.RFNomeAbreviado = userConfig.RfnomeAbreviado;
+                result.RFRespostaContabilidade = userConfig.RfrespostaContabilidade;
+                result.RFAlterarDestinatarios = userConfig.RfalterarDestinatarios;
+                result.RFMailEnvio = userConfig.RfmailEnvio;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -192,6 +197,11 @@ namespace Hydra.Such.Portal.Controllers
                 PerfilNumeraçãoRecDocCompras = data.ReceptionConfig,
                 Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null,
                 RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null,
+                RffiltroArea = data.RFFiltroArea,
+                RfnomeAbreviado = data.RFNomeAbreviado,
+                RfrespostaContabilidade = data.RFRespostaContabilidade,
+                RfalterarDestinatarios = data.RFAlterarDestinatarios,
+                RfmailEnvio = data.RFMailEnvio,
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -254,6 +264,12 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.PerfilNumeraçãoRecDocCompras = data.ReceptionConfig;
                 userConfig.Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null;
                 userConfig.RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null;
+                userConfig.RffiltroArea = data.RFFiltroArea;
+                userConfig.RfnomeAbreviado = data.RFNomeAbreviado;
+                userConfig.RfrespostaContabilidade = data.RFRespostaContabilidade;
+                userConfig.RfalterarDestinatarios = data.RFAlterarDestinatarios;
+                userConfig.RfmailEnvio = data.RFMailEnvio;
+
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses

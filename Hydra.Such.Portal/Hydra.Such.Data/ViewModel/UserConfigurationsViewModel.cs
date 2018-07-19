@@ -21,6 +21,12 @@ namespace Hydra.Such.Data.ViewModel
         public int? ReceptionConfig { get; set; }
         public BillingReceptionAreas? RFPerfil { get; set; }
         public BillingReceptionUserProfiles? RFPerfilVisualizacao { get; set; }
+        public string RFFiltroArea { get; set; }
+        public string RFNomeAbreviado { get; set; }
+        public bool? RFRespostaContabilidade { get; set; }
+        public bool? RFAlterarDestinatarios { get; set; }
+        public string RFMailEnvio { get; set; }
+
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }

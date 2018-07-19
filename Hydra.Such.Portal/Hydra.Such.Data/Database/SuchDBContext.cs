@@ -93,6 +93,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ProjetosFaturação> ProjetosFaturação { get; set; }
         public virtual DbSet<RececaoFaturacao> RececaoFaturacao { get; set; }
         public virtual DbSet<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
+        public virtual DbSet<RececaoFaturacaoWorkflowAnexo> RececaoFaturacaoWorkflowAnexo { get; set; }
         public virtual DbSet<RecFacturasProblemas> RecFacturasProblemas { get; set; }
         public virtual DbSet<RecFaturacaoConfigDestinatarios> RecFaturacaoConfigDestinatarios { get; set; }
         public virtual DbSet<RegistoDeAtas> RegistoDeAtas { get; set; }
@@ -110,6 +111,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TelemoveisCartoes> TelemoveisCartoes { get; set; }
         public virtual DbSet<TelemoveisEquipamentos> TelemoveisEquipamentos { get; set; }
         public virtual DbSet<TelemoveisMovimentos> TelemoveisMovimentos { get; set; }
+        public virtual DbSet<TelemoveisOcorrencias> TelemoveisOcorrencias { get; set; }
         public virtual DbSet<TemposPaCcp> TemposPaCcp { get; set; }
         public virtual DbSet<TextoFaturaContrato> TextoFaturaContrato { get; set; }
         public virtual DbSet<TipoDeProjeto> TipoDeProjeto { get; set; }
@@ -127,8 +129,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1188,9 +1188,25 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Região por defeito")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.RfalterarDestinatarios).HasColumnName("RFAlterarDestinatarios");
+
+                entity.Property(e => e.RffiltroArea)
+                    .HasColumnName("RFFiltroArea")
+                    .HasMaxLength(120);
+
+                entity.Property(e => e.RfmailEnvio)
+                    .HasColumnName("RFMailEnvio")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.RfnomeAbreviado)
+                    .HasColumnName("RFNomeAbreviado")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.Rfperfil).HasColumnName("RFPerfil");
 
                 entity.Property(e => e.RfperfilVisualizacao).HasColumnName("RFPerfilVisualizacao");
+
+                entity.Property(e => e.RfrespostaContabilidade).HasColumnName("RFRespostaContabilidade");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -6180,6 +6196,15 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_RececaoFaturacaoWorkflow_RecFacturasProblemas");
             });
 
+            modelBuilder.Entity<RececaoFaturacaoWorkflowAnexo>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Caminho).HasColumnType("nchar(200)");
+
+                entity.Property(e => e.Comentario).HasColumnType("nchar(10)");
+            });
+
             modelBuilder.Entity<RecFacturasProblemas>(entity =>
             {
                 entity.HasKey(e => new { e.Codigo, e.Tipo });
@@ -7201,6 +7226,39 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorComIva)
                     .HasColumnName("Valor_Com_IVA")
                     .HasColumnType("decimal(, 20)");
+            });
+
+            modelBuilder.Entity<TelemoveisOcorrencias>(entity =>
+            {
+                entity.HasKey(e => e.NumOcorrencia);
+
+                entity.ToTable("Telemoveis_Ocorrencias");
+
+                entity.Property(e => e.NumOcorrencia).HasColumnName("Num_Ocorrencia");
+
+                entity.Property(e => e.DataAlteracao)
+                    .HasColumnName("Data_Alteracao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataOcorrencia)
+                    .HasColumnName("Data_Ocorrencia")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NumCartao)
+                    .IsRequired()
+                    .HasColumnName("Num_Cartao")
+                    .HasMaxLength(9)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ocorrencia)
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Utilizador)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TemposPaCcp>(entity =>
