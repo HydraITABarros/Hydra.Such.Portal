@@ -74,6 +74,7 @@
         <iron-ajax auto url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ Vendors }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ TiposProblemas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -348,32 +349,32 @@
                         </template>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendenteDescricao}}" id="txtArea" disabled></vaadin-text-field>
+                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente}}" id="txtArea" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="{{ _destinatarioWorkFlow }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{ data.areaPendente2 }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                        <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-1">
-                        <vaadin-text-field type="text" value="" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.tipoProblema}}" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-9">
-                        <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{_descricaoWorkFlow}}" disabled></vaadin-text-field>
+                        <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{data.descricaoProblema}}" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.dataPassaPendente}}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-10">
-                        <such-textarea rows="3" id="txtComment" label="Comentário" disabled="{{_isNotes}}"></such-textarea>
+                        <such-textarea rows="3" value="{{data.descricao}}" id="txtComment" label="Comentário" disabled="{{_isNotes}}"></such-textarea>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.dataResolucao}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -383,7 +384,6 @@
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _checkPending }}">
                             <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
-                            <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
                     </div>
                 </div>
@@ -426,10 +426,10 @@
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.utilizador}}
+                                {{item.destinatario}}
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -477,6 +477,17 @@
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                </div>
             </div>
 
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
@@ -493,7 +504,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-6">
-                        <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
+                        <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
                     </div>
                 </div>
 
@@ -545,9 +556,10 @@
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field label=" " type="text" id="txtdestinatario"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" id="txt2"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
                         </div>
                     </div>
                 </div>
@@ -748,23 +760,6 @@
                             this.$.txtDatePeding.value = dataFormatada;
                         }
                         this.$.txtDestProblema.value = workFlow.utilizador;
-
-                        //Botão Resposta
-                        debugger;
-                        if (this.data.estado == 1) {
-                            if (this.data.AreaPendente == 0) {
-                                this._hiddeAnswerButton = true;
-                            } else if (this.data.AreaPendente == 1) {
-                                if (this._rfperfil == "Aprovisionamento") {
-                                    this._hiddeAnswerButton = true;
-                                }
-                            } else {
-                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
-
-                                    this._hiddeAnswerButton = false;
-                                }
-                            }
-                        }
                     }
                 },
                 _supplierSelected: function (e) {
@@ -891,16 +886,16 @@
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                            var workFlow = this.updatedItem.workflowItems[this.updatedItem.workflowItems.length - 1];
-                            this.$.txtComment.value = workFlow.comentario;
-                            this.$.codDescricao.value = workFlow.codTipoProblema;
-                            this.$.txtDescription.value = workFlow.descricao;
-                            var data = new Date(workFlow.dataCriacao);
-                            var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                            if (dataFormatada != undefined) {
-                                this.$.txtDatePeding.value =dataFormatada;
-                            }
-                            this.$.txtDestProblema.value = workFlow.utilizador;
+                            //var workFlow = this.updatedItem.workflowItems[this.updatedItem.workflowItems.length - 1];
+                            //this.$.txtComment.value = workFlow.comentario;
+                            //this.$.codDescricao.value = workFlow.codTipoProblema;
+                            //this.$.txtDescription.value = workFlow.descricao;
+                            //var data = new Date(workFlow.dataCriacao);
+                            //var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                            //if (dataFormatada != undefined) {
+                            //    this.$.txtDatePeding.value =dataFormatada;
+                            //}
+                            //this.$.txtDestProblema.value = workFlow.destinatario;
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -971,6 +966,7 @@
                         var problem = this.TiposProblemas.find(x => x.id == id);
                         this._descricaoProblema = problem.value;
                     }
+                    this._areaChanged();
                 },
                 _reasonTypeChanged: function (e) {
                     var id = this.$.cmbMotivos.value;
@@ -990,12 +986,45 @@
 
 
                 _areaChanged: function (e) {
-                    var id = e.detail.value;
-                    if (id != undefined && id != "") {
-                        var areas = this.Areas.find(x => x.id == id);
-                        this.$.txtdestinatario.value = areas.extra;
+                    var idArea = this.$.txtAreadgl.value;
+                    var idProblema = this.$.cmbProblemas.value;
+                    var destino = null;
+                    if (idArea != undefined && idArea != "" && idProblema != undefined && idProblema != "") {
+                        var problem = this.TiposProblemas.find(x => x.id == idProblema);
+                        //Caso Envio Areas Null
+                        //Por defeito Aprovisionamento(U03)
+                        idArea = idArea.replace('1A-', '');
+                        if (problem.extra == null || problem.extra == "") {
+                            var codDestino = "U03-" + idArea;
+                            destino = this.Destinos.find(x => x.id == codDestino);
+                            this.$.txtArea2.value = "Aprovisionamento";
+                            this.$.txtdestinatario.value = destino.extra;
+                        }
+                        else {
+                            // Caso Envio Area contem 1 EX (-50-)
+                            if (problem.extra.length <= 4) {
+                                problem.extra = problem.extra.replace('-', '');
+                                var codDestino = "U-" + problem.extra + "-" + idArea;
+                                destino = this.Destinos.find(x => x.id == codDestino);
+                                this.$.txtArea2.value = destino.value;
+                                this.$.txtdestinatario.value = destino.extra;
+                            }
+                            // Caso Envio Area contem varios EX (-10=PDIAS-20=MFRANCO-)
+                            else {
+                                var fields = problem.extra.split('-');
+                                var codDestino = "U03-" + idArea;
+                                for (i = 0; i < fields.length; i++) {
+                                    var txts = fields[i].split('=');
+                                    if (txts[0] == idArea) {
+                                        this.$.txtArea2.value = "Aprovisionamento";
+                                        this.$.txtdestinatario.value = txts[1];
+
+                                    }
+                                }
+                            }
+                        }
                     }
-                },
+                 },
                 _anexoChanged: function (e) {
                     if (this.$.txtAnexo.checked == true) {                        
                         this._isAnexarFicheiro = false;
@@ -1058,36 +1087,49 @@
                 },
                 _dlgSend: function () {
                     if (this._validateInputForAccounting()) {
-                        var workflow = null;;
-                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                        if (this._isInternalDestination == true) {                          
-                            workflow = {
-                                id: idWork.id+1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: this.$.cmbProblemas.value,
-                                codProblema: "RF1P",
-                                descricao: this.$.txtdescricaoProblema.value,
-                                utilizador: this.$.txtdestinatario.value,
-                                comentario: this.$.txtCommentdgl.value,
-                                enderecoFornecedor: selVendor.email    
-                            };
+                        if (this.$.txtDatePeding.value != "") {
+                            var txt
+                            if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                                 txt = true;
+                            } else {
+                                 txt = false;
+                            }
                         }
-                        else {
-                            workflow = {
-                                id: idWork.id + 1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: this.$.cmbMotivos.value,
-                                codProblema: "RF4P",
-                                descricao: this.$.txtmotivo.value,
-                                utilizador: this.$.txtFornecedor.value,
-                                comentario: this.$.txtCommentdgl.value,
-                                enderecoFornecedor: selVendor.email                           
-                            };
+                        if (txt == true) {
+                            var workflow = null;;
+                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+                            var Area = this.Areas.find(x => x.id = this.$.txtAreadgl.value);
+                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                            if (this._isInternalDestination == true) {
+                                workflow = {
+                                    id: idWork.id + 1,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbProblemas.value,
+                                    codProblema: "RF1P",
+                                    descricao: this.$.txtdescricaoProblema.value,
+                                    destinatario: this.$.txtdestinatario.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email,
+                                    area: Area.value,
+                                    areaWorkflow: this.$.txtArea2.value,
+                                    codDestino: this.$.txtCodDestino.value,
+                                };
+                            }
+                            else {
+                                workflow = {
+                                    id: idWork.id + 1,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbMotivos.value,
+                                    codProblema: "RF4P",
+                                    descricao: this.$.txtmotivo.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email
+                                };
+                            }
+                            this.data.workflowItems.push(workflow);
+                            this.$.page_send_ajax.body = JSON.stringify(this.data);
+                            this.$.page_send_ajax.generateRequest();
                         }
-                        this.data.workflowItems.push(workflow);
-                        this.$.page_send_ajax.body = JSON.stringify(this.data);
-                        this.$.page_send_ajax.generateRequest();
                         this.$.dialogSendPeding.close();                   
 
                     }
