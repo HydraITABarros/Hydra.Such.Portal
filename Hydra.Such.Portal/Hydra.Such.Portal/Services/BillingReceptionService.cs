@@ -353,9 +353,9 @@ namespace Hydra.Such.Portal.Services
         }
         public RecFacturasProblemas GetQuestionID(string id,string Cod)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(Cod))
             {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
                 return problem;
             }
             else
