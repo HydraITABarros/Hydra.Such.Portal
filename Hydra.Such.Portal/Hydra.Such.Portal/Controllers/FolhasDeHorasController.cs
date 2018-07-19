@@ -2498,7 +2498,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
 
-                    if (data.Terminada == null ? false : (bool)data.Terminada)
+                    if (data.Terminada == null ? false : !(bool)data.Terminada)
                     {
                         result.eReasonCode = 101;
                         result.eMessage = "A Folha de Horas tem que ser Terminada antes de ser Validada.";
@@ -2524,9 +2524,10 @@ namespace Hydra.Such.Portal.Controllers
                                     var parameters = new[]
                                     {
                                     new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                                    new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                    new SqlParameter("@NoUtilizador", data.EmpregadoNo),
+                                    new SqlParameter("@NoValidador", User.Identity.Name)
                                 };
-                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
+                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                     if (result.eReasonCode == 0)
                                     {
@@ -2745,10 +2746,11 @@ namespace Hydra.Such.Portal.Controllers
                                     var parameters = new[]
                                     {
                                         new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo),
+                                        new SqlParameter("@NoValidador", User.Identity.Name)
                                     };
 
-                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
+                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                     if (result.eReasonCode == 0)
                                     {
@@ -2932,10 +2934,11 @@ namespace Hydra.Such.Portal.Controllers
                                     var parameters = new[]
                                     {
                                         new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo),
+                                        new SqlParameter("@NoValidador", User.Identity.Name)
                                     };
 
-                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
+                                    result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                     if (result.eReasonCode == 0)
                                     {
