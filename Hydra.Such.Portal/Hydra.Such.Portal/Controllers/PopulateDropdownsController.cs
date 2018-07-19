@@ -26,6 +26,7 @@ using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.Logic.Telemoveis;
 
 namespace Hydra.Such.Portal.Controllers
 {
