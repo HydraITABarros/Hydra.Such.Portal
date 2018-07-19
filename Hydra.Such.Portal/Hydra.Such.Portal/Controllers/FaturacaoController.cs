@@ -50,8 +50,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhesRecFatura(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
-            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
 
             if (UPerm != null && UPerm.Read.Value)
             {
