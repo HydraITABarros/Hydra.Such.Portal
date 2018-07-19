@@ -64,8 +64,8 @@
                     </div>
 
                     <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox id="chkDevolvido" value="{{ data.devolvido }}">Devolvido</vaadin-checkbox>
-                        <vaadin-checkbox id="chkBloqueado" value="{{ data.bloqueado }}">Bloqueado</vaadin-checkbox>
+                        <vaadin-checkbox id="chkDevolvido" checked="{{ data.devolvido }}">Devolvido</vaadin-checkbox>
+                        <vaadin-checkbox id="chkBloqueado" checked="{{ data.bloqueado }}">Bloqueado</vaadin-checkbox>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -77,9 +77,9 @@
         </div>
 
         @*CRUD NEW PROFILEMODEL*@
-        <iron-ajax url="/Administracao/CreateProfileModel"
+        <iron-ajax url="/Administracao/CreateProblemConfig"
                    id="ajax_create"
-                   last-response="{{data}}"
+                   last-response="{{createdItem}}"
                    method="post"
                    handle-as="json"
                    on-response="_responseProcessor"
@@ -107,27 +107,23 @@
                    on-response="_deleteResponse"
                    content-type="application/json"></iron-ajax>
 
-
-
         <div class="marginSpace">
-            @*@if (ViewBag.ProfileModelId == 0)
-        {*@
+            @if (string.IsNullOrEmpty(ViewBag.ProblemId))
+            {
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
-        @*}
-        else
-        {*@
+            }
+            else
+            {
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
             </template>
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
-        @*}*@
+            }
         </div>
-
-
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
@@ -172,7 +168,7 @@
                         this.$.ajax_create.url = "/Administracao/UpdateProfileModel";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
-                        this.openToast("Perfil modelo atualizado com sucesso!");
+                        this.openToast("Registo atualizado com sucesso!");
                     } else {
                         this.openToastError('É obrigatório preencher o campo Descrição.');
                     }
@@ -182,17 +178,20 @@
                     this.$.ajax_create.body = JSON.stringify(this.data);
                     this.$.ajax_create.generateRequest();
                 },
-                _ResponseProcessor: function (e) {
+                _responseProcessor: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            window.location.href = "/Administracao/PerfisModeloDetalhes/" + this.data.id;
+                            if(this.createdItem.eReasonCode == 1)
+                                window.location.href = "/Administracao/ConfigProblemasDetalhes/?id=" + this.data.codigo + "&type=" + this.data.tipo;
+                            else
+                                this.openToastError('Ocorreu um erro ao criar o registo.');
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.id == 0) {
-                                window.location.href = "/Administracao/PerfisModelo";
+                                window.location.href = "/Administracao/ConfigProblemas";
                             } else {
-                                this.openToastError('Ocorreu um erro ao remover o Perfil Modelo');
+                                this.openToastError('Ocorreu um erro ao remover o registo.');
                             }
                         }
                         else
@@ -201,14 +200,14 @@
                         }
                     } else {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            this.openToastError('Ocorreu um erro ao criar o perfil modelo.');
+                            this.openToastError('Ocorreu um erro ao criar o registo.');
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
-                            this.openToastError('Ocorreu um erro ao remover o Perfil Modelo');
+                            this.openToastError('Ocorreu um erro ao remover o registo.');
                         }
                         else {
                             this.$.grid_databound.generateRequest();
-                            this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                            this.openToastError('Ocorreu um erro ao atualizar o registo.');
                         }
                     }
                 },
