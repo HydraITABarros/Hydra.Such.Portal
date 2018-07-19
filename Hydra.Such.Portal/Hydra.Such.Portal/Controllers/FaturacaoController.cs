@@ -50,11 +50,14 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhesRecFatura(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Id = id;
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
+                ViewBag.RFPerfil = userConfig.RFPerfil;
                 return View();
             }
             else
@@ -76,42 +79,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-        [HttpGet]
-        public JsonResult GetProblems()
-        {
-            List<DDMessageString> result = billingRecService.GetProblem().Select(x => new DDMessageString()
-            {
-                id = x.Tipo,
-                value = x.Descricao
-            }).ToList();
-
-            return Json(result);
-        }
-        [HttpGet]
-        public JsonResult GetReasons()
-        {
-            List<DDMessageString> result = billingRecService.GetReason().Select(x => new DDMessageString()
-            {
-                id = x.Tipo,
-                value = x.Descricao
-            }).ToList();
-
-            return Json(result);
-        }
-
-        [HttpGet]
-        public JsonResult GetAreas()
-        {
-            List<DDMessageRelated> result = billingRecService.GetAreas().Select(x => new DDMessageRelated()
-            {
-                id = x.Codigo,
-                value = x.CodArea,
-                extra=x.Destinatario
-            }).ToList();
-
-            return Json(result);
-        }
-
+      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -200,7 +168,7 @@ namespace Hydra.Such.Portal.Controllers
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
-                workflow.AreaWorkflow = item.AreaPendenteDescricao;
+                workflow.AreaWorkflow = item.AreaPendente;
                 item.WorkflowItems.Add(workflow);
 
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
@@ -257,6 +225,59 @@ namespace Hydra.Such.Portal.Controllers
             //    item.eMessage = "O registo não pode ser nulo";
             //}
             return Json(false);
+        }
+
+        [HttpGet]
+        public JsonResult GetProblems()
+        {
+
+            List<DDMessageRelated> result = billingRecService.GetProblem().Select(x => new DDMessageRelated()
+            {
+                id = x.Tipo,
+                value = x.Descricao,
+                extra = x.EnvioAreas
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult GetReasons()
+        {
+            List<DDMessageString> result = billingRecService.GetReason().Select(x => new DDMessageString()
+            {
+                id = x.Tipo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult GetAreas()
+        {
+            List<DDMessageRelated> result = billingRecService.GetAreas().Select(x => new DDMessageRelated()
+            {
+                id = x.Codigo,
+                value = x.CodArea,
+                extra = x.Destinatario
+            }).ToList();
+
+            return Json(result);
+        }
+
+       
+        [HttpGet]
+        public JsonResult GetDestino()
+        {
+            List<DDMessageRelated> result = billingRecService.GetDestination().Select(x => new DDMessageRelated()
+            {
+                id = x.Codigo,
+                value = x.CodArea,
+                extra = x.Destinatario
+            }).ToList();
+
+            return Json(result);
         }
     }
 }

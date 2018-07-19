@@ -22,7 +22,8 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-<x-rececaofaturasdetails></x-rececaofaturasdetails>
+
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" ></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -73,7 +74,10 @@
         <iron-ajax auto url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ Vendors }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ TiposProblemas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
@@ -123,13 +127,13 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/SendBillingReception"
-           last-response="{{ updatedItem }}"
-           id="page_send_ajax"
-           on-response="_updateResponse"
-           method="post"
-           handle-as="json"
-           content-type="application/json">
-       </iron-ajax>
+                   last-response="{{ updatedItem }}"
+                   id="page_send_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
 
         <div class="subMenu">
@@ -324,82 +328,83 @@
                     </template>
                 </div>
             </div>
-            
-                <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
-                <div class="panel-body">
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-sm-3">
-                            <template is="dom-if" if="{{ !_checkPending }}">
-                                <vaadin-text-field label=" " type="text" value="{{data.id}}" id="txtid" disabled></vaadin-text-field>
-                            </template>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field label="Área" type="text" value="{{data.areaPendenteDescricao}}" id="txtArea" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="{{ _destinatarioWorkFlow }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-1">
-                            <vaadin-text-field type="text" value="" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-9">
-                            <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{_descricaoWorkFlow}}" disabled></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-10">
-                            <such-textarea rows="3" id="txtComment"  label="Comentário" disabled="{{_isNotes}}"></such-textarea>
-                        </div>
-                        <div class="col-sm-2">
-                            <vaadin-text-field type="text" value="" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-9">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </div>
-                        <div class="col-sm-3">
-                            <template is="dom-if" if="{{ _checkPending }}">
-                                <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
-                            </template>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                    </div>
-                    <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="data"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
 
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.data}}
-                                </template>
+            <div class="panel-heading" style="font-size:16px">Ponto de Situação</div>
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[States]]" id="cmbEstados" item-value-path="id" item-label-path="value" value="{{ data.estado }}" label="Estado" disabled>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
                             </template>
-                        </vaadin-grid-column>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <template is="dom-if" if="{{ !_checkPending }}">
+                            <vaadin-text-field label=" " type="text" value="{{data.id}}" id="txtid" disabled></vaadin-text-field>
+                        </template>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente}}" id="txtArea" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{ data.areaPendente2 }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-1">
+                        <vaadin-text-field type="text" value="{{data.tipoProblema}}" id="codDescricao" name="codDescricao" label="Descrição" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-9">
+                        <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{data.descricaoProblema}}" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{data.dataPassaPendente}}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-10">
+                        <such-textarea rows="3" value="{{data.descricao}}" id="txtComment" label="Comentário" disabled="{{_isNotes}}"></such-textarea>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field type="text" value="{{data.dataResolucao}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-3">
+                        <template is="dom-if" if="{{ _checkPending }}">
+                            <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
+                            <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
+                        </template>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                </div>
+                <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="data"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.data}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
 
                     <vaadin-grid-column width="160px" resizable>
                         <template class="header">
@@ -422,10 +427,10 @@
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{item.utilizador}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.utilizador}}
+                                {{item.destinatario}}
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -473,6 +478,17 @@
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                </div>
             </div>
 
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
@@ -489,7 +505,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-6">
-                        <vaadin-text-field label=" " type="text" value="{{ data.codFornecedor }}" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
+                        <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
                     </div>
                 </div>
 
@@ -541,9 +557,10 @@
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field label=" " type="text" id="txtdestinatario"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" id="txt2"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
                         </div>
                     </div>
                 </div>
@@ -571,11 +588,54 @@
                     </div>
                 </div>
             </paper-dialog>
-        </div>
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-    </template>
+            <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ ProblemasPorPerfil ]]" id="cmbProblemasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
+                    </div>
+
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgValidateAnswer">&nbsp; Enviar</paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
+        </div>
+                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+</template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -602,6 +662,10 @@
                         value: true,
                     },
                     _isAnexarFicheiro: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _isAnexarFicheiroResposta: {
                         type: Boolean,
                         value: false,
                     },
@@ -649,6 +713,14 @@
                         type: Boolean,
                         value: false,
                     },
+                    _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _hiddeAnswerButton: {
+                        type: Boolean,
+                        value: true,
+                    }
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -689,6 +761,23 @@
                             this.$.txtDatePeding.value = dataFormatada;
                         }
                         this.$.txtDestProblema.value = workFlow.utilizador;
+
+                        //Botão Resposta
+                        debugger;
+                        if (this.data.estado == 1) {
+                            if (this.data.AreaPendente == 0) {
+                                this._hiddeAnswerButton = true;
+                            } else if (this.data.AreaPendente == 1) {
+                                if (this._rfperfil == "Aprovisionamento") {
+                                    this._hiddeAnswerButton = true;
+                                }
+                            } else {
+                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+
+                                    this._hiddeAnswerButton = false;
+                                }
+                            }
+                        }
                     }
                 },
                 _supplierSelected: function (e) {
@@ -743,6 +832,30 @@
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
+
+                _validateInputForAnswer: function () {
+                    if (this.data.estado == null || this.data.estado == "") {
+                        this._openToastError("O Estado tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.areaPendenteDescricao == "" || this.data.areaPendenteDescricao == null) {
+                        this._openToastError("Área Pendente tem que estar preenchida.");
+                        return false;
+                    }
+                    if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
+                        this._openToastError("Destinatário tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
+                        this._openToastError("Cód. Descrição tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                        this._openToastError("Descrição tem que estar preenchida.");
+                        return false;
+                    }
+                    return true;
+                },
                 _create: function () {
                     if (this._validateInputForNew()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -791,15 +904,17 @@
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                            var workFlow = this.updatedItem.workflowItems[this.updatedItem.workflowItems.length - 1];
-                            this.$.txtComment.value = workFlow.comentario;
-                            this.$.codDescricao.value = workFlow.codTipoProblema;
-                            this.$.txtDescription.value = workFlow.descricao;
-                            var data = new Date(workFlow.dataCriacao);
-                            var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                            if (dataFormatada != undefined) {
-                                this.$.txtDatePeding.value =dataFormatada;
-                            }
+                            //var workFlow = this.updatedItem.workflowItems[this.updatedItem.workflowItems.length - 1];
+                            //this.$.txtComment.value = workFlow.comentario;
+                            //this.$.codDescricao.value = workFlow.codTipoProblema;
+                            //this.$.txtDescription.value = workFlow.descricao;
+                            //var data = new Date(workFlow.dataCriacao);
+                            //var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                            //if (dataFormatada != undefined) {
+                            //    this.$.txtDatePeding.value =dataFormatada;
+                            //}
+                            //this.$.txtDestProblema.value = workFlow.destinatario;
+                            
                             this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         else {
@@ -871,6 +986,7 @@
                         var problem = this.TiposProblemas.find(x => x.id == id);
                         this._descricaoProblema = problem.value;
                     }
+                    this._areaChanged();
                 },
                 _reasonTypeChanged: function (e) {
                     var id = this.$.cmbMotivos.value;
@@ -879,11 +995,54 @@
                         this.$.txtmotivo.value = motivos.value;
                     }
                 },
-                _areaChanged: function (e) {
-                    var id = e.detail.value;
+
+                _answerChange: function () {
+                    var id = this.$.cmbProblemasPorPerfil.value;
                     if (id != undefined && id != "") {
-                        var areas = this.Areas.find(x => x.id == id);
-                        this.$.txtdestinatario.value = areas.extra;
+                        var resposta = this.ProblemasPorPerfil.find(x => x.id == id);
+                        this.$.txtdescricaoResposta.value = resposta.value;
+                    }
+                },
+
+
+                _areaChanged: function (e) {
+                    var idArea = this.$.txtAreadgl.value;
+                    var idProblema = this.$.cmbProblemas.value;
+                    var destino = null;
+                    if (idArea != undefined && idArea != "" && idProblema != undefined && idProblema != "") {
+                        var problem = this.TiposProblemas.find(x => x.id == idProblema);
+                        //Caso Envio Areas Null
+                        //Por defeito Aprovisionamento(U03)
+                        idArea = idArea.replace('1A-', '');
+                        if (problem.extra == null || problem.extra == "") {
+                            var codDestino = "U03-" + idArea;
+                            destino = this.Destinos.find(x => x.id == codDestino);
+                            this.$.txtArea2.value = "Aprovisionamento";
+                            this.$.txtdestinatario.value = destino.extra;
+                        }
+                        else {
+                            // Caso Envio Area contem 1 EX (-50-)
+                            if (problem.extra.length <= 4) {
+                                problem.extra = problem.extra.replace('-', '');
+                                var codDestino = "U-" + problem.extra + "-" + idArea;
+                                destino = this.Destinos.find(x => x.id == codDestino);
+                                this.$.txtArea2.value = destino.value;
+                                this.$.txtdestinatario.value = destino.extra;
+                            }
+                            // Caso Envio Area contem varios EX (-10=PDIAS-20=MFRANCO-)
+                            else {
+                                var fields = problem.extra.split('-');
+                                var codDestino = "U03-" + idArea;
+                                for (i = 0; i < fields.length; i++) {
+                                    var txts = fields[i].split('=');
+                                    if (txts[0] == idArea) {
+                                        this.$.txtArea2.value = "Aprovisionamento";
+                                        this.$.txtdestinatario.value = txts[1];
+
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 _anexoChanged: function (e) {
@@ -893,6 +1052,16 @@
                     else
                         this._isAnexarFicheiro = true;
                 },
+
+                _anexoAnswerChanged: function (e) {
+                    if (this.$.txtAnexoResposta.checked == true) {
+                        this._isAnexarFicheiroResposta = false;
+                    }
+                    else
+                        this._isAnexarFicheiroResposta = true;
+
+                },
+
                 _destinationTypeChanged: function (e) {
                     var type = e.detail.value;
                     if (type == 0) //interno
@@ -906,6 +1075,15 @@
                 _sendPending: function () {
                     this.$.dialogSendPeding.open();
                 },
+
+                _sendaAnswer: function () {
+                    this.$.dialogSendAnswer.open();
+
+                    //this.$.RespostasPerfil_ajax.body = JSON.stringify(this.data);
+                    this.$.RespostasPerfil_ajax.generateRequest();
+                },
+
+
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
                         this.data.id = "CF" + this.data.id;
@@ -929,37 +1107,50 @@
                 },
                 _dlgSend: function () {
                     if (this._validateInputForAccounting()) {
-                        var workflow = null;;
-                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                        if (this._isInternalDestination == true) {                          
-                            workflow = {
-                                id: idWork.id+1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: this.$.cmbProblemas.value,
-                                codProblema: "RF1P",
-                                descricao: this.$.txtdescricaoProblema.value,
-                                utilizador: this.$.txtdestinatario.value,
-                                comentario: this.$.txtCommentdgl.value,
-                                enderecoFornecedor: selVendor.email    
-                            };
+                        if (this.$.txtDatePeding.value != "") {
+                            var txt
+                            if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                                txt = true;
+                            } else {
+                                txt = false;
+                            }
                         }
-                        else {
-                            workflow = {
-                                id: idWork.id + 1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: this.$.cmbMotivos.value,
-                                codProblema: "RF4P",
-                                descricao: this.$.txtmotivo.value,
-                                utilizador: this.$.txtFornecedor.value,
-                                comentario: this.$.txtCommentdgl.value,
-                                enderecoFornecedor: selVendor.email                           
-                            };
+                        if (txt == true) {
+                            var workflow = null;;
+                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+                            var Area = this.Areas.find(x => x.id = this.$.txtAreadgl.value);
+                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                            if (this._isInternalDestination == true) {
+                                workflow = {
+                                    id: idWork.id + 1,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbProblemas.value,
+                                    codProblema: "RF1P",
+                                    descricao: this.$.txtdescricaoProblema.value,
+                                    destinatario: this.$.txtdestinatario.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email,
+                                    area: Area.value,
+                                    areaWorkflow: this.$.txtArea2.value,
+                                    codDestino: this.$.txtCodDestino.value,
+                                };
+                            }
+                            else {
+                                workflow = {
+                                    id: idWork.id + 1,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbMotivos.value,
+                                    codProblema: "RF4P",
+                                    descricao: this.$.txtmotivo.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email
+                                };
+                            }
+                            this.data.workflowItems.push(workflow);
+                            this.$.page_send_ajax.body = JSON.stringify(this.data);
+                            this.$.page_send_ajax.generateRequest();
                         }
-                        this.data.workflowItems.push(workflow);
-                        this.$.page_send_ajax.body = JSON.stringify(this.data);
-                        this.$.page_send_ajax.generateRequest();
-                        this.$.dialogSendPeding.close();                   
+                        this.$.dialogSendPeding.close();
 
                     }
                 },

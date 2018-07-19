@@ -150,6 +150,8 @@ namespace Hydra.Such.Data
             AdminViaturasTelemoveis = 107,
             [Description("Administração Existências")]
             AdminExistencias = 108,
+            [Description("Administração Receção Faturação")]
+            AdminReceçãoFaturação = 109,
         }
 
         public enum Areas

@@ -130,41 +130,45 @@ namespace Hydra.Such.Data.Logic.Request
         {
             if (item != null)
             {
+                var parsedItem = new BillingReceptionModel();
+                parsedItem.Id = item.Id;
+                parsedItem.IdAreaPendente = item.IdAreaPendente.HasValue ? (BillingReceptionAreas)item.IdAreaPendente : (BillingReceptionAreas?)null;
+                parsedItem.AreaPendente = item.AreaPendente;
+                parsedItem.AreaPendente2 = item.AreaPendente2;
+                parsedItem.CodAreaFuncional = item.CodAreaFuncional;
+                parsedItem.CodCentroResponsabilidade = item.CodCentroResponsabilidade;
+                parsedItem.CodFornecedor = item.CodFornecedor;
+                parsedItem.CodLocalizacao = string.IsNullOrEmpty(item.CodLocalizacao) ? item.CodLocalizacao : item.CodLocalizacao.Trim();
+                parsedItem.CodRegiao = item.CodRegiao;
+                parsedItem.CriadoPor = item.CriadoPor;
+                parsedItem.DataCriacao = item.DataCriacao;
+                parsedItem.DataDocFornecedor = !item.DataDocFornecedor.HasValue ? "" : item.DataDocFornecedor.Value.ToString("yyyy-MM-dd");
+                parsedItem.DataModificacao = item.DataModificacao;
+                parsedItem.DataRececao = !item.DataRececao.HasValue ? "" : item.DataRececao.Value.ToString("yyyy-MM-dd");
+                parsedItem.DataUltimaInteracao = !item.DataUltimaInteracao.HasValue ? "" : item.DataUltimaInteracao.Value.ToString("yyyy-MM-dd");
+                parsedItem.Destinatario = item.Destinatario;
+                parsedItem.Estado = (Enumerations.BillingReceptionStates)item.Estado;
+                parsedItem.Local = item.Local;
+                parsedItem.ModificadoPor = item.ModificadoPor;
+                parsedItem.NumAcordoFornecedor = item.NumAcordoFornecedor;
+                parsedItem.NumDocFornecedor = item.NumDocFornecedor;
+                parsedItem.NumEncomenda = item.NumEncomenda;
+                parsedItem.NumEncomendaManual = item.NumEncomendaManual;
+                parsedItem.QuantidadeEncomenda = item.QuantidadeEncomenda;
+                parsedItem.QuantidadeRecebida = item.QuantidadeRecebida;
+                parsedItem.TipoDocumento = (Enumerations.BillingDocumentTypes)item.TipoDocumento;
+                parsedItem.Valor = item.Valor;
+                parsedItem.ValorEncomendaOriginal = item.ValorEncomendaOriginal;
+                parsedItem.ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado;
+                parsedItem.DocumentoCriadoEm = item.DocumentoCriadoEm;
+                parsedItem.DocumentoCriadoPor = item.DocumentoCriadoPor;
+                parsedItem.DataPassaPendente = item.DataPassaPendente;
+                parsedItem.Descricao = item.Descricao;
+                parsedItem.DescricaoProblema = item.DescricaoProblema;
+                parsedItem.TipoProblema = item.TipoProblema;
+                parsedItem.WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel();
 
-                return new BillingReceptionModel()
-                {
-                    Id = item.Id,
-                    AreaPendente = (BillingReceptionAreas)item.AreaPendente,
-                    AreaPendenteDescricao = item.AreaPendente != null ? EnumHelper.GetDescriptionFor(typeof(BillingReceptionAreas), (int)item.AreaPendente) : string.Empty,
-                    CodAreaFuncional = item.CodAreaFuncional,
-                    CodCentroResponsabilidade = item.CodCentroResponsabilidade,
-                    CodFornecedor = item.CodFornecedor,
-                    CodLocalizacao = string.IsNullOrEmpty(item.CodLocalizacao) ? item.CodLocalizacao : item.CodLocalizacao.Trim(),
-                    CodRegiao = item.CodRegiao,
-                    CriadoPor = item.CriadoPor,
-                    DataCriacao = item.DataCriacao,
-                    DataDocFornecedor = !item.DataDocFornecedor.HasValue ? "" : item.DataDocFornecedor.Value.ToString("yyyy-MM-dd"),
-                    DataModificacao = item.DataModificacao,
-                    DataRececao = !item.DataRececao.HasValue ? "" : item.DataRececao.Value.ToString("yyyy-MM-dd"),
-                    DataUltimaInteracao = !item.DataUltimaInteracao.HasValue ? "" : item.DataUltimaInteracao.Value.ToString("yyyy-MM-dd"),
-                    Destinatario = item.Destinatario,
-                    Estado = (Enumerations.BillingReceptionStates)item.Estado,
-                    Local = item.Local,
-                    ModificadoPor = item.ModificadoPor,
-                    NumAcordoFornecedor = item.NumAcordoFornecedor,
-                    NumDocFornecedor = item.NumDocFornecedor,
-                    NumEncomenda = item.NumEncomenda,
-                    NumEncomendaManual = item.NumEncomendaManual,
-                    QuantidadeEncomenda = item.QuantidadeEncomenda,
-                    QuantidadeRecebida = item.QuantidadeRecebida,
-                    TipoDocumento = (Enumerations.BillingDocumentTypes)item.TipoDocumento,
-                    Valor = item.Valor,
-                    ValorEncomendaOriginal = item.ValorEncomendaOriginal,
-                    ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
-                    DocumentoCriadoEm = item.DocumentoCriadoEm,
-                    DocumentoCriadoPor = item.DocumentoCriadoPor,
-                    WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel(),
-                };
+                return parsedItem;
             }
             return null;
         }
@@ -185,7 +189,9 @@ namespace Hydra.Such.Data.Logic.Request
                 return new RececaoFaturacao()
                 {
                     Id = item.Id,
-                    AreaPendente = (int)item.AreaPendente,
+                    IdAreaPendente = (int)item.IdAreaPendente,
+                    AreaPendente=item.AreaPendente,
+                    AreaPendente2=item.AreaPendente2,
                     CodAreaFuncional = item.CodAreaFuncional,
                     CodCentroResponsabilidade = item.CodCentroResponsabilidade,
                     CodFornecedor = item.CodFornecedor,
@@ -212,7 +218,12 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorEncomendaOriginal = item.ValorEncomendaOriginal,
                     ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
                     DocumentoCriadoEm = item.DocumentoCriadoEm,
-                    DocumentoCriadoPor = item.DocumentoCriadoPor
+                    DocumentoCriadoPor = item.DocumentoCriadoPor,
+                    DataPassaPendente=item.DataPassaPendente,
+                    DescricaoProblema=item.DescricaoProblema,
+                    Descricao=item.Descricao,
+                    TipoProblema=item.TipoProblema,
+                    DataResolucao=item.DataResolucao
                 };
             }
             return null;

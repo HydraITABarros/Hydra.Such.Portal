@@ -1905,6 +1905,20 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.Cartoes_TarifariosDados;
             return Json(result);
         }
+
+        public JsonResult GetBillingReceptionAreas()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingReceptionAreas));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+
+        public JsonResult GetBillingReceptionUserProfiles()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(BillingReceptionUserProfiles));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
     }
 
 

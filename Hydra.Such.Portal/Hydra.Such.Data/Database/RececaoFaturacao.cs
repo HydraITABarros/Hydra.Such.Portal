@@ -33,12 +33,20 @@ namespace Hydra.Such.Data.Database
         public DateTime? DocumentoCriadoEm { get; set; }
         public string DocumentoCriadoPor { get; set; }
         public string Destinatario { get; set; }
-        public int? AreaPendente { get; set; }
+        public int? IdAreaPendente { get; set; }
         public DateTime? DataUltimaInteracao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
+        public string NumDocRegistado { get; set; }
+        public DateTime? DataResolucao { get; set; }
+        public string TipoProblema { get; set; }
+        public string Descricao { get; set; }
+        public string DescricaoProblema { get; set; }
+        public DateTime? DataPassaPendente { get; set; }
+        public string AreaPendente { get; set; }
+        public string AreaPendente2 { get; set; }
 
         public ICollection<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
     }

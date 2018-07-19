@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
         public string CodProblema { get; set; }
         public string AreaWorkflow { get; set; }
         public string Area { get; set; }
+        public string CodDestino { get; set; }
         public string Destinatario { get; set; }
         public string Descricao { get; set; }
         public string Comentario { get; set; }
