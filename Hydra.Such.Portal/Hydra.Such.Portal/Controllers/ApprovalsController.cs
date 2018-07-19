@@ -256,10 +256,11 @@ namespace Hydra.Such.Portal.Controllers
                                             var parameters = new[]
                                             {
                                                 new SqlParameter("@NoFH", FolhaHoras.NºFolhaDeHoras),
-                                                new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado)
+                                                new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado),
+                                                new SqlParameter("@NoValidador", User.Identity.Name)
                                             };
 
-                                            int Resultado = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
+                                            int Resultado = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                             if (Resultado == 0)
                                             {
@@ -443,10 +444,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 var parameters = new[]
                                                 {
                                                     new SqlParameter("@NoFH", FolhaHoras.NºFolhaDeHoras),
-                                                    new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado)
+                                                    new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado),
+                                                    new SqlParameter("@NoValidador", User.Identity.Name)
                                                 };
 
-                                                int Resultado = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
+                                                int Resultado = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                                 if (Resultado == 0)
                                                 {
@@ -578,10 +580,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 var parameters = new[]
                                                 {
                                                     new SqlParameter("@NoFH", FolhaHoras.NºFolhaDeHoras),
-                                                    new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado)
+                                                    new SqlParameter("@NoUtilizador", FolhaHoras.NºEmpregado),
+                                                    new SqlParameter("@NoValidador", User.Identity.Name)
                                                 };
 
-                                                int Resultado = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
+                                                int Resultado = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                                 if (Resultado == 0)
                                                 {
