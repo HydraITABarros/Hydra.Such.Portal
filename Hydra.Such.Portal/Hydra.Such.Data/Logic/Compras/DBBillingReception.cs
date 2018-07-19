@@ -134,8 +134,9 @@ namespace Hydra.Such.Data.Logic.Request
                 return new BillingReceptionModel()
                 {
                     Id = item.Id,
-                    AreaPendente = (BillingReceptionAreas)item.AreaPendente,
-                    AreaPendenteDescricao = item.AreaPendente != null ? EnumHelper.GetDescriptionFor(typeof(BillingReceptionAreas), (int)item.AreaPendente) : string.Empty,
+                    IdAreaPendente = (BillingReceptionAreas)item.IdAreaPendente,
+                    AreaPendente = item.AreaPendente,
+                    AreaPendente2=item.AreaPendente2,
                     CodAreaFuncional = item.CodAreaFuncional,
                     CodCentroResponsabilidade = item.CodCentroResponsabilidade,
                     CodFornecedor = item.CodFornecedor,
@@ -163,8 +164,12 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
                     DocumentoCriadoEm = item.DocumentoCriadoEm,
                     DocumentoCriadoPor = item.DocumentoCriadoPor,
+                    DataPassaPendente=item.DataPassaPendente,
+                    Descricao=item.Descricao,
+                    DescricaoProblema=item.DescricaoProblema,
+                    TipoProblema=item.TipoProblema,
                     WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel(),
-                };
+                };  
             }
             return null;
         }
@@ -185,7 +190,9 @@ namespace Hydra.Such.Data.Logic.Request
                 return new RececaoFaturacao()
                 {
                     Id = item.Id,
-                    AreaPendente = (int)item.AreaPendente,
+                    IdAreaPendente = (int)item.IdAreaPendente,
+                    AreaPendente=item.AreaPendente,
+                    AreaPendente2=item.AreaPendente2,
                     CodAreaFuncional = item.CodAreaFuncional,
                     CodCentroResponsabilidade = item.CodCentroResponsabilidade,
                     CodFornecedor = item.CodFornecedor,
@@ -212,7 +219,12 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorEncomendaOriginal = item.ValorEncomendaOriginal,
                     ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado,
                     DocumentoCriadoEm = item.DocumentoCriadoEm,
-                    DocumentoCriadoPor = item.DocumentoCriadoPor
+                    DocumentoCriadoPor = item.DocumentoCriadoPor,
+                    DataPassaPendente=item.DataPassaPendente,
+                    DescricaoProblema=item.DescricaoProblema,
+                    Descricao=item.Descricao,
+                    TipoProblema=item.TipoProblema,
+                    DataResolucao=item.DataResolucao
                 };
             }
             return null;
