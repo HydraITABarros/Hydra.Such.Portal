@@ -49,11 +49,21 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Clientes/ExportToExcel_Clientes"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
         </div>
 
@@ -168,7 +178,20 @@
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop - paddingTop;
                     $(this.$.grid).height(height);
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                    this.$.gridFHEmpregadoRecursos.clearCache();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Clientes/ExportToExcelDownload_Clientes?sFileName=' + FileName;
+                },
             });
         });
     </script>

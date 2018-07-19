@@ -18,6 +18,10 @@ using Hydra.Such.Data;
 using static Hydra.Such.Data.Enumerations;
 using System.Net;
 using Hydra.Such.Data.ViewModel.Clients;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -26,11 +30,15 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _generalConfig;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ClientesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public ClientesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         #region Clientes
@@ -247,6 +255,58 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
         #endregion
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Clientes([FromBody] List<ClientDetailsViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Clientes");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Nome");
+                row.CreateCell(2).SetCellValue("Morada");
+                row.CreateCell(3).SetCellValue("Cód. Postal");
+                row.CreateCell(4).SetCellValue("Cidade");
+                row.CreateCell(5).SetCellValue("Região");
+                int count = 1;
+                foreach (ClientDetailsViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.No);
+                    row.CreateCell(1).SetCellValue(item.Name);
+                    row.CreateCell(2).SetCellValue(item.Address);
+                    row.CreateCell(3).SetCellValue(item.Post_Code);
+                    row.CreateCell(4).SetCellValue(item.City);
+                    row.CreateCell(5).SetCellValue(item.Regiao_Cliente);
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Clientes(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Clientes.xlsx");
+        }
 
     }
 }

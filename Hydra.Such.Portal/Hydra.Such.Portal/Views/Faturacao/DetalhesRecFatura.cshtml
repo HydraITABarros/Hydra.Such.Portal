@@ -556,7 +556,7 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" id="txtdestinatario"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtdestinatarioArea"></vaadin-text-field>
                             <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
@@ -914,7 +914,7 @@
                             //    this.$.txtDatePeding.value =dataFormatada;
                             //}
                             //this.$.txtDestProblema.value = workFlow.destinatario;
-                            }
+                            
                             this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         else {
@@ -1018,7 +1018,7 @@
                             var codDestino = "U03-" + idArea;
                             destino = this.Destinos.find(x => x.id == codDestino);
                             this.$.txtArea2.value = "Aprovisionamento";
-                            this.$.txtdestinatario.value = destino.extra;
+                            this.$.txtdestinatarioArea.value = destino.extra;
                         }
                         else {
                             // Caso Envio Area contem 1 EX (-50-)
@@ -1027,7 +1027,7 @@
                                 var codDestino = "U-" + problem.extra + "-" + idArea;
                                 destino = this.Destinos.find(x => x.id == codDestino);
                                 this.$.txtArea2.value = destino.value;
-                                this.$.txtdestinatario.value = destino.extra;
+                                this.$.txtdestinatarioArea.value = destino.extra;
                             }
                             // Caso Envio Area contem varios EX (-10=PDIAS-20=MFRANCO-)
                             else {
@@ -1037,7 +1037,7 @@
                                     var txts = fields[i].split('=');
                                     if (txts[0] == idArea) {
                                         this.$.txtArea2.value = "Aprovisionamento";
-                                        this.$.txtdestinatario.value = txts[1];
+                                        this.$.txtdestinatarioArea.value = txts[1];
 
                                     }
                                 }
@@ -1116,6 +1116,7 @@
                             }
                         }
                         if (txt == true) {
+                            debugger;;
                             var workflow = null;;
                             var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
                             var Area = this.Areas.find(x => x.id = this.$.txtAreadgl.value);
@@ -1127,12 +1128,12 @@
                                     codTipoProblema: this.$.cmbProblemas.value,
                                     codProblema: "RF1P",
                                     descricao: this.$.txtdescricaoProblema.value,
-                                    destinatario: this.$.txtdestinatario.value,
+                                    destinatario: this.$.txtdestinatarioArea.value,
                                     comentario: this.$.txtCommentdgl.value,
                                     enderecoFornecedor: selVendor.email,
                                     area: Area.value,
                                     areaWorkflow: this.$.txtArea2.value,
-                                    codDestino: this.$.txtCodDestino.value,
+                                    codDestino: this.$.txtCodDestino.value
                                 };
                             }
                             else {

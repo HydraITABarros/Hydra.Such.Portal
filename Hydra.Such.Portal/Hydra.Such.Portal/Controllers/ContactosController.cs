@@ -12,6 +12,10 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -19,11 +23,15 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _generalConfig;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ContactosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public ContactosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         // GET: Contactos
@@ -239,6 +247,50 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<ContactViewModel> result = DBContacts.GetAll().ParseToViewModel();
             return Json(result);
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Contactos([FromBody] List<ContactViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Contactos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("ID");
+                row.CreateCell(1).SetCellValue("Nome");
+                int count = 1;
+                foreach (ContactViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.Id);
+                    row.CreateCell(1).SetCellValue(item.Name);
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Contactos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contactos.xlsx");
         }
     }
 }

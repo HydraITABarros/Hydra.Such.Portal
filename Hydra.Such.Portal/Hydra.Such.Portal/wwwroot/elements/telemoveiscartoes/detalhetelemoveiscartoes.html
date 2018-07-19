@@ -24,6 +24,8 @@
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <dom-module id="x-detalhetelemoveiscartoes">
     <template>
@@ -56,6 +58,23 @@
                 color: white;
                 margin-top: 7px;
             }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
         </style>
 
         <!-- DROPDOWNS POPULATE -->
@@ -69,6 +88,8 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores_NumMec" last-response="{{UserApprovalList}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/TelemoveisEquipamentos/GetAllEquipamentos" last-response="{{Equipamentos_Imei}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/TelemoveisCartoes/GetCartoesDetails"
                    last-response="{{data}}"
@@ -78,7 +99,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/TelemoveisEquipamentos/CreateTelemoveisEquipamentos"
+        <iron-ajax url="/TelemoveisCartoes/CreateTelemoveisCartoes"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -103,7 +124,7 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
             <paper-button id="btnCreate" raised class="tablinks" on-tap="_create" disabled="{{ !_isCreate }}" title="Criar" style="background-color:#71BCC1"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
@@ -115,7 +136,7 @@
                         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Equipamento</paper-tab>
-                            <paper-tab>Detalhe</paper-tab>
+                            <!--<paper-tab>Detalhe</paper-tab>-->
                         </paper-tabs>
 
                         <iron-pages selected="{{selected}}">
@@ -250,10 +271,38 @@
                                                 </vaadin-combo-box>
                                             </div>
                                             <div class="col-sm-3">
-                                                
+                                                <p>&nbsp;</p>
+                                                <vaadin-checkbox style="align-items:center" checked="{{data.chamadasInternacionais_Show}}" id="chamadasInternacionais_Show">Chamadas Internacionais</vaadin-checkbox>
                                             </div>
                                             <div class="col-sm-3">
+                                                <p>&nbsp;</p>
+                                                <vaadin-checkbox style="align-items:center" checked="{{data.roaming_Show}}" id="roaming_Show">Roaming</vaadin-checkbox>
+                                            </div>
+                                        </div>
 
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-combo-box items="[[GPRS_Cartao]]" id="gprs" item-value-path="id" item-label-path="value" label="GPRS" value="{{data.gprs}}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="100%">
+                                                                    <b>[[item.value]]</b>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field rows="3" maxlength="200" value="{{data.observacoes}}" id="observacoes" name="observacoes" label="Observações"> </vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field type="number" value="{{data.consumos}}" id="consumos" name="consumos" label="Consumos" disabled="true">
+                                                    <div slot="suffix">€</div>
+                                                </vaadin-text-field>
                                             </div>
                                         </div>
 
@@ -265,39 +314,74 @@
                             <div>
                                 <div class="panel panel-default">
                                     <div class="panel-body">
-
                                         <div class="row break_clear">
-
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="imei" name="imei" value="{{data.imei}}" label="Imei"
+                                                                items="[[Equipamentos_Imei]]"
+                                                                text-path="imei"
+                                                                value-path="imei"
+                                                                fields='[{"field":"imei", "name":"Imei"},{"field":"marca", "name":"Marca"},{"field":"modelo", "name":"Modelo"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-date-picker value="{{data.dataAtribuicao_Show}}" id="dataAtribuicao_Show" name="dataAtribuicao_Show" label="Data Atribuição"></vaadin-date-picker>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <p>&nbsp;</p>
+                                                <vaadin-checkbox style="align-items:center" checked="{{data.equipamentoNaoDevolvido_Show}}" id="equipamentoNaoDevolvido_Show" required>Equipamento Não Devolvido</vaadin-checkbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.marca_Show}}" maxlength="30" id="marca_Show" name="marca_Show" label="Marca" disabled="true"> </vaadin-text-field>
+                                            </div>
                                         </div>
-
-                                        <div class="row break_clear">
-
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
 
                             <!--Detalhe-->
-                            <div>
+                            <!--<div>
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <div class="row break_clear">
-
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.utilizador}}" id="utilizador" name="utilizador" label="Utilizador" disabled="true"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-date-picker value="{{data.dataAlteracao_Show}}" id="dataAlteracao_Show" name="dataAlteracao_Show" label="Data Alteração"></vaadin-date-picker>
+                                            </div>
                                         </div>
+                                        <br />
                                         <div class="row break_clear">
-
-                                        </div>
-
-                                        <div class="row break_clear">
-
+                                            <div class="col-sm-12">
+                                                <paper-collapse-group>
+                                                    <paper-collapse-item header="Histórico de Ocorrências" opened>
+                                                        <div class="panel-body">
+                                                            <div class="row break_clear">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-2">
+                                                                            <vaadin-date-picker value="{{data.data_xxxxxxxx}}" id="data_xxxxxxxx" name="data_xxxxxxxx" label="Data" disabled="{{ _isCreate }}"></vaadin-date-picker>
+                                                                        </div>
+                                                                        <div class="col-sm-8">
+                                                                            <vaadin-text-field value="{{data.ocorrencia_xxxxxxx}}" maxlength="200" id="ocorrencia_xxxxxxx" name="ocorrencia_xxxxxxx" label="Ocorrência" disabled="{{ _isCreate }}"> </vaadin-text-field>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <br />
+                                                                            <paper-button class="btnSave" id="btnInserirAnexo" raised on-tap="_btnInserirAnexo" disabled="{{ _isCreate }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anexo</paper-button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </paper-collapse-item>
+                                                </paper-collapse-group>
+                                            </div>
                                         </div>
 
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                         </iron-pages>
-
 
                         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
                         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -342,7 +426,7 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "numCartao": this._numcartao });
                     this.$.page_databound_ajax.generateRequest();
 
-                    if (this._numCartao == "")
+                    if (this._numcartao == "")
                         this._isCreate = true;
                 },
 
@@ -353,7 +437,49 @@
                 },
 
                 _create: function () {
+                    debugger
+                    if (this._validateData()) {
 
+                        this.$.ajax_createprocedimento.body = JSON.stringify({
+                            "numCartao": this.$.numCartao.value,
+                            "tipoServico": this.$.tipoServico.value,
+                            "contaSuch": this.$.contaSuch.value,
+                            //"contaUtilizador": this.$.contaUtilizador.value,
+                            "barramentos": this.$.barramentos.value,
+                            //"tarifarioVoz": this.$.TarifarioVoz.value,
+                            "tarifarioDados": this.$.tarifarioDados.value,
+                            //"extensaoVpn": this.$.extensaoVpn.value,
+                            "plafondFr": this.$.plafondFr.value,
+                            "plafondExtra": this.$.plafondExtra.value,
+                            //"fimFidelizacao": this.$.fimFidelizacao.value,
+                            "gprs": this.$.gprs.value,
+                            "estado": this.$.estado.value,
+                            "dataEstado": this.$.dataEstado.value,
+                            "observacoes": this.$.observacoes.value,
+                            "numFuncionario": this.$.numFuncionario.value,
+                            "nome": this.$.numFuncionario.valueText,
+                            "codRegiao": this.$.codRegiao.value,
+                            "codAreaFuncional": this.$.codAreaFuncional.value,
+                            "codCentroResponsabilidade": this.$.codCentroResponsabilidade.value
+                            //"grupo": this.$.grupo.value,
+                            //"imei": this.$.imei.value,
+                            //"dataAtribuicao": this.$.dataAtribuicao.value,
+                            //"chamadasInternacionais": this.$.chamadasInternacionais.value,
+                            //"roaming": this.$.roaming_Show.value,
+                            //"internet": this.$.internet.value,
+                            //"declaracao": this.$.declaracao.value,
+                            //"utilizador": this.$.utilizador.value,
+                            //"dataAlteracao": this.$.dataAlteracao.value,
+                            //"plafond100percUtilizador": this.$.plafond100percUtilizador.value,
+                            //"plafond100percUtilizador": this.$.plafond100percUtilizador_Show.value,
+                            //"whiteList": this.$.whiteList.value,
+                            //"valorMensalidadeDados": this.$.valorMensalidadeDados.value,
+                            //"plafondDados": this.$.plafondDados.value,
+                            //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido.value
+                            //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido_Show.value
+                        });
+                        this.$.ajax_createprocedimento.generateRequest();
+                    }
                 },
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {

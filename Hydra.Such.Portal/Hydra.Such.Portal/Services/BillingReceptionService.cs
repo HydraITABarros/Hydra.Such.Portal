@@ -169,8 +169,8 @@ namespace Hydra.Such.Portal.Services
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
             item.TipoProblema = wfItemLast.CodTipoProblema;
-            item.AreaPendente = wfItemLast.AreaWorkflow;
-            item.AreaPendente2 = wfItemLast.Area;
+            item.AreaPendente = wfItemLast.Area;
+            item.AreaPendente2 = wfItemLast.AreaWorkflow;
             item.Destinatario = wfItemLast.Destinatario;
             item.Descricao = wfItemLast.Comentario;
             item.DescricaoProblema = wfItemLast.Descricao;
