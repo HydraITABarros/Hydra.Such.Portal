@@ -5554,14 +5554,28 @@ namespace Hydra.Such.Portal.Controllers
         {
             string problemId = string.Empty;
             string problemType = string.Empty;
+            RecFacturasProblemas result = null;
 
-            if (requestParams != null)
+            problemId = requestParams["id"].ToString();
+            problemType = requestParams["type"].ToString();
+
+            if (string.IsNullOrEmpty(problemId))
             {
-                problemId = requestParams["id"].ToString();
-                problemType = requestParams["type"].ToString();
+                result = new RecFacturasProblemas();
             }
+            else
+            {
+                Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+                result = billingReceptionService.GetQuestionID(problemId, problemType);
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateProblemConfig([FromBody] RecFacturasProblemas item)
+        {
             Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
-            var result = billingReceptionService.GetQuestionID(problemId, problemType);
+            var result = billingReceptionService.CreateProblemConfig(item);
             return Json(result);
         }
         #endregion

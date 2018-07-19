@@ -63,7 +63,7 @@
                         <vaadin-text-field type="text" value="{{ data.envioAreas }}" id="txtEnvioAreas" name="txtEnvioAreas" label="Envio Áreas"></vaadin-text-field>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox id="chkDevolvido" value="{{ data.devolvido }}">Devolvido</vaadin-checkbox>
                         <vaadin-checkbox id="chkBloqueado" value="{{ data.bloqueado }}">Bloqueado</vaadin-checkbox>
                     </div>
@@ -110,21 +110,21 @@
 
 
         <div class="marginSpace">
-            @if (ViewBag.ProfileModelId == 0)
-        {
+            @*@if (ViewBag.ProfileModelId == 0)
+        {*@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             </template>
-        }
+        @*}
         else
-        {
+        {*@
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
             </template>
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
-        }
+        @*}*@
         </div>
 
 
@@ -157,13 +157,13 @@
                     this.$.ToastMessageError.open();
                 },
                 _create: function () {
-                    if (this.data.description !== '' && this.data.description != null) {
-                        this.$.ajax_create.url = "/Administracao/CreateProfileModel";
+                    if (this.data.codigo !== '' && this.data.codigo != null) {
+                        this.$.ajax_create.url = "/Administracao/CreateProblemConfig";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
-                        this.openToast("Perfil modelo criado com sucesso!");
+                        this.openToast("Configuração criada com sucesso!");
                     } else {
-                        this.openToastError('É obrigatório preencher o campo Descrição.');
+                        this.openToastError('É obrigatório preencher o campo Código.');
                     }
                 },
                 _update: function () {

@@ -148,6 +148,17 @@ namespace Hydra.Such.Data.Logic.ComprasML
             ctx.RecFacturasProblemas.Update(item);
             return item;
         }
+
+        public void Create(RecFacturasProblemas item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+
+            if (string.IsNullOrEmpty(item.Tipo))
+                item.Tipo = string.Empty;
+
+            ctx.RecFacturasProblemas.Add(item);
+        }
         #endregion
 
         void IDisposable.Dispose()
