@@ -5510,10 +5510,10 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Receção Faturação - Conf. Problemas
-        public IActionResult ConfiguracaProblemas()
+        public IActionResult ConfigProblemas()
         {
             //UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UPermissions = userPerm;
@@ -5528,21 +5528,18 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProblemConfigurations()
         {
-            List<ProfileModelsViewModel> result = DBProfileModels.GetAll().Select(x => new ProfileModelsViewModel()
-            {
-                Id = x.Id,
-                Description = x.Descrição
-            }).ToList();
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var result = billingReceptionService.GetAllProblems();
             return Json(result);
         }
 
-
-        public IActionResult DetalhesConfigProblema(int id)
+        public IActionResult ConfigProblemasDetalhes([FromQuery] string id, [FromQuery] string type)
         {
-            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
             if (userPerm != null && userPerm.Read.Value)
             {
-                ViewBag.ProfileModelId = id;
+                ViewBag.ProblemId = id;
+                ViewBag.ProblemType = type;
                 ViewBag.UPermissions = userPerm;
                 return View();
             }
@@ -5553,33 +5550,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProblemConfigDetails([FromBody] ProfileModelsViewModel data)
+        public JsonResult GetProblemConfigDetails([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
-            PerfisModelo PM = DBProfileModels.GetById(data.Id);
-            ProfileModelsViewModel result = new ProfileModelsViewModel()
-            {
-                Id = 0,
-                Description = "",
-                ProfileModelAccesses = new List<AccessProfileModelView>()
-            };
+            string problemId = string.Empty;
+            string problemType = string.Empty;
 
-            if (PM != null)
+            if (requestParams != null)
             {
-                result.Id = PM.Id;
-                result.Description = PM.Descrição;
-
-                result.ProfileModelAccesses = DBAccessProfiles.GetByProfileModelId(data.Id).Select(x => new AccessProfileModelView()
-                {
-                    IdProfile = x.IdPerfil,
-                    //Area = x.Área,
-                    Feature = x.Funcionalidade,
-                    Create = x.Inserção,
-                    Read = x.Leitura,
-                    Update = x.Modificação,
-                    Delete = x.Eliminação
-                }).ToList();
+                problemId = requestParams["id"].ToString();
+                problemType = requestParams["type"].ToString();
             }
-
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var result = billingReceptionService.GetQuestionID(problemId, problemType);
             return Json(result);
         }
         #endregion

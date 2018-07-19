@@ -77,15 +77,12 @@ namespace Hydra.Such.Portal.Services
 
             return item;
         }
-         
-
+        
         public string CreateNumeration(BillingReceptionModel item)
         {
 
             return "";
         }
-
-
 
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
@@ -200,9 +197,9 @@ namespace Hydra.Such.Portal.Services
             }
             RecFacturasProblemas question = null;
            if ( wfItem.CodProblema== "RF1P")
-                question = GetQuestionID(wfItem.CodTipoProblema, "RF1P");
+                question = GetQuestionID("RF1P", wfItem.CodTipoProblema);
            else
-                question = GetQuestionID(wfItem.CodTipoProblema, "RF4P");
+                question = GetQuestionID("RF4P", wfItem.CodTipoProblema);
             if (question != null)
             {
                 //Rever o Envio de Areas
@@ -321,17 +318,16 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetQuestionsProblem();
         }
-        public RecFacturasProblemas GetQuestionID(string id,string Cod)
+        public RecFacturasProblemas GetQuestionID(string id,string type)
         {
-            if (id != null && id != "")
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
             {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, Cod).LastOrDefault();
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
                 return problem;
             }
             else
                 return null;
         }
-       
         public List<RecFacturasProblemas> GetReason()
         {
             return repo.GetQuestionsReason();
@@ -407,6 +403,11 @@ namespace Hydra.Such.Portal.Services
                             "</html>";
 
             return Body;
+        }
+
+        public List<RecFacturasProblemas> GetAllProblems()
+        {
+            return repo.GetAllProblems();
         }
         #endregion
     }
