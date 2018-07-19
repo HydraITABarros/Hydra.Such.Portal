@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetUserConfigData([FromBody] UserConfigurationsViewModel data)
         {
-            ConfigUtilizadores CU = DBUserConfigurations.GetById(data.IdUser);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(data.IdUser);
             UserConfigurationsViewModel result = new UserConfigurationsViewModel()
             {
                 IdUser = "",
@@ -128,20 +128,24 @@ namespace Hydra.Such.Portal.Controllers
                 UserProfiles = new List<ProfileModelsViewModel>()
             };
 
-            if (CU != null)
+            if (userConfig != null)
             {
-                result.IdUser = CU.IdUtilizador;
-                result.Name = CU.Nome;
-                result.Active = CU.Ativo;
-                result.Administrator = CU.Administrador;
-                result.Regiao = CU.RegiãoPorDefeito;
-                result.Area = CU.AreaPorDefeito;
-                result.Cresp = CU.CentroRespPorDefeito;
-                result.EmployeeNo = CU.EmployeeNo;
-                result.ProcedimentosEmailEnvioParaCA = CU.ProcedimentosEmailEnvioParaCa;
-                result.ProcedimentosEmailEnvioParaArea = CU.ProcedimentosEmailEnvioParaArea;
-                result.ProcedimentosEmailEnvioParaArea2 = CU.ProcedimentosEmailEnvioParaArea2;
-                result.ReceptionConfig = CU.PerfilNumeraçãoRecDocCompras;
+                result.IdUser = userConfig.IdUtilizador;
+                result.Name = userConfig.Nome;
+                result.Active = userConfig.Ativo;
+                result.Administrator = userConfig.Administrador;
+                result.Regiao = userConfig.RegiãoPorDefeito;
+                result.Area = userConfig.AreaPorDefeito;
+                result.Cresp = userConfig.CentroRespPorDefeito;
+                result.EmployeeNo = userConfig.EmployeeNo;
+                result.ProcedimentosEmailEnvioParaCA = userConfig.ProcedimentosEmailEnvioParaCa;
+                result.ProcedimentosEmailEnvioParaArea = userConfig.ProcedimentosEmailEnvioParaArea;
+                result.ProcedimentosEmailEnvioParaArea2 = userConfig.ProcedimentosEmailEnvioParaArea2;
+                result.ReceptionConfig = userConfig.PerfilNumeraçãoRecDocCompras;
+                if(userConfig.Rfperfil.HasValue)
+                    result.RFPerfil = (Enumerations.BillingReceptionAreas)userConfig.Rfperfil;
+                if (userConfig.RfperfilVisualizacao.HasValue)
+                    result.RFPerfilVisualizacao = (Enumerations.BillingReceptionUserProfiles)userConfig.RfperfilVisualizacao;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -185,7 +189,9 @@ namespace Hydra.Such.Portal.Controllers
                 ProcedimentosEmailEnvioParaArea = data.ProcedimentosEmailEnvioParaArea,
                 ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2,
                 UtilizadorCriação = User.Identity.Name,
-                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig
+                PerfilNumeraçãoRecDocCompras = data.ReceptionConfig,
+                Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null,
+                RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null,
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -246,6 +252,8 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ProcedimentosEmailEnvioParaArea2 = data.ProcedimentosEmailEnvioParaArea2;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 userConfig.PerfilNumeraçãoRecDocCompras = data.ReceptionConfig;
+                userConfig.Rfperfil = data.RFPerfil.HasValue ? (int)data.RFPerfil : (int?)null;
+                userConfig.RfperfilVisualizacao = data.RFPerfilVisualizacao.HasValue ? (int)data.RFPerfilVisualizacao : (int?)null;
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses
@@ -5498,6 +5506,81 @@ namespace Hydra.Such.Portal.Controllers
 
                 return Json(result);
             }
+        }
+        #endregion
+
+        #region Receção Faturação - Conf. Problemas
+        public IActionResult ConfiguracaProblemas()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetProblemConfigurations()
+        {
+            List<ProfileModelsViewModel> result = DBProfileModels.GetAll().Select(x => new ProfileModelsViewModel()
+            {
+                Id = x.Id,
+                Description = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+
+        public IActionResult DetalhesConfigProblema(int id)
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.ProfileModelId = id;
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetProblemConfigDetails([FromBody] ProfileModelsViewModel data)
+        {
+            PerfisModelo PM = DBProfileModels.GetById(data.Id);
+            ProfileModelsViewModel result = new ProfileModelsViewModel()
+            {
+                Id = 0,
+                Description = "",
+                ProfileModelAccesses = new List<AccessProfileModelView>()
+            };
+
+            if (PM != null)
+            {
+                result.Id = PM.Id;
+                result.Description = PM.Descrição;
+
+                result.ProfileModelAccesses = DBAccessProfiles.GetByProfileModelId(data.Id).Select(x => new AccessProfileModelView()
+                {
+                    IdProfile = x.IdPerfil,
+                    //Area = x.Área,
+                    Feature = x.Funcionalidade,
+                    Create = x.Inserção,
+                    Read = x.Leitura,
+                    Update = x.Modificação,
+                    Delete = x.Eliminação
+                }).ToList();
+            }
+
+            return Json(result);
         }
         #endregion
     }
