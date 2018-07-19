@@ -3,8 +3,6 @@
     ViewData["Title"] = "Configuração Problemas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
@@ -14,8 +12,10 @@
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 
 <x-problems-config></x-problems-config>
 <dom-module id="x-problems-config">
@@ -82,28 +82,17 @@
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="devolvido">Devolvido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="devolvido" />
                 </template>
                 <template>
-                    {{item.devolvido}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codModeloEmail">Modelo Email</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codModeloEmail" />
-                </template>
-                <template>
-                    {{item.codModeloEmail}}
+                    <vaadin-checkbox checked="{{item.devolvido}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="bloqueado">Bloqueado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="bloqueado" />
                 </template>
                 <template>
-                    {{item.bloqueado}}
+                    <vaadin-checkbox checked="{{item.bloqueado}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

@@ -5598,16 +5598,36 @@ namespace Hydra.Such.Portal.Controllers
             var updatedItem = billingReceptionService.UpdateProblemConfig(item);
 
             ErrorHandler result = new ErrorHandler();
-            //if (createdItem != null)
-            //{
-            //    result.eMessage = "Registo criado com sucesso.";
-            //    result.eReasonCode = 1;
-            //}
-            //else
-            //{
-            //    result.eMessage = "Ocorreu um erro ao criar o registo.";
-            //    result.eReasonCode = 2;
-            //}
+            if (updatedItem != null)
+            {
+                result.eMessage = "Registo atualizado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteProblemConfig([FromBody] RecFacturasProblemas item)
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var updatedItem = billingReceptionService.DeleteProblemConfig(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (updatedItem != null)
+            {
+                result.eMessage = "Registo eliminado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                result.eReasonCode = 2;
+            }
             return Json(result);
         }
         #endregion

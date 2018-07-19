@@ -353,7 +353,7 @@ namespace Hydra.Such.Portal.Services
         }
         public RecFacturasProblemas GetQuestionID(string id,string type)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(id))
             {
                 RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
                 return problem;
@@ -461,7 +461,21 @@ namespace Hydra.Such.Portal.Services
         {
             try
             {
-                repo.Create(item);
+                repo.Update(item);
+                repo.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return item;
+        }
+
+        public RecFacturasProblemas DeleteProblemConfig(RecFacturasProblemas item)
+        {
+            try
+            {
+                repo.Delete(item);
                 repo.SaveChanges();
             }
             catch (Exception ex)
