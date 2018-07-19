@@ -27,6 +27,8 @@ namespace Hydra.Such.Data.Database
         public string AreaPorDefeito { get; set; }
         public string CentroRespPorDefeito { get; set; }
         public int? PerfilNumeraçãoRecDocCompras { get; set; }
+        public int? Rfperfil { get; set; }
+        public int? RfperfilVisualizacao { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }

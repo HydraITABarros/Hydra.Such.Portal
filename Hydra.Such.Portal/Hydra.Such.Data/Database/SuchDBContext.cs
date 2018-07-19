@@ -798,6 +798,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataEncomenda).HasColumnType("datetime");
 
+                entity.Property(e => e.DataMercadoLocal).HasColumnType("datetime");
+
                 entity.Property(e => e.DataRecusa).HasColumnType("datetime");
 
                 entity.Property(e => e.DataTratado).HasColumnType("datetime");
@@ -1183,6 +1185,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.RegiãoPorDefeito)
                     .HasColumnName("Região por defeito")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.Rfperfil).HasColumnName("RFPerfil");
+
+                entity.Property(e => e.RfperfilVisualizacao).HasColumnName("RFPerfilVisualizacao");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -6111,6 +6117,8 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<RececaoFaturacaoWorkflow>(entity =>
             {
+                entity.Property(e => e.Area).HasMaxLength(20);
+
                 entity.Property(e => e.AreaWorkflow).HasMaxLength(50);
 
                 entity.Property(e => e.CodProblema).HasColumnType("nchar(10)");
@@ -6128,6 +6136,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataModificacao).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Destinatario).HasMaxLength(50);
 
                 entity.Property(e => e.EnderecoEnvio).HasMaxLength(100);
 
