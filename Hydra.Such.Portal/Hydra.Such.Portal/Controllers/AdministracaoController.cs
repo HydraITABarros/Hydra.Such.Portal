@@ -5575,7 +5575,39 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateProblemConfig([FromBody] RecFacturasProblemas item)
         {
             Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
-            var result = billingReceptionService.CreateProblemConfig(item);
+            var createdItem = billingReceptionService.CreateProblemConfig(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (createdItem != null)
+            {
+                result.eMessage = "Registo criado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao criar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProblemConfig([FromBody] RecFacturasProblemas item)
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var updatedItem = billingReceptionService.UpdateProblemConfig(item);
+
+            ErrorHandler result = new ErrorHandler();
+            //if (createdItem != null)
+            //{
+            //    result.eMessage = "Registo criado com sucesso.";
+            //    result.eReasonCode = 1;
+            //}
+            //else
+            //{
+            //    result.eMessage = "Ocorreu um erro ao criar o registo.";
+            //    result.eReasonCode = 2;
+            //}
             return Json(result);
         }
         #endregion

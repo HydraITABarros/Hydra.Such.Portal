@@ -78,7 +78,7 @@
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -384,6 +384,7 @@
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _checkPending }}">
                             <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
+                            <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
                     </div>
                 </div>
@@ -631,10 +632,10 @@
                 </div>
             </paper-dialog>
         </div>
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-    </template>
+</template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -760,6 +761,23 @@
                             this.$.txtDatePeding.value = dataFormatada;
                         }
                         this.$.txtDestProblema.value = workFlow.utilizador;
+
+                        //Botão Resposta
+                        debugger;
+                        if (this.data.estado == 1) {
+                            if (this.data.AreaPendente == 0) {
+                                this._hiddeAnswerButton = true;
+                            } else if (this.data.AreaPendente == 1) {
+                                if (this._rfperfil == "Aprovisionamento") {
+                                    this._hiddeAnswerButton = true;
+                                }
+                            } else {
+                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+
+                                    this._hiddeAnswerButton = false;
+                                }
+                            }
+                        }
                     }
                 },
                 _supplierSelected: function (e) {
@@ -896,6 +914,8 @@
                             //    this.$.txtDatePeding.value =dataFormatada;
                             //}
                             //this.$.txtDestProblema.value = workFlow.destinatario;
+                            }
+                            this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -1024,7 +1044,7 @@
                             }
                         }
                     }
-                 },
+                },
                 _anexoChanged: function (e) {
                     if (this.$.txtAnexo.checked == true) {                        
                         this._isAnexarFicheiro = false;
@@ -1090,9 +1110,9 @@
                         if (this.$.txtDatePeding.value != "") {
                             var txt
                             if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
-                                 txt = true;
+                                txt = true;
                             } else {
-                                 txt = false;
+                                txt = false;
                             }
                         }
                         if (txt == true) {
@@ -1130,7 +1150,7 @@
                             this.$.page_send_ajax.body = JSON.stringify(this.data);
                             this.$.page_send_ajax.generateRequest();
                         }
-                        this.$.dialogSendPeding.close();                   
+                        this.$.dialogSendPeding.close();
 
                     }
                 },

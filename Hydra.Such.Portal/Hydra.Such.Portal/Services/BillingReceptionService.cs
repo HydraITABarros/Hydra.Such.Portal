@@ -445,16 +445,29 @@ namespace Hydra.Such.Portal.Services
 
         public RecFacturasProblemas CreateProblemConfig(RecFacturasProblemas item)
         {
-            repo.Create(item);
             try
             {
+                repo.Create(item);
                 repo.SaveChanges();
             }
             catch (Exception ex)
             {
                 return null;
             }
-
+            return item;
+        }
+        
+        public RecFacturasProblemas UpdateProblemConfig(RecFacturasProblemas item)
+        {
+            try
+            {
+                repo.Create(item);
+                repo.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
             return item;
         }
         #endregion
