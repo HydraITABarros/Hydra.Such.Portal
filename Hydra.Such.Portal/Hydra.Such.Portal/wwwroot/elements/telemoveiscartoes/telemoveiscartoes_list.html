@@ -51,10 +51,20 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/TelemoveisCartoes/ExportToExcel_TelemoveisCartoes"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid aria-label="CartoesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -167,6 +177,19 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../TelemoveisCartoes/ExportToExcelDownload_TelemoveisCartoes?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

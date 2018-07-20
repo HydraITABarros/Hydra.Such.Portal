@@ -63,7 +63,7 @@
                 <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
-                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
         </div>
 
@@ -184,7 +184,6 @@
                     //debugger;
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
-                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _exportEXCELResponse: function (e) {

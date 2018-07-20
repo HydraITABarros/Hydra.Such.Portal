@@ -57,6 +57,15 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ExportToExcel_Propostas"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="subMenu">
@@ -64,6 +73,7 @@
                     <paper-button class="tablinks" id="showLost" on-tap="_showLosts"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showLostMessage}}</paper-button>
                     <paper-button class="tablinks" id="showAborted" on-tap="_showAborted"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showAbortedMessage}}</paper-button>
                     <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+                    <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
                 </div>
             </template>
         </template>
@@ -378,6 +388,19 @@
                         this._isHistoric = "false";
                     }
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Contratos/ExportToExcelDownload_Propostas?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

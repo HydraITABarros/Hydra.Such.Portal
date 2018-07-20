@@ -2136,21 +2136,24 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(6).SetCellValue("Criado Por");
                 row.CreateCell(7).SetCellValue("Data-Hora Criação");
 
-                int count = 1;
-                foreach (PrecoVendaRecursoFHViewModel item in dp)
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
+                    int count = 1;
+                    foreach (PrecoVendaRecursoFHViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
 
-                    row.CreateCell(0).SetCellValue(item.Code);
-                    row.CreateCell(1).SetCellValue(item.CodTipoTrabalho);
-                    row.CreateCell(2).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
-                    row.CreateCell(3).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(4).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
-                    row.CreateCell(5).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
-                    row.CreateCell(6).SetCellValue(item.UtilizadorCriacao);
-                    row.CreateCell(7).SetCellValue(item.DataHoraCriacao.ToString());
+                        row.CreateCell(0).SetCellValue(item.Code);
+                        row.CreateCell(1).SetCellValue(item.CodTipoTrabalho);
+                        row.CreateCell(2).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
+                        row.CreateCell(3).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(4).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
+                        row.CreateCell(5).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
+                        row.CreateCell(6).SetCellValue(item.UtilizadorCriacao);
+                        row.CreateCell(7).SetCellValue(item.DataHoraCriacao.ToString());
 
-                    count++;
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }
@@ -2366,33 +2369,36 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(16).SetCellValue("Criado Por");
                 row.CreateCell(17).SetCellValue("Data-Hora Criação");
 
-                int count = 1;
-                foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
+                if (dp.LinhasAcordoPrecos != null)
                 {
-                    row = excelSheet.CreateRow(count);
+                    int count = 1;
+                    foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
+                    {
+                        row = excelSheet.CreateRow(count);
 
-                    row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
-                    row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
-                    row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
-                    row.CreateCell(3).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
-                    row.CreateCell(4).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
-                    row.CreateCell(5).SetCellValue(item.Regiao.ToString());
-                    row.CreateCell(6).SetCellValue(item.Area.ToString());
-                    row.CreateCell(7).SetCellValue(item.Cresp.ToString());
-                    row.CreateCell(8).SetCellValue(item.Localizacao.ToString());
-                    row.CreateCell(9).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(10).SetCellValue(item.Um.ToString());
-                    row.CreateCell(11).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
-                    row.CreateCell(12).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
-                    row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor.ToString());
-                    row.CreateCell(14).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
-                    row.CreateCell(15).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                    row.CreateCell(16).SetCellValue(item.UserId.ToString());
-                    row.CreateCell(17).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+                        row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
+                        row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
+                        row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
+                        row.CreateCell(3).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
+                        row.CreateCell(4).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
+                        row.CreateCell(5).SetCellValue(item.Regiao.ToString());
+                        row.CreateCell(6).SetCellValue(item.Area.ToString());
+                        row.CreateCell(7).SetCellValue(item.Cresp.ToString());
+                        row.CreateCell(8).SetCellValue(item.Localizacao.ToString());
+                        row.CreateCell(9).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(10).SetCellValue(item.Um.ToString());
+                        row.CreateCell(11).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
+                        row.CreateCell(12).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
+                        row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor.ToString());
+                        row.CreateCell(14).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
+                        row.CreateCell(15).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
+                        row.CreateCell(16).SetCellValue(item.UserId.ToString());
+                        row.CreateCell(17).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
 
-                    count++;
+                        count++;
+                    }
+                    excelSheet.SetColumnHidden(0, true);
                 }
-                excelSheet.SetColumnHidden(0, true);
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
@@ -2645,15 +2651,19 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(1).SetCellValue("Recurso");
                 row.CreateCell(2).SetCellValue("Criado Por");
                 row.CreateCell(3).SetCellValue("Data-Hora Criação");
-                int count = 1;
-                foreach (RHRecursosViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.NoEmpregado);
-                    row.CreateCell(1).SetCellValue(item.Recurso);
-                    row.CreateCell(2).SetCellValue(item.UtilizadorCriacao);
-                    row.CreateCell(3).SetCellValue(item.DataHoraCriacao.ToString());
-                    count++;
+                    int count = 1;
+                    foreach (RHRecursosViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.NoEmpregado);
+                        row.CreateCell(1).SetCellValue(item.Recurso);
+                        row.CreateCell(2).SetCellValue(item.UtilizadorCriacao);
+                        row.CreateCell(3).SetCellValue(item.DataHoraCriacao.ToString());
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }

@@ -36,6 +36,16 @@
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <iron-ajax url="/ModelosRequisicao/GetRequisitionTemplates" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ModelosRequisicao/ExportToExcel_ModelosRequisicao"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -46,6 +56,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
@@ -237,6 +248,19 @@
                     window.location.href = "/ModelosRequisicao/Detalhes/";
                 }
             },
+
+            _exportEXCEL: function () {
+                //debugger;
+                this.$.ajax_Export.body = JSON.stringify(this.result);
+                this.$.ajax_Export.generateRequest();
+            },
+
+            _exportEXCELResponse: function (e) {
+                //debugger
+                var FileName = this.export;
+                location.href = '../ModelosRequisicao/ExportToExcelDownload_ModelosRequisicao?sFileName=' + FileName;
+            },
+
         });
     });
 

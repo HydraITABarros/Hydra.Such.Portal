@@ -83,14 +83,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ProcedimentosCcps/ExportToExcel_PedidosAquisicao"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <!--<div class="marginSpace">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-        </div>-->
+        <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+    </div>-->
 
         <vaadin-grid aria-label="ProcedimentosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>
@@ -293,7 +303,20 @@
                     if (this._historico == 1) {
                         this._showHistoryMessage = "Mostrar Ativos";
                     }
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../ProcedimentosCcps/ExportToExcelDownload_PedidosAquisicao?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

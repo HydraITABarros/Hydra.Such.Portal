@@ -10,11 +10,22 @@ using Microsoft.AspNetCore.Mvc;
 using static Hydra.Such.Data.Enumerations;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.ViewModel.Telemoveis;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class TelemoveisCartoesController : Controller
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public TelemoveisCartoesController(IHostingEnvironment _hostingEnvironment)
+        {
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         public IActionResult TelemoveisCartoes()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Telemoveis);
@@ -200,17 +211,17 @@ namespace Hydra.Such.Portal.Controllers
                     telemoveisCartoes.Grupo = item.Grupo;
                     telemoveisCartoes.Imei = item.Imei;
                     telemoveisCartoes.DataAtribuicao = item.DataAtribuicao;
-                    telemoveisCartoes.ChamadasInternacionais = item.ChamadasInternacionais;
-                    telemoveisCartoes.Roaming = item.Roaming;
+                    telemoveisCartoes.ChamadasInternacionais = Convert.ToByte(item.ChamadasInternacionais_Show);
+                    telemoveisCartoes.Roaming = Convert.ToByte(item.Roaming_Show);
                     telemoveisCartoes.Internet = item.Internet;
                     telemoveisCartoes.Declaracao = item.Declaracao;
                     telemoveisCartoes.Utilizador = item.Utilizador;
                     telemoveisCartoes.DataAlteracao = DateTime.Now;
-                    telemoveisCartoes.Plafond100percUtilizador = item.Plafond100percUtilizador;
+                    telemoveisCartoes.Plafond100percUtilizador = Convert.ToByte(item.Plafond100percUtilizador_Show);
                     telemoveisCartoes.WhiteList = item.WhiteList;
                     telemoveisCartoes.ValorMensalidadeDados = item.ValorMensalidadeDados;
                     telemoveisCartoes.PlafondDados = item.PlafondDados;
-                    telemoveisCartoes.EquipamentoNaoDevolvido = item.EquipamentoNaoDevolvido;
+                    telemoveisCartoes.EquipamentoNaoDevolvido = Convert.ToByte(item.EquipamentoNaoDevolvido_Show);
 
                     try
                     {
@@ -274,5 +285,64 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(item);
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_TelemoveisCartoes([FromBody] List<TelemoveisCartoesView> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Telemóveis Cartões");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Cartão");
+                row.CreateCell(1).SetCellValue("Tipo Serviço");
+                row.CreateCell(2).SetCellValue("Estado");
+                row.CreateCell(3).SetCellValue("Conta SUCH");
+                row.CreateCell(4).SetCellValue("Código Região");
+                row.CreateCell(5).SetCellValue("Código Área Funcional");
+                row.CreateCell(6).SetCellValue("Código Centro Responsabilidade");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (TelemoveisCartoesView item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.NumCartao);
+                        row.CreateCell(1).SetCellValue(item.TipoServico_Show);
+                        row.CreateCell(2).SetCellValue(item.Estado_Show);
+                        row.CreateCell(3).SetCellValue(item.ContaSuch);
+                        row.CreateCell(4).SetCellValue(item.CodRegiao);
+                        row.CreateCell(5).SetCellValue(item.CodAreaFuncional);
+                        row.CreateCell(6).SetCellValue(item.CodCentroResponsabilidade);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_TelemoveisCartoes(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Telemóveis Cartões.xlsx");
+        }
+
     }
 }

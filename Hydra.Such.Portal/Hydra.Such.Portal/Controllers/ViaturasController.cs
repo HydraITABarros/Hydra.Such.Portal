@@ -18,12 +18,27 @@ using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class ViaturasController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public ViaturasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         public IActionResult Viaturas()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Viaturas);
@@ -178,6 +193,77 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Viaturas([FromBody] List<ViaturasViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Viaturas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Matrícula");
+                row.CreateCell(1).SetCellValue("Data Matrícula");
+                row.CreateCell(2).SetCellValue("Estado");
+                row.CreateCell(3).SetCellValue("Tipo Viatura");
+                row.CreateCell(4).SetCellValue("Código Marca");
+                row.CreateCell(5).SetCellValue("Marca");
+                row.CreateCell(6).SetCellValue("Código Modelo");
+                row.CreateCell(7).SetCellValue("Modelo");
+                row.CreateCell(8).SetCellValue("Código Região");
+                row.CreateCell(9).SetCellValue("Código Área Funcional");
+                row.CreateCell(10).SetCellValue("Código Centro Responsabilidade");
+                row.CreateCell(11).SetCellValue("Utilizador Criação");
+                row.CreateCell(12).SetCellValue("Data/Hora Modificação");
+                row.CreateCell(13).SetCellValue("Utilizador Modificação");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ViaturasViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Matricula);
+                        row.CreateCell(1).SetCellValue(item.DataMatricula);
+                        row.CreateCell(2).SetCellValue(item.EstadoDescricao);
+                        row.CreateCell(3).SetCellValue(item.TipoViatura.Descricao);
+                        row.CreateCell(4).SetCellValue(item.CodigoMarca);
+                        row.CreateCell(5).SetCellValue(item.Marca.Descricao);
+                        row.CreateCell(6).SetCellValue(item.CodigoModelo);
+                        row.CreateCell(7).SetCellValue(item.Modelo.Descricao);
+                        row.CreateCell(8).SetCellValue(item.CodigoRegiao);
+                        row.CreateCell(9).SetCellValue(item.CodigoAreaFuncional);
+                        row.CreateCell(10).SetCellValue(item.CodigoCentroResponsabilidade);
+                        row.CreateCell(11).SetCellValue(item.UtilizadorCriacao);
+                        row.CreateCell(12).SetCellValue(item.DataHoraModificacao);
+                        row.CreateCell(13).SetCellValue(item.UtilizadorModificacao);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Viaturas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Viaturas.xlsx");
+        }
 
     }
 }

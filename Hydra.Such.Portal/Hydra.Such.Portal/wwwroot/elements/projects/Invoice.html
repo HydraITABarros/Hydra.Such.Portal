@@ -28,6 +28,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
         <br />
         <style>
@@ -142,6 +143,15 @@
                    handle-as="json"
                    id="page_autorizelines_ajax"
                    on-response="_CreateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Projetos/ExportToExcel_FaturacaoProjetos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -454,6 +464,19 @@
 
                     //window.location.href = "/AutorizacaoFaturacao";
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
+                },
+
             });
         });
     </script>
