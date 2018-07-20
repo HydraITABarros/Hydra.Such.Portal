@@ -76,7 +76,7 @@
         <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
@@ -608,7 +608,7 @@
             <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ ProblemasPorPerfil ]]" id="cmbProblemasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                        <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -1018,7 +1018,7 @@
                 },
 
                 _answerChange: function () {
-                    var id = this.$.cmbProblemasPorPerfil.value;
+                    var id = this.$.cmbRespostasPorPerfil.value;
                     if (id != undefined && id != "") {
                         var resposta = this.ProblemasPorPerfil.find(x => x.id == id);
                         this.$.txtdescricaoResposta.value = resposta.value;
@@ -1100,10 +1100,11 @@
                 },
 
                 _sendaAnswer: function () {
+                    debugger;
                     this.$.dialogSendAnswer.open();
-
-                    //this.$.RespostasPerfil_ajax.body = JSON.stringify(this.data);
-                    this.$.RespostasPerfil_ajax.generateRequest();
+                    var data = this.data;
+                    this.$.respostasPerfil_ajax.body = JSON.stringify(data);
+                    this.$.respostasPerfil_ajax.generateRequest();
                 },
 
 
@@ -1153,8 +1154,7 @@
                         };
                     }
                 },
-
-                },
+                
                 _dlgAddAttached: function () {
                     var anexoNew = {
                         file: this.$.txtNomeFicheiro.value,
