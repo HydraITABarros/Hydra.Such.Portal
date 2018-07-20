@@ -134,7 +134,14 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Faturacao/DocumentIsDigitized"
+                   last-response="{{ updatedItem }}"
+                   id="page_documentDigit_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -148,7 +155,7 @@
                     <paper-button class="tablinks" on-tap="_postInvoiceCP"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Fatura CP</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _isCreditMemo }}">
-                    <paper-button class="tablinks" on-tap="_postDocument"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
+                    <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
             </template>
             <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
@@ -349,10 +356,10 @@
                         </template>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente}}" id="txtArea" disabled></vaadin-text-field>
+                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente2}}" id="txtArea" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="{{ data.areaPendente2 }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{ data.destinatario }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
                         <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
@@ -366,7 +373,7 @@
                         <vaadin-text-field rows="1" id="txtDescription" name="txtDescription" label=" " value="{{data.descricaoProblema}}" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="{{data.dataPassaPendente}}" id="txtDatePeding" name="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
+                        <vaadin-date-picker value="{{data.dataPassaPendente}}" id="txtDatePeding" label="Data passou Pendente" disabled></vaadin-date-picker>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -383,7 +390,7 @@
                     </div>
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _checkPending }}">
-                            <paper-button raised id="btnSendPending" class="btnSave" on-tap="_sendPending">Pendente</paper-button>
+                            <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
                     </div>
@@ -545,7 +552,7 @@
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" value="" label="Área" on-value-changed="_areaChanged">
+                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -579,6 +586,9 @@
 
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -617,7 +627,7 @@
                         <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
                     </div>
 
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
@@ -632,10 +642,10 @@
                 </div>
             </paper-dialog>
         </div>
-                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-</template>
+    </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -701,6 +711,10 @@
                         type: String,
                         value: "",
                     },
+                    _nameButtonSend: {
+                        type: String,
+                        value: "Enviar Pendente",
+                    },
                     _isInvoice: {
                         type: Boolean,
                         value: false,
@@ -720,6 +734,14 @@
                     _hiddeAnswerButton: {
                         type: Boolean,
                         value: true,
+                    },
+                    _hiddeSendButton: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    Anexos: {
+                        type: Array,
+                        value: null,
                     }
                 },
                 ready: function () {
@@ -750,33 +772,27 @@
                         if (this.data.estado==2){
                             this._checkPending = false;
                         }
-                        //Ponto de situação
-                        var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        this.$.txtComment.value = workFlow.comentario;
-                        this.$.codDescricao.value = workFlow.codTipoProblema;
-                        this.$.txtDescription.value = workFlow.descricao;
-                        var data = new Date(workFlow.dataCriacao);
-                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                        if (dataFormatada != undefined) {
-                            this.$.txtDatePeding.value = dataFormatada;
-                        }
-                        this.$.txtDestProblema.value = workFlow.utilizador;
 
-                        //Botão Resposta
-                        debugger;
                         if (this.data.estado == 1) {
+                            this._nameButtonSend = "Enviar";
                             if (this.data.AreaPendente == 0) {
                                 this._hiddeAnswerButton = true;
                             } else if (this.data.AreaPendente == 1) {
                                 if (this._rfperfil == "Aprovisionamento") {
                                     this._hiddeAnswerButton = true;
-                                }
+                                }                               
                             } else {
                                 if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
 
                                     this._hiddeAnswerButton = false;
                                 }
                             }
+                            //QUESTÂO
+                            if (this._rfperfil == "Contabilidade") {
+
+                                this._hiddeSendButton = true;
+                            }                        
+
                         }
                     }
                 },
@@ -904,18 +920,17 @@
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                            //var workFlow = this.updatedItem.workflowItems[this.updatedItem.workflowItems.length - 1];
-                            //this.$.txtComment.value = workFlow.comentario;
-                            //this.$.codDescricao.value = workFlow.codTipoProblema;
-                            //this.$.txtDescription.value = workFlow.descricao;
-                            //var data = new Date(workFlow.dataCriacao);
-                            //var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                            //if (dataFormatada != undefined) {
-                            //    this.$.txtDatePeding.value =dataFormatada;
-                            //}
-                            //this.$.txtDestProblema.value = workFlow.destinatario;
-                            
-                            this.$.txtDestProblema.value = workFlow.utilizador;
+                           
+                            this.$.cmbProblemas.value = "";
+                            this.$.txtdescricaoProblema.value = "";
+                            this.$.txtdestinatarioArea.value = "";
+                            this.$.txtCommentdgl.value = "";
+                            this.$.txtArea2.value = "";
+                            this.$.txtCodDestino.value = "";    
+                            this.$.cmbMotivos.value = "";
+                            this.$.txtmotivo.value = "";
+                            this.$.txtCommentdgl.value = "";
+                           
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -1022,9 +1037,11 @@
                         }
                         else {
                             // Caso Envio Area contem 1 EX (-50-)
+                          
                             if (problem.extra.length <= 4) {
                                 problem.extra = problem.extra.replace('-', '');
-                                var codDestino = "U-" + problem.extra + "-" + idArea;
+                                problem.extra = problem.extra.replace('-', '');
+                                var codDestino = "U" + problem.extra;
                                 destino = this.Destinos.find(x => x.id == codDestino);
                                 this.$.txtArea2.value = destino.value;
                                 this.$.txtdestinatarioArea.value = destino.extra;
@@ -1098,17 +1115,31 @@
                         this.$.page_billing_ajax.generateRequest();
                     }
                 },
-                _postDocument: function () {
+                _postNotaCredito: function () {
                     if (this._validateInputForAccounting()) {
                         this.data.id = "CC" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
                     }
                 },
+                _dlgAddAttached: function () {
+                    var anexoNew = {
+                        file: this.$.txtNomeFicheiro.value,
+                        description: this.$.txtDescricaoAnexo.value      
+                    };
+                    if (this.Anexos == null) {
+                        this.Anexos = [anexoNew];
+                    }
+                    else
+                        this.Anexos.push(anexoNew);
+
+                    this.$.txtNomeFicheiro.value = "";
+                    this.$.txtDescricaoAnexo.value = "";
+                 },
                 _dlgSend: function () {
                     if (this._validateInputForAccounting()) {
                         if (this.$.txtDatePeding.value != "") {
-                            var txt
+                            var txt;
                             if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
                                 txt = true;
                             } else {
@@ -1116,10 +1147,10 @@
                             }
                         }
                         if (txt == true) {
-                            debugger;;
                             var workflow = null;;
                             var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-                            var Area = this.Areas.find(x => x.id = this.$.txtAreadgl.value);
+                            
+                            var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
                                 workflow = {
@@ -1133,7 +1164,8 @@
                                     enderecoFornecedor: selVendor.email,
                                     area: Area.value,
                                     areaWorkflow: this.$.txtArea2.value,
-                                    codDestino: this.$.txtCodDestino.value
+                                    codDestino: this.$.txtCodDestino.value,
+                                    attached: this.Anexos
                                 };
                             }
                             else {
@@ -1144,9 +1176,11 @@
                                     codProblema: "RF4P",
                                     descricao: this.$.txtmotivo.value,
                                     comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email
+                                    enderecoFornecedor: selVendor.email,
+                                    attached: this.Anexos
                                 };
                             }
+                            this.Anexos = null;
                             this.data.workflowItems.push(workflow);
                             this.$.page_send_ajax.body = JSON.stringify(this.data);
                             this.$.page_send_ajax.generateRequest();
@@ -1154,6 +1188,10 @@
                         this.$.dialogSendPeding.close();
 
                     }
+                },
+                _openDocument: function (e) {
+                    this.$.page_documentDigit_ajax.body = JSON.stringify(this.data);
+                    this.$.page_documentDigit_ajax.generateRequest();
                 },
                 _goBack: function (e) {
                     window.history.back();

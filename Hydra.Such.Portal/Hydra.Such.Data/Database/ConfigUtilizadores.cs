@@ -29,6 +29,11 @@ namespace Hydra.Such.Data.Database
         public int? PerfilNumeraçãoRecDocCompras { get; set; }
         public int? Rfperfil { get; set; }
         public int? RfperfilVisualizacao { get; set; }
+        public string RffiltroArea { get; set; }
+        public string RfnomeAbreviado { get; set; }
+        public bool? RfrespostaContabilidade { get; set; }
+        public bool? RfalterarDestinatarios { get; set; }
+        public string RfmailEnvio { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }

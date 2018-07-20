@@ -164,7 +164,7 @@ namespace Hydra.Such.Portal.Services
             {
                 item.Estado = BillingReceptionStates.Pendente;
                 if (item.DataPassaPendente == null)
-                    item.DataPassaPendente = DateTime.Now;
+                    item.DataPassaPendente = DateTime.Now.ToString();
             }
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
@@ -180,8 +180,7 @@ namespace Hydra.Such.Portal.Services
 
             item = repo.Update(item);
 
-           
-
+          
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
             wfItem.IdRecFaturacao = item.Id;
             if(questao.Devolvido==true)
@@ -203,8 +202,19 @@ namespace Hydra.Such.Portal.Services
             wfItem.Comentario = wfItemLast.Comentario;
             wfItem.Utilizador = postedByUserName;
 
-           repo.Create(wfItem);
-
+            repo.Create(wfItem);
+            if (wfItemLast.Attached != null)
+            {
+                int id=0;
+                RececaoFaturacaoWorkflowAnexo wfAnexoItem = new RececaoFaturacaoWorkflowAnexo();
+                foreach (BillingRecWorkflowModelAttached attached in wfItemLast.Attached)
+                {
+                    wfAnexoItem = DBBillingReceptionWFAttach.ParseToDB(attached);
+                    wfAnexoItem.Idwokflow = wfItemLast.Id;
+                    wfAnexoItem.Id = id;
+                    repo.Create(wfAnexoItem);                 
+                }
+            }
             try
             {
                 repo.SaveChanges();
@@ -214,6 +224,7 @@ namespace Hydra.Such.Portal.Services
             {
                 return null;
             }
+
            RecFaturacaoConfigDestinatarios destino = null;
            if ( wfItem.CodProblema== "RF1P")
                 destino = GetDestinationAreaDest(wfItemLast.CodDestino);

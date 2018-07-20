@@ -168,7 +168,6 @@ namespace Hydra.Such.Portal.Controllers
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
-                workflow.AreaWorkflow = item.AreaPendente;
                 item.WorkflowItems.Add(workflow);
 
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
@@ -213,17 +212,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
+        public ActionResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
         {
-            //if (item != null)
-            //{
-                
-            //}
-            //else
-            //{
-            //    item.eReasonCode = 2;
-            //    item.eMessage = "O registo não pode ser nulo";
-            //}
+            if (item != null)
+            {
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
             return Json(false);
         }
 
