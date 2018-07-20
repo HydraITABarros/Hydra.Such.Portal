@@ -756,7 +756,6 @@
                     Anexos: {
                         type: Array,
                         value: null,
-                    }
                     },
                     _docIsValid: {
                         type: Boolean,
@@ -839,11 +838,17 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
-                    if (this.$.cmbDocumentTypes.validate() &&
-                        this._docIsValid) {
-                        return true;
+                    if (this.$.cmbDocumentTypes.validate()) {
+                        if (this._docIsValid) {
+                            return true;
+                        }
+                        else if (!this._docIsValid) {
+                            this._openToastError("Já foi criada receção de fatura para o documento.");
+                        }
                     }
-                    this._openToastError("Verifique os dados inseridos.");
+                    else {
+                        this._openToastError("Verifique os dados inseridos.");
+                    }
                     return false;
                 },
                 _clFormatDateWorkflow: function (param) {
