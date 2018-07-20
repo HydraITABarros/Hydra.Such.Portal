@@ -5647,5 +5647,30 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
+
+        #region Receção Faturação - Conf. Destinatários
+        public IActionResult ConfigDestinatarios()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        //[HttpPost]
+        //public JsonResult GetConfAddressees()
+        //{
+        //    Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+        //    var result = billingReceptionService.
+        //    return Json(result);
+        //}
+        #endregion
     }
 }
