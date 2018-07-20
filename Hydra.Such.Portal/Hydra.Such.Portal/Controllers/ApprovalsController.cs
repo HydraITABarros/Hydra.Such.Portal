@@ -20,15 +20,22 @@ using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Database;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class ApprovalsController : Controller
     {
         private readonly ISession session;
-        public ApprovalsController(IHttpContextAccessor httpContextAccessor)
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IHostingEnvironment _hostingEnvironment)
         {
             this.session = httpContextAccessor.HttpContext.Session;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -688,5 +695,64 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Approvals([FromBody] List<ApprovalMovementsViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pedidos de Aprovação");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Tipo");
+                row.CreateCell(2).SetCellValue("Associado");
+                row.CreateCell(3).SetCellValue("CSolicitado Por");
+                row.CreateCell(4).SetCellValue("Valor");
+                row.CreateCell(5).SetCellValue("Estado");
+                row.CreateCell(6).SetCellValue("Nivel");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ApprovalMovementsViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.MovementNo);
+                        row.CreateCell(1).SetCellValue(item.TypeText);
+                        row.CreateCell(2).SetCellValue(item.Number);
+                        row.CreateCell(3).SetCellValue(item.RequestUser);
+                        row.CreateCell(4).SetCellValue(item.Value.ToString());
+                        row.CreateCell(5).SetCellValue(item.StatusText);
+                        row.CreateCell(6).SetCellValue(item.Level);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Approvals(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Aprovação.xlsx");
+        }
+
     }
 }

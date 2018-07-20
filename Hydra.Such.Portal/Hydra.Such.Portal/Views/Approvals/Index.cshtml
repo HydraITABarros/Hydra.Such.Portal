@@ -41,12 +41,24 @@
                    on-response="_actionResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Approvals/ExportToExcel_Approvals"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+        </div>
 
         <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="60px">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="id" />
+                    <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementNo" />
                 </template>
                 <template>
                     {{item.movementNo}}
@@ -210,7 +222,20 @@
                         this.$.ToastError.text = this.actionResult.eMessage;
                         this.$.ToastError.open();
                     }
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Approvals/ExportToExcelDownload_Approvals?sFileName=' + FileName;
+                },
+
             });
         });
     </script>
