@@ -134,7 +134,13 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Faturacao/GetUserProfileById"
+                   last-response="{{ userProfile }}"
+                   id="get_userprofile_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -627,15 +633,15 @@
                 <div class="row break_clear">
                     <div class="buttons">
                         <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgValidateAnswer">&nbsp; Enviar</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
                     </div>
                 </div>
             </paper-dialog>
         </div>
-                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-</template>
+    </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -769,7 +775,7 @@
                                 this._hiddeAnswerButton = true;
                             } else if (this.data.AreaPendente == 1) {
                                 if (this._rfperfil == "Aprovisionamento") {
-                                    this._hiddeAnswerButton = true;
+                                    this._hiddeAnswerButton = false;
                                 }
                             } else {
                                 if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
@@ -1105,6 +1111,32 @@
                         this.$.page_billing_ajax.generateRequest();
                     }
                 },
+                _dlgSendAnswer: function () {
+                    debugger;
+                    if (this._validateInputForAnswer()) {
+                        var answerDestinyProfile;
+                        var userToAnswer = this.data.criadoPor;
+
+                        this.$.get_userprofile_ajax.body = JSON.stringify(this.data.criadoPor);
+                        this.$.get_userprofile_ajax.generateRequest();
+
+                        var workflow = null;;
+                        workflow = {
+                            id: idWork.id + 1,
+                            idRecFaturacao: this.data.id,
+                            codTipoProblema: this.$.cmbProblemas.value,
+                            codProblema: "RF1P",
+                            descricao: this.$.txtdescricaoProblema.value,
+                            destinatario: this.$.txtdestinatario.value,
+                            comentario: this.$.txtCommentdgl.value,
+                            enderecoFornecedor: selVendor.email,
+                            area: Area.value,
+                            areaWorkflow: this.$.txtArea2.value,
+                            codDestino: this.$.txtCodDestino.value,
+                        };
+                    }
+                },
+
                 _dlgSend: function () {
                     if (this._validateInputForAccounting()) {
                         if (this.$.txtDatePeding.value != "") {
