@@ -304,6 +304,19 @@
                             <li>@Html.ActionLink("Tipos Grupo Contab OM Projet", "TiposGrupoContabOMProjeto", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Acordo de Preços", "AcordoPrecos_List", "Administracao", null, null)</li>
+
+                            <!--CCP-->
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Receção Faturação</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Configuração Problemas", "ConfigProblemas", "Administracao", null, null)</li>
+                                    <li>@Html.ActionLink("Configuração Destinatários", "ConfigDestinatarios", "Administracao", null, null)</li>
+                                </ul>
+                            </li>
                         </ul>
                     </li><!-- .menu-item -->
 
