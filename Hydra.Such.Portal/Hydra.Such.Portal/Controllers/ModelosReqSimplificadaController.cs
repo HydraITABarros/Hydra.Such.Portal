@@ -13,6 +13,10 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 //using Hydra.Such.Portal.Configurations;
 //using Microsoft.Extensions.Options;
 
@@ -20,7 +24,13 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
     public class ModelosReqSimplificadaController : Controller
     {
-        
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public ModelosReqSimplificadaController(IHostingEnvironment _hostingEnvironment)
+        {
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ModelosRequisiçõesSimplificadas);
@@ -367,5 +377,60 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
             return Json(result);
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_ModelosRequisicaoSimplificada([FromBody] List<SimplifiedReqTemplateViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Modelos de Requisição Simplificada");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Modelo");
+                row.CreateCell(1).SetCellValue("Descrição");
+                row.CreateCell(2).SetCellValue("Região");
+                row.CreateCell(3).SetCellValue("CÁrea Funcional");
+                row.CreateCell(4).SetCellValue("Centro Responsabilidade");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (SimplifiedReqTemplateViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionTemplateId);
+                        row.CreateCell(1).SetCellValue(item.Description);
+                        row.CreateCell(2).SetCellValue(item.CodeRegion);
+                        row.CreateCell(3).SetCellValue(item.CodeFunctionalArea);
+                        row.CreateCell(4).SetCellValue(item.CodeResponsabilityCenter);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ModelosRequisicaoSimplificada(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Modelos de Requisição Simplificada.xlsx");
+        }
+
     }
 }

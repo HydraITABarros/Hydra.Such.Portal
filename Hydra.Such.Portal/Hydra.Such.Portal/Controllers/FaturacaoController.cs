@@ -16,6 +16,10 @@ using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Data.Logic.Approvals;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -25,12 +29,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private BillingReceptionService billingRecService;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             billingRecService = new BillingReceptionService();
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult RececaoFaturas()
@@ -240,6 +246,40 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAnswers([FromBody] BillingReceptionModel data)
+        {
+            int userProfile = (int)DBUserConfigurations.GetById(User.Identity.Name).Rfperfil;
+            List<RecFacturasProblemas> result = new List<RecFacturasProblemas>();
+            string AnswerType = "";
+            if (data.AreaPendente == "Contabilidade")
+            {
+                if(userProfile == 1)
+                {
+                    AnswerType = "RF1R";
+                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                }
+            }
+            if (data.AreaPendente == "Aprovisionamento")
+            {
+                if (userProfile == 2 || userProfile == 3)
+                {
+                    AnswerType = "RF5R";
+                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                }
+            }
+
+            List<DDMessageRelated> answers = result
+            .Select(x => new DDMessageRelated()
+            {
+                id = x.Tipo,
+                value = x.Descricao,
+                extra = x.EnvioAreas
+            }).ToList();
+
+            return Json(answers);
+        }
+
         [HttpGet]
         public JsonResult GetReasons()
         {
@@ -279,13 +319,94 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-
-        [HttpGet]
-        public JsonResult GetUserProfileById([FromBody] string user)
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RececaoFaturas([FromBody] List<BillingReceptionModel> dp)
         {
-            int userProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
-            return Json(userProfile);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Receção de Faturas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Tipo de Documento");
+                row.CreateCell(2).SetCellValue("Estado");
+                row.CreateCell(3).SetCellValue("Data de Receção");
+                row.CreateCell(4).SetCellValue("Fornecedor");
+                row.CreateCell(5).SetCellValue("Núm. Doc. Fornecedor");
+                row.CreateCell(6).SetCellValue("Data Doc. Fornecedor");
+                row.CreateCell(7).SetCellValue("Núm. Encomenda");
+                row.CreateCell(8).SetCellValue("Núm. Encomenda Manual");
+                row.CreateCell(9).SetCellValue("Valor Encomenda Original");
+                row.CreateCell(10).SetCellValue("Quantidade Encomenda");
+                row.CreateCell(11).SetCellValue("Quantidade Recebida");
+                row.CreateCell(12).SetCellValue("Valor Recebido não Contabilizado");
+                row.CreateCell(13).SetCellValue("Valor");
+                row.CreateCell(14).SetCellValue("Cód. Região");
+                row.CreateCell(15).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(16).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(17).SetCellValue("Cód. Localização");
+                row.CreateCell(18).SetCellValue("Local");
+                row.CreateCell(19).SetCellValue("Núm. Acordo Fornecedor");
+                row.CreateCell(20).SetCellValue("Destinatario");
+                row.CreateCell(21).SetCellValue("Àrea Pendente");
+                row.CreateCell(22).SetCellValue("Data Última Interação");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (BillingReceptionModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Id);
+                        row.CreateCell(1).SetCellValue(item.TipoDocumento.ToString());
+                        row.CreateCell(2).SetCellValue(item.Estado.ToString());
+                        row.CreateCell(3).SetCellValue(item.DataRececao);
+                        row.CreateCell(4).SetCellValue(item.CodFornecedor);
+                        row.CreateCell(5).SetCellValue(item.NumDocFornecedor);
+                        row.CreateCell(6).SetCellValue(item.DataDocFornecedor);
+                        row.CreateCell(7).SetCellValue(item.NumEncomenda);
+                        row.CreateCell(8).SetCellValue(item.NumEncomendaManual);
+                        row.CreateCell(9).SetCellValue(item.ValorEncomendaOriginal.ToString());
+                        row.CreateCell(10).SetCellValue(item.QuantidadeEncomenda.ToString());
+                        row.CreateCell(11).SetCellValue(item.QuantidadeRecebida.ToString());
+                        row.CreateCell(12).SetCellValue(item.ValorRecebidoNaoContabilizado.ToString());
+                        row.CreateCell(13).SetCellValue(item.Valor.ToString());
+                        row.CreateCell(14).SetCellValue(item.CodRegiao);
+                        row.CreateCell(15).SetCellValue(item.CodAreaFuncional);
+                        row.CreateCell(16).SetCellValue(item.CodCentroResponsabilidade);
+                        row.CreateCell(17).SetCellValue(item.CodLocalizacao);
+                        row.CreateCell(18).SetCellValue(item.Local);
+                        row.CreateCell(19).SetCellValue(item.NumAcordoFornecedor);
+                        row.CreateCell(20).SetCellValue(item.Destinatario);
+                        row.CreateCell(21).SetCellValue(item.AreaPendente);
+                        row.CreateCell(22).SetCellValue(item.DataUltimaInteracao);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
         }
-        
+        //2
+        public IActionResult ExportToExcelDownload_RececaoFaturas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
+        }
     }
 }

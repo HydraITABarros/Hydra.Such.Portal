@@ -23,6 +23,9 @@ using System.Net.Mail;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Compras;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Hosting;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -124,11 +127,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ProcedimentosCcpsController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public ProcedimentosCcpsController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         #region Views
@@ -6744,7 +6749,66 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_PedidosAquisicao([FromBody] List<ProcedimentoCCPView> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pedidos de Aquisição");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Estado");
+                row.CreateCell(2).SetCellValue("Nome Processo");
+                row.CreateCell(3).SetCellValue("Gestor Processo");
+                row.CreateCell(4).SetCellValue("Valor Preço Base");
+                row.CreateCell(5).SetCellValue("Código Região");
+                row.CreateCell(6).SetCellValue("Codigo Área Funcional");
+                row.CreateCell(7).SetCellValue("Código Centro Responsabilidade");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ProcedimentoCCPView item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.No);
+                        row.CreateCell(1).SetCellValue(item.Estado.ToString());
+                        row.CreateCell(2).SetCellValue(item.NomeProcesso);
+                        row.CreateCell(3).SetCellValue(item.GestorProcesso);
+                        row.CreateCell(4).SetCellValue(item.ValorPrecoBase.ToString());
+                        row.CreateCell(5).SetCellValue(item.CodigoRegiao);
+                        row.CreateCell(6).SetCellValue(item.CodigoAreaFuncional);
+                        row.CreateCell(7).SetCellValue(item.CodigoCentroResponsabilidade);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_PedidosAquisicao(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Aquisição.xlsx");
+        }
+
     }
-
-
 }

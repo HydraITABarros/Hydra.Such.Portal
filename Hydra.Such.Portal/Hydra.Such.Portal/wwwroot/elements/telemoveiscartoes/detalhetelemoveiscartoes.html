@@ -87,7 +87,6 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores_NumMec" last-response="{{UserApprovalList}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/TelemoveisEquipamentos/GetAllEquipamentos" last-response="{{Equipamentos_Imei}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
@@ -107,7 +106,7 @@
                    on-response="_createResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/TelemoveisEquipamentos/UpdateTelemoveisEquipamentos"
+        <iron-ajax url="/TelemoveisCartoes/UpdateTelemoveisCartoes"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -115,7 +114,7 @@
                    on-response="_updateResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/TelemoveisEquipamentos/DeleteTelemoveisEquipamentos"
+        <iron-ajax url="/TelemoveisCartoes/DeleteTelemoveisCartoes"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -146,9 +145,8 @@
                                     <div class="panel-body">
                                         <div class="row break_clear">
                                             <div class="col-sm-3">
-                                                <vaadin-text-field value="{{data.numCartao}}" maxlength="30" id="numCartao" name="numCartao" label="Nº Cartão"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{data.numCartao}}" maxlength="9" id="numCartao" name="numCartao" label="Nº Cartão" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                             </div>
-
                                             <div class="col-sm-3">
                                                 <vaadin-combo-box items="[[TipoServico_Cartao]]" id="tipoServico" item-value-path="id" item-label-path="value" label="Tipo Serviço" value="{{data.tipoServico}}" required error-message="Este campo é obrigatório">
                                                     <template>
@@ -162,7 +160,6 @@
                                                     </template>
                                                 </vaadin-combo-box>
                                             </div>
-
                                             <div class="col-sm-3">
                                                 <div class="row">
                                                     <div class="col-sm-6">
@@ -178,18 +175,15 @@
                                                             </template>
                                                         </vaadin-combo-box>
                                                     </div>
-
                                                     <div class="col-sm-6">
                                                         <br />
-                                                        <vaadin-text-field value="{{ data.dataEstado_Show }}" maxlength="10" id="dataEstado" name="dataEstado"> </vaadin-text-field>
+                                                        <vaadin-date-picker value="{{data.dataEstado_Show}}" id="dataEstado_Show" name="dataEstado_Show"></vaadin-date-picker>
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="col-sm-3">
-                                                <vaadin-text-field value="{{data.fimFidelizacao_Show}}" maxlength="10" id="fimFidelizacao_Show" name="fimFidelizacao_Show" label="Fim Fidelização"> </vaadin-text-field>
+                                                <vaadin-date-picker value="{{data.fimFidelizacao_Show}}" id="fimFidelizacao_Show" name="fimFidelizacao_Show" label="Fim Fidelização"></vaadin-date-picker>
                                             </div>
-
                                         </div>
 
                                         <div class="row break_clear">
@@ -198,13 +192,13 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <p>&nbsp;</p>
-                                                <vaadin-checkbox style="align-items:center" checked="{{data.plafond100percUtilizador_Show}}" id="plafond100percUtilizador_Show" required>Plafond 100% Utilizador</vaadin-checkbox>
+                                                <vaadin-checkbox style="align-items:center" checked="{{data.plafond100percUtilizador_Show}}" id="plafond100percUtilizador_Show">Plafond 100% Utilizador</vaadin-checkbox>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-text-field type="number" value="{{data.plafondFr}}" id="plafondFr" name="plafondFr" label="Plafond FR"> </vaadin-text-field>
+                                                <vaadin-text-field type="number" value="{{data.plafondFr}}" id="plafondFr" name="plafondFr" label="Plafond FR" maxlength="10" pattern="[0-9]" style="text-align:right;"> </vaadin-text-field>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-text-field type="number" value="{{data.plafondExtra}}" id="plafondExtra" name="plafondExtra" label="Extra Plafond"> </vaadin-text-field>
+                                                <vaadin-text-field type="number" value="{{data.plafondExtra}}" id="plafondExtra" name="plafondExtra" label="Extra Plafond" maxlength="10" pattern="[0-9]" style="text-align:right;"> </vaadin-text-field>
                                             </div>
                                         </div>
 
@@ -245,7 +239,7 @@
 
                                         <div class="row break_clear">
                                             <div class="col-sm-3">
-                                                <vaadin-combo-box items="[[BarramentoVoz_Cartao]]" id="barramentos" item-value-path="value" item-label-path="value" label="Barramentos" value="{{data.barramentos}}">
+                                                <vaadin-combo-box items="[[BarramentoVoz_Cartao]]" id="barramentos" item-value-path="value" item-label-path="value" label="Barramentos" value="{{data.barramentos}}" required error-message="Este campo é obrigatório">
                                                     <template>
                                                         <table>
                                                             <tr>
@@ -258,7 +252,7 @@
                                                 </vaadin-combo-box>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-combo-box items="[[TarifarioDados_Cartao]]" id="tarifarioDados" item-value-path="value" item-label-path="value" label="Tarifário Dados" value="{{data.tarifarioDados}}">
+                                                <vaadin-combo-box items="[[TarifarioDados_Cartao]]" id="tarifarioDados" item-value-path="value" item-label-path="value" label="Tarifário Dados" value="{{data.tarifarioDados}}" required error-message="Este campo é obrigatório">
                                                     <template>
                                                         <table>
                                                             <tr>
@@ -282,7 +276,7 @@
 
                                         <div class="row break_clear">
                                             <div class="col-sm-3">
-                                                <vaadin-combo-box items="[[GPRS_Cartao]]" id="gprs" item-value-path="id" item-label-path="value" label="GPRS" value="{{data.gprs}}">
+                                                <vaadin-combo-box items="[[GPRS_Cartao]]" id="gprs" item-value-path="id" item-label-path="value" label="GPRS" value="{{data.gprs}}" required error-message="Este campo é obrigatório">
                                                     <template>
                                                         <table>
                                                             <tr>
@@ -294,18 +288,15 @@
                                                     </template>
                                                 </vaadin-combo-box>
                                             </div>
-
                                             <div class="col-sm-6">
                                                 <vaadin-text-field rows="3" maxlength="200" value="{{data.observacoes}}" id="observacoes" name="observacoes" label="Observações"> </vaadin-text-field>
                                             </div>
-
                                             <div class="col-sm-3">
                                                 <vaadin-text-field type="number" value="{{data.consumos}}" id="consumos" name="consumos" label="Consumos" disabled="true">
                                                     <div slot="suffix">€</div>
                                                 </vaadin-text-field>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -439,7 +430,6 @@
                 _create: function () {
                     debugger
                     if (this._validateData()) {
-
                         this.$.ajax_createprocedimento.body = JSON.stringify({
                             "numCartao": this.$.numCartao.value,
                             "tipoServico": this.$.tipoServico.value,
@@ -451,36 +441,36 @@
                             //"extensaoVpn": this.$.extensaoVpn.value,
                             "plafondFr": this.$.plafondFr.value,
                             "plafondExtra": this.$.plafondExtra.value,
-                            //"fimFidelizacao": this.$.fimFidelizacao.value,
+                            "fimFidelizacao": this.$.fimFidelizacao_Show.value,
                             "gprs": this.$.gprs.value,
                             "estado": this.$.estado.value,
-                            "dataEstado": this.$.dataEstado.value,
+                            "dataEstado": this.$.dataEstado_Show.value,
                             "observacoes": this.$.observacoes.value,
                             "numFuncionario": this.$.numFuncionario.value,
                             "nome": this.$.numFuncionario.valueText,
                             "codRegiao": this.$.codRegiao.value,
                             "codAreaFuncional": this.$.codAreaFuncional.value,
-                            "codCentroResponsabilidade": this.$.codCentroResponsabilidade.value
+                            "codCentroResponsabilidade": this.$.codCentroResponsabilidade.value,
                             //"grupo": this.$.grupo.value,
-                            //"imei": this.$.imei.value,
-                            //"dataAtribuicao": this.$.dataAtribuicao.value,
-                            //"chamadasInternacionais": this.$.chamadasInternacionais.value,
-                            //"roaming": this.$.roaming_Show.value,
+                            "imei": this.$.imei.value,
+                            "dataAtribuicao": this.$.dataAtribuicao_Show.value,
+                            "chamadasInternacionais": this.$.chamadasInternacionais_Show.__data.checked ? 1 : 0,
+                            "roaming": this.$.roaming_Show.__data.checked ? 1 : 0,
                             //"internet": this.$.internet.value,
                             //"declaracao": this.$.declaracao.value,
                             //"utilizador": this.$.utilizador.value,
                             //"dataAlteracao": this.$.dataAlteracao.value,
                             //"plafond100percUtilizador": this.$.plafond100percUtilizador.value,
-                            //"plafond100percUtilizador": this.$.plafond100percUtilizador_Show.value,
+                            "plafond100percUtilizador": this.$.plafond100percUtilizador_Show.__data.checked ? 1 : 0,
                             //"whiteList": this.$.whiteList.value,
                             //"valorMensalidadeDados": this.$.valorMensalidadeDados.value,
                             //"plafondDados": this.$.plafondDados.value,
                             //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido.value
-                            //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido_Show.value
+                            "equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido_Show.__data.checked ? 1 : 0
                         });
                         this.$.ajax_createprocedimento.generateRequest();
                     }
-                },
+                }, 
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -491,7 +481,48 @@
                 },
 
                 _update: function () {
-
+                    debugger
+                    if (this._validateData()) {
+                        this.$.ajax_updateprocedimento.body = JSON.stringify({
+                            "numCartao": this.$.numCartao.value,
+                            "tipoServico": this.$.tipoServico.value,
+                            "contaSuch": this.$.contaSuch.value,
+                            //"contaUtilizador": this.$.contaUtilizador.value,
+                            "barramentos": this.$.barramentos.value,
+                            //"tarifarioVoz": this.$.TarifarioVoz.value,
+                            "tarifarioDados": this.$.tarifarioDados.value,
+                            //"extensaoVpn": this.$.extensaoVpn.value,
+                            "plafondFr": this.$.plafondFr.value,
+                            "plafondExtra": this.$.plafondExtra.value,
+                            "fimFidelizacao": this.$.fimFidelizacao_Show.value,
+                            "gprs": this.$.gprs.value,
+                            "estado": this.$.estado.value,
+                            "dataEstado": this.$.dataEstado_Show.value,
+                            "observacoes": this.$.observacoes.value,
+                            "numFuncionario": this.$.numFuncionario.value,
+                            "nome": this.$.numFuncionario.valueText,
+                            "codRegiao": this.$.codRegiao.value,
+                            "codAreaFuncional": this.$.codAreaFuncional.value,
+                            "codCentroResponsabilidade": this.$.codCentroResponsabilidade.value,
+                            //"grupo": this.$.grupo.value,
+                            "imei": this.$.imei.value,
+                            "dataAtribuicao": this.$.dataAtribuicao_Show.value,
+                            "chamadasInternacionais": this.$.chamadasInternacionais_Show.__data.checked ? 1 : 0,
+                            "roaming": this.$.roaming_Show.__data.checked ? 1 : 0,
+                            //"internet": this.$.internet.value,
+                            //"declaracao": this.$.declaracao.value,
+                            //"utilizador": this.$.utilizador.value,
+                            //"dataAlteracao": this.$.dataAlteracao.value,
+                            //"plafond100percUtilizador": this.$.plafond100percUtilizador.value,
+                            "plafond100percUtilizador": this.$.plafond100percUtilizador_Show.__data.checked ? 1 : 0,
+                            //"whiteList": this.$.whiteList.value,
+                            //"valorMensalidadeDados": this.$.valorMensalidadeDados.value,
+                            //"plafondDados": this.$.plafondDados.value,
+                            //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido.value
+                            "equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido_Show.__data.checked ? 1 : 0
+                        });
+                        this.$.ajax_updateprocedimento.generateRequest();
+                    }
                 },
                 _updateResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -502,7 +533,53 @@
                 },
 
                 _delete: function () {
+                    if (this._validateData()) {
+                        var ajax_request = this.$.ajax_deleteprocedimento;
+                        ajax_request.body = JSON.stringify({
+                            "numCartao": this.$.numCartao.value,
+                            "tipoServico": this.$.tipoServico.value,
+                            "contaSuch": this.$.contaSuch.value,
+                            //"contaUtilizador": this.$.contaUtilizador.value,
+                            "barramentos": this.$.barramentos.value,
+                            //"tarifarioVoz": this.$.TarifarioVoz.value,
+                            "tarifarioDados": this.$.tarifarioDados.value,
+                            //"extensaoVpn": this.$.extensaoVpn.value,
+                            "plafondFr": this.$.plafondFr.value,
+                            "plafondExtra": this.$.plafondExtra.value,
+                            "fimFidelizacao": this.$.fimFidelizacao_Show.value,
+                            "gprs": this.$.gprs.value,
+                            "estado": this.$.estado.value,
+                            "dataEstado": this.$.dataEstado_Show.value,
+                            "observacoes": this.$.observacoes.value,
+                            "numFuncionario": this.$.numFuncionario.value,
+                            "nome": this.$.numFuncionario.valueText,
+                            "codRegiao": this.$.codRegiao.value,
+                            "codAreaFuncional": this.$.codAreaFuncional.value,
+                            "codCentroResponsabilidade": this.$.codCentroResponsabilidade.value,
+                            //"grupo": this.$.grupo.value,
+                            "imei": this.$.imei.value,
+                            "dataAtribuicao": this.$.dataAtribuicao_Show.value,
+                            "chamadasInternacionais": this.$.chamadasInternacionais_Show.__data.checked ? 1 : 0,
+                            "roaming": this.$.roaming_Show.__data.checked ? 1 : 0,
+                            //"internet": this.$.internet.value,
+                            //"declaracao": this.$.declaracao.value,
+                            //"utilizador": this.$.utilizador.value,
+                            //"dataAlteracao": this.$.dataAlteracao.value,
+                            //"plafond100percUtilizador": this.$.plafond100percUtilizador.value,
+                            "plafond100percUtilizador": this.$.plafond100percUtilizador_Show.__data.checked ? 1 : 0,
+                            //"whiteList": this.$.whiteList.value,
+                            //"valorMensalidadeDados": this.$.valorMensalidadeDados.value,
+                            //"plafondDados": this.$.plafondDados.value,
+                            //"equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido.value
+                            "equipamentoNaoDevolvido": this.$.equipamentoNaoDevolvido_Show.__data.checked ? 1 : 0
+                        });
+                        //this.$.ajax_deleteprocedimento.generateRequest();
 
+                        this._confirmAndExecuteActionToast(
+                            "Confirma a eliminação do Cartão?",
+                            ajax_request
+                        );
+                    }
                 },
                 _deleteResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -547,8 +624,54 @@
                     });
                 },
 
-                _validateData: function () {
+                //Troca o caracter , por .
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
 
+                _validateData: function () {
+                    if (this.$.numCartao.validate() & this.$.numCartao.value != "") {
+                        if (this.$.estado.validate() & this.$.estado.value >= 0) {
+                            if (this.$.tipoServico.validate() & this.$.tipoServico.value >= 0) {
+                                if (this.$.barramentos.validate() & this.$.barramentos.value != "") {
+                                    if (this.$.tarifarioDados.validate() & this.$.tarifarioDados.value != "") {
+                                        if (this.$.gprs.validate() & this.$.gprs.value >= 0) {
+                                            return true;
+                                        }
+                                        else {
+                                            this._showErrorMessage("Falta preencher o campo GPRS.");
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo Tarifário Dados.");
+                                        return false;
+                                    }
+                                    return true;
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Barramentos.");
+                                    return false;
+                                }
+                                return true;
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Tipo Serviço.");
+                                return false;
+                            }
+                            return true;
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Estado.");
+                            return false;
+                        }
+                        return true;
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Nº Cartão.");
+                        return false;
+                    }
 
                     return true;
                 },
