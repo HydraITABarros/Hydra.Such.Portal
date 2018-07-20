@@ -39,6 +39,7 @@ using NPOI.XSSF.UserModel;
 using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -5663,14 +5664,95 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+        
+        public IActionResult ConfigDestinatariosDetalhes([FromQuery] string id)
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.ProblemId = id;
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
 
-        //[HttpPost]
-        //public JsonResult GetConfAddressees()
-        //{
-        //    Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
-        //    var result = billingReceptionService.
-        //    return Json(result);
-        //}
+        [HttpPost]
+        public JsonResult GetConfAddressees()
+        {
+            var items = DBRFConfigDestinatarios.GetAll();
+            return Json(items);
+        }
+
+        [HttpPost]
+        public JsonResult GetConfAddressee([FromBody] string id)
+        {
+            var item = DBRFConfigDestinatarios.GetById(id);
+            if (item == null)
+                item = new RecFaturacaoConfigDestinatarios();
+            return Json(item);
+        }
+        [HttpPost]
+        public JsonResult CreateConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            var createdItem = DBRFConfigDestinatarios.Create(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (createdItem != null)
+            {
+                result.eMessage = "Registo criado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao criar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            var updatedItem = DBRFConfigDestinatarios.Update(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (updatedItem != null)
+            {
+                result.eMessage = "Registo atualizado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var deleted = DBRFConfigDestinatarios.Delete(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (deleted)
+            {
+                result.eMessage = "Registo eliminado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
         #endregion
     }
 }
