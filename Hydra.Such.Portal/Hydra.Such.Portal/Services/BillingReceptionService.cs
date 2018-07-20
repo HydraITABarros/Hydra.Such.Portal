@@ -341,45 +341,6 @@ namespace Hydra.Such.Portal.Services
             return isValid;
         }
 
-        #region Problems
-        public List<RecFaturacaoConfigDestinatarios> GetDestination()
-        {
-            return repo.GetDestination();
-        }
-
-        public RecFaturacaoConfigDestinatarios GetDestinationAreaDest(string id)
-        {
-            if (id != null && id != "")
-            {
-                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
-                return destino;
-            }
-            else
-                return null;
-        }
-
-        public List<RecFacturasProblemas> GetProblem()
-        {
-            return repo.GetQuestionsProblem();
-        }
-        public RecFacturasProblemas GetQuestionID(string id,string type)
-        {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
-            {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
-                return problem;
-            }
-            else
-                return null;
-        }
-        public List<RecFacturasProblemas> GetReason()
-        {
-            return repo.GetQuestionsReason();
-        }
-        public List<RecFaturacaoConfigDestinatarios> GetAreas()
-        {
-            return repo.GetAreas();
-        }
         public static string MakeEmailBodyContent(string Into, string IfFactura, string Fornecedor, string Data, string Valor, string Utilizador)
         {
             string Body = @"<html>" +
@@ -449,6 +410,46 @@ namespace Hydra.Such.Portal.Services
             return Body;
         }
 
+        #region Problems
+        public List<RecFaturacaoConfigDestinatarios> GetDestination()
+        {
+            return repo.GetDestination();
+        }
+
+        public RecFaturacaoConfigDestinatarios GetDestinationAreaDest(string id)
+        {
+            if (id != null && id != "")
+            {
+                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
+                return destino;
+            }
+            else
+                return null;
+        }
+
+        public List<RecFacturasProblemas> GetProblem()
+        {
+            return repo.GetQuestionsProblem();
+        }
+        public RecFacturasProblemas GetQuestionID(string id,string type)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
+                return problem;
+            }
+            else
+                return null;
+        }
+        public List<RecFacturasProblemas> GetReason()
+        {
+            return repo.GetQuestionsReason();
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetAreas()
+        {
+            return repo.GetAreas();
+        }
+        
         public List<RecFacturasProblemas> GetAllProblems()
         {
             return repo.GetAllProblems();
@@ -472,7 +473,21 @@ namespace Hydra.Such.Portal.Services
         {
             try
             {
-                repo.Create(item);
+                repo.Update(item);
+                repo.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return item;
+        }
+
+        public RecFacturasProblemas DeleteProblemConfig(RecFacturasProblemas item)
+        {
+            try
+            {
+                repo.Delete(item);
                 repo.SaveChanges();
             }
             catch (Exception ex)

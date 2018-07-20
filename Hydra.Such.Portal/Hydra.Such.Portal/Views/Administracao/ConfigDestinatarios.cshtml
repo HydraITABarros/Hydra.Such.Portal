@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetProblemConfigurations"
+        <iron-ajax url="/Administracao/GetConfAddressees"
                    last-response="{{result}}"
                    auto
                    method="post"
@@ -54,45 +54,54 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipo" />
+                    <vaadin-grid-sorter path="codArea">Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codArea" />
                 </template>
                 <template>
-                    {{item.tipo}}
+                    {{item.codArea}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-sorter path="codCentroResponsabilidade">Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCentroResponsabilidade" />
                 </template>
                 <template>
-                    {{item.descricao}}
+                    {{item.codCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="envioAreas">Envio Áreas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="envioAreas" />
+                    <vaadin-grid-sorter path="destinatario">Destinatário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="destinatario" />
                 </template>
                 <template>
-                    {{item.envioAreas}}
+                    {{item.destinatario}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="devolvido">Devolvido</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="mostra">Mostra</vaadin-grid-sorter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.devolvido}}"></vaadin-checkbox>
+                    <vaadin-checkbox checked="{{item.mostra}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="bloqueado">Bloqueado</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="enviaEmail">Envia Email</vaadin-grid-sorter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.bloqueado}}"></vaadin-checkbox>
+                    <vaadin-checkbox checked="{{item.enviaEmail}}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notas" />
+                </template>
+                <template>
+                    {{item.notas}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -130,12 +139,12 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/Administracao/ConfigProblemasDetalhes/?id=" + item.codigo + "&type=" + item.tipo;
+                        window.location.href = "/Administracao/ConfigDestinatariosDetalhes/?id=" + item.codigo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/Administracao/ConfigProblemasDetalhes/";
+                        window.location.href = "/Administracao/ConfigDestinatariosDetalhes/";
                     }
                 },
                 _goBack: function (e) {

@@ -25,10 +25,20 @@
         <iron-ajax id="contacts_grid_datasource" url="/Contactos/GetContacts" last-response="{{Contacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax id="deleteContact_ajax" url="/Contactos/DeleteContact" last-response="{{DeleteContactResponse}}" on-response="_deleteContactResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contactos/ExportToExcel_Contactos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -43,7 +53,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="80%">
                 <template class="header">
-                    <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
                 </template>
                 <template>
@@ -150,6 +160,19 @@
                     else {
                         this._openToastError("Ocorreu um erro ao eliminar o contacto.");
                     }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.Contacts);
+                    this.$.ajax_Export.generateRequest();
+                    this.$.gridFHEmpregadoRecursos.clearCache();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Contactos/ExportToExcelDownload_Contactos?sFileName=' + FileName;
                 },
             });
         });

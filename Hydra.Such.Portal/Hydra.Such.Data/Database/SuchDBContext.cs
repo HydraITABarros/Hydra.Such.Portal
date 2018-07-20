@@ -130,8 +130,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-      
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -6200,6 +6198,8 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<RececaoFaturacaoWorkflowAnexo>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.Caminho).HasColumnType("nchar(200)");
 
                 entity.Property(e => e.Comentario).HasColumnType("nchar(10)");

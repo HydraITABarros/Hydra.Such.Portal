@@ -78,7 +78,6 @@
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetProblems" last-response="{{ ProblemasPorPerfil }}" id="RespostasPerfil_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
-
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -130,6 +129,13 @@
                    last-response="{{ updatedItem }}"
                    id="page_send_ajax"
                    on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetUserProfileById"
+                   last-response="{{ userProfile }}"
+                   id="get_userprofile_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json">
@@ -637,7 +643,7 @@
                 <div class="row break_clear">
                     <div class="buttons">
                         <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgValidateAnswer">&nbsp; Enviar</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
                     </div>
                 </div>
             </paper-dialog>
@@ -1121,6 +1127,33 @@
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
                     }
+                },
+                _dlgSendAnswer: function () {
+                    debugger;
+                    if (this._validateInputForAnswer()) {
+                        var answerDestinyProfile;
+                        var userToAnswer = this.data.criadoPor;
+
+                        this.$.get_userprofile_ajax.body = JSON.stringify(this.data.criadoPor);
+                        this.$.get_userprofile_ajax.generateRequest();
+
+                        var workflow = null;;
+                        workflow = {
+                            id: idWork.id + 1,
+                            idRecFaturacao: this.data.id,
+                            codTipoProblema: this.$.cmbProblemas.value,
+                            codProblema: "RF1P",
+                            descricao: this.$.txtdescricaoProblema.value,
+                            destinatario: this.$.txtdestinatario.value,
+                            comentario: this.$.txtCommentdgl.value,
+                            enderecoFornecedor: selVendor.email,
+                            area: Area.value,
+                            areaWorkflow: this.$.txtArea2.value,
+                            codDestino: this.$.txtCodDestino.value,
+                        };
+                    }
+                },
+
                 },
                 _dlgAddAttached: function () {
                     var anexoNew = {
