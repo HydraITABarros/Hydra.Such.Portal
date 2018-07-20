@@ -7018,7 +7018,13 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Estado")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.EquipamentoNaoDevolvido).HasColumnName("Equipamento_Nao_Devolvido");
+                entity.Property(e => e.Declaracao).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EquipamentoNaoDevolvido)
+                    .HasColumnName("Equipamento_Nao_Devolvido")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Estado).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.ExtensaoVpn)
                     .HasColumnName("Extensao_VPN")
@@ -7029,7 +7035,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Fim_Fidelizacao")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Gprs).HasColumnName("GPRS");
+                entity.Property(e => e.Gprs)
+                    .HasColumnName("GPRS")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Grupo)
                     .HasMaxLength(10)
@@ -7038,6 +7046,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Imei)
                     .HasMaxLength(16)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Internet).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Nome)
                     .IsRequired()
@@ -7053,13 +7063,23 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Plafond100percUtilizador).HasColumnName("Plafond_100perc_Utilizador");
+                entity.Property(e => e.Plafond100percUtilizador)
+                    .HasColumnName("Plafond_100perc_Utilizador")
+                    .HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.PlafondDados).HasColumnName("Plafond_Dados");
+                entity.Property(e => e.PlafondDados)
+                    .HasColumnName("Plafond_Dados")
+                    .HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.PlafondExtra).HasColumnName("Plafond_Extra");
+                entity.Property(e => e.PlafondExtra)
+                    .HasColumnName("Plafond_Extra")
+                    .HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.PlafondFr).HasColumnName("Plafond_FR");
+                entity.Property(e => e.PlafondFr)
+                    .HasColumnName("Plafond_FR")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Roaming).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.TarifarioDados)
                     .HasColumnName("Tarifario_Dados")
@@ -7079,7 +7099,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorMensalidadeDados)
                     .HasColumnName("Valor_Mensalidade_Dados")
-                    .HasColumnType("decimal(, 20)");
+                    .HasColumnType("decimal(, 20)")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.WhiteList)
                     .HasColumnName("White_List")

@@ -39,10 +39,10 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string TipoProblema { get; set; }
         public string Descricao { get; set; }
         public string DescricaoProblema { get; set; }
-        public DateTime? DataPassaPendente { get; set; }
+        public string DataPassaPendente { get; set; }
         public string AreaPendente { get; set; }
         public string AreaPendente2 { get; set; }
-        public DateTime? DataResolucao { get; set; }
+        public string DataResolucao { get; set; }
 
         public List<BillingRecWorkflowModel> WorkflowItems { get; set; }
     }

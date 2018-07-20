@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes Configuração Problema";
+    ViewData["Title"] = "Detalhes Configuração Destinatário";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -11,22 +10,18 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html" />
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html" />
-
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html" />
-
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <x-problemdetails-config></x-problemdetails-config>
 <dom-module id="x-problemdetails-config">
@@ -35,9 +30,17 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{Areas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores"
+                   last-response="{{Users}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
-        @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetProblemConfigDetails"
+        <iron-ajax url="/Administracao/GetConfAddressee"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -57,32 +60,70 @@
                         <vaadin-text-field type="text" value="{{ data.codigo }}" id="txtCodigo" name="txtCodigo" label="Código" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{ data.tipo }}" id="txtTipo" name="txtTipo" label="Tipo" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-combo-box items="[[Areas]]" id="cmbAreas" item-value-path="value" item-label-path="value" value="{{ data.codArea }}" label="Área" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{ data.envioAreas }}" id="txtEnvioAreas" name="txtEnvioAreas" label="Envio Áreas" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-combo-box items="[[ResponsabilityCenters]]" id="cmbResponsabilityCenters" item-value-path="id" item-label-path="value" value="{{data.codCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="40%">[[item.id]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
-                    <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox id="chkDevolvido" checked="{{ data.devolvido }}" disabled="{{ !_permissions.update }}">Devolvido</vaadin-checkbox>
-                        <vaadin-checkbox id="chkBloqueado" checked="{{ data.bloqueado }}" disabled="{{ !_permissions.update }}">Bloqueado</vaadin-checkbox>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[Users]]" id="cmbUsers" item-value-path="id" item-label-path="value" value="{{data.destinatario}}" label="Destinatário" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="40%">[[item.id]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-12">
-                        <vaadin-text-field rows="1" id="txtDescricao" maxlength="100" name="txtDescricao" label="Descrição" value="{{data.descricao}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field rows="1" id="txtNotas" maxlength="250" name="txtNotas" label="Notas" value="{{data.notas}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3 alignPoga">
+                        <vaadin-checkbox id="chkDevolvido" checked="{{ data.mostra }}" disabled="{{ !_permissions.update }}">Mostra</vaadin-checkbox>
+                        <vaadin-checkbox id="chkBloqueado" checked="{{ data.enviaEmail }}" disabled="{{ !_permissions.update }}">Envia Email</vaadin-checkbox>
                     </div>
                 </div>
             </div>
         </div>
 
         @*CRUD NEW PROFILEMODEL*@
-        <iron-ajax url="/Administracao/CreateProblemConfig"
+        <iron-ajax url="/Administracao/CreateConfAddressee"
                    id="ajax_create"
                    last-response="{{actionResponse}}"
                    method="post"
                    handle-as="json"
                    on-response="_responseProcessor"
                    content-type="application/json; charset=utf-8"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetAreas"
+                   last-response="{{Areas}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
 
         <div class="marginSpace">
             @if (string.IsNullOrEmpty(ViewBag.ProblemId))
@@ -117,9 +158,8 @@
                     },
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify({ "id": "@ViewBag.ProblemId", "type": "@ViewBag.ProblemType" });
+                    this.$.page_databound_ajax.body = JSON.stringify("@ViewBag.ProblemId");
                     this.$.page_databound_ajax.generateRequest();
-
                 },
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -131,7 +171,7 @@
                 },
                 _create: function () {
                     if (this.data.codigo !== '' && this.data.codigo != null) {
-                        this.$.ajax_create.url = "/Administracao/CreateProblemConfig";
+                        this.$.ajax_create.url = "/Administracao/CreateConfAddressee";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
                         this.openToast("Configuração criada com sucesso!");
@@ -142,7 +182,7 @@
                 _update: function () {
 
                     if (this.data.codigo !== '' && this.data.codigo != null) {
-                        this.$.ajax_create.url = "/Administracao/UpdateProblemConfig";
+                        this.$.ajax_create.url = "/Administracao/UpdateConfAddressee";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
                         this.openToast("Registo atualizado com sucesso!");
@@ -151,7 +191,7 @@
                     }
                 },
                 _delete: function () {
-                    this.$.ajax_create.url = "/Administracao/DeleteProblemConfig";
+                    this.$.ajax_create.url = "/Administracao/DeleteConfAddressee";
                     this.$.ajax_create.body = JSON.stringify(this.data);
                     this.$.ajax_create.generateRequest();
                 },
@@ -160,13 +200,13 @@
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {
                             if(this.actionResponse.eReasonCode == 1)
-                                window.location.href = "/Administracao/ConfigProblemasDetalhes/?id=" + this.data.codigo + "&type=" + this.data.tipo;
+                                window.location.href = "/Administracao/ConfigDestinatariosDetalhes/?id=" + this.data.codigo;
                             else
                                 this.openToastError('Ocorreu um erro ao criar o registo.');
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
                             if (this.actionResponse.eReasonCode == 1) {
-                                window.location.href = "/Administracao/ConfigProblemas";
+                                window.location.href = "/Administracao/ConfigDestinatarios/";
                             } else {
                                 this.openToastError('Ocorreu um erro ao remover o registo.');
                             }
@@ -190,7 +230,7 @@
                 },
                 _createNew: function (item) {
                     if (item != null) {
-                        window.location.href = "/Administracao/ConfigProblemasDetalhes/";
+                        window.location.href = "/Administracao/ConfigDestinatariosDetalhes/";
                     }
                 }
 

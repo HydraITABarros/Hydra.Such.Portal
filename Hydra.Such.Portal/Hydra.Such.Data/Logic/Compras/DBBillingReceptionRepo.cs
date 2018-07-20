@@ -116,6 +116,16 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         #endregion
 
+        #region WFA
+        public RececaoFaturacaoWorkflowAnexo Create(RececaoFaturacaoWorkflowAnexo item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            var item1 = ctx.RececaoFaturacaoWorkflowAnexo.Add(item);
+            return item;
+        }
+        #endregion
+
         #region GETS
         
 
