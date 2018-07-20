@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data.Logic.ComprasML;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -245,36 +246,53 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult GetUserProfileById([FromBody] string user)
+        {
+            int userPendingProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
+            return Json(userPendingProfile);
+        }
+            
 
         [HttpPost]
         public JsonResult GetAnswers([FromBody] BillingReceptionModel data)
         {
-            int userProfile = (int)DBUserConfigurations.GetById(User.Identity.Name).Rfperfil;
+            int userPendingProfile = (int)DBUserConfigurations.GetById(User.Identity.Name).Rfperfil;
+            //int userDestinyProfile = (int)DBUserConfigurations.GetById(data.CriadoPor).Rfperfil;
+            //string QuestionArea = billingRecService.GetQuestionIDByDesc(data.TipoProblema, data.Descricao).EnvioAreas;
+            int userDestinyProfile = 0;
             List<RecFacturasProblemas> result = new List<RecFacturasProblemas>();
             string AnswerType = "";
-            if (data.AreaPendente == "Contabilidade")
+
+            if (data.AreaPendente2 == "Aprovisionamento")
             {
-                if(userProfile == 1)
+                if (userPendingProfile == 1 && userDestinyProfile == 0)
                 {
                     AnswerType = "RF1R";
                     result = billingRecService.GetProblemAnswer(AnswerType).ToList();
-                }
+                } 
             }
-            if (data.AreaPendente == "Aprovisionamento")
+
+            if(data.AreaPendente2 == "UnidadesProdutivas" || data.AreaPendente2 == "UnidadesProdutivas")
             {
-                if (userProfile == 2 || userProfile == 3)
+                if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
                 {
                     AnswerType = "RF5R";
                     result = billingRecService.GetProblemAnswer(AnswerType).ToList();
                 }
             }
+            
+            //if(QuestionArea == "")
+            //{
+
+            //}
 
             List<DDMessageRelated> answers = result
             .Select(x => new DDMessageRelated()
             {
                 id = x.Tipo,
                 value = x.Descricao,
-                extra = x.EnvioAreas
+                extra = x.Codigo
             }).ToList();
 
             return Json(answers);
