@@ -21,6 +21,10 @@ using Hydra.Such.Data;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.ViewModel.Approvals;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -29,11 +33,15 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _generalConfig;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FolhasDeHorasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public FolhasDeHorasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         #region Home
@@ -3275,6 +3283,84 @@ namespace Hydra.Such.Portal.Controllers
                 result.eMessage = "Ocorreu um erro.";
             }
             return Json(result);
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_FolhasHoras([FromBody] List<FolhaDeHorasViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Folha de Horas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Folha Horas");
+                row.CreateCell(1).SetCellValue("Nº Ordem/Projecto");
+                row.CreateCell(2).SetCellValue("Projecto Descrição");
+                row.CreateCell(3).SetCellValue("Nº Empregado");
+                row.CreateCell(4).SetCellValue("Nome Empregado");
+                row.CreateCell(5).SetCellValue("Data Início");
+                row.CreateCell(6).SetCellValue("Hora Início");
+                row.CreateCell(7).SetCellValue("Data Fim");
+                row.CreateCell(8).SetCellValue("Hora Fim");
+                row.CreateCell(9).SetCellValue("Tipo Deslocação");
+                row.CreateCell(10).SetCellValue("Tipo km");
+                row.CreateCell(11).SetCellValue("Matrícula");
+                row.CreateCell(12).SetCellValue("Desloc. Fora do Concelho");
+                row.CreateCell(13).SetCellValue("Terminado");
+                row.CreateCell(14).SetCellValue("Custo Total Ajuda Custo");
+                row.CreateCell(15).SetCellValue("Custo Total Horas");
+                row.CreateCell(16).SetCellValue("Custo Total km");
+                row.CreateCell(17).SetCellValue("Nº Total km");
+                row.CreateCell(18).SetCellValue("Observações");
+                int count = 1;
+                foreach (FolhaDeHorasViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.FolhaDeHorasNo);
+                    row.CreateCell(1).SetCellValue(item.ProjetoNo);
+                    row.CreateCell(2).SetCellValue(item.ProjetoDescricao);
+                    row.CreateCell(3).SetCellValue(item.EmpregadoNo);
+                    row.CreateCell(4).SetCellValue(item.EmpregadoNome);
+                    row.CreateCell(5).SetCellValue(item.DataPartidaTexto);
+                    row.CreateCell(6).SetCellValue(item.HoraPartidaTexto);
+                    row.CreateCell(7).SetCellValue(item.DataChegadaTexto);
+                    row.CreateCell(8).SetCellValue(item.HoraChegadaTexto);
+                    row.CreateCell(9).SetCellValue(item.TipoDeslocacaoTexto);
+                    row.CreateCell(10).SetCellValue(item.CodigoTipoKms);
+                    row.CreateCell(11).SetCellValue(item.Matricula);
+                    row.CreateCell(12).SetCellValue(item.DeslocacaoForaConcelhoTexto);
+                    row.CreateCell(13).SetCellValue(item.TerminadaTexto);
+                    row.CreateCell(14).SetCellValue(item.CustoTotalAjudaCusto.ToString());
+                    row.CreateCell(15).SetCellValue(item.CustoTotalHoras.ToString());
+                    row.CreateCell(16).SetCellValue(item.CustoTotalKM.ToString());
+                    row.CreateCell(17).SetCellValue(item.NumTotalKM.ToString());
+                    row.CreateCell(18).SetCellValue(item.Observacoes);
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_FolhasHoras(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Folha de Horas.xlsx");
         }
 
         #endregion

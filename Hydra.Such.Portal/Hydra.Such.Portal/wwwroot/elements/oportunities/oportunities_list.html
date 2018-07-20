@@ -58,6 +58,15 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ExportToExcel_Oportunidades"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
@@ -66,6 +75,7 @@
             </template>
             <paper-button class="tablinks" on-tap="_showHistoryButton"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{_showHistory}}</paper-button>
             <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -134,8 +144,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="150px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" />
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" />
                 </template>
                 <template>
                     {{item.statusDescription}}
@@ -184,7 +194,7 @@
                 </template>
                 <template>
                     <p align="right"> {{item.totalProposalValue}}€</p>
-                   
+
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
@@ -324,7 +334,20 @@
                     this.result.splice(index, 1);
                     this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
                     this.$.ajax_delete_contract.generateRequest();
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                    this.$.gridFHEmpregadoRecursos.clearCache();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Contratos/ExportToExcelDownload_Oportunidades?sFileName=' + FileName;
+                },
             });
         });
     </script>

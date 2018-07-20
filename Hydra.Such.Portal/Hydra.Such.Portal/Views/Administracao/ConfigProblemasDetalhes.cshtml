@@ -62,7 +62,6 @@
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{ data.envioAreas }}" id="txtEnvioAreas" name="txtEnvioAreas" label="Envio Áreas"></vaadin-text-field>
                     </div>
-
                     <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox id="chkDevolvido" checked="{{ data.devolvido }}">Devolvido</vaadin-checkbox>
                         <vaadin-checkbox id="chkBloqueado" checked="{{ data.bloqueado }}">Bloqueado</vaadin-checkbox>
@@ -79,7 +78,7 @@
         @*CRUD NEW PROFILEMODEL*@
         <iron-ajax url="/Administracao/CreateProblemConfig"
                    id="ajax_create"
-                   last-response="{{createdItem}}"
+                   last-response="{{actionResponse}}"
                    method="post"
                    handle-as="json"
                    on-response="_responseProcessor"
@@ -164,8 +163,8 @@
                 },
                 _update: function () {
 
-                    if (this.data.description !== '' && this.data.description != null) {
-                        this.$.ajax_create.url = "/Administracao/UpdateProfileModel";
+                    if (this.data.codigo !== '' && this.data.codigo != null) {
+                        this.$.ajax_create.url = "/Administracao/UpdateProblemConfig";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
                         this.openToast("Registo atualizado com sucesso!");
@@ -174,7 +173,7 @@
                     }
                 },
                 _delete: function () {
-                    this.$.ajax_create.url = "/Administracao/DeleteProfileModel";
+                    this.$.ajax_create.url = "/Administracao/DeleteProblemConfig";
                     this.$.ajax_create.body = JSON.stringify(this.data);
                     this.$.ajax_create.generateRequest();
                 },
@@ -182,13 +181,13 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            if(this.createdItem.eReasonCode == 1)
+                            if(this.actionResponse.eReasonCode == 1)
                                 window.location.href = "/Administracao/ConfigProblemasDetalhes/?id=" + this.data.codigo + "&type=" + this.data.tipo;
                             else
                                 this.openToastError('Ocorreu um erro ao criar o registo.');
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
-                            if (this.data.id == 0) {
+                            if (this.actionResponse.eReasonCode == 1) {
                                 window.location.href = "/Administracao/ConfigProblemas";
                             } else {
                                 this.openToastError('Ocorreu um erro ao remover o registo.');

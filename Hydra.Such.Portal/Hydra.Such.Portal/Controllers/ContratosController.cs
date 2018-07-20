@@ -19,6 +19,10 @@ using Hydra.Such.Data;
 using Newtonsoft.Json;
 using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.ViewModel.Clients;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -26,11 +30,15 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _generalConfig;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ContratosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public ContratosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         #region Contratos
@@ -2043,6 +2051,72 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-        
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Oportunidades([FromBody] List<ContractViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Oportunidades");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Oportunidade");
+                row.CreateCell(1).SetCellValue("Data Inicio");
+                row.CreateCell(2).SetCellValue("Data Fim");
+                row.CreateCell(3).SetCellValue("Nº Contacto");
+                row.CreateCell(4).SetCellValue("Nº Cliente");
+                row.CreateCell(5).SetCellValue("Nome Cliente");
+                row.CreateCell(6).SetCellValue("Descrição");
+                row.CreateCell(7).SetCellValue("Estado");
+                row.CreateCell(8).SetCellValue("Cód. Região");
+                row.CreateCell(9).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(10).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(11).SetCellValue("Nº Versão");
+                row.CreateCell(12).SetCellValue("Valor Total");
+                int count = 1;
+                foreach (ContractViewModel item in dp)
+                {
+                    row = excelSheet.CreateRow(count);
+                    row.CreateCell(0).SetCellValue(item.ContractNo);
+                    row.CreateCell(1).SetCellValue(item.StartData);
+                    row.CreateCell(2).SetCellValue(item.DueDate);
+                    row.CreateCell(3).SetCellValue(item.ContactNo);
+                    row.CreateCell(4).SetCellValue(item.ClientNo);
+                    row.CreateCell(5).SetCellValue(item.ClientName);
+                    row.CreateCell(6).SetCellValue(item.Description);
+                    row.CreateCell(7).SetCellValue(item.StatusDescription);
+                    row.CreateCell(8).SetCellValue(item.CodeRegion);
+                    row.CreateCell(9).SetCellValue(item.CodeFunctionalArea);
+                    row.CreateCell(10).SetCellValue(item.CodeResponsabilityCenter);
+                    row.CreateCell(11).SetCellValue(item.VersionNo);
+                    row.CreateCell(12).SetCellValue(item.TotalProposalValue.ToString());
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Oportunidades(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Oportunidades.xlsx");
+        }
+
     }
 }

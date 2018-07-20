@@ -120,6 +120,11 @@ namespace Hydra.Such.Data.Logic
                     Regiao = item.RegiãoPorDefeito,
                     RFPerfil = item.Rfperfil.HasValue ? (Enumerations.BillingReceptionAreas)item.Rfperfil : (Enumerations.BillingReceptionAreas?)null,
                     RFPerfilVisualizacao = item.RfperfilVisualizacao.HasValue ? (Enumerations.BillingReceptionUserProfiles)item.RfperfilVisualizacao : (Enumerations.BillingReceptionUserProfiles?)null,
+                    RFFiltroArea = item.RffiltroArea,
+                    RFNomeAbreviado = item.RfnomeAbreviado,
+                    RFRespostaContabilidade = item.RfrespostaContabilidade,
+                    RFAlterarDestinatarios = item.RfalterarDestinatarios,
+                    RFMailEnvio = item.RfmailEnvio,
                 };
             }
             return null;
@@ -154,6 +159,11 @@ namespace Hydra.Such.Data.Logic
                     RegiãoPorDefeito = item.Regiao,
                     Rfperfil = item.RFPerfil.HasValue ? (int)item.RFPerfil : (int?)null,
                     RfperfilVisualizacao = item.RFPerfilVisualizacao.HasValue ? (int)item.RFPerfilVisualizacao : (int?)null,
+                    RffiltroArea = item.RFFiltroArea,
+                    RfnomeAbreviado = item.RFNomeAbreviado,
+                    RfrespostaContabilidade = item.RFRespostaContabilidade,
+                    RfalterarDestinatarios = item.RFAlterarDestinatarios,
+                    RfmailEnvio = item.RFMailEnvio,
                 };
             }
             return null;

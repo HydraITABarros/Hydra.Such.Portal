@@ -186,6 +186,21 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="txtRFFiltroArea" name="txtRFFiltroArea" label="Filtro Área" value="{{data.rfFiltroArea}}"></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-3 alignPoga">
+                            <vaadin-checkbox id="chkRFRespostaContabilidade" checked="{{ data.rfRespostaContabilidade }}">Resposta Contabilidade</vaadin-checkbox>
+                            <vaadin-checkbox id="chkRFAlterarDestinatarios" checked="{{ data.rfAlterarDestinatarios }}">Alterar Destinatários</vaadin-checkbox>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="txtRFNomeAbreviado" name="txtRFNomeAbreviado" label="Nome Abreviado" value="{{data.rfNomeAbreviado}}"></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="txtRFMailEnvio" name="txtRFMailEnvio" label="Mail Envio" value="{{data.rfMailEnvio}}"></vaadin-text-field>
+                        </div>
                     </div>
                 </div>
             </paper-collapse-item>
@@ -622,7 +637,6 @@
                     this.Flag = true;
                     
                 },
-
                 ready: function () {
 
                 },

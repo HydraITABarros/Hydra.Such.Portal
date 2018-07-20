@@ -169,8 +169,8 @@ namespace Hydra.Such.Portal.Services
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
             item.TipoProblema = wfItemLast.CodTipoProblema;
-            item.AreaPendente = wfItemLast.AreaWorkflow;
-            item.AreaPendente2 = wfItemLast.Area;
+            item.AreaPendente = wfItemLast.Area;
+            item.AreaPendente2 = wfItemLast.AreaWorkflow;
             item.Destinatario = wfItemLast.Destinatario;
             item.Descricao = wfItemLast.Comentario;
             item.DescricaoProblema = wfItemLast.Descricao;
@@ -353,7 +353,7 @@ namespace Hydra.Such.Portal.Services
         }
         public RecFacturasProblemas GetQuestionID(string id,string type)
         {
-            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(id))
             {
                 RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
                 return problem;
@@ -461,7 +461,21 @@ namespace Hydra.Such.Portal.Services
         {
             try
             {
-                repo.Create(item);
+                repo.Update(item);
+                repo.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return item;
+        }
+
+        public RecFacturasProblemas DeleteProblemConfig(RecFacturasProblemas item)
+        {
+            try
+            {
+                repo.Delete(item);
                 repo.SaveChanges();
             }
             catch (Exception ex)
