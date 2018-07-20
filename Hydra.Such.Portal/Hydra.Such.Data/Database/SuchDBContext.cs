@@ -130,6 +130,15 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -6198,11 +6207,9 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<RececaoFaturacaoWorkflowAnexo>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Caminho).HasMaxLength(200);
 
-                entity.Property(e => e.Caminho).HasColumnType("nchar(200)");
-
-                entity.Property(e => e.Comentario).HasColumnType("nchar(10)");
+                entity.Property(e => e.Comentario).HasMaxLength(50);
             });
 
             modelBuilder.Entity<RecFacturasProblemas>(entity =>

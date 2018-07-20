@@ -391,7 +391,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes" hidden>&nbsp; Nota</paper-button>
                     </div>
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _checkPending }}">
@@ -490,7 +490,7 @@
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
-                <div class="row break_clear">
+                <div class="row break_clear" hidden>
                     <div class="col-sm-2">
                         <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
                     </div>
