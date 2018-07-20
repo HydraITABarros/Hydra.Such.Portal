@@ -279,5 +279,14 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+
+        [HttpGet]
+        public JsonResult GetUserProfileById([FromBody] string user)
+        {
+            int userProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
+            return Json(userProfile);
+        }
+        
     }
 }
