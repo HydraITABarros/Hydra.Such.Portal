@@ -287,6 +287,25 @@ namespace Hydra.Such.Portal.Controllers
             int userProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
             return Json(userProfile);
         }
-        
+
+        [HttpPost]
+        public JsonResult CheckIfDocumentExists([FromBody] BillingReceptionModel item)
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            bool exists = billingReceptionService.CheckIfDocumentExistsFor(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (exists)
+            {
+                result.eMessage = "Já foi criada receção de fatura para o documento.";
+                result.eReasonCode = 2;
+            }
+            else
+            {
+                result.eMessage = "O documento pode ser rececionado.";
+                result.eReasonCode = 1;
+            }
+            return Json(result);
+        }
     }
 }

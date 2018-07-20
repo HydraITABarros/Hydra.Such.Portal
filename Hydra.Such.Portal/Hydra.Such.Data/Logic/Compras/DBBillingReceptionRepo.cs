@@ -7,6 +7,7 @@ using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.ComprasML
 {
@@ -64,6 +65,21 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return ctx.RececaoFaturacao
                     .Include(x => x.RececaoFaturacaoWorkflow)
                     .SingleOrDefault(x => x.Id == id)
+                    .ParseToViewModel();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public List<BillingReceptionModel> GetByExternalDoc(string externalDocNo, int year, string supplierId)
+        {
+            try
+            {
+                return ctx.RececaoFaturacao
+                    .Where(x => x.CodFornecedor == supplierId && x.NumDocFornecedor == externalDocNo && x.DataDocFornecedor.Value.Year == year)
+                    .ToList()
                     .ParseToViewModel();
             }
             catch (Exception ex)

@@ -141,6 +141,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Faturacao/CheckIfDocumentExists"
+                   last-response="{{ preventDuplicateDocsResponse }}"
+                   id="docvalidation_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   on-response="_docValidationResponse">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -275,7 +284,7 @@
                                         fields='[{"field":"no", "name":"Nº Encomenda"},
                                             {"field":"buyFromVendorNo", "name":"Nº Fornecedor"},
                                             {"field":"buyFromVendorName", "name":"Nome Fornecedor"},
-                                            {"field":"valorFactura", "name":"Valor"},
+                                            {"field":"amount", "name":"Valor"},
                                             {"field":"quantity", "name":"Quantidade"},
                                             {"field":"quantityReceived", "name":"Quantidade Recebida"},
                                             {"field":"amountRcdNotInvoiced", "name":"Quantidade Rec. não Contabilizada"},
@@ -725,8 +734,15 @@
                     _hiddeAnswerButton: {
                         type: Boolean,
                         value: true,
-                    }
+                    },
+                    _docIsValid: {
+                        type: Boolean,
+                        value: false,
+                    },
                 },
+                observers: [
+                    '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
+                ],
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
                         this._isCreate = false;
@@ -757,16 +773,17 @@
                         }
                         //Ponto de situação
                         var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        this.$.txtComment.value = workFlow.comentario;
-                        this.$.codDescricao.value = workFlow.codTipoProblema;
-                        this.$.txtDescription.value = workFlow.descricao;
-                        var data = new Date(workFlow.dataCriacao);
-                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                        if (dataFormatada != undefined) {
-                            this.$.txtDatePeding.value = dataFormatada;
+                        if (workFlow != null) {
+                            this.$.txtComment.value = workFlow.comentario;
+                            this.$.codDescricao.value = workFlow.codTipoProblema;
+                            this.$.txtDescription.value = workFlow.descricao;
+                            var data = new Date(workFlow.dataCriacao);
+                            var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                            if (dataFormatada != undefined) {
+                                this.$.txtDatePeding.value = dataFormatada;
+                            }
+                            this.$.txtDestProblema.value = workFlow.utilizador;
                         }
-                        this.$.txtDestProblema.value = workFlow.utilizador;
-
                         //Botão Resposta
                         debugger;
                         if (this.data.estado == 1) {
@@ -792,7 +809,8 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
-                    if (this.$.cmbDocumentTypes.validate()) {
+                    if (this.$.cmbDocumentTypes.validate() &&
+                        this._docIsValid) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
@@ -837,7 +855,6 @@
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-
                 _validateInputForAnswer: function () {
                     if (this.data.estado == null || this.data.estado == "") {
                         this._openToastError("O Estado tem que estar preenchido.");
@@ -952,6 +969,28 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
+                    debugger;
+                    if (this._isCreate &&
+                        date != undefined &&
+                        date != "" &&
+                        docNumber != undefined &&
+                        docNumber != "" &&
+                        codFornecedor != undefined &&
+                        codFornecedor != "")
+                    {
+                        this.$.docvalidation_ajax.body = JSON.stringify(this.data);
+                        this.$.docvalidation_ajax.generateRequest();
+                    }
+                },
+                _docValidationResponse: function (e) { 
+                    if (e.detail.status === 200) {
+                        if (this.preventDuplicateDocsResponse.eReasonCode == "1") 
+                            this._docIsValid = true;
+                        else
+                            this._openToastError(this.preventDuplicateDocsResponse.eMessage);
+                    }
+                },
                 _orderSelected: function (e) {
                     var order = this.$.sbOrders.activeItem;
                     if (order != null) {
@@ -978,7 +1017,12 @@
                         this.$.txtQuantidadeEncomenda.value = order.quantity;
                         this.$.txtQuantidadeRecebida.value = order.quantityReceived;
                         this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
-                        this.$.txtValor.value = order.valorFactura;
+                        this.$.txtValor.value = order.amount;
+
+                        this._preventDocumentDuplicates();
+                        if (!this._docIsValid)
+                            return false;
+
                         if (order.quantity == order.quantityReceived)
                             this._openToast("Encomenda totalmente rececionada.");
                         else

@@ -486,5 +486,12 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
         #endregion
+
+        public bool CheckIfDocumentExistsFor(BillingReceptionModel item)
+        {
+            DateTime date = DateTime.Parse(item.DataDocFornecedor);
+            var items = repo.GetByExternalDoc(item.NumDocFornecedor, date.Year, item.CodFornecedor);
+            return items.Any();
+        }
     }
 }

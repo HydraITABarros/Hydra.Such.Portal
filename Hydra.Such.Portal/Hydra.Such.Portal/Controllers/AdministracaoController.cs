@@ -5737,7 +5737,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
         {
-            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
             var deleted = DBRFConfigDestinatarios.Delete(item);
 
             ErrorHandler result = new ErrorHandler();
