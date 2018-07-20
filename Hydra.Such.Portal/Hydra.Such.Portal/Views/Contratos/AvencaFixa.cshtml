@@ -61,6 +61,14 @@
         <iron-ajax url="/Contratos/GetPedingAvencaFixa" last-response="{{result}}" id="ajax_getpeding" method="post" handle-as="json" content-type="application/json" on-response="_gridListPedingResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
         <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json" on-response="_invoiceCountResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/ExportToExcel_AvencaFixa"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -71,7 +79,7 @@
             <paper-button class="tablinks" on-tap="_count"><i class="fa fa-align-right" aria-hidden="true"></i> Contabilizar</paper-button>
             <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-times-circle" aria-hidden="true"></i> CAFs Pendentes </paper-button>
             <paper-button class="tablinks" on-tap="_openInvice"><i class="fa fa-check-circle" aria-hidden="true"></i> CAFs Activas </paper-button>
-
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <h2 class="separator">Autorizar Faturação Contratos</h2>
@@ -358,6 +366,19 @@
                 _openInvice: function (param) {
                     this.$.ajax_getall.generateRequest();
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Contratos/ExportToExcelDownload_AvencaFixa?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

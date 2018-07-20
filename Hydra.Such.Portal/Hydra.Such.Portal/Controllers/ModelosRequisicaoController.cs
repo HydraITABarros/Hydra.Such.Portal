@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data;
@@ -12,8 +13,11 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
@@ -22,14 +26,16 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ModelosRequisicaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public ModelosRequisicaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
-        
+
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions =
@@ -326,6 +332,70 @@ namespace Hydra.Such.Portal.Controllers
                 item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
             return Json(item);
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_ModelosRequisicao([FromBody] List<RequisitionViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Modelos de Requisição");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Requisição");
+                row.CreateCell(1).SetCellValue("ERegião Mercado Local");
+                row.CreateCell(2).SetCellValue("Data Mercado Local");
+                row.CreateCell(3).SetCellValue("Código Região");
+                row.CreateCell(4).SetCellValue("Código Área Funcional");
+                row.CreateCell(5).SetCellValue("Código Centro Responsabilidade");
+                row.CreateCell(6).SetCellValue("Nº Consulta Mercado");
+                row.CreateCell(7).SetCellValue("Nº Encomenda");
+                row.CreateCell(8).SetCellValue("Nº Requisição Reclamada");
+                row.CreateCell(9).SetCellValue("Data requisição");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.LocalMarketRegion);
+                        row.CreateCell(2).SetCellValue(item.LocalMarketDate.ToString());
+                        row.CreateCell(3).SetCellValue(item.RegionCode);
+                        row.CreateCell(4).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(5).SetCellValue(item.CenterResponsibilityCode);
+                        row.CreateCell(6).SetCellValue(item.MarketInquiryNo);
+                        row.CreateCell(7).SetCellValue(item.OrderNo);
+                        row.CreateCell(8).SetCellValue(item.RequestReclaimNo);
+                        row.CreateCell(9).SetCellValue(item.RequisitionDate);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ModelosRequisicao(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Modelos de Requisição.xlsx");
         }
     }
 }

@@ -31,10 +31,23 @@
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
         <iron-ajax url="/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_RequisicoesValidar"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+        </div>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -60,8 +73,8 @@
                 <template class="header">
                     <p class="alignCenter">Urgente</p>
                     @*<vaadin-grid-filter path="urgent" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>*@
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>*@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
@@ -71,8 +84,8 @@
                 <template class="header">
                     <p class="alignCenter">Compra a Dinheiro</p>
                     @*<vaadin-grid-filter path="buyCash" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>*@
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>*@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
@@ -82,8 +95,8 @@
                 <template class="header">
                     <p class="alignCenter">Trabalho já executado</p>
                     @*<vaadin-grid-filter path="alreadyPerformed" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>*@
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>*@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
@@ -93,8 +106,8 @@
                 <template class="header">
                     <p class="alignCenter">Requisição Nutrição</p>
                     @*<vaadin-grid-filter path="requestNutrition" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>*@
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>*@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
@@ -146,23 +159,23 @@
                 </template>
             </vaadin-grid-column>
             @*<vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="createUser" />
-                    </template>
-                    <template>
-                        {{item.createUser}}
-                    </template>
-                </vaadin-grid-column>*@
+                <template class="header">
+                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
+                </template>
+                <template>
+                    {{item.createUser}}
+                </template>
+            </vaadin-grid-column>*@
             @*<vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="approvers" />
-                    </template>
-                    <template>
-                        {{item.approvers}}
-                    </template>
-                </vaadin-grid-column>*@
+                <template class="header">
+                    <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvers" />
+                </template>
+                <template>
+                    {{item.approvers}}
+                </template>
+            </vaadin-grid-column>*@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
@@ -173,101 +186,101 @@
                 </template>
             </vaadin-grid-column>
             @*<vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="updateUser" />
-                    </template>
-                    <template>
-                        {{item.updateUser}}
-                    </template>
-                </vaadin-grid-column>*@
+                <template class="header">
+                    <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="updateUser" />
+                </template>
+                <template>
+                    {{item.updateUser}}
+                </template>
+            </vaadin-grid-column>*@
             @*<vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="budget" />
-                    </template>
-                    <template>
-                        {{item.budget}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <p class="alignCenter">Mercado Local</p>
-                        <vaadin-grid-filter path="localMarket" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>
-                    </template>
-                    <template>
-                        <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localMarketRegion" />
-                    </template>
-                    <template>
-                        {{item.localMarketRegion}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localMarketDate" />
-                    </template>
-                    <template>
-                        [[ _parseDateFormat(item.localMarketDate)]]
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="marketInquiryNo" />
-                    </template>
-                    <template>
-                        {{item.marketInquiryNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="orderNo" />
-                    </template>
-                    <template>
-                        {{item.orderNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <p class="alignCenter">Reposição Stock</p>
-                        <vaadin-grid-filter path="stockReplacement" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>
-                    </template>
-                    <template>
-                        <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <p class="alignCenter">Reclamação</p>
-                        <vaadin-grid-filter path="reclamation" value="[[_filterActive]]">
-                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                        </vaadin-grid-filter>
-                    </template>
-                    <template>
-                        <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="requestReclaimNo" />
-                    </template>
-                    <template>
-                        {{item.requestReclaimNo}}
-                    </template>
-                </vaadin-grid-column>*@
+                <template class="header">
+                    <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="budget" />
+                </template>
+                <template>
+                    {{item.budget}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <p class="alignCenter">Mercado Local</p>
+                    <vaadin-grid-filter path="localMarket" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketRegion" />
+                </template>
+                <template>
+                    {{item.localMarketRegion}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketDate" />
+                </template>
+                <template>
+                    [[ _parseDateFormat(item.localMarketDate)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marketInquiryNo" />
+                </template>
+                <template>
+                    {{item.marketInquiryNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="orderNo" />
+                </template>
+                <template>
+                    {{item.orderNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <p class="alignCenter">Reposição Stock</p>
+                    <vaadin-grid-filter path="stockReplacement" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <p class="alignCenter">Reclamação</p>
+                    <vaadin-grid-filter path="reclamation" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestReclaimNo" />
+                </template>
+                <template>
+                    {{item.requestReclaimNo}}
+                </template>
+            </vaadin-grid-column>*@
         </vaadin-grid>
     </template>
     <script>
@@ -359,7 +372,21 @@
                         }
                     }
                     return "";
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../GestaoRequisicoes/ExportToExcelDownload_RequisicoesValidar?sFileName=' + FileName;
+                },
+
+
             });
         });
     </script>

@@ -36,6 +36,19 @@
 
         <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay" id="getStatesOfPlay_ajax" last-response="{{_statesOfPlay1}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_PontosSituacaoRequisicoes"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+        </div>
+
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
 
@@ -131,6 +144,19 @@
                 _redirectToRequisitionDetails: function (e) {
                     window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this._statesOfPlay1);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../GestaoRequisicoes/ExportToExcelDownload_PontosSituacaoRequisicoes?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

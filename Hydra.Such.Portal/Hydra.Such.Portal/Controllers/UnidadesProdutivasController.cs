@@ -15,6 +15,10 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -22,11 +26,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public UnidadesProdutivasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public UnidadesProdutivasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
 
@@ -319,5 +325,68 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_UnidadesProdutivas([FromBody] List<ProductivityUnitViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Unidades Produtivas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Unidade Produtiva");
+                row.CreateCell(1).SetCellValue("Descrição");
+                row.CreateCell(2).SetCellValue("Data Inicio Exploração");
+                row.CreateCell(3).SetCellValue("Data Fim Exploração");
+                row.CreateCell(4).SetCellValue("Cód. Região");
+                row.CreateCell(5).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(6).SetCellValue("Cód. Area Funcional");
+                row.CreateCell(7).SetCellValue("Proj. Cozinha");
+                row.CreateCell(8).SetCellValue("Proj. Mat. Subsidiárias");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ProductivityUnitViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ProductivityUnitNo);
+                        row.CreateCell(1).SetCellValue(item.Description);
+                        row.CreateCell(2).SetCellValue(item.StartDateExploration);
+                        row.CreateCell(3).SetCellValue(item.EndDateExploration);
+                        row.CreateCell(4).SetCellValue(item.CodeRegion);
+                        row.CreateCell(5).SetCellValue(item.CodeFunctionalArea);
+                        row.CreateCell(6).SetCellValue(item.CodeResponsabilityCenter);
+                        row.CreateCell(7).SetCellValue(item.ProjectKitchen);
+                        row.CreateCell(8).SetCellValue(item.ProjectSubsidiaries);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_UnidadesProdutivas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Unidades Produtivas.xlsx");
+        }
+
     }
 }
