@@ -163,7 +163,7 @@ namespace Hydra.Such.Portal.Services
             else
             {
                 item.Estado = BillingReceptionStates.Pendente;
-                if (item.DataPassaPendente == null)
+                if (item.DataPassaPendente == null || item.DataPassaPendente == "")
                     item.DataPassaPendente = DateTime.Now.ToString();
             }
             item.Estado = BillingReceptionStates.Pendente;
@@ -512,5 +512,12 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
         #endregion
+
+        public bool CheckIfDocumentExistsFor(BillingReceptionModel item)
+        {
+            DateTime date = DateTime.Parse(item.DataDocFornecedor);
+            var items = repo.GetByExternalDoc(item.NumDocFornecedor, date.Year, item.CodFornecedor);
+            return items.Any();
+        }
     }
 }
