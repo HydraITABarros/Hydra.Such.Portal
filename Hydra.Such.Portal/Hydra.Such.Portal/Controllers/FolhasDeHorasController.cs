@@ -3322,30 +3322,34 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(16).SetCellValue("Custo Total km");
                 row.CreateCell(17).SetCellValue("Nº Total km");
                 row.CreateCell(18).SetCellValue("Observações");
-                int count = 1;
-                foreach (FolhaDeHorasViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.FolhaDeHorasNo);
-                    row.CreateCell(1).SetCellValue(item.ProjetoNo);
-                    row.CreateCell(2).SetCellValue(item.ProjetoDescricao);
-                    row.CreateCell(3).SetCellValue(item.EmpregadoNo);
-                    row.CreateCell(4).SetCellValue(item.EmpregadoNome);
-                    row.CreateCell(5).SetCellValue(item.DataPartidaTexto);
-                    row.CreateCell(6).SetCellValue(item.HoraPartidaTexto);
-                    row.CreateCell(7).SetCellValue(item.DataChegadaTexto);
-                    row.CreateCell(8).SetCellValue(item.HoraChegadaTexto);
-                    row.CreateCell(9).SetCellValue(item.TipoDeslocacaoTexto);
-                    row.CreateCell(10).SetCellValue(item.CodigoTipoKms);
-                    row.CreateCell(11).SetCellValue(item.Matricula);
-                    row.CreateCell(12).SetCellValue(item.DeslocacaoForaConcelhoTexto);
-                    row.CreateCell(13).SetCellValue(item.TerminadaTexto);
-                    row.CreateCell(14).SetCellValue(item.CustoTotalAjudaCusto.ToString());
-                    row.CreateCell(15).SetCellValue(item.CustoTotalHoras.ToString());
-                    row.CreateCell(16).SetCellValue(item.CustoTotalKM.ToString());
-                    row.CreateCell(17).SetCellValue(item.NumTotalKM.ToString());
-                    row.CreateCell(18).SetCellValue(item.Observacoes);
-                    count++;
+                    int count = 1;
+                    foreach (FolhaDeHorasViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.FolhaDeHorasNo);
+                        row.CreateCell(1).SetCellValue(item.ProjetoNo);
+                        row.CreateCell(2).SetCellValue(item.ProjetoDescricao);
+                        row.CreateCell(3).SetCellValue(item.EmpregadoNo);
+                        row.CreateCell(4).SetCellValue(item.EmpregadoNome);
+                        row.CreateCell(5).SetCellValue(item.DataPartidaTexto);
+                        row.CreateCell(6).SetCellValue(item.HoraPartidaTexto);
+                        row.CreateCell(7).SetCellValue(item.DataChegadaTexto);
+                        row.CreateCell(8).SetCellValue(item.HoraChegadaTexto);
+                        row.CreateCell(9).SetCellValue(item.TipoDeslocacaoTexto);
+                        row.CreateCell(10).SetCellValue(item.CodigoTipoKms);
+                        row.CreateCell(11).SetCellValue(item.Matricula);
+                        row.CreateCell(12).SetCellValue(item.DeslocacaoForaConcelhoTexto);
+                        row.CreateCell(13).SetCellValue(item.TerminadaTexto);
+                        row.CreateCell(14).SetCellValue(item.CustoTotalAjudaCusto.ToString());
+                        row.CreateCell(15).SetCellValue(item.CustoTotalHoras.ToString());
+                        row.CreateCell(16).SetCellValue(item.CustoTotalKM.ToString());
+                        row.CreateCell(17).SetCellValue(item.NumTotalKM.ToString());
+                        row.CreateCell(18).SetCellValue(item.Observacoes);
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }

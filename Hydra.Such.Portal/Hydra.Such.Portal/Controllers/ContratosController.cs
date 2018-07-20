@@ -2083,24 +2083,28 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(10).SetCellValue("Cód. Centro Responsabilidade");
                 row.CreateCell(11).SetCellValue("Nº Versão");
                 row.CreateCell(12).SetCellValue("Valor Total");
-                int count = 1;
-                foreach (ContractViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.ContractNo);
-                    row.CreateCell(1).SetCellValue(item.StartData);
-                    row.CreateCell(2).SetCellValue(item.DueDate);
-                    row.CreateCell(3).SetCellValue(item.ContactNo);
-                    row.CreateCell(4).SetCellValue(item.ClientNo);
-                    row.CreateCell(5).SetCellValue(item.ClientName);
-                    row.CreateCell(6).SetCellValue(item.Description);
-                    row.CreateCell(7).SetCellValue(item.StatusDescription);
-                    row.CreateCell(8).SetCellValue(item.CodeRegion);
-                    row.CreateCell(9).SetCellValue(item.CodeFunctionalArea);
-                    row.CreateCell(10).SetCellValue(item.CodeResponsabilityCenter);
-                    row.CreateCell(11).SetCellValue(item.VersionNo);
-                    row.CreateCell(12).SetCellValue(item.TotalProposalValue.ToString());
-                    count++;
+                    int count = 1;
+                    foreach (ContractViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ContractNo);
+                        row.CreateCell(1).SetCellValue(item.StartData);
+                        row.CreateCell(2).SetCellValue(item.DueDate);
+                        row.CreateCell(3).SetCellValue(item.ContactNo);
+                        row.CreateCell(4).SetCellValue(item.ClientNo);
+                        row.CreateCell(5).SetCellValue(item.ClientName);
+                        row.CreateCell(6).SetCellValue(item.Description);
+                        row.CreateCell(7).SetCellValue(item.StatusDescription);
+                        row.CreateCell(8).SetCellValue(item.CodeRegion);
+                        row.CreateCell(9).SetCellValue(item.CodeFunctionalArea);
+                        row.CreateCell(10).SetCellValue(item.CodeResponsabilityCenter);
+                        row.CreateCell(11).SetCellValue(item.VersionNo);
+                        row.CreateCell(12).SetCellValue(item.TotalProposalValue.ToString());
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }
@@ -2116,6 +2120,216 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Oportunidades.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Propostas([FromBody] List<ContractViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Propostas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Proposta");
+                row.CreateCell(1).SetCellValue("Nº Oportunidade");
+                row.CreateCell(2).SetCellValue("Data Inicio");
+                row.CreateCell(3).SetCellValue("Data Fim");
+                row.CreateCell(4).SetCellValue("Nº Contacto");
+                row.CreateCell(5).SetCellValue("Nº Cliente");
+                row.CreateCell(6).SetCellValue("Nome Cliente");
+                row.CreateCell(7).SetCellValue("Descrição");
+                row.CreateCell(8).SetCellValue("Estado");
+                row.CreateCell(9).SetCellValue("Cód. Região");
+                row.CreateCell(10).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(11).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(12).SetCellValue("Nº Versão");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ContractViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ContractNo);
+                        row.CreateCell(1).SetCellValue(item.OportunityNo);
+                        row.CreateCell(2).SetCellValue(item.StartData);
+                        row.CreateCell(3).SetCellValue(item.DueDate);
+                        row.CreateCell(4).SetCellValue(item.ContactNo);
+                        row.CreateCell(5).SetCellValue(item.ClientNo);
+                        row.CreateCell(6).SetCellValue(item.ClientName);
+                        row.CreateCell(7).SetCellValue(item.Description);
+                        row.CreateCell(8).SetCellValue(item.StatusDescription);
+                        row.CreateCell(9).SetCellValue(item.CodeRegion);
+                        row.CreateCell(10).SetCellValue(item.CodeFunctionalArea);
+                        row.CreateCell(11).SetCellValue(item.CodeResponsabilityCenter);
+                        row.CreateCell(12).SetCellValue(item.VersionNo);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Propostas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Propostas.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_Contratos([FromBody] List<ContractViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Contratos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Contrato");
+                row.CreateCell(1).SetCellValue("Data Inicio");
+                row.CreateCell(2).SetCellValue("Data Fim");
+                row.CreateCell(3).SetCellValue("Nº Cliente");
+                row.CreateCell(4).SetCellValue("Nome Cliente");
+                row.CreateCell(5).SetCellValue("Âmbito dos Serviços");
+                row.CreateCell(6).SetCellValue("Estado");
+                row.CreateCell(7).SetCellValue("Cód. Região");
+                row.CreateCell(8).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(9).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(10).SetCellValue("Nº Versão");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ContractViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ContractNo);
+                        row.CreateCell(1).SetCellValue(item.StartData);
+                        row.CreateCell(2).SetCellValue(item.DueDate);
+                        row.CreateCell(3).SetCellValue(item.ClientNo);
+                        row.CreateCell(4).SetCellValue(item.ClientName);
+                        row.CreateCell(5).SetCellValue(item.Description);
+                        row.CreateCell(6).SetCellValue(item.StatusDescription);
+                        row.CreateCell(7).SetCellValue(item.CodeRegion);
+                        row.CreateCell(8).SetCellValue(item.CodeFunctionalArea);
+                        row.CreateCell(9).SetCellValue(item.CodeResponsabilityCenter);
+                        row.CreateCell(10).SetCellValue(item.VersionNo);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_Contratos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_AvencaFixa([FromBody] List<FaturacaoContratosViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Avença Fixa");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Contrato");
+                row.CreateCell(1).SetCellValue("Situação");
+                row.CreateCell(2).SetCellValue("Descrição");
+                row.CreateCell(3).SetCellValue("Nº Cliente");
+                row.CreateCell(4).SetCellValue("Nome Cliente");
+                row.CreateCell(5).SetCellValue("Valor da Fatura");
+                row.CreateCell(6).SetCellValue("Nº Faturas a Emitir");
+                row.CreateCell(7).SetCellValue("Total a Faturar");
+                row.CreateCell(8).SetCellValue("Valor do Contrato");
+                row.CreateCell(9).SetCellValue("Valor por Faturar");
+                row.CreateCell(10).SetCellValue("Valor Faturado");
+                row.CreateCell(11).SetCellValue("Cód. Região");
+                row.CreateCell(12).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(13).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(14).SetCellValue("Data Próxima Fatura");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (FaturacaoContratosViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ContractNo);
+                        row.CreateCell(1).SetCellValue(item.Situation);
+                        row.CreateCell(2).SetCellValue(item.Description);
+                        row.CreateCell(3).SetCellValue(item.ClientNo);
+                        row.CreateCell(4).SetCellValue(item.ClientName);
+                        row.CreateCell(5).SetCellValue(item.InvoiceValue.ToString());
+                        row.CreateCell(6).SetCellValue(item.NumberOfInvoices.ToString());
+                        row.CreateCell(7).SetCellValue(item.InvoiceTotal.ToString());
+                        row.CreateCell(8).SetCellValue(item.ContractValue.ToString());
+                        row.CreateCell(9).SetCellValue(item.ValueToInvoice.ToString());
+                        row.CreateCell(10).SetCellValue(item.BilledValue.ToString());
+                        row.CreateCell(11).SetCellValue(item.RegionCode);
+                        row.CreateCell(12).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(13).SetCellValue(item.ResponsabilityCenterCode);
+                        row.CreateCell(14).SetCellValue(item.RegisterDate);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_AvencaFixa(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Avença Fixa.xlsx");
         }
 
     }

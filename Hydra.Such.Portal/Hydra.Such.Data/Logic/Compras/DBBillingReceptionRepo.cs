@@ -132,8 +132,23 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         #endregion
 
-        #region GETS
+        #region WFA
+        public RececaoFaturacaoWorkflowAnexo Create(RececaoFaturacaoWorkflowAnexo item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+            var item1 = ctx.RececaoFaturacaoWorkflowAnexo.Add(item);
+            return item;
+        }
+        #endregion
 
+        #region GETS
+        
+
+        public List<RecFacturasProblemas> GetAnswerProblem(string Type)
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Type).ToList();
+        }
         public List<RecFacturasProblemas> GetQuestionsProblem()
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();

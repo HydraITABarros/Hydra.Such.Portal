@@ -162,11 +162,12 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado;
                 parsedItem.DocumentoCriadoEm = item.DocumentoCriadoEm;
                 parsedItem.DocumentoCriadoPor = item.DocumentoCriadoPor;
-                parsedItem.DataPassaPendente = item.DataPassaPendente;
+                parsedItem.DataPassaPendente = !item.DataPassaPendente.HasValue ? "" : item.DataPassaPendente.Value.ToString("dd-MM-yyyy");
                 parsedItem.Descricao = item.Descricao;
                 parsedItem.DescricaoProblema = item.DescricaoProblema;
                 parsedItem.TipoProblema = item.TipoProblema;
                 parsedItem.WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel();
+                parsedItem.DataResolucao= !item.DataResolucao.HasValue ? "" : item.DataResolucao.Value.ToString("yyyy-MM-dd");
 
                 return parsedItem;
             }
@@ -219,10 +220,11 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado;
                 parsedItem.DocumentoCriadoEm = item.DocumentoCriadoEm;
                 parsedItem.DocumentoCriadoPor = item.DocumentoCriadoPor;
-                parsedItem.DataPassaPendente = item.DataPassaPendente;
+                parsedItem.DataPassaPendente = string.IsNullOrEmpty(item.DataPassaPendente) ? (DateTime?)null : DateTime.Parse(item.DataPassaPendente);
                 parsedItem.Descricao = item.Descricao;
                 parsedItem.DescricaoProblema = item.DescricaoProblema;
                 parsedItem.TipoProblema = item.TipoProblema;
+                parsedItem.DataResolucao = string.IsNullOrEmpty(item.DataResolucao) ? (DateTime?)null : DateTime.Parse(item.DataResolucao);
 
                 return parsedItem;
                

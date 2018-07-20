@@ -25,5 +25,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
+        public List<BillingRecWorkflowModelAttached> Attached { get; set; }
     }
 }

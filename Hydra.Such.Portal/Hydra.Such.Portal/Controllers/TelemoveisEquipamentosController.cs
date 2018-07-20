@@ -10,11 +10,23 @@ using Microsoft.AspNetCore.Mvc;
 using static Hydra.Such.Data.Enumerations;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.ViewModel.Telemoveis;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System.IO;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class TelemoveisEquipamentosController : Controller
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public TelemoveisEquipamentosController(IHostingEnvironment _hostingEnvironment)
+        {
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         public IActionResult TelemoveisEquipamentos()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Telemoveis);
@@ -252,5 +264,70 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(item);
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_TelemoveisEquipamentos([FromBody] List<TelemoveisEquipamentosView> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Telemóveis Equipamentos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("IMEI / Nº Série");
+                row.CreateCell(1).SetCellValue("Tipo");
+                row.CreateCell(2).SetCellValue("Marca");
+                row.CreateCell(3).SetCellValue("Modelo");
+                row.CreateCell(4).SetCellValue("Estado");
+                row.CreateCell(5).SetCellValue("Cor");
+                row.CreateCell(6).SetCellValue("Observações");
+                row.CreateCell(7).SetCellValue("Devolvido");
+                row.CreateCell(8).SetCellValue("Utilizador");
+                row.CreateCell(9).SetCellValue("Data Alteração");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (TelemoveisEquipamentosView item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Imei);
+                        row.CreateCell(1).SetCellValue(item.Tipo_Show);
+                        row.CreateCell(2).SetCellValue(item.Marca);
+                        row.CreateCell(3).SetCellValue(item.Modelo);
+                        row.CreateCell(4).SetCellValue(item.Estado_Show);
+                        row.CreateCell(5).SetCellValue(item.Cor);
+                        row.CreateCell(6).SetCellValue(item.Observacoes);
+                        row.CreateCell(7).SetCellValue(item.Devolvido_Show);
+                        row.CreateCell(8).SetCellValue(item.Utilizador);
+                        row.CreateCell(9).SetCellValue(item.DataAlteracao_Show);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_TelemoveisEquipamentos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Telemóveis Equipamentos.xlsx");
+        }
+
     }
 }

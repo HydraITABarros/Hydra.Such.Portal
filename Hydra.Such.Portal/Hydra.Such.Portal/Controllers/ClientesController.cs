@@ -280,17 +280,21 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(3).SetCellValue("Cód. Postal");
                 row.CreateCell(4).SetCellValue("Cidade");
                 row.CreateCell(5).SetCellValue("Região");
-                int count = 1;
-                foreach (ClientDetailsViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.No);
-                    row.CreateCell(1).SetCellValue(item.Name);
-                    row.CreateCell(2).SetCellValue(item.Address);
-                    row.CreateCell(3).SetCellValue(item.Post_Code);
-                    row.CreateCell(4).SetCellValue(item.City);
-                    row.CreateCell(5).SetCellValue(item.Regiao_Cliente);
-                    count++;
+                    int count = 1;
+                    foreach (ClientDetailsViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.No);
+                        row.CreateCell(1).SetCellValue(item.Name);
+                        row.CreateCell(2).SetCellValue(item.Address);
+                        row.CreateCell(3).SetCellValue(item.Post_Code);
+                        row.CreateCell(4).SetCellValue(item.City);
+                        row.CreateCell(5).SetCellValue(item.Regiao_Cliente);
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }

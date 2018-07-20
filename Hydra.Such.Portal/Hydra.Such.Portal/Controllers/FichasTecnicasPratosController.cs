@@ -1,18 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class FichasTecnicasPratosController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public FichasTecnicasPratosController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         #region View
         //Start Grid
 
@@ -568,6 +587,70 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
-#endregion
+        #endregion
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_FichasTecnicasPratos([FromBody] List<RecordTechnicalOfPlatesModelView> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Fichas Técnicas de Pratos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Nome Ficha Técnica");
+                row.CreateCell(2).SetCellValue("Class.FT.1");
+                row.CreateCell(3).SetCellValue("Class.FT.2");
+                row.CreateCell(4).SetCellValue("Class.FT.3");
+                row.CreateCell(5).SetCellValue("Class.FT.4");
+                row.CreateCell(6).SetCellValue("Class.FT.5");
+                row.CreateCell(7).SetCellValue("Class.FT.6");
+                row.CreateCell(8).SetCellValue("Class.FT.7");
+                row.CreateCell(9).SetCellValue("Cód. Unidade Medida");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RecordTechnicalOfPlatesModelView item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.PlateNo);
+                        row.CreateCell(1).SetCellValue(item.RecordTechnicalName);
+                        row.CreateCell(2).SetCellValue(item.ClassFt1.ToString());
+                        row.CreateCell(3).SetCellValue(item.ClassFt2.ToString());
+                        row.CreateCell(4).SetCellValue(item.ClassFt3);
+                        row.CreateCell(5).SetCellValue(item.ClassFt4);
+                        row.CreateCell(6).SetCellValue(item.ClassFt5);
+                        row.CreateCell(7).SetCellValue(item.ClassFt6);
+                        row.CreateCell(8).SetCellValue(item.ClassFt7);
+                        row.CreateCell(9).SetCellValue(item.UnitMeasureCode);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_FichasTecnicasPratos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Fichas Técnicas de Pratos.xlsx");
+        }
     }
 }

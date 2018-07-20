@@ -28,6 +28,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
         <br />
         <style>
@@ -145,6 +146,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Projetos/ExportToExcel_AutorizacaoFaturacao"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
 
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
                    last-response="{{response2}}"
@@ -159,7 +169,6 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-
 
         <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
             <vaadin-grid-selection-column auto-select>
@@ -439,7 +448,20 @@
                     this.$.page_databound_ajax.generateRequest();
                     this.$.ToastMessageSuccess.text = 'Movimentos Autorizados criadas com sucesso';
                     this.$.ToastMessageSuccess.open();
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Projetos/ExportToExcelDownload_AutorizacaoFaturacao?sFileName=' + FileName;
+                },
+
             });
         });
     </script>
