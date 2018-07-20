@@ -241,6 +241,40 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAnswers([FromBody] BillingReceptionModel data)
+        {
+            int userProfile = (int)DBUserConfigurations.GetById(User.Identity.Name).Rfperfil;
+            List<RecFacturasProblemas> result = new List<RecFacturasProblemas>();
+            string AnswerType = "";
+            if (data.AreaPendente == "Contabilidade")
+            {
+                if(userProfile == 1)
+                {
+                    AnswerType = "RF1R";
+                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                }
+            }
+            if (data.AreaPendente == "Aprovisionamento")
+            {
+                if (userProfile == 2 || userProfile == 3)
+                {
+                    AnswerType = "RF5R";
+                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                }
+            }
+
+            List<DDMessageRelated> answers = result
+            .Select(x => new DDMessageRelated()
+            {
+                id = x.Tipo,
+                value = x.Descricao,
+                extra = x.EnvioAreas
+            }).ToList();
+
+            return Json(answers);
+        }
+
         [HttpGet]
         public JsonResult GetReasons()
         {

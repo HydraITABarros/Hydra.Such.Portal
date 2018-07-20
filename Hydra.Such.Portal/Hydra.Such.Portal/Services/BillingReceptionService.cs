@@ -347,6 +347,11 @@ namespace Hydra.Such.Portal.Services
                 return null;
         }
 
+        public List<RecFacturasProblemas> GetProblemAnswer(string Type)
+        {
+            return repo.GetAnswerProblem(Type);
+        }
+
         public List<RecFacturasProblemas> GetProblem()
         {
             return repo.GetQuestionsProblem();

@@ -117,7 +117,12 @@ namespace Hydra.Such.Data.Logic.ComprasML
         #endregion
 
         #region GETS
+        
 
+        public List<RecFacturasProblemas> GetAnswerProblem(string Type)
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Type).ToList();
+        }
         public List<RecFacturasProblemas> GetQuestionsProblem()
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();
