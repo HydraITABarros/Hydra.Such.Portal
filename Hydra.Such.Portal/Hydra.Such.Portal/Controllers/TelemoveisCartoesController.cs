@@ -200,17 +200,17 @@ namespace Hydra.Such.Portal.Controllers
                     telemoveisCartoes.Grupo = item.Grupo;
                     telemoveisCartoes.Imei = item.Imei;
                     telemoveisCartoes.DataAtribuicao = item.DataAtribuicao;
-                    telemoveisCartoes.ChamadasInternacionais = item.ChamadasInternacionais;
-                    telemoveisCartoes.Roaming = item.Roaming;
+                    telemoveisCartoes.ChamadasInternacionais = Convert.ToByte(item.ChamadasInternacionais_Show);
+                    telemoveisCartoes.Roaming = Convert.ToByte(item.Roaming_Show);
                     telemoveisCartoes.Internet = item.Internet;
                     telemoveisCartoes.Declaracao = item.Declaracao;
                     telemoveisCartoes.Utilizador = item.Utilizador;
                     telemoveisCartoes.DataAlteracao = DateTime.Now;
-                    telemoveisCartoes.Plafond100percUtilizador = item.Plafond100percUtilizador;
+                    telemoveisCartoes.Plafond100percUtilizador = Convert.ToByte(item.Plafond100percUtilizador_Show);
                     telemoveisCartoes.WhiteList = item.WhiteList;
                     telemoveisCartoes.ValorMensalidadeDados = item.ValorMensalidadeDados;
                     telemoveisCartoes.PlafondDados = item.PlafondDados;
-                    telemoveisCartoes.EquipamentoNaoDevolvido = item.EquipamentoNaoDevolvido;
+                    telemoveisCartoes.EquipamentoNaoDevolvido = Convert.ToByte(item.EquipamentoNaoDevolvido_Show);
 
                     try
                     {
