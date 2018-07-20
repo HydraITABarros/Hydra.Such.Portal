@@ -780,12 +780,13 @@
                         }
 
                         if (this.data.estado == 1) {
+                            debugger;
                             this._nameButtonSend = "Enviar";
-                            if (this.data.AreaPendente == 0) {
+                            if (this.data.areaPendente2 == "Contabilidade") {
                                 this._hiddeAnswerButton = true;
-                            } else if (this.data.AreaPendente == 1) {
+                            } else if (this.data.areaPendente2 == "Aprovisionamento") {
                                 if (this._rfperfil == "Aprovisionamento") {
-                                    this._hiddeAnswerButton = true;
+                                    this._hiddeAnswerButton = false;
                                 }                               
                             } else {
                                 if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
@@ -797,8 +798,9 @@
                             if (this._rfperfil == "Contabilidade") {
 
                                 this._hiddeSendButton = true;
-                            }                        
-
+                            }        
+                            //para testes
+                            this._hiddeSendButton = true;
                         }
                     }
                 },
@@ -860,7 +862,7 @@
                         this._openToastError("O Estado tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.areaPendenteDescricao == "" || this.data.areaPendenteDescricao == null) {
+                    if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
                         this._openToastError("Área Pendente tem que estar preenchida.");
                         return false;
                     }
@@ -1020,7 +1022,7 @@
                 _answerChange: function () {
                     var id = this.$.cmbRespostasPorPerfil.value;
                     if (id != undefined && id != "") {
-                        var resposta = this.ProblemasPorPerfil.find(x => x.id == id);
+                        var resposta = this.RespostasPorPerfil.find(x => x.id == id);
                         this.$.txtdescricaoResposta.value = resposta.value;
                     }
                 },
@@ -1135,23 +1137,43 @@
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
 
-                        this.$.get_userprofile_ajax.body = JSON.stringify(this.data.criadoPor);
-                        this.$.get_userprofile_ajax.generateRequest();
+                        var idmotivo = this.$.cmbRespostasPorPerfil.value
+                        var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
 
                         var workflow = null;;
+                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+
+                        //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                        var novoDestino = idWork.utilizador;
+                        this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
+                        this.$.get_userprofile_ajax.generateRequest();
+                        //**/
+
+                        var Area = idWork.areaPendente2;
+
+
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
                             idRecFaturacao: this.data.id,
                             codTipoProblema: this.$.cmbProblemas.value,
-                            codProblema: "RF1P",
-                            descricao: this.$.txtdescricaoProblema.value,
-                            destinatario: this.$.txtdestinatario.value,
-                            comentario: this.$.txtCommentdgl.value,
+                            codProblema: motivoExtra,
+                            descricao: this.$.txtdescricaoResposta.value,
+
+                            //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                            destinatario: novoDestino,
+
+                            comentario: this.$.txtCommentdglAnswer.value,
                             enderecoFornecedor: selVendor.email,
                             area: Area.value,
-                            areaWorkflow: this.$.txtArea2.value,
+                            areaWorkflow: this.userProfile,
                             codDestino: this.$.txtCodDestino.value,
+                            attached: this.Anexos
                         };
+                        
+                        this.data.workflowItems.push(workflow);
+                        this.$.page_send_ajax.body = JSON.stringify(this.data);
+                        this.$.page_send_ajax.generateRequest();
                     }
                 },
                 
@@ -1170,15 +1192,16 @@
                     this.$.txtDescricaoAnexo.value = "";
                  },
                 _dlgSend: function () {
+                    debugger;
                     if (this._validateInputForAccounting()) {
-                        if (this.$.txtDatePeding.value != "") {
+                        
                             var txt;
                             if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
                                 txt = true;
                             } else {
                                 txt = false;
                             }
-                        }
+
                         if (txt == true) {
                             var workflow = null;;
                             var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
