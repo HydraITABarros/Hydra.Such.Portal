@@ -39,6 +39,7 @@ using NPOI.XSSF.UserModel;
 using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2135,21 +2136,24 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(6).SetCellValue("Criado Por");
                 row.CreateCell(7).SetCellValue("Data-Hora Criação");
 
-                int count = 1;
-                foreach (PrecoVendaRecursoFHViewModel item in dp)
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
+                    int count = 1;
+                    foreach (PrecoVendaRecursoFHViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
 
-                    row.CreateCell(0).SetCellValue(item.Code);
-                    row.CreateCell(1).SetCellValue(item.CodTipoTrabalho);
-                    row.CreateCell(2).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
-                    row.CreateCell(3).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(4).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
-                    row.CreateCell(5).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
-                    row.CreateCell(6).SetCellValue(item.UtilizadorCriacao);
-                    row.CreateCell(7).SetCellValue(item.DataHoraCriacao.ToString());
+                        row.CreateCell(0).SetCellValue(item.Code);
+                        row.CreateCell(1).SetCellValue(item.CodTipoTrabalho);
+                        row.CreateCell(2).SetCellValue(item.PrecoUnitario.HasValue ? item.PrecoUnitario.ToString() : "");
+                        row.CreateCell(3).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(4).SetCellValue(item.StartingDate.HasValue ? Convert.ToDateTime(item.StartingDate).ToShortDateString() : "");
+                        row.CreateCell(5).SetCellValue(item.EndingDate.HasValue ? Convert.ToDateTime(item.EndingDate).ToShortDateString() : "");
+                        row.CreateCell(6).SetCellValue(item.UtilizadorCriacao);
+                        row.CreateCell(7).SetCellValue(item.DataHoraCriacao.ToString());
 
-                    count++;
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }
@@ -2365,33 +2369,36 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(16).SetCellValue("Criado Por");
                 row.CreateCell(17).SetCellValue("Data-Hora Criação");
 
-                int count = 1;
-                foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
+                if (dp.LinhasAcordoPrecos != null)
                 {
-                    row = excelSheet.CreateRow(count);
+                    int count = 1;
+                    foreach (LinhasAcordoPrecosViewModel item in dp.LinhasAcordoPrecos)
+                    {
+                        row = excelSheet.CreateRow(count);
 
-                    row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
-                    row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
-                    row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
-                    row.CreateCell(3).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
-                    row.CreateCell(4).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
-                    row.CreateCell(5).SetCellValue(item.Regiao.ToString());
-                    row.CreateCell(6).SetCellValue(item.Area.ToString());
-                    row.CreateCell(7).SetCellValue(item.Cresp.ToString());
-                    row.CreateCell(8).SetCellValue(item.Localizacao.ToString());
-                    row.CreateCell(9).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                    row.CreateCell(10).SetCellValue(item.Um.ToString());
-                    row.CreateCell(11).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
-                    row.CreateCell(12).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
-                    row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor.ToString());
-                    row.CreateCell(14).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
-                    row.CreateCell(15).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                    row.CreateCell(16).SetCellValue(item.UserId.ToString());
-                    row.CreateCell(17).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+                        row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
+                        row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
+                        row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
+                        row.CreateCell(3).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
+                        row.CreateCell(4).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
+                        row.CreateCell(5).SetCellValue(item.Regiao.ToString());
+                        row.CreateCell(6).SetCellValue(item.Area.ToString());
+                        row.CreateCell(7).SetCellValue(item.Cresp.ToString());
+                        row.CreateCell(8).SetCellValue(item.Localizacao.ToString());
+                        row.CreateCell(9).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(10).SetCellValue(item.Um.ToString());
+                        row.CreateCell(11).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
+                        row.CreateCell(12).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
+                        row.CreateCell(13).SetCellValue(item.CodProdutoFornecedor.ToString());
+                        row.CreateCell(14).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
+                        row.CreateCell(15).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
+                        row.CreateCell(16).SetCellValue(item.UserId.ToString());
+                        row.CreateCell(17).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
 
-                    count++;
+                        count++;
+                    }
+                    excelSheet.SetColumnHidden(0, true);
                 }
-                excelSheet.SetColumnHidden(0, true);
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
@@ -2644,15 +2651,19 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(1).SetCellValue("Recurso");
                 row.CreateCell(2).SetCellValue("Criado Por");
                 row.CreateCell(3).SetCellValue("Data-Hora Criação");
-                int count = 1;
-                foreach (RHRecursosViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.NoEmpregado);
-                    row.CreateCell(1).SetCellValue(item.Recurso);
-                    row.CreateCell(2).SetCellValue(item.UtilizadorCriacao);
-                    row.CreateCell(3).SetCellValue(item.DataHoraCriacao.ToString());
-                    count++;
+                    int count = 1;
+                    foreach (RHRecursosViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.NoEmpregado);
+                        row.CreateCell(1).SetCellValue(item.Recurso);
+                        row.CreateCell(2).SetCellValue(item.UtilizadorCriacao);
+                        row.CreateCell(3).SetCellValue(item.DataHoraCriacao.ToString());
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }
@@ -5635,6 +5646,112 @@ namespace Hydra.Such.Portal.Controllers
 
             ErrorHandler result = new ErrorHandler();
             if (updatedItem != null)
+            {
+                result.eMessage = "Registo eliminado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+        #endregion
+
+        #region Receção Faturação - Conf. Destinatários
+        public IActionResult ConfigDestinatarios()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        
+        public IActionResult ConfigDestinatariosDetalhes([FromQuery] string id)
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminReceçãoFaturação);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.ProblemId = id;
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfAddressees()
+        {
+            var items = DBRFConfigDestinatarios.GetAll();
+            return Json(items);
+        }
+
+        [HttpPost]
+        public JsonResult GetConfAddressee([FromBody] string id)
+        {
+            var item = DBRFConfigDestinatarios.GetById(id);
+            if (item == null)
+                item = new RecFaturacaoConfigDestinatarios();
+            return Json(item);
+        }
+        [HttpPost]
+        public JsonResult CreateConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            var createdItem = DBRFConfigDestinatarios.Create(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (createdItem != null)
+            {
+                result.eMessage = "Registo criado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao criar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            var updatedItem = DBRFConfigDestinatarios.Update(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (updatedItem != null)
+            {
+                result.eMessage = "Registo atualizado com sucesso.";
+                result.eReasonCode = 1;
+            }
+            else
+            {
+                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                result.eReasonCode = 2;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfAddressee([FromBody] RecFaturacaoConfigDestinatarios item)
+        {
+            Services.BillingReceptionService billingReceptionService = new Services.BillingReceptionService();
+            var deleted = DBRFConfigDestinatarios.Delete(item);
+
+            ErrorHandler result = new ErrorHandler();
+            if (deleted)
             {
                 result.eMessage = "Registo eliminado com sucesso.";
                 result.eReasonCode = 1;

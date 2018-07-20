@@ -20,6 +20,10 @@ using Hydra.Such.Data;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.ViewModel.Projects;
+using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -27,13 +31,16 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly GeneralConfigurations _config;
         private readonly NAVConfigurations _configNAV;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV)
+
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configNAV = appSettingsNAV.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
-        
+
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
@@ -1287,5 +1294,65 @@ namespace Hydra.Such.Portal.Controllers
             return Json(requestParams);
         }
         #endregion
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RequisicoesArquivadas([FromBody] List<RequisitionViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Arquivadas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Requisição");
+                row.CreateCell(1).SetCellValue("Estado");
+                row.CreateCell(2).SetCellValue("Data Requisição");
+                row.CreateCell(3).SetCellValue("Código Localização");
+                row.CreateCell(4).SetCellValue("Responsável Aprovação");
+                row.CreateCell(5).SetCellValue("Data/Hora Aprovação");
+                row.CreateCell(6).SetCellValue("Observações");
+                row.CreateCell(7).SetCellValue("Nº Funcionário");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.State.ToString());
+                        row.CreateCell(2).SetCellValue(item.RequisitionDate);
+                        row.CreateCell(3).SetCellValue(item.LocalCode);
+                        row.CreateCell(4).SetCellValue(item.ResponsibleApproval);
+                        row.CreateCell(5).SetCellValue(item.ApprovalDate.ToString());
+                        row.CreateCell(6).SetCellValue(item.Comments);
+                        row.CreateCell(7).SetCellValue(item.EmployeeNo);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RequisicoesArquivadas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Requisições Arquivadas.xlsx");
+        }
     }
 }

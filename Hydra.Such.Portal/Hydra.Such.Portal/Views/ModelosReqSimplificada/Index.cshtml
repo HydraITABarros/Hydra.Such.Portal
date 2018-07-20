@@ -38,6 +38,16 @@
                    id="ajax_delete_model"
                    on-response="_onDeleteReqTemplateResponse"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ModelosReqSimplificada/ExportToExcel_ModelosRequisicaoSimplificada"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{functionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{responsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{regions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -47,6 +57,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid id="grdCoffeeShopsTable" aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -211,6 +222,19 @@
                     }
                     return "";
                 },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../ModelosReqSimplificada/ExportToExcelDownload_ModelosRequisicaoSimplificada?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

@@ -498,33 +498,37 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(19).SetCellValue("Nº Fornecedor");
                 row.CreateCell(20).SetCellValue("Nº Encomenda");
                 row.CreateCell(21).SetCellValue("Nº Consulta Mercado");
-                int count = 1;
-                foreach (ComprasViewModel item in Compras)
+
+                if (Compras != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.EstadoTexto);
-                    row.CreateCell(1).SetCellValue(item.RegiaoMercadoLocal);
-                    row.CreateCell(2).SetCellValue(item.CodigoProduto);
-                    row.CreateCell(3).SetCellValue(item.Descricao);
-                    row.CreateCell(4).SetCellValue(item.Descricao2);
-                    row.CreateCell(5).SetCellValue(item.CodigoUnidadeMedida);
-                    row.CreateCell(6).SetCellValue(item.Quantidade.ToString());
-                    row.CreateCell(7).SetCellValue(item.NoRequisicao);
-                    row.CreateCell(8).SetCellValue(item.NoLinhaRequisicao.ToString());
-                    row.CreateCell(9).SetCellValue(item.UrgenteTexto);
-                    row.CreateCell(10).SetCellValue(item.DataCriacaoTexto);
-                    row.CreateCell(11).SetCellValue(item.UtilizadorCriacaoTexto);
-                    row.CreateCell(12).SetCellValue(item.DataValidacaoTexto);
-                    row.CreateCell(13).SetCellValue(item.UtilizadorValidacaoTexto);
-                    row.CreateCell(14).SetCellValue(item.DataRecusaTexto);
-                    row.CreateCell(15).SetCellValue(item.UtilizadorRecusaTexto);
-                    row.CreateCell(16).SetCellValue(item.RecusadoComprasTexto);
-                    row.CreateCell(17).SetCellValue(item.DataTratadoTexto);
-                    row.CreateCell(18).SetCellValue(item.UtilizadorTratadoTexto);
-                    row.CreateCell(19).SetCellValue(item.NoFornecedorTexto);
-                    row.CreateCell(20).SetCellValue(item.NoEncomendaTexto);
-                    row.CreateCell(21).SetCellValue(item.NoConsultaMercado);
-                    count++;
+                    int count = 1;
+                    foreach (ComprasViewModel item in Compras)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.EstadoTexto);
+                        row.CreateCell(1).SetCellValue(item.RegiaoMercadoLocal);
+                        row.CreateCell(2).SetCellValue(item.CodigoProduto);
+                        row.CreateCell(3).SetCellValue(item.Descricao);
+                        row.CreateCell(4).SetCellValue(item.Descricao2);
+                        row.CreateCell(5).SetCellValue(item.CodigoUnidadeMedida);
+                        row.CreateCell(6).SetCellValue(item.Quantidade.ToString());
+                        row.CreateCell(7).SetCellValue(item.NoRequisicao);
+                        row.CreateCell(8).SetCellValue(item.NoLinhaRequisicao.ToString());
+                        row.CreateCell(9).SetCellValue(item.UrgenteTexto);
+                        row.CreateCell(10).SetCellValue(item.DataCriacaoTexto);
+                        row.CreateCell(11).SetCellValue(item.UtilizadorCriacaoTexto);
+                        row.CreateCell(12).SetCellValue(item.DataValidacaoTexto);
+                        row.CreateCell(13).SetCellValue(item.UtilizadorValidacaoTexto);
+                        row.CreateCell(14).SetCellValue(item.DataRecusaTexto);
+                        row.CreateCell(15).SetCellValue(item.UtilizadorRecusaTexto);
+                        row.CreateCell(16).SetCellValue(item.RecusadoComprasTexto);
+                        row.CreateCell(17).SetCellValue(item.DataTratadoTexto);
+                        row.CreateCell(18).SetCellValue(item.UtilizadorTratadoTexto);
+                        row.CreateCell(19).SetCellValue(item.NoFornecedorTexto);
+                        row.CreateCell(20).SetCellValue(item.NoEncomendaTexto);
+                        row.CreateCell(21).SetCellValue(item.NoConsultaMercado);
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }

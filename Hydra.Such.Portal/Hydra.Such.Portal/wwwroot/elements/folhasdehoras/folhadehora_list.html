@@ -121,7 +121,7 @@
             <paper-button class="tablinks" id="showPorIntegrarAjCusto" on-tap="_showPorIntegrarAjCusto"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showPorIntegrarAjCustoMessage }}</paper-button>
             <paper-button class="tablinks" id="showPorIntegrarKm" on-tap="_showPorIntegrarKm"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showPorIntegrarKmMessage }}</paper-button>
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
 
@@ -892,7 +892,6 @@
                     //debugger;
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
-                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _exportEXCELResponse: function (e) {

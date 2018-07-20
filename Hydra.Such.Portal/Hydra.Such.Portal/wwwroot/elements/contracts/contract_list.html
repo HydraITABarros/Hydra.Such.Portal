@@ -101,6 +101,15 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ExportToExcel_Contratos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
@@ -109,6 +118,7 @@
             </template>
             <template is="dom-if" if="{{ !_contractno }}">
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
         </div>
 
@@ -363,7 +373,20 @@
                 _openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Contratos/ExportToExcelDownload_Contratos?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

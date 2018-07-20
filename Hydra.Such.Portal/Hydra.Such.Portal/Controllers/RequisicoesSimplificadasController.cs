@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data;
@@ -17,6 +18,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -26,11 +29,14 @@ namespace Hydra.Such.Portal.Controllers
         ProjetosController register;
         private readonly NAVWSConfigurations configws;
         private ErrorHandler mensage = new ErrorHandler();
+        private readonly IHostingEnvironment _hostingEnvironment;
 
 
         public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             this.configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
+
             register = new ProjetosController(appSettings, NAVWSConfigs, _hostingEnvironment);
         }
 
@@ -816,8 +822,69 @@ namespace Hydra.Such.Portal.Controllers
             return Json(requisitionSimpli);
         }
 
-      
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RequisicoesSimplificadas([FromBody] List<SimplifiedRequisitionViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Simplificadas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Estado");
+                row.CreateCell(2).SetCellValue("Data Requisição");
+                row.CreateCell(3).SetCellValue("Hora Requisição");
+                row.CreateCell(4).SetCellValue("Cód. Localização");
+                row.CreateCell(5).SetCellValue("Cód. Região");
+                row.CreateCell(6).SetCellValue("Cód. Area");
+                row.CreateCell(7).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(8).SetCellValue("Nº Projeto");
+                row.CreateCell(9).SetCellValue("Observações");
 
-     
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (SimplifiedRequisitionViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.Status.ToString());
+                        row.CreateCell(2).SetCellValue(item.RequisitionDate);
+                        row.CreateCell(3).SetCellValue(item.RequisitionTime);
+                        row.CreateCell(4).SetCellValue(item.LocationCode);
+                        row.CreateCell(5).SetCellValue(item.RegionCode);
+                        row.CreateCell(6).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(7).SetCellValue(item.ResponsabilityCenterCode);
+                        row.CreateCell(8).SetCellValue(item.ProjectNo);
+                        row.CreateCell(9).SetCellValue(item.Observations);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RequisicoesSimplificadas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Requisições Simplificadas.xlsx");
+        }
+
     }
 }

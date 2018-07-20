@@ -75,7 +75,7 @@
             </template>
             <paper-button class="tablinks" on-tap="_showHistoryButton"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{_showHistory}}</paper-button>
             <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -340,7 +340,6 @@
                     //debugger;
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
-                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _exportEXCELResponse: function (e) {

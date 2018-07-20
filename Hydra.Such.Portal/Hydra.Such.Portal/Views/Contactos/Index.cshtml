@@ -38,7 +38,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" disabled="{{ !_permissions.update }}" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -166,7 +166,6 @@
                     //debugger;
                     this.$.ajax_Export.body = JSON.stringify(this.Contacts);
                     this.$.ajax_Export.generateRequest();
-                    this.$.gridFHEmpregadoRecursos.clearCache();
                 },
 
                 _exportEXCELResponse: function (e) {

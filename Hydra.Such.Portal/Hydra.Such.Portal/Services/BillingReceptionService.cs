@@ -164,7 +164,7 @@ namespace Hydra.Such.Portal.Services
             {
                 item.Estado = BillingReceptionStates.Pendente;
                 if (item.DataPassaPendente == null)
-                    item.DataPassaPendente = DateTime.Now;
+                    item.DataPassaPendente = DateTime.Now.ToString();
             }
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
@@ -180,8 +180,7 @@ namespace Hydra.Such.Portal.Services
 
             item = repo.Update(item);
 
-           
-
+          
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
             wfItem.IdRecFaturacao = item.Id;
             if(questao.Devolvido==true)
@@ -203,8 +202,19 @@ namespace Hydra.Such.Portal.Services
             wfItem.Comentario = wfItemLast.Comentario;
             wfItem.Utilizador = postedByUserName;
 
-           repo.Create(wfItem);
-
+            repo.Create(wfItem);
+            if (wfItemLast.Attached != null)
+            {
+                int id=0;
+                RececaoFaturacaoWorkflowAnexo wfAnexoItem = new RececaoFaturacaoWorkflowAnexo();
+                foreach (BillingRecWorkflowModelAttached attached in wfItemLast.Attached)
+                {
+                    wfAnexoItem = DBBillingReceptionWFAttach.ParseToDB(attached);
+                    wfAnexoItem.Idwokflow = wfItemLast.Id;
+                    wfAnexoItem.Id = id;
+                    repo.Create(wfAnexoItem);                 
+                }
+            }
             try
             {
                 repo.SaveChanges();
@@ -214,6 +224,7 @@ namespace Hydra.Such.Portal.Services
             {
                 return null;
             }
+
            RecFaturacaoConfigDestinatarios destino = null;
            if ( wfItem.CodProblema== "RF1P")
                 destino = GetDestinationAreaDest(wfItemLast.CodDestino);
@@ -330,45 +341,6 @@ namespace Hydra.Such.Portal.Services
             return isValid;
         }
 
-        #region Problems
-        public List<RecFaturacaoConfigDestinatarios> GetDestination()
-        {
-            return repo.GetDestination();
-        }
-
-        public RecFaturacaoConfigDestinatarios GetDestinationAreaDest(string id)
-        {
-            if (id != null && id != "")
-            {
-                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
-                return destino;
-            }
-            else
-                return null;
-        }
-
-        public List<RecFacturasProblemas> GetProblem()
-        {
-            return repo.GetQuestionsProblem();
-        }
-        public RecFacturasProblemas GetQuestionID(string id,string type)
-        {
-            if (!string.IsNullOrEmpty(id))
-            {
-                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
-                return problem;
-            }
-            else
-                return null;
-        }
-        public List<RecFacturasProblemas> GetReason()
-        {
-            return repo.GetQuestionsReason();
-        }
-        public List<RecFaturacaoConfigDestinatarios> GetAreas()
-        {
-            return repo.GetAreas();
-        }
         public static string MakeEmailBodyContent(string Into, string IfFactura, string Fornecedor, string Data, string Valor, string Utilizador)
         {
             string Body = @"<html>" +
@@ -438,6 +410,46 @@ namespace Hydra.Such.Portal.Services
             return Body;
         }
 
+        #region Problems
+        public List<RecFaturacaoConfigDestinatarios> GetDestination()
+        {
+            return repo.GetDestination();
+        }
+
+        public RecFaturacaoConfigDestinatarios GetDestinationAreaDest(string id)
+        {
+            if (id != null && id != "")
+            {
+                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
+                return destino;
+            }
+            else
+                return null;
+        }
+
+        public List<RecFacturasProblemas> GetProblem()
+        {
+            return repo.GetQuestionsProblem();
+        }
+        public RecFacturasProblemas GetQuestionID(string id,string type)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, type).LastOrDefault();
+                return problem;
+            }
+            else
+                return null;
+        }
+        public List<RecFacturasProblemas> GetReason()
+        {
+            return repo.GetQuestionsReason();
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetAreas()
+        {
+            return repo.GetAreas();
+        }
+        
         public List<RecFacturasProblemas> GetAllProblems()
         {
             return repo.GetAllProblems();

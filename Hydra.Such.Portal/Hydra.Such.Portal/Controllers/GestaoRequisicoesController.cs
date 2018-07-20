@@ -19,6 +19,10 @@ using Hydra.Such.Data;
 using Hydra.Such.Portal.Controllers;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.Logic.ComprasML;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -26,11 +30,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations config;
         private readonly NAVWSConfigurations configws;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             config = appSettings.Value;
             configws = NAVWSConfigs.Value;
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
 
@@ -1665,5 +1671,214 @@ namespace Hydra.Such.Portal.Controllers
             string stateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), id);
             return Json(stateDescription);
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RequisicoesValidar([FromBody] List<RequisitionViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições a Validar");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Requisição");
+                row.CreateCell(1).SetCellValue("Estado");
+                row.CreateCell(2).SetCellValue("Urgente");
+                row.CreateCell(3).SetCellValue("Compra a Dinheiro");
+                row.CreateCell(4).SetCellValue("Trabalho já executado");
+                row.CreateCell(5).SetCellValue("Requisição Nutrição");
+                row.CreateCell(6).SetCellValue("Código Região");
+                row.CreateCell(7).SetCellValue("Código Área Funcional");
+                row.CreateCell(8).SetCellValue("Código Centro Responsabilidade");
+                row.CreateCell(9).SetCellValue("Observações");
+                row.CreateCell(10).SetCellValue("Data requisição");
+                row.CreateCell(11).SetCellValue("Valor Estimado");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.State.ToString());
+                        row.CreateCell(2).SetCellValue(item.Urgent.ToString());
+                        row.CreateCell(3).SetCellValue(item.BuyCash.ToString());
+                        row.CreateCell(4).SetCellValue(item.AlreadyPerformed.ToString());
+                        row.CreateCell(5).SetCellValue(item.RequestNutrition.ToString());
+                        row.CreateCell(6).SetCellValue(item.RegionCode);
+                        row.CreateCell(7).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(8).SetCellValue(item.CenterResponsibilityCode);
+                        row.CreateCell(9).SetCellValue(item.Comments);
+                        row.CreateCell(10).SetCellValue(item.RequisitionDate);
+                        row.CreateCell(11).SetCellValue(item.EstimatedValue.ToString());
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RequisicoesValidar(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Requisições a Validar.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_GestaoRequisicoes([FromBody] List<RequisitionViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Gestão Requisições");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Requisição");
+                row.CreateCell(1).SetCellValue("Estado");
+                row.CreateCell(2).SetCellValue("Urgente");
+                row.CreateCell(3).SetCellValue("Compra a Dinheiro");
+                row.CreateCell(4).SetCellValue("Trabalho já executado");
+                row.CreateCell(5).SetCellValue("Requisição Nutrição");
+                row.CreateCell(6).SetCellValue("Orçamento");
+                row.CreateCell(7).SetCellValue("Mercado Local");
+                row.CreateCell(8).SetCellValue("Região Mercado Local");
+                row.CreateCell(9).SetCellValue("Data Mercado Local");
+                row.CreateCell(10).SetCellValue("Código Região");
+                row.CreateCell(11).SetCellValue("Código Área Funcional");
+                row.CreateCell(12).SetCellValue("Código Centro Responsabilidade");
+                row.CreateCell(13).SetCellValue("Observações");
+                row.CreateCell(14).SetCellValue("Nº Consulta Mercado");
+                row.CreateCell(15).SetCellValue("Nº Encomenda");
+                row.CreateCell(16).SetCellValue("Reposição Stock");
+                row.CreateCell(17).SetCellValue("Reclamação");
+                row.CreateCell(18).SetCellValue("Nº Requisição Reclamada");
+                row.CreateCell(19).SetCellValue("Data requisição");
+                row.CreateCell(20).SetCellValue("Utilizador Criação");
+                row.CreateCell(21).SetCellValue("Valor Estimado");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.State.ToString());
+                        row.CreateCell(2).SetCellValue(item.Urgent.ToString());
+                        row.CreateCell(3).SetCellValue(item.BuyCash.ToString());
+                        row.CreateCell(4).SetCellValue(item.AlreadyPerformed.ToString());
+                        row.CreateCell(5).SetCellValue(item.RequestNutrition.ToString());
+                        row.CreateCell(6).SetCellValue(item.Budget.ToString());
+                        row.CreateCell(7).SetCellValue(item.LocalMarket.ToString());
+                        row.CreateCell(8).SetCellValue(item.LocalMarketRegion);
+                        row.CreateCell(9).SetCellValue(item.LocalMarketDate.ToString());
+                        row.CreateCell(10).SetCellValue(item.RegionCode);
+                        row.CreateCell(11).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(12).SetCellValue(item.CenterResponsibilityCode);
+                        row.CreateCell(13).SetCellValue(item.Comments);
+                        row.CreateCell(14).SetCellValue(item.MarketInquiryNo);
+                        row.CreateCell(15).SetCellValue(item.OrderNo);
+                        row.CreateCell(16).SetCellValue(item.StockReplacement.ToString());
+                        row.CreateCell(17).SetCellValue(item.Reclamation.ToString());
+                        row.CreateCell(18).SetCellValue(item.RequestReclaimNo);
+                        row.CreateCell(19).SetCellValue(item.RequisitionDate);
+                        row.CreateCell(20).SetCellValue(item.CreateUser);
+                        row.CreateCell(21).SetCellValue(item.EstimatedValue.ToString());
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_GestaoRequisicoes(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_PontosSituacaoRequisicoes([FromBody] List<StateOfPlayViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pontos Situação de Requisições");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Requisição");
+                row.CreateCell(1).SetCellValue("Lido");
+                row.CreateCell(2).SetCellValue("Pergunta");
+                row.CreateCell(3).SetCellValue("Resposta");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (StateOfPlayViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
+                        row.CreateCell(1).SetCellValue(item.ReadStringValue);
+                        row.CreateCell(2).SetCellValue(item.Question);
+                        row.CreateCell(3).SetCellValue(item.Answer);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_PontosSituacaoRequisicoes(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pontos Situação de Requisições.xlsx");
+        }
+
     }
 }

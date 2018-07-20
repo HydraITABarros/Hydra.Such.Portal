@@ -269,13 +269,17 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 row.CreateCell(0).SetCellValue("ID");
                 row.CreateCell(1).SetCellValue("Nome");
-                int count = 1;
-                foreach (ContactViewModel item in dp)
+
+                if (dp != null)
                 {
-                    row = excelSheet.CreateRow(count);
-                    row.CreateCell(0).SetCellValue(item.Id);
-                    row.CreateCell(1).SetCellValue(item.Name);
-                    count++;
+                    int count = 1;
+                    foreach (ContactViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Id);
+                        row.CreateCell(1).SetCellValue(item.Name);
+                        count++;
+                    }
                 }
                 workbook.Write(fs);
             }

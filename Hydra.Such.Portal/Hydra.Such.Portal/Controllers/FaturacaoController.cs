@@ -16,6 +16,10 @@ using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Data.Logic.Approvals;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -25,12 +29,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private BillingReceptionService billingRecService;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             billingRecService = new BillingReceptionService();
+            this._hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult RececaoFaturas()
@@ -168,7 +174,6 @@ namespace Hydra.Such.Portal.Controllers
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
-                workflow.AreaWorkflow = item.AreaPendente;
                 item.WorkflowItems.Add(workflow);
 
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
@@ -213,17 +218,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
+        public ActionResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
         {
-            //if (item != null)
-            //{
-                
-            //}
-            //else
-            //{
-            //    item.eReasonCode = 2;
-            //    item.eMessage = "O registo não pode ser nulo";
-            //}
+            if (item != null)
+            {
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
             return Json(false);
         }
 
@@ -278,6 +283,96 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(result);
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RececaoFaturas([FromBody] List<BillingReceptionModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Receção de Faturas");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Tipo de Documento");
+                row.CreateCell(2).SetCellValue("Estado");
+                row.CreateCell(3).SetCellValue("Data de Receção");
+                row.CreateCell(4).SetCellValue("Fornecedor");
+                row.CreateCell(5).SetCellValue("Núm. Doc. Fornecedor");
+                row.CreateCell(6).SetCellValue("Data Doc. Fornecedor");
+                row.CreateCell(7).SetCellValue("Núm. Encomenda");
+                row.CreateCell(8).SetCellValue("Núm. Encomenda Manual");
+                row.CreateCell(9).SetCellValue("Valor Encomenda Original");
+                row.CreateCell(10).SetCellValue("Quantidade Encomenda");
+                row.CreateCell(11).SetCellValue("Quantidade Recebida");
+                row.CreateCell(12).SetCellValue("Valor Recebido não Contabilizado");
+                row.CreateCell(13).SetCellValue("Valor");
+                row.CreateCell(14).SetCellValue("Cód. Região");
+                row.CreateCell(15).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(16).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(17).SetCellValue("Cód. Localização");
+                row.CreateCell(18).SetCellValue("Local");
+                row.CreateCell(19).SetCellValue("Núm. Acordo Fornecedor");
+                row.CreateCell(20).SetCellValue("Destinatario");
+                row.CreateCell(21).SetCellValue("Àrea Pendente");
+                row.CreateCell(22).SetCellValue("Data Última Interação");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (BillingReceptionModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Id);
+                        row.CreateCell(1).SetCellValue(item.TipoDocumento.ToString());
+                        row.CreateCell(2).SetCellValue(item.Estado.ToString());
+                        row.CreateCell(3).SetCellValue(item.DataRececao);
+                        row.CreateCell(4).SetCellValue(item.CodFornecedor);
+                        row.CreateCell(5).SetCellValue(item.NumDocFornecedor);
+                        row.CreateCell(6).SetCellValue(item.DataDocFornecedor);
+                        row.CreateCell(7).SetCellValue(item.NumEncomenda);
+                        row.CreateCell(8).SetCellValue(item.NumEncomendaManual);
+                        row.CreateCell(9).SetCellValue(item.ValorEncomendaOriginal.ToString());
+                        row.CreateCell(10).SetCellValue(item.QuantidadeEncomenda.ToString());
+                        row.CreateCell(11).SetCellValue(item.QuantidadeRecebida.ToString());
+                        row.CreateCell(12).SetCellValue(item.ValorRecebidoNaoContabilizado.ToString());
+                        row.CreateCell(13).SetCellValue(item.Valor.ToString());
+                        row.CreateCell(14).SetCellValue(item.CodRegiao);
+                        row.CreateCell(15).SetCellValue(item.CodAreaFuncional);
+                        row.CreateCell(16).SetCellValue(item.CodCentroResponsabilidade);
+                        row.CreateCell(17).SetCellValue(item.CodLocalizacao);
+                        row.CreateCell(18).SetCellValue(item.Local);
+                        row.CreateCell(19).SetCellValue(item.NumAcordoFornecedor);
+                        row.CreateCell(20).SetCellValue(item.Destinatario);
+                        row.CreateCell(21).SetCellValue(item.AreaPendente);
+                        row.CreateCell(22).SetCellValue(item.DataUltimaInteracao);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RececaoFaturas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
         }
     }
 }
