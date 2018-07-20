@@ -163,7 +163,7 @@ namespace Hydra.Such.Portal.Services
             else
             {
                 item.Estado = BillingReceptionStates.Pendente;
-                if (item.DataPassaPendente == null)
+                if (item.DataPassaPendente == null || item.DataPassaPendente == "")
                     item.DataPassaPendente = DateTime.Now.ToString();
             }
             item.Estado = BillingReceptionStates.Pendente;

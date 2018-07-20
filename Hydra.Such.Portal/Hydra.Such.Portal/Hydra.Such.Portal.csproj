@@ -48,6 +48,7 @@
     <Folder Include="Areas\Compras\Models\" />
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="wwwroot\FacturasFornecedor\2017\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\reports\" />
