@@ -377,6 +377,17 @@ namespace Hydra.Such.Portal.Services
             else
                 return null;
         }
+
+        public RecFacturasProblemas GetQuestionIDByDesc(string id, string desc)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                RecFacturasProblemas problem = repo.GetQuestionsID(id, desc).LastOrDefault();
+                return problem;
+            }
+            else
+                return null;
+        }
         public List<RecFacturasProblemas> GetReason()
         {
             return repo.GetQuestionsReason();
@@ -501,5 +512,12 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
         #endregion
+
+        public bool CheckIfDocumentExistsFor(BillingReceptionModel item)
+        {
+            DateTime date = DateTime.Parse(item.DataDocFornecedor);
+            var items = repo.GetByExternalDoc(item.NumDocFornecedor, date.Year, item.CodFornecedor);
+            return items.Any();
+        }
     }
 }

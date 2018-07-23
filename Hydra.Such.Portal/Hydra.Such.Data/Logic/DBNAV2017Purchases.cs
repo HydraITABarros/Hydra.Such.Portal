@@ -80,6 +80,7 @@ namespace Hydra.Such.Data.Logic
                         item.Quantity = temp.Quantity;
                         item.QuantityReceived = temp.QuantityReceived;
                         item.AmountRcdNotInvoiced = temp.AmountRcdNotInvoiced;
+                        item.Amount = temp.Amount;
                         
                         result.Add(item);
                     }
