@@ -413,10 +413,16 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes" hidden>&nbsp; Nota</paper-button>
+                        <template is="dom-if" if="{{ _isNotes }}">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </template>
+                    </div>
+                    <div class="col-sm-3" hidden={{_isNotes}}>                        
+                        <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
+                        <paper-button raised id="btnSendAnswer" class="btnSave"on-tap="_saveNote">Guardar</paper-button>
                     </div>
                     <div class="col-sm-3">
-                        <template is="dom-if" if="{{ _checkPending }}">
+                        <template is="dom-if" if="{{ _isNotes }}">
                             <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
@@ -837,7 +843,7 @@
                             } else if (this.data.areaPendente2 == "Aprovisionamento") {
                                 if (this._rfperfil == "Aprovisionamento") {
                                     this._hiddeAnswerButton = false;
-                                }                               
+                                }
                             } else {
                                 if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
 
@@ -848,7 +854,7 @@
                             if (this._rfperfil == "Contabilidade") {
 
                                 this._hiddeSendButton = true;
-                            }        
+                            }
                             //para testes
                             this._hiddeSendButton = true;
                         }
@@ -984,18 +990,18 @@
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                           
+
                             this.$.cmbProblemas.value = "";
                             this.$.txtdescricaoProblema.value = "";
                             this.$.txtdestinatarioArea.value = "";
                             this.$.txtCommentdgl.value = "";
                             this.$.txtArea2.value = "";
                             this.$.txtAreadgl.value="";
-                            this.$.txtCodDestino.value = "";    
+                            this.$.txtCodDestino.value = "";
                             this.$.cmbMotivos.value = "";
                             this.$.txtmotivo.value = "";
                             this.$.txtCommentdgl.value = "";
-                           
+
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -1027,7 +1033,7 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
+                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) {
                     debugger;
                     if (this._isCreate &&
                         date != undefined &&
@@ -1041,9 +1047,9 @@
                         this.$.docvalidation_ajax.generateRequest();
                     }
                 },
-                _docValidationResponse: function (e) { 
+                _docValidationResponse: function (e) {
                     if (e.detail.status === 200) {
-                        if (this.preventDuplicateDocsResponse.eReasonCode == "1") 
+                        if (this.preventDuplicateDocsResponse.eReasonCode == "1")
                             this._docIsValid = true;
                         else
                             this._openToastError(this.preventDuplicateDocsResponse.eMessage);
@@ -1129,7 +1135,7 @@
                         }
                         else {
                             // Caso Envio Area contem 1 EX (-50-)
-                          
+
                             if (problem.extra.length <= 4) {
                                 problem.extra = problem.extra.replace('-', '');
                                 problem.extra = problem.extra.replace('-', '');
@@ -1155,7 +1161,7 @@
                     }
                 },
                 _anexoChanged: function (e) {
-                    if (this.$.txtAnexo.checked == true) {                        
+                    if (this.$.txtAnexo.checked == true) {
                         this._isAnexarFicheiro = false;
                     }
                     else
@@ -1254,7 +1260,7 @@
                             codDestino: this.$.txtCodDestino.value,
                             attached: this.Anexos
                         };
-                        
+
                         this.data.workflowItems.push(workflow);
                         this.$.page_send_ajax.body = JSON.stringify(this.data);
                         this.$.page_send_ajax.generateRequest();
@@ -1264,7 +1270,7 @@
                 _dlgAddAttached: function () {
                     var anexoNew = {
                         file: this.$.txtNomeFicheiro.value,
-                        description: this.$.txtDescricaoAnexo.value      
+                        description: this.$.txtDescricaoAnexo.value
                     };
                     if (this.Anexos == null) {
                         this.Anexos = [anexoNew];
@@ -1278,7 +1284,7 @@
                 _dlgSend: function () {
                     debugger;
                     if (this._validateInputForAccounting()) {
-                        
+
                             var txt;
                             if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
                                 txt = true;
@@ -1289,7 +1295,7 @@
                         if (txt == true) {
                             var workflow = null;;
                             var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-                            
+
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
@@ -1357,11 +1363,17 @@
                     window.history.back();
                 },
                 _notes: function (e) {
-                    if (this._isNotes == false)
-                        this._isNotes = true;
-                    else
-                        this._isNotes = false;
+                     this._isNotes = false;
                 },
+        _cancelNote: function (e) {
+                    this._isNotes = true;
+                },
+                _saveNote: function (e) {
+                    this._isNotes = true;
+
+
+                },
+
                 _accountingOptionSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
@@ -1378,7 +1390,7 @@
                             this.$.setState_ajax.body = JSON.stringify(this.data);
                             this.$.setState_ajax.generateRequest();
                             break;
-                    }                    
+                    }
                 },
                 _setStateResponse: function (e) {
                     if (e.detail.status === 200) {
