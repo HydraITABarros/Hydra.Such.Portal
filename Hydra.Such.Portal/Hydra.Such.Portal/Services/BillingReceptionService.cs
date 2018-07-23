@@ -168,12 +168,14 @@ namespace Hydra.Such.Portal.Services
             }
             return true;
         }
-        public BillingRecWorkflowModel UpdateWorkFlow(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast, string postedByUserName)
+        public BillingReceptionModel UpdateWorkFlow(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
             wfItem = DBBillingReceptionWf.ParseToDB(wfItemLast);
             item.Descricao = wfItemLast.Comentario;
+            item.DescricaoProblema = wfItemLast.Descricao;
             item.DataModificacao = DateTime.Now;
+            wfItem.Utilizador = postedByUserName;
             wfItem.Id = 0;
             item = repo.Update(item);
 
@@ -188,7 +190,7 @@ namespace Hydra.Such.Portal.Services
             {
                 return null;
             }
-            return wfItemLast;
+            return item;
         }
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
@@ -324,6 +326,7 @@ namespace Hydra.Such.Portal.Services
 
                             item.eReasonCode = 1;
                             item.eMessage = "Fatura criada com sucesso.";
+
                         }
                         catch
                         {
@@ -347,6 +350,82 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
+        public BillingReceptionModel OpenOrder(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
+        {
+            if (item != null)
+            {
+                Task<WSGenericCodeUnit.FxGetURLOrder_Result> createOrderLink = WSGeneric.GetOrderByN(item.NumEncomenda, _configws);
+
+                createOrderLink.Wait();
+                if (createOrderLink.IsCompletedSuccessfully)
+                {
+
+                    try
+                    {
+                        item.eReasonCode = 1;
+                        item.eMessage = "Factura Aberta.";
+                        item.link = createOrderLink.Result.return_value;
+                    }
+                    catch
+                    {
+                        //TODO: Rever comportamento no caso de erro
+                        item.eReasonCode = 2;
+                        item.eMessage = "Não foi possivel abrir a Factura Nº De Encomenda:" + item.NumEncomenda;
+                    }
+                }
+                else
+                {
+                    item.Id = item.Id.Remove(0, 2);
+
+                }
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return item;
+        }
+
+        public BillingReceptionModel OpenOrderByBilling(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
+        {
+            if (item != null)
+            {
+             
+                Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> createOrderBillingLinkTask = WSGeneric.GetOrderRequisition(item.Id, _configws);
+
+                createOrderBillingLinkTask.Wait();
+                if (createOrderBillingLinkTask.IsCompletedSuccessfully)
+                {
+
+                    try
+                    {
+                        item.eReasonCode = 1;
+                        item.eMessage = "Factura Aberta.";
+                        item.link = createOrderBillingLinkTask.Result.return_value;
+                    }
+                    catch
+                    {
+                        //TODO: Rever comportamento no caso de erro
+                        item.eReasonCode = 2;
+                        item.eMessage = "Não foi possivel abrir a Factura nº:"+ item.Id;
+                    }
+                }
+                else
+                {
+                    item.Id = item.Id.Remove(0, 2);
+
+                }
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return item;
+        }
         private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;

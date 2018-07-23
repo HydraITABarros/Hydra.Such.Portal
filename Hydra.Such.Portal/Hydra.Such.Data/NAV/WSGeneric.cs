@@ -42,6 +42,42 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSGenericCodeUnit.FxGetURLOrder_Result> GetOrderByN(string HeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSGenericCodeUnit.WsGeneric_PortClient WS_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSGenericCodeUnit.FxGetURLOrder_Result result = await WS_Client.FxGetURLOrderAsync(HeaderNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static async Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> GetOrderRequisition(string HeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSGenericCodeUnit.WsGeneric_PortClient WS_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSGenericCodeUnit.FxGetURLOrderRequisition_Result result = await WS_Client.FxGetURLOrderRequisitionAsync(HeaderNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static async Task<WSGenericCodeUnit.FxCabimento_Result> CreatePurchaseOrder(String prePurchHeaderNo, NAVWSConfigurations WSConfigurations)
         {
             //Configure NAV Client
