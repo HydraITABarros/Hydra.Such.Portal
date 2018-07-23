@@ -193,7 +193,9 @@ namespace Hydra.Such.Data
             [Description("Devolvido")]
             Devolvido,
             [Description("Sem Efeito")]
-            SemEfeito
+            SemEfeito,
+            [Description("Resolvido")]
+            Resolvido
         }
 
         public enum BillingDocumentTypes

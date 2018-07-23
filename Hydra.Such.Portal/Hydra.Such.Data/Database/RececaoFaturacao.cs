@@ -47,6 +47,8 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataPassaPendente { get; set; }
         public string AreaPendente { get; set; }
         public string AreaPendente2 { get; set; }
+        public string AreaUltimaInteracao { get; set; }
+        public string UserUltimaInteracao { get; set; }
 
         public ICollection<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
     }

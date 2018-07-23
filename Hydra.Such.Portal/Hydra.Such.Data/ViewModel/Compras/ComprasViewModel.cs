@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     {
         public int ID { get; set; }
         public string CodigoProduto { get; set; }
+        public string CodigoProdutoTexto { get; set; }
         public string Descricao { get; set; }
         public string Descricao2 { get; set; }
         public string CodigoUnidadeMedida { get; set; }
@@ -17,6 +18,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? Urgente { get; set; }
         public string UrgenteTexto { get; set; }
         public string RegiaoMercadoLocal { get; set; }
+        public string RegiaoMercadoLocalTexto { get; set; }
         public int? Estado { get; set; }
         public string EstadoTexto { get; set; }
         public DateTime? DataCriacao { get; set; }

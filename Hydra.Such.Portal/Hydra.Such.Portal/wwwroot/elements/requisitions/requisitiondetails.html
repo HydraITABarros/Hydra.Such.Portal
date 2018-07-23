@@ -1597,7 +1597,7 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
-
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _validateRequisition: function () {
                     this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);

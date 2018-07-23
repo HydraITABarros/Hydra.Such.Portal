@@ -108,6 +108,16 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/ExportToExcel_PreMovimentosProjetos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -214,6 +224,7 @@
         </style>
         <div class="subMenu" hidden="{{ _permissions.update }}">
             <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <vaadin-grid aria-label="Pré Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
@@ -629,7 +640,20 @@
                         this.openToastError("Não existem pré movimentos associados a este projeto.");
                     }
 
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../ExportToExcelDownload_PreMovimentosProjetos?sFileName=' + FileName;
+                },
+
             });
         });
     </script>
