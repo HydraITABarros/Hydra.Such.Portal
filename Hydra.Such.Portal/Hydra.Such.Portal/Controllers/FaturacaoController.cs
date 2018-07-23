@@ -453,5 +453,11 @@ namespace Hydra.Such.Portal.Controllers
         //    int userProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
         //    return Json(userProfile);
         //}
+        [HttpGet]
+        public JsonResult SetState([FromBody] BillingReceptionModel item)
+        {
+            //set state
+            return Json(item);
+        }
     }
 }
