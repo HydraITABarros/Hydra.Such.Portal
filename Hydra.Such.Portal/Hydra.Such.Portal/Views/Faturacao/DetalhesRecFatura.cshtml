@@ -391,10 +391,16 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes" hidden>&nbsp; Nota</paper-button>
+                        <template is="dom-if" if="{{ _isNotes }}">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </template>
+                    </div>
+                    <div class="col-sm-3" hidden={{_isNotes}}>                        
+                        <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
+                        <paper-button raised id="btnSendAnswer" class="btnSave"on-tap="_saveNote">Guardar</paper-button>
                     </div>
                     <div class="col-sm-3">
-                        <template is="dom-if" if="{{ _checkPending }}">
+                        <template is="dom-if" if="{{ _isNotes }}">
                             <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
                         </template>
@@ -1250,11 +1256,16 @@
                     window.history.back();
                 },
                 _notes: function (e) {
-                    if (this._isNotes == false)
-                        this._isNotes = true;
-                    else
-                        this._isNotes = false;
+                     this._isNotes = false;
                 },
+                _saveNote: function (e) {
+                    this._isNotes = true;
+                   
+                
+                },
+                _cancelNote: function (e) {
+                    this._isNotes = true;
+                }
             });
         });
     </script>
