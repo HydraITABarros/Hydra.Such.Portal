@@ -446,5 +446,12 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+        [HttpGet]
+        public JsonResult SetState([FromBody] BillingReceptionModel item)
+        {
+            //set state
+            return Json(item);
+        }
     }
 }
