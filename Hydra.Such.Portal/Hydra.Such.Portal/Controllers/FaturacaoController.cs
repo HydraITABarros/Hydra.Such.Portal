@@ -198,7 +198,41 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
-    
+        [HttpPost]
+        public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
+        {
+
+            BillingRecWorkflowModel updatedItem = null;
+            if (item != null)
+            {               
+                item.ModificadoPor = User.Identity.Name;
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                workflow.DataCriacao = DateTime.Now;
+                workflow.IdRecFaturacao = item.Id;
+                item.WorkflowItems.Add(workflow);
+                
+                updatedItem = billingRecService.UpdateWorkFlow(item, workflow, User.Identity.Name);
+                if (updatedItem != null)
+                {
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo atualizado com sucesso";
+
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+
+                }
+            }
+            else
+            {
+                item = new BillingReceptionModel();
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
+        }
         //CF ou CP ou CC opc
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)

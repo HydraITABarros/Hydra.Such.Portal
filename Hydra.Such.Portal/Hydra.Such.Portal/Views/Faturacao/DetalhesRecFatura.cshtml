@@ -133,6 +133,15 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateWorkFlow"
+                   last-response="{{ updatedItem }}"
+                   id="page_updateWork_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        
         <iron-ajax url="/Faturacao/GetUserProfileById"
                    last-response="{{ userProfile }}"
                    id="get_userprofile_ajax"
@@ -174,6 +183,8 @@
                 </template>
             </template>
             <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
+            <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_openPen"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
         </div>
 
         <div class="panel panel-default">
@@ -389,173 +400,240 @@
                     </div>
                     <div class="col-sm-2">
                         <vaadin-text-field type="text" value="{{data.dataPassaPendente}}" id="txtDatePeding" label="Data passou Pendente" disabled></vaadin-text-field>
-                  </div>
-                <div class="row break_clear">
-                    <div class="col-sm-10">
-                        <such-textarea rows="3" value="{{data.descricao}}" id="txtComment" label="Comentário" disabled="{{_isNotes}}"></such-textarea>
                     </div>
-                    <div class="col-sm-2">
-                        <vaadin-text-field type="text" value="{{data.dataResolucao}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                    <div class="row break_clear">
+                        <div class="col-sm-10">
+                            <such-textarea rows="3" value="{{data.descricao}}" id="txtComment" label="Comentário" disabled="{{_isNotes}}"></such-textarea>
+                        </div>
+                        <div class="col-sm-2">
+                            <vaadin-text-field type="text" value="{{data.dataResolucao}}" id="txtDateResolution" name="txtDateResolution" label="Data de Resolução" disabled></vaadin-text-field>
+                        </div>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-9">
-                        <template is="dom-if" if="{{ _isNotes }}">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </template>
-                    </div>
-                    <div class="col-sm-3" hidden={{_isNotes}}>                        
-                        <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
-                        <paper-button raised id="btnSendAnswer" class="btnSave"on-tap="_saveNote">Guardar</paper-button>
-                    </div>
-                    <div class="col-sm-3">
-                        <template is="dom-if" if="{{ _isNotes }}">
-                            <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
-                            <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
-                        </template>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                </div>
-                <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
-                    <vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="data"></vaadin-grid-filter>
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-
+                    <div class="row break_clear">
+                        <div class="col-sm-9">
+                            <template is="dom-if" if="{{ _isNotes }}">
+                                <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
                             </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.dataCriacao}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-
-                    <vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.areaWorkflow}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.destinatario}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="200px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codTipoProblema" />
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.codTipoProblema}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-
-                    <vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.descricao}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-
-                    <vaadin-grid-column width="200px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="comentario" />
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.comentario}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-                <div class="row break_clear" hidden>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                </div>
-            </div>
-
-            <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatarios" item-value-path="id" item-label-path="value" value="{{_destinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-6">
-                        <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
-                    </div>
-                </div>
-
-                <div class="row break_clear">
-
-                    <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
-                        <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-6" hidden="{{ _isInternalDestination }}">
-                        <vaadin-text-field label=" " type="text" value="" id="txtmotivo"></vaadin-text-field>
-                    </div>
-                    <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
+                        </div>
+                        <div class="col-sm-3" hidden={{_isNotes}}>
+                            <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
+                            <paper-button raised id="btnSendAnswer" class="btnSave" on-tap="_saveNote">Guardar</paper-button>
+                        </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                            <template is="dom-if" if="{{ _isNotes }}">
+                                <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
+                                <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                    </div>
+                    <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[data.workflowItems]]" class="grid" active-item="{{_SelectedLine}}">
+                        <vaadin-grid-column width="160px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="data"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.dataCriacao}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="160px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.areaWorkflow}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column width="160px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+                                    <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.destinatario}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column width="200px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codTipoProblema" />
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.codTipoProblema}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="160px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+                                    <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.descricao}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="200px" resizable>
+                            <template class="header">
+                                <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="comentario" />
+                            </template>
+                            <template>
+                                <template is="dom-if" if="{{ item.selected }}">
+                                    <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </template>
+                                <template is="dom-if" if="{{ !item.selected }}">
+                                    {{item.comentario}}
+                                </template>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                    <div class="row break_clear" hidden>
+                        <div class="col-sm-2">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </div>
+                        <div class="col-sm-2">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </div>
+                        <div class="col-sm-2">
+                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                        </div>
+                    </div>
+                </div>
+
+                <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatarios" item-value-path="id" item-label-path="value" value="{{_destinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-6">
+                            <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+
+                        <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
+                            <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.id]]</div>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-6" hidden="{{ _isInternalDestination }}">
+                            <vaadin-text-field label=" " type="text" value="" id="txtmotivo"></vaadin-text-field>
+                        </div>
+                        <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.id]]</div>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field label=" " value="{{_descricaoProblema}}" type="text" id="txtdescricaoProblema"></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field label=" " type="text" id="txtdestinatarioArea"></vaadin-text-field>
+                                <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-9">
+                            <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
+                        </div>
+                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                            <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                            <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
+                        </div>
+                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                            <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="buttons">
+                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                        </div>
+                    </div>
+                </paper-dialog>
+
+                <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -567,103 +645,36 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-6">
-                            <vaadin-text-field label=" " value="{{_descricaoProblema}}" type="text" id="txtdescricaoProblema"></vaadin-text-field>
+                            <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
                         </div>
                     </div>
-                    <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
+                    <div class="row break_clear">
+                        <div class="col-sm-9">
+                            <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
+                            <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
                         </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" id="txtdestinatarioArea"></vaadin-text-field>
-                            <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
+                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                            <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
                         </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
+
+                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                            <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
                         </div>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-9">
-                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
+                    <div class="row break_clear">
+                        <div class="buttons">
+                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
+                        </div>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
-                    </div>
-
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
-                    </div>
-                </div>
-            </paper-dialog>
-
-            <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-6">
-                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-9">
-                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
-                    </div>
-
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
-                    </div>
-                </div>
-            </paper-dialog>
-        </div>
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+                </paper-dialog>
+            </div>
+            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
     <script>
@@ -813,9 +824,7 @@
                             this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         //Botão Resposta
-                        debugger;
                         if (this.data.estado == 1) {
-                            debugger;
                             this._nameButtonSend = "Enviar";
                             if (this.data.areaPendente2 == "Contabilidade") {
                                 this._hiddeAnswerButton = true;
@@ -1013,7 +1022,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
-                    debugger;
                     if (this._isCreate &&
                         date != undefined &&
                         date != "" &&
@@ -1171,7 +1179,6 @@
                 },
 
                 _sendaAnswer: function () {
-                    debugger;
                     this.$.dialogSendAnswer.open();
                     var data = this.data;
                     this.$.respostasPerfil_ajax.body = JSON.stringify(data);
@@ -1201,7 +1208,6 @@
                     }
                 },
                 _dlgSendAnswer: function () {
-                    debugger;
                     if (this._validateInputForAnswer()) {
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
@@ -1261,7 +1267,6 @@
                     this.$.txtDescricaoAnexo.value = "";
                  },
                 _dlgSend: function () {
-                    debugger;
                     if (this._validateInputForAccounting()) {
                         
                             var txt;
@@ -1272,14 +1277,12 @@
                             }
 
                         if (txt == true) {
-                            var workflow = null;;
-                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-                            
+                            var workflow = null;                            
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
                                 workflow = {
-                                    id: idWork.id + 1,
+                                    id: 0,
                                     idRecFaturacao: this.data.id,
                                     codTipoProblema: this.$.cmbProblemas.value,
                                     codProblema: "RF1P",
@@ -1295,7 +1298,7 @@
                             }
                             else {
                                 workflow = {
-                                    id: idWork.id + 1,
+                                    id: 0,
                                     idRecFaturacao: this.data.id,
                                     codTipoProblema: this.$.cmbMotivos.value,
                                     codProblema: "RF4P",
@@ -1345,8 +1348,22 @@
                      this._isNotes = false;
                 },
                 _saveNote: function (e) {
+                    debugger;;
                     this._isNotes = true;
-                   
+                    var workflow = null;;
+                    var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
+                    var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                    workflow = {
+                        id: 0,
+                        idRecFaturacao: this.data.id,
+                        descricao: "*Anotação",
+                        comentario: this.$.txtComment.value,
+                        codDestino: this.$.txtCodDestino.value,
+                    };
+                    this.Anexos = null;
+                    this.data.workflowItems.push(workflow);
+                    this.$.page_updateWork_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updateWork_ajax.generateRequest();
                 
                 },
                 _cancelNote: function (e) {
