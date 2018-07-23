@@ -1148,7 +1148,6 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
-                    debugger;;
                     if (this.$.cmbDocumentTypes.validate()) {
                         if (this._docIsValid) {
                             return true;
@@ -1173,7 +1172,7 @@
                     return "";
                 },
                 _validateInputForAccounting: function () {
-                    if (this._validateInputForNew()) {
+                   // if (this._validateInputForNew()) { ver com o joao
                         if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
                             var selState = this.States.find(x => x.id == this.data.estado);
                             var stateDescription = selState != null ? selState.value : this.data.estado;
@@ -1197,9 +1196,9 @@
                             return false;
                         }
                         return true;
-                    }
-                    this._openToastError("Verifique os dados inseridos.");
-                    return false;
+                 //   }
+                    //this._openToastError("Verifique os dados inseridos.");
+                    //return false;
                 },
                 _validateInputForAnswer: function () {
                     if (this.data.estado == null || this.data.estado == "") {

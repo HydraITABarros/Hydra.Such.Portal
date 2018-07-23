@@ -36,6 +36,24 @@ namespace WSGenericCodeUnit
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxPostShipmentDoc", ReplyAction="*")]
         System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> FxPostShipmentDocAsync(WSGenericCodeUnit.FxPostShipmentDoc request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxExistEntryNo", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxExistEntryNo_Result> FxExistEntryNoAsync(WSGenericCodeUnit.FxExistEntryNo request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxFindResource", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxFindResource_Result> FxFindResourceAsync(WSGenericCodeUnit.FxFindResource request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxProcessRHIntegration", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxProcessRHIntegration_Result> FxProcessRHIntegrationAsync(WSGenericCodeUnit.FxProcessRHIntegration request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxSetOperation", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxSetOperation_Result> FxSetOperationAsync(WSGenericCodeUnit.FxSetOperation request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxGetURLOrder", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrder_Result> FxGetURLOrderAsync(WSGenericCodeUnit.FxGetURLOrder request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxGetURLOrderRequisition", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> FxGetURLOrderRequisitionAsync(WSGenericCodeUnit.FxGetURLOrderRequisition request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -290,6 +308,230 @@ namespace WSGenericCodeUnit
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxExistEntryNo", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxExistEntryNo
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public int pEntryNo;
+        
+        public FxExistEntryNo()
+        {
+        }
+        
+        public FxExistEntryNo(int pEntryNo)
+        {
+            this.pEntryNo = pEntryNo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxExistEntryNo_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxExistEntryNo_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public bool return_value;
+        
+        public FxExistEntryNo_Result()
+        {
+        }
+        
+        public FxExistEntryNo_Result(bool return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxFindResource", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxFindResource
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pCode;
+        
+        public FxFindResource()
+        {
+        }
+        
+        public FxFindResource(string pCode)
+        {
+            this.pCode = pCode;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxFindResource_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxFindResource_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public bool return_value;
+        
+        public FxFindResource_Result()
+        {
+        }
+        
+        public FxFindResource_Result(bool return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxProcessRHIntegration", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxProcessRHIntegration
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public bool pPaymentAdvance;
+        
+        public FxProcessRHIntegration()
+        {
+        }
+        
+        public FxProcessRHIntegration(bool pPaymentAdvance)
+        {
+            this.pPaymentAdvance = pPaymentAdvance;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxProcessRHIntegration_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxProcessRHIntegration_Result
+    {
+        
+        public FxProcessRHIntegration_Result()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxSetOperation", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxSetOperation
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public int pOperationCode;
+        
+        public FxSetOperation()
+        {
+        }
+        
+        public FxSetOperation(int pOperationCode)
+        {
+            this.pOperationCode = pOperationCode;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxSetOperation_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxSetOperation_Result
+    {
+        
+        public FxSetOperation_Result()
+        {
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetURLOrder", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetURLOrder
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pOrder;
+        
+        public FxGetURLOrder()
+        {
+        }
+        
+        public FxGetURLOrder(string pOrder)
+        {
+            this.pOrder = pOrder;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetURLOrder_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetURLOrder_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string return_value;
+        
+        public FxGetURLOrder_Result()
+        {
+        }
+        
+        public FxGetURLOrder_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetURLOrderRequisition", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetURLOrderRequisition
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pRequisitionNo;
+        
+        public FxGetURLOrderRequisition()
+        {
+        }
+        
+        public FxGetURLOrderRequisition(string pRequisitionNo)
+        {
+            this.pRequisitionNo = pRequisitionNo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetURLOrderRequisition_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetURLOrderRequisition_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string return_value;
+        
+        public FxGetURLOrderRequisition_Result()
+        {
+        }
+        
+        public FxGetURLOrderRequisition_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     public interface WsGeneric_PortChannel : WSGenericCodeUnit.WsGeneric_Port, System.ServiceModel.IClientChannel
     {
@@ -432,6 +674,84 @@ namespace WSGenericCodeUnit
             return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxPostShipmentDocAsync(inValue);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxExistEntryNo_Result> WSGenericCodeUnit.WsGeneric_Port.FxExistEntryNoAsync(WSGenericCodeUnit.FxExistEntryNo request)
+        {
+            return base.Channel.FxExistEntryNoAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxExistEntryNo_Result> FxExistEntryNoAsync(int pEntryNo)
+        {
+            WSGenericCodeUnit.FxExistEntryNo inValue = new WSGenericCodeUnit.FxExistEntryNo();
+            inValue.pEntryNo = pEntryNo;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxExistEntryNoAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxFindResource_Result> WSGenericCodeUnit.WsGeneric_Port.FxFindResourceAsync(WSGenericCodeUnit.FxFindResource request)
+        {
+            return base.Channel.FxFindResourceAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxFindResource_Result> FxFindResourceAsync(string pCode)
+        {
+            WSGenericCodeUnit.FxFindResource inValue = new WSGenericCodeUnit.FxFindResource();
+            inValue.pCode = pCode;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxFindResourceAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxProcessRHIntegration_Result> WSGenericCodeUnit.WsGeneric_Port.FxProcessRHIntegrationAsync(WSGenericCodeUnit.FxProcessRHIntegration request)
+        {
+            return base.Channel.FxProcessRHIntegrationAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxProcessRHIntegration_Result> FxProcessRHIntegrationAsync(bool pPaymentAdvance)
+        {
+            WSGenericCodeUnit.FxProcessRHIntegration inValue = new WSGenericCodeUnit.FxProcessRHIntegration();
+            inValue.pPaymentAdvance = pPaymentAdvance;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxProcessRHIntegrationAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxSetOperation_Result> WSGenericCodeUnit.WsGeneric_Port.FxSetOperationAsync(WSGenericCodeUnit.FxSetOperation request)
+        {
+            return base.Channel.FxSetOperationAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxSetOperation_Result> FxSetOperationAsync(int pOperationCode)
+        {
+            WSGenericCodeUnit.FxSetOperation inValue = new WSGenericCodeUnit.FxSetOperation();
+            inValue.pOperationCode = pOperationCode;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxSetOperationAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrder_Result> WSGenericCodeUnit.WsGeneric_Port.FxGetURLOrderAsync(WSGenericCodeUnit.FxGetURLOrder request)
+        {
+            return base.Channel.FxGetURLOrderAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrder_Result> FxGetURLOrderAsync(string pOrder)
+        {
+            WSGenericCodeUnit.FxGetURLOrder inValue = new WSGenericCodeUnit.FxGetURLOrder();
+            inValue.pOrder = pOrder;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxGetURLOrderAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> WSGenericCodeUnit.WsGeneric_Port.FxGetURLOrderRequisitionAsync(WSGenericCodeUnit.FxGetURLOrderRequisition request)
+        {
+            return base.Channel.FxGetURLOrderRequisitionAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> FxGetURLOrderRequisitionAsync(string pRequisitionNo)
+        {
+            WSGenericCodeUnit.FxGetURLOrderRequisition inValue = new WSGenericCodeUnit.FxGetURLOrderRequisition();
+            inValue.pRequisitionNo = pRequisitionNo;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxGetURLOrderRequisitionAsync(inValue);
+        }
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -460,8 +780,8 @@ namespace WSGenericCodeUnit
         {
             if ((endpointConfiguration == EndpointConfiguration.WsGeneric_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/ReplaceWithAPercentEncod" +
-                        "edCompanyName/Codeunit/WsGeneric");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Codeun" +
+                        "it/WsGeneric?wsdl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
