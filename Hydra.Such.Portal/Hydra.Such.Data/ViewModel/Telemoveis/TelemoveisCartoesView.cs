@@ -55,5 +55,7 @@ namespace Hydra.Such.Data.ViewModel.Telemoveis
         public bool EquipamentoNaoDevolvido_Show { get; set; }
         public string Marca_Show { get; set; }
         public string DataAlteracao_Show { get; set; }
+
+        public ICollection<TelemoveisMovimentosView> TelemoveisMovimentos_List { get; set; }
     }
 }

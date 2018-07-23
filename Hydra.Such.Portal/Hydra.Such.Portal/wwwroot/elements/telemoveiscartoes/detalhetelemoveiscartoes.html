@@ -135,6 +135,7 @@
                         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Equipamento</paper-tab>
+                            <paper-tab>Movimentos</paper-tab>
                             <!--<paper-tab>Detalhe</paper-tab>-->
                         </paper-tabs>
 
@@ -329,49 +330,143 @@
                                 </div>
                             </div>
 
-                            <!--Detalhe-->
-                            <!--<div>
+                            <!--Movimentos-->
+                            <div>
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <div class="row break_clear">
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field value="{{data.utilizador}}" id="utilizador" name="utilizador" label="Utilizador" disabled="true"> </vaadin-text-field>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <vaadin-date-picker value="{{data.dataAlteracao_Show}}" id="dataAlteracao_Show" name="dataAlteracao_Show" label="Data Alteração"></vaadin-date-picker>
-                                            </div>
-                                        </div>
-                                        <br />
-                                        <div class="row break_clear">
-                                            <div class="col-sm-12">
-                                                <paper-collapse-group>
-                                                    <paper-collapse-item header="Histórico de Ocorrências" opened>
-                                                        <div class="panel-body">
-                                                            <div class="row break_clear">
-                                                                <div class="col-sm-12">
-                                                                    <div class="row">
-                                                                        <div class="col-sm-2">
-                                                                            <vaadin-date-picker value="{{data.data_xxxxxxxx}}" id="data_xxxxxxxx" name="data_xxxxxxxx" label="Data" disabled="{{ _isCreate }}"></vaadin-date-picker>
-                                                                        </div>
-                                                                        <div class="col-sm-8">
-                                                                            <vaadin-text-field value="{{data.ocorrencia_xxxxxxx}}" maxlength="200" id="ocorrencia_xxxxxxx" name="ocorrencia_xxxxxxx" label="Ocorrência" disabled="{{ _isCreate }}"> </vaadin-text-field>
-                                                                        </div>
-                                                                        <div class="col-sm-2">
-                                                                            <br />
-                                                                            <paper-button class="btnSave" id="btnInserirAnexo" raised on-tap="_btnInserirAnexo" disabled="{{ _isCreate }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anexo</paper-button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </paper-collapse-item>
-                                                </paper-collapse-group>
-                                            </div>
-                                        </div>
+                                            <vaadin-grid aria-label="MovimentosGrid" id="grid" items="[[data.telemoveisMovimentos_List]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numCartao" style="text-align:center;">Nº Cartão</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numCartao" />
+                                                    </template>
+                                                    <template align="right">
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.numCartao }}" readonly></vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="data" style="text-align:center;">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="data" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.data }}" readonly></vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numFactura" style="text-align:center;">Nº Factura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numFactura" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.numFactura }}" readonly></vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="valor" style="text-align:center;">Valor</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="valor" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.valor }}" readonly>
+                                                                <div slot="suffix">€</div>
+                                                            </vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="valorComIva" style="text-align:center;">Valor c/ IVA</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="valorComIva" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.valorComIva }}" readonly>
+                                                                <div slot="suffix">€</div>
+                                                            </vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataFactura_Show" style="text-align:center;">Data Factura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataFactura_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.dataFactura_Show }}" readonly></vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="150px" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataRegisto_Show" style="text-align:center;">Data Registo</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="DataRegisto_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-text-field type="text" value="{{ item.DataRegisto_Show }}" readonly></vaadin-text-field>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+
+                            <!--Detalhe-->
+                            <!--<div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-text-field value="{{data.utilizador}}" id="utilizador" name="utilizador" label="Utilizador" disabled="true"> </vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-date-picker value="{{data.dataAlteracao_Show}}" id="dataAlteracao_Show" name="dataAlteracao_Show" label="Data Alteração"></vaadin-date-picker>
+                    </div>
+                </div>
+                <br />
+                <div class="row break_clear">
+                    <div class="col-sm-12">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Histórico de Ocorrências" opened>
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <vaadin-date-picker value="{{data.data_xxxxxxxx}}" id="data_xxxxxxxx" name="data_xxxxxxxx" label="Data" disabled="{{ _isCreate }}"></vaadin-date-picker>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <vaadin-text-field value="{{data.ocorrencia_xxxxxxx}}" maxlength="200" id="ocorrencia_xxxxxxx" name="ocorrencia_xxxxxxx" label="Ocorrência" disabled="{{ _isCreate }}"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnInserirAnexo" raised on-tap="_btnInserirAnexo" disabled="{{ _isCreate }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anexo</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>-->
                         </iron-pages>
 
                         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>

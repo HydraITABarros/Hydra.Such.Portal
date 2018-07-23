@@ -43,6 +43,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string AreaPendente { get; set; }
         public string AreaPendente2 { get; set; }
         public string DataResolucao { get; set; }
+        public string AreaUltimaInteracao { get; set; }
+        public string UserUltimaInteracao { get; set; }
+        public string link { get; set; }
 
         public List<BillingRecWorkflowModel> WorkflowItems { get; set; }
     }

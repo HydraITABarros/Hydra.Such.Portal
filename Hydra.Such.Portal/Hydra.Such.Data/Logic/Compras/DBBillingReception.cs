@@ -168,6 +168,9 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.TipoProblema = item.TipoProblema;
                 parsedItem.WorkflowItems = item.RececaoFaturacaoWorkflow.ToList().ParseToViewModel();
                 parsedItem.DataResolucao= !item.DataResolucao.HasValue ? "" : item.DataResolucao.Value.ToString("yyyy-MM-dd");
+                parsedItem.AreaUltimaInteracao = item.AreaUltimaInteracao;
+                parsedItem.UserUltimaInteracao = item.UserUltimaInteracao;
+
 
                 return parsedItem;
             }
@@ -225,7 +228,8 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.DescricaoProblema = item.DescricaoProblema;
                 parsedItem.TipoProblema = item.TipoProblema;
                 parsedItem.DataResolucao = string.IsNullOrEmpty(item.DataResolucao) ? (DateTime?)null : DateTime.Parse(item.DataResolucao);
-
+                parsedItem.AreaUltimaInteracao = item.AreaUltimaInteracao;
+                parsedItem.UserUltimaInteracao = item.UserUltimaInteracao;
                 return parsedItem;
                
               

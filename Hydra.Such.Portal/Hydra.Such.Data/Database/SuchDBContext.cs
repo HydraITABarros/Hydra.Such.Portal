@@ -130,7 +130,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-       
+    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -6098,6 +6098,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.AreaPendente2).HasMaxLength(50);
 
+                entity.Property(e => e.AreaUltimaInteracao).HasMaxLength(50);
+
                 entity.Property(e => e.CodAreaFuncional).HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade).HasMaxLength(20);
@@ -6149,6 +6151,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumEncomendaManual).HasMaxLength(20);
 
                 entity.Property(e => e.TipoProblema).HasMaxLength(20);
+
+                entity.Property(e => e.UserUltimaInteracao).HasMaxLength(50);
             });
 
             modelBuilder.Entity<RececaoFaturacaoWorkflow>(entity =>

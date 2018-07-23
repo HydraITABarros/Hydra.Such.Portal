@@ -169,17 +169,26 @@
         </iron-ajax>
 
         <iron-ajax url="/Faturacao/SetState"
-                   last-response="{{ setStateResponse }}"
+                   last-response="{{ updatedItem }}"
                    id="setState_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json"
-                   on-response="_setStateResponse">
+                   on-response="_updateResponse">
         </iron-ajax>
         <iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
                    last-response="{{ getViewResponse }}"
                    id="getHistory_ajax"
                    method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ getViewResponse }}"
+                   id="getPendingTotal_ajax"
+                   method="post"
+                   on-response="_getPendingTotalponse"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
@@ -190,7 +199,22 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Faturacao/OpenOrderNav"
+                   last-response="{{ updatedItem }}"
+                   id="openEncomenda_ajax"
+                   on-response="_viewLinkResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/OpenOrderBillingNav"
+                   last-response="{{ updatedItem }}"
+                   id="openEncomendaFactura_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_viewLinkResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -205,9 +229,11 @@
                 <template is="dom-if" if="{{ _isCreditMemo }}">
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
-                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
-                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Aprovisionamentos" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Contabilidade" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
             </template>
+            <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
+            <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
             <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
             <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
             <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
@@ -1004,7 +1030,7 @@
                     },
                     _nameButtonSend: {
                         type: String,
-                        value: "Enviar Pendente",
+                        value: "Env. Pendente",
                     },
                     _isInvoice: {
                         type: Boolean,
@@ -1040,7 +1066,7 @@
                     },
                     _accountingMenuItems: {
                         type: Array,
-                        value: [{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 1, description: "Pendente" }],
+                        value: [{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 1, description: "Pendente" }, { value: 5, description: "Resolvido" }],
                     },
                     _provisioningMenuItems: {
                         type: Array,
@@ -1249,6 +1275,7 @@
                     }
                 },
                 _updateResponse: function (e) {
+                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
@@ -1552,17 +1579,22 @@
                     this.$.txtDescricaoAnexo.value = "";
                  },
                 _dlgSend: function () {
-                    if (this._validateInputForAccounting()) {
-
-                            var txt;
-                            if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
-                                txt = true;
-                            } else {
-                                txt = false;
-                            }
+                    var validar = false;// caso ja seja pendente
+                    if (this.data.estado == 1) {
+                        validar = true;
+                    }else if (this._validateInputForAccounting()) {
+                        validar = true;
+                    }
+                    if (validar == true) {
+                        var txt;
+                        if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                            txt = true;
+                        } else {
+                            txt = false;
+                        }
 
                         if (txt == true) {
-                            var workflow = null;                            
+                            var workflow = null;
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
@@ -1626,6 +1658,25 @@
                     var link = "../../FacturasFornecedor/" + ano + mes + "/" + pdfName;
                     window.open(link);
                 },
+                _viewLinkResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.updatedItem.eReasonCode == "1") {
+                            this._openToast(this.updatedItem.eMessage);
+                            this.data = this.updatedItem;
+                            if (this.data.link != null) {
+                                var link = this.data.link;
+                                window.open(link);
+                            }
+                        }
+                        else {
+                            this._openToastError(this.updatedItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                    
+                },
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -1654,6 +1705,20 @@
                 
 
 
+                }, 
+                _provisioningOptionSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                            break;
+                    }
                 },
                 _accountingOptionSelected: function (e) {
                     if (e.detail.value == 0)
@@ -1662,33 +1727,54 @@
 
                     if (item == null)
                         return;
-
-                    switch (item.value) {
+                    switch (item.value) {          
                         case 1:
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
                         case 2:
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
                         case 4:
-                            this.data.state = item.value;
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
+                        case 5:
+                            this.data.estado = item.value;
                             this.$.setState_ajax.body = JSON.stringify(this.data);
                             this.$.setState_ajax.generateRequest();
                             break;
                     }
                 },
-                _setStateResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        //check setStateResponse
-                    }
-                },
+               
                 _openHistory: function (e) {
+                    this.getViewResponse = null;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getHistory_ajax.body = JSON.stringify(this.data);
                     this.$.getHistory_ajax.generateRequest();
                 },
                 _openPending: function (e) {
+                    this.getViewResponse = null;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getPending_ajax.body = JSON.stringify(this.data);
                     this.$.getPending_ajax.generateRequest();
                 },
-
+                _openNEncomenda: function (e) {
+                    if (this.$.sbOrders.value != null && this.$.sbOrders.value != "") {
+                        this.$.openEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.openEncomenda_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não existe Nº de Encomenda!");
+                    }
+                },
+                _openRequisicao: function (e) {
+                    this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
+                    this.$.openEncomendaFactura_ajax.generateRequest();
+                },
             });
         });
     </script>

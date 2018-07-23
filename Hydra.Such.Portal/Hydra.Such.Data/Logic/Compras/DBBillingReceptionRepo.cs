@@ -63,7 +63,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 //history
                 if(option!=1)
-                   return ctx.RececaoFaturacao.Where(x=> x.AreaPendente==null || x.AreaPendente == "").OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                   return ctx.RececaoFaturacao.Where(x=> (x.AreaPendente==null || x.AreaPendente == "") && x.Estado != 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
                 else if(perfil == 0)// Pending && Perfil
                     return ctx.RececaoFaturacao.Where(x => x.Estado == 1 && x.AreaPendente=="Contabilidade").OrderByDescending(x => x.Id).ToList().ParseToViewModel();
                 else// Pending
