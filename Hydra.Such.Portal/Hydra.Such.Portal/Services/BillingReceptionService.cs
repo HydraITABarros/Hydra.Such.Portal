@@ -119,7 +119,24 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+        public List<BillingReceptionModel> GetAllForUserHistPending(string userName,int option,BillingReceptionAreas perfil)
+        {
+            var billingReceptions = repo.GetAll(option, perfil);
 
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+
+            return billingReceptions;
+        }
         public BillingReceptionModel GetById(string id)
         {
 
@@ -151,7 +168,28 @@ namespace Hydra.Such.Portal.Services
             }
             return true;
         }
+        public BillingRecWorkflowModel UpdateWorkFlow(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast, string postedByUserName)
+        {
+            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
+            wfItem = DBBillingReceptionWf.ParseToDB(wfItemLast);
+            item.Descricao = wfItemLast.Comentario;
+            item.DataModificacao = DateTime.Now;
+            wfItem.Id = 0;
+            item = repo.Update(item);
 
+            repo.Create(wfItem);
+           
+            try
+            {
+                repo.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return wfItemLast;
+        }
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             //Update Header
@@ -206,11 +244,12 @@ namespace Hydra.Such.Portal.Services
             if (wfItemLast.Attached != null)
             {
                 int id=0;
+                int IDFatura = GetWorkFlow(item);
                 RececaoFaturacaoWorkflowAnexo wfAnexoItem = new RececaoFaturacaoWorkflowAnexo();
                 foreach (BillingRecWorkflowModelAttached attached in wfItemLast.Attached)
                 {
                     wfAnexoItem = DBBillingReceptionWFAttach.ParseToDB(attached);
-                    wfAnexoItem.Idwokflow = wfItemLast.Id;
+                    wfAnexoItem.Idwokflow = IDFatura+1;
                     wfAnexoItem.Id = id;
                     repo.Create(wfAnexoItem);                 
                 }
@@ -518,6 +557,13 @@ namespace Hydra.Such.Portal.Services
             DateTime date = DateTime.Parse(item.DataDocFornecedor);
             var items = repo.GetByExternalDoc(item.NumDocFornecedor, date.Year, item.CodFornecedor);
             return items.Any();
+        }
+
+        public int GetWorkFlow(BillingReceptionModel item)
+        {
+
+            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetLastById(item.NumEncomenda);
+            return LastWork.Id;
         }
     }
 }
