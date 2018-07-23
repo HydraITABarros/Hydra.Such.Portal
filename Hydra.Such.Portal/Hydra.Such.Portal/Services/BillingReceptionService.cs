@@ -119,7 +119,24 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+        public List<BillingReceptionModel> GetAllForUserHistPending(string userName,int option,BillingReceptionAreas perfil)
+        {
+            var billingReceptions = repo.GetAll(option, perfil);
 
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+
+            return billingReceptions;
+        }
         public BillingReceptionModel GetById(string id)
         {
 
@@ -151,7 +168,30 @@ namespace Hydra.Such.Portal.Services
             }
             return true;
         }
+        public BillingReceptionModel UpdateWorkFlow(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast, string postedByUserName)
+        {
+            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
+            wfItem = DBBillingReceptionWf.ParseToDB(wfItemLast);
+            item.Descricao = wfItemLast.Comentario;
+            item.DescricaoProblema = wfItemLast.Descricao;
+            item.DataModificacao = DateTime.Now;
+            wfItem.Utilizador = postedByUserName;
+            wfItem.Id = 0;
+            item = repo.Update(item);
 
+            repo.Create(wfItem);
+           
+            try
+            {
+                repo.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return item;
+        }
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             //Update Header
@@ -206,11 +246,12 @@ namespace Hydra.Such.Portal.Services
             if (wfItemLast.Attached != null)
             {
                 int id=0;
+                int IDFatura = GetWorkFlow(item);
                 RececaoFaturacaoWorkflowAnexo wfAnexoItem = new RececaoFaturacaoWorkflowAnexo();
                 foreach (BillingRecWorkflowModelAttached attached in wfItemLast.Attached)
                 {
                     wfAnexoItem = DBBillingReceptionWFAttach.ParseToDB(attached);
-                    wfAnexoItem.Idwokflow = wfItemLast.Id;
+                    wfAnexoItem.Idwokflow = IDFatura+1;
                     wfAnexoItem.Id = id;
                     repo.Create(wfAnexoItem);                 
                 }
@@ -285,6 +326,7 @@ namespace Hydra.Such.Portal.Services
 
                             item.eReasonCode = 1;
                             item.eMessage = "Fatura criada com sucesso.";
+
                         }
                         catch
                         {
@@ -308,6 +350,82 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
+        public BillingReceptionModel OpenOrder(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
+        {
+            if (item != null)
+            {
+                Task<WSGenericCodeUnit.FxGetURLOrder_Result> createOrderLink = WSGeneric.GetOrderByN(item.NumEncomenda, _configws);
+
+                createOrderLink.Wait();
+                if (createOrderLink.IsCompletedSuccessfully)
+                {
+
+                    try
+                    {
+                        item.eReasonCode = 1;
+                        item.eMessage = "Factura Aberta.";
+                        item.link = createOrderLink.Result.return_value;
+                    }
+                    catch
+                    {
+                        //TODO: Rever comportamento no caso de erro
+                        item.eReasonCode = 2;
+                        item.eMessage = "Não foi possivel abrir a Factura Nº De Encomenda:" + item.NumEncomenda;
+                    }
+                }
+                else
+                {
+                    item.Id = item.Id.Remove(0, 2);
+
+                }
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return item;
+        }
+
+        public BillingReceptionModel OpenOrderByBilling(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
+        {
+            if (item != null)
+            {
+             
+                Task<WSGenericCodeUnit.FxGetURLOrderRequisition_Result> createOrderBillingLinkTask = WSGeneric.GetOrderRequisition(item.Id, _configws);
+
+                createOrderBillingLinkTask.Wait();
+                if (createOrderBillingLinkTask.IsCompletedSuccessfully)
+                {
+
+                    try
+                    {
+                        item.eReasonCode = 1;
+                        item.eMessage = "Factura Aberta.";
+                        item.link = createOrderBillingLinkTask.Result.return_value;
+                    }
+                    catch
+                    {
+                        //TODO: Rever comportamento no caso de erro
+                        item.eReasonCode = 2;
+                        item.eMessage = "Não foi possivel abrir a Factura nº:"+ item.Id;
+                    }
+                }
+                else
+                {
+                    item.Id = item.Id.Remove(0, 2);
+
+                }
+              
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return item;
+        }
         private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;
@@ -518,6 +636,13 @@ namespace Hydra.Such.Portal.Services
             DateTime date = DateTime.Parse(item.DataDocFornecedor);
             var items = repo.GetByExternalDoc(item.NumDocFornecedor, date.Year, item.CodFornecedor);
             return items.Any();
+        }
+
+        public int GetWorkFlow(BillingReceptionModel item)
+        {
+
+            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetLastById(item.NumEncomenda);
+            return LastWork.Id;
         }
     }
 }

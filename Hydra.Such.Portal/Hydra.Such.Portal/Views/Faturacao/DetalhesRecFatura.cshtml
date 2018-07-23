@@ -134,6 +134,15 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateWorkFlow"
+                   last-response="{{ updatedItem }}"
+                   id="page_updateWork_ajax"
+                   on-response="_updateResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Faturacao/GetUserProfileById"
                    last-response="{{ userProfile }}"
                    id="get_userprofile_ajax"
@@ -160,14 +169,52 @@
         </iron-ajax>
 
         <iron-ajax url="/Faturacao/SetState"
-                   last-response="{{ setStateResponse }}"
+                   last-response="{{ updatedItem }}"
                    id="setState_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json"
-                   on-response="_setStateResponse">
+                   on-response="_updateResponse">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
+                   last-response="{{ getViewResponse }}"
+                   id="getHistory_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ getViewResponse }}"
+                   id="getPendingTotal_ajax"
+                   method="post"
+                   on-response="_getPendingTotalponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ getViewResponse }}"
+                   id="getPending_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/OpenOrderNav"
+                   last-response="{{ updatedItem }}"
+                   id="openEncomenda_ajax"
+                   on-response="_viewLinkResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/OpenOrderBillingNav"
+                   last-response="{{ updatedItem }}"
+                   id="openEncomendaFactura_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_viewLinkResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -182,10 +229,14 @@
                 <template is="dom-if" if="{{ _isCreditMemo }}">
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
-                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
-                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Aprovisionamentos" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Contabilidade" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
             </template>
+            <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
+            <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
             <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
+            <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
         </div>
 
         <div class="panel panel-default">
@@ -417,14 +468,15 @@
                             <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
                         </template>
                     </div>
-                    <div class="col-sm-3" hidden={{_isNotes}}>                        
+                    <div class="col-sm-3" hidden={{_isNotes}}>
                         <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
-                        <paper-button raised id="btnSendAnswer" class="btnSave"on-tap="_saveNote">Guardar</paper-button>
+                        <paper-button raised id="btnSendAnswer" class="btnSave" on-tap="_saveNote">Guardar</paper-button>
                     </div>
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _isNotes }}">
                             <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
+                            <paper-button raised id="btnReSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_resendUAS">Reenvio para UP/UAS</paper-button>
                         </template>
                     </div>
                 </div>
@@ -674,6 +726,238 @@
                     </div>
                 </div>
             </paper-dialog>
+
+
+            <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+            </paper-dialog>
+
+            <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
+                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="id" />
+                        </template>
+                        <template>
+                            {{item.id}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="tipoDocumento" />
+                        </template>
+                        <template>
+                            {{item.tipoDocumento}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="estado" />
+                        </template>
+                        <template>
+                            {{item.estado}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataRececao" />
+                        </template>
+                        <template>
+                            {{item.dataRececao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codFornecedor" />
+                        </template>
+                        <template>
+                            {{item.codFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numDocFornecedor" />
+                        </template>
+                        <template>
+                            {{item.numDocFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataDocFornecedor" />
+                        </template>
+                        <template>
+                            {{item.dataDocFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numEncomenda" />
+                        </template>
+                        <template>
+                            {{item.numEncomenda}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numEncomendaManual" />
+                        </template>
+                        <template>
+                            {{item.numEncomendaManual}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valorEncomendaOriginal" />
+                        </template>
+                        <template>
+                            {{item.valorEncomendaOriginal}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantidadeEncomenda" />
+                        </template>
+                        <template>
+                            {{item.quantidadeEncomenda}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantidadeRecebida" />
+                        </template>
+                        <template>
+                            {{item.quantidadeRecebida}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
+                        </template>
+                        <template>
+                            {{item.valorRecebidoNaoContabilizado}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valor" />
+                        </template>
+                        <template>
+                            {{item.valor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codRegiao" />
+                        </template>
+                        <template>
+                            {{item.codRegiao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codAreaFuncional" />
+                        </template>
+                        <template>
+                            {{item.codAreaFuncional}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codCentroResponsabilidade" />
+                        </template>
+                        <template>
+                            {{item.codCentroResponsabilidade}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codLocalizacao" />
+                        </template>
+                        <template>
+                            {{item.codLocalizacao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="local" />
+                        </template>
+                        <template>
+                            {{ item.local }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numAcordoFornecedor" />
+                        </template>
+                        <template>
+                            {{ item.numAcordoFornecedor }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="destinatario">Destinatario</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="destinatario" />
+                        </template>
+                        <template>
+                            {{ item.destinatario }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaPendente" />
+                        </template>
+                        <template>
+                            {{ item.areaPendente }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataUltimaInteracao" />
+                        </template>
+                        <template>
+                            {{ item.dataUltimaInteracao }}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+                <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
+
+            </paper-dialog>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -746,7 +1030,7 @@
                     },
                     _nameButtonSend: {
                         type: String,
-                        value: "Enviar Pendente",
+                        value: "Env. Pendente",
                     },
                     _isInvoice: {
                         type: Boolean,
@@ -782,7 +1066,7 @@
                     },
                     _accountingMenuItems: {
                         type: Array,
-                        value: [{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 1, description: "Pendente" }],
+                        value: [{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 1, description: "Pendente" }, { value: 5, description: "Resolvido" }],
                     },
                     _provisioningMenuItems: {
                         type: Array,
@@ -834,32 +1118,36 @@
                             this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         //Botão Resposta
-                        debugger;
-                        if (this.data.estado == 1) {
-                            debugger;
-                            this._nameButtonSend = "Enviar";
-                            if (this.data.areaPendente2 == "Contabilidade") {
-                                this._hiddeAnswerButton = true;
-                            } else if (this.data.areaPendente2 == "Aprovisionamento") {
-                                if (this._rfperfil == "Aprovisionamento") {
-                                    this._hiddeAnswerButton = false;
-                                }
-                            } else {
-                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
-
-                                    this._hiddeAnswerButton = false;
-                                }
-                            }
-                            //QUESTÂO
-                            if (this._rfperfil == "Contabilidade") {
-
-                                this._hiddeSendButton = true;
-                            }
-                            //para testes
-                            this._hiddeSendButton = true;
-                        }
+                        this._hiddeButtons();
                     }
                 },
+
+                _hiddeButtons: function () {
+                    debugger;
+                    if (this.data.estado == 1) {
+                        this._nameButtonSend = "Enviar";
+                        if (this.data.areaPendente2 == "Contabilidade") {
+                            this._hiddeAnswerButton = true;
+                        } else if (this.data.areaPendente2 == "Aprovisionamento") {
+                            if (this._rfperfil == "Aprovisionamento") {
+                                this._hiddeAnswerButton = false;
+                            }
+                        } else {
+                            if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+
+                                this._hiddeAnswerButton = false;
+                            }
+                        }
+                        //QUESTÂO
+                        if (this._rfperfil == "Contabilidade") {
+
+                            this._hiddeSendButton = true;
+                        }
+                        //para testes
+                        this._hiddeSendButton = true;
+                    }
+                },
+
                 _supplierSelected: function (e) {
                     this._loadOrders(e.detail.value);
                 },
@@ -880,6 +1168,7 @@
                     }
                     return false;
                 },
+
                 _clFormatDateWorkflow: function (param) {
                     if (param != undefined) {
                         var data = new Date(param);
@@ -891,7 +1180,7 @@
                     return "";
                 },
                 _validateInputForAccounting: function () {
-                    if (this._validateInputForNew()) {
+                   // if (this._validateInputForNew()) { ver com o joao
                         if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
                             var selState = this.States.find(x => x.id == this.data.estado);
                             var stateDescription = selState != null ? selState.value : this.data.estado;
@@ -915,9 +1204,9 @@
                             return false;
                         }
                         return true;
-                    }
-                    this._openToastError("Verifique os dados inseridos.");
-                    return false;
+                 //   }
+                    //this._openToastError("Verifique os dados inseridos.");
+                    //return false;
                 },
                 _validateInputForAnswer: function () {
                     if (this.data.estado == null || this.data.estado == "") {
@@ -986,6 +1275,7 @@
                     }
                 },
                 _updateResponse: function (e) {
+                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
@@ -1011,6 +1301,7 @@
                         this._openToastError("O servidor não conseguiu processar o pedido.");
                     }
                     this.$.dialogSendPeding.close();
+                    this._hiddeButtons();
                 },
 
                 _responseValidatorProcessor: function (data) {
@@ -1033,8 +1324,7 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) {
-                    debugger;
+                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
                     if (this._isCreate &&
                         date != undefined &&
                         date != "" &&
@@ -1192,12 +1482,20 @@
                 },
 
                 _sendaAnswer: function () {
-                    debugger;
                     this.$.dialogSendAnswer.open();
                     var data = this.data;
                     this.$.respostasPerfil_ajax.body = JSON.stringify(data);
                     this.$.respostasPerfil_ajax.generateRequest();
                 },
+
+                _resendUAS: function () {
+                    debugger;
+                    this.$.dialogReSendUAS.open();
+                    var data = this.data;
+                    this.$.respostasPerfil_ajax.body = JSON.stringify(data);
+                    this.$.respostasPerfil_ajax.generateRequest();
+                },
+                
 
 
                 _postInvoiceCF: function () {
@@ -1222,8 +1520,8 @@
                     }
                 },
                 _dlgSendAnswer: function () {
-                    debugger;
                     if (this._validateInputForAnswer()) {
+                        debugger;
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
 
@@ -1238,25 +1536,22 @@
                         this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
                         this.$.get_userprofile_ajax.generateRequest();
                         //**/
-
-                        var Area = idWork.areaPendente2;
-
-
+                        var userProfile = this.userProfile;
+                        var Area = idWork.area;
+                        
                         var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
                             idRecFaturacao: this.data.id,
-                            codTipoProblema: this.$.cmbProblemas.value,
+                            codTipoProblema: idmotivo,
                             codProblema: motivoExtra,
                             descricao: this.$.txtdescricaoResposta.value,
-
                             //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
                             destinatario: novoDestino,
-
                             comentario: this.$.txtCommentdglAnswer.value,
                             enderecoFornecedor: selVendor.email,
-                            area: Area.value,
-                            areaWorkflow: this.userProfile,
+                            area: userProfile,
+                            areaWorkflow: userProfile,
                             codDestino: this.$.txtCodDestino.value,
                             attached: this.Anexos
                         };
@@ -1264,6 +1559,8 @@
                         this.data.workflowItems.push(workflow);
                         this.$.page_send_ajax.body = JSON.stringify(this.data);
                         this.$.page_send_ajax.generateRequest();
+
+                        this.$.dialogSendAnswer.close();
                     }
 
                 },
@@ -1282,25 +1579,27 @@
                     this.$.txtDescricaoAnexo.value = "";
                  },
                 _dlgSend: function () {
-                    debugger;
-                    if (this._validateInputForAccounting()) {
-
-                            var txt;
-                            if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
-                                txt = true;
-                            } else {
-                                txt = false;
-                            }
+                    var validar = false;// caso ja seja pendente
+                    if (this.data.estado == 1) {
+                        validar = true;
+                    }else if (this._validateInputForAccounting()) {
+                        validar = true;
+                    }
+                    if (validar == true) {
+                        var txt;
+                        if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                            txt = true;
+                        } else {
+                            txt = false;
+                        }
 
                         if (txt == true) {
-                            var workflow = null;;
-                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-
+                            var workflow = null;
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
                                 workflow = {
-                                    id: idWork.id + 1,
+                                    id: 0,
                                     idRecFaturacao: this.data.id,
                                     codTipoProblema: this.$.cmbProblemas.value,
                                     codProblema: "RF1P",
@@ -1316,7 +1615,7 @@
                             }
                             else {
                                 workflow = {
-                                    id: idWork.id + 1,
+                                    id: 0,
                                     idRecFaturacao: this.data.id,
                                     codTipoProblema: this.$.cmbMotivos.value,
                                     codProblema: "RF4P",
@@ -1359,6 +1658,25 @@
                     var link = "../../FacturasFornecedor/" + ano + mes + "/" + pdfName;
                     window.open(link);
                 },
+                _viewLinkResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.updatedItem.eReasonCode == "1") {
+                            this._openToast(this.updatedItem.eMessage);
+                            this.data = this.updatedItem;
+                            if (this.data.link != null) {
+                                var link = this.data.link;
+                                window.open(link);
+                            }
+                        }
+                        else {
+                            this._openToastError(this.updatedItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                    
+                },
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -1370,8 +1688,37 @@
                 },
                 _saveNote: function (e) {
                     this._isNotes = true;
+                    var workflow = null;;
+                    var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
+                    var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                    workflow = {
+                        id: 0,
+                        idRecFaturacao: this.data.id,
+                        descricao: "*Anotação",
+                        comentario: this.$.txtComment.value,
+                        codDestino: this.$.txtCodDestino.value,
+                    };
+                    this.Anexos = null;
+                    this.data.workflowItems.push(workflow);
+                    this.$.page_updateWork_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updateWork_ajax.generateRequest();
+                
 
 
+                }, 
+                _provisioningOptionSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                            break;
+                    }
                 },
                 _accountingOptionSelected: function (e) {
                     if (e.detail.value == 0)
@@ -1380,21 +1727,53 @@
 
                     if (item == null)
                         return;
-
-                    switch (item.value) {
+                    switch (item.value) {          
                         case 1:
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
                         case 2:
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
                         case 4:
-                            this.data.state = item.value;
+                            this.data.estado = item.value;
+                            this.$.setState_ajax.body = JSON.stringify(this.data);
+                            this.$.setState_ajax.generateRequest();
+                            break;
+                        case 5:
+                            this.data.estado = item.value;
                             this.$.setState_ajax.body = JSON.stringify(this.data);
                             this.$.setState_ajax.generateRequest();
                             break;
                     }
                 },
-                _setStateResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        //check setStateResponse
+               
+                _openHistory: function (e) {
+                    this.getViewResponse = null;
+                    this.$.dialogViewHist_Pending.open();
+                    this.$.getHistory_ajax.body = JSON.stringify(this.data);
+                    this.$.getHistory_ajax.generateRequest();
+                },
+                _openPending: function (e) {
+                    this.getViewResponse = null;
+                    this.$.dialogViewHist_Pending.open();
+                    this.$.getPending_ajax.body = JSON.stringify(this.data);
+                    this.$.getPending_ajax.generateRequest();
+                },
+                _openNEncomenda: function (e) {
+                    if (this.$.sbOrders.value != null && this.$.sbOrders.value != "") {
+                        this.$.openEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.openEncomenda_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não existe Nº de Encomenda!");
                     }
+                },
+                _openRequisicao: function (e) {
+                    this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
+                    this.$.openEncomendaFactura_ajax.generateRequest();
                 },
             });
         });

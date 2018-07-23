@@ -72,10 +72,27 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+      
 
         public JsonResult GetBillingReceptions()
         {
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
+            return Json(billingReceptions);
+        }
+        public JsonResult GetBillingReceptionsHistory()
+        {
+
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name,0, areaPendente);
+            return Json(billingReceptions);
+        }
+        public JsonResult GetBillingReceptionsPending()
+        {
+
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name, 1, areaPendente);
             return Json(billingReceptions);
         }
 
@@ -176,6 +193,8 @@ namespace Hydra.Such.Portal.Controllers
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
                 item.WorkflowItems.Add(workflow);
+                item.AreaUltimaInteracao = workflow.AreaWorkflow;
+                item.UserUltimaInteracao = workflow.CriadoPor;
 
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                 if (updatedItem != null)
@@ -198,7 +217,42 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
-    
+        [HttpPost]
+        public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
+        {
+
+            BillingReceptionModel updatedItem = null;
+            if (item != null)
+            {               
+                item.ModificadoPor = User.Identity.Name;
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                workflow.DataCriacao = DateTime.Now;
+                workflow.IdRecFaturacao = item.Id;
+                item.WorkflowItems.Add(workflow);
+                
+                updatedItem = billingRecService.UpdateWorkFlow(item, workflow, User.Identity.Name);
+                if (updatedItem != null)
+                {
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo atualizado com sucesso";
+                    item = updatedItem;
+
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+
+                }
+            }
+            else
+            {
+                item = new BillingReceptionModel();
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
+        }
         //CF ou CP ou CC opc
         [HttpPost]
         public JsonResult PostDocument([FromBody] BillingReceptionModel item)
@@ -218,6 +272,40 @@ namespace Hydra.Such.Portal.Controllers
             return Json(item);
         }
 
+        [HttpPost]
+        public JsonResult OpenOrderNav([FromBody] BillingReceptionModel item)
+        {
+            BillingReceptionModel postedDocument;
+            if (item != null)
+            {
+                postedDocument = billingRecService.OpenOrder(item, User.Identity.Name, _config, _configws);
+                item = postedDocument;
+            }
+            else
+            {
+                item = new BillingReceptionModel();
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
+        }
+        [HttpPost]
+        public JsonResult OpenOrderBillingNav([FromBody] BillingReceptionModel item)
+        {
+            BillingReceptionModel postedDocument;
+            if (item != null)
+            {
+                postedDocument = billingRecService.OpenOrderByBilling(item, User.Identity.Name, _config, _configws);
+                item = postedDocument;
+            }
+            else
+            {
+                item = new BillingReceptionModel();
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(item);
+        }
         [HttpPost]
         public ActionResult DocumentIsDigitized([FromBody] BillingReceptionModel item)
         {
@@ -447,11 +535,82 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpGet]
+        //[HttpGet]
+        //public JsonResult GetUserProfileById([FromBody] string user)
+        //{
+        //    int userProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
+        //    return Json(userProfile);
+        //}
+        [HttpPost]
         public JsonResult SetState([FromBody] BillingReceptionModel item)
         {
-            //set state
+            BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+            item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+
+            BillingReceptionModel updatedItem = null;
+            if (item != null)
+            {
+                
+                if (item.Estado==BillingReceptionStates.Pendente)
+                {
+                    item.DataResolucao = null;
+                    item.AreaPendente2 = "";
+                    item.Destinatario = "";
+                    item.AreaPendente = "Contabilidade";
+                    item.IdAreaPendente = BillingReceptionAreas.Contabilidade;
+                    item.AreaUltimaInteracao = "Contabilidade";
+                    item.UserUltimaInteracao = workflow.CriadoPor;
+                }
+                else if(item.Estado == BillingReceptionStates.Resolvido || item.Estado == BillingReceptionStates.Contabilizado || item.Estado == BillingReceptionStates.SemEfeito)
+                {
+                    item.AreaPendente = "";
+                    item.AreaPendente2 = "";
+                    item.Destinatario = "";
+                    item.TipoProblema = "";
+                    item.Descricao = "";
+                    item.DescricaoProblema = "";
+                    item.AreaPendente = "Contabilidade";
+                    item.AreaUltimaInteracao = "Contabilidade";
+                    item.UserUltimaInteracao = workflow.CriadoPor;
+                    item.IdAreaPendente = BillingReceptionAreas.Contabilidade;
+                    item.DataResolucao = DateTime.Now.ToString("dd/MM/yyyy");
+                }
+               
+                item.ModificadoPor = User.Identity.Name;
+                if(item.Estado == BillingReceptionStates.Resolvido)
+                    workflow.Descricao = BillingReceptionStates.Resolvido.ToString();
+                else
+                   workflow.Descricao = "Alteração MANUAL para o estado " + item.Estado;
+
+
+                workflow.Estado = item.Estado;
+                workflow.DataCriacao = DateTime.Now;
+                workflow.IdRecFaturacao = item.Id;
+                item.DescricaoProblema = workflow.Descricao;
+                item.WorkflowItems.Add(workflow);
+
+                updatedItem = billingRecService.UpdateWorkFlow(item, workflow, User.Identity.Name);
+                if (updatedItem != null)
+                {
+                    updatedItem.eReasonCode = 1;
+                    updatedItem.eMessage = "Registo atualizado para "+  item.Estado + " com sucesso";
+                    item = updatedItem;
+
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+
+                }
+            }
+            else
+            {
+                item = new BillingReceptionModel();
+                item.eReasonCode = 2;
+                item.eMessage = "O registo não pode ser nulo";
+            }
             return Json(item);
+
         }
     }
 }
