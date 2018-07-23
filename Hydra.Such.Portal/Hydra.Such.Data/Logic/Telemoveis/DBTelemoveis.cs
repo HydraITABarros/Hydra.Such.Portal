@@ -360,6 +360,8 @@ namespace Hydra.Such.Data.Logic.Telemoveis
         {
             decimal _Consumo = 0;
             string _Marca = string.Empty;
+            List<TelemoveisMovimentosView> Objecto_Lista_Movimentos = new List<TelemoveisMovimentosView>();
+
 
             if (ObjectToTransform != null)
             {
@@ -371,6 +373,7 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                     foreach (var mov in list)
                     {
                         _Consumo += mov.ValorComIva;
+                        Objecto_Lista_Movimentos.Add(CastTelemoveisMovimentosToView(mov));
                     }
 
                     _Marca = _context.TelemoveisEquipamentos.Where(e => e.Imei == ObjectToTransform.Imei).FirstOrDefault().Marca.ToString();
@@ -430,7 +433,8 @@ namespace Hydra.Such.Data.Logic.Telemoveis
                 DataAtribuicao_Show = ObjectToTransform.DataAtribuicao == null ? "" : ObjectToTransform.DataAtribuicao.Value.ToString("yyyy-MM-dd"),
                 EquipamentoNaoDevolvido_Show = ObjectToTransform.EquipamentoNaoDevolvido == 0 ? false : true,
                 Marca_Show = _Marca,
-                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd")
+                DataAlteracao_Show = ObjectToTransform.DataAlteracao == null ? "" : ObjectToTransform.DataAlteracao.Value.ToString("yyyy-MM-dd"),
+                TelemoveisMovimentos_List = Objecto_Lista_Movimentos
             };
 
             return view;
@@ -438,5 +442,54 @@ namespace Hydra.Such.Data.Logic.Telemoveis
 
         #endregion
 
+        #region TELEMOVEIS MOVIMENTOS
+        #region CRUD
+        /// <summary>
+        /// Lista de todos os registos (Movimentos de um cartão)
+        /// </summary>
+        /// <param name="numCartao"></param>
+        /// <returns></returns>
+        public static List<TelemoveisMovimentos> GetTelemoveisMovimentos(string numCartao)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.TelemoveisMovimentos.Where(p => p.NumCartao == numCartao).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        #endregion
+
+
+        public static TelemoveisMovimentosView CastTelemoveisMovimentosToView(TelemoveisMovimentos ObjectToTransform)
+        {
+            TelemoveisMovimentosView view = new TelemoveisMovimentosView()
+            {
+                NumMovimento = ObjectToTransform.NumMovimento,
+                NumCartao = ObjectToTransform.NumCartao,
+                Data = ObjectToTransform.Data,
+                NumFactura = ObjectToTransform.NumFactura,
+                ValorComIva = ObjectToTransform.ValorComIva,
+                DataFactura = ObjectToTransform.DataFactura,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                Utilizador = ObjectToTransform.Utilizador,
+                DataRegisto = ObjectToTransform.DataRegisto,
+                NumDocumento = ObjectToTransform.NumDocumento,
+                Valor = ObjectToTransform.Valor,
+                DataFactura_Show = ObjectToTransform.DataFactura == null ? "" : ObjectToTransform.DataFactura.ToString("yyyy-MM-dd"),
+                DataRegisto_Show = ObjectToTransform.DataRegisto == null ? "" : ObjectToTransform.DataRegisto.ToString("yyyy-MM-dd")
+            };
+
+            return view;
+        }
+
+        #endregion
     }
 }
