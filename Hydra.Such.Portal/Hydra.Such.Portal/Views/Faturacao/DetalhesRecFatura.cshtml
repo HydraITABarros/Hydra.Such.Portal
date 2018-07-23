@@ -1593,17 +1593,22 @@
                     this.$.txtDescricaoAnexo.value = "";
                  },
                 _dlgSend: function () {
-                    if (this._validateInputForAccounting()) {
-
-                            var txt;
-                            if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
-                                txt = true;
-                            } else {
-                                txt = false;
-                            }
+                    var validar = false;// caso ja seja pendente
+                    if (this.data.estado == 1) {
+                        validar = true;
+                    }else if (this._validateInputForAccounting()) {
+                        validar = true;
+                    }
+                    if (validar == true) {
+                        var txt;
+                        if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                            txt = true;
+                        } else {
+                            txt = false;
+                        }
 
                         if (txt == true) {
-                            var workflow = null;                            
+                            var workflow = null;
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             if (this._isInternalDestination == true) {
