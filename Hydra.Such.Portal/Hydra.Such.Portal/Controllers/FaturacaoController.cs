@@ -78,6 +78,22 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
+        public JsonResult GetBillingReceptionsHistory()
+        {
+
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name,0, areaPendente);
+            return Json(billingReceptions);
+        }
+        public JsonResult GetBillingReceptionsPending()
+        {
+
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name, 1, areaPendente);
+            return Json(billingReceptions);
+        }
 
         [HttpGet]
         public JsonResult GetBillingReception(string id)

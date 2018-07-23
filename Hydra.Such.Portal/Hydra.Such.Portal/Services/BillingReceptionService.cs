@@ -119,7 +119,24 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+        public List<BillingReceptionModel> GetAllForUserHistPending(string userName,int option,BillingReceptionAreas perfil)
+        {
+            var billingReceptions = repo.GetAll(option, perfil);
 
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+
+            return billingReceptions;
+        }
         public BillingReceptionModel GetById(string id)
         {
 

@@ -142,7 +142,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
         <iron-ajax url="/Faturacao/GetUserProfileById"
                    last-response="{{ userProfile }}"
                    id="get_userprofile_ajax"
@@ -176,6 +176,20 @@
                    content-type="application/json"
                    on-response="_setStateResponse">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
+                   last-response="{{ getViewResponse }}"
+                   id="getHistory_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ getViewResponse }}"
+                   id="getPending_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -196,7 +210,7 @@
             </template>
             <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
             <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
-            <paper-button class="tablinks" on-tap="_openPen"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
+            <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
         </div>
 
         <div class="panel panel-default">
@@ -428,9 +442,9 @@
                             <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
                         </template>
                     </div>
-                    <div class="col-sm-3" hidden={{_isNotes}}>                        
+                    <div class="col-sm-3" hidden={{_isNotes}}>
                         <paper-button raised id="btnSendPending" class="btnSave" on-tap="_cancelNote">Cancelar</paper-button>
-                        <paper-button raised id="btnSendAnswer" class="btnSave"on-tap="_saveNote">Guardar</paper-button>
+                        <paper-button raised id="btnSendAnswer" class="btnSave" on-tap="_saveNote">Guardar</paper-button>
                     </div>
                     <div class="col-sm-3">
                         <template is="dom-if" if="{{ _isNotes }}">
@@ -451,203 +465,136 @@
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
 
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.dataCriacao}}
-                                </template>
                             </template>
-                        </vaadin-grid-column>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.dataCriacao}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
-                            </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="areaWorkflow">Área</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaWorkflow"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
 
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.areaWorkflow}}
-                                </template>
                             </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.areaWorkflow}}
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.destinatario}}
-                                </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.destinatario}}" id="txtDestinatarioGrid" name="txtDestinatarioGrid" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="codTipoProblema" />
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.destinatario}}
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.codTipoProblema}}
-                                </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codTipoProblema">Código</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codTipoProblema" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
                             </template>
-                        </vaadin-grid-column>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.codTipoProblema}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
 
-                        <vaadin-grid-column width="160px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
-                            <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.descricao}}" id="txtDescricao" name="txtDescricao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.descricao}}
-                                </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.descricao}}
                             </template>
-                        </vaadin-grid-column>
+                        </template>
+                    </vaadin-grid-column>
 
-                        <vaadin-grid-column width="200px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="comentario" />
+                    <vaadin-grid-column width="200px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="comentario">Comentários</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="comentario" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.comentario}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+                <div class="row break_clear" hidden>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                    <div class="col-sm-2">
+                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
+                    </div>
+                </div>
+            </div>
+
+            <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatarios" item-value-path="id" item-label-path="value" value="{{_destinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
                             <template>
-                                <template is="dom-if" if="{{ item.selected }}">
-                                    <vaadin-text-field value="{{item.comentario}}" id="txtComentario" name="txtComentario" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </template>
-                                <template is="dom-if" if="{{ !item.selected }}">
-                                    {{item.comentario}}
-                                </template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
                             </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
-                    <div class="row break_clear" hidden>
-                        <div class="col-sm-2">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </div>
-                        <div class="col-sm-2">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </div>
-                        <div class="col-sm-2">
-                            <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                        </div>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
                     </div>
                 </div>
 
-                <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
-                    <div class="row break_clear">
+                <div class="row break_clear">
+
+                    <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
+                        <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6" hidden="{{ _isInternalDestination }}">
+                        <vaadin-text-field label=" " type="text" value="" id="txtmotivo"></vaadin-text-field>
+                    </div>
+                    <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[TiposDestinatarios]]" id="cmbDestinatarios" item-value-path="id" item-label-path="value" value="{{_destinatario}}" label="Destinatário" on-value-changed="_destinationTypeChanged">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-sm-6">
-                            <vaadin-text-field label=" " type="text" value="" id="txtFornecedor" hidden="{{ _isInternalDestination }}" disabled></vaadin-text-field>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-
-                        <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
-                            <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.id]]</div>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-                        <div class="col-sm-6" hidden="{{ _isInternalDestination }}">
-                            <vaadin-text-field label=" " type="text" value="" id="txtmotivo"></vaadin-text-field>
-                        </div>
-                        <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.id]]</div>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field label=" " value="{{_descricaoProblema}}" type="text" id="txtdescricaoProblema"></vaadin-text-field>
-                            </div>
-                        </div>
-                        <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field label=" " type="text" id="txtdestinatarioArea"></vaadin-text-field>
-                                <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-9">
-                            <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
-                        </div>
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                            <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                            <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
-                        </div>
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                            <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="buttons">
-                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                            <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
-                        </div>
-                    </div>
-                </paper-dialog>
-
-                <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -659,78 +606,358 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-6">
-                            <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
+                            <vaadin-text-field label=" " value="{{_descricaoProblema}}" type="text" id="txtdescricaoProblema"></vaadin-text-field>
                         </div>
                     </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-9">
-                            <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
+                    <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
-                        </div>
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                            <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                            <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="buttons">
-                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                            <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
-                        </div>
-                    </div>
-                </paper-dialog>
-
-
-                <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.id]]</div>
                                             <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
                             </vaadin-combo-box>
                         </div>
-                        <div class="col-sm-6">
-                            <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-9">
-                            <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
+                            <vaadin-text-field label=" " type="text" id="txtdestinatarioArea"></vaadin-text-field>
+                            <vaadin-text-field label=" " type="text" id="txtCodDestino" hidden></vaadin-text-field>
                         </div>
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                            <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
+                        <div class="col-sm-3">
+                            <vaadin-text-field label=" " type="text" id="txtArea2"></vaadin-text-field>
                         </div>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdgl" name="txtCommentdgl" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
+                    </div>
 
-                        <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                            <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
-                        </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
-                    <div class="row break_clear">
-                        <div class="buttons">
-                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                            <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
-                        </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
                     </div>
-                </paper-dialog>
-            </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
+
+            <paper-dialog id="dialogSendAnswer" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
+                    </div>
+
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
+
+
+            <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
+                    </div>
+
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
+                    </div>
+                </div>
+            </paper-dialog>
+            <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
+                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="id" />
+                        </template>
+                        <template>
+                            {{item.id}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="tipoDocumento" />
+                        </template>
+                        <template>
+                            {{item.tipoDocumento}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="estado" />
+                        </template>
+                        <template>
+                            {{item.estado}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataRececao" />
+                        </template>
+                        <template>
+                            {{item.dataRececao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codFornecedor" />
+                        </template>
+                        <template>
+                            {{item.codFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numDocFornecedor" />
+                        </template>
+                        <template>
+                            {{item.numDocFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataDocFornecedor" />
+                        </template>
+                        <template>
+                            {{item.dataDocFornecedor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numEncomenda" />
+                        </template>
+                        <template>
+                            {{item.numEncomenda}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numEncomendaManual" />
+                        </template>
+                        <template>
+                            {{item.numEncomendaManual}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valorEncomendaOriginal" />
+                        </template>
+                        <template>
+                            {{item.valorEncomendaOriginal}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantidadeEncomenda" />
+                        </template>
+                        <template>
+                            {{item.quantidadeEncomenda}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantidadeRecebida" />
+                        </template>
+                        <template>
+                            {{item.quantidadeRecebida}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
+                        </template>
+                        <template>
+                            {{item.valorRecebidoNaoContabilizado}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valor" />
+                        </template>
+                        <template>
+                            {{item.valor}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codRegiao" />
+                        </template>
+                        <template>
+                            {{item.codRegiao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codAreaFuncional" />
+                        </template>
+                        <template>
+                            {{item.codAreaFuncional}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codCentroResponsabilidade" />
+                        </template>
+                        <template>
+                            {{item.codCentroResponsabilidade}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codLocalizacao" />
+                        </template>
+                        <template>
+                            {{item.codLocalizacao}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="local" />
+                        </template>
+                        <template>
+                            {{ item.local }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="numAcordoFornecedor" />
+                        </template>
+                        <template>
+                            {{ item.numAcordoFornecedor }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="destinatario">Destinatario</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="destinatario" />
+                        </template>
+                        <template>
+                            {{ item.destinatario }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaPendente" />
+                        </template>
+                        <template>
+                            {{ item.areaPendente }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataUltimaInteracao" />
+                        </template>
+                        <template>
+                            {{ item.dataUltimaInteracao }}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+                <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
+
+            </paper-dialog>
+        </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
@@ -921,6 +1148,7 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
+                    debugger;;
                     if (this.$.cmbDocumentTypes.validate()) {
                         if (this._docIsValid) {
                             return true;
@@ -1465,6 +1693,17 @@
                         //check setStateResponse
                     }
                 },
+                _openHistory: function (e) {
+                    this.$.dialogViewHist_Pending.open();
+                    this.$.getHistory_ajax.body = JSON.stringify(this.data);
+                    this.$.getHistory_ajax.generateRequest();
+                },
+                _openPending: function (e) {
+                    this.$.dialogViewHist_Pending.open();
+                    this.$.getPending_ajax.body = JSON.stringify(this.data);
+                    this.$.getPending_ajax.generateRequest();
+                },
+
             });
         });
     </script>
