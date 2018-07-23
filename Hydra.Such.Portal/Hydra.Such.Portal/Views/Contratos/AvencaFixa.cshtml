@@ -321,7 +321,7 @@
                 },
 
                 _invoiceCountResponse: function (e) {
-                    if (e.returnValue == true) {
+                    if (this.invoiceCount == true) {
                         this.$.avencaFixaTable.clearCache();
                         this.openToastSuccess("Faturas contabilizadas com sucesso.");
                     }

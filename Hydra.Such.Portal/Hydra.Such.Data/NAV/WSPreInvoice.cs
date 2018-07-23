@@ -133,7 +133,10 @@ namespace Hydra.Such.Data.NAV
                     Shipment_Date = now,
                     Shipment_DateSpecified = true,
                     Shipment_Start_Time = now.AddHours(1),
-                    Shipment_Start_TimeSpecified = true
+                    Shipment_Start_TimeSpecified = true,
+                    Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
+                    Document_TypeSpecified = true
+
                 }
             };
 

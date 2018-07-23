@@ -973,8 +973,9 @@ namespace Hydra.Such.Portal.Controllers
                 String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
 
                 // Valor Fatura
+            
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
-                Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+                Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
 
                 result.Add(new FaturacaoContratosViewModel
                 {
@@ -1009,9 +1010,9 @@ namespace Hydra.Such.Portal.Controllers
                 
                     String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
 
-                    // Valor Fatura
-                    List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
-                    Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+                // Valor Fatura
+                List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
+                    Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
 
                     result.Add(new FaturacaoContratosViewModel
                     {
@@ -1044,6 +1045,7 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
+                
                 List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
 
@@ -1308,7 +1310,7 @@ namespace Hydra.Such.Portal.Controllers
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
                     InvoiceHeader.Wait();
 
-                    if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null)
+                    if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
                     {
                         String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                         List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
@@ -1318,20 +1320,20 @@ namespace Hydra.Such.Portal.Controllers
                             Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                             InvoiceLines.Wait();
 
-                            if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
-                            {
-                                Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-                                postNAV.Wait();
+                            //if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
+                            //{
+                            //    //Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                            //    //postNAV.Wait();
 
-                                if (!postNAV.IsCompletedSuccessfully || postNAV == null)
-                                {
-                                    return Json(false);
-                                }
-                            }
-                            else
-                            {
-                                return Json(false);
-                            }
+                            //    if (!postNAV.IsCompletedSuccessfully || postNAV == null)
+                            //    {
+                            //        return Json(false);
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    return Json(false);
+                            //}
                         }
                     }
                     else
