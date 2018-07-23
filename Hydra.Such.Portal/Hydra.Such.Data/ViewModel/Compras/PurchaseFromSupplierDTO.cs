@@ -17,6 +17,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }
+        public string LocalMarketRegion { get; set; }
 
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
@@ -41,5 +42,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? OpenOrderLineNo { get; set; }
         public string PurchOrderFitId { get; set; }
         public string PurchOrderCommitmentId { get; set; }
+        public string UnitMeasureCode { get; set; }
+        public string RegionCode { get; set; }
+        public string FunctionalAreaCode { get; set; }
+        public string CenterResponsibilityCode { get; set; }
     }
 }

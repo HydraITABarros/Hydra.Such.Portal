@@ -868,7 +868,6 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(data);
                         }
                     }
-
                    
                     List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
@@ -1004,7 +1003,7 @@ namespace Hydra.Such.Portal.Controllers
                         }).ToList();
 
                     //Criar Anexos
-                    data = CopyAttachments(newlistOpenOrder, data);
+                    data = CopyAttachments(newlist, data);
                 }
             }
             catch (Exception ex)
@@ -1107,7 +1106,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                
             }
-            if (totalItems == newlist.Count)
+            if (newlist.Count > 0 && totalItems == newlist.Count)
             {
                 //if all items have been created delete pre-requisition lines
                 DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
