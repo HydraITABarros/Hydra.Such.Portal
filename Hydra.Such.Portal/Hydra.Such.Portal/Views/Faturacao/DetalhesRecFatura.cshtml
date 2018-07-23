@@ -1055,7 +1055,7 @@
                     },
                     _nameButtonSend: {
                         type: String,
-                        value: "Enviar Pendente",
+                        value: "Env. Pendente",
                     },
                     _isInvoice: {
                         type: Boolean,
@@ -1157,14 +1157,14 @@
                                     this._hiddeAnswerButton = false;
                                 }
                             }
-                            //QUESTÂO
-                            if (this._rfperfil == "Contabilidade") {
+                                                    
+                        }
+                        //QUESTÂO
+                        if (this._rfperfil == "Contabilidade") {
 
-                                this._hiddeSendButton = true;
-                            }
-                            //para testes
                             this._hiddeSendButton = true;
                         }
+
                     }
                 },
                 _supplierSelected: function (e) {
@@ -1766,11 +1766,13 @@
                 },
                
                 _openHistory: function (e) {
+                    this.getViewResponse = null;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getHistory_ajax.body = JSON.stringify(this.data);
                     this.$.getHistory_ajax.generateRequest();
                 },
                 _openPending: function (e) {
+                    this.getViewResponse = null;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getPending_ajax.body = JSON.stringify(this.data);
                     this.$.getPending_ajax.generateRequest();

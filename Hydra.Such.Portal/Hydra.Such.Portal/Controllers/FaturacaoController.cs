@@ -193,6 +193,8 @@ namespace Hydra.Such.Portal.Controllers
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
                 item.WorkflowItems.Add(workflow);
+                item.AreaUltimaInteracao = workflow.AreaWorkflow;
+                item.UserUltimaInteracao = workflow.CriadoPor;
 
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                 if (updatedItem != null)
@@ -556,6 +558,8 @@ namespace Hydra.Such.Portal.Controllers
                     item.Destinatario = "";
                     item.AreaPendente = "Contabilidade";
                     item.IdAreaPendente = BillingReceptionAreas.Contabilidade;
+                    item.AreaUltimaInteracao = "Contabilidade";
+                    item.UserUltimaInteracao = workflow.CriadoPor;
                 }
                 else if(item.Estado == BillingReceptionStates.Resolvido || item.Estado == BillingReceptionStates.Contabilizado || item.Estado == BillingReceptionStates.SemEfeito)
                 {
@@ -566,6 +570,8 @@ namespace Hydra.Such.Portal.Controllers
                     item.Descricao = "";
                     item.DescricaoProblema = "";
                     item.AreaPendente = "Contabilidade";
+                    item.AreaUltimaInteracao = "Contabilidade";
+                    item.UserUltimaInteracao = workflow.CriadoPor;
                     item.IdAreaPendente = BillingReceptionAreas.Contabilidade;
                     item.DataResolucao = DateTime.Now.ToString("dd/MM/yyyy");
                 }
