@@ -1167,7 +1167,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         List<LinhasRequisição> LinhasRequisicao = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x =>
                             x.MercadoLocal == true &&
-                            x.ValidadoCompras == false &&
+                            (x.ValidadoCompras == null || x.ValidadoCompras == false) &&
                             x.QuantidadeRequerida > 0).ToList();
 
                         if (LinhasRequisicao != null && LinhasRequisicao.Count() > 0)
@@ -1195,7 +1195,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                 Compras Compra = new Compras
                                 {
-                                    CodigoProduto = Linha.CódigoProdutoFornecedor,
+                                    CodigoProduto = Linha.Código,
                                     Descricao = Linha.Descrição,
                                     CodigoUnidadeMedida = Linha.CódigoUnidadeMedida,
                                     Quantidade = Linha.QuantidadeRequerida,
@@ -1215,6 +1215,9 @@ namespace Hydra.Such.Portal.Controllers
                                 if (CompraReq != null)
                                 {
                                     Linha.IdCompra = CompraReq.Id;
+                                    Linha.ValidadoCompras = true;
+                                    Linha.UtilizadorModificação = User.Identity.Name;
+                                    Linha.DataHoraModificação = DateTime.Now;
 
                                     if (DBRequestLine.Update(Linha) == null)
                                     {

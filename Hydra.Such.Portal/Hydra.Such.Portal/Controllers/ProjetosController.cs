@@ -3417,5 +3417,187 @@ namespace Hydra.Such.Portal.Controllers
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Faturação de Projetos.xlsx");
         }
 
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_MovimentosProjetos([FromBody] List<ProjectDiaryViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Movimentos de Projetos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Nº Projeto");
+                row.CreateCell(1).SetCellValue("Date");
+                row.CreateCell(2).SetCellValue("Tipo Movimento");
+                row.CreateCell(3).SetCellValue("Tipo");
+                row.CreateCell(4).SetCellValue("Código");
+                row.CreateCell(5).SetCellValue("Descrição");
+                row.CreateCell(6).SetCellValue("Cód. Unidade Medida");
+                row.CreateCell(7).SetCellValue("Quantidade");
+                row.CreateCell(8).SetCellValue("Preço Unitário");
+                row.CreateCell(9).SetCellValue("Preço total");
+                row.CreateCell(10).SetCellValue("Custo Unitário");
+                row.CreateCell(11).SetCellValue("Custo Total");
+                row.CreateCell(12).SetCellValue("Fatura-a Nº Cliente");
+                row.CreateCell(13).SetCellValue("Nome Cliente");
+                row.CreateCell(14).SetCellValue("Cód. Localização");
+                row.CreateCell(15).SetCellValue("Objeto Serviço");
+                row.CreateCell(16).SetCellValue("Cód. Região");
+                row.CreateCell(17).SetCellValue("Cód Área Funcional");
+                row.CreateCell(18).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(19).SetCellValue("Utilizador");
+                row.CreateCell(20).SetCellValue("Faturável");
+                row.CreateCell(21).SetCellValue("Folha de Horas");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ProjectDiaryViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.ProjectNo);
+                        row.CreateCell(1).SetCellValue(item.Date);
+                        row.CreateCell(2).SetCellValue(item.MovementType.ToString());
+                        row.CreateCell(3).SetCellValue(item.Type.ToString());
+                        row.CreateCell(4).SetCellValue(item.Code);
+                        row.CreateCell(5).SetCellValue(item.Description);
+                        row.CreateCell(6).SetCellValue(item.MeasurementUnitCode);
+                        row.CreateCell(7).SetCellValue(item.Quantity.ToString());
+                        row.CreateCell(8).SetCellValue(item.UnitPrice.ToString());
+                        row.CreateCell(9).SetCellValue(item.TotalPrice.ToString());
+                        row.CreateCell(10).SetCellValue(item.UnitCost.ToString());
+                        row.CreateCell(11).SetCellValue(item.TotalCost.ToString());
+                        row.CreateCell(12).SetCellValue(item.InvoiceToClientNo);
+                        row.CreateCell(13).SetCellValue(item.ClientName);
+                        row.CreateCell(14).SetCellValue(item.LocationCode);
+                        //row.CreateCell(15).SetCellValue(item.ServiceObject); ????????????
+                        row.CreateCell(16).SetCellValue(item.RegionCode);
+                        row.CreateCell(17).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(18).SetCellValue(item.ResponsabilityCenterCode);
+                        row.CreateCell(19).SetCellValue(item.User);
+                        row.CreateCell(20).SetCellValue(item.Billable.ToString());
+                        row.CreateCell(21).SetCellValue(item.FolhaHoras);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovimentosProjetos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Movimentos de Projetos.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_PreMovimentosProjetos([FromBody] List<ProjectDiaryViewModel> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pré-Movimentos de Projetos");
+                IRow row = excelSheet.CreateRow(0);
+                row.CreateCell(0).SetCellValue("Registado");
+                row.CreateCell(1).SetCellValue("Nº Projeto");
+                row.CreateCell(2).SetCellValue("Date");
+                row.CreateCell(3).SetCellValue("Tipo Movimento");
+                row.CreateCell(4).SetCellValue("Tipo");
+                row.CreateCell(5).SetCellValue("Código");
+                row.CreateCell(6).SetCellValue("Descrição");
+                row.CreateCell(7).SetCellValue("Cód. Unidade Medida");
+                row.CreateCell(8).SetCellValue("Quantidade");
+                row.CreateCell(9).SetCellValue("Preço Unitário");
+                row.CreateCell(10).SetCellValue("Preço total");
+                row.CreateCell(11).SetCellValue("Custo Unitário");
+                row.CreateCell(12).SetCellValue("Custo Total");
+                row.CreateCell(13).SetCellValue("Fatura-a Nº Cliente");
+                row.CreateCell(14).SetCellValue("Nome Cliente");
+                row.CreateCell(15).SetCellValue("Cód. Localização");
+                row.CreateCell(16).SetCellValue("Objeto Serviço");
+                row.CreateCell(17).SetCellValue("Cód. Região");
+                row.CreateCell(18).SetCellValue("Cód Área Funcional");
+                row.CreateCell(19).SetCellValue("Cód. Centro Responsabilidade");
+                row.CreateCell(20).SetCellValue("Utilizador");
+                row.CreateCell(21).SetCellValue("Faturável");
+                row.CreateCell(22).SetCellValue("Folha de Horas");
+                row.CreateCell(23).SetCellValue("Cód. Serviço Cliente");
+                row.CreateCell(24).SetCellValue("Serviço Cliente");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ProjectDiaryViewModel item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        row.CreateCell(0).SetCellValue(item.Registered == null ? "Não" : item.Registered == false ? "Não" : "Sim");
+                        row.CreateCell(1).SetCellValue(item.ProjectNo);
+                        row.CreateCell(2).SetCellValue(item.Date);
+                        row.CreateCell(3).SetCellValue(item.MovementType.ToString());
+                        row.CreateCell(4).SetCellValue(item.Type.ToString());
+                        row.CreateCell(5).SetCellValue(item.Code);
+                        row.CreateCell(6).SetCellValue(item.Description);
+                        row.CreateCell(7).SetCellValue(item.MeasurementUnitCode);
+                        row.CreateCell(8).SetCellValue(item.Quantity.ToString());
+                        row.CreateCell(9).SetCellValue(item.UnitPrice.ToString());
+                        row.CreateCell(10).SetCellValue(item.TotalPrice.ToString());
+                        row.CreateCell(11).SetCellValue(item.UnitCost.ToString());
+                        row.CreateCell(12).SetCellValue(item.TotalCost.ToString());
+                        row.CreateCell(13).SetCellValue(item.InvoiceToClientNo);
+                        row.CreateCell(14).SetCellValue(item.ClientName);
+                        row.CreateCell(15).SetCellValue(item.LocationCode);
+                        //row.CreateCell(16).SetCellValue(item.ServiceObject); ????????????
+                        row.CreateCell(17).SetCellValue(item.RegionCode);
+                        row.CreateCell(18).SetCellValue(item.FunctionalAreaCode);
+                        row.CreateCell(19).SetCellValue(item.ResponsabilityCenterCode);
+                        row.CreateCell(20).SetCellValue(item.User);
+                        row.CreateCell(21).SetCellValue(item.Billable.ToString());
+                        row.CreateCell(22).SetCellValue(item.FolhaHoras);
+                        row.CreateCell(23).SetCellValue(item.ServiceClientCode);
+                        row.CreateCell(24).SetCellValue(item.ServiceClientDescription);
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_PreMovimentosProjetos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pré-Movimentos de Projetos.xlsx");
+        }
+
     }
 }

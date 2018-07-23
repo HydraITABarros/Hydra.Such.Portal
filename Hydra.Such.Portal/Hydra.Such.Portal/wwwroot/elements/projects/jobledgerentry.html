@@ -83,6 +83,19 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/ExportToExcel_MovimentosProjetos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+        </div>
+
         <vaadin-grid aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
 
             <vaadin-grid-column width="160px" resizable>
@@ -148,14 +161,14 @@
                 <template>
                     {{item.code}}
                     <!--@*<vaadin-combo-box items="[[]]" item-value-path="id" disabled item-label-path="value" value="{{item.code}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>*@-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>*@-->
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -415,7 +428,20 @@
                         this.openToastError("Não existem movimentos associados a este projeto.");
                     }
 
-                }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../ExportToExcelDownload_MovimentosProjetos?sFileName=' + FileName;
+                },
+
             });
         });
     </script>

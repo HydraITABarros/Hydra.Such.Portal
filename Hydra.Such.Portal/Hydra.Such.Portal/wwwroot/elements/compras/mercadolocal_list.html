@@ -158,6 +158,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetProducts"
+                   id="filteredProducts_ajax"
+                   auto
+                   last-response="{{Products}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        
         <div class="subMenu">
             <paper-button class="tablinks" id="showValidadas" on-tap="_showValidadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showValidadasMessage }}</paper-button>
             <paper-button class="tablinks" id="showRecusadas" on-tap="_showRecusadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showRecusadasMessage }}</paper-button>
@@ -197,21 +206,21 @@
 
             <vaadin-grid-column id="grid_regiaoMercadoLocal" resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="regiaoMercadoLocal">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoMercadoLocal" />
+                    <vaadin-grid-sorter path="regiaoMercadoLocalTexto">Região Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoMercadoLocalTexto" />
                 </template>
                 <template>
-                    {{item.regiaoMercadoLocal}}
+                    {{item.regiaoMercadoLocalTexto}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column id="grid_codigoProduto" resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoProduto">Cód. Produto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoProduto" />
+                    <vaadin-grid-sorter path="codigoProdutoTexto">Cód. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoProdutoTexto" />
                 </template>
                 <template>
-                    {{item.codigoProduto}}
+                    {{item.codigoProdutoTexto}}
                 </template>
             </vaadin-grid-column>
 
