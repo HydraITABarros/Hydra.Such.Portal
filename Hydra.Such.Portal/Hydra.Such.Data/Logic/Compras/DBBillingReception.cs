@@ -162,7 +162,7 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.ValorRecebidoNaoContabilizado = item.ValorRecebidoNaoContabilizado;
                 parsedItem.DocumentoCriadoEm = item.DocumentoCriadoEm;
                 parsedItem.DocumentoCriadoPor = item.DocumentoCriadoPor;
-                parsedItem.DataPassaPendente = !item.DataPassaPendente.HasValue ? "" : item.DataPassaPendente.Value.ToString("yyyy-MM-dd");
+                parsedItem.DataPassaPendente = !item.DataPassaPendente.HasValue ? "" : item.DataPassaPendente.Value.ToString("dd-MM-yyyy");
                 parsedItem.Descricao = item.Descricao;
                 parsedItem.DescricaoProblema = item.DescricaoProblema;
                 parsedItem.TipoProblema = item.TipoProblema;

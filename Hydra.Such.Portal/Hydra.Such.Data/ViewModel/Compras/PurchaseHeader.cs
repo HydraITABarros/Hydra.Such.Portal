@@ -27,5 +27,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal Quantity { get; set; }
         public decimal QuantityReceived { get; set; }
         public decimal AmountRcdNotInvoiced { get; set; }
+        public decimal Amount { get; set; }
     }
 }

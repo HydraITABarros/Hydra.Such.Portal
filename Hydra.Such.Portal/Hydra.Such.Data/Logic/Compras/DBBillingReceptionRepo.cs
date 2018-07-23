@@ -7,6 +7,7 @@ using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.ComprasML
 {
@@ -72,6 +73,21 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public List<BillingReceptionModel> GetByExternalDoc(string externalDocNo, int year, string supplierId)
+        {
+            try
+            {
+                return ctx.RececaoFaturacao
+                    .Where(x => x.CodFornecedor == supplierId && x.NumDocFornecedor == externalDocNo && x.DataDocFornecedor.Value.Year == year)
+                    .ToList()
+                    .ParseToViewModel();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public void Delete(BillingReceptionModel item)
         {
             if (item == null)
@@ -128,7 +144,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         #region GETS
         
-
         public List<RecFacturasProblemas> GetAnswerProblem(string Type)
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == Type).ToList();
@@ -141,6 +156,11 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == id && x.Tipo == type).ToList();
         }
+        public List<RecFacturasProblemas> GetQuestionIDByDesc(string id, string desc)
+        {
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == id && x.Descricao == desc).ToList();
+        }
+        
         public List<RecFacturasProblemas> GetQuestionsReason()
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF4P").ToList();
