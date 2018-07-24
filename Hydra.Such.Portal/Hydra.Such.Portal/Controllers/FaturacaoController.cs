@@ -84,7 +84,15 @@ namespace Hydra.Such.Portal.Controllers
 
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name,0, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            return Json(billingReceptions);
+        }
+        public JsonResult GetBillingReceptionsPendingExcept()
+        {
+
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, 1, areaPendente);
             return Json(billingReceptions);
         }
         public JsonResult GetBillingReceptionsPending()
@@ -92,7 +100,7 @@ namespace Hydra.Such.Portal.Controllers
 
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHistPending(User.Identity.Name, 1, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, 1, areaPendente);
             return Json(billingReceptions);
         }
 
@@ -334,6 +342,20 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public JsonResult GetUAProblems()
+        {
+            List<DDMessageRelated> result = billingRecService.GetProblemAnswer("RF5P").Select(x => new DDMessageRelated()
+            {
+                id = x.Tipo,
+                value = x.Descricao,
+                extra = x.EnvioAreas
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetUserProfileById([FromBody] string user)
         {
