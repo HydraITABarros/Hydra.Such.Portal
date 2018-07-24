@@ -78,7 +78,7 @@
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         
         <iron-ajax url="/Faturacao/GetBillingReception/"
@@ -1504,9 +1504,7 @@
                 _resendUAS: function () {
                     debugger;
                     this.$.dialogReSendUAS.open();
-                    var data = this.data;
-                    this.$.respostasPerfil_ajax.body = JSON.stringify(data);
-                    this.$.respostasPerfil_ajax.generateRequest();
+                    this.$.uaProblemas_ajax.generateRequest();
                 },
                 
 
