@@ -57,14 +57,11 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return null;
             }
         }
-        public List<BillingReceptionModel> GetAll(int option, BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllPeddingExcept(BillingReceptionAreas perfil)
         {
             try
             {
-                //history
-                if(option!=1)
-                   return ctx.RececaoFaturacao.Where(x=> (x.AreaPendente==null || x.AreaPendente == "") && x.Estado != 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
-                else if(perfil == 0)// Pending && Perfil
+                if(perfil == BillingReceptionAreas.Contabilidade)// Pending && Perfil Contabilidade
                     return ctx.RececaoFaturacao.Where(x => x.Estado == 1 && x.AreaPendente=="Contabilidade").OrderByDescending(x => x.Id).ToList().ParseToViewModel();
                 else// Pending
                     return ctx.RececaoFaturacao.Where(x => x.Estado == 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
@@ -74,6 +71,32 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return null;
             }
         }
+        public List<BillingReceptionModel> GetAllHistory()
+        {
+            try
+            {
+                //history
+                return ctx.RececaoFaturacao.Where(x => (x.AreaPendente == null || x.AreaPendente == "")).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public List<BillingReceptionModel> GetAllPending()
+        {
+            try
+            {
+               //Expecto a Area Contabilidade
+               return ctx.RececaoFaturacao.Where(x =>  x.Estado == 1 && x.IdAreaPendente!=0).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public BillingReceptionModel GetById(string id)
         {
             try

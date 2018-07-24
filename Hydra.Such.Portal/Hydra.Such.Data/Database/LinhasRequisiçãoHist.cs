@@ -1,17 +1,17 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class LinhasRequisiÃ§Ã£oHist
+    public partial class LinhasRequisiçãoHist
     {
-        public string NÂºRequisiÃ§Ã£o { get; set; }
-        public int NÂºLinha { get; set; }
+        public string NºRequisição { get; set; }
+        public int NºLinha { get; set; }
         public int? Tipo { get; set; }
-        public string CÃ³digo { get; set; }
-        public string DescriÃ§Ã£o { get; set; }
-        public string CÃ³digoUnidadeMedida { get; set; }
-        public string CÃ³digoLocalizaÃ§Ã£o { get; set; }
+        public string Código { get; set; }
+        public string Descrição { get; set; }
+        public string CódigoUnidadeMedida { get; set; }
+        public string CódigoLocalização { get; set; }
         public bool? MercadoLocal { get; set; }
         public decimal? QuantidadeARequerer { get; set; }
         public decimal? QuantidadeRequerida { get; set; }
@@ -20,26 +20,26 @@ namespace Hydra.Such.Data.Database
         public decimal? QuantidadeAReceber { get; set; }
         public decimal? QuantidadeRecebida { get; set; }
         public decimal? QuantidadePendente { get; set; }
-        public decimal? CustoUnitÃ¡rio { get; set; }
-        public DateTime? DataReceÃ§Ã£oEsperada { get; set; }
-        public bool? FaturÃ¡vel { get; set; }
-        public string NÂºProjeto { get; set; }
-        public string CÃ³digoRegiÃ£o { get; set; }
-        public string CÃ³digoÃreaFuncional { get; set; }
-        public string CÃ³digoCentroResponsabilidade { get; set; }
-        public string NÂºFuncionÃ¡rio { get; set; }
+        public decimal? CustoUnitário { get; set; }
+        public DateTime? DataReceçãoEsperada { get; set; }
+        public bool? Faturável { get; set; }
+        public string NºProjeto { get; set; }
+        public string CódigoRegião { get; set; }
+        public string CódigoÁreaFuncional { get; set; }
+        public string CódigoCentroResponsabilidade { get; set; }
+        public string NºFuncionário { get; set; }
         public string Viatura { get; set; }
-        public DateTime? DataHoraCriaÃ§Ã£o { get; set; }
-        public string UtilizadorCriaÃ§Ã£o { get; set; }
-        public DateTime? DataHoraModificaÃ§Ã£o { get; set; }
-        public string UtilizadorModificaÃ§Ã£o { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
         public decimal? QtdPorUnidadeDeMedida { get; set; }
-        public decimal? PreÃ§oUnitÃ¡rioVenda { get; set; }
-        public decimal? ValorOrÃ§amento { get; set; }
-        public int? NÂºLinhaOrdemManutenÃ§Ã£o { get; set; }
+        public decimal? PreçoUnitárioVenda { get; set; }
+        public decimal? ValorOrçamento { get; set; }
+        public int? NºLinhaOrdemManutenção { get; set; }
         public bool? CriarConsultaMercado { get; set; }
-        public bool? EnviarPrÃ©Compra { get; set; }
-        public bool? EnviadoPrÃ©Compra { get; set; }
+        public bool? EnviarPréCompra { get; set; }
+        public bool? EnviadoPréCompra { get; set; }
         public DateTime? DataMercadoLocal { get; set; }
         public string UserMercadoLocal { get; set; }
         public bool? EnviadoParaCompras { get; set; }
@@ -49,16 +49,18 @@ namespace Hydra.Such.Data.Database
         public string MotivoRecusaMercLocal { get; set; }
         public DateTime? DataRecusaMercLocal { get; set; }
         public int? IdCompra { get; set; }
-        public string NÂºFornecedor { get; set; }
-        public string NÂºEncomendaAberto { get; set; }
-        public int? NÂºLinhaEncomendaAberto { get; set; }
-        public string NÂºDeConsultaMercadoCriada { get; set; }
-        public string NÂºEncomendaCriada { get; set; }
-        public string CÃ³digoProdutoFornecedor { get; set; }
-        public string UnidadeProdutivaNutriÃ§Ã£o { get; set; }
-        public string RegiÃ£oMercadoLocal { get; set; }
-        public string NÂºCliente { get; set; }
+        public string NºFornecedor { get; set; }
+        public string NºEncomendaAberto { get; set; }
+        public int? NºLinhaEncomendaAberto { get; set; }
+        public string NºDeConsultaMercadoCriada { get; set; }
+        public string NºEncomendaCriada { get; set; }
+        public string CódigoProdutoFornecedor { get; set; }
+        public string UnidadeProdutivaNutrição { get; set; }
+        public string RegiãoMercadoLocal { get; set; }
+        public string NºCliente { get; set; }
         public string Aprovadores { get; set; }
         public bool? Urgente { get; set; }
+        public string GrupoRegistoIvanegocio { get; set; }
+        public string GrupoRegistoIvaproduto { get; set; }
     }
 }

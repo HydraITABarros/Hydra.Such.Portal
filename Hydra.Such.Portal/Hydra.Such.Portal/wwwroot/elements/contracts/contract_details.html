@@ -546,7 +546,8 @@
                                                         </div>
                                                         <div class=" row break_clear">
                                                             <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{data.contractMaxDuration}}" id="contractMaxDuration" name="contractMaxDuration" label="Duração máxima contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                <vaadin-date-picker label="Duração máxima contrato" id="contractMaxDuration" name="contractMaxDuration" value="{{data.contractMaxDuration}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+
                                                             </div>
                                                             <div class="col-md-6 ">
                                                                 <such-textarea rows="5" value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ _lockFields }}"> </such-textarea>
@@ -889,7 +890,7 @@
                                                             <div class="col-md-6">
                                                                 <such-textarea rows="5" value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </such-textarea>
 
-                                                                re
+                                                                
                                                                 <!--<vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>-->
                                                             </div>
                                                         </div>
@@ -1123,7 +1124,6 @@
                                         <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" on-value-changed="_ConvertDecimals" label="Quantidade" disabled="{{ _lockFields }}" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        ">
                                         <!--<vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnit" name="_CLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ _lockFields }}">
                                         <template>
                                             <paper-icon-item>
@@ -1172,7 +1172,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        l-
+                                  
                                         <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
                                         <template>
                                             <table width="500px">
@@ -1192,7 +1192,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <d
                                         <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
                                             <template>
                                                 <table width="550px">
@@ -1246,7 +1245,6 @@
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                         </such-selectbox>
-                                        -s
                                     </div>
                                     <div class="col-lg-2">
                                         <!--<vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ _lockFields }}">
@@ -1662,7 +1660,7 @@
                                         </template>
                                         <template>
                                             <center>
-                                                <template is="dom-if" if="{{ _lockFields }}">
+                                                <template is="dom-if" if="{{ !_lockFields }}">
                                                     <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
                                                     <center>
                                                         <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
@@ -2344,7 +2342,8 @@
                         }
 
                         this._lockFields = this.data.changeStatus == 2 || !this._permissions.update;
-                        this._showContractLinesForm = this.data.changeStatus == 1 && this._permissions.update ? "none" : "";
+                        debugger;
+                        this._showContractLinesForm = this.data.changeStatus == 2 && this._permissions.update ? "none" : "";
                         this._showButtons = this.data.changeStatus != 2 && !this._permissions.update ? "none" : "";
                     }
 
@@ -2635,7 +2634,6 @@
 
                 },
                 _createInvoiceResponseProcessor: function (data) {
-                    debugger;
                     var verifica = false;
                     var ListLines = [];
                     var Invoice;
@@ -2700,7 +2698,6 @@
                                     }
                                 },
                                 callback: function (result) {
-                                    debugger;
                                     if (result) {
                                         if (t1 == "") {
                                             ListLines = t2;
@@ -3086,7 +3083,6 @@
                 },
 
                 _openInvoiceList: function (e) {
-                    debugger;
                     this.$.dlgContratInvoiceList.open();
 
                     this.$.get_invoiceheaderList_ajax.body = JSON.stringify(this.data.contractNo);
@@ -3095,7 +3091,6 @@
                 },
 
                 _openInvoiceLinesList: function (e) {
-                    debugger;
                     this.$.dlgContratInvoiceLinesList.open();
 
                     this.$.get_invoiceheaderLinesList_ajax.body = JSON.stringify(this.data.contractNo);
@@ -3103,7 +3098,6 @@
                 },
 
                 _deleteFiles: function (e) {
-                    debugger
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
 
