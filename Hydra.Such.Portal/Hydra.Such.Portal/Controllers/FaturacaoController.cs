@@ -188,7 +188,46 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json("");
         }
+        [HttpPost]
+        public JsonResult UpdateBillingList([FromBody] List<BillingReceptionModel> items)
+        {
 
+            BillingReceptionModel updatedItem = null;
+            if (items != null)
+            {
+                string NovoDestinatario=items[0].Destinatario;
+                foreach (BillingReceptionModel item in items)
+                {
+
+                    item.ModificadoPor = User.Identity.Name;
+                    BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                    item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                    workflow.DataCriacao = DateTime.Now;
+                    workflow.Destinatario = NovoDestinatario;
+                    item.WorkflowItems.Add(workflow);
+                    item.AreaUltimaInteracao = workflow.AreaWorkflow;
+                    item.UserUltimaInteracao = workflow.CriadoPor;
+
+                    updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
+                    if (updatedItem == null)
+                    {
+
+                        item.eReasonCode = 2;
+                        updatedItem = item;
+
+                    }
+
+
+                }
+            }
+            else
+            {
+                updatedItem = new BillingReceptionModel();
+                updatedItem.eReasonCode = 2;
+                updatedItem.eMessage = "O registo não pode ser nulo";
+            }
+            return Json(updatedItem);
+        }
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -200,6 +239,9 @@ namespace Hydra.Such.Portal.Controllers
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
+                workflow.Comentario = "Alteração Destinatário";
+                workflow.Estado = BillingReceptionStates.Pendente;
+                item.AreaPendente = "Aprovisionamentos";
                 item.WorkflowItems.Add(workflow);
                 item.AreaUltimaInteracao = workflow.AreaWorkflow;
                 item.UserUltimaInteracao = workflow.CriadoPor;

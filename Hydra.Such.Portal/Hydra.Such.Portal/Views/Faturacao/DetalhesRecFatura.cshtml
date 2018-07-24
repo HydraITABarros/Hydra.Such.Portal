@@ -16,15 +16,19 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
-<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" ></x-rececaofaturasdetails>
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil"></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -65,7 +69,7 @@
                 margin: 0px !important;
             }
         </style>
-
+        <iron-ajax auto url="/PopulateDropdowns/GetUtilizadoresByArea" last-response="{{ User }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetRegionCode" last-response="{{ Regions }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ FunctionalAreas }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ ResponsabilityCenters }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -80,7 +84,7 @@
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -148,6 +152,14 @@
         <iron-ajax url="/Faturacao/GetUserProfileById"
                    last-response="{{ userProfile }}"
                    id="get_userprofile_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateBillingList"
+                   id="updateDestination"
+                    last-response="{{ updateDestinItem }}"
+                   on-response="_updateDestinationResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json">
@@ -720,10 +732,10 @@
 
 
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
-               
+
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange"*@>
+                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -749,7 +761,30 @@
             </paper-dialog>
 
             <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
-                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                <div class="row break_clear" hidden="{{_showOptionDestitation}}">
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ User ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <paper-button class="btnSave" raised on-tap="_dlgUpdateDesti">Alterar</paper-button>
+                    </div>
+
+                </div>
+                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                    <vaadin-grid-selection-column auto-select hidden="{{_showOptionDestitation}}">
+                    </vaadin-grid-selection-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -1047,6 +1082,10 @@
                         type: Boolean,
                         value: false,
                     },
+                    _showOptionDestitation: {
+                        type: Boolean,
+                        value: true,
+                    },
                     _showHiddenAccounting: {
                         type: Boolean,
                         value: true,
@@ -1156,8 +1195,8 @@
                         this._hiddeSendButton = true;
                     }
                     if (this._rfperfil == "Aprovisionamento") {
-                        this._showHiddenAccounting = false;
-                        this._hiddeSendButton = true;
+                        this._showHiddenProvisioning = false;
+                        this._hiddeSendButton = false;
                     }
                 },
 
@@ -1303,7 +1342,7 @@
                             this.$.cmbMotivos.value = "";
                             this.$.txtmotivo.value = "";
                             this.$.txtCommentdgl.value = "";
-                             
+
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -1336,7 +1375,7 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
+                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) {
                     if (this._isCreate &&
                         date != undefined &&
                         date != "" &&
@@ -1506,7 +1545,7 @@
                     this.$.respostasPerfil_ajax.body = JSON.stringify(data);
                     this.$.respostasPerfil_ajax.generateRequest();
                 },
-                
+
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
                         this.data.id = "CF" + this.data.id;
@@ -1546,7 +1585,7 @@
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;
-                        
+
                         var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
@@ -1712,6 +1751,20 @@
                     var link = "../../FacturasFornecedor/" + ano + mes + "/" + pdfName;
                     window.open(link);
                 },
+                _updateDestinationResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (updateDestinItem != undefined) {
+                            this._openToastError(this.updatedItem.eMessage);
+                        } else {
+                            this.$.grdBillingView.clearCache();
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                },
                 _viewLinkResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
@@ -1728,11 +1781,12 @@
                     }
                     else {
                         this._openToastError("O servidor não conseguiu processar o pedido.");
-                    }                    
+                    }
                 },
                 _getPendingTotalReponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.getViewResponse != undefined) {
+                            this._showOptionDestitation = false;
                             this.$.dialogViewHist_Pending.open();
                         }
                         else {
@@ -1768,10 +1822,10 @@
                     this.data.workflowItems.push(workflow);
                     this.$.page_updateWork_ajax.body = JSON.stringify(this.data);
                     this.$.page_updateWork_ajax.generateRequest();
-                
 
 
-                }, 
+
+                },
                 _provisioningOptionSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
@@ -1793,7 +1847,7 @@
 
                     if (item == null)
                         return;
-                    switch (item.value) {          
+                    switch (item.value) {
                         case 1:
                             this.data.estado = item.value;
                             this.$.setState_ajax.body = JSON.stringify(this.data);
@@ -1816,15 +1870,17 @@
                             break;
                     }
                 },
-               
+
                 _openHistory: function (e) {
                     this.getViewResponse = null;
+                    this._showOptionDestitation = true;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getHistory_ajax.body = JSON.stringify(this.data);
                     this.$.getHistory_ajax.generateRequest();
                 },
                 _openPending: function (e) {
                     this.getViewResponse = null;
+                    this._showOptionDestitation = true;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getPending_ajax.body = JSON.stringify(this.data);
                     this.$.getPending_ajax.generateRequest();
@@ -1840,6 +1896,23 @@
                 _openRequisicao: function (e) {
                     this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
                     this.$.openEncomendaFactura_ajax.generateRequest();
+                },
+                _dlgUpdateDesti: function (selectedItem, selectedItems) {
+                    debugger;
+                    if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
+                        if (this.selectedItems != null && this.selectedItems != "") {
+                            var selItms = this.selectedItems;
+                            selItms[0].destinatario = this.$.cmbDestinatarios.value;
+                            this.$.updateDestination.body = JSON.stringify(selItms);
+                            this.$.updateDestination.generateRequest();
+
+                        } else {
+                            this._openToastError("Não foi selecionada nenhuma linha.");
+                        }
+                    }
+                    else {
+                        this._openToastError("Não foi selecionada nenhum Destinatário.");
+                    }
                 },
                 _clFormatStatus: function (param) {
                     if (param != undefined) {

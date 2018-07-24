@@ -137,7 +137,16 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
-
+        public JsonResult GetUtilizadoresByArea()
+        {
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            List<DDMessageString> result = DBUserConfigurations.GetAll().Where(x => x.Rfperfil == (int)userConfig.RFPerfil).Select(x => new DDMessageString()
+            {
+                id = x.IdUtilizador,
+                value = x.Nome
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetUtilizadores_NumMec()
         {
