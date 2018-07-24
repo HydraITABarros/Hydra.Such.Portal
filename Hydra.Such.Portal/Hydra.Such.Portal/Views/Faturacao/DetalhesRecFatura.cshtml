@@ -731,23 +731,10 @@
 
 
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
+               
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Destinatário" on-value-changed="_problemTypeChanged">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" on-value-changed="_UAProblemChange">
+                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange"*@>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
