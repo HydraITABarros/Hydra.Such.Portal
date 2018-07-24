@@ -334,6 +334,20 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public JsonResult GetUAProblems()
+        {
+            List<DDMessageRelated> result = billingRecService.GetProblemAnswer("RF5P").Select(x => new DDMessageRelated()
+            {
+                id = x.Tipo,
+                value = x.Descricao,
+                extra = x.EnvioAreas
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetUserProfileById([FromBody] string user)
         {
