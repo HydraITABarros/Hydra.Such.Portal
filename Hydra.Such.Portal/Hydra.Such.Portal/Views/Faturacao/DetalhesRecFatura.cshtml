@@ -190,11 +190,11 @@
                    last-response="{{ getViewResponse }}"
                    id="getPendingTotal_ajax"
                    method="post"
-                   on-response="_getPendingTotalponse"
+                   on-response="_getPendingTotalReponse"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
                    last-response="{{ getViewResponse }}"
                    id="getPending_ajax"
                    method="post"
@@ -231,8 +231,8 @@
                 <template is="dom-if" if="{{ _isCreditMemo }}">
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
-                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Aprovisionamentos" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
-                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Contabilidade" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
             </template>
             <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
             <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
@@ -572,17 +572,6 @@
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
-                <div class="row break_clear" hidden>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                </div>
             </div>
 
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
@@ -776,7 +765,7 @@
                             <vaadin-grid-filter path="tipoDocumento" />
                         </template>
                         <template>
-                            {{item.tipoDocumento}}
+                            [[ _clFormatTypeDoc(item.tipoDocumento) ]]
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -785,7 +774,7 @@
                             <vaadin-grid-filter path="estado" />
                         </template>
                         <template>
-                            {{item.estado}}
+                            [[ _clFormatStatus(item.estado) ]]
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -1058,6 +1047,14 @@
                         type: Boolean,
                         value: false,
                     },
+                    _showHiddenAccounting: {
+                        type: Boolean,
+                        value: true,
+                    },
+                    _showHiddenProvisioning: {
+                        type: Boolean,
+                        value: true,
+                    },
                     _rfperfil: {
                         type: String,
                         value: "",
@@ -1137,7 +1134,6 @@
                 },
 
                 _hiddeButtons: function () {
-                    debugger;
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
                         if (this.data.areaPendente2 == "Contabilidade") {
@@ -1145,6 +1141,7 @@
                         } else if (this.data.areaPendente2 == "Aprovisionamento") {
                             if (this._rfperfil == "Aprovisionamento") {
                                 this._hiddeAnswerButton = false;
+                                this._showHiddenProvisioning = true;
                             }
                         } else {
                             if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
@@ -1152,11 +1149,14 @@
                                 this._hiddeAnswerButton = false;
                             }
                         }
-                        
                     }
                     //QUESTÂO
                     if (this._rfperfil == "Contabilidade") {
-
+                        this._showHiddenAccounting = false;
+                        this._hiddeSendButton = true;
+                    }
+                    if (this._rfperfil == "Aprovisionamento") {
+                        this._showHiddenAccounting = false;
                         this._hiddeSendButton = true;
                     }
                 },
@@ -1288,7 +1288,6 @@
                     }
                 },
                 _updateResponse: function (e) {
-                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
@@ -1304,7 +1303,7 @@
                             this.$.cmbMotivos.value = "";
                             this.$.txtmotivo.value = "";
                             this.$.txtCommentdgl.value = "";
-
+                             
                         }
                         else {
                             this._openToastError(this.updatedItem.eMessage);
@@ -1502,13 +1501,10 @@
                 },
 
                 _resendUAS: function () {
-                    debugger;
                     this.$.dialogReSendUAS.open();
                     this.$.uaProblemas_ajax.generateRequest();
                 },
                 
-
-
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
                         this.data.id = "CF" + this.data.id;
@@ -1532,7 +1528,6 @@
                 },
                 _dlgSendAnswer: function () {
                     if (this._validateInputForAnswer()) {
-                        debugger;
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
 
@@ -1731,8 +1726,20 @@
                     }
                     else {
                         this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }                    
+                },
+                _getPendingTotalReponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.getViewResponse != undefined) {
+                            this.$.dialogViewHist_Pending.open();
+                        }
+                        else {
+                            this._openToastError(this.updatedItem.eMessage);
+                        }
                     }
-                    
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
                 },
                 _goBack: function (e) {
                     window.history.back();
@@ -1831,6 +1838,24 @@
                 _openRequisicao: function (e) {
                     this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
                     this.$.openEncomendaFactura_ajax.generateRequest();
+                },
+                _clFormatStatus: function (param) {
+                    if (param != undefined) {
+                        var sel = this.States.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
+                },
+                _clFormatTypeDoc: function (param) {
+                    if (param != undefined) {
+                        var sel = this.DocumentTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
                 },
             });
         });
