@@ -390,7 +390,7 @@
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{data.claimedRequesitionNo}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -399,10 +399,18 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="RegionCode" name="RegionCode" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectRegionCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="500px">
                                                         <tr>
@@ -411,10 +419,17 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectFunctionalAreaCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="550px">
                                                         <tr>
@@ -423,7 +438,14 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectResponsabilityCenterCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
                                         </div>
                                     </div>
 
@@ -726,6 +748,8 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>
+
+
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
@@ -1485,7 +1509,7 @@
                 },
 
                 _deletedAttachResponse: function (e) {
-
+                    debugger
                     if (this.deleted_files.eReasonCode === 1) {
                         this._openToast("Anexo eliminado com sucesso.");
 

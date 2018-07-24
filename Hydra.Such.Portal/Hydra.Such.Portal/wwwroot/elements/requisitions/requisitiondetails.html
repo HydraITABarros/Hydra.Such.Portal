@@ -321,7 +321,7 @@
                                             <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -330,10 +330,18 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+
+                                            <such-selectbox id="RegionCode" name="RegionCode" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectRegionCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -342,10 +350,17 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectFunctionalAreaCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <!--<vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -354,7 +369,14 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectResponsabilityCenterCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">

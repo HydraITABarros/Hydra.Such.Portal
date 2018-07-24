@@ -7,5 +7,5 @@
 
 <link rel="import" href="~/elements/contracts/contract_list.html">
 
-<x-contractlist _areaid="1" _archived="@ViewBag.Archived" _contractno="@ViewBag.ContractNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractlist>
+<x-contractlist _areaid="1" _archived="@ViewBag.Archived" _contractno="@ViewBag.ContractNo" _uploadurl="@ViewBag.UploadURL" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-contractlist>
 
