@@ -16,15 +16,19 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
-<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" ></x-rececaofaturasdetails>
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil"></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -65,7 +69,7 @@
                 margin: 0px !important;
             }
         </style>
-
+        <iron-ajax auto url="/PopulateDropdowns/GetUtilizadoresByArea" last-response="{{ User }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetRegionCode" last-response="{{ Regions }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ FunctionalAreas }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ ResponsabilityCenters }}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -78,9 +82,9 @@
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -152,6 +156,14 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateBillingList"
+                   id="updateDestination"
+                    last-response="{{ updateDestinItem }}"
+                   on-response="_updateDestinationResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Faturacao/DocumentIsDigitized"
                    last-response="{{ updatedItem }}"
                    id="page_documentDigit_ajax"
@@ -190,11 +202,11 @@
                    last-response="{{ getViewResponse }}"
                    id="getPendingTotal_ajax"
                    method="post"
-                   on-response="_getPendingTotalponse"
+                   on-response="_getPendingTotalReponse"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
                    last-response="{{ getViewResponse }}"
                    id="getPending_ajax"
                    method="post"
@@ -231,8 +243,8 @@
                 <template is="dom-if" if="{{ _isCreditMemo }}">
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
-                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Aprovisionamentos" items='[[ _provisioningMenuItems ]]'></such-dropdown-menu>
-                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Contabilidade" items='[[ _accountingMenuItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>
+                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
             </template>
             <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
             <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
@@ -572,17 +584,6 @@
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
-                <div class="row break_clear" hidden>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                    <div class="col-sm-2">
-                        <paper-button raised id="btnNotes" class="btnSave" on-tap="_notes">&nbsp; Nota</paper-button>
-                    </div>
-                </div>
             </div>
 
             <paper-dialog id="dialogSendPeding" class="dialgoBox" modal>
@@ -731,10 +732,10 @@
 
 
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
-               
+
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange"*@>
+                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -760,7 +761,30 @@
             </paper-dialog>
 
             <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
-                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                <div class="row break_clear" hidden="{{_showOptionDestitation}}">
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ User ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <paper-button class="btnSave" raised on-tap="_dlgUpdateDesti">Alterar</paper-button>
+                    </div>
+
+                </div>
+                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                    <vaadin-grid-selection-column auto-select hidden="{{_showOptionDestitation}}">
+                    </vaadin-grid-selection-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -776,7 +800,7 @@
                             <vaadin-grid-filter path="tipoDocumento" />
                         </template>
                         <template>
-                            {{item.tipoDocumento}}
+                            [[ _clFormatTypeDoc(item.tipoDocumento) ]]
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -785,7 +809,7 @@
                             <vaadin-grid-filter path="estado" />
                         </template>
                         <template>
-                            {{item.estado}}
+                            [[ _clFormatStatus(item.estado) ]]
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -1058,6 +1082,18 @@
                         type: Boolean,
                         value: false,
                     },
+                    _showOptionDestitation: {
+                        type: Boolean,
+                        value: true,
+                    },
+                    _showHiddenAccounting: {
+                        type: Boolean,
+                        value: true,
+                    },
+                    _showHiddenProvisioning: {
+                        type: Boolean,
+                        value: true,
+                    },
                     _rfperfil: {
                         type: String,
                         value: "",
@@ -1137,7 +1173,6 @@
                 },
 
                 _hiddeButtons: function () {
-                    debugger;
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
                         if (this.data.areaPendente2 == "Contabilidade") {
@@ -1145,6 +1180,7 @@
                         } else if (this.data.areaPendente2 == "Aprovisionamento") {
                             if (this._rfperfil == "Aprovisionamento") {
                                 this._hiddeAnswerButton = false;
+                                this._showHiddenProvisioning = true;
                             }
                         } else {
                             if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
@@ -1152,12 +1188,15 @@
                                 this._hiddeAnswerButton = false;
                             }
                         }
-                        
                     }
                     //QUESTÂO
                     if (this._rfperfil == "Contabilidade") {
-
+                        this._showHiddenAccounting = false;
                         this._hiddeSendButton = true;
+                    }
+                    if (this._rfperfil == "Aprovisionamento") {
+                        this._showHiddenProvisioning = false;
+                        this._hiddeSendButton = false;
                     }
                 },
 
@@ -1288,7 +1327,6 @@
                     }
                 },
                 _updateResponse: function (e) {
-                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
@@ -1337,7 +1375,7 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) { 
+                _preventDocumentDuplicates: function (date, docNumber, codFornecedor) {
                     if (this._isCreate &&
                         date != undefined &&
                         date != "" &&
@@ -1502,14 +1540,9 @@
                 },
 
                 _resendUAS: function () {
-                    debugger;
                     this.$.dialogReSendUAS.open();
-                    var data = this.data;
-                    this.$.respostasPerfil_ajax.body = JSON.stringify(data);
-                    this.$.respostasPerfil_ajax.generateRequest();
+                    this.$.uaProblemas_ajax.generateRequest();
                 },
-                
-
 
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
@@ -1534,7 +1567,6 @@
                 },
                 _dlgSendAnswer: function () {
                     if (this._validateInputForAnswer()) {
-                        debugger;
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
 
@@ -1551,7 +1583,7 @@
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;
-                        
+
                         var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
@@ -1717,6 +1749,20 @@
                     var link = "../../FacturasFornecedor/" + ano + mes + "/" + pdfName;
                     window.open(link);
                 },
+                _updateDestinationResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (updateDestinItem != undefined) {
+                            this._openToastError(this.updatedItem.eMessage);
+                        } else {
+                            this.$.grdBillingView.clearCache();
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                },
                 _viewLinkResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
@@ -1734,7 +1780,20 @@
                     else {
                         this._openToastError("O servidor não conseguiu processar o pedido.");
                     }
-                    
+                },
+                _getPendingTotalReponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.getViewResponse != undefined) {
+                            this._showOptionDestitation = false;
+                            this.$.dialogViewHist_Pending.open();
+                        }
+                        else {
+                            this._openToastError(this.updatedItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
                 },
                 _goBack: function (e) {
                     window.history.back();
@@ -1761,10 +1820,10 @@
                     this.data.workflowItems.push(workflow);
                     this.$.page_updateWork_ajax.body = JSON.stringify(this.data);
                     this.$.page_updateWork_ajax.generateRequest();
-                
 
 
-                }, 
+
+                },
                 _provisioningOptionSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
@@ -1786,7 +1845,7 @@
 
                     if (item == null)
                         return;
-                    switch (item.value) {          
+                    switch (item.value) {
                         case 1:
                             this.data.estado = item.value;
                             this.$.setState_ajax.body = JSON.stringify(this.data);
@@ -1809,15 +1868,17 @@
                             break;
                     }
                 },
-               
+
                 _openHistory: function (e) {
                     this.getViewResponse = null;
+                    this._showOptionDestitation = true;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getHistory_ajax.body = JSON.stringify(this.data);
                     this.$.getHistory_ajax.generateRequest();
                 },
                 _openPending: function (e) {
                     this.getViewResponse = null;
+                    this._showOptionDestitation = true;
                     this.$.dialogViewHist_Pending.open();
                     this.$.getPending_ajax.body = JSON.stringify(this.data);
                     this.$.getPending_ajax.generateRequest();
@@ -1833,6 +1894,41 @@
                 _openRequisicao: function (e) {
                     this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
                     this.$.openEncomendaFactura_ajax.generateRequest();
+                },
+                _dlgUpdateDesti: function (selectedItem, selectedItems) {
+                    debugger;
+                    if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
+                        if (this.selectedItems != null && this.selectedItems != "") {
+                            var selItms = this.selectedItems;
+                            selItms[0].destinatario = this.$.cmbDestinatarios.value;
+                            this.$.updateDestination.body = JSON.stringify(selItms);
+                            this.$.updateDestination.generateRequest();
+
+                        } else {
+                            this._openToastError("Não foi selecionada nenhuma linha.");
+                        }
+                    }
+                    else {
+                        this._openToastError("Não foi selecionada nenhum Destinatário.");
+                    }
+                },
+                _clFormatStatus: function (param) {
+                    if (param != undefined) {
+                        var sel = this.States.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
+                },
+                _clFormatTypeDoc: function (param) {
+                    if (param != undefined) {
+                        var sel = this.DocumentTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
                 },
             });
         });

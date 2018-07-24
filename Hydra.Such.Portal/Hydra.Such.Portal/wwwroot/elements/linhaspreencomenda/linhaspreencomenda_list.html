@@ -1,0 +1,243 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
+
+<dom-module id="x-linhaspreencomendalist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/LinhasPreEncomenda/GetAllLinhas"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <!--
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+            </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            -->
+
+            <paper-button id="btnConsultaMercado" class="tablinks" on-tap="_btnConsultaMercado" title="Consulta Mercado"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta Mercado</paper-button>
+            <paper-button id="btnEncomenda" class="tablinks" on-tap="_btnEncomenda" title="Encomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Encomenda</paper-button>
+        </div>
+
+        <vaadin-grid aria-label="LinhasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numPreEncomenda">Nº Pré-Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numPreEncomenda" />
+                </template>
+                <template>
+                    {{item.numPreEncomenda}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numLinhaPreEncomenda">Nº Linha Pré-Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numLinhaPreEncomenda" />
+                </template>
+                <template>
+                    {{item.numLinhaPreEncomenda}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoProduto">Código Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoProduto" />
+                </template>
+                <template>
+                    {{item.codigoProduto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoProduto">Descrição Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoProduto" />
+                </template>
+                <template>
+                    {{item.descricaoProduto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeDisponibilizada">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeDisponibilizada" />
+                </template>
+                <template>
+                    {{item.quantidadeDisponibilizada}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoUnitario" />
+                </template>
+                <template>
+                    {{item.custoUnitario}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoLocalizacao">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoLocalizacao" />
+                </template>
+                <template>
+                    {{item.codigoLocalizacao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numFornecedor" />
+                </template>
+                <template>
+                    {{item.numFornecedor}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numRequisicao">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numRequisicao" />
+                </template>
+                <template>
+                    {{item.numRequisicao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numLinhaRequisicao">Nº Linha Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numLinhaRequisicao" />
+                </template>
+                <template>
+                    {{item.numLinhaRequisicao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="numProjeto">Nº Projecto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numProjeto" />
+                </template>
+                <template>
+                    {{item.numProjeto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" />
+                </template>
+                <template>
+                    {{item.codigoRegiao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" />
+                </template>
+                <template>
+                    {{item.codigoAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codigoCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-linhaspreencomendalist',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/?numLinhaPreEncomenda=" + item.numCartao;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/";
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+            });
+        });
+    </script>
+</dom-module>

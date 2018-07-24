@@ -119,9 +119,9 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
-        public List<BillingReceptionModel> GetAllForUserHistPending(string userName,int option,BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllForUserHist(string userName,int option,BillingReceptionAreas perfil)
         {
-            var billingReceptions = repo.GetAll(option, perfil);
+            var billingReceptions = repo.GetAllHistory();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
@@ -137,6 +137,30 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+        public List<BillingReceptionModel> GetAllForUserPendingExcept(string userName, int option, BillingReceptionAreas perfil)
+        {
+            var billingReceptions = repo.GetAllPeddingExcept(perfil);
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+
+            return billingReceptions;
+        }
+        public List<BillingReceptionModel> GetAllForUserPending(string userName, int option, BillingReceptionAreas perfil)
+        {
+            var billingReceptions = repo.GetAllPending();
+            return billingReceptions;
+        }
+
         public BillingReceptionModel GetById(string id)
         {
 
@@ -209,7 +233,6 @@ namespace Hydra.Such.Portal.Services
             item.Estado = BillingReceptionStates.Pendente;
             item.DataUltimaInteracao = DateTime.Now.ToString();
             item.TipoProblema = wfItemLast.CodTipoProblema;
-            item.AreaPendente = wfItemLast.Area;
             item.AreaPendente2 = wfItemLast.AreaWorkflow;
             item.Destinatario = wfItemLast.Destinatario;
             item.Descricao = wfItemLast.Comentario;
