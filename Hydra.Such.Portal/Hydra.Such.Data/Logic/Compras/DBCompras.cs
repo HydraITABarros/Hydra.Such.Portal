@@ -279,7 +279,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
-        public static List<ComprasViewModel> ToListComprasViewModel(List<Compras> ComprasList)
+        public static List<ComprasViewModel> ToListComprasViewModel(List<ComprasViewModel> ComprasList)
         {
             try
             {

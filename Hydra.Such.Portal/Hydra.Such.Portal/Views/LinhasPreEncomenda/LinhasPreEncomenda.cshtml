@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.LinhasPreEncomenda>
+
+@{
+    ViewData["Title"] = "Linhas Pré-Encomenda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/linhaspreencomenda/linhaspreencomenda_list.html">
+
+<x-linhaspreencomendalist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-linhaspreencomendalist>
