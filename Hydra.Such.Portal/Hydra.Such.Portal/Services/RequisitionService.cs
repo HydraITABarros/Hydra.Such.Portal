@@ -113,6 +113,7 @@ namespace Hydra.Such.Portal.Services
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
+                                LocalMarketRegion = requisition.LocalMarketRegion,
                                 Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
@@ -124,7 +125,11 @@ namespace Hydra.Such.Portal.Services
                                     UnitCost = line.UnitCost,
                                     LocationCode = line.LocalCode,
                                     OpenOrderNo = line.OpenOrderNo,
-                                    OpenOrderLineNo = line.OpenOrderLineNo
+                                    OpenOrderLineNo = line.OpenOrderLineNo,
+                                    CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                    FunctionalAreaCode = line.FunctionalAreaCode,
+                                    RegionCode = line.RegionCode,
+                                    UnitMeasureCode = line.UnitMeasureCode,
                                 })
                                 .ToList()
                             })
@@ -217,6 +222,7 @@ namespace Hydra.Such.Portal.Services
                                     CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                     FunctionalAreaCode = requisition.FunctionalAreaCode,
                                     RegionCode = requisition.RegionCode,
+                                    LocalMarketRegion = requisition.LocalMarketRegion,
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {
                                         LineId = line.LineNo,
@@ -228,7 +234,11 @@ namespace Hydra.Such.Portal.Services
                                         UnitCost = line.UnitCost,
                                         LocationCode = line.LocalCode,
                                         OpenOrderNo = line.OpenOrderNo,
-                                        OpenOrderLineNo = line.OpenOrderLineNo
+                                        OpenOrderLineNo = line.OpenOrderLineNo,
+                                        CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                        FunctionalAreaCode = line.FunctionalAreaCode,
+                                        RegionCode = line.RegionCode,
+                                        UnitMeasureCode = line.UnitMeasureCode,
                                     })
                                     .ToList()
                                 })
@@ -470,7 +480,8 @@ namespace Hydra.Such.Portal.Services
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
                 createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
-                
+                purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
+
                 Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
                 createPurchaseLinesTask.Wait();
                 if (createPurchaseLinesTask.IsCompletedSuccessfully)
@@ -480,14 +491,14 @@ namespace Hydra.Such.Portal.Services
                         /*
                          *  Swallow errors at this stage as they will be managed in NAV
                          */
-                        Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
-                        createPurchOrderTask.Wait();
-                        if (createPurchOrderTask.IsCompletedSuccessfully)
-                        {
-                            createPrePurchOrderResult.CompletedSuccessfully = true;
-                        }
+                        //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
+                        //createPurchOrderTask.Wait();
+                        //if (createPurchOrderTask.IsCompletedSuccessfully)
+                        //{
+                        //    createPrePurchOrderResult.CompletedSuccessfully = true;
+                        //}
                     }
-                    catch { }
+                    catch (Exception ex)  { }
                 }
             }
             return createPrePurchOrderResult;
