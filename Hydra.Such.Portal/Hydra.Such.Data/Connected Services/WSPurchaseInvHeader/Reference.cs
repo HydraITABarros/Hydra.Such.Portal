@@ -82,6 +82,66 @@ namespace WSPurchaseInvHeader
         
         private string responsabilityCenterCode20Field;
         
+        private string locationCodeField;
+        
+        private string your_ReferenceField;
+        
+        private string observacoesField;
+        
+        private string purchaser_CodeField;
+        
+        private string n_ConsultaField;
+        
+        private System.DateTime expected_Receipt_DateField;
+        
+        private bool expected_Receipt_DateFieldSpecified;
+        
+        private string responsibility_CenterField;
+        
+        private string v_Prop_NumField;
+        
+        private string ship_to_NameField;
+        
+        private string ship_to_Name_2Field;
+        
+        private string ship_to_AddressField;
+        
+        private string ship_to_Address_2Field;
+        
+        private string ship_to_CityField;
+        
+        private string ship_to_ContactField;
+        
+        private string ship_to_Post_CodeField;
+        
+        private string ship_to_CountyField;
+        
+        private string ship_to_Country_Region_CodeField;
+        
+        private string requisition_NoField;
+        
+        private string payment_Terms_CodeField;
+        
+        private Mercado_Local_Regiao mercado_Local_RegiaoField;
+        
+        private bool mercado_Local_RegiaoFieldSpecified;
+        
+        private Motivo_Anulacao_Encomenda motivo_Anulacao_EncomendaField;
+        
+        private bool motivo_Anulacao_EncomendaFieldSpecified;
+        
+        private string encomenda_Origem_NAV17Field;
+        
+        private string utilizador_CriacaoField;
+        
+        private bool prices_Including_VATField;
+        
+        private bool prices_Including_VATFieldSpecified;
+        
+        private bool down_PaymentField;
+        
+        private bool down_PaymentFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -179,6 +239,476 @@ namespace WSPurchaseInvHeader
                 this.responsabilityCenterCode20Field = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public string LocationCode
+        {
+            get
+            {
+                return this.locationCodeField;
+            }
+            set
+            {
+                this.locationCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string Your_Reference
+        {
+            get
+            {
+                return this.your_ReferenceField;
+            }
+            set
+            {
+                this.your_ReferenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string Observacoes
+        {
+            get
+            {
+                return this.observacoesField;
+            }
+            set
+            {
+                this.observacoesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string Purchaser_Code
+        {
+            get
+            {
+                return this.purchaser_CodeField;
+            }
+            set
+            {
+                this.purchaser_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string N_Consulta
+        {
+            get
+            {
+                return this.n_ConsultaField;
+            }
+            set
+            {
+                this.n_ConsultaField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=12)]
+        public System.DateTime Expected_Receipt_Date
+        {
+            get
+            {
+                return this.expected_Receipt_DateField;
+            }
+            set
+            {
+                this.expected_Receipt_DateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Expected_Receipt_DateSpecified
+        {
+            get
+            {
+                return this.expected_Receipt_DateFieldSpecified;
+            }
+            set
+            {
+                this.expected_Receipt_DateFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public string Responsibility_Center
+        {
+            get
+            {
+                return this.responsibility_CenterField;
+            }
+            set
+            {
+                this.responsibility_CenterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public string V_Prop_Num
+        {
+            get
+            {
+                return this.v_Prop_NumField;
+            }
+            set
+            {
+                this.v_Prop_NumField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public string Ship_to_Name
+        {
+            get
+            {
+                return this.ship_to_NameField;
+            }
+            set
+            {
+                this.ship_to_NameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public string Ship_to_Name_2
+        {
+            get
+            {
+                return this.ship_to_Name_2Field;
+            }
+            set
+            {
+                this.ship_to_Name_2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public string Ship_to_Address
+        {
+            get
+            {
+                return this.ship_to_AddressField;
+            }
+            set
+            {
+                this.ship_to_AddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        public string Ship_to_Address_2
+        {
+            get
+            {
+                return this.ship_to_Address_2Field;
+            }
+            set
+            {
+                this.ship_to_Address_2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        public string Ship_to_City
+        {
+            get
+            {
+                return this.ship_to_CityField;
+            }
+            set
+            {
+                this.ship_to_CityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        public string Ship_to_Contact
+        {
+            get
+            {
+                return this.ship_to_ContactField;
+            }
+            set
+            {
+                this.ship_to_ContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
+        public string Ship_to_Post_Code
+        {
+            get
+            {
+                return this.ship_to_Post_CodeField;
+            }
+            set
+            {
+                this.ship_to_Post_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        public string Ship_to_County
+        {
+            get
+            {
+                return this.ship_to_CountyField;
+            }
+            set
+            {
+                this.ship_to_CountyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        public string Ship_to_Country_Region_Code
+        {
+            get
+            {
+                return this.ship_to_Country_Region_CodeField;
+            }
+            set
+            {
+                this.ship_to_Country_Region_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
+        public string Requisition_No
+        {
+            get
+            {
+                return this.requisition_NoField;
+            }
+            set
+            {
+                this.requisition_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=25)]
+        public string Payment_Terms_Code
+        {
+            get
+            {
+                return this.payment_Terms_CodeField;
+            }
+            set
+            {
+                this.payment_Terms_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
+        public Mercado_Local_Regiao Mercado_Local_Regiao
+        {
+            get
+            {
+                return this.mercado_Local_RegiaoField;
+            }
+            set
+            {
+                this.mercado_Local_RegiaoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Mercado_Local_RegiaoSpecified
+        {
+            get
+            {
+                return this.mercado_Local_RegiaoFieldSpecified;
+            }
+            set
+            {
+                this.mercado_Local_RegiaoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
+        public Motivo_Anulacao_Encomenda Motivo_Anulacao_Encomenda
+        {
+            get
+            {
+                return this.motivo_Anulacao_EncomendaField;
+            }
+            set
+            {
+                this.motivo_Anulacao_EncomendaField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Motivo_Anulacao_EncomendaSpecified
+        {
+            get
+            {
+                return this.motivo_Anulacao_EncomendaFieldSpecified;
+            }
+            set
+            {
+                this.motivo_Anulacao_EncomendaFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        public string Encomenda_Origem_NAV17
+        {
+            get
+            {
+                return this.encomenda_Origem_NAV17Field;
+            }
+            set
+            {
+                this.encomenda_Origem_NAV17Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Utilizador_Criacao
+        {
+            get
+            {
+                return this.utilizador_CriacaoField;
+            }
+            set
+            {
+                this.utilizador_CriacaoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        public bool Prices_Including_VAT
+        {
+            get
+            {
+                return this.prices_Including_VATField;
+            }
+            set
+            {
+                this.prices_Including_VATField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Prices_Including_VATSpecified
+        {
+            get
+            {
+                return this.prices_Including_VATFieldSpecified;
+            }
+            set
+            {
+                this.prices_Including_VATFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
+        public bool Down_Payment
+        {
+            get
+            {
+                return this.down_PaymentField;
+            }
+            set
+            {
+                this.down_PaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Down_PaymentSpecified
+        {
+            get
+            {
+                return this.down_PaymentFieldSpecified;
+            }
+            set
+            {
+                this.down_PaymentFieldSpecified = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
+    public enum Mercado_Local_Regiao
+    {
+        
+        /// <remarks/>
+        _blank_,
+        
+        /// <remarks/>
+        Lisboa,
+        
+        /// <remarks/>
+        Porto,
+        
+        /// <remarks/>
+        Coimbra,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
+    public enum Motivo_Anulacao_Encomenda
+    {
+        
+        /// <remarks/>
+        _blank_,
+        
+        /// <remarks/>
+        Orçamento_rectificativo,
+        
+        /// <remarks/>
+        Solicitação_Área,
+        
+        /// <remarks/>
+        Reenvio_Fornecedor_Alternativo,
+        
+        /// <remarks/>
+        Alteração_Câmbio,
+        
+        /// <remarks/>
+        Erro_do_Utilizador,
+        
+        /// <remarks/>
+        Preços_Incorretos,
+        
+        /// <remarks/>
+        Quantidades_Incorretas,
     }
     
     /// <remarks/>
@@ -244,6 +774,81 @@ namespace WSPurchaseInvHeader
         
         /// <remarks/>
         ResponsabilityCenterCode20,
+        
+        /// <remarks/>
+        LocationCode,
+        
+        /// <remarks/>
+        Your_Reference,
+        
+        /// <remarks/>
+        Observacoes,
+        
+        /// <remarks/>
+        Purchaser_Code,
+        
+        /// <remarks/>
+        N_Consulta,
+        
+        /// <remarks/>
+        Expected_Receipt_Date,
+        
+        /// <remarks/>
+        Responsibility_Center,
+        
+        /// <remarks/>
+        V_Prop_Num,
+        
+        /// <remarks/>
+        Ship_to_Name,
+        
+        /// <remarks/>
+        Ship_to_Name_2,
+        
+        /// <remarks/>
+        Ship_to_Address,
+        
+        /// <remarks/>
+        Ship_to_Address_2,
+        
+        /// <remarks/>
+        Ship_to_City,
+        
+        /// <remarks/>
+        Ship_to_Contact,
+        
+        /// <remarks/>
+        Ship_to_Post_Code,
+        
+        /// <remarks/>
+        Ship_to_County,
+        
+        /// <remarks/>
+        Ship_to_Country_Region_Code,
+        
+        /// <remarks/>
+        Requisition_No,
+        
+        /// <remarks/>
+        Payment_Terms_Code,
+        
+        /// <remarks/>
+        Mercado_Local_Regiao,
+        
+        /// <remarks/>
+        Motivo_Anulacao_Encomenda,
+        
+        /// <remarks/>
+        Encomenda_Origem_NAV17,
+        
+        /// <remarks/>
+        Utilizador_Criacao,
+        
+        /// <remarks/>
+        Prices_Including_VAT,
+        
+        /// <remarks/>
+        Down_Payment,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -830,8 +1435,8 @@ namespace WSPurchaseInvHeader
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPurchInvHeaderInterm_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/CRONUS Portugal Ltd./Pag" +
-                        "e/WSPurchInvHeaderInterm?wsdl");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSPurchInvHe" +
+                        "aderInterm");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

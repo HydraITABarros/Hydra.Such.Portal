@@ -701,11 +701,12 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<AcessosLocalizacoes> result = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+            List<AcessosLocalizacoes> userLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+            var allLocations = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
 
-            if (result == null || result.Count == 0)
+            if (userLocations == null || userLocations.Count == 0)
             {
-                List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+                List<DDMessageRelated> result_all = allLocations.Select(x => new DDMessageRelated()
                 {
                     id = x.Code,
                     value = x.Name,
@@ -715,12 +716,14 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                List<DDMessageString> result_user = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name).Select(x => new DDMessageString()
+                var userLocationsIds = userLocations.Select(x => x.Localizacao).Distinct().ToList();
+                List<DDMessageRelated> result_all = allLocations.Where(x => userLocationsIds.Contains(x.Code)).Select(x => new DDMessageRelated()
                 {
-                    id = x.Localizacao,
-                    value = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault().Name
+                    id = x.Code,
+                    value = x.Name,
+                    extra = Convert.ToString(x.ArmazemCDireta)
                 }).ToList();
-                return Json(result_user);
+                return Json(result_all);
             }
         }
 

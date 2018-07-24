@@ -104,7 +104,7 @@ namespace Hydra.Such.Data.NAV
                    Document_TypeSpecified = true,
                    No = x.Código,
                    TypeSpecified = true,
-                   Type = ConvertType((x.Tipo.Replace(" ", String.Empty))),
+                   Type = x.Tipo.Replace(" ", String.Empty) == "3" ? WSCreatePreInvoiceLine.Type.G_L_Account : ConvertType((x.Tipo.Replace(" ", String.Empty)))+1,
                    Description = x.Descrição,
                    //Quantity = x.Quantidade.Value,
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,

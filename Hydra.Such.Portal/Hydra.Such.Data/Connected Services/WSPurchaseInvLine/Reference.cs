@@ -96,6 +96,8 @@ namespace WSPurchaseInvLine
         
         private string descriptionField;
         
+        private string description_2Field;
+        
         private string buy_from_Vendor_NoField;
         
         private bool haveFittingField;
@@ -123,6 +125,28 @@ namespace WSPurchaseInvLine
         private int blanket_Order_Line_NoField;
         
         private bool blanket_Order_Line_NoFieldSpecified;
+        
+        private int oM_Line_NoField;
+        
+        private bool oM_Line_NoFieldSpecified;
+        
+        private decimal line_Discount_PercentField;
+        
+        private bool line_Discount_PercentFieldSpecified;
+        
+        private string vAT_Bus_Posting_GroupField;
+        
+        private string vAT_Prod_Posting_GroupField;
+        
+        private string requisition_NoField;
+        
+        private int requisition_Line_NoField;
+        
+        private bool requisition_Line_NoFieldSpecified;
+        
+        private string cross_Reference_NoField;
+        
+        private string unit_of_Measure_CodeField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -322,6 +346,20 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string Description_2
+        {
+            get
+            {
+                return this.description_2Field;
+            }
+            set
+            {
+                this.description_2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         public string Buy_from_Vendor_No
         {
             get
@@ -335,7 +373,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         public bool HaveFitting
         {
             get
@@ -363,7 +401,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public string BlanketOrderNo
         {
             get
@@ -377,7 +415,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public string State_Message
         {
             get
@@ -391,7 +429,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string Job_No
         {
             get
@@ -405,7 +443,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string Unit_of_Measure
         {
             get
@@ -419,7 +457,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string RegionCode20
         {
             get
@@ -433,7 +471,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string FunctionAreaCode20
         {
             get
@@ -447,7 +485,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string ResponsabilityCenterCode20
         {
             get
@@ -461,7 +499,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string gLocation
         {
             get
@@ -475,7 +513,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Blanket_Order_No
         {
             get
@@ -489,7 +527,7 @@ namespace WSPurchaseInvLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public int Blanket_Order_Line_No
         {
             get
@@ -513,6 +551,160 @@ namespace WSPurchaseInvLine
             set
             {
                 this.blanket_Order_Line_NoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        public int OM_Line_No
+        {
+            get
+            {
+                return this.oM_Line_NoField;
+            }
+            set
+            {
+                this.oM_Line_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool OM_Line_NoSpecified
+        {
+            get
+            {
+                return this.oM_Line_NoFieldSpecified;
+            }
+            set
+            {
+                this.oM_Line_NoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        public decimal Line_Discount_Percent
+        {
+            get
+            {
+                return this.line_Discount_PercentField;
+            }
+            set
+            {
+                this.line_Discount_PercentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Line_Discount_PercentSpecified
+        {
+            get
+            {
+                return this.line_Discount_PercentFieldSpecified;
+            }
+            set
+            {
+                this.line_Discount_PercentFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
+        public string VAT_Bus_Posting_Group
+        {
+            get
+            {
+                return this.vAT_Bus_Posting_GroupField;
+            }
+            set
+            {
+                this.vAT_Bus_Posting_GroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=25)]
+        public string VAT_Prod_Posting_Group
+        {
+            get
+            {
+                return this.vAT_Prod_Posting_GroupField;
+            }
+            set
+            {
+                this.vAT_Prod_Posting_GroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
+        public string Requisition_No
+        {
+            get
+            {
+                return this.requisition_NoField;
+            }
+            set
+            {
+                this.requisition_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
+        public int Requisition_Line_No
+        {
+            get
+            {
+                return this.requisition_Line_NoField;
+            }
+            set
+            {
+                this.requisition_Line_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Requisition_Line_NoSpecified
+        {
+            get
+            {
+                return this.requisition_Line_NoFieldSpecified;
+            }
+            set
+            {
+                this.requisition_Line_NoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        public string Cross_Reference_No
+        {
+            get
+            {
+                return this.cross_Reference_NoField;
+            }
+            set
+            {
+                this.cross_Reference_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Unit_of_Measure_Code
+        {
+            get
+            {
+                return this.unit_of_Measure_CodeField;
+            }
+            set
+            {
+                this.unit_of_Measure_CodeField = value;
             }
         }
     }
@@ -635,6 +827,9 @@ namespace WSPurchaseInvLine
         Description,
         
         /// <remarks/>
+        Description_2,
+        
+        /// <remarks/>
         Buy_from_Vendor_No,
         
         /// <remarks/>
@@ -669,6 +864,30 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         Blanket_Order_Line_No,
+        
+        /// <remarks/>
+        OM_Line_No,
+        
+        /// <remarks/>
+        Line_Discount_Percent,
+        
+        /// <remarks/>
+        VAT_Bus_Posting_Group,
+        
+        /// <remarks/>
+        VAT_Prod_Posting_Group,
+        
+        /// <remarks/>
+        Requisition_No,
+        
+        /// <remarks/>
+        Requisition_Line_No,
+        
+        /// <remarks/>
+        Cross_Reference_No,
+        
+        /// <remarks/>
+        Unit_of_Measure_Code,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1265,8 +1484,8 @@ namespace WSPurchaseInvLine
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPurchInvLineInterm_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/CRONUS Portugal Ltd./Pag" +
-                        "e/WSPurchInvLineInterm?wsdl");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSPurchInvLi" +
+                        "neInterm");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

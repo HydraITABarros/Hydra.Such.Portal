@@ -43,13 +43,20 @@ namespace Hydra.Such.Data.NAV
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Quantity = purchLine.QuantityRequired.HasValue ? purchLine.QuantityRequired.Value : 0,
                     QuantitySpecified = true,
+                    Unit_of_Measure_Code = purchLine.UnitMeasureCode,
                     Direct_Unit_Cost = purchLine.UnitCost.HasValue ? purchLine.UnitCost.Value : 0,
                     Direct_Unit_CostSpecified = true,
                     Job_No = purchLine.ProjectNo,
                     gLocation = purchLine.LocationCode,
-                    Blanket_Order_No = purchLine.OpenOrderNo,
-                    Blanket_Order_Line_No = purchLine.OpenOrderLineNo.Value,
-                    Blanket_Order_Line_NoSpecified = true,
+                    Blanket_Order_No = string.IsNullOrEmpty(purchLine.OpenOrderNo) ? string.Empty : purchLine.OpenOrderNo,
+                    Blanket_Order_Line_No = purchLine.OpenOrderLineNo.HasValue ? purchLine.OpenOrderLineNo.Value : 0,
+                    Blanket_Order_Line_NoSpecified = purchLine.OpenOrderLineNo.HasValue,
+                    FunctionAreaCode20 = purchLine.FunctionalAreaCode,
+                    RegionCode20 = purchLine.RegionCode,
+                    ResponsabilityCenterCode20 = purchLine.CenterResponsibilityCode,
+                    Requisition_No = purchFromSupplier.RequisitionId,
+                    Requisition_Line_No = purchLine.LineId.HasValue ? purchLine.LineId.Value : 0,
+                    Requisition_Line_NoSpecified = true,
                 })
                 .ToArray();
 

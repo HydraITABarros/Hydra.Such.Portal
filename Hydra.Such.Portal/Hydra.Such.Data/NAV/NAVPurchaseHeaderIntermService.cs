@@ -35,7 +35,9 @@ namespace Hydra.Such.Data.NAV
                     Pay_to_Vendor_No = purchFromSupplier.SupplierId,
                     FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
                     RegionCode20 = purchFromSupplier.RegionCode,
-                    ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode
+                    ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
+                    Mercado_Local_Regiao = (WSPurchaseInvHeader.Mercado_Local_Regiao) Convert.ToInt32(purchFromSupplier.LocalMarketRegion),
+                    Mercado_Local_RegiaoSpecified = true,
                 }
             };
             

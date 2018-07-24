@@ -1809,8 +1809,10 @@
 
                 _purchaseheaderresponse: function (e) {
                     if (this.CBPurchaseHeader.length == 0) {
-                        this.$._CBPurchaseHeader.value = "";
-                        this.$._CBPurchaseLine.value = "";
+                        if(this.$._CBPurchaseHeader != null)
+                            this.$._CBPurchaseHeader.value = "";
+                        if (this.$._CBPurchaseLine != null)
+                            this.$._CBPurchaseLine.value = "";
                     }
                 },
 

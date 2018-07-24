@@ -731,7 +731,7 @@
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ RespostasPorPerfil ]]" id="cmbRespostasPorPerfil" item-value-path="id" item-label-path="id" label="Resposta" on-value-changed="_answerChange">
+                        <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -742,34 +742,9 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-sm-6">
-                        <vaadin-text-field label=" " value="{{_descricaoResposta}}" type="text" id="txtdescricaoResposta"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-9">
-                        <such-textarea rows="3" id="txtCommentdglAnswer" name="txtCommentdglAnswer" label="Comentário"></such-textarea>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
-                    </div>
-
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexoResposta"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgSendAnswer">&nbsp; Enviar</paper-button>
-                    </div>
                 </div>
             </paper-dialog>
+
             <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
                 <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
                     <vaadin-grid-column resizable>
@@ -1143,30 +1118,36 @@
                             this.$.txtDestProblema.value = workFlow.utilizador;
                         }
                         //Botão Resposta
-                        if (this.data.estado == 1) {
-                            this._nameButtonSend = "Enviar";
-                            if (this.data.areaPendente2 == "Contabilidade") {
-                                this._hiddeAnswerButton = true;
-                            } else if (this.data.areaPendente2 == "Aprovisionamento") {
-                                if (this._rfperfil == "Aprovisionamento") {
-                                    this._hiddeAnswerButton = false;
-                                }
-                            } else {
-                                if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+                        this._hiddeButtons();
+                    }
+                },
 
-                                    this._hiddeAnswerButton = false;
-                                }
+                _hiddeButtons: function () {
+                    debugger;
+                    if (this.data.estado == 1) {
+                        this._nameButtonSend = "Enviar";
+                        if (this.data.areaPendente2 == "Contabilidade") {
+                            this._hiddeAnswerButton = true;
+                        } else if (this.data.areaPendente2 == "Aprovisionamento") {
+                            if (this._rfperfil == "Aprovisionamento") {
+                                this._hiddeAnswerButton = false;
                             }
-                                                    
+                        } else {
+                            if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
+
+                                this._hiddeAnswerButton = false;
+                            }
                         }
                         //QUESTÂO
                         if (this._rfperfil == "Contabilidade") {
 
                             this._hiddeSendButton = true;
                         }
-
+                        //para testes
+                        this._hiddeSendButton = true;
                     }
                 },
+
                 _supplierSelected: function (e) {
                     this._loadOrders(e.detail.value);
                 },
@@ -1187,6 +1168,7 @@
                     }
                     return false;
                 },
+
                 _clFormatDateWorkflow: function (param) {
                     if (param != undefined) {
                         var data = new Date(param);
@@ -1319,6 +1301,7 @@
                         this._openToastError("O servidor não conseguiu processar o pedido.");
                     }
                     this.$.dialogSendPeding.close();
+                    this._hiddeButtons();
                 },
 
                 _responseValidatorProcessor: function (data) {
@@ -1538,6 +1521,7 @@
                 },
                 _dlgSendAnswer: function () {
                     if (this._validateInputForAnswer()) {
+                        debugger;
                         var answerDestinyProfile;
                         var userToAnswer = this.data.criadoPor;
 
@@ -1575,6 +1559,8 @@
                         this.data.workflowItems.push(workflow);
                         this.$.page_send_ajax.body = JSON.stringify(this.data);
                         this.$.page_send_ajax.generateRequest();
+
+                        this.$.dialogSendAnswer.close();
                     }
 
                 },
