@@ -42,7 +42,7 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 try
                 {
 
-                    _fornecedor = ObjectToTransform.NºFornecedor == null ? "" DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name,
+                    //_fornecedor = ObjectToTransform.NºFornecedor == null ? "" DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name,
 
 
                 }
