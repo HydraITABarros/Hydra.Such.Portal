@@ -38,8 +38,8 @@ namespace Hydra.Such.Data.Logic
                             ProductGroupCode = (string)temp.Product_Group_Code,
                             VendorProductNo = (string)temp.Vendor_Item_No_,
                             LastCostDirect = (decimal)temp.Last_Direct_Cost,
-                            VendorNo = (string)temp.Vendor_No_
-
+                            VendorNo = (string)temp.Vendor_No_,
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup
                         });
                     }
                 }
@@ -87,6 +87,7 @@ namespace Hydra.Such.Data.Logic
                         item.VendorNo = (string)temp.Vendor_No_;
                         item.UnitCost = (decimal)temp.UnitCost;
                         item.LocationCode = temp.Location_Code.Equals(DBNull.Value) ? "" : (string)temp.Location_Code;
+                        item.VATProductPostingGroup = (string)temp.VATProductPostingGroup;
 
                         result.Add(item);
                     }

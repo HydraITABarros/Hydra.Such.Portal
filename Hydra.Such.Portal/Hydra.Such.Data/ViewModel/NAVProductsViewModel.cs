@@ -16,6 +16,6 @@ namespace Hydra.Such.Data.ViewModel
         public decimal LastCostDirect { get; set; }
         public decimal? UnitCost { get; set; }
         public string LocationCode { get; set; }
-
+        public string VATProductPostingGroup { get; set; }
     }
 }

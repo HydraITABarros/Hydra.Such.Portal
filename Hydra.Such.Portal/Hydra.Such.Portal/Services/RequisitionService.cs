@@ -47,6 +47,7 @@ namespace Hydra.Such.Portal.Services
                     requisition.State = RequisitionStates.Validated;
                     requisition.ResponsibleValidation = this.changedByUserName;
                     requisition.ValidationDate = DateTime.Now;
+                    requisition.UpdateUser = this.changedByUserName;
 
                     linesToValidate.ForEach(item =>
                     {
@@ -130,6 +131,8 @@ namespace Hydra.Such.Portal.Services
                                     FunctionalAreaCode = line.FunctionalAreaCode,
                                     RegionCode = line.RegionCode,
                                     UnitMeasureCode = line.UnitMeasureCode,
+                                    VATBusinessPostingGroup = line.VATBusinessPostingGroup,
+                                    VATProductPostingGroup = line.VATProductPostingGroup
                                 })
                                 .ToList()
                             })
@@ -239,6 +242,8 @@ namespace Hydra.Such.Portal.Services
                                         FunctionalAreaCode = line.FunctionalAreaCode,
                                         RegionCode = line.RegionCode,
                                         UnitMeasureCode = line.UnitMeasureCode,
+                                        VATBusinessPostingGroup = line.VATBusinessPostingGroup,
+                                        VATProductPostingGroup = line.VATProductPostingGroup
                                     })
                                     .ToList()
                                 })
