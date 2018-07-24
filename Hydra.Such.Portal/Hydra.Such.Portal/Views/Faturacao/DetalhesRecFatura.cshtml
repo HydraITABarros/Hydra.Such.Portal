@@ -78,7 +78,9 @@
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        
         <iron-ajax url="/Faturacao/GetBillingReception/"
                    last-response="{{ data }}"
                    method="get"
@@ -731,7 +733,7 @@
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                        <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Destinatário" on-value-changed="_problemTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -741,6 +743,31 @@
                                 </paper-icon-item>
                             </template>
                         </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" on-value-changed="_UAProblemChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-9">
+                        <such-textarea rows="3" id="txtCommentUAdgl" name="txtCommentUAdgl" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="buttons">
+                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_dlgSendUA">&nbsp; Enviar</paper-button>
                     </div>
                 </div>
             </paper-dialog>
@@ -1138,12 +1165,11 @@
                                 this._hiddeAnswerButton = false;
                             }
                         }
-                        //QUESTÂO
-                        if (this._rfperfil == "Contabilidade") {
+                        
+                    }
+                    //QUESTÂO
+                    if (this._rfperfil == "Contabilidade") {
 
-                            this._hiddeSendButton = true;
-                        }
-                        //para testes
                         this._hiddeSendButton = true;
                     }
                 },
@@ -1564,6 +1590,52 @@
                     }
 
                 },
+
+                _dlgSendUA: function () {
+                        if (this._validateInputForAnswer()) {
+                            debugger;
+                            var answerDestinyProfile;
+                            var userToAnswer = this.data.criadoPor;
+
+                            var idmotivo = this.$.cmbRespostasPorPerfil.value
+                            var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
+
+                            var workflow = null;;
+                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+
+                            //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                            var novoDestino = idWork.utilizador;
+                            this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
+                            this.$.get_userprofile_ajax.generateRequest();
+                            //**/
+                            var userProfile = this.userProfile;
+                            var Area = idWork.area;
+
+                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                            workflow = {
+                                id: idWork.id + 1,
+                                idRecFaturacao: this.data.id,
+                                codTipoProblema: idmotivo,
+                                codProblema: "RF5P",
+                                descricao: this.$.txtdescricaoResposta.value,
+                                //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                                destinatario: novoDestino,
+                                comentario: this.$.txtCommentdglAnswer.value,
+                                enderecoFornecedor: selVendor.email,
+                                area: userProfile,
+                                areaWorkflow: userProfile,
+                                codDestino: this.$.txtCodDestino.value,
+                                attached: this.Anexos
+                            };
+
+                            this.data.workflowItems.push(workflow);
+                            this.$.page_send_ajax.body = JSON.stringify(this.data);
+                            this.$.page_send_ajax.generateRequest();
+
+                            this.$.dialogSendAnswer.close();
+                        }
+                },
+
                 _dlgAddAttached: function () {
                     var anexoNew = {
                         file: this.$.txtNomeFicheiro.value,
