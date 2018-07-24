@@ -72,7 +72,7 @@ namespace Hydra.Such.Portal.Controllers
                     result.ForEach(Compras =>
                     {
                         Compras.RegiaoMercadoLocalTexto = Compras.RegiaoMercadoLocal == null ? "" : EnumerablesFixed.LocalMarketRegions.Where(y => y.Id == Compras.RegiaoMercadoLocal).FirstOrDefault().Value;
-                        Compras.CodigoProdutoTexto = Compras.CodigoProduto == null ? "" : Compras.CodigoProduto + " - " + DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.CodigoProduto).FirstOrDefault().Name;
+                        Compras.CodigoProdutoTexto = Compras.CodigoProduto == null ? "" : Compras.CodigoProduto;
                         Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
                         Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : Compras.NoFornecedor + " - " + DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name;
                         if (!string.IsNullOrEmpty(Compras.NoRequisicao) && Compras.NoLinhaRequisicao != null)
