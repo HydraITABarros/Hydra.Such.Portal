@@ -1,0 +1,274 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<dom-module id="x-detalhelinhaspreencomenda">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/LinhasPreEncomenda/GetLinhasPreEncomendaDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
+            <!--<paper-button id="btnCreate" raised class="tablinks" on-tap="_create" disabled="{{ !_isCreate }}" title="Criar" style="background-color:#71BCC1"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>-->
+        </div>
+
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numPreEncomenda}}" maxlength="20" id="numPreEncomenda" name="numPreEncomenda" label="Nº Pré-Encomenda"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numLinhaPreEncomenda}}" id="numLinhaPreEncomenda" name="numLinhaPreEncomenda" label="Nº Linha"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoProduto}}" id="codigoProduto" name="codigoProduto" label="Cód. Produto"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.descricaoProduto}}" id="descricaoProduto" name="descricaoProduto" label="Desc. Produto"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoLocalizacao}}" maxlength="10" id="codigoLocalizacao" name="codigoLocalizacao" label="Cód. Localização"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoUnidadeMedida}}" maxlength="10" id="codigoUnidadeMedida" name="codigoUnidadeMedida" label="Cód. Unidade Medida"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.quantidadeDisponibilizada}}" id="quantidadeDisponibilizada" name="quantidadeDisponibilizada" label="Quantidade Disponibilizada"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.custoUnitario}}" id="custoUnitario" name="custoUnitario" label="Custo Unitário"> </vaadin-text-field>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numFornecedor}}" maxlength="20" id="numFornecedor" name="numFornecedor" label="Nº Fornecedor"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.nomeFornecedor_Show}}" id="nomeFornecedor_Show" name="nomeFornecedor_Show" label="Nome Fornecedor" disabled="true"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numRequisicao}}" id="numRequisicao" name="numRequisicao" label="Nº Requisição"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numLinhaRequisicao}}" id="numLinhaRequisicao" name="numLinhaRequisicao" label="Nº Linha Requisição"> </vaadin-text-field>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoRegiao}}" maxlength="20" id="codigoRegiao" name="codigoRegiao" label="Cód. Região"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoAreaFuncional}}" maxlength="20" id="codigoAreaFuncional" name="codigoAreaFuncional" label="Cód. Área Funcional"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.codigoCentroResponsabilidade}}" maxlength="20" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Cód. Centro Responsabilidade"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.numProjeto}}" maxlength="20" id="numProjeto" name="numProjeto" label="Nº Projeto"> </vaadin-text-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-detalhelinhaspreencomenda',
+                properties: {
+                    _id: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isUpdate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    userAllowed: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _permissions: {
+                        type: Array
+                    }
+                },
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "numLinhaPreEncomenda": this._id });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._numLinhaPreEncomenda == "")
+                        this._isCreate = true;
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+                    self._setFieldsEditability(self.data);
+                },
+                
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                //Troca o caracter , por .
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
+
+                _validateData: function () {
+                    
+
+                    return true;
+                },
+
+                _setFieldsEditability(data) {
+                    var _self = this;
+
+
+                },
+
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                }
+            });
+        });
+    </script>
+</dom-module>

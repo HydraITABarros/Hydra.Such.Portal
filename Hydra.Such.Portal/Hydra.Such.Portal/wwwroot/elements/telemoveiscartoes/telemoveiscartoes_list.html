@@ -13,11 +13,20 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-telemoveiscartoeslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -65,10 +74,24 @@
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid aria-label="CartoesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numCartao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numCartao">Nº Cartão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numCartao" />
@@ -77,7 +100,7 @@
                     {{item.numCartao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoServico_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoServico_Show">Tipo Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="tipoServico_Show" />
@@ -86,7 +109,7 @@
                     {{item.tipoServico_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.estado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estado_Show" />
@@ -95,7 +118,7 @@
                     {{item.estado_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contaSuch.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contaSuch">Conta SUCH</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contaSuch" />
@@ -104,7 +127,7 @@
                     {{item.contaSuch}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codRegiao">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codRegiao" />
@@ -113,7 +136,7 @@
                     {{item.codRegiao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codAreaFuncional" />
@@ -122,7 +145,7 @@
                     {{item.codAreaFuncional}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codCentroResponsabilidade" />
@@ -148,6 +171,12 @@
                     _permissions: {
                         type: Array
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -162,6 +191,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -189,7 +221,47 @@
                     var FileName = this.export;
                     location.href = '../TelemoveisCartoes/ExportToExcelDownload_TelemoveisCartoes?sFileName=' + FileName;
                 },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "numCartao": { hidden: false, label: "Nº Cartão" },
+                        "tipoServico_Show": { hidden: false, label: "Tipo Serviço" },
+                        "estado_Show": { hidden: false, label: "Estado" },
+                        "contaSuch": { hidden: false, label: "Conta SUCH" },
+                        "codRegiao": { hidden: false, label: "Código Região" },
+                        "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" }
+                    };
 
+                    if (sessionStorage["telemoveiscartoesList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["telemoveiscartoesList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["telemoveiscartoesList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
             });
         });
     </script>

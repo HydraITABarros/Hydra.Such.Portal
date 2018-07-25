@@ -20,11 +20,20 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-procedimentoslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -96,14 +105,24 @@
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
-
-        <!--<div class="marginSpace">
-        <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-    </div>-->
-
+        
         <vaadin-grid aria-label="ProcedimentosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -112,7 +131,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estado" />
@@ -122,7 +141,7 @@
                     [[_displayState(item.estado)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.nomeProcesso.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeProcesso" />
@@ -131,7 +150,7 @@
                     {{item.nomeProcesso}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.gestorProcesso.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="gestorProcesso">Gestor Processo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="gestorProcesso" />
@@ -140,7 +159,7 @@
                     {{item.gestorProcesso}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.valorPrecoBase.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorPrecoBase">Valor Preço Base</vaadin-grid-sorter>
                     <vaadin-grid-filter path="valorPrecoBase" />
@@ -149,7 +168,7 @@
                     {{item.valorPrecoBase}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRegiao" />
@@ -158,7 +177,7 @@
                     {{item.codigoRegiao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoAreaFuncional">Codigo Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoAreaFuncional" />
@@ -167,7 +186,7 @@
                     {{item.codigoAreaFuncional}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoCentroResponsabilidade" />
@@ -182,8 +201,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-
-
             Polymer({
                 is: 'x-procedimentoslist',
                 properties: {
@@ -207,11 +224,20 @@
                     _isHistoric: {
                         type: String,
                         value: "false"
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
                     }
                 },
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "id": this._procedimentotypeid, "Historic": this._historico }/*this._procedimentotypeid*/);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -316,7 +342,48 @@
                     var FileName = this.export;
                     location.href = '../ProcedimentosCcps/ExportToExcelDownload_PedidosAquisicao?sFileName=' + FileName;
                 },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "no": { hidden: false, label: "Nº" },
+                        "estado": { hidden: false, label: "Estado" },
+                        "nomeProcesso": { hidden: false, label: "Nome Processo" },
+                        "gestorProcesso": { hidden: false, label: "Gestor Processo" },
+                        "valorPrecoBase": { hidden: false, label: "Valor Preço Base" },
+                        "codigoRegiao": { hidden: false, label: "Código Região" },
+                        "codigoAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" }
+                    };
 
+                    if (sessionStorage["procedimentosList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["procedimentosList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["procedimentosList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
             });
         });
     </script>
