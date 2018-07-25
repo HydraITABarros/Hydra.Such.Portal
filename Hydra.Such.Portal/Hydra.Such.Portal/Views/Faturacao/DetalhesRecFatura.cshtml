@@ -28,7 +28,7 @@
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
-<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil"></x-rececaofaturasdetails>
+<x-rececaofaturasdetails _rfperfil="@ViewBag.RFPerfil" _RFPerfilVisualizacao="@ViewBag._RFPerfilVisualizacao"></x-rececaofaturasdetails>
 
 <dom-module id="x-rececaofaturasdetails">
     <template>
@@ -243,14 +243,17 @@
                 <template is="dom-if" if="{{ _isCreditMemo }}">
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
-                <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>
-                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>
+                    <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
+                    <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
+                    <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
+                    <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
+                    <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
+                    <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true" hidden="{{_showHiddenPendingList}}"></i>&nbsp;Ver Pendente</paper-button>
+                </template>
             </template>
-            <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
-            <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
-            <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
-            <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
-            <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendente</paper-button>
+
         </div>
 
         <div class="panel panel-default">
@@ -448,7 +451,7 @@
                         </template>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente2}}" id="txtArea" disabled></vaadin-text-field>
+                        <vaadin-text-field label="Área" type="text" value="{{data.areaPendente}}" id="txtArea" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
                         <vaadin-text-field type="text" value="{{ data.destinatario }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
@@ -805,6 +808,15 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
+                            <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="areaPendente" />
+                        </template>
+                        <template>
+                            {{ item.areaPendente }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
                             <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
                             <vaadin-grid-filter path="estado" />
                         </template>
@@ -974,15 +986,7 @@
                             {{ item.destinatario }}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="areaPendente" />
-                        </template>
-                        <template>
-                            {{ item.areaPendente }}
-                        </template>
-                    </vaadin-grid-column>
+
                     <vaadin-grid-column resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
@@ -1094,7 +1098,15 @@
                         type: Boolean,
                         value: true,
                     },
+                    _showHiddenPendingList: {
+                        type: Boolean,
+                        value: true,
+                    },
                     _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _RFPerfilVisualizacao: {
                         type: String,
                         value: "",
                     },
@@ -1116,11 +1128,11 @@
                     },
                     _accountingMenuItems: {
                         type: Array,
-                        value: [{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 1, description: "Pendente" }, { value: 5, description: "Resolvido" }],
+                        value: [{ value: 1, description: "Pendente" },{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 5, description: "Resolvido" }],
                     },
                     _provisioningMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Alterar Destinatários" }],
+                        value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
                     },
                 },
                 observers: [
@@ -1154,19 +1166,19 @@
                         if (this.data.estado==2){
                             this._checkPending = false;
                         }
-                        //Ponto de situação
-                        var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        if (workFlow != null) {
-                            this.$.txtComment.value = workFlow.comentario;
-                            this.$.codDescricao.value = workFlow.codTipoProblema;
-                            this.$.txtDescription.value = workFlow.descricao;
-                            var data = new Date(workFlow.dataCriacao);
-                            var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                            if (dataFormatada != undefined) {
-                                this.$.txtDatePeding.value = dataFormatada;
-                            }
-                            this.$.txtDestProblema.value = workFlow.utilizador;
-                        }
+                        ////Ponto de situação
+                        //var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
+                        //if (workFlow != null) {
+                        //    this.$.txtComment.value = workFlow.comentario;
+                        //    this.$.codDescricao.value = workFlow.codTipoProblema;
+                        //    this.$.txtDescription.value = workFlow.descricao;
+                        //    var data = new Date(workFlow.dataCriacao);
+                        //    var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                        //    if (dataFormatada != undefined) {
+                        //        this.$.txtDatePeding.value = dataFormatada;
+                        //    }
+                        //    this.$.txtDestProblema.value = workFlow.utilizador;
+                        //}
                         //Botão Resposta
                         this._hiddeButtons();
                     }
@@ -1197,6 +1209,9 @@
                     if (this._rfperfil == "Aprovisionamento") {
                         this._showHiddenProvisioning = false;
                         this._hiddeSendButton = false;
+                    }
+                    if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil"){
+                        this._showHiddenPendingList = false;
                     }
                 },
 
@@ -1754,9 +1769,10 @@
                         if (updateDestinItem != undefined) {
                             this._openToastError(this.updatedItem.eMessage);
                         } else {
-                            this.$.grdBillingView.clearCache();
                             this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
                             this.$.getPendingTotal_ajax.generateRequest();
+                            this._openToast("Destinatário Actualizado");
+
                         }
                     }
                     else {
@@ -1768,9 +1784,12 @@
                         if (this.updatedItem.eReasonCode == "1") {
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
-                            if (this.data.link != null) {
+                            if (this.data.link != null && this.data.link !="") {
                                 var link = this.data.link;
                                 window.open(link);
+                            }
+                            else {
+                                this._openToastError("Não foi possivel abrir a Encomenda");
                             }
                         }
                         else {
@@ -1784,7 +1803,6 @@
                 _getPendingTotalReponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.getViewResponse != undefined) {
-                            this._showOptionDestitation = false;
                             this.$.dialogViewHist_Pending.open();
                         }
                         else {
@@ -1833,6 +1851,12 @@
                         return;
                     switch (item.value) {
                         case 1:
+                            this._showOptionDestitation = false;
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                            break;
+                        case 2:
+                            this._showOptionDestitation = true;
                             this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
                             this.$.getPendingTotal_ajax.generateRequest();
                             break;
@@ -1847,24 +1871,52 @@
                         return;
                     switch (item.value) {
                         case 1:
-                            this.data.estado = item.value;
-                            this.$.setState_ajax.body = JSON.stringify(this.data);
-                            this.$.setState_ajax.generateRequest();
+                            if (this.data.estado != 0 && this.data.estado != 2 && this.data.estado != 1){
+                                if (confirm("Pretende alterar o estado para Pendente?")) {
+                                    this.data.estado = item.value;
+                                    this.$.setState_ajax.body = JSON.stringify(this.data);
+                                    this.$.setState_ajax.generateRequest();
+                                }
+                            }
+                            else {
+                                this._openToastError("Não foi possivel alterar o estado");
+                            }
                             break;
                         case 2:
-                            this.data.estado = item.value;
-                            this.$.setState_ajax.body = JSON.stringify(this.data);
-                            this.$.setState_ajax.generateRequest();
+                            if (this.data.estado != 2 && this.data.estado != 3) {
+                                if (confirm("Pretende alterar o estado para Contabilizado?")) {
+                                    this.data.estado = item.value;
+                                    this.$.setState_ajax.body = JSON.stringify(this.data);
+                                    this.$.setState_ajax.generateRequest();
+                                }
+                            }
+                            else {
+                                this._openToastError("Não foi possivel alterar o estado");
+                            }
                             break;
                         case 4:
-                            this.data.estado = item.value;
-                            this.$.setState_ajax.body = JSON.stringify(this.data);
-                            this.$.setState_ajax.generateRequest();
+                            if (this.data.estado != 2 && this.data.estado != 3) {
+                                if (confirm("Pretende alterar o estado para Sem Efeito?")) {
+                                    this.data.estado = item.value;
+                                    this.$.setState_ajax.body = JSON.stringify(this.data);
+                                    this.$.setState_ajax.generateRequest();
+                                }
+                            }
+                            else {
+                                this._openToastError("Não foi possivel alterar o estado");
+                            }
                             break;
                         case 5:
-                            this.data.estado = item.value;
-                            this.$.setState_ajax.body = JSON.stringify(this.data);
-                            this.$.setState_ajax.generateRequest();
+                            if (this.data.estado != 3 && this.data.areaPendente2 != "") {
+                                if (confirm("Pretende alterar o estado para Resolvido?")) {
+                                    this.data.estado = item.value;
+                                    this.$.setState_ajax.body = JSON.stringify(this.data);
+                                    this.$.setState_ajax.generateRequest();
+                                }
+                            }
+                            else {
+                                this._openToastError("Não foi possivel alterar o estado");
+                            }
                             break;
                     }
                 },
@@ -1892,8 +1944,12 @@
                     }
                 },
                 _openRequisicao: function (e) {
-                    this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
-                    this.$.openEncomendaFactura_ajax.generateRequest();
+                    if (this.$.txtBillingReceptionId.value != null && this.$.txtBillingReceptionId.value != "") {
+                        this.$.openEncomendaFactura_ajax.body = JSON.stringify(this.data);
+                        this.$.openEncomendaFactura_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Não existe Nº da Refêrencia!");
+                    }
                 },
                 _dlgUpdateDesti: function (selectedItem, selectedItems) {
                     debugger;
@@ -1903,6 +1959,7 @@
                             selItms[0].destinatario = this.$.cmbDestinatarios.value;
                             this.$.updateDestination.body = JSON.stringify(selItms);
                             this.$.updateDestination.generateRequest();
+                            this.$.grdBillingView.clearCache();
 
                         } else {
                             this._openToastError("Não foi selecionada nenhuma linha.");

@@ -317,7 +317,6 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formPreRequisitions">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
@@ -572,11 +571,11 @@
                                 <!--Anexos-->
                                 <div>
                                     <div class="row break_clear">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
 
                                             </vaadin-upload>
-                                        </template>
+                                        <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
@@ -1393,6 +1392,7 @@
                     this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
+                    
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
                             if (e.detail.xhr.status == 200) {
