@@ -2110,7 +2110,8 @@
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._MaintenanceOrderLineNo.value = "";
-                                this.$._CBPurchaseHeader.value = "";
+                                if (this.$._CBPurchaseHeader != null)
+                                    this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
                                 this.$._CBItems._clearSelection();
                                 this.$._ProjectNo.value = this.data.projectNo;
@@ -2179,17 +2180,25 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
+                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 
                         this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         var req = this.$.CleanPreRequesition_ajax;
-
-                        if (this.CreateReqResponse.eMessages.length > 0) {
-                            var errors = this.CreateReqResponse.eMessages[0].message;
-                            for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
-                                errors += this.CreateReqResponse.eMessages[i].message + ";";
+                        var errorsToDisplay = this.CreateReqResponse.eMessages.find(x => x.type == 0);
+                        //if (this.CreateReqResponse.eMessages.length > 0) {
+                        if (errorsToDisplay != undefined) {//.length > 0) {
+                            if (Array.isArray(errors)) {
+                                var errors = errorsToDisplay[0].message;
+                                for (var i = 1; i < errorsToDisplay.length; i++) {
+                                    errors += errorsToDisplay[i].message + ";";
+                                }
                             }
+                            else {
+                                var errors = errorsToDisplay.message;
+                            }
+
                             var thisCtx = this;
 
                             setTimeout(

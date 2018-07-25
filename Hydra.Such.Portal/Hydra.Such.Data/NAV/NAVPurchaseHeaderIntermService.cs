@@ -28,6 +28,10 @@ namespace Hydra.Such.Data.NAV
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
 
+            int localMarketRegion;
+            if (int.TryParse(purchFromSupplier.LocalMarketRegion, out localMarketRegion))
+                localMarketRegion--;
+
             WSPurchaseInvHeader.Create navCreate = new WSPurchaseInvHeader.Create()
             {
                 WSPurchInvHeaderInterm = new WSPurchaseInvHeader.WSPurchInvHeaderInterm()
@@ -36,7 +40,7 @@ namespace Hydra.Such.Data.NAV
                     FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
                     RegionCode20 = purchFromSupplier.RegionCode,
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
-                    Mercado_Local_Regiao = (WSPurchaseInvHeader.Mercado_Local_Regiao) Convert.ToInt32(purchFromSupplier.LocalMarketRegion),
+                    Mercado_Local_Regiao = (WSPurchaseInvHeader.Mercado_Local_Regiao)localMarketRegion,
                     Mercado_Local_RegiaoSpecified = true,
                 }
             };
