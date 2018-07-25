@@ -29,6 +29,28 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// Devolve os dados de um registo da tabela
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <param name="imei"></param>
+        /// <returns></returns>
+        public static LinhasPreEncomenda GetLinhasPreEncomenda(int numLinhaPreEncomenda)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasPreEncomenda.Where(p => p.NºLinhaPreEncomenda == numLinhaPreEncomenda).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         #endregion
 
 

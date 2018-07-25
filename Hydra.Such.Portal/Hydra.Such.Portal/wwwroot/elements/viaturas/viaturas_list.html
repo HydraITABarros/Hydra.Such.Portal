@@ -12,10 +12,19 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-viaturaslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -67,18 +76,24 @@
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova Viatura</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
-
-
-        <!--<div class="marginSpace">
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-        </template>
-    </div>-->
-
         <vaadin-grid id="grdViaturasGrid" aria-label="ViaturasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.matricula.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
                     <vaadin-grid-filter path="matricula" />
@@ -88,7 +103,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px">
+            <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.dataMatricula.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataMatricula">Data Matrícula</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataMatricula" />
@@ -98,27 +113,27 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="90px">
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.estadoDescricao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
+                    <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadoDescricao" />
                 </template>
                 <template>
                     {{item.estadoDescricao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.tipoViatura.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoViatura">Tipo Viatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoViatura" />
+                    <vaadin-grid-sorter path="tipoViatura.descricao">Tipo Viatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoViatura.descricao" />
                 </template>
                 <template>
                     {{item.tipoViatura.descricao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px">
+            <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.codigoMarca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoMarca">Código Marca</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoMarca" />
@@ -128,17 +143,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marca.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marca" />
+                    <vaadin-grid-sorter path="marca.descricao">Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marca.descricao" />
                 </template>
                 <template>
                     {{item.marca.descricao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoModelo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoModelo">Código Modelo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoModelo" />
@@ -148,17 +163,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.modelo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="modelo" />
+                    <vaadin-grid-sorter path="modelo.descricao">Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="modelo.descricao" />
                 </template>
                 <template>
                     {{item.modelo.descricao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px">
+            <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRegiao" />
@@ -168,7 +183,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="180px">
+            <vaadin-grid-column width="180px" resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoAreaFuncional" />
@@ -178,7 +193,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="240px">
+            <vaadin-grid-column width="240px" resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoCentroResponsabilidade" />
@@ -188,7 +203,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorCriacao" />
@@ -198,7 +213,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="190px">
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.dataHoraModificacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Modificação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataHoraModificacao" />
@@ -208,7 +223,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="190px">
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.utilizadorModificacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Modificação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorModificacao" />
@@ -237,6 +252,12 @@
                     _permissions: {
                         type: Array
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -251,6 +272,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -278,6 +302,54 @@
                     var FileName = this.export;
                     location.href = '../Viaturas/ExportToExcelDownload_Viaturas?sFileName=' + FileName;
                 },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "matricula": { hidden: false, label: "Matrícula" },
+                        "dataMatricula": { hidden: false, label: "Data Matrícula" },
+                        "estadoDescricao": { hidden: false, label: "Estado" },
+                        "tipoViatura": { hidden: false, label: "Tipo Viatura" },
+                        "codigoMarca": { hidden: false, label: "Código Marca" },
+                        "marca": { hidden: false, label: "Marca" },
+                        "codigoModelo": { hidden: false, label: "Código Modelo" },
+                        "modelo": { hidden: false, label: "Modelo" },
+                        "codigoRegiao": { hidden: false, label: "Código Região" },
+                        "codigoAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "utilizadorCriacao": { hidden: false, label: "Utilizador Criação" },
+                        "dataHoraModificacao": { hidden: false, label: "Data/Hora Modificação" },
+                        "utilizadorModificacao": { hidden: false, label: "Utilizador Modificação" }
+                    };
+
+                    if (sessionStorage["viaturasList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["viaturasList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["viaturasList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
             });
         });
     </script>

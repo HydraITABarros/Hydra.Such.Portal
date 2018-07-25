@@ -12,6 +12,14 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-clientlist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -59,16 +67,32 @@
         </iron-ajax>
 
         <div class="subMenu">
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
                 <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+
         </div>
 
         <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -77,7 +101,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.name.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -86,7 +110,7 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.address.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="address">Morada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="address" />
@@ -95,7 +119,7 @@
                     {{item.address}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable>
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.post_Code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="post_Code">Cód. Postal</vaadin-grid-sorter>
                     <vaadin-grid-filter path="post_Code" />
@@ -104,7 +128,7 @@
                     {{item.post_Code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable>
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.city.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="city" />
@@ -113,7 +137,7 @@
                     {{item.city}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable>
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.regiao_Cliente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regiao_Cliente">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regiao_Cliente" />
@@ -128,7 +152,7 @@
     </template>
 
     <script>
-        document.addEventListener('WebComponentsReady', function () {
+        document.addEventListener('WebComponentsReady', function () {  
             Polymer({
                 is: 'x-clientlist',
                 properties: {
@@ -147,6 +171,12 @@
                         type: Boolean,
                         value: false
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -154,6 +184,7 @@
                     }
                 },
                 _create: function (item) {
+
                     if (item != null) {
                         window.location.href = "Clientes/DetalhesCliente/";
                     }
@@ -161,6 +192,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "areaid": this._areaid });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     var gridToBottomTimeout;
@@ -191,6 +225,46 @@
                     var FileName = this.export;
                     location.href = '../Clientes/ExportToExcelDownload_Clientes?sFileName=' + FileName;
                 },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "no": { hidden: false, label: "Nº" },
+                        "name": { hidden: false, label: "Nome" },
+                        "address": { hidden: false, label: "Morada" },
+                        "post_Code": { hidden: false, label: "Cód. Postal" },
+                        "city": { hidden: false, label: "Cidade" },
+                        "regiao_Cliente": { hidden: false, label: "Região" }
+                    };
+
+                    if (sessionStorage["clientList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["clientList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["clientList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
             });
         });
     </script>

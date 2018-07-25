@@ -317,7 +317,6 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formPreRequisitions">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
@@ -1445,7 +1444,7 @@
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
                 },
-
+                
                 _setProjectDim2: function (e) {
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);

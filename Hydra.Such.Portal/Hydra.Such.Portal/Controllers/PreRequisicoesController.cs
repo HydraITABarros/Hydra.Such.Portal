@@ -868,7 +868,12 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(data);
                         }
                     }
-                   
+
+                    //Get VATPostingGroup Info
+                    List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
+                    var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
+                    var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+                    
                     List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
@@ -934,8 +939,16 @@ namespace Hydra.Such.Portal.Controllers
                             }).ToList()
                         }).ToList();
 
-                    //Criar anexos                  
-                    data = CopyAttachments(newlistOpenOrder, data);
+                    //Set VATPostingGroup Info
+                    newlistOpenOrder.ForEach(header =>
+                    {
+                        header.Lines.ForEach(line => {
+                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                        });
+                    });
+                
+                    data = CreateRequesition(newlistOpenOrder, data);
 
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto ==0|| x.NºLinhaEncomendaAberto==null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
@@ -1002,8 +1015,15 @@ namespace Hydra.Such.Portal.Controllers
                             }).ToList()
                         }).ToList();
 
-                    //Criar Anexos
-                    data = CopyAttachments(newlist, data);
+                    //Set VATPostingGroup Info
+                    newlist.ForEach(header =>
+                    {
+                        header.Lines.ForEach(line => {
+                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                        });
+                    });
+                    data = CreateRequesition(newlist, data);
                 }
             }
             catch (Exception ex)
@@ -1015,7 +1035,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-        public PreRequesitionsViewModel CopyAttachments(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
+        public PreRequesitionsViewModel CreateRequesition(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
         {
             int totalItems = 0;
             string createdReqIds = ": ";
