@@ -1420,7 +1420,36 @@
                             this._RegistOverrideValidation();
                             break;
                         case 4: //"Anular Aprovação"
-                            this._RegistCancelApproval();
+                            var loads = this;
+                            var TMessage = this.$.ToastMessage;
+                            var TMessageError = this.$.ToastError;
+
+                            bootbox.prompt({
+                                title: "Introduza o motivo de rejeição!",
+                                inputType: 'textarea',
+                                buttons: {
+                                    confirm: {
+                                        label: 'Rejeitar',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Cancelar',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    debugger;
+                                    if (result == "") {
+                                        TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                        TMessageError.open();
+                                        return false;
+                                    } else {
+                                        loads._RegistCancelApproval();
+                                    }
+                                }
+                            });
+
+                            
                             break;
                         case 5: //"Fechar Requisição"
                             this._RegistCloseRequest();
