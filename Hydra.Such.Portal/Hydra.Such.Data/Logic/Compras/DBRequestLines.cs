@@ -222,6 +222,8 @@ namespace Hydra.Such.Data.Logic.Request
                     MarketLocalRegion = item.RegiãoMercadoLocal,
                     CustomerNo = item.NºCliente,
                     Approvers = item.Aprovadores,
+                    VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
+                    VATProductPostingGroup = item.GrupoRegistoIvaproduto
                 };
             }
             return null;
@@ -296,6 +298,8 @@ namespace Hydra.Such.Data.Logic.Request
                     RegiãoMercadoLocal= item.MarketLocalRegion,
                     NºCliente= item.CustomerNo,
                     Aprovadores= item.Approvers,
+                    GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
+                    GrupoRegistoIvaproduto = item.VATProductPostingGroup
                 };
             }
             return null;

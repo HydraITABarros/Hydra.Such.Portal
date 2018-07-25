@@ -12,6 +12,6 @@ namespace Hydra.Such.Data.ViewModel
         public string Address { get; set; }
         public string VATRegistrationNo { get; set; }
         public string PostCode { get; set; }
-       
+        public string VATBusinessPostingGroup { get; set; }
     }
 }

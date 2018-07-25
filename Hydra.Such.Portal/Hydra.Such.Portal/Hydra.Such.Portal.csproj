@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,6 +52,9 @@
     <Folder Include="wwwroot\FacturasFornecedor\2017\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
+    <Folder Include="wwwroot\lib\paper-menu-master\.github\" />
+    <Folder Include="wwwroot\lib\paper-menu-master\demo\" />
+    <Folder Include="wwwroot\lib\paper-menu-master\test\" />
     <Folder Include="wwwroot\reports\" />
     <Folder Include="wwwroot\Upload\" />
   </ItemGroup>
