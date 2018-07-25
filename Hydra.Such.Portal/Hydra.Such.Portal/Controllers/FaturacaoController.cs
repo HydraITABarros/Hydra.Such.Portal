@@ -65,6 +65,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
                 ViewBag.RFPerfil = userConfig.RFPerfil;
+                ViewBag.RFPerfilVisualizacao = userConfig.RFPerfilVisualizacao;
                 return View();
             }
             else
@@ -91,8 +92,10 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, 1, areaPendente);
+            BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
+            BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
+
+            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
             return Json(billingReceptions);
         }
         public JsonResult GetBillingReceptionsPending()
@@ -100,7 +103,7 @@ namespace Hydra.Such.Portal.Controllers
 
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, 1, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserPending();
             return Json(billingReceptions);
         }
 
@@ -200,14 +203,20 @@ namespace Hydra.Such.Portal.Controllers
                 {
 
                     item.ModificadoPor = User.Identity.Name;
-                    BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
-                    item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
-                    workflow.DataCriacao = DateTime.Now;
-                    workflow.Destinatario = NovoDestinatario;
+                    BillingRecWorkflowModel workflow = new BillingRecWorkflowModel();
                     item.WorkflowItems.Add(workflow);
                     item.AreaUltimaInteracao = workflow.AreaWorkflow;
                     item.UserUltimaInteracao = workflow.CriadoPor;
-
+                    workflow.DataCriacao = DateTime.Now;
+                    workflow.Destinatario = NovoDestinatario;
+                    workflow.CodTipoProblema = item.TipoProblema;
+                    workflow.Area = item.AreaPendente;
+                    workflow.AreaWorkflow= item.AreaPendente2;  
+                    workflow.Comentario = item.Descricao;
+                    workflow.Descricao= item.DescricaoProblema;
+                    workflow.Comentario = "Alteração Destinatário";
+                    workflow.Estado = BillingReceptionStates.Pendente;
+                    item.AreaPendente = "Aprovisionamentos";
                     updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                     if (updatedItem == null)
                     {
@@ -235,17 +244,11 @@ namespace Hydra.Such.Portal.Controllers
             BillingReceptionModel updatedItem = null;
             if (item != null)
             {
-                item.ModificadoPor = User.Identity.Name;
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
-                workflow.Comentario = "Alteração Destinatário";
-                workflow.Estado = BillingReceptionStates.Pendente;
-                item.AreaPendente = "Aprovisionamentos";
                 item.WorkflowItems.Add(workflow);
-                item.AreaUltimaInteracao = workflow.AreaWorkflow;
-                item.UserUltimaInteracao = workflow.CriadoPor;
-
+                
                 updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                 if (updatedItem != null)
                 {
@@ -277,6 +280,8 @@ namespace Hydra.Such.Portal.Controllers
                 item.ModificadoPor = User.Identity.Name;
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                item.DescricaoProblema = "";
+                item.TipoProblema = "";
                 workflow.DataCriacao = DateTime.Now;
                 workflow.IdRecFaturacao = item.Id;
                 item.WorkflowItems.Add(workflow);
@@ -608,8 +613,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult SetState([FromBody] BillingReceptionModel item)
         {
-            BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
-            item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+            BillingRecWorkflowModel workflow = new BillingRecWorkflowModel();
+          
 
             BillingReceptionModel updatedItem = null;
             if (item != null)
@@ -633,7 +638,6 @@ namespace Hydra.Such.Portal.Controllers
                     item.TipoProblema = "";
                     item.Descricao = "";
                     item.DescricaoProblema = "";
-                    item.AreaPendente = "Contabilidade";
                     item.AreaUltimaInteracao = "Contabilidade";
                     item.UserUltimaInteracao = workflow.CriadoPor;
                     item.IdAreaPendente = BillingReceptionAreas.Contabilidade;

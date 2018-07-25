@@ -947,8 +947,7 @@ namespace Hydra.Such.Portal.Controllers
                             line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                         });
                     });
-
-                    //Criar anexos                  
+                
                     data = CreateRequesition(newlistOpenOrder, data);
 
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
@@ -1020,11 +1019,10 @@ namespace Hydra.Such.Portal.Controllers
                     newlist.ForEach(header =>
                     {
                         header.Lines.ForEach(line => {
-                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo + "_")?.VATBusinessPostingGroup;
-                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code + "_")?.VATProductPostingGroup;
+                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                         });
                     });
-                    //Criar Anexos
                     data = CreateRequesition(newlist, data);
                 }
             }
