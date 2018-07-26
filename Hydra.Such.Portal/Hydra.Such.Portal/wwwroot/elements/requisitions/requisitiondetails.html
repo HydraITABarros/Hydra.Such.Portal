@@ -1576,6 +1576,11 @@
                             }
                         });
                     }
+
+                    if (this._isCreate == false) {
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                        this.$.page_update_ajax.generateRequest();
+                    }
                 },
                 isReadOnly: function () {
                     //return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
