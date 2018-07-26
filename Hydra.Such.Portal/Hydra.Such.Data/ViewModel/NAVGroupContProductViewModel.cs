@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class NAVGroupContProductViewModel
+    public class NAVGroupContViewModel
     {
         public string Code { get; set; }
         public string Description { get; set; }

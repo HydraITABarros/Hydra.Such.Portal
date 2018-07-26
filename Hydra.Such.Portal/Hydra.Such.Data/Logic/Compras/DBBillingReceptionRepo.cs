@@ -57,14 +57,15 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return null;
             }
         }
-        public List<BillingReceptionModel> GetAllPeddingExcept(BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllPeddingExcept(BillingReceptionAreas perfil, BillingReceptionUserProfiles perfilVisualizacao)
         {
             try
             {
-                if(perfil == BillingReceptionAreas.Contabilidade)// Pending && Perfil Contabilidade
-                    return ctx.RececaoFaturacao.Where(x => x.Estado == 1 && x.AreaPendente=="Contabilidade").OrderByDescending(x => x.Id).ToList().ParseToViewModel();
-                else// Pending
+                if (perfilVisualizacao == BillingReceptionUserProfiles.Tudo)// Pending Tudo
                     return ctx.RececaoFaturacao.Where(x => x.Estado == 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                else
+                    return ctx.RececaoFaturacao.Where(x => x.Estado == 1 && x.AreaPendente== perfil.ToString()).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+              
             }
             catch (Exception ex)
             {
@@ -88,7 +89,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             try
             {
                //Expecto a Area Contabilidade
-               return ctx.RececaoFaturacao.Where(x =>  x.Estado == 1 && x.IdAreaPendente!=0).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+               return ctx.RececaoFaturacao.Where(x =>  x.Estado == 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
 
             }
             catch (Exception ex)

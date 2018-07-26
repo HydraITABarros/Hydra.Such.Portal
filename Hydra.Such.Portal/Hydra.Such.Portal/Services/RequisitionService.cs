@@ -210,6 +210,9 @@ namespace Hydra.Such.Portal.Services
             {
                 //use for database update later
                 var requisitionLines = requisition.Lines;
+                var test = requisitionLines.Where(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0).ToList();
+                if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0))
+                    throw new Exception("é obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
 

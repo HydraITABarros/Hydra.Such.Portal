@@ -13,11 +13,20 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-telemoveisequipamentoslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -65,10 +74,24 @@
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid aria-label="TelemoveisGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.imei.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="imei">IMEI / Nº Série</vaadin-grid-sorter>
                     <vaadin-grid-filter path="imei" />
@@ -86,7 +109,7 @@
                     {{item.tipo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipo_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="tipo_Show" />
@@ -95,7 +118,7 @@
                     {{item.tipo_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.marca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
                     <vaadin-grid-filter path="marca" />
@@ -104,7 +127,7 @@
                     {{item.marca}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.modelo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="modelo" />
@@ -113,7 +136,7 @@
                     {{item.modelo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.estado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estado_Show" />
@@ -122,7 +145,7 @@
                     {{item.estado_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.cor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="cor">Cor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="cor" />
@@ -131,7 +154,7 @@
                     {{item.cor}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.observacoes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
                     <vaadin-grid-filter path="observacoes" />
@@ -140,7 +163,7 @@
                     {{item.observacoes}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.devolvido_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="devolvido_Show">Devolvido</vaadin-grid-sorter>
                     <vaadin-grid-filter path="devolvido_Show" />
@@ -149,7 +172,7 @@
                     {{item.devolvido_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizador.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizador" />
@@ -158,7 +181,7 @@
                     {{item.utilizador}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataAlteracao_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataAlteracao_Show">Data Alteração</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataAlteracao_Show" />
@@ -185,6 +208,12 @@
                     _permissions: {
                         type: Array
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -199,6 +228,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -226,6 +258,50 @@
                     var FileName = this.export;
                     location.href = '../TelemoveisEquipamentos/ExportToExcelDownload_TelemoveisEquipamentos?sFileName=' + FileName;
                 },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "imei": { hidden: false, label: "IMEI / Nº Série" },
+                        "tipo_Show": { hidden: false, label: "Tipo" },
+                        "marca": { hidden: false, label: "Marca" },
+                        "modelo": { hidden: false, label: "Modelo" },
+                        "estado_Show": { hidden: false, label: "Estado" },
+                        "cor": { hidden: false, label: "Cor" },
+                        "observacoes": { hidden: false, label: "Observações" },
+                        "devolvido_Show": { hidden: false, label: "Devolvido" },
+                        "utilizador": { hidden: false, label: "Utilizador" },
+                        "dataAlteracao_Show": { hidden: false, label: "Data Alteração" }
+                    };
+
+                    if (sessionStorage["telemoveisequipamentosList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["telemoveisequipamentosList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["telemoveisequipamentosList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
 
             });
         });
