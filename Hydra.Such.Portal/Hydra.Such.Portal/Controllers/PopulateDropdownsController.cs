@@ -311,18 +311,20 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult OpenOrderLines([FromBody] DateTime? date)
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
+            string data = date.ToString();
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data, "", "").ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
         {
+            string data = date.ToString();
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data,"","").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
                     !string.IsNullOrEmpty(numb)
@@ -368,20 +370,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
+        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo,string codFuncArea)
         {
-            DateTime date = DateTime.Now;
+            //string date = DateTime.Now.ToString("yyyy-MM-dd hh:m:ss.mmm");
+            string date = "1753-01-01 00:00:00.000";
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
-                List<DDMessageRelated> result = new List<DDMessageRelated>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, PurchaseHeaderNo).Select(x => new DDMessageRelated()
-                {
-                    id = x.Line_No.ToString(),
-                    value = x.BuyFromVendorNo,
-                    extra = x.OutstandingQtyBase.ToString("n2"),
-                    extra2 = x.ProdOrderNo
-                }).ToList(); ;
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", "50");
+         
+
                 return Json(result);
 
             }
