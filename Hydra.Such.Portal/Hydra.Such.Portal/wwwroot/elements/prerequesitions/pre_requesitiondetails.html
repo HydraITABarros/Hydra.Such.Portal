@@ -420,7 +420,7 @@
                                                 </template>
                                             </vaadin-combo-box>-->
 
-                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-change={{_PopulatePurchaseLines}}
                                                             items="[[LProjectFunctionalAreaCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -2130,10 +2130,10 @@
                 },
 
                 _PopulatePurchaseLines: function (data) {
-
-                    var PurchaseNo = this._CBPurchaseHeader;
+                    debugger;;
+                    var codArea = this.FunctionalAreaCode;
                     this._CBPurchaseLine = "";
-                    this.$.purchaselines_ajax.body = JSON.stringify(PurchaseNo);
+                    this.$.purchaselines_ajax.body = JSON.stringify(codArea);
                     this.$.purchaselines_ajax.generateRequest();
 
 

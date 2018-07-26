@@ -370,15 +370,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo,string codFuncArea)
+        public JsonResult getOpenOrderLineByHeader([FromBody] string codFuncArea)
         {
-            //string date = DateTime.Now.ToString("yyyy-MM-dd hh:m:ss.mmm");
-            string date = "1753-01-01 00:00:00.000";
+            string date = DateTime.Now.ToString("yyyy-MM-dd hh:m:ss.mmm");
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", "50");
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea);
          
 
                 return Json(result);
