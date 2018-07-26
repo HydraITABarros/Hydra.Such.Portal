@@ -97,6 +97,7 @@ namespace Hydra.Such.Data.NAV
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
+                   
                    Document_No = HeaderNo,
                    Line_No = counter+=10000,
                    Line_NoSpecified = true,

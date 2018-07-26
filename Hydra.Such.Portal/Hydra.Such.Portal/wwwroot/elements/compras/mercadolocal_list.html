@@ -15,6 +15,14 @@
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-compraslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -165,7 +173,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        
+
         <div class="subMenu">
             <paper-button class="tablinks" id="showValidadas" on-tap="_showValidadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showValidadasMessage }}</paper-button>
             <paper-button class="tablinks" id="showRecusadas" on-tap="_showRecusadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showRecusadasMessage }}</paper-button>
@@ -176,6 +184,20 @@
             <paper-button class="tablinks" id="btn_ValidadoToTratado" on-tap="_validadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
             <paper-button class="tablinks" id="btn_RecusadoToTratado" on-tap="_recusadoToTratado" disabled="{{ !_permissions.update }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Tratado</paper-button>
             <paper-button class="tablinks" id="btnExport" on-tap="_exportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Exportar Excel</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid aria-label="Mercado Local" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="gridCompras" items="[[result]]">
@@ -193,7 +215,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_estadoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_estadoTexto" resizable width="150px" hidden$="{{ _columns.estadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estadoTexto">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estadoTexto" />
@@ -203,7 +225,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_regiaoMercadoLocal" resizable width="150px">
+            <vaadin-grid-column id="grid_regiaoMercadoLocal" resizable width="150px" hidden$="{{ _columns.regiaoMercadoLocalTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoMercadoLocalTexto">Região Mercado Local</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regiaoMercadoLocalTexto" />
@@ -213,7 +235,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_codigoProduto" resizable width="150px">
+            <vaadin-grid-column id="grid_codigoProduto" resizable width="150px" hidden$="{{ _columns.codigoProdutoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoProdutoTexto">Cód. Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoProdutoTexto" />
@@ -223,7 +245,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_descricao" resizable width="150px">
+            <vaadin-grid-column id="grid_descricao" resizable width="150px" hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao" />
@@ -233,7 +255,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_descricao2" resizable width="150px">
+            <vaadin-grid-column id="grid_descricao2" resizable width="150px" hidden$="{{ _columns.descricao2.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao2">Descrição 2</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricao2" />
@@ -243,7 +265,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_codigoUnidadeMedida" resizable width="150px">
+            <vaadin-grid-column id="grid_codigoUnidadeMedida" resizable width="150px" hidden$="{{ _columns.codigoUnidadeMedida.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoUnidadeMedida">Cód. Unid. Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoUnidadeMedida" />
@@ -253,7 +275,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_quantidade" resizable width="150px">
+            <vaadin-grid-column id="grid_quantidade" resizable width="150px" hidden$="{{ _columns.quantidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantidade" />
@@ -263,7 +285,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_noRequisicao" resizable width="150px">
+            <vaadin-grid-column id="grid_noRequisicao" resizable width="150px" hidden$="{{ _columns.noRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noRequisicao" />
@@ -273,7 +295,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_noLinhaRequisicao" resizable width="150px">
+            <vaadin-grid-column id="grid_noLinhaRequisicao" resizable width="150px" hidden$="{{ _columns.noLinhaRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noLinhaRequisicao">Nº Linha Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noLinhaRequisicao" />
@@ -283,7 +305,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_urgenteTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_urgenteTexto" resizable width="150px" hidden$="{{ _columns.urgenteTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="urgenteTexto">Urgente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="urgenteTexto" />
@@ -293,7 +315,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataCriacaoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_dataCriacaoTexto" resizable width="150px" hidden$="{{ _columns.dataCriacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataCriacaoTexto" />
@@ -303,7 +325,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorCriacaoTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_utilizadorCriacaoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorCriacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacaoTexto">Utilizador Criação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorCriacaoTexto" />
@@ -313,7 +335,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataValidacaoTexto" resizable width="150px" hidden="{{ _hideDataValidacao }}">
+            <vaadin-grid-column id="grid_dataValidacaoTexto" resizable width="150px" hidden$="{{ _columns.dataValidacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataValidacaoTexto">Data Validação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataValidacaoTexto" />
@@ -323,7 +345,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorValidacaoTexto" resizable width="150px" hidden="{{ _hideUtilizadorValidacao }}">
+            <vaadin-grid-column id="grid_utilizadorValidacaoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorValidacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorValidacaoTexto">Utilizador Validador</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorValidacaoTexto" />
@@ -333,7 +355,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px" hidden="{{ _hideDataRecusa }}">
+            <vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px" hidden$="{{ _columns.dataRecusaTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRecusaTexto">Data Recusa</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataRecusaTexto" />
@@ -343,7 +365,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorRecusaTexto" resizable width="150px" hidden="{{ _hideUtilizadorRecusa }}">
+            <vaadin-grid-column id="grid_utilizadorRecusaTexto" resizable width="150px" hidden$="{{ _columns.utilizadorRecusaTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorRecusaTexto">Utilizador Recusou</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorRecusaTexto" />
@@ -353,7 +375,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_recusadoComprasTexto" resizable width="150px" hidden="{{ _hideRecusadoCompras }}">
+            <vaadin-grid-column id="grid_recusadoComprasTexto" resizable width="150px" hidden$="{{ _columns.recusadoComprasTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="recusadoComprasTexto">Recusado Compras</vaadin-grid-sorter>
                     <vaadin-grid-filter path="recusadoComprasTexto" />
@@ -363,7 +385,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px" hidden="{{ _hideDataTratado }}">
+            <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px" hidden$="{{ _columns.dataTratadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataTratadoTexto">Data Tratado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataTratadoTexto" />
@@ -373,7 +395,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_utilizadorTratadoTexto" resizable width="150px" hidden="{{ _hideUtilizadorTratado }}">
+            <vaadin-grid-column id="grid_utilizadorTratadoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorTratadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorTratadoTexto">Utilizador Tratado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorTratadoTexto" />
@@ -383,7 +405,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_noFornecedorTexto" resizable width="150px">
+            <vaadin-grid-column id="grid_noFornecedorTexto" resizable width="150px" hidden$="{{ _columns.noFornecedorTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noFornecedorTexto">Nº Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noFornecedorTexto" />
@@ -393,7 +415,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_noEncomenda" resizable width="150px">
+            <vaadin-grid-column id="grid_noEncomenda" resizable width="150px" hidden$="{{ _columns.noEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noEncomenda">Nº Encomenda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noEncomenda" />
@@ -403,7 +425,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column id="grid_noConsultaMercado" resizable width="150px">
+            <vaadin-grid-column id="grid_noConsultaMercado" resizable width="150px" hidden$="{{ _columns.noConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noConsultaMercado" />
@@ -499,6 +521,12 @@
                         type: String,
                         value: "Compras Tratadas"
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
 
                 ready: function () {
@@ -510,6 +538,9 @@
                     this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                     this.$.compras_databound_ajax.generateRequest();
                     this.$.gridCompras.clearCache();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -623,7 +654,7 @@
                 },
 
                 _setButtonTexts: function () {
-                    //debugger;
+                    debugger;
                     var _self = this;
 
                     //BOTÕES
@@ -647,6 +678,15 @@
                     this._hideDataTratado = true;
                     this._hideUtilizadorTratado = true;
 
+
+                    //this._columns.dataValidacaoTexto.hidden = true;
+                    //this._columns.utilizadorValidacaoTexto.hidden = true;
+                    //this._columns.dataRecusaTexto.hidden = true;
+                    //this._columns.utilizadorRecusaTexto.hidden = true;
+                    //this._columns.recusadoComprasTexto.hidden = true;
+                    //this._columns.dataTratadoTexto.hidden = true;
+                    //this._columns.utilizadorTratadoTexto.hidden = true;
+
                     if (this._aprovadas == true) {
                         $(_self.$.btn_AprovadoToTratado).removeClass('hidden');
                         $(_self.$.btn_AprovadoToValidar).removeClass('hidden');
@@ -658,6 +698,9 @@
                             this._hideDataValidacao = false;
                             this._hideUtilizadorValidacao = false;
 
+                            //this._columns.dataValidacaoTexto.hidden = true;
+                            //this._columns.utilizadorValidacaoTexto.hidden = true;
+
                             $(_self.$.btn_ValidadoToTratado).removeClass('hidden');
                         } else {
                             if (this._recusadas == true) {
@@ -665,6 +708,9 @@
 
                                 this._hideDataRecusa = false;
                                 this._hideUtilizadorRecusa = false;
+
+                                //this._columns.dataRecusaTexto.hidden = false;
+                                //this._columns.utilizadorRecusaTexto.hidden = false;
 
                                 $(_self.$.btn_RecusadoToTratado).removeClass('hidden');
                             }
@@ -679,6 +725,14 @@
                                     this._hideRecusadoCompras = false;
                                     this._hideDataTratado = false;
                                     this._hideUtilizadorTratado = false;
+
+                                    //this._columns.dataValidacaoTexto.hidden = false;
+                                    //this._columns.utilizadorValidacaoTexto.hidden = false;
+                                    //this._columns.dataRecusaTexto.hidden = false;
+                                    //this._columns.utilizadorRecusaTexto.hidden = false;
+                                    //this._columns.recusadoComprasTexto.hidden = false;
+                                    //this._columns.dataTratadoTexto.hidden = false;
+                                    //this._columns.utilizadorTratadoTexto.hidden = false;
                                 }
                             }
                         }
@@ -851,6 +905,62 @@
                     location.href = '../MercadoLocal/ExportToExcelDownload_MercadoLocal?sFileName=' + FileName;
                 },
 
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "estadoTexto": { hidden: false, label: "Estado" },
+                        "regiaoMercadoLocalTexto": { hidden: false, label: "Região Mercado Local" },
+                        "codigoProdutoTexto": { hidden: false, label: "Cód. Produto" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "descricao2": { hidden: false, label: "Descrição 2" },
+                        "codigoUnidadeMedida": { hidden: false, label: "Cód. Unid. Medida" },
+                        "quantidade": { hidden: false, label: "Quantidade" },
+                        "noRequisicao": { hidden: false, label: "Nº Requisição" },
+                        "noLinhaRequisicao": { hidden: false, label: "Nº Linha Requisição" },
+                        "urgenteTexto": { hidden: false, label: "Urgente" },
+                        "dataCriacaoTexto": { hidden: false, label: "Data Criação" },
+                        "utilizadorCriacaoTexto": { hidden: false, label: "Utilizador Criação" },
+                        "dataValidacaoTexto": { hidden: false, label: "Data Validação" },
+                        "utilizadorValidacaoTexto": { hidden: false, label: "Utilizador Validador" },
+                        "dataRecusaTexto": { hidden: false, label: "Data Recusa" },
+                        "utilizadorRecusaTexto": { hidden: false, label: "Utilizador Recusou" },
+                        "recusadoComprasTexto": { hidden: false, label: "Recusado Compras" },
+                        "dataTratadoTexto": { hidden: false, label: "Data Tratado" },
+                        "utilizadorTratadoTexto": { hidden: false, label: "Utilizador Tratado" },
+                        "noFornecedorTexto": { hidden: false, label: "Nº Fornecedor" },
+                        "noEncomenda": { hidden: false, label: "Nº Encomenda" },
+                        "noConsultaMercado": { hidden: false, label: "Nº Consulta Mercado" }
+                    };
+
+                    if (sessionStorage["compraslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["compraslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["compraslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
             });
         });
     </script>

@@ -3248,6 +3248,18 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.DocumentoaCriar).HasColumnName("Documento a Criar");
+
+                entity.Property(e => e.CriarDocumento).HasColumnName("Criar Documento");
+
+                entity.Property(e => e.NºEncomendaAberto)
+                    .HasColumnName("Nº Encomenda Aberto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºLinhaEncomendaAberto).HasColumnName("Nº Linha Encomenda Aberto");
+
+                entity.Property(e => e.Tratada).HasColumnName("Tratada");
             });
 
             modelBuilder.Entity<LinhasPréRequisição>(entity =>

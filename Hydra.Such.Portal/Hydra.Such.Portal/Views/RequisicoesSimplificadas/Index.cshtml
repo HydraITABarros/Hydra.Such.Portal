@@ -24,6 +24,14 @@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <x-simplifiedreq></x-simplifiedreq>
 <dom-module id="x-simplifiedreq">
     <template>
@@ -49,10 +57,24 @@
                 <paper-button class="btnSave" raised on-tap="_redirectToNewForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="gridrequisitionsimple" aria-label="gridrequisitionsimple" items="[[SimplifiedRequisitions]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="100px">
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionNo" />
@@ -61,7 +83,8 @@
                     {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.status.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="status" />
@@ -70,7 +93,8 @@
                     [[_parseStatus(item.status)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="100px">
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionDate" />
@@ -79,7 +103,8 @@
                     {{item.requisitionDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.requisitionTime.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionTime">Hora Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionTime" />
@@ -88,7 +113,8 @@
                     {{item.requisitionTime}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.locationCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode" />
@@ -97,7 +123,8 @@
                     {{item.locationCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.regionCode.hidden }}">>
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -106,7 +133,8 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Area</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
@@ -115,7 +143,8 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode" />
@@ -124,7 +153,8 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
@@ -133,7 +163,8 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="70px">
+
+            <vaadin-grid-column width="70px" resizable hidden$="{{ _columns.observations.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="observations">Observações</vaadin-grid-sorter>
                     <vaadin-grid-filter path="observations" />
@@ -156,11 +187,26 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
 
                 ready: function () {
-                    var option="@ViewBag.Option";
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+
+                    var option = "@ViewBag.Option";
                     if (option =="registar") {
                         this.$.ddmarginSpace.style.display = 'none';
                         this.$.grid_datasource.body = JSON.stringify(option);
@@ -170,12 +216,6 @@
                         this.$.grid_datasource.body = JSON.stringify(option);
                     }
                     this.$.grid_datasource.generateRequest();
-
-                    var _this = this;
-                    $(window).resize(function () {
-                        _this.fixGridToBottom();
-                    });
-                    $(window).trigger('resize');
                 },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.gridrequisitionsimple);
@@ -216,6 +256,51 @@
                     var FileName = this.export;
                     location.href = '../RequisicoesSimplificadas/ExportToExcelDownload_RequisicoesSimplificadas?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº" },
+                        "status": { hidden: false, label: "Estado" },
+                        "requisitionDate": { hidden: false, label: "Data Requisição" },
+                        "requisitionTime": { hidden: false, label: "Hora Requisição" },
+                        "locationCode": { hidden: false, label: "Cód. Localização" },
+                        "regionCode": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaCode": { hidden: false, label: "Cód. Area" },
+                        "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "observations": { hidden: false, label: "Observações" }
+                    };
+
+                    if (sessionStorage["simplifiedreq.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["simplifiedreq.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["simplifiedreq.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+            /* end - ColumnToggle */
 
             });
         });

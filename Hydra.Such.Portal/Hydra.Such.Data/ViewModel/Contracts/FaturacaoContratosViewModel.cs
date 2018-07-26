@@ -30,5 +30,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public DateTime? ModificationDate { get; set; }
         public string CreationUser { get; set; }
         public string ModificationUser { get; set; }
+        public decimal InvoiceGroupCount { get; set; }
+        public decimal InvoiceGroupValue { get; set; }
     }
 }

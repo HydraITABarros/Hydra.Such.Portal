@@ -27,6 +27,14 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <x-unitstokkeeping></x-unitstokkeeping>
 
 <dom-module id="x-unitstokkeeping">
@@ -84,10 +92,24 @@
                 <paper-button class="tablinks" on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="gridUnitStockeeping" aria-label="gridUnitStockeeping" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable width="160px">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.productNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="productNo">Nº de Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="productNo" />
@@ -96,7 +118,8 @@
                     <vaadin-text-field value="{{item.productNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
@@ -105,7 +128,8 @@
                     <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -114,7 +138,8 @@
                     <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.inventory.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="inventory">Inventário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="inventory" />
@@ -123,7 +148,8 @@
                     <vaadin-text-field value="{{item.inventory}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.blocked.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="blocked" />
@@ -134,7 +160,8 @@
                     </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.codeUnitMeasure.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeUnitMeasure">Cód. Unidade Medida Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeUnitMeasure" />
@@ -143,7 +170,8 @@
                     <vaadin-text-field value="{{item.codeUnitMeasure}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.unitCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost" />
@@ -152,7 +180,8 @@
                     <vaadin-text-field value="{{item.unitCost}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.wareHouseValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="wareHouse">Valor em Armazem</vaadin-grid-sorter>
                     <vaadin-grid-filter path="wareHouse" />
@@ -161,7 +190,8 @@
                     <vaadin-text-field value="{{item.wareHouseValue}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.shelfNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="shelfNo">Nº Prateleiras</vaadin-grid-sorter>
                     <vaadin-grid-filter path="shelfNo" />
@@ -170,7 +200,8 @@
                     <vaadin-text-field value="{{item.shelfNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.vendorNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vendorNo">Nº Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="vendorNo" />
@@ -179,7 +210,8 @@
                     <vaadin-text-field value="{{item.vendorNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.vendorItemNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vendorItemNo">Cód. Produto Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="vendorItemNo" />
@@ -188,6 +220,7 @@
                     <vaadin-text-field value="{{item.vendorItemNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
@@ -211,8 +244,17 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -248,6 +290,51 @@
                     location.href = '../UnidadeArmazenamento/ExportToExcelDownload_UnidadesArmazenamento?sFileName=' + FileName;
                 },
 
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "productNo": { hidden: false, label: "Nº de Produto" },
+                        "code": { hidden: false, label: "Cód. Localização" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "inventory": { hidden: false, label: "Inventário" },
+                        "blocked": { hidden: false, label: "Bloqueado" },
+                        "codeUnitMeasure": { hidden: false, label: "Cód. Unidade Medida Produto" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "wareHouseValue": { hidden: false, label: "Valor em Armazem" },
+                        "shelfNo": { hidden: false, label: "Nº Prateleiras" },
+                        "vendorNo": { hidden: false, label: "Nº Fornecedor" },
+                        "vendorItemNo": { hidden: false, label: "Cód. Produto Fornecedor" }
+                    };
+
+                    if (sessionStorage["unitstokkeeping.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["unitstokkeeping.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["unitstokkeeping.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+            /* end - ColumnToggle */
             });
         });
     </script>

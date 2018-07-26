@@ -1,9 +1,12 @@
 ﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -12,6 +15,18 @@
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 
 <dom-module id="x-linhaspreencomendalist">
     <template>
@@ -51,20 +66,69 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <!--
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
-            </template>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-            -->
+        <iron-ajax url="/LinhasPreEncomenda/MarcarComoConsultaMercado"
+                   last-response="{{result_ConsultaMercado}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_ConsultaMercado"
+                   on-response="_ConsultaMercadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
-            <paper-button id="btnConsultaMercado" class="tablinks" on-tap="_btnConsultaMercado" title="Consulta Mercado"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta Mercado</paper-button>
-            <paper-button id="btnEncomenda" class="tablinks" on-tap="_btnEncomenda" title="Encomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Encomenda</paper-button>
+        <iron-ajax url="/LinhasPreEncomenda/MarcarComoEncomenda"
+                   last-response="{{result_Encomenda}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_Encomenda"
+                   on-response="_EncomendaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/LinhasPreEncomenda/MarcarComoCriarDocumento"
+                   last-response="{{result_CriarDocumento}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_CriarDocumento"
+                   on-response="_CriarDocumentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/LinhasPreEncomenda/MarcarComoNaoCriarDocumento"
+                   last-response="{{result_NaoCriarDocumento}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_NaoCriarDocumento"
+                   on-response="_NaoCriarDocumentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" id="btn_ConsultaMercado" on-tap="_ConsultaMercado" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Consulta Mercado</paper-button>
+            <paper-button class="tablinks" id="btn_Encomenda" on-tap="_Encomenda" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Encomenda</paper-button>
+            <paper-button class="tablinks" id="btn_CriarDocumento" on-tap="_CriarDocumento" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Criar Documento</paper-button>
+            <paper-button class="tablinks" id="btn_NaoCriarDocumento" on-tap="_NaoCriarDocumento" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Não Criar Documento</paper-button>
+
+            <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="LinhasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable>
+        <vaadin-grid aria-label="LinhasGrid" class="editDialogGrid" id="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" items="[[result]]" multi-sort="true">
+            <vaadin-grid-selection-column auto-select>
+            </vaadin-grid-selection-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numPreEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numPreEncomenda">Nº Pré-Encomenda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numPreEncomenda" />
@@ -73,7 +137,7 @@
                     {{item.numPreEncomenda}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaPreEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numLinhaPreEncomenda">Nº Linha Pré-Encomenda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numLinhaPreEncomenda" />
@@ -82,7 +146,7 @@
                     {{item.numLinhaPreEncomenda}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoProduto">Código Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoProduto" />
@@ -91,7 +155,7 @@
                     {{item.codigoProduto}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricaoProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoProduto">Descrição Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descricaoProduto" />
@@ -100,7 +164,7 @@
                     {{item.descricaoProduto}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantidadeDisponibilizada.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantidadeDisponibilizada">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantidadeDisponibilizada" />
@@ -109,7 +173,7 @@
                     {{item.quantidadeDisponibilizada}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoUnitario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="custoUnitario" />
@@ -118,7 +182,7 @@
                     {{item.custoUnitario}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoLocalizacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoLocalizacao">Código Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoLocalizacao" />
@@ -127,7 +191,7 @@
                     {{item.codigoLocalizacao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numFornecedor" />
@@ -136,7 +200,35 @@
                     {{item.numFornecedor}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeFornecedor_Show">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor_Show" />
+                </template>
+                <template>
+                    {{item.nomeFornecedor_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentoaCriar_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentoaCriar_Show">Documento a Criar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentoaCriar_Show" />
+                </template>
+                <template>
+                    {{item.documentoaCriar_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.criarDocumento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="criarDocumento">Criar Documento</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.criarDocumento}}" disabled></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numRequisicao">Nº Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numRequisicao" />
@@ -145,7 +237,7 @@
                     {{item.numRequisicao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numLinhaRequisicao">Nº Linha Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numLinhaRequisicao" />
@@ -154,7 +246,7 @@
                     {{item.numLinhaRequisicao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numProjeto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numProjeto">Nº Projecto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numProjeto" />
@@ -163,7 +255,25 @@
                     {{item.numProjeto}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numEncomendaAberto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numEncomendaAberto">Nº Encomenda Aberto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numEncomendaAberto" />
+                </template>
+                <template>
+                    {{item.numEncomendaAberto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaEncomendaAberto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numLinhaEncomendaAberto">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numLinhaEncomendaAberto" />
+                </template>
+                <template>
+                    {{item.numLinhaEncomendaAberto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRegiao" />
@@ -172,7 +282,7 @@
                     {{item.codigoRegiao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoAreaFuncional" />
@@ -181,7 +291,7 @@
                     {{item.codigoAreaFuncional}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoCentroResponsabilidade" />
@@ -207,20 +317,55 @@
                     _permissions: {
                         type: Array
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    selectedItems: {
+                        type: Array
+                    },
+                    selectedItem: {
+                        type: Array
+                    },
+                    _functionsMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda Compromisso" }, { value: 3, description: "Criar Encomenda Cabimento" }],
+                    },
                 },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/?numLinhaPreEncomenda=" + item.numCartao;
-                    }
-                },
-                _create: function (item) {
-                    if (item != null) {
-                        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/";
+                //_rowSelected: function (item) {
+                //    if (item != null) {
+                //        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/?numLinhaPreEncomenda=" + item.numLinhaPreEncomenda;
+                //    }
+                //},
+                //_create: function (item) {
+                //    if (item != null) {
+                //        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/";
+                //    }
+                //},
+                _functionsMenuItemSelected: function (e) {
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1: //"Criar Consulta Mercado"
+                            this._criarConsultaMercado();
+                            break;
+                        case 2://"Criar Encomenda Compromisso"
+                            this._criarEncomendaCompromisso();
+                            break;
+                        case 3://"Criar Encomenda Cabimento"
+                            this._criarEncomendaCabimento();
+                            break;
                     }
                 },
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -237,6 +382,148 @@
                     grid_el.height(height);
                 },
 
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _ConsultaMercado: function (selectedItem, selectedItems) {
+                    debugger;
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.ajax_ConsultaMercado.body = JSON.stringify(selItms);
+                        this.$.ajax_ConsultaMercado.generateRequest();
+                        this.$.grid.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+                _ConsultaMercadoResponse: function () {
+                    debugger;
+                    if (this.result_ConsultaMercado.eReasonCode == 0) {
+                        this._showMessage(this.result_ConsultaMercado.eMessage);
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_ConsultaMercado.eMessage);
+                    }
+                },
+
+                _Encomenda: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.ajax_Encomenda.body = JSON.stringify(selItms);
+                        this.$.ajax_Encomenda.generateRequest();
+                        this.$.grid.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+                _EncomendaResponse: function () {
+                    if (this.result_Encomenda.eReasonCode == 0) {
+                        this._showMessage(this.result_Encomenda.eMessage);
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_Encomenda.eMessage);
+                    }
+                },
+
+                _CriarDocumento: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.ajax_CriarDocumento.body = JSON.stringify(selItms);
+                        this.$.ajax_CriarDocumento.generateRequest();
+                        this.$.grid.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+                _CriarDocumentoResponse: function () {
+                    if (this.result_CriarDocumento.eReasonCode == 0) {
+                        this._showMessage(this.result_CriarDocumento.eMessage);
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_CriarDocumento.eMessage);
+                    }
+                },
+
+
+                _NaoCriarDocumento: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+                        this.$.ajax_NaoCriarDocumento.body = JSON.stringify(selItms);
+                        this.$.ajax_NaoCriarDocumento.generateRequest();
+                        this.$.grid.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+                _NaoCriarDocumentoResponse: function () {
+                    if (this.result_NaoCriarDocumento.eReasonCode == 0) {
+                        this._showMessage(this.result_NaoCriarDocumento.eMessage);
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._showErrorMessage(this.result_NaoCriarDocumento.eMessage);
+                    }
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "numPreEncomenda": { hidden: false, label: "Nº Pré-Encomenda" },
+                        "numLinhaPreEncomenda": { hidden: false, label: "Nº Linha Pré-Encomenda" },
+                        "codigoProduto": { hidden: false, label: "Código Produto" },
+                        "descricaoProduto": { hidden: false, label: "Descrição Produto" },
+                        "quantidadeDisponibilizada": { hidden: false, label: "Quantidade" },
+                        "custoUnitario": { hidden: false, label: "Custo Unitário" },
+                        "codigoLocalizacao": { hidden: false, label: "Código Localização" },
+                        "numFornecedor": { hidden: false, label: "Código Fornecedor" },
+                        "nomeFornecedor_Show": { hidden: false, label: "Nome Fornecedor" },
+                        "documentoaCriar_Show": { hidden: false, label: "Documento a Criar" },
+                        "criarDocumento": { hidden: false, label: "Criar Documento" },
+                        "numRequisicao": { hidden: false, label: "Nº Requisição" },
+                        "numLinhaRequisicao": { hidden: false, label: "Nº Linha Requisição" },
+                        "numProjeto": { hidden: false, label: "Nº Projecto" },
+                        "numEncomendaAberto": { hidden: false, label: "Nº Encomenda Aberto" },
+                        "numLinhaEncomendaAberto": { hidden: false, label: "Nº Linha Encomenda Aberto" },
+                        "codigoRegiao": { hidden: false, label: "Código Região" },
+                        "codigoAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" }
+                    };
+
+                    if (sessionStorage["linhaspreencomendaList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["linhaspreencomendaList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["linhaspreencomendaList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
             });
         });
     </script>

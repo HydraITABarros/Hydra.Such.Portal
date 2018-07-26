@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
@@ -12,10 +11,17 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
-@*<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <x-reqtemplates></x-reqtemplates>
 <dom-module id="x-reqtemplates">
@@ -58,10 +64,24 @@
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="grdCoffeeShopsTable" aria-label="CoffeeShopsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.requisitionTemplateId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionTemplateId">Nº Modelo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionTemplateId" />
@@ -70,7 +90,8 @@
                     {{item.requisitionTemplateId}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -79,7 +100,8 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -88,7 +110,8 @@
                     [[_getRegionDescription(item.codeRegion)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -97,7 +120,8 @@
                     [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+
+            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -106,6 +130,7 @@
                     [[_getResponsabilityCenterDescription(item.codeResponsabilityCenter)]]
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
@@ -137,6 +162,12 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(functionalAreas,responsabilityCenters,regions,products)'
@@ -144,6 +175,9 @@
                 _onCacheLoaded: function (functionalAreas, responsabilityCenters, regions, products) {
                     //If necessary, remove auto attribute from iron-ajax and make the request
                     this.$.grid_databound.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -234,6 +268,46 @@
                     var FileName = this.export;
                     location.href = '../ModelosReqSimplificada/ExportToExcelDownload_ModelosRequisicaoSimplificada?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionTemplateId": { hidden: false, label: "Nº Modelo" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "codeRegion": { hidden: false, label: "Região" },
+                        "codeFunctionalArea": { hidden: false, label: "Área Funcional" },
+                        "codeResponsabilityCenter": { hidden: false, label: "Centro Responsabilidade" }
+                    };
+
+                    if (sessionStorage["reqtemplates.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["reqtemplates.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["reqtemplates.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
 
             });
         });
