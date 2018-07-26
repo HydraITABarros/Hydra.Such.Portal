@@ -648,7 +648,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetReqModelList()
         {
             List<Requisição> RequisitionModel = null;
-            RequisitionModel = DBRequest.GetReqModel();
+            RequisitionModel = DBRequestTemplates.GetAll();
 
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();

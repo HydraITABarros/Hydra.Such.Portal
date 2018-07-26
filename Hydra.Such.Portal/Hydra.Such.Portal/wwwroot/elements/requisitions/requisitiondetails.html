@@ -1020,74 +1020,67 @@
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
-                                        <vaadin-grid-filter path="createMarketSearchStringValue">
-                                        </vaadin-grid-filter>
+                                        <!--<vaadin-grid-filter path="createMarketSearchStringValue">
+                                        </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>-->
-                                            {{item.createMarketSearchStringValue}}
-                                            /t
+                                            <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
+                                            <!--{{item.createMarketSearchStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Mercado Local</p>
-                                        <vaadin-grid-filter path="localMarketStringValue">
+                                        <!--<vaadin-grid-filter path="localMarketStringValue">-->
                                             <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    e>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
-                                            {{item.localMarketStringValue}}
-                                            te
+                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                                            <!--{{item.localMarketStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviado Pré Compra</p>
-                                        <vaadin-grid-filter path="submitPrePurchaseStringValue">
+                                        <!--<vaadin-grid-filter path="submitPrePurchaseStringValue">-->
                                             <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    em
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>-->
-                                            {{item.submitPrePurchaseStringValue}}
-                                            te
+                                            <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
+                                            <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviar Pré Compra</p>
-                                        <vaadin-grid-filter path="sendPrePurchaseStringValue">
+                                        <!--<vaadin-grid-filter path="sendPrePurchaseStringValue">-->
                                             <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    pl
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>-->
-                                            {{item.sendPrePurchaseStringValue}}
-                                            mp
+                                            <vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                            <!--{{item.sendPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>

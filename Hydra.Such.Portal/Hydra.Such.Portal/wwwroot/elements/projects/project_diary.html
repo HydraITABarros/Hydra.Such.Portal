@@ -158,7 +158,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectListDiary" last-response="{{response}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements" last-response="{{response2}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements" last-response="{{response2}}" auto method="post" handle-as="json" content-type="application/json" on-response="_onGetProjMovTypesResponse"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes" last-response="{{response3}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{MeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -194,22 +194,27 @@
                     <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
-                                    required error-message="Este campo é obrigatório"
-                                    items="[[response2]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-combo-box items="[[_projMovTypes]]" id="projectMovementList" name="projectMovementList" item-value-path="id" item-label-path="value" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
+                                    required error-message="Este campo é obrigatório">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectTypeList" name="projectTypeList" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}"
-                                    on-value-changed="_projectTypeChange"
-                                    items="[[response3]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-combo-box items="[[response3]]" id="projectTypeList" name="projectTypeList" item-value-path="id" item-label-path="value" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}" on-value-changed="_projectTypeChange">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="piCode" name="piCode" value="{{codeNumber}}" label="Código" disabled="{{ !_permissions.create }}"
@@ -1375,7 +1380,10 @@
                     Flag: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+                    _projMovTypes: {
+                        type: Array,
+                    },
                 },
 
                 observers: [
@@ -1614,8 +1622,8 @@
                             this.$.piExternalGuideNo.value = "";
                             this.$.dpcompDate.value = "";
                             this.$.piCodeMeasurementUnit._clearSelection();
-                            this.$.projectMovementList._clearSelection();
-                            this.$.projectTypeList._clearSelection();
+                            this.$.projectMovementList.value = 1;
+                            this.$.projectTypeList.value = "";
                         }
                         else {
                             this.openToastError(this.result.eMessage);
@@ -2114,7 +2122,25 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
-
+                _onGetProjMovTypesResponse: function (e) {
+                    //remover opção venda
+                    try {
+                        var itemToRemove = this.response2.find(x => x.id == 2);
+                        if (itemToRemove != null) {
+                            var index = this.response2.indexOf(itemToRemove);
+                            if (index > -1) {
+                                this.response2.splice(index, 1);
+                            }
+                        }
+                    }
+                    catch (err) {
+                        
+                    }
+                    finally {
+                        this._projMovTypes = this.response2;
+                    }
+                    this.$.projectMovementList.value = 1;
+                },
             });
 
         });
