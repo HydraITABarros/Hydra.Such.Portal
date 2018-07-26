@@ -148,7 +148,7 @@
                     {{item.numberOfInvoices}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceTotal">Total a Faturar</vaadin-grid-sorter>
                     <vaadin-grid-filter path="invoiceTotal"></vaadin-grid-filter>
@@ -218,6 +218,24 @@
                 </template>
                 <template>
                     {{item.registerDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroupValue">Grupo Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroupValue"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.invoiceGroupValue}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroupCount">Quantidade de Linhas Agrupadas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroupCount"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.invoiceGroupCount}}
                 </template>
             </vaadin-grid-column>
 

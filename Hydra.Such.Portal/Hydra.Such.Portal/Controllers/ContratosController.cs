@@ -977,7 +977,7 @@ namespace Hydra.Such.Portal.Controllers
             
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                 Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
-
+                Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
                 result.Add(new FaturacaoContratosViewModel
                 {
                     ContractNo = item.NºContrato,
@@ -991,6 +991,8 @@ namespace Hydra.Such.Portal.Controllers
                     ValueToInvoice = item.ValorPorFaturar,
                     BilledValue = item.ValorFaturado,
                     RegionCode = item.CódigoRegião,
+                    InvoiceGroupCount = Count,
+                    InvoiceGroupValue = item.GrupoFatura,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
@@ -1014,7 +1016,7 @@ namespace Hydra.Such.Portal.Controllers
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                     Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
-
+                    Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
                     result.Add(new FaturacaoContratosViewModel
                     {
                         ContractNo = item.NºContrato,
@@ -1029,6 +1031,8 @@ namespace Hydra.Such.Portal.Controllers
                         BilledValue = item.ValorFaturado,
                         RegionCode = item.CódigoRegião,
                         Situation= item.Situação,
+                        InvoiceGroupCount = Count,
+                        InvoiceGroupValue = item.GrupoFatura,
                         FunctionalAreaCode = item.CódigoÁreaFuncional,
                         ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                         RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
@@ -1042,7 +1046,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
-
+            
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
@@ -1066,13 +1070,17 @@ namespace Hydra.Such.Portal.Controllers
                         InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
 
                         Decimal contractVal = 0;
-                        if (item.TipoContrato == 1 || item.TipoContrato == 4)
+                        if (item.TipoContrato != 1 || item.TipoContrato != 4)
                         {
                             int NumMeses = 0;
-
-                            if (item.DataExpiração.Value != null && item.DataExpiração.ToString() != "" && item.DataInicial.Value != null && item.DataInicial.ToString() != "")
+                            
+                            if (item.DataExpiração != null && item.DataExpiração.Value != null && item.DataExpiração.ToString() != "" && item.DataInicial != null && item.DataInicial.Value != null && item.DataInicial.ToString() != "")
                             {
                                 NumMeses = ((item.DataExpiração.Value.Year - item.DataInicial.Value.Year) * 12) + item.DataExpiração.Value.Month - item.DataInicial.Value.Month;
+                            }
+                            if (NumMeses == 0)
+                            {
+                                NumMeses = 1;
                             }
                             contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
                         }
@@ -1102,7 +1110,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //nextInvoice = item.ÚltimaDataFatura.Value;
                                 lastInvoice = item.DataInicial.Value.Month;
-                            }
+                               }
                         }
                         else
                         {
@@ -1250,6 +1258,7 @@ namespace Hydra.Such.Portal.Controllers
                             Situação=Problema,
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name
+                            
                         };
                         try
                         {
