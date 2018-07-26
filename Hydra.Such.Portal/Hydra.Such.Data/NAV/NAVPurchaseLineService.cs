@@ -57,6 +57,8 @@ namespace Hydra.Such.Data.NAV
                     Requisition_No = purchFromSupplier.RequisitionId,
                     Requisition_Line_No = purchLine.LineId.HasValue ? purchLine.LineId.Value : 0,
                     Requisition_Line_NoSpecified = true,
+                    VAT_Bus_Posting_Group = purchLine.VATBusinessPostingGroup,
+                    VAT_Prod_Posting_Group = purchLine.VATProductPostingGroup
                 })
                 .ToArray();
 

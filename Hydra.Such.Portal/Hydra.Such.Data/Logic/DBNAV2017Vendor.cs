@@ -32,7 +32,8 @@ namespace Hydra.Such.Data.Logic
                             Email=(string)temp.Email,
                             Address = (string)temp.Address,
                             VATRegistrationNo = (string)temp.VATRegistrationNo,
-                            PostCode = (string)temp.PostCode
+                            PostCode = (string)temp.PostCode,
+                            VATBusinessPostingGroup = (string)temp.VATBusinessPostingGroup
                         });
                     }
                 }

@@ -83,7 +83,9 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    prePurchOrderLines.ForEach(item => item.DataHoraCriação = DateTime.Now);
+                    prePurchOrderLines.ForEach(item => { item.DataHoraCriação = DateTime.Now;
+                                                        item.NºEncomendaAberto = requisitionLines.Where(y => y.NºLinha == item.NºLinhaRequisição).FirstOrDefault().NºEncomendaAberto;
+                                                        item.NºLinhaEncomendaAberto = requisitionLines.Where(y => y.NºLinha == item.NºLinhaRequisição).FirstOrDefault().NºLinhaEncomendaAberto; });
 
                     ctx.LinhasPreEncomenda.AddRange(prePurchOrderLines);
 

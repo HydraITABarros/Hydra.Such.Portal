@@ -22,7 +22,7 @@ namespace Hydra.Such.Data.ViewModel
             this.eMessage = message;
         }
     }
-    public struct TraceInformation
+    public class TraceInformation
     {
         public TraceInformation(TraceType type, string message)
         {

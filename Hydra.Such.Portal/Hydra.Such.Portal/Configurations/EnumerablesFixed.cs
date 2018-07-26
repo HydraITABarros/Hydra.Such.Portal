@@ -2356,6 +2356,19 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Tratado"
             }
         };
+
+        public static readonly List<EnumData> LinhasPreEncomenda_Documento_a_Criar = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Consulta Mercado"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Encomenda"
+            }
+        };
     }
 
     public class EnumDataString

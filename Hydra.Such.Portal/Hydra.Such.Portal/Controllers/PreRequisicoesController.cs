@@ -868,7 +868,12 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(data);
                         }
                     }
-                   
+
+                    //Get VATPostingGroup Info
+                    List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
+                    var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
+                    var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+                    
                     List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
@@ -934,9 +939,17 @@ namespace Hydra.Such.Portal.Controllers
                             }).ToList()
                         }).ToList();
 
-                    //Criar anexos                  
-                    data = CopyAttachments(newlistOpenOrder, data);
-
+                    //Set VATPostingGroup Info
+                    newlistOpenOrder.ForEach(header =>
+                    {
+                        header.Lines.ForEach(line => {
+                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                        });
+                    });
+                
+                    data = CreateRequesition(newlistOpenOrder, data);
+                    
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
                     PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto ==0|| x.NºLinhaEncomendaAberto==null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
                                         
@@ -1002,8 +1015,32 @@ namespace Hydra.Such.Portal.Controllers
                             }).ToList()
                         }).ToList();
 
-                    //Criar Anexos
-                    data = CopyAttachments(newlist, data);
+                    //Set VATPostingGroup Info
+                    newlist.ForEach(header =>
+                    {
+                        header.Lines.ForEach(line => {
+                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                        });
+                    });
+                    data = CreateRequesition(newlist, data);
+                    
+                    if (data.eReasonCode == 1 && newlist.Count > 0 || newlistOpenOrder.Count > 0)
+                    {
+                        //if all items have been created delete pre-requisition lines
+                        DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                        
+                        var successMessages = data.eMessages.Where(x => x.Type == TraceType.Success).Select(x => x.Message).ToArray();
+                        if (successMessages.Length > 0)
+                        {
+                            data.eMessage += " " + string.Join(";", successMessages);
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                    }
                 }
             }
             catch (Exception ex)
@@ -1011,11 +1048,10 @@ namespace Hydra.Such.Portal.Controllers
                 data.eReasonCode = 0;
                 data.eMessage = "Ocorreu um erro ao criar a requisição.";
             }
-
             return Json(data);
         }
 
-        public PreRequesitionsViewModel CopyAttachments(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
+        public PreRequesitionsViewModel CreateRequesition(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
         {
             int totalItems = 0;
             string createdReqIds = ": ";
@@ -1079,7 +1115,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         //count successful items for later validation
                         totalItems++;
-                        createdReqIds += RequisitionNo + "; ";
+                        //createdReqIds += RequisitionNo + "; ";
                         var totalValue = req.GetTotalValue();
                         //Start Approval
                         ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
@@ -1088,10 +1124,9 @@ namespace Hydra.Such.Portal.Controllers
                             data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
                         }
 
-
                         data.eReasonCode = 1;
                         data.eMessage = "Requisições criadas com sucesso";
-
+                        data.eMessages.Add(new TraceInformation(TraceType.Success, RequisitionNo));
                     }
                     else
                     {
@@ -1106,21 +1141,21 @@ namespace Hydra.Such.Portal.Controllers
                 }
                
             }
-            if (newlist.Count > 0 && totalItems == newlist.Count)
-            {
-                //if all items have been created delete pre-requisition lines
-                DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-                //data.eMessage += createdReqIds;
-                //if (data.eMessages.Count > 0)
-                //{
-                //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
-                //}
-            }
-            else
-            {
-                data.eReasonCode = 0;
-                data.eMessage = "Ocorreu um erro ao criar a requisição.";
-            }
+            //if (newlist.Count > 0 && totalItems == newlist.Count)
+            //{
+            //    //if all items have been created delete pre-requisition lines
+            //    DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+            //    //data.eMessage += createdReqIds;
+            //    //if (data.eMessages.Count > 0)
+            //    //{
+            //    //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+            //    //}
+            //}
+            //else
+            //{
+            //    data.eReasonCode = 0;
+            //    data.eMessage = "Ocorreu um erro ao criar a requisição.";
+            //}
 
             return data;
         }

@@ -32,12 +32,12 @@ namespace Hydra.Such.Portal.Services
 
             item.DataCriacao = DateTime.Now;
             item.IdAreaPendente = (int)BillingReceptionAreas.Contabilidade;
+            item.AreaPendente = BillingReceptionAreas.Contabilidade.ToString();
             item.Estado = BillingReceptionStates.Rececao;
             item.DataCriacao = DateTime.Now;
-            item.DataUltimaInteracao = DateTime.Now.ToString();
-            
+            item.DescricaoProblema = "Entrada fatura em receção";
 
-            if(item.Id == "" || item.Id == null)
+            if (item.Id == "" || item.Id == null)
             {
                 ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
 
@@ -56,7 +56,7 @@ namespace Hydra.Such.Portal.Services
             wfItem.Data = DateTime.Now;
             wfItem.DataCriacao = DateTime.Now;
             wfItem.Estado = (int)BillingReceptionStates.Rececao;//TODO: Identificar estados possivels “Receção/Conferência”
-            wfItem.Utilizador = item.CriadoPor;
+
             repo.Create(wfItem);
 
             try
@@ -137,9 +137,9 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
-        public List<BillingReceptionModel> GetAllForUserPendingExcept(string userName, int option, BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllForUserPendingExcept(string userName, BillingReceptionAreas perfil,BillingReceptionUserProfiles PerfilVisualizacao)
         {
-            var billingReceptions = repo.GetAllPeddingExcept(perfil);
+            var billingReceptions = repo.GetAllPeddingExcept(perfil, PerfilVisualizacao);
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
@@ -155,7 +155,7 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
-        public List<BillingReceptionModel> GetAllForUserPending(string userName, int option, BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllForUserPending()
         {
             var billingReceptions = repo.GetAllPending();
             return billingReceptions;
@@ -197,7 +197,6 @@ namespace Hydra.Such.Portal.Services
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
             wfItem = DBBillingReceptionWf.ParseToDB(wfItemLast);
             item.Descricao = wfItemLast.Comentario;
-            item.DescricaoProblema = wfItemLast.Descricao;
             item.DataModificacao = DateTime.Now;
             wfItem.Utilizador = postedByUserName;
             wfItem.Id = 0;
@@ -219,27 +218,35 @@ namespace Hydra.Such.Portal.Services
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             //Update Header
-            RecFacturasProblemas questao = null;
-            questao = GetQuestionID(wfItemLast.CodProblema, wfItemLast.CodTipoProblema);
-
-            if (questao.Devolvido == true)
-                item.Estado = BillingReceptionStates.Devolvido;
-            else
-            {
-                item.Estado = BillingReceptionStates.Pendente;
-                if (item.DataPassaPendente == null || item.DataPassaPendente == "")
-                    item.DataPassaPendente = DateTime.Now.ToString();
-            }
+            RecFacturasProblemas questao = new RecFacturasProblemas();
             item.Estado = BillingReceptionStates.Pendente;
-            item.DataUltimaInteracao = DateTime.Now.ToString();
+            if (wfItemLast.CodProblema != null)
+            {
+                questao = GetQuestionID(wfItemLast.CodProblema, wfItemLast.CodTipoProblema);
+
+                if (questao.Devolvido == true)
+                    item.Estado = BillingReceptionStates.Devolvido;
+                else
+                {
+                    item.Estado = BillingReceptionStates.Pendente;
+                    if (item.DataPassaPendente == null || item.DataPassaPendente == "")
+                        item.DataPassaPendente = DateTime.Now.ToString("dd/MM/yyyy");
+                }
+            }
+            
+            item.DataUltimaInteracao = (item.DataModificacao == null) ? item.DataModificacao.ToString() : item.DataCriacao.ToString();
             item.TipoProblema = wfItemLast.CodTipoProblema;
-            item.AreaPendente2 = wfItemLast.AreaWorkflow;
+            item.AreaPendente = wfItemLast.AreaWorkflow;
+            item.AreaPendente2 = wfItemLast.Area;
             item.Destinatario = wfItemLast.Destinatario;
             item.Descricao = wfItemLast.Comentario;
+            item.TipoProblema = wfItemLast.CodTipoProblema;
             item.DescricaoProblema = wfItemLast.Descricao;
             item.DataModificacao = DateTime.Now;
-            //area ultima interação
-            //user ultima interação
+            item.ModificadoPor = postedByUserName;
+            item.AreaUltimaInteracao = wfItemLast.AreaWorkflow;
+            item.UserUltimaInteracao = wfItemLast.CriadoPor;
+
 
             item = repo.Update(item);
 
@@ -255,6 +262,7 @@ namespace Hydra.Such.Portal.Services
             wfItem.ModificadoPor = item.ModificadoPor;
             wfItem.Data = item.DataCriacao;
             wfItem.DataCriacao = DateTime.Now;
+            wfItem.CriadoPor = postedByUserName;
             wfItem.EnderecoEnvio = postedByUserName;
             wfItem.EnderecoFornecedor = wfItemLast.EnderecoFornecedor;
             wfItem.CodDestino = wfItemLast.CodDestino;
@@ -664,7 +672,7 @@ namespace Hydra.Such.Portal.Services
         public int GetWorkFlow(BillingReceptionModel item)
         {
 
-            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetLastById(item.NumEncomenda);
+            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetLastById(item.Id);
             return LastWork.Id;
         }
     }

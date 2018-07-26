@@ -46,5 +46,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }
+        public string VATBusinessPostingGroup { get; set; }
+        public string VATProductPostingGroup { get; set; }
     }
 }

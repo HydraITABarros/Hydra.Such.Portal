@@ -29,29 +29,55 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// Devolve os dados de um registo da tabela
+        /// </summary>
+        /// <param name="tipo"></param>
+        /// <param name="imei"></param>
+        /// <returns></returns>
+        public static LinhasPreEncomenda GetLinhasPreEncomenda(int numLinhaPreEncomenda)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasPreEncomenda.Where(p => p.NºLinhaPreEncomenda == numLinhaPreEncomenda).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        public static LinhasPreEncomenda Update(LinhasPreEncomenda ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.LinhasPreEncomenda.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
 
         public static LinhasPreEncomendaView CastLinhasPreEncomendaToView(LinhasPreEncomenda ObjectToTransform)
         {
             string _fornecedor = string.Empty;
-
-            if (ObjectToTransform != null)
-            {
-                SuchDBContext _context = new SuchDBContext();
-                try
-                {
-
-                    //_fornecedor = ObjectToTransform.NºFornecedor == null ? "" DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name,
-
-
-                }
-                catch
-                {
-
-                }
-            }
-
+            
             LinhasPreEncomendaView view = new LinhasPreEncomendaView()
             {
                 CodigoAreaFuncional = ObjectToTransform.CódigoÁreaFuncional,
@@ -73,12 +99,53 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 QuantidadeDisponibilizada = ObjectToTransform.QuantidadeDisponibilizada,
                 UtilizadorCriacao = ObjectToTransform.UtilizadorCriação,
                 UtilizadorModificacao = ObjectToTransform.UtilizadorModificação,
+                DocumentoaCriar = ObjectToTransform.DocumentoaCriar,
+                CriarDocumento = ObjectToTransform.CriarDocumento,
+                NumEncomendaAberto = ObjectToTransform.NºEncomendaAberto,
+                NumLinhaEncomendaAberto = ObjectToTransform.NºLinhaEncomendaAberto,
+                Tratada = ObjectToTransform.Tratada,
                 DataHoraCriacao_Show = ObjectToTransform.DataHoraCriação == null ? "" : ObjectToTransform.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
                 DataHoraModificacao_Show = ObjectToTransform.DataHoraModificação == null ? "" : ObjectToTransform.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
-                NomeFornecedor_Show = _fornecedor
+                NomeFornecedor_Show = _fornecedor,
+                DocumentoaCriar_Show = ObjectToTransform.DocumentoaCriar == null ? "" : ObjectToTransform.DocumentoaCriar == 0 ? "Consulta Mercado" : "Encomenda"
             };
 
             return view;
+        }
+
+        public static LinhasPreEncomenda CastLinhasPreEncomendaToDB(LinhasPreEncomendaView ObjectToTransform)
+        {
+            string _fornecedor = string.Empty;
+
+            LinhasPreEncomenda linha = new LinhasPreEncomenda()
+            {
+                CódigoÁreaFuncional = ObjectToTransform.CodigoAreaFuncional,
+                CódigoCentroResponsabilidade = ObjectToTransform.CodigoCentroResponsabilidade,
+                CódigoLocalização = ObjectToTransform.CodigoLocalizacao,
+                CódigoProduto = ObjectToTransform.CodigoProduto,
+                CódigoRegião = ObjectToTransform.CodigoRegiao,
+                CódigoUnidadeMedida = ObjectToTransform.CodigoUnidadeMedida,
+                CustoUnitário = ObjectToTransform.CustoUnitario,
+                DataHoraCriação = ObjectToTransform.DataHoraCriacao,
+                DataHoraModificação = ObjectToTransform.DataHoraModificacao,
+                DescriçãoProduto = ObjectToTransform.DescricaoProduto,
+                NºFornecedor = ObjectToTransform.NumFornecedor,
+                NºLinhaPreEncomenda = ObjectToTransform.NumLinhaPreEncomenda,
+                NºLinhaRequisição = ObjectToTransform.NumLinhaRequisicao,
+                NºPreEncomenda = ObjectToTransform.NumPreEncomenda,
+                NºProjeto = ObjectToTransform.NumProjeto,
+                NºRequisição = ObjectToTransform.NumRequisicao,
+                QuantidadeDisponibilizada = ObjectToTransform.QuantidadeDisponibilizada,
+                UtilizadorCriação = ObjectToTransform.UtilizadorCriacao,
+                UtilizadorModificação = ObjectToTransform.UtilizadorModificacao,
+                DocumentoaCriar = ObjectToTransform.DocumentoaCriar,
+                CriarDocumento = ObjectToTransform.CriarDocumento,
+                NºEncomendaAberto = ObjectToTransform.NumEncomendaAberto,
+                NºLinhaEncomendaAberto = ObjectToTransform.NumLinhaEncomendaAberto,
+                Tratada = ObjectToTransform.Tratada
+            };
+
+            return linha;
         }
 
     }

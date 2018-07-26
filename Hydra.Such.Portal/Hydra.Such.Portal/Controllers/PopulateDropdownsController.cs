@@ -631,7 +631,29 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetGroupContProduct()
         {
-            List<DDMessageString> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult GetVATBusinessPostingGroups()
+        {
+            List<DDMessageString> result = DBNAV2017GruposContabilisticos.GetVATBusinessPostingGroups(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult GetVATProductsPostingGroups()
+        {
+            List<DDMessageString> result = DBNAV2017GruposContabilisticos.GetVATProductsPostingGroups(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Description
@@ -1931,6 +1953,7 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
+
     }
 
 

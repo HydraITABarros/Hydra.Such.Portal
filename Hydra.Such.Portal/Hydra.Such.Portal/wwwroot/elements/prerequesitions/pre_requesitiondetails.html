@@ -317,7 +317,6 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formPreRequisitions">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
@@ -572,11 +571,11 @@
                                 <!--Anexos-->
                                 <div>
                                     <div class="row break_clear">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
 
                                             </vaadin-upload>
-                                        </template>
+                                        <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
@@ -1393,6 +1392,7 @@
                     this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
+                    
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
                             if (e.detail.xhr.status == 200) {
@@ -1444,7 +1444,7 @@
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
                 },
-
+                
                 _setProjectDim2: function (e) {
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
@@ -2110,7 +2110,8 @@
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._MaintenanceOrderLineNo.value = "";
-                                this.$._CBPurchaseHeader.value = "";
+                                if (this.$._CBPurchaseHeader != null)
+                                    this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
                                 this.$._CBItems._clearSelection();
                                 this.$._ProjectNo.value = this.data.projectNo;
@@ -2179,17 +2180,25 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
+                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 
                         this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         var req = this.$.CleanPreRequesition_ajax;
-
-                        if (this.CreateReqResponse.eMessages.length > 0) {
-                            var errors = this.CreateReqResponse.eMessages[0].message;
-                            for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
-                                errors += this.CreateReqResponse.eMessages[i].message + ";";
+                        var errorsToDisplay = this.CreateReqResponse.eMessages.find(x => x.type == 0);
+                        //if (this.CreateReqResponse.eMessages.length > 0) {
+                        if (errorsToDisplay != undefined) {//.length > 0) {
+                            if (Array.isArray(errors)) {
+                                var errors = errorsToDisplay[0].message;
+                                for (var i = 1; i < errorsToDisplay.length; i++) {
+                                    errors += errorsToDisplay[i].message + ";";
+                                }
                             }
+                            else {
+                                var errors = errorsToDisplay.message;
+                            }
+
                             var thisCtx = this;
 
                             setTimeout(

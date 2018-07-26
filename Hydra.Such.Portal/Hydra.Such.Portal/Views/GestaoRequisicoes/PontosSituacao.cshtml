@@ -26,6 +26,14 @@
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib\datetime-picker-master/time-element.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <x-stateofplaydetails></x-stateofplaydetails>
 
 <dom-module id="x-stateofplaydetails">
@@ -47,6 +55,20 @@
 
         <div class="subMenu">
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
@@ -57,7 +79,7 @@
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
                         <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{_selectedItem}}">
-                            <vaadin-grid-column width="60px" resizable>
+                            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="requisitionNo" direction="desc">Requisição</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="requisitionNo" />
@@ -66,7 +88,7 @@
                                     {{item.requisitionNo}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="60px" resizable>
+                            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.readStringValue.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="readStringValue" />
@@ -75,7 +97,7 @@
                                     {{ item.readStringValue }}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+                            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.question.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="question">Pergunta</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="question" />
@@ -84,7 +106,7 @@
                                     {{item.question}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+                            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.answer.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="answer">Resposta</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="answer" />
@@ -120,8 +142,17 @@
                     _selectedItem: {
                         observer: '_onItemSelected'
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -156,6 +187,45 @@
                     var FileName = this.export;
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_PontosSituacaoRequisicoes?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Requisição" },
+                        "readStringValue": { hidden: false, label: "Lido" },
+                        "question": { hidden: false, label: "Pergunta" },
+                        "answer": { hidden: false, label: "Resposta" }
+                    };
+
+                    if (sessionStorage["stateofplaydetails.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["stateofplaydetails.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["stateofplaydetails.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
 
             });
         });

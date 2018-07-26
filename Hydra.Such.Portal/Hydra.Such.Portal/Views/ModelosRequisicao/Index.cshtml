@@ -26,6 +26,14 @@
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <x-requestmodels></x-requestmodels>
 
 <dom-module id="x-requestmodels">
@@ -57,10 +65,24 @@
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionNo" />
@@ -69,7 +91,8 @@
                     {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localMarketRegion" />
@@ -78,7 +101,8 @@
                     [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localMarketDate" />
@@ -87,7 +111,8 @@
                     [[ _parseDateFormat(item.localMarketDate)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -96,7 +121,8 @@
                     [[ _parseregion(item.regionCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
@@ -105,7 +131,8 @@
                     [[ _parseArea(item.functionalAreaCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="centerResponsibilityCode" />
@@ -114,7 +141,8 @@
                     [[ _parsecenterRespons(item.centerResponsibilityCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="marketInquiryNo" />
@@ -123,7 +151,8 @@
                     {{item.marketInquiryNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="orderNo" />
@@ -132,7 +161,8 @@
                     {{item.orderNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requestReclaimNo" />
@@ -141,7 +171,8 @@
                     {{item.requestReclaimNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionDate" />
@@ -168,6 +199,12 @@
                     type: Array,
                     value: @Html.Raw(Json.Serialize(ViewBag.UserPermissions)),
                 },
+                _columns: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
+                },
             },
             observers: [
                 '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
@@ -177,6 +214,9 @@
                     this.$.ajax_getgrid.generateRequest();
                 }
                 this.Flag = true;
+
+                /*ColumnToggle*/
+                this._startColumnToggle();
 
                 var _this = this;
                 $(window).resize(function () {
@@ -260,6 +300,51 @@
                 var FileName = this.export;
                 location.href = '../ModelosRequisicao/ExportToExcelDownload_ModelosRequisicao?sFileName=' + FileName;
             },
+
+            /*start - ColumnToggle*/
+            _startColumnToggle: function () {
+                var columns = {
+                    "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                    "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
+                    "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                    "regionCode": { hidden: false, label: "Código Região" },
+                    "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                    "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                    "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
+                    "orderNo": { hidden: false, label: "Nº Encomenda" },
+                    "requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
+                    "requisitionDate": { hidden: false, label: "Data requisição" }
+                };
+
+                if (sessionStorage["requestmodels.ToggleColumn"]) {
+                    var keys = Object.keys(columns);
+                    var storedColumns = JSON.parse(sessionStorage["requestmodels.ToggleColumn"]);
+                    for (var i = 0; i < keys.length; i++) {
+                        columns[keys[i]] = storedColumns[keys[i]];
+                    }
+                };
+                this._columns = columns;
+            },
+            _toggleColumn: function (event) {
+                var columnIndex = JSON.parse(event.target.dataset.item).key;
+                event.path[0].classList.toggle("selected");
+                this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                if (typeof (Storage) !== "undefined") {
+                    sessionStorage["requestmodels.ToggleColumn"] = JSON.stringify(this._columns);
+                }
+            },
+            _getColumnItemClass: function (columnIndex) {
+                return !this._columns[columnIndex].hidden ? "selected" : "";
+            },
+            _toArray: function (obj) {
+                return Object.keys(obj).map(function (key) {
+                    return {
+                        key: key,
+                        value: obj[key]
+                    };
+                });
+            },
+            /* end - ColumnToggle */
 
         });
     });
