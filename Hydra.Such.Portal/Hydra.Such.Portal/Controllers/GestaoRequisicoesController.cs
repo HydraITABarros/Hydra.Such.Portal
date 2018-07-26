@@ -758,12 +758,13 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                item.Lines = productsInStock;
+                                var reqToUpdate = item;
+                                reqToUpdate.Lines = productsInStock;
 
-                                item.State = RequisitionStates.Available;
-                                item.UpdateUser = User.Identity.Name;
-                                item.UpdateDate = DateTime.Now;
-                                RequisitionViewModel updatedRequisition = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                reqToUpdate.State = RequisitionStates.Available;
+                                reqToUpdate.UpdateUser = User.Identity.Name;
+                                reqToUpdate.UpdateDate = DateTime.Now;
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
                                 if (updatedRequisition == null)
                                 {
                                     item.eReasonCode = 9;
@@ -771,6 +772,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
+                                    item = updatedRequisition;
                                     item.eReasonCode = 1;
                                     item.eMessage = "A Requisição está disponivel";
                                 }
@@ -863,6 +865,11 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eReasonCode = 12;
                                 item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
                             }
+                            else if (productsToHandle.Count == 0)
+                            {
+                                item.eReasonCode = 13;
+                                item.eMessage = item.eMessage = "Não existem linhas para receber (verificar campo Quantidade a receber).";
+                            }
                             else
                             {
                                 Guid transactionId = Guid.NewGuid();
@@ -908,103 +915,6 @@ namespace Hydra.Such.Portal.Controllers
                                     item.eReasonCode = 9;
                                     item.eMessage = "Ocorreu um erro: " + ex.Message;
                                 }
-
-
-
-                                //item.Lines = productsInStock;
-
-                                //item.State = RequisitionStates.Received;
-                                //item.UpdateUser = User.Identity.Name;
-                                //item.UpdateDate = DateTime.Now;
-                                //RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                //if (rValidation == null)
-                                //{
-                                //    item.eReasonCode = 9;
-                                //    item.eMessage = "Ocorreu um erro ao alterar a requisição";
-                                //}
-
-                                //if (prodNotStockkeepUnit != "")
-                                //{
-                                //    item.eReasonCode = 7;
-                                //    item.eMessage = " O produtos " + prodNotStockkeepUnit +
-                                //                    " não existem nas unidades de armazenamento do NAV";
-                                //}
-                                //else
-                                //{
-                                //Criar diário de projeto. A aguardar especificação 
-                                //foreach (RequisitionLineViewModel RLItem in getrlines)
-                                //{
-                                //    DiárioDeProjeto newRL = new DiárioDeProjeto();
-                                //    DiárioDeProjeto newdp = new DiárioDeProjeto()
-                                //    {
-                                //        NºProjeto = item.ProjectNo,
-                                //        Data = DateTime.Now,
-                                //        Tipo = RLItem.Type,
-                                //        Código = RLItem.Code,
-                                //        Descrição = RLItem.Description,
-                                //        Quantidade = RLItem.QuantityReceivable,
-                                //        CódUnidadeMedida = RLItem.UnitMeasureCode,
-                                //        CódLocalização = item.LocalCode,
-                                //        CódigoRegião = item.RegionCode,
-                                //        CódigoÁreaFuncional = item.FunctionalAreaCode,
-                                //        CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
-                                //        Utilizador =User.Identity.Name,
-                                //        CustoUnitário = RLItem.UnitCost,
-                                //        PreçoUnitário = RLItem.UnitCostsould,
-                                //        Faturável = RLItem.Billable,
-                                //        NºRequisição = item.RequisitionNo,
-                                //        NºLinhaRequisição = RLItem.LineNo,
-                                //        AcertoDePreços = false,
-                                //        FaturaçãoAutorizada = false,
-                                //        NºFuncionário = item.EmployeeNo,
-                                //        Registado =false,
-                                //        Faturada = false,
-                                //    };
-                                //    newdp.DataHoraCriação = DateTime.Now;
-                                //    newdp.UtilizadorCriação = User.Identity.Name;
-                                //    newRL = DBProjectDiary.Create(newdp);
-                                //    if (newRL == null)
-                                //    {
-                                //        if (ReqLineNotCreateDP == "")
-                                //        {
-                                //            ReqLineNotCreateDP = item.RequisitionNo;
-                                //        }
-                                //        else
-                                //        {
-                                //            ReqLineNotCreateDP = ReqLineNotCreateDP + " , " + item.RequisitionNo;
-                                //        }
-                                //    }
-                                //    else
-                                //    {
-                                //        if ((RLItem.QuantityRequired - RLItem.QuantityReceived) == 0 )
-                                //        {
-                                //            ReqLinesToHistCount++;
-                                //        }
-                                //    }
-                                //}
-                                //if (ReqLineNotCreateDP != "")
-                                //{
-                                //    item.eReasonCode = 15;
-                                //    item.eMessage =
-                                //        "As linhas " + ReqLineNotCreateDP +
-                                //        " não passaram para os diarios de projeto";
-                                //}
-                                //else
-                                //{
-                                //    if (ReqLinesToHistCount == getrlines.Count)
-                                //    {
-                                //        item.State = RequisitionStates.Archived;
-                                //        item.UpdateUser = User.Identity.Name;
-                                //        item.UpdateDate = DateTime.Now;
-                                //        RequisitionViewModel reqtoArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
-                                //        if (reqtoArchived == null)
-                                //        {
-                                //            item.eReasonCode = 14;
-                                //            item.eMessage = "Ocorreu um erro ao mandar para o histórico";
-                                //        }
-                                //    }
-                                //}
-                                //}
                             }
                         }
                         else
