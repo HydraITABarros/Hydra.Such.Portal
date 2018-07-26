@@ -1085,7 +1085,13 @@ namespace Hydra.Such.Portal.Controllers
                                 CopyFile.CreateUser = User.Identity.Name;
                                 CopyFile.DocType = 2;
                                 CopyFile.Url = NewFileName;
-                                DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                if(newFile != null)
+                                {
+                                    System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    DBAttachments.Delete(file);
+                                }
+
                             }
                             catch (Exception ex)
                             {
@@ -1102,7 +1108,7 @@ namespace Hydra.Such.Portal.Controllers
                         createdReqIds += RequisitionNo + "; ";
                         var totalValue = req.GetTotalValue();
                         //Start Approval
-                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
@@ -1129,6 +1135,8 @@ namespace Hydra.Such.Portal.Controllers
             if (newlist.Count > 0 && totalItems == newlist.Count)
             {
                 //if all items have been created delete pre-requisition lines
+                
+
                 DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
                 //data.eMessage += createdReqIds;
                 //if (data.eMessages.Count > 0)
@@ -1170,11 +1178,11 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (String.IsNullOrEmpty(Error))
                 {
-                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
-                        ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                        //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                     }
                 }
                 else
@@ -1185,11 +1193,11 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
                 if (ApprovalMovResult.eReasonCode != 100)
                 {
                     ApprovalMovResult.eReasonCode = 2;
-                    ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                 }
             }
 
@@ -1268,7 +1276,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
