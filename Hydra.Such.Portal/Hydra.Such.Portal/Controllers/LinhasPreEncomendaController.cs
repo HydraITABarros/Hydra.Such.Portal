@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -28,7 +29,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             _config = appSettings.Value;
         }
-
 
         // GET: LinhasPreEncomenda
         public IActionResult LinhasPreEncomenda()
@@ -61,7 +61,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-
 
         [HttpPost]
         public JsonResult GetAllLinhas()
@@ -106,6 +105,210 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
-        
+        [HttpPost]
+        public JsonResult MarcarComoConsultaMercado([FromBody] List<LinhasPreEncomendaView> Linhas)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 0,
+                eMessage = "Os Registos foram atualizados com sucesso, estando agora com o Documento a Criar como 'Consulta Mercado'."
+            };
+
+            try
+            {
+                if (Linhas != null && Linhas.Count() > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréEncomendas);
+                    if (UPerm.Update == true)
+                    {
+                        Linhas.ForEach(LinhaPreEncomenda =>
+                        {
+                            LinhaPreEncomenda.DocumentoaCriar = 0; //Consulta Mercado
+                            LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
+                            LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
+
+                            if (DBEncomendas.Update(DBEncomendas.CastLinhasPreEncomendaToDB(LinhaPreEncomenda)) == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                            }
+                        });
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não tem permissões para alterar o registo.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Não foi possivel ler o registo.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult MarcarComoEncomenda([FromBody] List<LinhasPreEncomendaView> Linhas)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 0,
+                eMessage = "Os Registos foram atualizados com sucesso, estando agora com o Documento a Criar como 'Encomenda'."
+            };
+
+            try
+            {
+                if (Linhas != null && Linhas.Count() > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréEncomendas);
+                    if (UPerm.Update == true)
+                    {
+                        Linhas.ForEach(LinhaPreEncomenda =>
+                        {
+                            LinhaPreEncomenda.DocumentoaCriar = 1; //Encomenda
+                            LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
+                            LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
+
+                            if (DBEncomendas.Update(DBEncomendas.CastLinhasPreEncomendaToDB(LinhaPreEncomenda)) == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                            }
+                        });
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não tem permissões para alterar o registo.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Não foi possivel ler o registo.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult MarcarComoCriarDocumento([FromBody] List<LinhasPreEncomendaView> Linhas)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 0,
+                eMessage = "Os Registos foram atualizados com sucesso, estando agora marcadas para Criar Documento."
+            };
+
+            try
+            {
+                if (Linhas != null && Linhas.Count() > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréEncomendas);
+                    if (UPerm.Update == true)
+                    {
+                        Linhas.ForEach(LinhaPreEncomenda =>
+                        {
+                            LinhaPreEncomenda.CriarDocumento = true;
+                            LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
+                            LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
+
+                            if (DBEncomendas.Update(DBEncomendas.CastLinhasPreEncomendaToDB(LinhaPreEncomenda)) == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                            }
+                        });
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não tem permissões para alterar o registo.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Não foi possivel ler o registo.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult MarcarComoNaoCriarDocumento([FromBody] List<LinhasPreEncomendaView> Linhas)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 0,
+                eMessage = "Os Registos foram atualizados com sucesso, estando agora marcadas para Não Criar Documento."
+            };
+
+            try
+            {
+                if (Linhas != null && Linhas.Count() > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréEncomendas);
+                    if (UPerm.Update == true)
+                    {
+                        Linhas.ForEach(LinhaPreEncomenda =>
+                        {
+                            LinhaPreEncomenda.CriarDocumento = false;
+                            LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
+                            LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
+
+                            if (DBEncomendas.Update(DBEncomendas.CastLinhasPreEncomendaToDB(LinhaPreEncomenda)) == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                            }
+                        });
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não tem permissões para alterar o registo.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Não foi possivel ler o registo.";
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(null);
+        }
+
+
     }
 }
