@@ -162,6 +162,13 @@ ul.nav li:hover {
 }
 
 .tableBtn {
+    height: 17px !important;
+    white-space: nowrap;
+    min-width: 0px !important;
+    width: 17px;
+}
+
+/*.tableBtn {
     height: auto !important;
     white-space: nowrap;
     padding: 6px 5px;
@@ -169,7 +176,7 @@ ul.nav li:hover {
     margin-bottom: -5px;
     min-width: 0 !important;
     width: 30px;
-}
+}*/
 
 .editGrid {
     /*margin: 10px 20px;*/

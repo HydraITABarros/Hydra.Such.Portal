@@ -20,6 +20,14 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <x-requisitions></x-requisitions>
 <dom-module id="x-requisitions">
     <template>
@@ -47,10 +55,24 @@
 
         <div class="subMenu">
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionNo" />
@@ -58,9 +80,9 @@
                 <template>
                     {{item.requisitionNo}}
                 </template>
-
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="state" />
@@ -69,51 +91,44 @@
                     [[ _parsestate(item.state)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
                 <template class="header">
-                    <p class="alignCenter">Urgente</p>
-                    @*<vaadin-grid-filter path="urgent" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>*@
+                    Urgente
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
                 <template class="header">
-                    <p class="alignCenter">Compra a Dinheiro</p>
-                    @*<vaadin-grid-filter path="buyCash" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>*@
+                    Compra a Dinheiro
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
-                    <p class="alignCenter">Trabalho já executado</p>
-                    @*<vaadin-grid-filter path="alreadyPerformed" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>*@
+                    Trabalho já executado
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestNutrition.hidden }}">
                 <template class="header">
-                    <p class="alignCenter">Requisição Nutrição</p>
-                    @*<vaadin-grid-filter path="requestNutrition" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>*@
+                    Requisição Nutrição
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -122,7 +137,8 @@
                     [[ _parseregion(item.regionCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
@@ -131,7 +147,8 @@
                     [[ _parseArea(item.functionalAreaCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="centerResponsibilityCode" />
@@ -140,7 +157,8 @@
                     [[ _parsecenterRespons(item.centerResponsibilityCode)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
                     <vaadin-grid-filter path="comments" />
@@ -149,7 +167,8 @@
                     {{item.comments}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionDate" />
@@ -158,25 +177,8 @@
                     [[ _parseDateFormat(item.requisitionDate)]]
                 </template>
             </vaadin-grid-column>
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="createUser" />
-                </template>
-                <template>
-                    {{item.createUser}}
-                </template>
-            </vaadin-grid-column>*@
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="approvers" />
-                </template>
-                <template>
-                    {{item.approvers}}
-                </template>
-            </vaadin-grid-column>*@
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="estimatedValue" />
@@ -185,102 +187,6 @@
                     {{item.estimatedValue}}
                 </template>
             </vaadin-grid-column>
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="updateUser" />
-                </template>
-                <template>
-                    {{item.updateUser}}
-                </template>
-            </vaadin-grid-column>*@
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="budget" />
-                </template>
-                <template>
-                    {{item.budget}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <p class="alignCenter">Mercado Local</p>
-                    <vaadin-grid-filter path="localMarket" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketRegion" />
-                </template>
-                <template>
-                    {{item.localMarketRegion}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketDate" />
-                </template>
-                <template>
-                    [[ _parseDateFormat(item.localMarketDate)]]
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marketInquiryNo" />
-                </template>
-                <template>
-                    {{item.marketInquiryNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="orderNo" />
-                </template>
-                <template>
-                    {{item.orderNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <p class="alignCenter">Reposição Stock</p>
-                    <vaadin-grid-filter path="stockReplacement" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <p class="alignCenter">Reclamação</p>
-                    <vaadin-grid-filter path="reclamation" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>*@
         </vaadin-grid>
     </template>
     <script>
@@ -294,7 +200,13 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'
@@ -304,6 +216,9 @@
                         this.$.ajax_getgrid.generateRequest();
                     }
                     this.Flag = true;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -386,6 +301,52 @@
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_RequisicoesValidar?sFileName=' + FileName;
                 },
 
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "state": { hidden: false, label: "Estado" },
+                        "urgent": { hidden: false, label: "Urgente" },
+                        "buyCash": { hidden: false, label: "Compra a Dinheiro" },
+                        "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
+                        "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                        "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "requisitionDate": { hidden: false, label: "Data requisição" },
+                        "estimatedValue": { hidden: false, label: "Valor Estimado" }
+                    };
+
+                    if (sessionStorage["requisitions.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["requisitions.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["requisitions.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
 
             });
         });

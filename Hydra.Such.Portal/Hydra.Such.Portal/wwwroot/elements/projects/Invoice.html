@@ -20,6 +20,14 @@
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-invoice">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -29,6 +37,20 @@
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
         <br />
         <style>
@@ -175,7 +197,7 @@
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
@@ -185,7 +207,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="invoiceToClientNo" />
@@ -195,7 +217,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" />
@@ -205,7 +227,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.date.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="date" />
@@ -214,7 +236,7 @@
                     {{item.date}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.movementType.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="movementType" />
@@ -231,7 +253,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -248,7 +270,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
@@ -257,7 +279,7 @@
                     {{item.code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -266,7 +288,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.quantity.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity" />
@@ -275,7 +297,7 @@
                     {{item.quantity}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.measurementUnitCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="measurementUnitCode" />
@@ -284,7 +306,7 @@
                     {{item.measurementUnitCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.locationCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode" />
@@ -293,7 +315,7 @@
                     {{item.locationCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -302,7 +324,7 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
@@ -311,7 +333,7 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode" />
@@ -320,7 +342,7 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost" />
@@ -329,7 +351,7 @@
                     <span slot="suffix">{{item.unitCost}}€</span>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalCost" />
@@ -338,7 +360,7 @@
                     <span slot="suffix">{{item.totalCost}}€</span>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitPrice.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitPrice" />
@@ -347,7 +369,7 @@
                     <span slot="suffix">{{item.unitPrice}}€</span>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalPrice.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalPrice" />
@@ -356,7 +378,7 @@
                     <span slot="suffix">{{item.totalPrice}}€</span>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
                     <vaadin-grid-filter path="commitmentNumber" />
@@ -405,10 +427,19 @@
 
                     selectedItems: {
                         type: Array,
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
                     }
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -476,6 +507,60 @@
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "date": { hidden: false, label: "Data" },
+                        "movementType": { hidden: false, label: "Tipo Movimento" },
+                        "type": { hidden: false, label: "Tipo" },
+                        "code": { hidden: false, label: "Código" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
+                        "locationCode": { hidden: false, label: "Cód. Localização" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área" },
+                        "responsabilityCenterCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "totalCost": { hidden: false, label: "Custo Total" },
+                        "unitPrice": { hidden: false, label: "Preço Unitário" },
+                        "totalPrice": { hidden: false, label: "Preço Total" },
+                        "commitmentNumber": { hidden: false, label: "Nº Compromisso" }
+                    };
+
+                    if (sessionStorage["invoice.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["invoice.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["invoice.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
 
             });
         });

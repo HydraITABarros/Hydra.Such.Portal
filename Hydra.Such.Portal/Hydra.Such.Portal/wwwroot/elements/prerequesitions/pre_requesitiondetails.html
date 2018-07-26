@@ -150,11 +150,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{GridCBPurchaseHeader}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -331,6 +327,10 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row break_clear">
+                                        <div class="col-md-2 " hidden>
+                                            <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.openOrderNo}}" disabled></vaadin-text-field>
+                                        </div>
+                                      
                                         <div class="col-md-2 ">
                                             <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
                                         </div>
@@ -419,7 +419,7 @@
                                                 </template>
                                             </vaadin-combo-box>-->
 
-                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-change={{_PopulatePurchaseLines}}
                                                             items="[[LProjectFunctionalAreaCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -663,9 +663,9 @@
                                     <div class="col-sm-2">
                                         <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Encomenda Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
-                                                        text-path="id"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Nº Linha Aberta"}, {"field":"value", "name":"Fornecedor"}, {"field":"extra", "name":"Quantidade Disponível"}]'
+                                                        text-path="documentNO"
+                                                        value-path="line_No"
+                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"buyFromVendorNo", "name":"Fornecedor"}, {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1082,7 +1082,7 @@
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
-                                    <vaadin-grid-column width="200px" resizable>
+                                    <!--<vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="openOrderNo" />
@@ -1103,7 +1103,7 @@
                                                 [[item.openOrderNo ]]
                                             </template>
                                         </template>
-                                    </vaadin-grid-column>
+                                    </vaadin-grid-column>-->
                                     <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1452,11 +1452,13 @@
                 _setPurchaseLine: function (e) {
                     if (e.detail.value != "") {
                         var line = e.detail.value;
-                        var proj = this.CBPurchaseLine.find(x => x.id == line);
-                        this._QuantityToOpen = proj.extra;
-                        this._CBVendor=proj.value;
-                        if (proj.extra2 != "" && this.CBItems != undefined) {
-                            var item = this.CBItems.find(x => x.code == proj.extra2);
+                        var document = this.$._CBPurchaseLine.title; 
+                        var proj = this.CBPurchaseLine.find(x => x.line_No == line && x.documentNO == document);
+                        this._QuantityToOpen = proj.outstandingQtyBase;
+                        this._CBVendor = proj.buyFromVendorNo;
+                        this._CBPurchaseHeader = proj.documentNO;
+                        if (proj.prodOrderNo != "" && this.CBItems != undefined) {
+                            var item = this.CBItems.find(x => x.code == proj.prodOrderNo);
                             if (item != null) {
                                 this._CBItems = item.code;
                             }
@@ -2109,7 +2111,8 @@
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._MaintenanceOrderLineNo.value = "";
-                                this.$._CBPurchaseHeader.value = "";
+                                if (this.$._CBPurchaseHeader != null)
+                                    this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
                                 this.$._CBItems._clearSelection();
                                 this.$._ProjectNo.value = this.data.projectNo;
@@ -2126,10 +2129,10 @@
                 },
 
                 _PopulatePurchaseLines: function (data) {
-
-                    var PurchaseNo = this._CBPurchaseHeader;
+                    debugger;;
+                    var codArea = this.FunctionalAreaCode;
                     this._CBPurchaseLine = "";
-                    this.$.purchaselines_ajax.body = JSON.stringify(PurchaseNo);
+                    this.$.purchaselines_ajax.body = JSON.stringify(codArea);
                     this.$.purchaselines_ajax.generateRequest();
 
 
@@ -2178,17 +2181,25 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
+                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 
                         this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         var req = this.$.CleanPreRequesition_ajax;
-
-                        if (this.CreateReqResponse.eMessages.length > 0) {
-                            var errors = this.CreateReqResponse.eMessages[0].message;
-                            for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
-                                errors += this.CreateReqResponse.eMessages[i].message + ";";
+                        var errorsToDisplay = this.CreateReqResponse.eMessages.find(x => x.type == 0);
+                        //if (this.CreateReqResponse.eMessages.length > 0) {
+                        if (errorsToDisplay != undefined) {//.length > 0) {
+                            if (Array.isArray(errors)) {
+                                var errors = errorsToDisplay[0].message;
+                                for (var i = 1; i < errorsToDisplay.length; i++) {
+                                    errors += errorsToDisplay[i].message + ";";
+                                }
                             }
+                            else {
+                                var errors = errorsToDisplay.message;
+                            }
+
                             var thisCtx = this;
 
                             setTimeout(

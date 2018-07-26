@@ -25,9 +25,18 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <x-rectecplates></x-rectecplates>
 <dom-module id="x-rectecplates">
@@ -62,6 +71,20 @@
                 <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div><!--on-response="_gridListResponse"-->
 
         <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -78,7 +101,7 @@
         </iron-ajax>
 
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.plateNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="plateNo">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="plateNo" />
@@ -86,9 +109,9 @@
                 <template>
                     {{item.plateNo}}
                 </template>
-
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.recordTechnicalName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="recordTechnicalName">Nome Ficha Técnica</vaadin-grid-sorter>
                     <vaadin-grid-filter path="recordTechnicalName" />
@@ -97,7 +120,8 @@
                     {{item.recordTechnicalName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt1.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt1">Class.FT.1</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt1" />
@@ -106,7 +130,8 @@
                     [[_parseclassFt(item.classFt1)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt2.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt2">Class.FT.2</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt2" />
@@ -115,7 +140,8 @@
                     [[_parseclassFt(item.classFt2)]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt3.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt3">Class.FT.3</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt3" />
@@ -124,7 +150,8 @@
                     {{item.classFt3}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt4.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt4">Class.FT.4</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt4" />
@@ -133,7 +160,8 @@
                     {{item.classFt4}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt5.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt5">Class.FT.5</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt5" />
@@ -142,7 +170,8 @@
                     {{item.classFt5}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt6.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt6">Class.FT.6</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt6" />
@@ -151,7 +180,8 @@
                     {{item.classFt6}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.classFt7.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="classFt7">Class.FT.7</vaadin-grid-sorter>
                     <vaadin-grid-filter path="classFt7" />
@@ -160,7 +190,8 @@
                     {{item.classFt7}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.unitMeasureCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitMeasureCode">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitMeasureCode" />
@@ -183,17 +214,28 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
 
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
-                    this.$.grid_databound_ajax.generateRequest();
+                    debugger;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
                     });
                     $(window).trigger('resize');
+
+                    this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms), historico: parseInt(this._historico) });
+                    this.$.grid_databound_ajax.generateRequest();
                 },
 
                 fixGridToBottom: function () {
@@ -235,6 +277,55 @@
                     var FileName = this.export;
                     location.href = '../FichasTecnicasPratos/ExportToExcelDownload_FichasTecnicasPratos?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    debugger;
+                    var columns = {
+                        "plateNo": { hidden: false, label: "Nº" },
+                        "recordTechnicalName": { hidden: false, label: "Nome Ficha Técnica" },
+                        "classFt1": { hidden: false, label: "Class.FT.1" },
+                        "classFt2": { hidden: false, label: "Class.FT.2" },
+                        "classFt3": { hidden: false, label: "Class.FT.3" },
+                        "classFt4": { hidden: false, label: "Class.FT.4" },
+                        "classFt5": { hidden: false, label: "Class.FT.5" },
+                        "classFt6": { hidden: false, label: "Class.FT.6" },
+                        "classFt7": { hidden: false, label: "Class.FT.7" },
+                        "unitMeasureCode": { hidden: false, label: "Cód. Unidade Medida" }
+                    };
+
+                    if (sessionStorage["rectecplates.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["rectecplates.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    debugger;
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["rectecplates.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    debugger;
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    debugger;
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
 
             });
         });

@@ -13,6 +13,14 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-oportunitieslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -76,10 +84,24 @@
             <paper-button class="tablinks" on-tap="_showHistoryButton"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{_showHistory}}</paper-button>
             <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
@@ -88,7 +110,8 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startData" />
@@ -97,7 +120,8 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueDate" />
@@ -106,7 +130,8 @@
                     {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contactNo" />
@@ -115,7 +140,8 @@
                     {{item.contactNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" />
@@ -124,7 +150,8 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" />
@@ -133,7 +160,8 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -142,7 +170,8 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="statusDescription" />
@@ -151,7 +180,8 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -160,7 +190,8 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -169,7 +200,8 @@
                     {{item.codeFunctionalArea}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -178,7 +210,8 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
@@ -187,16 +220,17 @@
                     {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.totalProposalValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalProposalValue">Valor Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalProposalValue" />
                 </template>
                 <template>
-                    <p align="right"> {{item.totalProposalValue}}€</p>
-
+                    {{item.totalProposalValue}}€
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <vaadin-grid-column width="10%">
                     <template class="header">
@@ -251,6 +285,12 @@
                         type: String,
                         value: "false"
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 _rowSelected: function (item) {
                     debugger;
@@ -271,6 +311,9 @@
 
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     var gridToBottomTimeout;
@@ -369,6 +412,54 @@
                     var FileName = this.export;
                     location.href = '../Contratos/ExportToExcelDownload_Oportunidades?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "contractNo": { hidden: false, label: "Nº Oportunidade" },
+                        "startData": { hidden: false, label: "Data Inicio" },
+                        "dueDate": { hidden: false, label: "Data Fim" },
+                        "contactNo": { hidden: false, label: "Nº Contacto" },
+                        "clientNo": { hidden: false, label: "Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "statusDescription": { hidden: false, label: "Estado" },
+                        "codeRegion": { hidden: false, label: "Cód. Região" },
+                        "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
+                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        "totalProposalValue": { hidden: false, label: "Valor Total" }
+                    };
+
+                    if (sessionStorage["oportunitieslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["oportunitieslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["oportunitieslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
             });
         });
     </script>
