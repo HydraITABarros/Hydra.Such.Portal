@@ -12,6 +12,14 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-projectlist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -64,10 +72,24 @@
             </template>
             <paper-button id="btnContractHistory" class="tablinks" on-tap="_showClosed"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showEndedMessage}}</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid aria-label="ProjectsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
@@ -76,7 +98,7 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dateText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="date" />
@@ -85,7 +107,7 @@
                     {{item.dateText}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="status" />
@@ -94,7 +116,7 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -103,7 +125,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" />
@@ -112,7 +134,7 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" />
@@ -121,7 +143,7 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -130,7 +152,7 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
@@ -139,7 +161,7 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode" />
@@ -148,7 +170,7 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="170px">
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.contractoNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
@@ -158,7 +180,7 @@
                     {{item.contractoNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.projectTypeCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectTypeCode">Cód. Tipo Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectTypeCode" />
@@ -167,7 +189,7 @@
                     {{item.projectTypeCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectTypeDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectTypeDescription">Tipo Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectTypeDescription" />
@@ -201,7 +223,13 @@
                         type: String,
                         notify: true,
                         value: "Exibir terminados"
-                    }
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
@@ -216,6 +244,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     var gridToBottomTimeout;
@@ -261,6 +292,53 @@
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_Projetos?sFileName=' + FileName;
                 },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "dateText": { hidden: false, label: "Data" },
+                        "statusDescription": { hidden: false, label: "Estado" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "clientNo": { hidden: false, label: "Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
+                        "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "contractoNo": { hidden: false, label: "Nº Contrato" },
+                        "projectTypeCode": { hidden: false, label: "Cód. Tipo Projeto" },
+                        "projectTypeDescription": { hidden: false, label: "Tipo Projeto" }
+                    };
+
+                    if (sessionStorage["projectlist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["projectlist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["projectlist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
 
             });
         });
