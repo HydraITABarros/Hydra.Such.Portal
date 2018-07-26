@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -665,7 +667,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
 
-        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType)
+        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType, string reason)
         {
             if (item != null)
             {
@@ -930,32 +932,45 @@ namespace Hydra.Such.Portal.Controllers
                     case "Anular Aprovacao":
                         if (item.State == RequisitionStates.Approved)
                         {
-                            item.State = RequisitionStates.Pending;
-                            item.ResponsibleApproval = "";
-                            item.ApprovalDate = null;
-                            item.UpdateUser = User.Identity.Name;
-                            item.UpdateDate = DateTime.Now;
-                            RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                            if (reqPend != null)
+                            ErrorHandler ApprovalMovResult = new ErrorHandler();
+                            ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
+                            if (ApprovalMovResult.eReasonCode != 100)
                             {
-                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
-                                foreach (RequisitionLineViewModel rlines in getrlines)
-                                {
-                                    rlines.QuantityRequired = null;
-                                    rlines.UpdateUser = User.Identity.Name;
-                                    rlines.UpdateDateTime = DateTime.Now;
-                                    RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
-                                    if (rlinesValidation == null)
-                                    {
-                                        item.eReasonCode = 5;
-                                        item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
-                                    }
-                                }
+                                item.eReasonCode = 4;
+                                item.eMessage = ApprovalMovResult.eMessage;
+                                //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                             }
                             else
                             {
-                                item.eReasonCode = 4;
-                                item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                                item.State = RequisitionStates.Pending;
+                                item.ResponsibleApproval = "";
+                                item.ApprovalDate = null;
+                                item.UpdateUser = User.Identity.Name;
+                                item.UpdateDate = DateTime.Now;
+                                item.Comments += reason;
+                                RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                if (reqPend != null)
+                                {
+                                    List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
+                                    foreach (RequisitionLineViewModel rlines in getrlines)
+                                    {
+                                        rlines.QuantityRequired = null;
+                                        rlines.UpdateUser = User.Identity.Name;
+                                        rlines.UpdateDateTime = DateTime.Now;
+                                        RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                        if (rlinesValidation == null)
+                                        {
+                                            item.eReasonCode = 5;
+                                            item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    item.eReasonCode = 4;
+                                    item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                                }
                             }
                         }
                         else
@@ -1367,7 +1382,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (requisition != null)
                 {
                     var totalValue = requisition.GetTotalValue();
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name, "");
                 }
             }
             else

@@ -15,7 +15,7 @@ namespace Hydra.Such.Portal.Extensions
         //100 - Fluxo Iniciado com suceso
         //101 - Não existem configurações de numerações compativeis
         //102 - Erro desconhecido
-        public static ErrorHandler StartApprovalMovement(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
+        public static ErrorHandler StartApprovalMovement(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser, string reason)
         {
             try
             {
@@ -85,16 +85,24 @@ namespace Hydra.Such.Portal.Extensions
                     //Notify Users
                     UsersToNotify.ForEach(e =>
                     {
-                        EmailsAprovações EmailApproval = new EmailsAprovações()
+                        EmailsAprovações EmailApproval = new EmailsAprovações();
+
+                        EmailApproval.NºMovimento = ApprovalMovement.MovementNo;
+                        EmailApproval.EmailDestinatário = e;
+                        EmailApproval.NomeDestinatário = e;
+                        EmailApproval.Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo;
+                        EmailApproval.DataHoraEmail = DateTime.Now;
+                        if(reason != "" && reason != null)
                         {
-                            NºMovimento = ApprovalMovement.MovementNo,
-                            EmailDestinatário = e,
-                            NomeDestinatário = e,
-                            Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            DataHoraEmail = DateTime.Now,
-                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
-                            Enviado = false
-                        };
+                            EmailApproval.TextoEmail = "Uma requisição aprovada foi movida novamente para aprovação." + Environment.NewLine + "Motivo: " + reason;
+                        }
+                        else
+                        {
+                            EmailApproval.TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
+
+                        }
+
+                        EmailApproval.Enviado = false;
 
 
                         SendEmailApprovals Email = new SendEmailApprovals
