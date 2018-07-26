@@ -24,7 +24,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@ExpirationDate", ExpirationDate.ToString("yyyy/MM/dd h:mm tt"))
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhaFaturaVendas @DBName, @CompanyName, @ContractNoPortal, @InitialDate, @ExpirationDate", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhaCRMemo @DBName, @CompanyName, @ContractNoPortal, @InitialDate, @ExpirationDate", parameters);
 
                     foreach (dynamic temp in data)
                     {
