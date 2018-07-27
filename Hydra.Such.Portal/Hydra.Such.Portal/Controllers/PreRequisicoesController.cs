@@ -1086,10 +1086,10 @@ namespace Hydra.Such.Portal.Controllers
                             try
                             {
                                 string FileName = file.UrlAnexo;
-                                string NewFileName = FileName.Substring(FileName.IndexOf('_'));
+                                string NewFileName = createReq.NºRequisição + FileName.Substring(FileName.IndexOf('_'));
                                 try
                                 {
-                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
+                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
