@@ -279,10 +279,8 @@
                     }
                 },
                 _responsehead: function (data) {
-
-                    _clFormatState(this.result.state);
-
-                    debugger;;
+                    if (this.result != null)
+                        this._clFormatState(this.result.state);
                 },
                 _clFormatState: function (param) {
                     if (param != undefined) {
@@ -291,7 +289,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _pendingreq: function (e) {
                     window.location.href = "../RequisicoesPendentes/";
@@ -310,7 +308,8 @@
                     this.$.ToastError.open();
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
+                    debugger;
+                    //this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*ColumnToggle*/

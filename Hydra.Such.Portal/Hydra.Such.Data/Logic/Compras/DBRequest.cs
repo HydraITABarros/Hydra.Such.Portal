@@ -189,7 +189,7 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     var statusValues = status.Cast<int>().ToList();
                     
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && !x.ModeloDeRequisição.Value && statusValues.Contains(x.Estado.Value)).ToList();
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
