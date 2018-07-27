@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3287,6 +3288,274 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        public async Task<JsonResult> ExportToExcel_FolhasHorasTESTE([FromBody] JObject dp)
+        {
+            //var id = "folhaDeHorasNo";
+
+            //JObject dp = (JObject)requestParams["Colunas"];
+
+
+            //JObject o = (JObject)requestParams["Dados"];
+            //List<FolhaDeHorasViewModel> Lista = new List<FolhaDeHorasViewModel>();
+            //foreach (var FH in o["Dados"].Children())
+            //{
+            //    Lista.Add(new FolhaDeHorasViewModel()
+            //    {
+            //        FolhaDeHorasNo = (string)FH["FolhaDeHorasNo"],
+            //        ProjetoNo = (string)FH["ProjetoNo"]
+            //    });
+            //}
+
+
+
+
+            List<FolhaDeHorasViewModel> Lista = DBFolhasDeHoras.GetAllByTodas(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
+            if (Lista != null)
+            {
+                Lista.ForEach(FH =>
+                {
+                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                    FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
+                    FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
+                    FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
+                    FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                });
+            }
+            Lista.OrderByDescending(x => x.FolhaDeHorasNo);
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + ".xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Folha de Horas");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["folhaDeHorasNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Folha Horas");
+                    Col = Col + 1;
+                }
+                if (dp["projetoNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Ordem/Projecto");
+                    Col = Col + 1;
+                }
+                if (dp["projetoDescricao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Projecto Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["empregadoNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Empregado");
+                    Col = Col + 1;
+                }
+                if (dp["empregadoNome"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Empregado");
+                    Col = Col + 1;
+                }
+                if (dp["dataPartidaTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Início");
+                    Col = Col + 1;
+                }
+                if (dp["horaPartidaTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora Início");
+                    Col = Col + 1;
+                }
+                if (dp["dataChegadaTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim");
+                    Col = Col + 1;
+                }
+                if (dp["horaChegadaTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora Fim");
+                    Col = Col + 1;
+                }
+                if (dp["tipoDeslocacaoTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo Deslocação");
+                    Col = Col + 1;
+                }
+                if (dp["codigoTipoKms"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo km");
+                    Col = Col + 1;
+                }
+                if (dp["matricula"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Matrícula");
+                    Col = Col + 1;
+                }
+                if (dp["deslocacaoForaConcelhoTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Desloc. Fora do Concelho");
+                    Col = Col + 1;
+                }
+                if (dp["terminadaTexto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Terminado");
+                    Col = Col + 1;
+                }
+                if (dp["custoTotalAjudaCusto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Custo Total Ajuda Custo");
+                    Col = Col + 1;
+                }
+                if (dp["custoTotalHoras"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Custo Total Horas");
+                    Col = Col + 1;
+                }
+                if (dp["custoTotalKM"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Custo Total km");
+                    Col = Col + 1;
+                }
+                if (dp["numTotalKM"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Total km");
+                    Col = Col + 1;
+                }
+                if (dp["observacoes"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+
+                if (Lista != null)
+                {
+                    int count = 1;
+                    foreach (FolhaDeHorasViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["folhaDeHorasNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FolhaDeHorasNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["projetoNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjetoNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["projetoDescricao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjetoDescricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["empregadoNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EmpregadoNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["empregadoNome"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EmpregadoNome);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataPartidaTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataPartidaTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["horaPartidaTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.HoraPartidaTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataChegadaTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataChegadaTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["horaChegadaTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.HoraChegadaTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["tipoDeslocacaoTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TipoDeslocacaoTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoTipoKms"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoTipoKms);
+                            Col = Col + 1;
+                        }
+                        if (dp["matricula"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Matricula);
+                            Col = Col + 1;
+                        }
+                        if (dp["deslocacaoForaConcelhoTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DeslocacaoForaConcelhoTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["terminadaTexto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TerminadaTexto);
+                            Col = Col + 1;
+                        }
+                        if (dp["custoTotalAjudaCusto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CustoTotalAjudaCusto.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["custoTotalHoras"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CustoTotalHoras.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["custoTotalKM"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CustoTotalKM.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["numTotalKM"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NumTotalKM.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["observacoes"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Observacoes);
+                            Col = Col + 1;
+                        }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+
+        }
+
+        //1
+        [HttpPost]
         public async Task<JsonResult> ExportToExcel_FolhasHoras([FromBody] List<FolhaDeHorasViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -3303,6 +3572,7 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Folha de Horas");
                 IRow row = excelSheet.CreateRow(0);
+
                 row.CreateCell(0).SetCellValue("Nº Folha Horas");
                 row.CreateCell(1).SetCellValue("Nº Ordem/Projecto");
                 row.CreateCell(2).SetCellValue("Projecto Descrição");

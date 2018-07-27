@@ -18,6 +18,7 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -35,6 +36,11 @@
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
+                vaadin-combo-box {
+                    margin-top: 0px !important;
+                    width: 100% !important;
+                }
+
                 input[readonly] {
                     border: 2px solid transparent;
                 }
@@ -57,6 +63,8 @@
                 }
             </style>
         </custom-style>
+
+        <iron-ajax url="/PopulateDropdowns/getSupplier" last-response="{{Fornecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/LinhasPreEncomenda/GetAllLinhas"
                    last-response="{{result}}"
@@ -102,6 +110,23 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/LinhasPreEncomenda/UpdateLinha"
+                   last-response="{{LinhaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatelinha_ajax"
+                   on-response="_updateLinhaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/LinhasPreEncomenda/CriarEncomendaCabimento"
+                   last-response="{{CriarEncomendaCabimento}}"
+                   id="criarEncomendaCabimento_ajax"
+                   on-response="_criarEncomendaCabimentoResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" id="btn_ConsultaMercado" on-tap="_ConsultaMercado" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Consulta Mercado</paper-button>
             <paper-button class="tablinks" id="btn_Encomenda" on-tap="_Encomenda" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Encomenda</paper-button>
@@ -126,7 +151,7 @@
         </div>
 
         <vaadin-grid aria-label="LinhasGrid" class="editDialogGrid" id="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" items="[[result]]" multi-sort="true">
-            <vaadin-grid-selection-column auto-select>
+            <vaadin-grid-selection-column auto-select id="chk_auto_select">
             </vaadin-grid-selection-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numPreEncomenda.hidden }}">
                 <template class="header">
@@ -191,15 +216,35 @@
                     {{item.codigoLocalizacao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numFornecedor" />
                 </template>
                 <template>
-                    {{item.numFornecedor}}
+                    <vaadin-combo-box items="[[Fornecedores]]" id="Fornecedor" name="Fornecedor" item-value-path="id" item-label-path="id" value="{{item.numFornecedor}}" on-change="_updateLinha" style="text-align:left;">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
+
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
+            <template class="header">
+                <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
+                <vaadin-grid-filter path="numFornecedor" />
+            </template>
+            <template>
+                {{item.numFornecedor}}
+            </template>
+        </vaadin-grid-column>-->
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeFornecedor_Show">Nome Fornecedor</vaadin-grid-sorter>
@@ -304,6 +349,21 @@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ CriarEncomendaCabimento.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ _isSuccess(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{ _hasErrors }}">
+                <div style="text-align: right;">
+                    <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                </div>
+            </template>
+        </paper-toast>
     </template>
 
     <script>
@@ -328,6 +388,19 @@
                     },
                     selectedItem: {
                         type: Array
+                    },
+                    _isError: function (type) {
+                        //Used to show or hide close button
+                        if (!this._hasErrors)
+                            this._hasErrors = type == 0;
+                        return type == 0;
+                    },
+                    _isSuccess: function (type) {
+                        return type == 1;
+                    },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
                     },
                     _functionsMenuItems: {
                         type: Array,
@@ -393,7 +466,6 @@
                 },
 
                 _ConsultaMercado: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.ajax_ConsultaMercado.body = JSON.stringify(selItms);
@@ -404,10 +476,10 @@
                     }
                 },
                 _ConsultaMercadoResponse: function () {
-                    debugger;
                     if (this.result_ConsultaMercado.eReasonCode == 0) {
                         this._showMessage(this.result_ConsultaMercado.eMessage);
                         this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid.selectedItems = [];
                     } else {
                         this._showErrorMessage(this.result_ConsultaMercado.eMessage);
                     }
@@ -427,6 +499,7 @@
                     if (this.result_Encomenda.eReasonCode == 0) {
                         this._showMessage(this.result_Encomenda.eMessage);
                         this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid.selectedItems = [];
                     } else {
                         this._showErrorMessage(this.result_Encomenda.eMessage);
                     }
@@ -446,6 +519,7 @@
                     if (this.result_CriarDocumento.eReasonCode == 0) {
                         this._showMessage(this.result_CriarDocumento.eMessage);
                         this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid.selectedItems = [];
                     } else {
                         this._showErrorMessage(this.result_CriarDocumento.eMessage);
                     }
@@ -466,9 +540,71 @@
                     if (this.result_NaoCriarDocumento.eReasonCode == 0) {
                         this._showMessage(this.result_NaoCriarDocumento.eMessage);
                         this.$.grid_databound_ajax.generateRequest();
+                        this.$.grid.selectedItems = [];
                     } else {
                         this._showErrorMessage(this.result_NaoCriarDocumento.eMessage);
                     }
+                },
+
+                _updateLinha: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+
+                    this.$.page_updatelinha_ajax.body = JSON.stringify({
+                        numLinhaPreEncomenda: e.model.item.numLinhaPreEncomenda,
+                        numFornecedor: e.model.item.numFornecedor
+                    });
+                    this.$.page_updatelinha_ajax.generateRequest();
+                    this.$.grid.clearCache();
+                },
+
+                _updateLinhaResponse: function (e) {
+                    if (this.LinhaUpdated.eReasonCode == 0) {
+                        this._showMessage('Linha atualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao actualizar a Linha.');
+                    }
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+
+                _criarEncomendaCabimento: function () {
+                    this.$.criarEncomendaCabimento_ajax.body = JSON.stringify(this.result);
+                    this.$.criarEncomendaCabimento_ajax.generateRequest();
+                },
+                _criarEncomendaCabimentoResponse: function (e) {
+                    if (this.CriarEncomendaCabimento.eReasonCode == "1") {
+                        this._openToast(this.CriarEncomendaCabimento.eMessage);
+                    }
+                    else {
+                        if (this.CriarEncomendaCabimento.eMessages.length > 0)
+                            //this._toggleToastMultiple();
+                            this._openToastError("Ocorreram vários erros!");
+                        else
+                            this._openToastError(this.CriarEncomendaCabimento.eMessage);
+                    }
+                },
+
+                _toggleToastMultiple: function () {
+                    this._checkForErrors();
+                    if (this._hasErrors)
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.CriarEncomendaCabimento.eMessages = [];
+                },
+                _checkForErrors: function () {
+                    var errors = this.CriarEncomendaCabimento.eMessages.find(x => x.type == 0);
+                    this._hasErrors = !(errors == undefined);
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
 
                 /*start - ColumnToggle*/

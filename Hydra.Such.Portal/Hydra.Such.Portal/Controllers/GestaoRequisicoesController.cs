@@ -870,7 +870,7 @@ namespace Hydra.Such.Portal.Controllers
                             else if (productsToHandle.Count == 0)
                             {
                                 item.eReasonCode = 13;
-                                item.eMessage = item.eMessage = "Não existem linhas para receber (verificar campo Quantidade a receber).";
+                                item.eMessage = item.eMessage = "Não é possivel receber: Os produtos não existem em stock.";
                             }
                             else
                             {
