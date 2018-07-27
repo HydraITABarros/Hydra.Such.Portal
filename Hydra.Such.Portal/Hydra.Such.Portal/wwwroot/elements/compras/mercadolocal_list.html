@@ -202,7 +202,7 @@
 
         <vaadin-grid aria-label="Mercado Local" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="gridCompras" items="[[result]]">
 
-            <vaadin-grid-selection-column auto-select>
+            <vaadin-grid-selection-column auto-select id="grid_SelectAll">
             </vaadin-grid-selection-column>
 
             <vaadin-grid-column id="grid_GoRequisicao" resizable hidden="{{ !_permissions.update }}">
@@ -769,6 +769,7 @@
                     } else {
                         this._showErrorMessage(this.result_AprovadoToTratado.eMessage);
                     }
+                    this.$.gridCompras.selectedItems  =  [];
                 },
 
 
@@ -792,6 +793,7 @@
                     } else {
                         this._showErrorMessage(this.result_AprovadoToValidar.eMessage);
                     }
+                    this.$.gridCompras.selectedItems = [];
                 },
 
                 _aprovadoToRecusar: function (selectedItem, selectedItems) {
@@ -842,6 +844,7 @@
                     } else {
                         this._showErrorMessage(this.result_AprovadoToRecusar.eMessage);
                     }
+                    this.$.gridCompras.selectedItems = [];
                 },
 
                 _validadoToTratado: function (selectedItem, selectedItems) {
@@ -864,6 +867,7 @@
                     } else {
                         this._showErrorMessage(this.result_ValidadoToTratado.eMessage);
                     }
+                    this.$.gridCompras.selectedItems = [];
                 },
 
                 _recusadoToTratado: function (selectedItem, selectedItems) {
@@ -886,6 +890,7 @@
                     } else {
                         this._showErrorMessage(this.result_RecusadoToTratado.eMessage);
                     }
+                    this.$.gridCompras.selectedItems = [];
                 },
 
                 _exportExcel: function (selectedItem, selectedItems) {
