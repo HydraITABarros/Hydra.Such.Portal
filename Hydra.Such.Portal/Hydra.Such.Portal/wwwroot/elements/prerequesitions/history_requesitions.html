@@ -281,8 +281,6 @@
                 _responsehead: function (data) {
                     if (this.result != null)
                         this._clFormatState(this.result.state);
-
-                    debugger;;
                 },
                 _clFormatState: function (param) {
                     if (param != undefined) {
@@ -310,7 +308,8 @@
                     this.$.ToastError.open();
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
+                    debugger;
+                    //this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*ColumnToggle*/
