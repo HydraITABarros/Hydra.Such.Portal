@@ -131,7 +131,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -3183,6 +3183,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºLinhaPreEncomenda).HasColumnName("Nº Linha Pre-Encomenda");
 
+                entity.Property(e => e.CriarDocumento)
+                    .HasColumnName("Criar Documento")
+                    .HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
@@ -3221,9 +3225,17 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Descrição Produto")
                     .HasMaxLength(100);
 
+                entity.Property(e => e.DocumentoACriar).HasColumnName("Documento a Criar");
+
+                entity.Property(e => e.NºEncomendaAberto)
+                    .HasColumnName("Nº Encomenda Aberto")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.NºFornecedor)
                     .HasColumnName("Nº Fornecedor")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.NºLinhaEncomendaAberto).HasColumnName("Nº Linha Encomenda Aberto");
 
                 entity.Property(e => e.NºLinhaRequisição).HasColumnName("Nº Linha Requisição");
 
@@ -3241,6 +3253,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.QuantidadeDisponibilizada).HasColumnName("Quantidade Disponibilizada");
 
+                entity.Property(e => e.Tratada).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -3248,18 +3262,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
-
-                entity.Property(e => e.DocumentoaCriar).HasColumnName("Documento a Criar");
-
-                entity.Property(e => e.CriarDocumento).HasColumnName("Criar Documento");
-
-                entity.Property(e => e.NºEncomendaAberto)
-                    .HasColumnName("Nº Encomenda Aberto")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.NºLinhaEncomendaAberto).HasColumnName("Nº Linha Encomenda Aberto");
-
-                entity.Property(e => e.Tratada).HasColumnName("Tratada");
             });
 
             modelBuilder.Entity<LinhasPréRequisição>(entity =>
@@ -6615,6 +6617,8 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Observações).HasColumnType("text");
+
+                entity.Property(e => e.PrecoIvaincluido).HasColumnName("PrecoIVAIncluido");
 
                 entity.Property(e => e.RegiãoMercadoLocal)
                     .HasColumnName("Região Mercado Local")
