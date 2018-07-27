@@ -279,8 +279,8 @@
                     }
                 },
                 _responsehead: function (data) {
-
-                    _clFormatState(this.result.state);
+                    if (this.result != null)
+                        this._clFormatState(this.result.state);
 
                     debugger;;
                 },
@@ -291,7 +291,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _pendingreq: function (e) {
                     window.location.href = "../RequisicoesPendentes/";
