@@ -258,6 +258,12 @@
                    id="ajax_getPlacesToDeliver"
                    on-response="localDeliveryResponse"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -276,13 +282,16 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
-                        
+
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <paper-tab>Anexos</paper-tab>
+                                </template>
                             </paper-tabs>
 
                             <iron-pages selected="{{selected}}">
@@ -518,6 +527,54 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
+
+                                        </vaadin-upload>
+                                        <!--</template>-->
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
                                     </div>
                                 </div>
                             </iron-pages>
@@ -963,74 +1020,67 @@
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
-                                        <vaadin-grid-filter path="createMarketSearchStringValue">
-                                        </vaadin-grid-filter>
+                                        <!--<vaadin-grid-filter path="createMarketSearchStringValue">
+                                        </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>-->
-                                            {{item.createMarketSearchStringValue}}
-                                            /t
+                                            <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
+                                            <!--{{item.createMarketSearchStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Mercado Local</p>
-                                        <vaadin-grid-filter path="localMarketStringValue">
+                                        <!--<vaadin-grid-filter path="localMarketStringValue">-->
                                             <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    e>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
-                                            {{item.localMarketStringValue}}
-                                            te
+                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                                            <!--{{item.localMarketStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviado Pré Compra</p>
-                                        <vaadin-grid-filter path="submitPrePurchaseStringValue">
+                                        <!--<vaadin-grid-filter path="submitPrePurchaseStringValue">-->
                                             <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    em
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>-->
-                                            {{item.submitPrePurchaseStringValue}}
-                                            te
+                                            <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
+                                            <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviar Pré Compra</p>
-                                        <vaadin-grid-filter path="sendPrePurchaseStringValue">
+                                        <!--<vaadin-grid-filter path="sendPrePurchaseStringValue">-->
                                             <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
-                                        </vaadin-grid-filter>
+                                        <!--</vaadin-grid-filter>-->
                                     </template>
-                                    pl
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--<vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>-->
-                                            {{item.sendPrePurchaseStringValue}}
-                                            mp
+                                            <vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                            <!--{{item.sendPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1452,8 +1502,8 @@
                             break;
                         case 4: //"Anular Aprovação"
                             var loads = this;
-                            var TMessage = this.$.ToastMessage;
-                            var TMessageError = this.$.ToastError;
+                            var TMessage = this.$.ToastMessageSuccess;
+                            var TMessageError = this.$.ToastMessageError;
 
                             bootbox.prompt({
                                 title: "Introduza o motivo de rejeição!",
@@ -1474,8 +1524,10 @@
                                         TMessageError.text = "É necessário preencher o motivo de rejeição.";
                                         TMessageError.open();
                                         return false;
+                                    } else if (result == null) {
+                                        
                                     } else {
-                                        loads._RegistCancelApproval();
+                                        loads._RegistCancelApproval(result);
                                     }
                                 }
                             });
@@ -1508,7 +1560,20 @@
                     }
                 },
                 ready: function () {
+                    if (this._isCreate == false && this.$.UploadRequest != null) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-prerequisitions");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }
 
+                    if (this._isCreate == false) {
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                        this.$.page_update_ajax.generateRequest();
+                    }
                 },
                 isReadOnly: function () {
                     //return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
@@ -2068,9 +2133,9 @@
                     this.$.regist_datasource.params = { "registType": "Anular Validacao" };
                     this.$.regist_datasource.generateRequest();
                 },
-                _RegistCancelApproval: function () {
+                _RegistCancelApproval: function (reason) {
                     this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
+                    this.$.regist_datasource.params = { "registType": "Anular Aprovacao", "reason": reason };
                     this.$.regist_datasource.generateRequest();
                 },
                 _RegistCloseRequest: function () {

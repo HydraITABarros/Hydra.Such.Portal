@@ -130,7 +130,7 @@ namespace Hydra.Such.Tester
             //var lowLevel = items.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).FirstOrDefault();
             //items.RemoveAll(x => x.NívelAprovação != lowLevel.NívelAprovação);
             return;
-            ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, "10", "010AG", "23", 5000, "JP123", "hydra08@such.pt");
+            ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, "10", "010AG", "23", 5000, "JP123", "hydra08@such.pt", "");
 
             int movNo = Convert.ToInt32(result.eMessages[0].Message);
             ErrorHandler ApproveResult = ApprovalMovementsManager.ApproveMovement(movNo, "hydra08@such.pt");

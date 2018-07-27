@@ -67,7 +67,7 @@ namespace Hydra.Such.Portal.Controllers
         
         public JsonResult GetModelRequisition()
         {
-            List<RequisitionViewModel> result = DBRequest.GetAllModelRequest().ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequestTemplates.GetAll().ParseToViewModel();
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
