@@ -43,6 +43,7 @@ namespace Hydra.Such.Portal.Controllers
                     UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int)id);
                     ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
                     ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+                    ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
                 }
                 else
                 {
@@ -372,9 +373,30 @@ namespace Hydra.Such.Portal.Controllers
             List<ProductivityUnitViewModel> result = DBProductivityUnits.ParseListToViewModel(DBProductivityUnits.GetAll());
             return Json(result);
         }
-        
+
+        [HttpPost]
+        public JsonResult UpdateAgreementVendor([FromBody] FornecedoresAcordoPrecos acordoFornecedor)
+        {
+            FornecedoresAcordoPrecos result = new FornecedoresAcordoPrecos();
+            result = DBFornecedoresAcordoPrecos.Update(acordoFornecedor);
+            if (acordoFornecedor != null)
+            {
+                result = DBFornecedoresAcordoPrecos.Update(acordoFornecedor);
+                if (result != null)
+                {
+                    return Json(result);
+                }
+                else
+                {
+                    result = DBFornecedoresAcordoPrecos.Create(acordoFornecedor);
+                    return Json(result);
+                }
+                
+            }
+            return null;
+        }
         //Create Shopping Necessity lines by copying Requisitions Lines 
-        
+
         public JsonResult GenerateByRequesition([FromBody] List<RequisitionViewModel> data)
         {
             ErrorHandler resultValidation = new ErrorHandler();
@@ -608,7 +630,7 @@ namespace Hydra.Such.Portal.Controllers
                                                         : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
                                                 resultRqLines.CódigoProdutoFornecedor = NecShopDirect.SupplierProductCode;
                                                 resultRqLines.NºEncomendaAberto = NecShopDirect.OpenOrderNo;
-                                                resultRqLines.NºLinhaEncomendaAberto = Convert.ToInt32(NecShopDirect.OrderLineOpenNo);
+                                                resultRqLines.NºLinhaEncomendaAberto = string.IsNullOrEmpty(NecShopDirect.OrderLineOpenNo) ? 0 : Convert.ToInt32(NecShopDirect.OrderLineOpenNo); 
                                                 resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
                                                 resultRqLines.CódigoCentroResponsabilidade =
                                                     ProductivityUnitDB.CódigoCentroResponsabilidade;

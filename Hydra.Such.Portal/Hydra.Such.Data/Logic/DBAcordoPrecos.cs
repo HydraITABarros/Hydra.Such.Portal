@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+
         public static AcordoPrecos Create(AcordoPrecos item)
         {
             try
