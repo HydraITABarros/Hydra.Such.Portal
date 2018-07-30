@@ -335,13 +335,13 @@
 
                 _responseDeleteProcessor: function (data) {
                     var self = this;
+                    var ajax_request = this.$.grid_databound_ajax;
+                    debugger;
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
                         if (this.deletedData.eReasonCode == 1) {
-                            setTimeout(
-                                function () {
-                                    window.location.href = "/";
-                                }, 2500);
+                            ajax_request.body = JSON.stringify({ "AreaId": self._areaid, "Archived": self._archived, "ContractNo": self._contractno });
+                            ajax_request.generateRequest();
                         } else if (this.deletedData.eReasonCode == 2) {
                             this._openToastError(this.deletedData.eMessage);
                         }

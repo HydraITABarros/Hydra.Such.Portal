@@ -661,8 +661,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler()
             {
-                eMessage = "Linhas copiadas com sucesso.",
-                eReasonCode = 1,
+                eMessage = "Ocorreu um erro ao copiar as linhas",
+                eReasonCode = 2,
             };
             Projetos project = null;
             if (!string.IsNullOrEmpty(req.ProjectNo))
@@ -707,7 +707,12 @@ namespace Hydra.Such.Portal.Controllers
                     preReqLines.Add(newline);
                 });
 
-                if (!DBPreRequesitionLines.CreateMultiple(preReqLines))
+                if (DBPreRequesitionLines.CreateMultiple(preReqLines))
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Linhas copiadas com sucesso.";
+                }
+                else
                 {
                     result.eReasonCode = 2;
                     result.eMessage = "Ocorreu um erro ao copiar as linhas";
