@@ -288,6 +288,8 @@ namespace Hydra.Such.Data.Logic.Request
                     RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     //dimension = item.,
                     //Budget = item.,
+                    InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
+                    PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
                 };
@@ -380,6 +382,8 @@ namespace Hydra.Such.Data.Logic.Request
                     DataRequisição = item.RequisitionDate != null && item.RequisitionDate != "" ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
+                    Adiantamento = item.InAdvance.HasValue ? item.InAdvance.Value : false,
+                    PrecoIvaincluido = item.PricesIncludingVAT.HasValue ? item.PricesIncludingVAT.Value : false,
                     LinhasRequisição = item.Lines.ParseToDB(),
                     RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                 };

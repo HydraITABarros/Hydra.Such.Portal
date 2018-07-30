@@ -427,6 +427,12 @@
                                         <div class="col-lg-2">
                                             <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
                                         </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox id="chkPricesIncludingVAT" checked="{{Requisition.pricesIncludingVAT}}" disabled="{{ !_permissions.update }}">Preço IVA Incluído</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <vaadin-checkbox id="chkInAdvance" checked="{{Requisition.inAdvance}}" disabled="{{ !_permissions.update }}">Adiantamento</vaadin-checkbox>
+                                        </div>
                                     </div>
                                     <br />
                                     <div class="row break_clear">
@@ -768,6 +774,11 @@
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
+                                        <vaadin-text-field id="txtDiscountPercentage" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" name="txtDiscountPercentage" label="% Desconto"></vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
+                                    <div class="col-lg-3">
                                         <vaadin-checkbox id="chkLocalMarket">Mercado Local</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-3">
@@ -1021,13 +1032,14 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                        </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
+                                            di
                                             <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
                                             <!--{{item.createMarketSearchStringValue}}-->
                                         </template>
@@ -1037,7 +1049,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Mercado Local</p>
                                         <!--<vaadin-grid-filter path="localMarketStringValue">-->
-                                            <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
+                                        <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
                                     </template>
                                     <template>
@@ -1045,6 +1057,7 @@
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
+                                            bo
                                             <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
                                             <!--{{item.localMarketStringValue}}-->
                                         </template>
@@ -1054,7 +1067,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Enviado Pré Compra</p>
                                         <!--<vaadin-grid-filter path="submitPrePurchaseStringValue">-->
-                                            <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
+                                        <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
                                     </template>
                                     <template>
@@ -1062,6 +1075,7 @@
                                             <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
+                                            ec
                                             <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
                                             <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
@@ -1071,7 +1085,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Enviar Pré Compra</p>
                                         <!--<vaadin-grid-filter path="sendPrePurchaseStringValue">-->
-                                            <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
+                                        <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
                                     </template>
                                     <template>
@@ -1329,6 +1343,21 @@
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _getVATProductDescription(item.vatProductPostingGroup) ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="discountPercentage">% Desconto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="discountPercentage" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido"></vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[ item.discountPercentage ]]
                                         </template>
                                     </template>
                                 </vaadin-grid-column>

@@ -21,7 +21,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
 
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
-
+        public bool? PricesIncludingVAT { get; set; }
+        public bool? InAdvance { get; set; }
         public List<PurchOrderLineDTO> Lines { get; set; }
     }
     /// <summary>
@@ -48,5 +49,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CenterResponsibilityCode { get; set; }
         public string VATBusinessPostingGroup { get; set; }
         public string VATProductPostingGroup { get; set; }
+        public decimal? DiscountPercentage { get; set; }
     }
 }

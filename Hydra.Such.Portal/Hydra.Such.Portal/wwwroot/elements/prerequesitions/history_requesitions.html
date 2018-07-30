@@ -180,7 +180,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="state" />
+                    <!--<vaadin-grid-filter path="state" />-->
                 </template>
                 <template>
                     [[ _clFormatState(item.state) ]]
@@ -278,12 +278,21 @@
                         }
                     }
                 },
+                observers: [
+                    '_onCacheLoaded(CBStatus)'
+                ],
+                _onCacheLoaded: function (CBStatus) {
+                    if (!this.Flag) {
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+                },
                 _responsehead: function (data) {
                     if (this.result != null)
                         this._clFormatState(this.result.state);
                 },
                 _clFormatState: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBStatus != null) {
                         var sel = this.CBStatus.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -308,10 +317,6 @@
                     this.$.ToastError.open();
                 },
                 ready: function () {
-                    debugger;
-                    //this.$.grid_databound_ajax.body = JSON.stringify({ "AreaNo": this._areaid });
-                    this.$.grid_databound_ajax.generateRequest();
-
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
