@@ -86,19 +86,20 @@ namespace Hydra.Such.Data.Logic.ComprasML
                     prePurchOrderLines.ForEach(item => { item.DataHoraCriação = DateTime.Now;
                                                         item.NºEncomendaAberto = requisitionLines.Where(y => y.NºLinha == item.NºLinhaRequisição).FirstOrDefault().NºEncomendaAberto;
                                                         item.NºLinhaEncomendaAberto = requisitionLines.Where(y => y.NºLinha == item.NºLinhaRequisição).FirstOrDefault().NºLinhaEncomendaAberto; });
-
                     ctx.LinhasPreEncomenda.AddRange(prePurchOrderLines);
 
                     if (requisitionLines != null)
                     {
-                        requisitionLines.ForEach(item => item.DataHoraModificação = DateTime.Now);
+                        requisitionLines.ForEach(item => { item.DataHoraModificação = DateTime.Now;
+                                                            /*item.EnviadoPréCompra = true;*/ });
                     }
                     ctx.LinhasRequisição.UpdateRange(requisitionLines);
+
                     ctx.SaveChanges();
                 }
                 return prePurchOrderLines;
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

@@ -25,7 +25,7 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorModificacao { get; set; }
-        public int? DocumentoaCriar { get; set; }
+        public int? DocumentoACriar { get; set; }
         public bool CriarDocumento { get; set; }
         public string NumEncomendaAberto { get; set; }
         public int? NumLinhaEncomendaAberto { get; set; }
@@ -35,6 +35,6 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string DataHoraCriacao_Show { get; set; }
         public string DataHoraModificacao_Show { get; set; }
         public string NomeFornecedor_Show { get; set; }
-        public string DocumentoaCriar_Show { get; set; }
+        public string DocumentoACriar_Show { get; set; }
     }
 }

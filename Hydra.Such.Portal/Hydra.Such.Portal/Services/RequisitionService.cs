@@ -335,8 +335,8 @@ namespace Hydra.Such.Portal.Services
                 //use for later database update
                 var requisitionLines = requisition.Lines
                     .Where(x =>
-                        x.SubmitPrePurchase != null
-                        && x.SubmitPrePurchase.Value)
+                        x.SendPrePurchase.Value == true  //Enviar Pré Compra
+                        && (x.SubmitPrePurchase == null || x.SubmitPrePurchase.Value == false))  //Enviado Pré Compra
                     .ToList();
 
                 var prePurchOrderLines = requisitionLines
@@ -367,7 +367,7 @@ namespace Hydra.Such.Portal.Services
                         //Update Requisition Lines
                         requisitionLines.ForEach(line =>
                         {
-                            line.SendPrePurchase = true;
+                            line.SubmitPrePurchase = true;
                             line.UpdateUser = this.changedByUserName;
                         });
 

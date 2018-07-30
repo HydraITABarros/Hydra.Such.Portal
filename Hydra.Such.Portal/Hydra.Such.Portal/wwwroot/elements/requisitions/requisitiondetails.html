@@ -267,12 +267,19 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
-                <paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
-                <such-dropdown-menu on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
-                <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
-            </template>
+
+            <paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
+            <paper-button class="tablinks" id="btnValidate" disabled="{{ !_permissions.update }}" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+            <paper-button class="tablinks" id="btnAnularAprovacao" disabled="{{ !_permissions.update }}" on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
+            <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
+            <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+
+            <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>-->
+            <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
+            <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
+            <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
+            <!--</template>-->
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
@@ -1039,7 +1046,6 @@
                                             <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            di
                                             <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
                                             <!--{{item.createMarketSearchStringValue}}-->
                                         </template>
@@ -1057,7 +1063,6 @@
                                             <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            bo
                                             <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
                                             <!--{{item.localMarketStringValue}}-->
                                         </template>
@@ -1075,7 +1080,6 @@
                                             <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            ec
                                             <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
                                             <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
@@ -1093,7 +1097,7 @@
                                             <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{item.sendPrePurchase}}" disabled></vaadin-checkbox>
                                             <!--{{item.sendPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
@@ -1452,11 +1456,11 @@
                     },
                     _registerMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Disponibilizar" }, { value: 2, description: "Receber" }, { value: 3, description: "Anular Validação" }, { value: 4, description: "Anular Aprovação" }, { value: 5, description: "Fechar Requisição" }],
+                        value: [{ value: 1, description: "Disponibilizar" }, { value: 2, description: "Receber" }, { value: 3, description: "Anular Validação" }, /*{ value: 4, description: "Anular Aprovação" },*/ { value: 5, description: "Fechar Requisição" }],
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré- Encomenda" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Encomenda" }],
                     },
                     _permissions: {
                         type: Array
@@ -1560,8 +1564,6 @@
                                     }
                                 }
                             });
-
-                            
                             break;
                         case 5: //"Fechar Requisição"
                             this._RegistCloseRequest();
@@ -1589,6 +1591,23 @@
                     }
                 },
                 ready: function () {
+                    //debugger;
+                    var _self = this;
+                    if (this._requisitionstatus === 3) { //GESTÃO REQUISIÇÕES
+                        $(_self.$.btnLocalMarketValidation).addClass('hidden');
+                        $(_self.$.btnValidate).addClass('hidden');
+                        $(_self.$.btnAnularAprovacao).addClass('hidden');
+                        $(_self.$.menuRegister).removeClass('hidden');
+                        $(_self.$.menuFunctios).removeClass('hidden');
+                    }
+                    if (this._requisitionstatus === 4) { //VALIDAÇÃO REQUISIÇÕES
+                        $(_self.$.btnLocalMarketValidation).removeClass('hidden');
+                        $(_self.$.btnValidate).removeClass('hidden');
+                        $(_self.$.btnAnularAprovacao).removeClass('hidden');
+                        $(_self.$.menuRegister).addClass('hidden');
+                        $(_self.$.menuFunctios).addClass('hidden');
+                    }
+
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
                             if (e.detail.xhr.status == 200) {
@@ -1625,6 +1644,7 @@
                 },
                 _onCacheLoaded: function (data, Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers, Requisition) {
                     if (!this.Flag) {
+                        //debugger;
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                         if (this._requisitionstatus === 6) {
                             this._isArchived = true;
@@ -1961,15 +1981,15 @@
                             unitCostSould: this.$.unitCostsouldId.value,
                             budgetValue: this.$.budgetValueId.value,
                             maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
-                            createMarketSearch: this.$.createMarketSearchId.checked,
-                            submitPrePurchase: this.$.submitPrePurchaseId.checked,
-                            sendPrePurchase: this.$.sendPrePurchaseId.checked,
+                            createMarketSearch: this.$.createMarketSearchId.__data.checked ? 1 : 0, //Criar Consulta Mercado
+                            submitPrePurchase: this.$.submitPrePurchaseId.__data.checked ? 1 : 0,   //Enviado Pré Compra
+                            sendPrePurchase: this.$.sendPrePurchaseId.__data.checked ? 1 : 0,       //Enviar Pré Compra
                             supplierNo: this.$.CBSuppliers.value,
                             openOrderNo: this.$.CBPurchaseHeader.value,
                             openOrderLineNo: this.$.CBPurchaseLine.value,
                             queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
                             projectNo: this.$.CBLineProjects.value,
-                            localMarket: this.$.chkLocalMarket.checked,
+                            localMarket: this.$.chkLocalMarket.__data.checked ? 1 : 0,              //Mercado Local
                             vatBusinessPostingGroup: "",
                             vatProductPostingGroup: ""
                         };
@@ -2349,6 +2369,40 @@
                 _closeChangeLogDlg: function () {
                     this.$.dlgChangeLog.close();
                 },
+
+                _anularAprovacao: function (e) {
+                    var loads = this;
+                    var TMessage = this.$.ToastMessageSuccess;
+                    var TMessageError = this.$.ToastMessageError;
+
+                    bootbox.prompt({
+                        title: "Introduza o motivo de rejeição!",
+                        inputType: 'textarea',
+                        buttons: {
+                            confirm: {
+                                label: 'Rejeitar',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Cancelar',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            debugger;
+                            if (result == "") {
+                                TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                TMessageError.open();
+                                return false;
+                            } else if (result == null) {
+
+                            } else {
+                                loads._RegistCancelApproval(result);
+                            }
+                        }
+                    });
+                },
+
             });
         });
     </script>
