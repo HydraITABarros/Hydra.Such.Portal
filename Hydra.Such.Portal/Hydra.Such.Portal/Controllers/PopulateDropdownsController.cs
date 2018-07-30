@@ -351,7 +351,7 @@ namespace Hydra.Such.Portal.Controllers
                     area = "0" + area;
                 }
                 List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
-                result = DBLinhasAcordoPrecos.GetAllByDateArea(area, date).ToList();
+                result = DBLinhasAcordoPrecos.GetAllByDateArea("10", date).ToList();
                 if (result != null && result.Count > 0)
                 {
                     return Json(result);

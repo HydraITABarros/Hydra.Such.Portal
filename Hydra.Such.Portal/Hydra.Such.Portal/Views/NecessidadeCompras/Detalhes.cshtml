@@ -62,7 +62,7 @@
         <iron-ajax url="/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="grid_priceAgreement_ajax" last-response="{{priceAgreement}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <style>
@@ -1256,20 +1256,19 @@
             },
 
             _requesitionResponse: function (e) {
+                debugger;;
                 if (e.detail.status === 200) {
-                    if (this.datarequesition.eReasonCode === 1) {
+                  
                         var selItms = {
-                            "noProcedime": this.$.priceAgreement.valueText,
+                            "noProcedimento": this.$.priceAgreement.valueText,
                             "noFornecedor": this.$.supplierNoId.value ,
                             "nomeFornecedor": this.$.SupplierNameId.value,
-                            "valorConsume": this.$.amountId.value
+                            "valorConsumido": this.$.amountId.value
                         }
-                        this.grid_updateAgreementByVendor_ajax.body = JSON.stringify();
-                        this.grid_updateAgreementByVendor_ajax.generateRequest();
+                        this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
+                        this.$.grid_updateAgreementByVendor_ajax.generateRequest();
                         this._openToast(this.datarequesition.eMessage);
-                    } else {
-                        this._openToastError(this.datarequesition.eMessage);
-                    }
+                   
                 } else {
                     this._openToastError("Occorreu um erro na geração de requisições.");
                 }
