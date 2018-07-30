@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -80,6 +81,8 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DataModificacaoTexto { get; set; }
         public string HoraModificacaoTexto { get; set; }
         public bool? Eliminada { get; set; }
+
+        public Object Colunas { get; set; }
 
 
 

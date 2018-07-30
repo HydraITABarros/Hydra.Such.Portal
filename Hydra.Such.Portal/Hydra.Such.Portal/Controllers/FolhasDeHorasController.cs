@@ -3288,41 +3288,9 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_FolhasHorasTESTE([FromBody] JObject dp)
+        public async Task<JsonResult> ExportToExcel_FolhasHorasTESTE([FromBody] List<FolhaDeHorasViewModel> Lista)
         {
-            //var id = "folhaDeHorasNo";
-
-            //JObject dp = (JObject)requestParams["Colunas"];
-
-
-            //JObject o = (JObject)requestParams["Dados"];
-            //List<FolhaDeHorasViewModel> Lista = new List<FolhaDeHorasViewModel>();
-            //foreach (var FH in o["Dados"].Children())
-            //{
-            //    Lista.Add(new FolhaDeHorasViewModel()
-            //    {
-            //        FolhaDeHorasNo = (string)FH["FolhaDeHorasNo"],
-            //        ProjetoNo = (string)FH["ProjetoNo"]
-            //    });
-            //}
-
-
-
-
-            List<FolhaDeHorasViewModel> Lista = DBFolhasDeHoras.GetAllByTodas(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
-            if (Lista != null)
-            {
-                Lista.ForEach(FH =>
-                {
-                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
-                    FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
-                    FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
-                    FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
-                    FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                });
-            }
-            Lista.OrderByDescending(x => x.FolhaDeHorasNo);
+            JObject dp = (JObject)Lista[0].Colunas;
 
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
@@ -3551,7 +3519,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             memory.Position = 0;
             return Json(sFileName);
-
         }
 
         //1

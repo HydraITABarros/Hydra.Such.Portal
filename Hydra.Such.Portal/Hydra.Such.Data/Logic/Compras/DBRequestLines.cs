@@ -223,7 +223,8 @@ namespace Hydra.Such.Data.Logic.Request
                     CustomerNo = item.NºCliente,
                     Approvers = item.Aprovadores,
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
-                    VATProductPostingGroup = item.GrupoRegistoIvaproduto
+                    VATProductPostingGroup = item.GrupoRegistoIvaproduto,
+                    DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
                 };
             }
             return null;
@@ -299,7 +300,8 @@ namespace Hydra.Such.Data.Logic.Request
                     NºCliente= item.CustomerNo,
                     Aprovadores= item.Approvers,
                     GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
-                    GrupoRegistoIvaproduto = item.VATProductPostingGroup
+                    GrupoRegistoIvaproduto = item.VATProductPostingGroup,
+                    PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : 0,
                 };
             }
             return null;

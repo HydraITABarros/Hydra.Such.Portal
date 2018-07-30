@@ -29,5 +29,6 @@ namespace Hydra.Such.Data.Database
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }
         public bool Tratada { get; set; }
+        public int? DocumentoACriar { get; set; }
     }
 }
