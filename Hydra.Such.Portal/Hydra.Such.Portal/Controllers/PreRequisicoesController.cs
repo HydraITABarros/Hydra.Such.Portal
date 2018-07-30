@@ -656,7 +656,7 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
             return Json(result);
         }
-
+        
         public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
             ErrorHandler result = new ErrorHandler()
@@ -671,51 +671,62 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
+
             if (reqLines != null)
             {
-                List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
-                reqLines.ForEach(x =>
+                if (reqLines.Count > 0)
                 {
-                    LinhasPréRequisição newline = new LinhasPréRequisição();
+                    reqLines.UpdateAgreedPrices();
 
-                    newline.NºPréRequisição = req.PreRequisitionNo;
-                    newline.CódigoLocalização = x.LocalCode;
-                    newline.CódigoProdutoFornecedor = x.SupplierProductCode;
-                    newline.Código = x.Code;
-                    newline.Descrição = x.Description;
-                    newline.CódigoUnidadeMedida = x.UnitMeasureCode;
-                    newline.QuantidadeARequerer = x.QuantityToRequire;
-                    newline.CustoUnitário = x.UnitCost;
-                    newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                    newline.Viatura = x.Vehicle;
-                    newline.NºFornecedor = x.SupplierNo;
-                    newline.NºEncomendaAberto = x.OpenOrderNo;
-                    newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
-                    newline.NºProjeto = x.ProjectNo;
-                    if (project != null)
+                    List <LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                    reqLines.ForEach(x =>
                     {
-                        newline.CódigoRegião = project.CódigoRegião;
-                        newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                        newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        LinhasPréRequisição newline = new LinhasPréRequisição();
+
+                        newline.NºPréRequisição = req.PreRequisitionNo;
+                        newline.CódigoLocalização = x.LocalCode;
+                        newline.CódigoProdutoFornecedor = x.SupplierProductCode;
+                        newline.Código = x.Code;
+                        newline.Descrição = x.Description;
+                        newline.CódigoUnidadeMedida = x.UnitMeasureCode;
+                        newline.QuantidadeARequerer = x.QuantityToRequire;
+                        newline.CustoUnitário = x.UnitCost;
+                        newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                        newline.Viatura = x.Vehicle;
+                        newline.NºFornecedor = x.SupplierNo;
+                        newline.NºEncomendaAberto = x.OpenOrderNo;
+                        newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+                        newline.NºProjeto = x.ProjectNo;
+                        if (project != null)
+                        {
+                            newline.CódigoRegião = project.CódigoRegião;
+                            newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                            newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        }
+                        else
+                        {
+                            newline.CódigoRegião = x.RegionCode;
+                            newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                            newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                        }
+                        preReqLines.Add(newline);
+                    });
+
+                    if (DBPreRequesitionLines.CreateMultiple(preReqLines))
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Linhas copiadas com sucesso.";
                     }
                     else
                     {
-                        newline.CódigoRegião = x.RegionCode;
-                        newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                        newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
-                    }                    
-                    preReqLines.Add(newline);
-                });
-
-                if (DBPreRequesitionLines.CreateMultiple(preReqLines))
-                {
-                    result.eReasonCode = 1;
-                    result.eMessage = "Linhas copiadas com sucesso.";
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    }
                 }
                 else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    result.eMessage = "O modelo de requisição não tem linhas";
                 }
             }
             else
@@ -943,7 +954,7 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-
+                    
                     //Set VATPostingGroup Info
                     newlistOpenOrder.ForEach(header =>
                     {
@@ -952,7 +963,7 @@ namespace Hydra.Such.Portal.Controllers
                             line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                         });
                     });
-                
+                    
                     data = CreateRequesition(newlistOpenOrder, data);
                     
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
