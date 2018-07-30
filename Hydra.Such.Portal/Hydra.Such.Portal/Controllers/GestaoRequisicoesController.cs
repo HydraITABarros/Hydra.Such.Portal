@@ -1212,6 +1212,90 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult AprovarRequisition([FromBody] RequisitionViewModel requisition)
+        {
+            if (requisition != null)
+            {
+                //Get Requistion Lines
+                if (requisition.Lines.Count > 0)
+                {
+                    //Check if requisition have Request Nutrition a false and all lines have ProjectNo
+                    if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
+                    {
+                        ErrorHandler approvalResult = new ErrorHandler();
+
+                        //Approve Movement
+                        MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 1 && x.CódigoÁreaFuncional == requisition.FunctionalAreaCode &&
+                            x.CódigoRegião == requisition.RegionCode && x.CódigoCentroResponsabilidade == requisition.CenterResponsibilityCode && x.Número == requisition.RequisitionNo &&
+                            x.Estado == 1).FirstOrDefault();
+
+                        if (approvalMovement != null)
+                            approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.NºMovimento, User.Identity.Name);
+                        else
+                        {
+                            requisition.eReasonCode = 175;
+                            requisition.eMessage = "Não existe movimento de Aprovação.";
+                        }
+
+                        //Check Approve Status
+                        if (approvalResult.eReasonCode == 103)
+                        {
+                            //Update Requisiton Data
+                            requisition.State = RequisitionStates.Approved;
+                            requisition.ResponsibleApproval = User.Identity.Name;
+                            requisition.ApprovalDate = DateTime.Now;
+                            requisition.UpdateDate = DateTime.Now;
+                            requisition.UpdateUser = User.Identity.Name;
+                            DBRequest.Update(requisition.ParseToDB());
+
+                            //Update Requisition Lines Data
+                            requisition.Lines.ForEach(line =>
+                            {
+                                if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                {
+                                    line.QuantityRequired = line.QuantityToRequire;
+                                    DBRequestLine.Update(line.ParseToDB());
+                                }
+                            });
+
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "A requisição foi aprovada com sucesso.";
+                        }
+                        else if (approvalResult.eReasonCode == 100)
+                        {
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                        }
+                        else
+                        {
+                            requisition.eReasonCode = 199;
+                            requisition.eMessage = "Ocorreu um erro desconhecido ao aprovar a requisição.";
+                        }
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 202;
+                        requisition.eMessage = "Todas as linhas necessitam de possuir NºOrdem/Projeto.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 201;
+                    requisition.eMessage = "A requisição não possui linhas.";
+                }
+            }
+            else
+            {
+                requisition = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(requisition);
+        }
+
+        [HttpPost]
 
         public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
         {

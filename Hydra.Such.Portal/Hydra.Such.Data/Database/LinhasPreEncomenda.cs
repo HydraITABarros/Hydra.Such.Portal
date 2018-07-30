@@ -24,7 +24,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
-        public int? DocumentoaCriar { get; set; }
         public bool CriarDocumento { get; set; }
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }

@@ -258,8 +258,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Clientes([FromBody] List<ClientDetailsViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Clientes([FromBody] List<ClientDetailsViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -274,25 +276,77 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Clientes");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº");
-                row.CreateCell(1).SetCellValue("Nome");
-                row.CreateCell(2).SetCellValue("Morada");
-                row.CreateCell(3).SetCellValue("Cód. Postal");
-                row.CreateCell(4).SetCellValue("Cidade");
-                row.CreateCell(5).SetCellValue("Região");
+                int Col = 0;
+
+                if (dp["no"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
+                    Col = Col + 1;
+                }
+                if (dp["name"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome");
+                    Col = Col + 1;
+                }
+                if (dp["address"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Morada");
+                    Col = Col + 1;
+                }
+                if (dp["post_Code"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Postal");
+                    Col = Col + 1;
+                }
+                if (dp["city"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cidade");
+                    Col = Col + 1;
+                }
+                if (dp["regiao_Cliente"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ClientDetailsViewModel item in dp)
+                    foreach (ClientDetailsViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.No);
-                        row.CreateCell(1).SetCellValue(item.Name);
-                        row.CreateCell(2).SetCellValue(item.Address);
-                        row.CreateCell(3).SetCellValue(item.Post_Code);
-                        row.CreateCell(4).SetCellValue(item.City);
-                        row.CreateCell(5).SetCellValue(item.Regiao_Cliente);
+
+                        if (dp["no"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.No);
+                            Col = Col + 1;
+                        }
+                        if (dp["name"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Name);
+                            Col = Col + 1;
+                        }
+                        if (dp["address"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Address);
+                            Col = Col + 1;
+                        }
+                        if (dp["post_Code"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Post_Code);
+                            Col = Col + 1;
+                        }
+                        if (dp["city"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.City);
+                            Col = Col + 1;
+                        }
+                        if (dp["regiao_Cliente"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Regiao_Cliente);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

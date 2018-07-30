@@ -18,12 +18,13 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContextExtention())
                 {
                     string purhNo = string.IsNullOrEmpty(PurchaseHeaderNo) ? "" : PurchaseHeaderNo;
+                    string codFunc = string.IsNullOrEmpty(codFuncitonalArea) ? "" : codFuncitonalArea;
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@DateSupplierPrice", Date),
-                        new SqlParameter("@FunctionalAreaCode", codFuncitonalArea),
-                        new SqlParameter("@PurchaseHeaderNo", PurchaseHeaderNo),
+                        new SqlParameter("@FunctionalAreaCode", codFunc),
+                        new SqlParameter("@PurchaseHeaderNo", purhNo),
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice, @FunctionalAreaCode,@PurchaseHeaderNo", parameters);

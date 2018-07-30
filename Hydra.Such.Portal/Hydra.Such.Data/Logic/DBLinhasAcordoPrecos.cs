@@ -60,6 +60,22 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<LinhasAcordoPrecos> GetAllByDateArea(string Area, DateTime Data)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos.Where(x => x.Area == Area && (x.DtValidadeInicio <= Data && x.DtValidadeFim >= Data)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static LinhasAcordoPrecos Create(LinhasAcordoPrecos item)
         {
             try
