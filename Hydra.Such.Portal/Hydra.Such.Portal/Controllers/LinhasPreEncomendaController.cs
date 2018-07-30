@@ -129,7 +129,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         Linhas.ForEach(LinhaPreEncomenda =>
                         {
-                            LinhaPreEncomenda.DocumentoaCriar = 0; //Consulta Mercado
+                            LinhaPreEncomenda.DocumentoACriar = 0; //Consulta Mercado
                             LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
                             LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
 
@@ -180,7 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         Linhas.ForEach(LinhaPreEncomenda =>
                         {
-                            LinhaPreEncomenda.DocumentoaCriar = 1; //Encomenda
+                            LinhaPreEncomenda.DocumentoACriar = 1; //Encomenda
                             LinhaPreEncomenda.DataHoraModificacao = DateTime.Now;
                             LinhaPreEncomenda.UtilizadorModificacao = User.Identity.Name;
 
@@ -419,7 +419,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    var list = item.Where(it => it.DocumentoaCriar == 1).Where(it => it.CriarDocumento == true).Where(it => it.NumEncomendaAberto == string.Empty).Where(it => !it.NumLinhaEncomendaAberto.HasValue).ToList();
+                    var list = item.Where(it => it.DocumentoACriar == 1).Where(it => it.CriarDocumento == true).Where(it => it.NumEncomendaAberto == string.Empty).Where(it => !it.NumLinhaEncomendaAberto.HasValue).ToList();
 
                     List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                     
