@@ -293,8 +293,9 @@
                     },
                 },
                 _rowSelected: function (item) {
+                    debugger;
+                    this.$.grid.selectedItems = item ? [item] : [];
                     if (item != null) {
-                        //debugger;
                         window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
                 },
@@ -334,13 +335,13 @@
 
                 _responseDeleteProcessor: function (data) {
                     var self = this;
+                    var ajax_request = this.$.grid_databound_ajax;
+                    debugger;
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
                         if (this.deletedData.eReasonCode == 1) {
-                            setTimeout(
-                                function () {
-                                    window.location.href = "/";
-                                }, 2500);
+                            ajax_request.body = JSON.stringify({ "AreaId": self._areaid, "Archived": self._archived, "ContractNo": self._contractno });
+                            ajax_request.generateRequest();
                         } else if (this.deletedData.eReasonCode == 2) {
                             this._openToastError(this.deletedData.eMessage);
                         }
@@ -373,10 +374,30 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    var index = this.result.indexOf(data.model.item);
-                    this.result.splice(index, 1);
-                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
-                    this.$.ajax_delete_contract.generateRequest();
+                    debugger;
+                    data.preventDefault();
+                    var ajax_request = this.$.ajax_delete_contract;
+                    var object = data.model.item;
+                    var id = data.model.item.contractNo;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Oportunidade " + id + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(object);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
 
                 _exportEXCEL: function () {

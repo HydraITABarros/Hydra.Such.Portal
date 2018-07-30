@@ -27,6 +27,7 @@
   <ItemGroup>
     <Content Remove="Areas\Compras\Views\GestaoRequisicoes\PontoSituacao - Copy.cshtml" />
     <Content Remove="Areas\Compras\Views\GestaoRequisicoes\PontoSituacao.cshtml" />
+    <Content Remove="wwwroot\Upload\hydra08%40such.pt_Novo Documento de Texto.txt" />
   </ItemGroup>
 
   <ItemGroup>

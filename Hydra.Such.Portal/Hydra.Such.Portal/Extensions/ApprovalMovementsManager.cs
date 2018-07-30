@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel;
@@ -15,7 +16,7 @@ namespace Hydra.Such.Portal.Extensions
         //100 - Fluxo Iniciado com suceso
         //101 - Não existem configurações de numerações compativeis
         //102 - Erro desconhecido
-        public static ErrorHandler StartApprovalMovement(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
+        public static ErrorHandler StartApprovalMovement(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser, string reason)
         {
             try
             {
@@ -55,14 +56,15 @@ namespace Hydra.Such.Portal.Extensions
                     result.eMessages.Add(new TraceInformation(TraceType.Error, ApprovalMovement.MovementNo.ToString()));
 
                     //Create User ApprovalMovements
-                    List<string> UsersToNotify = new List<string>();
+                    List<ConfigUtilizadores> UsersToNotify = new List<ConfigUtilizadores>();
                     //ApprovalConfigurations.ForEach(x =>
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
+                        UsersToNotify.Add(users);
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
@@ -71,7 +73,8 @@ namespace Hydra.Such.Portal.Extensions
                         GUsers.ForEach(y =>
                         {
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                            UsersToNotify.Add(y);
+                            ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                            UsersToNotify.Add(users);
                         });
                     }
                     //});
@@ -85,16 +88,24 @@ namespace Hydra.Such.Portal.Extensions
                     //Notify Users
                     UsersToNotify.ForEach(e =>
                     {
-                        EmailsAprovações EmailApproval = new EmailsAprovações()
+                        EmailsAprovações EmailApproval = new EmailsAprovações();
+
+                        EmailApproval.NºMovimento = ApprovalMovement.MovementNo;
+                        EmailApproval.EmailDestinatário = e.RfmailEnvio;
+                        EmailApproval.NomeDestinatário = e.Nome;
+                        EmailApproval.Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo;
+                        EmailApproval.DataHoraEmail = DateTime.Now;
+                        if(reason != "" && reason != null)
                         {
-                            NºMovimento = ApprovalMovement.MovementNo,
-                            EmailDestinatário = e,
-                            NomeDestinatário = e,
-                            Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            DataHoraEmail = DateTime.Now,
-                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
-                            Enviado = false
-                        };
+                            EmailApproval.TextoEmail = "Uma requisição aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
+                        }
+                        else
+                        {
+                            EmailApproval.TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
+
+                        }
+
+                        EmailApproval.Enviado = false;
 
 
                         SendEmailApprovals Email = new SendEmailApprovals
@@ -103,9 +114,9 @@ namespace Hydra.Such.Portal.Extensions
                             From = "plataforma@such.pt"
                         };
 
-                        Email.To.Add(e);
+                        Email.To.Add(e.RfmailEnvio);
 
-                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+                        Email.Body = MakeEmailBodyContent(EmailApproval.TextoEmail);
 
                         Email.IsBodyHtml = true;
                         Email.EmailApproval = EmailApproval;
@@ -173,14 +184,15 @@ namespace Hydra.Such.Portal.Extensions
                     ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
 
                     //Create User ApprovalMovements
-                    List<string> UsersToNotify = new List<string>();
+                    List<ConfigUtilizadores> UsersToNotify = new List<ConfigUtilizadores>();
                     //ApprovalConfigurations.ForEach(x =>
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
+                        UsersToNotify.Add(users);
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
@@ -189,7 +201,8 @@ namespace Hydra.Such.Portal.Extensions
                         GUsers.ForEach(y =>
                         {
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                            UsersToNotify.Add(y);
+                            ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                            UsersToNotify.Add(users);
                         });
                     }
                     //});
@@ -201,8 +214,8 @@ namespace Hydra.Such.Portal.Extensions
                         EmailsAprovações EmailApproval = new EmailsAprovações()
                         {
                             NºMovimento = ApprovalMovement.MovementNo,
-                            EmailDestinatário = e,
-                            NomeDestinatário = e,
+                            EmailDestinatário = e.RfmailEnvio,
+                            NomeDestinatário = e.Nome,
                             Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
                             DataHoraEmail = DateTime.Now,
                             TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
@@ -216,7 +229,7 @@ namespace Hydra.Such.Portal.Extensions
                             From = "plataforma@such.pt"
                         };
 
-                        Email.To.Add(e);
+                        Email.To.Add(e.RfmailEnvio);
 
                         Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
 
@@ -321,14 +334,15 @@ namespace Hydra.Such.Portal.Extensions
                     result.eMessages.Add(new TraceInformation(TraceType.Error, ApprovalMovement.MovementNo.ToString()));
 
                     //Create User ApprovalMovements
-                    List<string> UsersToNotify = new List<string>();
+                    List<ConfigUtilizadores> UsersToNotify = new List<ConfigUtilizadores>();
                     //ApprovalConfigurations.ForEach(x =>
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
+                        UsersToNotify.Add(users);
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
@@ -337,7 +351,8 @@ namespace Hydra.Such.Portal.Extensions
                         GUsers.ForEach(y =>
                         {
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                            UsersToNotify.Add(y);
+                            ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                            UsersToNotify.Add(users);
                         });
                     }
                     //});
@@ -354,8 +369,8 @@ namespace Hydra.Such.Portal.Extensions
                         EmailsAprovações EmailApproval = new EmailsAprovações()
                         {
                             NºMovimento = ApprovalMovement.MovementNo,
-                            EmailDestinatário = e,
-                            NomeDestinatário = e,
+                            EmailDestinatário = e.RfmailEnvio,
+                            NomeDestinatário = e.Nome,
                             Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
                             DataHoraEmail = DateTime.Now,
                             TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
@@ -369,7 +384,7 @@ namespace Hydra.Such.Portal.Extensions
                             From = "plataforma@such.pt"
                         };
 
-                        Email.To.Add(e);
+                        Email.To.Add(e.RfmailEnvio);
 
                         Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
 

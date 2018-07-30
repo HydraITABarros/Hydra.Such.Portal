@@ -30,6 +30,10 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string Regiao_Cliente { get; set; }
         public string Country_RegionCode { get; set; }
         // Endereços de envio ???
+        
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
     }
 
     public enum Tipo_Cliente
