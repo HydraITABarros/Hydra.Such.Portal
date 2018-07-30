@@ -194,6 +194,13 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/AprovarRequisition"
+                   last-response="{{Requisition}}"
+                   id="aprovarRequisition_datasource"
+                   on-response="_aprovarRequisitionResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
         <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{regist}}"
                    id="regist_datasource"
@@ -271,6 +278,7 @@
             <paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
             <paper-button class="tablinks" id="btnValidate" disabled="{{ !_permissions.update }}" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
             <paper-button class="tablinks" id="btnAnularAprovacao" disabled="{{ !_permissions.update }}" on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
+            <paper-button class="tablinks" id="btnAprovar" disabled="{{ !_permissions.update }}" on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
             <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
             <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
 
@@ -417,7 +425,7 @@
                                             <vaadin-checkbox id="chkexclusive" checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkboxid="chk>
+                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 ">
                                             <vaadin-checkbox id="chksample" checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
@@ -1039,7 +1047,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-            </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1350,7 +1358,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                
+
                                 <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="discountPercentage">% Desconto</vaadin-grid-sorter>
@@ -1593,14 +1601,19 @@
                 ready: function () {
                     //debugger;
                     var _self = this;
-                    if (this._requisitionstatus === 3) { //GESTÃO REQUISIÇÕES
+                    if (this._requisitionstatus === 0) { //Pendente
+                        $(_self.$.btnAprovar).removeClass('hidden');
+                    } else {
+                        $(_self.$.btnAprovar).addClass('hidden');
+                    }
+                    if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
                         $(_self.$.btnLocalMarketValidation).addClass('hidden');
                         $(_self.$.btnValidate).addClass('hidden');
                         $(_self.$.btnAnularAprovacao).addClass('hidden');
                         $(_self.$.menuRegister).removeClass('hidden');
                         $(_self.$.menuFunctios).removeClass('hidden');
                     }
-                    if (this._requisitionstatus === 4) { //VALIDAÇÃO REQUISIÇÕES
+                    if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
                         $(_self.$.btnLocalMarketValidation).removeClass('hidden');
                         $(_self.$.btnValidate).removeClass('hidden');
                         $(_self.$.btnAnularAprovacao).removeClass('hidden');
@@ -2403,6 +2416,18 @@
                     });
                 },
 
+                _aprovarRequisicao: function () {
+                    this.$.aprovarRequisition_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.aprovarRequisition_datasource.generateRequest();
+                },
+                _aprovarRequisicaoResponse: function (e) {
+                    var self = this;
+                    if (this.actionResult.eReasonCode == 100) {
+                        this._openToast(this.Requisition.eMessage);
+                    } else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
             });
         });
     </script>
