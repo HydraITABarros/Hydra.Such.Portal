@@ -26,6 +26,25 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+        public static AutorizarFaturaçãoContratos Update(AutorizarFaturaçãoContratos ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
+                    ctx.AutorizarFaturaçãoContratos.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static bool DeleteAll()
         {

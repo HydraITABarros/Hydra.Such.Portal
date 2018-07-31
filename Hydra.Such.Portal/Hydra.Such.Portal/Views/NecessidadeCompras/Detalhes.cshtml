@@ -784,7 +784,8 @@
                                 "date": e.detail.value
                             };
                             this.$.ajax_result.generateRequest();
-                        } else {
+                        }
+                        else {
                             if (e.detail.value != null &&
                                 e.detail.value != "") {
                                 this.$.ajax_nOrderLines.body = JSON.stringify(e.detail.value);
