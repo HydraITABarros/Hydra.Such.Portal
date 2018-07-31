@@ -347,9 +347,7 @@
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-            </div>
-            <div class="row" hidden="{{ !_permissions.create }}">
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                     <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
             </div>
