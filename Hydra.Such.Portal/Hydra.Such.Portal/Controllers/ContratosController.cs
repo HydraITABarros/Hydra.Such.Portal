@@ -965,28 +965,52 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetAllAvencaFixa()
         {
+            List<AutorizarFaturaçãoContratos> ALLcontractList = DBContractInvoices.GetAll();
+            foreach (AutorizarFaturaçãoContratos fc in ALLcontractList)
+            {
+                List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(fc.NºContrato);
+                Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
+                if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
+                {
+                    fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
+                    fc.UtilizadorModificação = User.Identity.Name;
+                    fc.DataHoraModificação = DateTime.Now;
+                    DBAuthorizeInvoiceContracts.Update(fc);
+                }
+            }
             List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAllInvoice();
             List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
-
             foreach (var item in contractList)
             {
+                string StartDate = "";
+                string ExpiryDate = "";
+                int? InvoicePeriod = null;
+                Contratos AFixaContract = DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                if (AFixaContract != null)
+                {
+                    StartDate = AFixaContract.DataInicial.HasValue ? AFixaContract.DataInicial.Value.ToString("yyyy-MM-dd") : "";
+                    ExpiryDate = AFixaContract.DataExpiração.HasValue ? AFixaContract.DataExpiração.Value.ToString("yyyy-MM-dd") : "";
+                    InvoicePeriod = AFixaContract.PeríodoFatura;
+                }
                 //Client Name -> NAV
                 String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
-
+                string DocNo_ = "";
                 // Valor Fatura
-            
+
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                 Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
                 Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
+
                 result.Add(new FaturacaoContratosViewModel
                 {
+                    Document_No = DocNo_,
                     ContractNo = item.NºContrato,
                     Description = item.Descrição,
                     ClientNo = item.NºCliente,
                     ClientName = cliName,
                     InvoiceValue = sum,
                     NumberOfInvoices = item.NºDeFaturasAEmitir,
-                    InvoiceTotal = item.TotalAFaturar,
+                    InvoiceTotal = sum,
                     ContractValue = item.ValorDoContrato,
                     ValueToInvoice = item.ValorPorFaturar,
                     BilledValue = item.ValorFaturado,
@@ -995,7 +1019,10 @@ namespace Hydra.Such.Portal.Controllers
                     InvoiceGroupValue = item.GrupoFatura,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
-                    RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
+                    RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
+                    StartDate = StartDate,
+                    ExpiryDate = ExpiryDate,
+                    InvoicePeriod = InvoicePeriod
                 });
             }
 
@@ -1004,28 +1031,59 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetPedingAvencaFixa()
         {
+            //find Invoice Value = 0
+            List<AutorizarFaturaçãoContratos> ALLcontractList = DBContractInvoices.GetAll();
+            foreach (AutorizarFaturaçãoContratos fc in ALLcontractList)
+            {
+                List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(fc.NºContrato);
+                Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
+                if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
+                {
+                    fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
+                    fc.UtilizadorModificação = User.Identity.Name;
+                    fc.DataHoraModificação = DateTime.Now;
+                    DBAuthorizeInvoiceContracts.Update(fc);
+                }
+            }
+
             List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetPedding();
             List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
 
             foreach (var item in contractList)
             {
+                string StartDate="";
+                string ExpiryDate = "";
+                int? InvoicePeriod = null;
+                Contratos AFixaContract= DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                if (AFixaContract != null)
+                {
+                     StartDate = AFixaContract.DataInicial.HasValue? AFixaContract.DataInicial.Value.ToString("yyyy-MM-dd") : "";
+                     ExpiryDate = AFixaContract.DataExpiração.HasValue ? AFixaContract.DataExpiração.Value.ToString("yyyy-MM-dd") : "";
+                     InvoicePeriod = AFixaContract.PeríodoFatura;
+                }
                 //Estado Pendente
-                
+                string DocNo_ = "";
                     String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
-
+                //Pre registadas
+                List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.NºCliente);
+                if (SLines.Count > 0)
+                {
+                     DocNo_ = SLines.LastOrDefault().DocNo;
+                }
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                     Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
                     Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
                     result.Add(new FaturacaoContratosViewModel
                     {
+                        Document_No = DocNo_,
                         ContractNo = item.NºContrato,
                         Description = item.Descrição,
                         ClientNo = item.NºCliente,
                         ClientName = cliName,
                         InvoiceValue = sum,
                         NumberOfInvoices = item.NºDeFaturasAEmitir,
-                        InvoiceTotal = item.TotalAFaturar,
+                        InvoiceTotal = sum,
                         ContractValue = item.ValorDoContrato,
                         ValueToInvoice = item.ValorPorFaturar,
                         BilledValue = item.ValorFaturado,
@@ -1035,7 +1093,10 @@ namespace Hydra.Such.Portal.Controllers
                         InvoiceGroupValue = item.GrupoFatura,
                         FunctionalAreaCode = item.CódigoÁreaFuncional,
                         ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
-                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
+                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
+                        StartDate= StartDate,
+                        ExpiryDate = ExpiryDate,
+                        InvoicePeriod = InvoicePeriod
                     });
                 
             }
@@ -1051,6 +1112,7 @@ namespace Hydra.Such.Portal.Controllers
             foreach (var item in contractList)
             {
                 
+                List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
 
@@ -1193,7 +1255,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += "Falta Morada!";
                         }
-                        
+                        if (SLines.Count > 0 && !Problema.Contains("Fatura no Pre-Registo!"))
+                        {
+                            Problema += "Fatura no Pre-Registo!";
+                        }
                         bool verifica = false;
                         if (item.NºComprimissoObrigatório == false || item.NºComprimissoObrigatório== null)
                         {
@@ -1209,11 +1274,15 @@ namespace Hydra.Such.Portal.Controllers
                         if(verifica==true)
                             Problema += "Falta Nº Compromisso";
 
-                        NAVSalesHeaderViewModel result= DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
-                        if (result != null)
+                        if (!Problema.Contains("Fatura no Pre-Registo!"))
                         {
-                           Problema += "Fatura no Pre-Registo";
+                            NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
+                            if (result != null)
+                            {
+                                Problema += "Fatura no Pre-Registo!";
+                            }
                         }
+
 
                         Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
                         postNAV.Wait();
