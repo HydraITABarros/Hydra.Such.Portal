@@ -36,5 +36,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ExpiryDate { get; set; }
         public string StartDate { get; set; }
         public int? InvoicePeriod { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

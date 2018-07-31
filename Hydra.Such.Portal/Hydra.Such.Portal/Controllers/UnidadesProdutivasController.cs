@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -328,8 +329,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_UnidadesProdutivas([FromBody] List<ProductivityUnitViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_UnidadesProdutivas([FromBody] List<ProductivityUnitViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -344,31 +347,107 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Unidades Produtivas");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Unidade Produtiva");
-                row.CreateCell(1).SetCellValue("Descrição");
-                row.CreateCell(2).SetCellValue("Data Inicio Exploração");
-                row.CreateCell(3).SetCellValue("Data Fim Exploração");
-                row.CreateCell(4).SetCellValue("Cód. Região");
-                row.CreateCell(5).SetCellValue("Cód. Centro Responsabilidade");
-                row.CreateCell(6).SetCellValue("Cód. Area Funcional");
-                row.CreateCell(7).SetCellValue("Proj. Cozinha");
-                row.CreateCell(8).SetCellValue("Proj. Mat. Subsidiárias");
+                int Col = 0;
+
+                if (dp["productivityUnitNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Unidade Produtiva");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["startDateExploration"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicio Exploração");
+                    Col = Col + 1;
+                }
+                if (dp["endDateExploration"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim Exploração");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Area Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["projectKitchen"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Proj. Cozinha");
+                    Col = Col + 1;
+                }
+                if (dp["projectSubsidiaries"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Proj. Mat. Subsidiárias");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ProductivityUnitViewModel item in dp)
+                    foreach (ProductivityUnitViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ProductivityUnitNo);
-                        row.CreateCell(1).SetCellValue(item.Description);
-                        row.CreateCell(2).SetCellValue(item.StartDateExploration);
-                        row.CreateCell(3).SetCellValue(item.EndDateExploration);
-                        row.CreateCell(4).SetCellValue(item.CodeRegion);
-                        row.CreateCell(5).SetCellValue(item.CodeFunctionalArea);
-                        row.CreateCell(6).SetCellValue(item.CodeResponsabilityCenter);
-                        row.CreateCell(7).SetCellValue(item.ProjectKitchen);
-                        row.CreateCell(8).SetCellValue(item.ProjectSubsidiaries);
+
+                        if (dp["productivityUnitNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProductivityUnitNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["startDateExploration"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartDateExploration);
+                            Col = Col + 1;
+                        }
+                        if (dp["endDateExploration"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EndDateExploration);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["projectKitchen"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectKitchen);
+                            Col = Col + 1;
+                        }
+                        if (dp["projectSubsidiaries"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectSubsidiaries);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

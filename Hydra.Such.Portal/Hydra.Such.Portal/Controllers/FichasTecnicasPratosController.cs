@@ -14,6 +14,7 @@ using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -591,8 +592,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_FichasTecnicasPratos([FromBody] List<RecordTechnicalOfPlatesModelView> dp)
+        public async Task<JsonResult> ExportToExcel_FichasTecnicasPratos([FromBody] List<RecordTechnicalOfPlatesModelView> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -607,33 +610,117 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Fichas Técnicas de Pratos");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº");
-                row.CreateCell(1).SetCellValue("Nome Ficha Técnica");
-                row.CreateCell(2).SetCellValue("Class.FT.1");
-                row.CreateCell(3).SetCellValue("Class.FT.2");
-                row.CreateCell(4).SetCellValue("Class.FT.3");
-                row.CreateCell(5).SetCellValue("Class.FT.4");
-                row.CreateCell(6).SetCellValue("Class.FT.5");
-                row.CreateCell(7).SetCellValue("Class.FT.6");
-                row.CreateCell(8).SetCellValue("Class.FT.7");
-                row.CreateCell(9).SetCellValue("Cód. Unidade Medida");
+                int Col = 0;
+
+                if (dp["plateNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
+                    Col = Col + 1;
+                }
+                if (dp["recordTechnicalName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Ficha Técnica");
+                    Col = Col + 1;
+                }
+                if (dp["classFt1"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.1");
+                    Col = Col + 1;
+                }
+                if (dp["classFt2"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.2");
+                    Col = Col + 1;
+                }
+                if (dp["classFt3"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.3");
+                    Col = Col + 1;
+                }
+                if (dp["classFt4"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.4");
+                    Col = Col + 1;
+                }
+                if (dp["classFt5"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.5");
+                    Col = Col + 1;
+                }
+                if (dp["classFt6"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.6");
+                    Col = Col + 1;
+                }
+                if (dp["classFt7"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Class.FT.7");
+                    Col = Col + 1;
+                }
+                if (dp["unitMeasureCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Unidade Medida");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (RecordTechnicalOfPlatesModelView item in dp)
+                    foreach (RecordTechnicalOfPlatesModelView item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.PlateNo);
-                        row.CreateCell(1).SetCellValue(item.RecordTechnicalName);
-                        row.CreateCell(2).SetCellValue(item.ClassFt1.ToString());
-                        row.CreateCell(3).SetCellValue(item.ClassFt2.ToString());
-                        row.CreateCell(4).SetCellValue(item.ClassFt3);
-                        row.CreateCell(5).SetCellValue(item.ClassFt4);
-                        row.CreateCell(6).SetCellValue(item.ClassFt5);
-                        row.CreateCell(7).SetCellValue(item.ClassFt6);
-                        row.CreateCell(8).SetCellValue(item.ClassFt7);
-                        row.CreateCell(9).SetCellValue(item.UnitMeasureCode);
+
+                        if (dp["plateNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.PlateNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["recordTechnicalName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RecordTechnicalName);
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt1"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt1.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt2"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt2.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt3"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt3);
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt4"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt4);
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt5"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt5);
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt6"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt6);
+                            Col = Col + 1;
+                        }
+                        if (dp["classFt7"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClassFt7);
+                            Col = Col + 1;
+                        }
+                        if (dp["unitMeasureCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.UnitMeasureCode);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

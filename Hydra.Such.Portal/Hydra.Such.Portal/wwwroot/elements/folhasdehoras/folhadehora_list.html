@@ -119,15 +119,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/ExportToExcel_FolhasHorasTESTE"
-                   last-response="{{export}}"
-                   id="ajax_ExportTESTE"
-                   method="post"
-                   handle-as="json"
-                   on-response="_exportEXCELResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
@@ -947,8 +938,8 @@
                     //debugger;
                     this.result[0].Colunas = this._columns;
 
-                    this.$.ajax_ExportTESTE.body = JSON.stringify(this.result);
-                    this.$.ajax_ExportTESTE.generateRequest();
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
                 },
 
                 _exportEXCELResponse: function (e) {

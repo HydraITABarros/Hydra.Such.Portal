@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Newtonsoft.Json.Linq;
 //using Hydra.Such.Portal.Configurations;
 //using Microsoft.Extensions.Options;
 
@@ -380,8 +381,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_ModelosRequisicaoSimplificada([FromBody] List<SimplifiedReqTemplateViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_ModelosRequisicaoSimplificada([FromBody] List<SimplifiedReqTemplateViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -396,23 +399,67 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Modelos de Requisição Simplificada");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Modelo");
-                row.CreateCell(1).SetCellValue("Descrição");
-                row.CreateCell(2).SetCellValue("Região");
-                row.CreateCell(3).SetCellValue("CÁrea Funcional");
-                row.CreateCell(4).SetCellValue("Centro Responsabilidade");
+                int Col = 0;
+
+                if (dp["requisitionTemplateId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Modelo");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("CÁrea Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Centro Responsabilidade");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (SimplifiedReqTemplateViewModel item in dp)
+                    foreach (SimplifiedReqTemplateViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.RequisitionTemplateId);
-                        row.CreateCell(1).SetCellValue(item.Description);
-                        row.CreateCell(2).SetCellValue(item.CodeRegion);
-                        row.CreateCell(3).SetCellValue(item.CodeFunctionalArea);
-                        row.CreateCell(4).SetCellValue(item.CodeResponsabilityCenter);
+
+                        if (dp["requisitionTemplateId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionTemplateId);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

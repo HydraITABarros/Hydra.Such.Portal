@@ -698,8 +698,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Approvals([FromBody] List<ApprovalMovementsViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Approvals([FromBody] List<ApprovalMovementsViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -714,27 +716,87 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Pedidos de Aprovação");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº");
-                row.CreateCell(1).SetCellValue("Tipo");
-                row.CreateCell(2).SetCellValue("Associado");
-                row.CreateCell(3).SetCellValue("CSolicitado Por");
-                row.CreateCell(4).SetCellValue("Valor");
-                row.CreateCell(5).SetCellValue("Estado");
-                row.CreateCell(6).SetCellValue("Nivel");
+                int Col = 0;
+
+                if (dp["movementNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
+                    Col = Col + 1;
+                }
+                if (dp["typeText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
+                if (dp["number"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Associado");
+                    Col = Col + 1;
+                }
+                if (dp["requestUser"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("CSolicitado Por");
+                    Col = Col + 1;
+                }
+                if (dp["value"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor");
+                    Col = Col + 1;
+                }
+                if (dp["statusText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["level"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nivel");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ApprovalMovementsViewModel item in dp)
+                    foreach (ApprovalMovementsViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.MovementNo);
-                        row.CreateCell(1).SetCellValue(item.TypeText);
-                        row.CreateCell(2).SetCellValue(item.Number);
-                        row.CreateCell(3).SetCellValue(item.RequestUser);
-                        row.CreateCell(4).SetCellValue(item.Value.ToString());
-                        row.CreateCell(5).SetCellValue(item.StatusText);
-                        row.CreateCell(6).SetCellValue(item.Level);
+
+                        if (dp["movementNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MovementNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["typeText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TypeText);
+                            Col = Col + 1;
+                        }
+                        if (dp["number"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Number);
+                            Col = Col + 1;
+                        }
+                        if (dp["requestUser"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequestUser);
+                            Col = Col + 1;
+                        }
+                        if (dp["value"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Value.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["statusText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StatusText);
+                            Col = Col + 1;
+                        }
+                        if (dp["level"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Level);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

@@ -52,7 +52,6 @@
             </paper-menu-button>
             <!--end ColumnToggle-->
         </div>
-        <br />
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -480,6 +479,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },

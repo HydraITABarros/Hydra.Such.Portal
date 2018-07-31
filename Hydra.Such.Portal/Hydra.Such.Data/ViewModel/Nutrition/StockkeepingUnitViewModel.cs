@@ -23,5 +23,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CodeProcuctCategory { get; set; }
         public string CodeProcuctGroup { get; set; }
         public decimal? PriceSale { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

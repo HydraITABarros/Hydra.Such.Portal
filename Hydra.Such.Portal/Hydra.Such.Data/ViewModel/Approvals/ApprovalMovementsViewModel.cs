@@ -31,5 +31,8 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public string StatusText { get; set; }
         public string ReproveReason { get; set; }
         public int Level { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

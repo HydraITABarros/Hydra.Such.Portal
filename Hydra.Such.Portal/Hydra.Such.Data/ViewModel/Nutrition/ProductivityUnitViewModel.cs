@@ -34,6 +34,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CreateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
 
         public List<DBProjectBillingViewModel> BillingProjects { get; set; }
         public List<CoffeeShopViewModel> CoffeeShops { get; set; }

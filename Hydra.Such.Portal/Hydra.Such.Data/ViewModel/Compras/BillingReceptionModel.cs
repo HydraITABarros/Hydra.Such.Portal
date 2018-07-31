@@ -47,6 +47,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string UserUltimaInteracao { get; set; }
         public string link { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
         public List<BillingRecWorkflowModel> WorkflowItems { get; set; }
     }
 }

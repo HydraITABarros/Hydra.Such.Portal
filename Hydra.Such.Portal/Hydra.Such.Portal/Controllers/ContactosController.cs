@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -251,8 +252,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Contactos([FromBody] List<ContactViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Contactos([FromBody] List<ContactViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -267,17 +270,37 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Contactos");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("ID");
-                row.CreateCell(1).SetCellValue("Nome");
+                int Col = 0;
+
+                if (dp["id"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("ID");
+                    Col = Col + 1;
+                }
+                if (dp["name"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ContactViewModel item in dp)
+                    foreach (ContactViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.Id);
-                        row.CreateCell(1).SetCellValue(item.Name);
+
+                        if (dp["id"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Id);
+                            Col = Col + 1;
+                        }
+                        if (dp["name"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Name);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

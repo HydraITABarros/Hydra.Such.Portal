@@ -316,7 +316,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3" id="divLocalMarketRegions">
                                             <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
@@ -341,24 +341,9 @@
                                             </such-selectbox>
                                         </div>
                                     </div>
-                                    <br />
+
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                        </div>
                                         <div class="col-lg-3">
-                                            <!--<vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table width="180px">
-                                                    <tr>
-                                                        <td width="20%">[[item.id]]</td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
-
                                             <such-selectbox id="RegionCode" name="RegionCode" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
                                                             items="[[LProjectRegionCodes]]"
                                                             text-path="value"
@@ -367,17 +352,6 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <!--<vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
                                                             items="[[LProjectFunctionalAreaCodes]]"
                                                             text-path="value"
@@ -386,17 +360,6 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <!--<vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
                                                             text-path="value"
@@ -404,68 +367,65 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row break_clear">
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkUrgent" checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkRelatedSearches" checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkImmobilized" checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkexclusive" checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chksample" checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkequipment" checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkbuyCash" checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkstockReplacement" checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox id="chkPricesIncludingVAT" checked="{{Requisition.pricesIncludingVAT}}" disabled="{{ !_permissions.update }}">Preço IVA Incluído</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <vaadin-checkbox id="chkInAdvance" checked="{{Requisition.inAdvance}}" disabled="{{ !_permissions.update }}">Adiantamento</vaadin-checkbox>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row break_clear">
-                                        <div class="col-lg-3" id="VehicleDiv" hidden>
                                             <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.id]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-md-3 ">
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkUrgent" checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkRelatedSearches" checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkImmobilized" checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkexclusive" checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chksample" checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkequipment" checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkbuyCash" checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkstockReplacement" checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkPricesIncludingVAT" checked="{{Requisition.pricesIncludingVAT}}" disabled="{{ !_permissions.update }}">Preço IVA Incluído</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="chkInAdvance" checked="{{Requisition.inAdvance}}" disabled="{{ !_permissions.update }}">Adiantamento</vaadin-checkbox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 ">
-                                        <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
-                                    </div>
+
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                        </div>
+                                        <div class="col-sm-3 ">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3 ">
                                             <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
                                         </div>
                                     </div>
@@ -1612,6 +1572,8 @@
                         $(_self.$.btnAnularAprovacao).addClass('hidden');
                         $(_self.$.menuRegister).removeClass('hidden');
                         $(_self.$.menuFunctios).removeClass('hidden');
+
+                        $(_self.$.divLocalMarketRegions).addClass('hidden');
                     }
                     if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
                         $(_self.$.btnLocalMarketValidation).removeClass('hidden');
@@ -1619,6 +1581,8 @@
                         $(_self.$.btnAnularAprovacao).removeClass('hidden');
                         $(_self.$.menuRegister).addClass('hidden');
                         $(_self.$.menuFunctios).addClass('hidden');
+
+                        $(_self.$.divLocalMarketRegions).removeClass('hidden');
                     }
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
