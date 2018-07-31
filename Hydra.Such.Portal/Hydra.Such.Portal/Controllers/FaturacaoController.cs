@@ -125,8 +125,16 @@ namespace Hydra.Such.Portal.Controllers
                 createdItem = billingRecService.Create(item);
                 if (createdItem != null)
                 {
-                    createdItem.eReasonCode = 1;
-                    createdItem.eMessage = "Registo criado com sucesso";
+                    if (createdItem.Id == null || createdItem.Id == "")
+                    {
+                        createdItem.eReasonCode = 2;
+                        createdItem.eMessage = "Erro ao criar o registo, Id vazio!";
+                    }
+                    else
+                    {
+                        createdItem.eReasonCode = 1;
+                        createdItem.eMessage = "Registo criado com sucesso";
+                    }
                     item = createdItem;
                 }
                 else
@@ -174,22 +182,29 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] BillingReceptionModel data)
         {
+            ConfigUtilizadores user = DBUserConfigurations.GetById(User.Identity.Name);
             //Get Project Numeration
-            int Cfg = (int)DBUserConfigurations.GetById(User.Identity.Name).PerfilNumeraçãoRecDocCompras;
-
-            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
-
-            //Validate if ProjectNo is valid
-            if (!(data.Id == "" || data.Id == null) && !CfgNumeration.Manual.Value)
+            if (user.PerfilNumeraçãoRecDocCompras != null)
             {
-                return Json("A numeração configurada para contratos não permite inserção manual.");
+                int Cfg = (int)user.PerfilNumeraçãoRecDocCompras;
+                ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(Cfg);
+
+                //Validate if ProjectNo is valid
+                if (!(data.Id == "" || data.Id == null) && !CfgNumeration.Manual.Value)
+                {
+                    return Json("A numeração configurada para contratos não permite inserção manual.");
+                }
+                else if (data.Id == "" && !CfgNumeration.Automático.Value)
+                {
+                    return Json("É obrigatório inserir o Nº de Contrato.");
+                }
+                return Json("");
             }
-            else if (data.Id == "" && !CfgNumeration.Automático.Value)
-            {
-                return Json("É obrigatório inserir o Nº de Contrato.");
+            else {
+                return Json("É obrigatório a configuração Perfil de Numeração no utilizador.");
             }
 
-            return Json("");
+              
         }
         [HttpPost]
         public JsonResult UpdateBillingList([FromBody] List<BillingReceptionModel> items)
