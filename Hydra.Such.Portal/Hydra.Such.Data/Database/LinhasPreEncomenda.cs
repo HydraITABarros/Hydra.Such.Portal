@@ -24,10 +24,10 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
-        public int? DocumentoACriar { get; set; }
-        public bool? CriarDocumento { get; set; }
+        public bool CriarDocumento { get; set; }
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }
-        public bool? Tratada { get; set; }
+        public bool Tratada { get; set; }
+        public int? DocumentoACriar { get; set; }
     }
 }

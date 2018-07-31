@@ -260,7 +260,7 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Cabeçalho</div>
+                        <!--<div class="panel-heading">Cabeçalho</div>-->
                         <div class="panel-body">
 
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -423,7 +423,7 @@
                                                     <div class="panel-body">
                                                         <div class="row break_clear">
                                                             <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -445,7 +445,7 @@
                                                         </div>
                                                         <div class="row break_clear">
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
@@ -2200,11 +2200,11 @@
                         //this.$.mPaymentTerms.validate() &
                         this.$.mStartDateFirstContract.validate() &
                         this.$.mFirstContractReference.validate() &
-                        this.$.mClientRequisitionNo.validate() &
+                        //this.$.mClientRequisitionNo.validate() &
                         this.$.mPromiseNo.validate() &
                         this.$.mStartData.validate() &
                         this.$.mStatus.validate() &
-                        this.$.mReceiptDateRequisition.validate() &
+                        //this.$.mReceiptDateRequisition.validate() &
                         this.$.versionNo.validate() &
                         this.$.dueDate.validate() &
                         this.$.mChangeStatus.validate() &

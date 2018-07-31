@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
    public class DBNAV2017OpenOrderLines
     {
-        public static List<NAVOpenOrderLinesViewModels> GetAll(string NAVDatabaseName, string NAVCompanyName, DateTime? Date, string PurchaseHeaderNo)
+        public static List<NAVOpenOrderLinesViewModels> GetAll(string NAVDatabaseName, string NAVCompanyName, string Date, string PurchaseHeaderNo,string codFuncitonalArea)
         {
             List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
             try
@@ -17,14 +17,17 @@ namespace Hydra.Such.Data.Logic
                
                 using (var ctx = new SuchDBContextExtention())
                 {
+                    string purhNo = string.IsNullOrEmpty(PurchaseHeaderNo) ? "" : PurchaseHeaderNo;
+                    string codFunc = string.IsNullOrEmpty(codFuncitonalArea) ? "" : codFuncitonalArea;
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@DateSupplierPrice", Date),
-                        new SqlParameter("@PurchaseHeaderNo", PurchaseHeaderNo)
+                        new SqlParameter("@FunctionalAreaCode", codFunc),
+                        new SqlParameter("@PurchaseHeaderNo", purhNo),
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice, @PurchaseHeaderNo", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice, @FunctionalAreaCode,@PurchaseHeaderNo", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -147,9 +150,10 @@ namespace Hydra.Such.Data.Logic
                                 ContractEndingDate = (DateTime)temp.ContractEndingDate
                             });
                     }
+                    return result;
                 }
 
-                return result;
+               
             }
             catch (Exception ex)
             {

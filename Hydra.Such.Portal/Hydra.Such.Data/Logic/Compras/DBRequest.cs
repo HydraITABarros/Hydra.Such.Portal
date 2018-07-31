@@ -159,22 +159,6 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetAllModelRequest()
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.Requisição.Where(x=> x.ModeloDeRequisição ==true).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-
         public static List<Requisição> GetByProcedimento(string procedimentoNo)
         {
             try
@@ -192,21 +176,6 @@ namespace Hydra.Such.Data.Logic.Request
 
         #endregion
 
-        public static List<Requisição> GetReqModel()
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.Requisição.Where(x => x.ModeloDeRequisição == true).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public static List<Requisição> GetReqByUserAreaStatus(string userName, RequisitionStates status)
         {
             return GetReqByUserAreaStatus(userName, new List<RequisitionStates> { status });
@@ -220,7 +189,7 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     var statusValues = status.Cast<int>().ToList();
                     
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value)).ToList();
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -234,8 +203,7 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 using (var ctx = new SuchDBContext())
                 {
-
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName).ToList();
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -320,6 +288,8 @@ namespace Hydra.Such.Data.Logic.Request
                     RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     //dimension = item.,
                     //Budget = item.,
+                    InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
+                    PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
                 };
@@ -412,6 +382,8 @@ namespace Hydra.Such.Data.Logic.Request
                     DataRequisição = item.RequisitionDate != null && item.RequisitionDate != "" ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
+                    Adiantamento = item.InAdvance.HasValue ? item.InAdvance.Value : false,
+                    PrecoIvaincluido = item.PricesIncludingVAT.HasValue ? item.PricesIncludingVAT.Value : false,
                     LinhasRequisição = item.Lines.ParseToDB(),
                     RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                 };

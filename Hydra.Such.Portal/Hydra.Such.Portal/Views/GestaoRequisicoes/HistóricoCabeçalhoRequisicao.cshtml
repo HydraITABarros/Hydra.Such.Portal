@@ -1,11 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "HistóricoCabeçalhoRequisicao";
+    ViewData["Title"] = "Detalhes de Requisição - Histórico";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link rel="import" href="~/elements/requisitions/requisitiondetails.html">
-<h1 class="title">Histórico de Requisições</h1>
 
 <x-requisitiondetails _requisitionid="@ViewBag.RequisitionId"
                       _requisitionstatus="@ViewBag.ArchivedRequisitionEnumValue"

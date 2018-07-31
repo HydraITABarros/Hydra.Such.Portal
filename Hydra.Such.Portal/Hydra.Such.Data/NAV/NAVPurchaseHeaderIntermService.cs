@@ -42,6 +42,10 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
                     Mercado_Local_Regiao = (WSPurchaseInvHeader.Mercado_Local_Regiao)localMarketRegion,
                     Mercado_Local_RegiaoSpecified = true,
+                    Down_Payment = purchFromSupplier.InAdvance.HasValue ? purchFromSupplier.InAdvance.Value : false,
+                    Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
+                    Prices_Including_VAT = purchFromSupplier.PricesIncludingVAT.HasValue ? purchFromSupplier.PricesIncludingVAT.Value : false,
+                    Prices_Including_VATSpecified = purchFromSupplier.PricesIncludingVAT.HasValue,
                 }
             };
             

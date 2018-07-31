@@ -648,7 +648,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetReqModelList()
         {
             List<Requisição> RequisitionModel = null;
-            RequisitionModel = DBRequest.GetReqModel();
+            RequisitionModel = DBRequestTemplates.GetAll();
 
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
@@ -656,13 +656,13 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
             return Json(result);
         }
-
+        
         public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
             ErrorHandler result = new ErrorHandler()
             {
-                eMessage = "Linhas copiadas com sucesso.",
-                eReasonCode = 1,
+                eMessage = "Ocorreu um erro ao copiar as linhas",
+                eReasonCode = 2,
             };
             Projetos project = null;
             if (!string.IsNullOrEmpty(req.ProjectNo))
@@ -671,46 +671,62 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
+
             if (reqLines != null)
             {
-                List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
-                reqLines.ForEach(x =>
+                if (reqLines.Count > 0)
                 {
-                    LinhasPréRequisição newline = new LinhasPréRequisição();
+                    reqLines.UpdateAgreedPrices();
 
-                    newline.NºPréRequisição = req.PreRequisitionNo;
-                    newline.CódigoLocalização = x.LocalCode;
-                    newline.CódigoProdutoFornecedor = x.SupplierProductCode;
-                    newline.Código = x.Code;
-                    newline.Descrição = x.Description;
-                    newline.CódigoUnidadeMedida = x.UnitMeasureCode;
-                    newline.QuantidadeARequerer = x.QuantityToRequire;
-                    newline.CustoUnitário = x.UnitCost;
-                    newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                    newline.Viatura = x.Vehicle;
-                    newline.NºFornecedor = x.SupplierNo;
-                    newline.NºEncomendaAberto = x.OpenOrderNo;
-                    newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
-                    newline.NºProjeto = x.ProjectNo;
-                    if (project != null)
+                    List <LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                    reqLines.ForEach(x =>
                     {
-                        newline.CódigoRegião = project.CódigoRegião;
-                        newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                        newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        LinhasPréRequisição newline = new LinhasPréRequisição();
+
+                        newline.NºPréRequisição = req.PreRequisitionNo;
+                        newline.CódigoLocalização = x.LocalCode;
+                        newline.CódigoProdutoFornecedor = x.SupplierProductCode;
+                        newline.Código = x.Code;
+                        newline.Descrição = x.Description;
+                        newline.CódigoUnidadeMedida = x.UnitMeasureCode;
+                        newline.QuantidadeARequerer = x.QuantityToRequire;
+                        newline.CustoUnitário = x.UnitCost;
+                        newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                        newline.Viatura = x.Vehicle;
+                        newline.NºFornecedor = x.SupplierNo;
+                        newline.NºEncomendaAberto = x.OpenOrderNo;
+                        newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+                        newline.NºProjeto = x.ProjectNo;
+                        if (project != null)
+                        {
+                            newline.CódigoRegião = project.CódigoRegião;
+                            newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                            newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        }
+                        else
+                        {
+                            newline.CódigoRegião = x.RegionCode;
+                            newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                            newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                        }
+                        preReqLines.Add(newline);
+                    });
+
+                    if (DBPreRequesitionLines.CreateMultiple(preReqLines))
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Linhas copiadas com sucesso.";
                     }
                     else
                     {
-                        newline.CódigoRegião = x.RegionCode;
-                        newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                        newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
-                    }                    
-                    preReqLines.Add(newline);
-                });
-
-                if (!DBPreRequesitionLines.CreateMultiple(preReqLines))
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    }
+                }
+                else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    result.eMessage = "O modelo de requisição não tem linhas";
                 }
             }
             else
@@ -938,7 +954,7 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-
+                    
                     //Set VATPostingGroup Info
                     newlistOpenOrder.ForEach(header =>
                     {
@@ -947,7 +963,7 @@ namespace Hydra.Such.Portal.Controllers
                             line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                         });
                     });
-                
+                    
                     data = CreateRequesition(newlistOpenOrder, data);
                     
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
@@ -1086,10 +1102,10 @@ namespace Hydra.Such.Portal.Controllers
                             try
                             {
                                 string FileName = file.UrlAnexo;
-                                string NewFileName = FileName.Substring(FileName.IndexOf('_'));
+                                string NewFileName = createReq.NºRequisição + FileName.Substring(FileName.IndexOf('_'));
                                 try
                                 {
-                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
+                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1101,7 +1117,13 @@ namespace Hydra.Such.Portal.Controllers
                                 CopyFile.CreateUser = User.Identity.Name;
                                 CopyFile.DocType = 2;
                                 CopyFile.Url = NewFileName;
-                                DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                if(newFile != null)
+                                {
+                                    System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    DBAttachments.Delete(file);
+                                }
+
                             }
                             catch (Exception ex)
                             {
@@ -1118,7 +1140,7 @@ namespace Hydra.Such.Portal.Controllers
                         //createdReqIds += RequisitionNo + "; ";
                         var totalValue = req.GetTotalValue();
                         //Start Approval
-                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name);
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
@@ -1141,21 +1163,23 @@ namespace Hydra.Such.Portal.Controllers
                 }
                
             }
-            //if (newlist.Count > 0 && totalItems == newlist.Count)
-            //{
-            //    //if all items have been created delete pre-requisition lines
-            //    DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-            //    //data.eMessage += createdReqIds;
-            //    //if (data.eMessages.Count > 0)
-            //    //{
-            //    //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
-            //    //}
-            //}
-            //else
-            //{
-            //    data.eReasonCode = 0;
-            //    data.eMessage = "Ocorreu um erro ao criar a requisição.";
-            //}
+            if (newlist.Count > 0 && totalItems == newlist.Count)
+            {
+                //if all items have been created delete pre-requisition lines
+                
+
+                DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                //data.eMessage += createdReqIds;
+                //if (data.eMessages.Count > 0)
+                //{
+                //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                //}
+            }
+            else
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
+            }
 
             return data;
         }
@@ -1185,11 +1209,11 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (String.IsNullOrEmpty(Error))
                 {
-                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
-                        ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                        //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                     }
                 }
                 else
@@ -1200,11 +1224,11 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
                 if (ApprovalMovResult.eReasonCode != 100)
                 {
                     ApprovalMovResult.eReasonCode = 2;
-                    ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                 }
             }
 
@@ -1283,7 +1307,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

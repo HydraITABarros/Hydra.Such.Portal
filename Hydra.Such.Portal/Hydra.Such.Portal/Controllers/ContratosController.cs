@@ -469,7 +469,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Verify if contract have Invoices Or Projects
-                    bool haveContracts = DBContracts.GetAllByContractNo(data.ContractNo).Count > 0;
+                    bool haveContracts = DBProjects.GetByContract(data.ContractNo).Count > 0;
                     bool haveInvoices = DBContractInvoices.GetByContractNo(data.ContractNo).Count > 0;
 
                     if (haveContracts || haveInvoices)

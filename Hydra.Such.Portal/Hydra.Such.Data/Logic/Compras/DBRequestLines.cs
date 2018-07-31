@@ -161,6 +161,37 @@ namespace Hydra.Such.Data.Logic.Request
         }
         #endregion
 
+        #region Logic extensions
+        public static void UpdateAgreedPrices(this List<RequisitionLineViewModel> reqLines)
+        {
+            if (reqLines == null || reqLines.Count == 0)
+                return;
+
+            List<LinhasAcordoPrecos> acordosPrecos = null;
+
+            using (var ctx = new SuchDBContext())
+            {
+                acordosPrecos = ctx.LinhasAcordoPrecos
+                    .Where(x => reqLines.Select(y => y.SupplierNo).Distinct().Contains(x.NoFornecedor)
+                                && x.DtValidadeInicio <= DateTime.Now
+                                && x.DtValidadeFim >= DateTime.Now)
+                    .ToList();
+            }
+            if (acordosPrecos.Count > 0)
+            {
+                for (int i = 0; i < reqLines.Count; i++)
+                {
+                    var acordo = acordosPrecos.FirstOrDefault(x => x.NoFornecedor == reqLines[i].SupplierNo && x.CodProduto == reqLines[i].Code);
+                    if (acordo != null)
+                    {
+                        if (acordo.CustoUnitario.HasValue)
+                            reqLines[i].UnitCost = acordo.CustoUnitario.Value;
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Parse Utilities
         public static RequisitionLineViewModel ParseToViewModel(this LinhasRequisição item)
         {
@@ -175,7 +206,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Description = item.Descrição,
                     UnitMeasureCode = item.CódigoUnidadeMedida,
                     LocalCode = item.CódigoLocalização,
-                    LocalMarket = item.MercadoLocal,
+                    LocalMarket = item.MercadoLocal == null ? false : item.MercadoLocal,
                     QuantityToRequire = item.QuantidadeARequerer,
                     QuantityRequired = item.QuantidadeRequerida,
                     QuantityToProvide = item.QuantidadeADisponibilizar,
@@ -185,7 +216,7 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantityPending = item.QuantidadePendente,
                     UnitCost = item.CustoUnitário,
                     ExpectedReceivingDate = !item.DataReceçãoEsperada.HasValue ? "" : item.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
-                    Billable = item.Faturável,
+                    Billable = item.Faturável == null ? false : item.Faturável,
                     ProjectNo = item.NºProjeto,
                     RegionCode = item.CódigoRegião,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
@@ -200,15 +231,15 @@ namespace Hydra.Such.Data.Logic.Request
                     UnitCostsould = item.PreçoUnitárioVenda,
                     BudgetValue = item.ValorOrçamento,
                     MaintenanceOrderLineNo = item.NºLinhaOrdemManutenção,
-                    CreateMarketSearch = item.CriarConsultaMercado,
-                    SubmitPrePurchase = item.EnviarPréCompra,
-                    SendPrePurchase = item.EnviadoPréCompra,
+                    CreateMarketSearch = item.CriarConsultaMercado == null ? false : item.CriarConsultaMercado,
+                    SubmitPrePurchase = item.EnviadoPréCompra == null ? false : item.EnviadoPréCompra,
+                    SendPrePurchase = item.EnviarPréCompra == null ? false : item.EnviarPréCompra,
                     LocalMarketDate = !item.DataMercadoLocal.HasValue ? "" : item.DataMercadoLocal.Value.ToString("yyyy-MM-dd"),
                     LocalMarketUser = item.UserMercadoLocal,
-                    SendForPurchase = item.EnviadoParaCompras,
+                    SendForPurchase = item.EnviadoParaCompras == null ? false : item.EnviadoParaCompras,
                     SendForPurchaseDate = !item.DataEnvioParaCompras.HasValue ? "" : item.DataEnvioParaCompras.Value.ToString("yyyy-MM-dd"),
-                    PurchaseValidated = item.ValidadoCompras,
-                    PurchaseRefused = item.RecusadoCompras,
+                    PurchaseValidated = item.ValidadoCompras == null ? false : item.ValidadoCompras,
+                    PurchaseRefused = item.RecusadoCompras == null ? false : item.RecusadoCompras,
                     ReasonToRejectionLocalMarket = item.MotivoRecusaMercLocal,
                     RejectionLocalMarketDate = !item.DataRecusaMercLocal.HasValue ? "" : item.DataRecusaMercLocal.Value.ToString("yyyy-MM-dd"),
                     PurchaseId = item.IdCompra,
@@ -223,7 +254,8 @@ namespace Hydra.Such.Data.Logic.Request
                     CustomerNo = item.NºCliente,
                     Approvers = item.Aprovadores,
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
-                    VATProductPostingGroup = item.GrupoRegistoIvaproduto
+                    VATProductPostingGroup = item.GrupoRegistoIvaproduto,
+                    DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
                 };
             }
             return null;
@@ -251,7 +283,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Descrição = item.Description,
                     CódigoUnidadeMedida = item.UnitMeasureCode,
                     CódigoLocalização = item.LocalCode,
-                    MercadoLocal = item.LocalMarket,
+                    MercadoLocal = item.LocalMarket == null ? false : item.LocalMarket,
                     QuantidadeARequerer = item.QuantityToRequire,
                     QuantidadeRequerida = item.QuantityRequired,
                     QuantidadeADisponibilizar = item.QuantityToProvide,
@@ -261,7 +293,7 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantidadePendente = item.QuantityPending,
                     CustoUnitário = item.UnitCost,
                     DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceivingDate),
-                    Faturável= item.Billable,
+                    Faturável= item.Billable == null ? false : item.Billable,
                     NºProjeto = item.ProjectNo,
                     CódigoRegião= item.RegionCode,
                     CódigoÁreaFuncional = item.FunctionalAreaCode,
@@ -276,15 +308,15 @@ namespace Hydra.Such.Data.Logic.Request
                     PreçoUnitárioVenda = item.UnitCostsould,
                     ValorOrçamento = item.BudgetValue,
                     NºLinhaOrdemManutenção = item.MaintenanceOrderLineNo,
-                    CriarConsultaMercado = item.CreateMarketSearch,
-                    EnviarPréCompra = item.SendPrePurchase,
-                    EnviadoPréCompra = item.SubmitPrePurchase,
+                    CriarConsultaMercado = item.CreateMarketSearch == null ? false : item.CreateMarketSearch,
+                    EnviarPréCompra = item.SendPrePurchase == null ? false : item.SendPrePurchase,
+                    EnviadoPréCompra = item.SubmitPrePurchase == null ? false : item.SubmitPrePurchase,
                     DataMercadoLocal = string.IsNullOrEmpty(item.LocalMarketDate) ? (DateTime?)null : DateTime.Parse(item.LocalMarketDate),
                     UserMercadoLocal = item.LocalMarketUser,
-                    EnviadoParaCompras= item.SendForPurchase,
+                    EnviadoParaCompras= item.SendForPurchase == null ? false : item.SendForPurchase,
                     DataEnvioParaCompras = string.IsNullOrEmpty(item.SendForPurchaseDate) ? (DateTime?)null : DateTime.Parse(item.SendForPurchaseDate),
-                    ValidadoCompras = item.PurchaseValidated,
-                    RecusadoCompras = item.PurchaseRefused,
+                    ValidadoCompras = item.PurchaseValidated == null ? false : item.PurchaseValidated,
+                    RecusadoCompras = item.PurchaseRefused == null ? false : item.PurchaseRefused,
                     MotivoRecusaMercLocal = item.ReasonToRejectionLocalMarket,
                     DataRecusaMercLocal = string.IsNullOrEmpty(item.RejectionLocalMarketDate) ? (DateTime?)null : DateTime.Parse(item.RejectionLocalMarketDate),
                     IdCompra= item.PurchaseId,
@@ -299,7 +331,8 @@ namespace Hydra.Such.Data.Logic.Request
                     NºCliente= item.CustomerNo,
                     Aprovadores= item.Approvers,
                     GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
-                    GrupoRegistoIvaproduto = item.VATProductPostingGroup
+                    GrupoRegistoIvaproduto = item.VATProductPostingGroup,
+                    PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : 0,
                 };
             }
             return null;

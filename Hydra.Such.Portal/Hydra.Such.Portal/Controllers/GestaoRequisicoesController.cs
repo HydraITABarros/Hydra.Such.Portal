@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -665,7 +667,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
 
-        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType)
+        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType, string reason)
         {
             if (item != null)
             {
@@ -758,12 +760,13 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                item.Lines = productsInStock;
+                                var reqToUpdate = item;
+                                reqToUpdate.Lines = productsInStock;
 
-                                item.State = RequisitionStates.Available;
-                                item.UpdateUser = User.Identity.Name;
-                                item.UpdateDate = DateTime.Now;
-                                RequisitionViewModel updatedRequisition = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                reqToUpdate.State = RequisitionStates.Available;
+                                reqToUpdate.UpdateUser = User.Identity.Name;
+                                reqToUpdate.UpdateDate = DateTime.Now;
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
                                 if (updatedRequisition == null)
                                 {
                                     item.eReasonCode = 9;
@@ -771,6 +774,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
+                                    item = updatedRequisition;
                                     item.eReasonCode = 1;
                                     item.eMessage = "A Requisição está disponivel";
                                 }
@@ -863,6 +867,11 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eReasonCode = 12;
                                 item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
                             }
+                            else if (productsToHandle.Count == 0)
+                            {
+                                item.eReasonCode = 13;
+                                item.eMessage = item.eMessage = "Não é possivel receber: Os produtos não existem em stock.";
+                            }
                             else
                             {
                                 Guid transactionId = Guid.NewGuid();
@@ -908,103 +917,6 @@ namespace Hydra.Such.Portal.Controllers
                                     item.eReasonCode = 9;
                                     item.eMessage = "Ocorreu um erro: " + ex.Message;
                                 }
-
-
-
-                                //item.Lines = productsInStock;
-
-                                //item.State = RequisitionStates.Received;
-                                //item.UpdateUser = User.Identity.Name;
-                                //item.UpdateDate = DateTime.Now;
-                                //RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                //if (rValidation == null)
-                                //{
-                                //    item.eReasonCode = 9;
-                                //    item.eMessage = "Ocorreu um erro ao alterar a requisição";
-                                //}
-
-                                //if (prodNotStockkeepUnit != "")
-                                //{
-                                //    item.eReasonCode = 7;
-                                //    item.eMessage = " O produtos " + prodNotStockkeepUnit +
-                                //                    " não existem nas unidades de armazenamento do NAV";
-                                //}
-                                //else
-                                //{
-                                //Criar diário de projeto. A aguardar especificação 
-                                //foreach (RequisitionLineViewModel RLItem in getrlines)
-                                //{
-                                //    DiárioDeProjeto newRL = new DiárioDeProjeto();
-                                //    DiárioDeProjeto newdp = new DiárioDeProjeto()
-                                //    {
-                                //        NºProjeto = item.ProjectNo,
-                                //        Data = DateTime.Now,
-                                //        Tipo = RLItem.Type,
-                                //        Código = RLItem.Code,
-                                //        Descrição = RLItem.Description,
-                                //        Quantidade = RLItem.QuantityReceivable,
-                                //        CódUnidadeMedida = RLItem.UnitMeasureCode,
-                                //        CódLocalização = item.LocalCode,
-                                //        CódigoRegião = item.RegionCode,
-                                //        CódigoÁreaFuncional = item.FunctionalAreaCode,
-                                //        CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
-                                //        Utilizador =User.Identity.Name,
-                                //        CustoUnitário = RLItem.UnitCost,
-                                //        PreçoUnitário = RLItem.UnitCostsould,
-                                //        Faturável = RLItem.Billable,
-                                //        NºRequisição = item.RequisitionNo,
-                                //        NºLinhaRequisição = RLItem.LineNo,
-                                //        AcertoDePreços = false,
-                                //        FaturaçãoAutorizada = false,
-                                //        NºFuncionário = item.EmployeeNo,
-                                //        Registado =false,
-                                //        Faturada = false,
-                                //    };
-                                //    newdp.DataHoraCriação = DateTime.Now;
-                                //    newdp.UtilizadorCriação = User.Identity.Name;
-                                //    newRL = DBProjectDiary.Create(newdp);
-                                //    if (newRL == null)
-                                //    {
-                                //        if (ReqLineNotCreateDP == "")
-                                //        {
-                                //            ReqLineNotCreateDP = item.RequisitionNo;
-                                //        }
-                                //        else
-                                //        {
-                                //            ReqLineNotCreateDP = ReqLineNotCreateDP + " , " + item.RequisitionNo;
-                                //        }
-                                //    }
-                                //    else
-                                //    {
-                                //        if ((RLItem.QuantityRequired - RLItem.QuantityReceived) == 0 )
-                                //        {
-                                //            ReqLinesToHistCount++;
-                                //        }
-                                //    }
-                                //}
-                                //if (ReqLineNotCreateDP != "")
-                                //{
-                                //    item.eReasonCode = 15;
-                                //    item.eMessage =
-                                //        "As linhas " + ReqLineNotCreateDP +
-                                //        " não passaram para os diarios de projeto";
-                                //}
-                                //else
-                                //{
-                                //    if (ReqLinesToHistCount == getrlines.Count)
-                                //    {
-                                //        item.State = RequisitionStates.Archived;
-                                //        item.UpdateUser = User.Identity.Name;
-                                //        item.UpdateDate = DateTime.Now;
-                                //        RequisitionViewModel reqtoArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
-                                //        if (reqtoArchived == null)
-                                //        {
-                                //            item.eReasonCode = 14;
-                                //            item.eMessage = "Ocorreu um erro ao mandar para o histórico";
-                                //        }
-                                //    }
-                                //}
-                                //}
                             }
                         }
                         else
@@ -1020,32 +932,45 @@ namespace Hydra.Such.Portal.Controllers
                     case "Anular Aprovacao":
                         if (item.State == RequisitionStates.Approved)
                         {
-                            item.State = RequisitionStates.Pending;
-                            item.ResponsibleApproval = "";
-                            item.ApprovalDate = null;
-                            item.UpdateUser = User.Identity.Name;
-                            item.UpdateDate = DateTime.Now;
-                            RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                            if (reqPend != null)
+                            ErrorHandler ApprovalMovResult = new ErrorHandler();
+                            ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
+                            if (ApprovalMovResult.eReasonCode != 100)
                             {
-                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
-                                foreach (RequisitionLineViewModel rlines in getrlines)
-                                {
-                                    rlines.QuantityRequired = null;
-                                    rlines.UpdateUser = User.Identity.Name;
-                                    rlines.UpdateDateTime = DateTime.Now;
-                                    RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
-                                    if (rlinesValidation == null)
-                                    {
-                                        item.eReasonCode = 5;
-                                        item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
-                                    }
-                                }
+                                item.eReasonCode = 4;
+                                item.eMessage = ApprovalMovResult.eMessage;
+                                //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
                             }
                             else
                             {
-                                item.eReasonCode = 4;
-                                item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                                item.State = RequisitionStates.Pending;
+                                item.ResponsibleApproval = "";
+                                item.ApprovalDate = null;
+                                item.UpdateUser = User.Identity.Name;
+                                item.UpdateDate = DateTime.Now;
+                                item.Comments += reason;
+                                RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                if (reqPend != null)
+                                {
+                                    List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
+                                    foreach (RequisitionLineViewModel rlines in getrlines)
+                                    {
+                                        rlines.QuantityRequired = null;
+                                        rlines.UpdateUser = User.Identity.Name;
+                                        rlines.UpdateDateTime = DateTime.Now;
+                                        RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                        if (rlinesValidation == null)
+                                        {
+                                            item.eReasonCode = 5;
+                                            item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    item.eReasonCode = 4;
+                                    item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                                }
                             }
                         }
                         else
@@ -1287,6 +1212,90 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult AprovarRequisition([FromBody] RequisitionViewModel requisition)
+        {
+            if (requisition != null)
+            {
+                //Get Requistion Lines
+                if (requisition.Lines.Count > 0)
+                {
+                    //Check if requisition have Request Nutrition a false and all lines have ProjectNo
+                    if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
+                    {
+                        ErrorHandler approvalResult = new ErrorHandler();
+
+                        //Approve Movement
+                        MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 1 && x.CódigoÁreaFuncional == requisition.FunctionalAreaCode &&
+                            x.CódigoRegião == requisition.RegionCode && x.CódigoCentroResponsabilidade == requisition.CenterResponsibilityCode && x.Número == requisition.RequisitionNo &&
+                            x.Estado == 1).FirstOrDefault();
+
+                        if (approvalMovement != null)
+                            approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.NºMovimento, User.Identity.Name);
+                        else
+                        {
+                            requisition.eReasonCode = 175;
+                            requisition.eMessage = "Não existe movimento de Aprovação.";
+                        }
+
+                        //Check Approve Status
+                        if (approvalResult.eReasonCode == 103)
+                        {
+                            //Update Requisiton Data
+                            requisition.State = RequisitionStates.Approved;
+                            requisition.ResponsibleApproval = User.Identity.Name;
+                            requisition.ApprovalDate = DateTime.Now;
+                            requisition.UpdateDate = DateTime.Now;
+                            requisition.UpdateUser = User.Identity.Name;
+                            DBRequest.Update(requisition.ParseToDB());
+
+                            //Update Requisition Lines Data
+                            requisition.Lines.ForEach(line =>
+                            {
+                                if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                {
+                                    line.QuantityRequired = line.QuantityToRequire;
+                                    DBRequestLine.Update(line.ParseToDB());
+                                }
+                            });
+
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "A requisição foi aprovada com sucesso.";
+                        }
+                        else if (approvalResult.eReasonCode == 100)
+                        {
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                        }
+                        else
+                        {
+                            requisition.eReasonCode = 199;
+                            requisition.eMessage = "Ocorreu um erro desconhecido ao aprovar a requisição.";
+                        }
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 202;
+                        requisition.eMessage = "Todas as linhas necessitam de possuir NºOrdem/Projeto.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 201;
+                    requisition.eMessage = "A requisição não possui linhas.";
+                }
+            }
+            else
+            {
+                requisition = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(requisition);
+        }
+
+        [HttpPost]
 
         public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
         {
@@ -1457,7 +1466,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (requisition != null)
                 {
                     var totalValue = requisition.GetTotalValue();
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name);
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name, "");
                 }
             }
             else

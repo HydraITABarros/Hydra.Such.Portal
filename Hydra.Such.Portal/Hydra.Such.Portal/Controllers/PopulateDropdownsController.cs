@@ -309,41 +309,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult OpenOrderLines([FromBody] DateTime? date)
+        public JsonResult OpenOrderLines([FromBody] DateTime date)
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
+            string data = date.ToString();
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data, "", "50").ToList();
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
-        {
-            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
-            try
-            {
-                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
-                if (result != null && result.Count > 0 &&
-                    !string.IsNullOrEmpty(documentNO) &&
-                    !string.IsNullOrEmpty(numb)
-                    && LineNo > 0)
-                {
-                    foreach (NAVOpenOrderLinesViewModels item in result)
-                    {
-                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
-                        {
-                            getorderline = item;
-                        }
-                    }
-                }
-                return Json(getorderline);
-            }
-            catch (Exception e)
-            {
-                return Json(getorderline);
-            }
-
-        }
+       
 
         [HttpPost]
         public JsonResult GetPurchaseHeader([FromBody] string respcenter)
@@ -368,20 +341,72 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
+        public JsonResult GetpriceAgreementByDate([FromBody] DateTime date,string area)
         {
-            DateTime date = DateTime.Now;
+            
+            try
+            {
+                if (area.Length <= 1)
+                {
+                    area = "0" + area;
+                }
+                List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
+                result = DBLinhasAcordoPrecos.GetAllByDateArea("10", date).ToList();
+                if (result != null && result.Count > 0)
+                {
+                    return Json(result);
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+     
+
+        [HttpPost]
+        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
+        {
+            string data = date.ToString();
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
-                List<DDMessageRelated> result = new List<DDMessageRelated>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, PurchaseHeaderNo).Select(x => new DDMessageRelated()
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data, "", "50").ToList();
+                if (result != null && result.Count > 0 &&
+                    !string.IsNullOrEmpty(documentNO) &&
+                    !string.IsNullOrEmpty(numb)
+                    && LineNo > 0)
                 {
-                    id = x.Line_No.ToString(),
-                    value = x.BuyFromVendorNo,
-                    extra = x.OutstandingQtyBase.ToString("n2"),
-                    extra2 = x.ProdOrderNo
-                }).ToList(); ;
+                    foreach (NAVOpenOrderLinesViewModels item in result)
+                    {
+                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
+                        {
+                            getorderline = item;
+                        }
+                    }
+                }
+                return Json(getorderline);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
+        }
+        [HttpPost]
+        public JsonResult getOpenOrderLineByHeader([FromBody] string codFuncArea)
+        {
+            string date = DateTime.Now.ToString();
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea);
+         
+
                 return Json(result);
 
             }
@@ -1213,6 +1238,20 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        public JsonResult GetPriceAgreementLines([FromBody]string Area,DateTime DataFornecedor)
+        {
+            List<LinhasAcordoPrecos> LinhasAcordoPrecos = DBLinhasAcordoPrecos.GetAll().ToList();
+ 
+            List<DDMessageString> result = LinhasAcordoPrecos.Where(x=> x.Area == Area && x.DtValidadeInicio== DataFornecedor).Select(x => new DDMessageString()
+            {
+                id = x.NoProcedimento,
+                value = x.DescricaoProduto
+            }).ToList();
+
+            return Json(result);
+        }
+
         // zpgm.<populate dropdowns to use in Procedimentos CCP 
         [HttpPost]
         public JsonResult GetPocedimentosCcpProcedimentoType()
@@ -1307,7 +1346,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
+       
 
         [HttpPost]
         public JsonResult GetNutritionCoffeShopTypes()

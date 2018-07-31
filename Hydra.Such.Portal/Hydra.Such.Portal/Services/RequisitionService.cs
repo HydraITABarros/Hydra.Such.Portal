@@ -115,6 +115,8 @@ namespace Hydra.Such.Portal.Services
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
                                 LocalMarketRegion = requisition.LocalMarketRegion,
+                                InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
+                                PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
                                 Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
@@ -132,7 +134,8 @@ namespace Hydra.Such.Portal.Services
                                     RegionCode = line.RegionCode,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     VATBusinessPostingGroup = line.VATBusinessPostingGroup,
-                                    VATProductPostingGroup = line.VATProductPostingGroup
+                                    VATProductPostingGroup = line.VATProductPostingGroup,
+                                    DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
                                 })
                                 .ToList()
                             })
@@ -229,6 +232,8 @@ namespace Hydra.Such.Portal.Services
                                     FunctionalAreaCode = requisition.FunctionalAreaCode,
                                     RegionCode = requisition.RegionCode,
                                     LocalMarketRegion = requisition.LocalMarketRegion,
+                                    InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
+                                    PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {
                                         LineId = line.LineNo,
@@ -246,7 +251,8 @@ namespace Hydra.Such.Portal.Services
                                         RegionCode = line.RegionCode,
                                         UnitMeasureCode = line.UnitMeasureCode,
                                         VATBusinessPostingGroup = line.VATBusinessPostingGroup,
-                                        VATProductPostingGroup = line.VATProductPostingGroup
+                                        VATProductPostingGroup = line.VATProductPostingGroup,
+                                        DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
                                     })
                                     .ToList()
                                 })
@@ -329,8 +335,8 @@ namespace Hydra.Such.Portal.Services
                 //use for later database update
                 var requisitionLines = requisition.Lines
                     .Where(x =>
-                        x.SubmitPrePurchase != null
-                        && x.SubmitPrePurchase.Value)
+                        x.SendPrePurchase.Value == true  //Enviar Pré Compra
+                        && (x.SubmitPrePurchase == null || x.SubmitPrePurchase.Value == false))  //Enviado Pré Compra
                     .ToList();
 
                 var prePurchOrderLines = requisitionLines
@@ -361,7 +367,7 @@ namespace Hydra.Such.Portal.Services
                         //Update Requisition Lines
                         requisitionLines.ForEach(line =>
                         {
-                            line.SendPrePurchase = true;
+                            line.SubmitPrePurchase = true;
                             line.UpdateUser = this.changedByUserName;
                         });
 

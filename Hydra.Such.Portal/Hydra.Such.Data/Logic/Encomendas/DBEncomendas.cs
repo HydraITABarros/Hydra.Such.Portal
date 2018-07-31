@@ -99,15 +99,15 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 QuantidadeDisponibilizada = ObjectToTransform.QuantidadeDisponibilizada,
                 UtilizadorCriacao = ObjectToTransform.UtilizadorCriação,
                 UtilizadorModificacao = ObjectToTransform.UtilizadorModificação,
-                //DocumentoaCriar = ObjectToTransform.DocumentoaCriar,
-                //CriarDocumento = ObjectToTransform.CriarDocumento,
+                DocumentoACriar = ObjectToTransform.DocumentoACriar,
+                CriarDocumento = ObjectToTransform.CriarDocumento,
                 NumEncomendaAberto = ObjectToTransform.NºEncomendaAberto,
                 NumLinhaEncomendaAberto = ObjectToTransform.NºLinhaEncomendaAberto,
-               // Tratada = ObjectToTransform.Tratada,
+                Tratada = ObjectToTransform.Tratada,
                 DataHoraCriacao_Show = ObjectToTransform.DataHoraCriação == null ? "" : ObjectToTransform.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
                 DataHoraModificacao_Show = ObjectToTransform.DataHoraModificação == null ? "" : ObjectToTransform.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                 NomeFornecedor_Show = _fornecedor,
-                //DocumentoaCriar_Show = ObjectToTransform.DocumentoaCriar == null ? "" : ObjectToTransform.DocumentoaCriar == 0 ? "Consulta Mercado" : "Encomenda"
+                DocumentoACriar_Show = ObjectToTransform.DocumentoACriar == null ? "" : ObjectToTransform.DocumentoACriar == 0 ? "Consulta Mercado" : "Encomenda"
             };
 
             return view;
@@ -138,7 +138,7 @@ namespace Hydra.Such.Data.Logic.Encomendas
                 QuantidadeDisponibilizada = ObjectToTransform.QuantidadeDisponibilizada,
                 UtilizadorCriação = ObjectToTransform.UtilizadorCriacao,
                 UtilizadorModificação = ObjectToTransform.UtilizadorModificacao,
-                //DocumentoaCriar = ObjectToTransform.DocumentoaCriar,
+                DocumentoACriar = ObjectToTransform.DocumentoACriar,
                 CriarDocumento = ObjectToTransform.CriarDocumento,
                 NºEncomendaAberto = ObjectToTransform.NumEncomendaAberto,
                 NºLinhaEncomendaAberto = ObjectToTransform.NumLinhaEncomendaAberto,

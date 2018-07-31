@@ -119,6 +119,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/ExportToExcel_FolhasHorasTESTE"
+                   last-response="{{export}}"
+                   id="ajax_ExportTESTE"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
@@ -132,29 +141,29 @@
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
-                <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
-                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
-                    <div class="list-group" slot="dropdown-content">
-                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
-                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
-                                {{ item.value.label }}
-                            </a>
-                            <hr />
-                        </template>
-                    </div>
-                </paper-menu-button>
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
 
-                <paper-menu-button class="column-toggle" no-animations id="gridOpcaoPendentes">
-                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas Pendentes"></paper-icon-button>
-                    <div class="list-group" slot="dropdown-content">
-                        <template is="dom-repeat" items="[[ _toArrayPendentes(_columnsPendentes)]]" id="columnsPendentesList">
-                            <a href="javascript:void(0);" on-tap="_toggleColumnPendentes" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassPendentes( item.key ) ]]">
-                                {{ item.value.label }}
-                            </a>
-                            <hr />
-                        </template>
-                    </div>
-                </paper-menu-button>
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoPendentes">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas Pendentes"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArrayPendentes(_columnsPendentes)]]" id="columnsPendentesList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumnPendentes" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassPendentes( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
             <!--end ColumnToggle-->
 
         </div>
@@ -936,8 +945,10 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
-                    this.$.ajax_Export.generateRequest();
+                    this.result[0].Colunas = this._columns;
+
+                    this.$.ajax_ExportTESTE.body = JSON.stringify(this.result);
+                    this.$.ajax_ExportTESTE.generateRequest();
                 },
 
                 _exportEXCELResponse: function (e) {
@@ -1002,7 +1013,7 @@
 
 
                 _startColumnTogglePendentes: function () {
-                    debugger;
+                    //debugger;
                     var columnsPendentes = {
                         "folhaDeHorasNo": { hidden: false, label: "Nº Folha Horas" },
                         "estadotexto": { hidden: false, label: "Motivo" },
@@ -1022,7 +1033,7 @@
                     this._columnsPendentes = columnsPendentes;
                 },
                 _toggleColumnPendentes: function (event) {
-                    debugger;
+                    //debugger;
                     var columnPendentesIndex = JSON.parse(event.target.dataset.item).key;
                     event.path[0].classList.toggle("selected");
                     this.set('_columnsPendentes.' + columnPendentesIndex + '.hidden', (!this._columnsPendentes[columnPendentesIndex].hidden));
@@ -1031,11 +1042,11 @@
                     }
                 },
                 _getColumnItemClassPendentes: function (columnPendentesIndex) {
-                    debugger;
+                    //debugger;
                     return !this._columnsPendentes[columnPendentesIndex].hidden ? "selected" : "";
                 },
                 _toArrayPendentes: function (obj) {
-                    debugger;
+                    //debugger;
                     return Object.keys(obj).map(function (key) {
                         return {
                             key: key,
