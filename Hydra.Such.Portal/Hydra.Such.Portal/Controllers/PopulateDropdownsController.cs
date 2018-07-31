@@ -374,7 +374,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data, "", "50").ToList();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data, "", "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
                     !string.IsNullOrEmpty(numb)
