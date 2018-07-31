@@ -146,6 +146,35 @@ namespace Hydra.Such.Data.Logic.Request
         #endregion
 
         #region Parse Utilities
+        public static void UpdateAgreedPrices(this List<RequisitionTemplateLineViewModel> reqLines, DateTime pricesDate)
+        {
+            if (reqLines == null || reqLines.Count == 0)
+                return;
+
+            List<LinhasAcordoPrecos> acordosPrecos = null;
+
+            using (var ctx = new SuchDBContext())
+            {
+                acordosPrecos = ctx.LinhasAcordoPrecos
+                    .Where(x => reqLines.Select(y => y.SupplierNo).Distinct().Contains(x.NoFornecedor)
+                                && x.DtValidadeInicio <= pricesDate
+                                && x.DtValidadeFim >= pricesDate)
+                    .ToList();
+            }
+            if (acordosPrecos.Count > 0)
+            {
+                for (int i = 0; i < reqLines.Count; i++)
+                {
+                    var acordo = acordosPrecos.FirstOrDefault(x => x.NoFornecedor == reqLines[i].SupplierNo && x.CodProduto == reqLines[i].Code);
+                    if (acordo != null)
+                    {
+                        if (acordo.CustoUnitario.HasValue)
+                            reqLines[i].UnitCost = acordo.CustoUnitario.Value;
+                    }
+                }
+            }
+        }
+
         public static RequisitionTemplateLineViewModel ParseToTemplateViewModel(this LinhasRequisição item)
         {
             if (item != null)

@@ -4379,15 +4379,15 @@ namespace Hydra.Such.Portal.Controllers
                     DtValidadeFim = x.DtValidadeFim,
                     DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
                     Cresp = x.Cresp,
-                    CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault().Name,
+                    CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault()?.Name,
                     Area = x.Area,
-                    AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault().Name,
+                    AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault()?.Name,
                     Regiao = x.Regiao,
-                    RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault().Name,
+                    RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault()?.Name,
                     Localizacao = x.Localizacao,
-                    LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault().Name,
+                    LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault()?.Name,
                     CustoUnitario = x.CustoUnitario,
-                    NomeFornecedor = x.NoFornecedor == null ? "" : x.NoFornecedor.ToString() + " - " + DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).SingleOrDefault().Name,
+                    NomeFornecedor = x.NoFornecedor == null ? "" : x.NoFornecedor.ToString() + " - " + DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).SingleOrDefault()?.Name,
                     DescricaoProduto = x.DescricaoProduto,
                     Um = x.Um,
                     QtdPorUm = x.QtdPorUm,
@@ -4395,12 +4395,12 @@ namespace Hydra.Such.Portal.Controllers
                     CodProdutoFornecedor = x.CodProdutoFornecedor,
                     DescricaoProdFornecedor = x.DescricaoProdFornecedor,
                     FormaEntrega = x.FormaEntrega,
-                    FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault().Value,
+                    FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
                     UserId = x.UserId,
                     DataCriacao = x.DataCriacao,
                     DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
                     TipoPreco = x.TipoPreco,
-                    TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault().Value
+                    TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value
                 }).ToList();
 
                 //ORIGEM = 1 » Acordo Preços
