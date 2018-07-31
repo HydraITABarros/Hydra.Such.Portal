@@ -247,6 +247,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.SimplifiedRequisitions[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.SimplifiedRequisitions);
                     this.$.ajax_Export.generateRequest();
                 },

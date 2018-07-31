@@ -34,6 +34,10 @@ namespace Hydra.Such.Data.ViewModel.Compras
         /// <summary>
         /// For filter purposes
         /// </summary>
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
         public string ReadStringValue
         {
             get

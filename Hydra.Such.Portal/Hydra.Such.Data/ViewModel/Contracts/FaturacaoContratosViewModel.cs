@@ -32,5 +32,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ModificationUser { get; set; }
         public decimal InvoiceGroupCount { get; set; }
         public decimal InvoiceGroupValue { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

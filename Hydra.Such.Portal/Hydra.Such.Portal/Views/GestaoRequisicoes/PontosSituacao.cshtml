@@ -178,6 +178,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this._statesOfPlay1[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this._statesOfPlay1);
                     this.$.ajax_Export.generateRequest();
                 },
