@@ -834,6 +834,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
                     data.eMessage = "";
+                    if (PreRequesitionLines.Count == 0)
+                    {
 
                     if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
                     {
@@ -1045,6 +1047,12 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eReasonCode = 0;
                         data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                    }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Pré-Requisição não contém linhas.";
                     }
                 }
             }

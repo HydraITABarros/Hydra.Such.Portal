@@ -88,40 +88,48 @@ namespace Hydra.Such.Portal.Extensions
                     //Notify Users
                     UsersToNotify.ForEach(e =>
                     {
-                        EmailsAprovações EmailApproval = new EmailsAprovações();
-
-                        EmailApproval.NºMovimento = ApprovalMovement.MovementNo;
-                        EmailApproval.EmailDestinatário = e.RfmailEnvio;
-                        EmailApproval.NomeDestinatário = e.Nome;
-                        EmailApproval.Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo;
-                        EmailApproval.DataHoraEmail = DateTime.Now;
-                        if(reason != "" && reason != null)
+                        if(e.RfmailEnvio != "" && e.RfmailEnvio != null)
                         {
-                            EmailApproval.TextoEmail = "Uma requisição aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
+                            EmailsAprovações EmailApproval = new EmailsAprovações();
+
+                            EmailApproval.NºMovimento = ApprovalMovement.MovementNo;
+                            EmailApproval.EmailDestinatário = e.RfmailEnvio;
+                            EmailApproval.NomeDestinatário = e.Nome;
+                            EmailApproval.Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo;
+                            EmailApproval.DataHoraEmail = DateTime.Now;
+                            if(reason != "" && reason != null)
+                            {
+                                EmailApproval.TextoEmail = "Uma requisição aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
+                            }
+                            else
+                            {
+                                EmailApproval.TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
+
+                            }
+
+                            EmailApproval.Enviado = false;
+
+
+                            SendEmailApprovals Email = new SendEmailApprovals
+                            {
+                                Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                                From = "plataforma@such.pt"
+                            };
+
+                            Email.To.Add(e.RfmailEnvio);
+
+                            Email.Body = MakeEmailBodyContent(EmailApproval.TextoEmail);
+
+                            Email.IsBodyHtml = true;
+                            Email.EmailApproval = EmailApproval;
+
+                            Email.SendEmail();
                         }
                         else
                         {
-                            EmailApproval.TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
-
+                            result.eReasonCode = 100;
+                            result.eMessage = "Porém um ou mais aprovadores não possuem e-mail de envio.";
                         }
-
-                        EmailApproval.Enviado = false;
-
-
-                        SendEmailApprovals Email = new SendEmailApprovals
-                        {
-                            Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            From = "plataforma@such.pt"
-                        };
-
-                        Email.To.Add(e.RfmailEnvio);
-
-                        Email.Body = MakeEmailBodyContent(EmailApproval.TextoEmail);
-
-                        Email.IsBodyHtml = true;
-                        Email.EmailApproval = EmailApproval;
-
-                        Email.SendEmail();
                     });
                 }
                 else

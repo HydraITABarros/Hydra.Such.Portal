@@ -930,9 +930,10 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Anular Aprovacao":
+                        ErrorHandler ApprovalMovResult = new ErrorHandler();
+
                         if (item.State == RequisitionStates.Approved)
                         {
-                            ErrorHandler ApprovalMovResult = new ErrorHandler();
                             ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
                             if (ApprovalMovResult.eReasonCode != 100)
                             {
@@ -980,7 +981,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Aprovação foi anulada";
+                            item.eMessage = "A Aprovação foi anulada." + ApprovalMovResult.eMessage;
                         }
                         break;
                     case "Anular Validacao":
