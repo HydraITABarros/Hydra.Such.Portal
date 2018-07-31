@@ -67,5 +67,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public decimal? Energeticvalue { get; set; }
         public decimal? Energeticvalue2 { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

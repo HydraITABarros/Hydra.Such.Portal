@@ -186,7 +186,6 @@
                                         </div>
 
                                     </div>
-                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-lg-2 ">
                                             <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ isReadOnly() }}">Urgente</vaadin-checkbox>
@@ -219,7 +218,6 @@
                                             <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ isReadOnly() }}">Reclamação</vaadin-checkbox>
                                         </div>
                                     </div>
-                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
@@ -558,7 +556,6 @@
                             </div>
                         </div>
 
-                        <br />
                         <div class="row">
                             <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
                                 <vaadin-grid-column width="160px" resizable>

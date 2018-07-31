@@ -256,13 +256,10 @@
                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
-        </div>
-        <div class="row" hidden="{{ !_permissions.create }}">
-            <div class="col-lg-2">
+            <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                 <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
         </div>
-        <br />
         <div class="row" hidden="{{ !_permissions.create }}">
 
             <div class="col-lg-10">
@@ -568,7 +565,7 @@
                 <template class="header">
                 </template>
                 <template>
-                    <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_delete">Eliminar</paper-button>
+                    <paper-button class="btnRemove tablinks" disabled="{{ !_permissions.delete }}" on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

@@ -248,7 +248,6 @@
                                             </such-selectbox>
                                         </div>
                                     </div>
-                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -295,8 +294,6 @@
                                             <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>-->
-                                    /
-                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-lg-2 ">
                                             <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
@@ -329,7 +326,6 @@
                                             <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
                                         </div>
                                     </div>
-                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-lg-3" id="VehicleDiv" hidden>
                                             <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}">
@@ -1001,7 +997,6 @@
                                 <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                         </div>
-                        <br />
                     </div>
                 </iron-form>
             </div>

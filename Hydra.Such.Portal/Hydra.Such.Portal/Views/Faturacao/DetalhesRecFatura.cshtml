@@ -294,10 +294,10 @@
                         </such-selectbox>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor"></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor"  required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-date-picker label="Data Doc. Fornecedor" id="dpDataDocFornecedor" disabled="{{ !_permissions.update }}" value="{{ data.dataDocFornecedor }}"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Doc. Fornecedor" id="dpDataDocFornecedor" disabled="{{ !_permissions.update }}" value="{{ data.dataDocFornecedor }}"  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.numAcordoFornecedor}}" id="txtNumAcordoFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Acordo Fornecedor"></vaadin-text-field>
@@ -1227,7 +1227,12 @@
                             return true;
                         }
                         else if (!this._docIsValid) {
-                            this._openToastError("Já foi criada receção de fatura para o documento.");
+                            if (this.$.dpDataDocFornecedor.validate() && this.$.txtNumDocFornecedor.validate() && this.$.sbVendors.validate()) {
+                                this._openToastError("Já foi criada receção de fatura para o documento.");
+                            }
+                            else {
+                                this._openToastError("Verifique os dados inseridos.");
+                            }
                         }
                     }
                     else {
@@ -1247,7 +1252,7 @@
                     return "";
                 },
                 _validateInputForAccounting: function () {
-                   // if (this._validateInputForNew()) { ver com o joao
+                   if (this._validateInputForNew()) { 
                         if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
                             var selState = this.States.find(x => x.id == this.data.estado);
                             var stateDescription = selState != null ? selState.value : this.data.estado;
@@ -1271,9 +1276,9 @@
                             return false;
                         }
                         return true;
-                 //   }
-                    //this._openToastError("Verifique os dados inseridos.");
-                    //return false;
+                  }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
                 },
                 _validateInputForAnswer: function () {
                     if (this.data.estado == null || this.data.estado == "") {
@@ -1377,7 +1382,7 @@
                             this.$.page_create_ajax.body = JSON.stringify(this.data);
                             this.$.page_create_ajax.generateRequest();
                         } else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
+                            this._openToastError(this.validateResponse);
                         }
                     }
                 },
