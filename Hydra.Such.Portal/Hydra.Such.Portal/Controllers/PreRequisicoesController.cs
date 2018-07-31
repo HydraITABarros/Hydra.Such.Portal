@@ -656,7 +656,7 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
             return Json(result);
         }
-
+        
         public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
             ErrorHandler result = new ErrorHandler()
@@ -671,51 +671,62 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
+
             if (reqLines != null)
             {
-                List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
-                reqLines.ForEach(x =>
+                if (reqLines.Count > 0)
                 {
-                    LinhasPréRequisição newline = new LinhasPréRequisição();
+                    reqLines.UpdateAgreedPrices();
 
-                    newline.NºPréRequisição = req.PreRequisitionNo;
-                    newline.CódigoLocalização = x.LocalCode;
-                    newline.CódigoProdutoFornecedor = x.SupplierProductCode;
-                    newline.Código = x.Code;
-                    newline.Descrição = x.Description;
-                    newline.CódigoUnidadeMedida = x.UnitMeasureCode;
-                    newline.QuantidadeARequerer = x.QuantityToRequire;
-                    newline.CustoUnitário = x.UnitCost;
-                    newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                    newline.Viatura = x.Vehicle;
-                    newline.NºFornecedor = x.SupplierNo;
-                    newline.NºEncomendaAberto = x.OpenOrderNo;
-                    newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
-                    newline.NºProjeto = x.ProjectNo;
-                    if (project != null)
+                    List <LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                    reqLines.ForEach(x =>
                     {
-                        newline.CódigoRegião = project.CódigoRegião;
-                        newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                        newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        LinhasPréRequisição newline = new LinhasPréRequisição();
+
+                        newline.NºPréRequisição = req.PreRequisitionNo;
+                        newline.CódigoLocalização = x.LocalCode;
+                        newline.CódigoProdutoFornecedor = x.SupplierProductCode;
+                        newline.Código = x.Code;
+                        newline.Descrição = x.Description;
+                        newline.CódigoUnidadeMedida = x.UnitMeasureCode;
+                        newline.QuantidadeARequerer = x.QuantityToRequire;
+                        newline.CustoUnitário = x.UnitCost;
+                        newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                        newline.Viatura = x.Vehicle;
+                        newline.NºFornecedor = x.SupplierNo;
+                        newline.NºEncomendaAberto = x.OpenOrderNo;
+                        newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+                        newline.NºProjeto = x.ProjectNo;
+                        if (project != null)
+                        {
+                            newline.CódigoRegião = project.CódigoRegião;
+                            newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                            newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        }
+                        else
+                        {
+                            newline.CódigoRegião = x.RegionCode;
+                            newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                            newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                        }
+                        preReqLines.Add(newline);
+                    });
+
+                    if (DBPreRequesitionLines.CreateMultiple(preReqLines))
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Linhas copiadas com sucesso.";
                     }
                     else
                     {
-                        newline.CódigoRegião = x.RegionCode;
-                        newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                        newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
-                    }                    
-                    preReqLines.Add(newline);
-                });
-
-                if (DBPreRequesitionLines.CreateMultiple(preReqLines))
-                {
-                    result.eReasonCode = 1;
-                    result.eMessage = "Linhas copiadas com sucesso.";
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    }
                 }
                 else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Ocorreu um erro ao copiar as linhas";
+                    result.eMessage = "O modelo de requisição não tem linhas";
                 }
             }
             else
@@ -945,7 +956,7 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-
+                    
                     //Set VATPostingGroup Info
                     newlistOpenOrder.ForEach(header =>
                     {
@@ -954,7 +965,7 @@ namespace Hydra.Such.Portal.Controllers
                             line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                         });
                     });
-                
+                    
                     data = CreateRequesition(newlistOpenOrder, data);
                     
                     List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
@@ -1352,8 +1363,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_RequisicoesArquivadas([FromBody] List<RequisitionViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_RequisicoesArquivadas([FromBody] List<RequisitionViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -1368,29 +1381,97 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Requisições Arquivadas");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Requisição");
-                row.CreateCell(1).SetCellValue("Estado");
-                row.CreateCell(2).SetCellValue("Data Requisição");
-                row.CreateCell(3).SetCellValue("Código Localização");
-                row.CreateCell(4).SetCellValue("Responsável Aprovação");
-                row.CreateCell(5).SetCellValue("Data/Hora Aprovação");
-                row.CreateCell(6).SetCellValue("Observações");
-                row.CreateCell(7).SetCellValue("Nº Funcionário");
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["state"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
+                if (dp["responsibleApproval"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Responsável Aprovação");
+                    Col = Col + 1;
+                }
+                if (dp["approvalDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data/Hora Aprovação");
+                    Col = Col + 1;
+                }
+                if (dp["comments"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["employeeNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Funcionário");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (RequisitionViewModel item in dp)
+                    foreach (RequisitionViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
-                        row.CreateCell(1).SetCellValue(item.State.ToString());
-                        row.CreateCell(2).SetCellValue(item.RequisitionDate);
-                        row.CreateCell(3).SetCellValue(item.LocalCode);
-                        row.CreateCell(4).SetCellValue(item.ResponsibleApproval);
-                        row.CreateCell(5).SetCellValue(item.ApprovalDate.ToString());
-                        row.CreateCell(6).SetCellValue(item.Comments);
-                        row.CreateCell(7).SetCellValue(item.EmployeeNo);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["state"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.State.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["responsibleApproval"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ResponsibleApproval);
+                            Col = Col + 1;
+                        }
+                        if (dp["approvalDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ApprovalDate.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["comments"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Comments);
+                            Col = Col + 1;
+                        }
+                        if (dp["employeeNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EmployeeNo);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

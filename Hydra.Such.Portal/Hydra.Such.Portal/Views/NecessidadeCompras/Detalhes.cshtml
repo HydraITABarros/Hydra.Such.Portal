@@ -32,7 +32,6 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-<h1 class="title">Produtos p/ Criação de Encomendas</h1>
 
 <x-needshopping></x-needshopping>
 <dom-module id="x-needshopping">
@@ -62,6 +61,9 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="grid_priceAgreement_ajax" last-response="{{priceAgreement}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <style>
             vaadin-combo-box {
@@ -187,7 +189,7 @@
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" on-value-changed="_localCodeOnChange"
+                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização"
                                 items="[[locationsresult]]"
                                 text-path="value"
                                 value-path="id"
@@ -195,21 +197,32 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
+                <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange"
+                                items="[[priceAgreement]]"
+                                text-path="noProcedimento"
+                                value-path="noFornecedor"
+                                fields='[{"field":"noProcedimento", "name":"Nº Procedimento"},{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
+                </such-selectbox>
+            </div>
+            <div class="col-md-3">
                 <such-selectbox id="mOpenOrderLinesId" value="{{codStockUnit}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange"
                                 items="[[cbopenorderlines]]"
                                 text-path="numb"
-                                value-path="id"
+                                value-path="line_No"
                                 fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
             <div class="col-md-3">
                 <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
             </div>
+        </div>
+        <div class="row" hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3 ">
+                <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
+            </div>
             <div class="col-md-3 ">
                 <vaadin-text-field id="prodCodId" name="prodCodName" label="Descrição Produto" value="{{prodCod}}" disabled></vaadin-text-field>
             </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
                 <such-selectbox id="unitofMeasureCodeId" value="" label="Unidade Medida" disabled
                                 items="[[unitmeasureresult]]"
@@ -221,14 +234,14 @@
             <div class="col-md-3">
                 <vaadin-text-field id="qtyID" name="qtyName" pattern="^[0-9]\d*(\.\d+)?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
             </div>
+        </div>
+        <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
                 <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
             </div>
             <div class="col-md-3 ">
                 <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
                 <vaadin-text-field id="amountId" name="amountName" class="alignRight" label="Valor total" value="{{amount}}" on-value-changed="_calcTotals" disabled> <div slot="suffix">€</div></vaadin-text-field>
             </div>
@@ -238,16 +251,12 @@
             <div class="col-md-3">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
             </div>
-            <div class="col-md-3 ">
-                <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
-            </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-lg-2 alignPoga">
                 <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
         </div>
-        <br />
         @* Grid *@
 
         <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
@@ -317,7 +326,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[locationsresult]]" disabled="{{ !_permissionsVal.update }}" id="codStockUnitId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
+                        <vaadin-combo-box items="[[locationsresult]]" disabled="{{ !_permissionsVal.update }}" id="codStockUnitId" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
                             <template>
                                 <table width="350px">
                                     <tr>
@@ -340,12 +349,12 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesId" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.id}}">
+                        <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesIdGrid" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.productNo}}">
                             <template>
                                 <table width="300px">
                                     <tr>
                                         <td width="20%"><b>[[item.numb]]</b></td>
-                                        <td width="80%">[[item.description]]</td>
+                                        <td width="80%">[[item.documentNO]]</td>
                                     </tr>
                                 </table>
                             </template>
@@ -566,7 +575,15 @@
                 <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
-
+        <paper-dialog id="dlgDate" style="height:200px; width:300px">
+            <div>
+                <vaadin-date-picker label="Data a Copiar Preços" id="dpPricesDate" name="dpPricesDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_openReqModelDlg">Seguinte</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
         <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -682,6 +699,11 @@
                     notify: true,
                     value: ""
                 },
+                _prodArea: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
                 _lineNoGrid: {
                     type: Number,
                     notify: true,
@@ -716,6 +738,8 @@
                 if (!this.Flag) {
                     var prodUnitId = @ViewBag.ProductivityUnitId;
                     var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                    this._prodArea = @ViewBag.ProductivityArea;
+
                     //get premissions to CRUD
                     this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
                     if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
@@ -734,24 +758,59 @@
                         }
                     },
             ready: function () {
-                        var prodUnitId = @ViewBag.ProductivityUnitId;
-                        var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
-                        //get premissions to CRUD
-                        this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
-                         if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
-                             this._permissionssubMenu = true;
-                        }
-                         if (prodUnitId != null && prodUnitDesc != "") {
-                             this.prodUnitNo = prodUnitId;
-                             this.descriptionUnit = prodUnitDesc;
+                var prodUnitId = @ViewBag.ProductivityUnitId;
+                var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                //get premissions to CRUD
+                this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
+                if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
+                    this._permissionssubMenu = true;
+                }
+                if (prodUnitId != null && prodUnitDesc != "") {
+                    this.prodUnitNo = prodUnitId;
+                    this.descriptionUnit = prodUnitDesc;
+                } else {
+                    this.prodUnitNo = "";
+                    this.descriptionUnit = "";
+                    this._NotSelectedprodUnit = true;
+                    this.$.ajax_prodUnit.generateRequest();
+                }
+                this._setDefaultDateForDatePickers();
+            },
+            _setDefaultDateForDatePickers: function () { 
+                try {
+                    if (this.$.dpPricesDate == null)
+                        return;
 
-                         } else {
-                             this.prodUnitNo = "";
-                             this.descriptionUnit = "";
-                             this._NotSelectedprodUnit = true;
-                             this.$.ajax_prodUnit.generateRequest();
+                    var today = new Date();
 
-                         }
+                    var dd = today.getDate();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+
+                    var mm = today.getMonth() + 1; //January is 0!
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var yyyy = today.getFullYear();
+
+                    var today = yyyy + '-' + mm + '-' + dd; //value="2018-07-31"
+
+                    this.$.dpPricesDate.value = today;
+                }
+                catch (err) { }
+            },
+            _openPriceAgreementOnChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var linhaAcordo = this.$.priceAgreement.activeItem;
+                    this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
+                    this.$.prodCodId.value = linhaAcordo.descricaoProduto;
+                    this.$.supplierNoId.value = linhaAcordo.noFornecedor;
+                    this.$.qtyID.value = "0";
+                    this.$.QtyforMeasId.value = linhaAcordo.qtdPorUM;
+                    this.$.unitofMeasureCodeId.value = linhaAcordo.u;
+                    this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                }
             },
             _DatePriceGridChange:function (e) {
                 if (e.detail.value != null && e.detail.value != "" &&
@@ -775,23 +834,30 @@
                 }
             },
             _DatePriceChange: function (e) {
-                debugger;
-                        if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
-                            this.$.ajax_result.body = JSON.stringify(this._numb);
-                            this.$.ajax_result.params = {
-                                "documentNO": this._documentNO,
-                                "LineNo": this._lineNo,
-                                "date": e.detail.value
-                            };
-                            this.$.ajax_result.generateRequest();
-                        } else {
-                            if (e.detail.value != null &&
-                                e.detail.value != "") {
-                                this.$.ajax_nOrderLines.body = JSON.stringify(e.detail.value);
-                                this.$.ajax_nOrderLines.generateRequest();
-                            }
-                        }
-                    },
+                if (e.detail.value != null && e.detail.value) {
+                    this.$.grid_priceAgreement_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.grid_priceAgreement_ajax.params = {
+                        "area": this._prodArea
+                    };
+                    this.$.grid_priceAgreement_ajax.generateRequest();
+                }
+                if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
+                    this.$.ajax_result.body = JSON.stringify(this._numb);
+                    this.$.ajax_result.params = {
+                        "documentNO": this._documentNO,
+                        "LineNo": this._lineNo,
+                        "date": e.detail.value
+                    };
+
+                    this.$.ajax_result.generateRequest();
+                } else {
+                    if (e.detail.value != null &&
+                        e.detail.value != "") {
+                        this.$.ajax_nOrderLines.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_nOrderLines.generateRequest();
+                    }
+                }
+            },
             _getgridResponse: function (data) {
                         if (data != null) {
                             if (data.detail.status === 200) {
@@ -799,72 +865,101 @@
                             } else {
                                 this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                             }
+
+
                         }
                     },
             _openOrderLinesOnChange: function (e) {
-                debugger;
                 if (e.detail.value) {
-                    var res = e.detail.value.split(" ");
-                    this._documentNo = res[0];
-                    this._lineNo = res[1];
-                    this._numb = res[2];
-                    this.$.ajax_result.body = JSON.stringify(this._numb);
-                            var dateVPrice = this.$.dpVendedorPriceId.value;
-                            if (dateVPrice == "") { dateVPrice = "01-01-1753";}
-                            this.$.ajax_result.params = {
-                                "documentNO": this._documentNo,
-                                "LineNo": this._lineNo,
-                                "date": dateVPrice
-                            };
-                            this.$.ajax_result.generateRequest();
-                        }
-                    },
+                    var proj = this.$.mOpenOrderLinesId.activeItem;
+                    this.$.supplierNoId.value = proj.buyFromVendorNo;
+                    this.$.prodCodId.value = proj.description;
+                    this.$.qtyID.value = "0";
+                    this.$.QtyforMeasId.value = proj.qtyperUnitofMeasure.toString();
+                    this.$.unitCostId.value = proj.unitCost.toString();
+                    this.$.amountId.value = proj.amount.toString();
+                    this.$.unitofMeasureCodeId.value = proj.unitofMeasureCode;
+                    if (proj.locationCode != "") {
+                        this.$.codStockUnitId.value = proj.locationCode;
+                    }
+                    this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
+                    this.$.ajax_supplierresult.generateRequest();
+                }
+                },
 
             //Get all values from the product selected in the grid
             //Works with functions _GridprodChangeResult and _supplierGridResponse
             _openOrderGridLinesOnChange: function (e) {
+                var res = e.detail.value.split(" ");
+                var documentNo = res[0];
+                var lineNo = res[1];
+                var numb = res[2];
                 if (e.detail.value) {
-                            var res = e.detail.value.split(" ");
-                            this._documentNOGrid = res[0];
-                            this._lineNoGrid = res[1];
-                            this._numbGrid = res[2];
-                            var datePS = "";
-                            var oSel = this.data.find(x => x.selected);
-
-                            if (oSel != undefined && e.detail.value != undefined) {
-                                if (oSel.dateByPriceSupplier != "" && oSel.dateByPriceSupplier != null) {
-                                    datePS = oSel.dateByPriceSupplier.split("-");
-                                    datePS = datePS[2] + "-" + datePS[1] + "-" + datePS[0];
-                                }
-                                if (datePS != "") {
-                                    this.$.ajax_result2.body = JSON.stringify(this._numbGrid);
-                                    this.$.ajax_result2.params = {
-                                        "documentNO": this._documentNOGrid,
-                                        "LineNo": this._lineNoGrid,
-                                        "date": datePS
-                                    };
-                                    this.$.ajax_result2.generateRequest();
-                                }
-                            }
+                    var proj = this.cbopenorderlinesGrid.find(x => x.line_No == lineNo && x.documentNO == documentNo && x.numb==numb);
+                    var oSel = this.data.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.supplierNo = proj.buyFromVendorNo;
+                        oSel.description = proj.description;
+                        oSel.quantitybyUnitMeasure = proj.qtyperUnitofMeasure;
+                        oSel.unitMeasureCode = proj.unitofMeasureCode;
+                        oSel.directUnitCost = proj.unitCost;
+                        oSel.documentNo = proj.documentNO;
+                        oSel.totalValue = proj.amount.toString();
+                        oSel.productNo = numb;
+                        this.$.amountId.value = proj.amount.toString();
+                        if (proj.locationCode != "") {
+                            oSel.localCode = proj.locationCode;
                         }
-                    },
-            _resultResponse: function (result) {
-                if (result != null) {
-
-                            this.$.supplierNoId.value = this.result.buyFromVendorNo;
-                            this.$.prodCodId.value = this.result.description;
-                            this.$.qtyID.value = 0;
-                            this.$.QtyforMeasId.value = this.result.qtyperUnitofMeasure;
-                            this.$.unitCostId.value = this.result.unitCost;
-                            this.$.amountId.value = this.result.amount;
-                            this.$.unitofMeasureCodeId.value = this.result.unitofMeasureCode;
-                            if (this.result.locationCode != "") {
-                                this.$.codStockUnitId.value = this.result.locationCode;
-                            }
+                        //get supplier name
+                        this.$.ajax_supplierGridresult.body = JSON.stringify(oSel.supplierNo);
+                        this.$.ajax_supplierGridresult.generateRequest();
+                    }
+                }
+            },
+            _GridprodChangeResult: function (result2) {
+                if (result2 != null) {
+                    var oSel = this.data.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.supplierNo = this.result2.buyFromVendorNo;
+                        oSel.description = this.result2.description;
+                        oSel.quantitybyUnitMeasure = this.result2.qtyperUnitofMeasure;
+                        oSel.unitMeasureCode = this.result2.unitofMeasureCode;
+                        oSel.directUnitCost = this.result2.unitCost;
+                        oSel.documentNo = this.result2.documentNO;
+                        oSel.totalValue = this.result2.amount;
+                        oSel.productNo = this.result2.numb;
+                        this.$.amountId.value = this.result2.amount;
+                        if (this.result2.locationCode != "") {
+                            oSel.localCode = this.result2.locationCode;
                         }
-                        this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
-                        this.$.ajax_supplierresult.generateRequest();
-                    },
+                        this.$.gridneedshopping.clearCache();
+                        //get supplier name
+                        this.$.ajax_supplierGridresult.body = JSON.stringify(oSel.supplierNo);
+                        this.$.ajax_supplierGridresult.generateRequest();
+                    }
+                }
+            },
+            //_resultResponse: function (result) {
+            //    if (result != null) {
+            //        var line = e.detail.value;
+            //        var document = this.$.mOpenOrderLinesId.title;
+            //        var proj = this.cbopenorderlines.find(x => x.line_No == line && x.documentNO == document);
+            //        this.$.supplierNoId.value = proj.buyFromVendorNo;
+            //        this.$.prodCodId.value = proj.description;
+            //        this.$.qtyID.value = 0;
+            //        this.$.QtyforMeasId.value = proj.qtyperUnitofMeasure;
+            //        this.$.unitCostId.value = proj.unitCost;
+            //        this.$.amountId.value = proj.amount;
+            //        this.$.unitofMeasureCodeId.value = proj.unitofMeasureCode;
+            //        if (proj.locationCode != "") {
+            //            this.$.codStockUnitId.value = proj.locationCode;
+            //        }
+
+            //    }
+            //    this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
+            //    this.$.ajax_supplierresult.generateRequest();
+            //},
+
             // Get supplier name to the header
             _supplierResponse: function (supplierresult) {
                         if (supplierresult != null) {
@@ -894,7 +989,8 @@
                         this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
                         this.$.ajax_requesitionupdate.generateRequest();
                     }
-                },
+            },
+
             _add() {
                 if (this._NotSelectedprodUnit == true) {
                     if (this.$.dpExpectedReceiptId.value != null &&
@@ -1024,7 +1120,16 @@
                         } else {
                             this._openToastError("Occorreu um erro ao atualizar.");
                         }
-                    },
+            },
+            
+            priceAgreementByVendor: function(e) {
+                if (e.detail.status === 200) {
+                   
+                     
+                } else {
+                    this._openToastError("Occorreu um erro ao atualizar.");
+                }
+            },
             _lineSelected: function (item) {
                         if (item != null) {
                             var oSel = this.data.find(x => x.selected);
@@ -1048,28 +1153,8 @@
             //this function is the response, is only used when a different product is selected in the grid
             //get the result from getOpenOrderLine and add necessary values to the line selected in the grid
             //Works like a Cascading from kendo
-            _GridprodChangeResult: function (result2) {
-                        if (result2 != null) {
-                            var oSel = this.data.find(x => x.selected);
-                            if (oSel != undefined) {
-                                oSel.supplierNo = this.result2.buyFromVendorNo;
-                                oSel.description = this.result2.description;
-                                oSel.quantitybyUnitMeasure = this.result2.qtyperUnitofMeasure;
-                                oSel.unitMeasureCode = this.result2.unitofMeasureCode;
-                                oSel.directUnitCost = this.result2.unitCost;
-                                oSel.documentNo = this.result2.documentNO;
-                                oSel.totalValue = this.result2.amount;
-                                this.$.amountId.value = this.result2.amount;
-                                if (this.result2.locationCode != "") {
-                                    oSel.localCode  = this.result2.locationCode;
-                                }
-                                this.$.gridneedshopping.clearCache();
-                                //get supplier name
-                                this.$.ajax_supplierGridresult.body = JSON.stringify(oSel.supplierNo);
-                                this.$.ajax_supplierGridresult.generateRequest();
-                    }
-                }
-            },
+
+
             _openToast: function(message) {
                 this.$.ToastMessage.text = message;
                 this.$.ToastMessage.open();
@@ -1079,7 +1164,8 @@
                 this.$.ToastError.open();
             },
             _requestModels: function() {
-                this.$.dialog.open();
+                //this.$.dialog.open();
+                this.$.dlgDate.open();
                 if (this.resultModelRequisition == null ||
                     this.resultModelRequisition == undefined ||
                     this.resultModelRequisition.length == 0) {
@@ -1115,7 +1201,9 @@
             _confirm: function (selectedItem, selectedItems) {
                 if (this.selectedItems != null && this.selectedItems != "") {
                     var selItms = this.selectedItems;
-                    this.$.grid_generatebyreq_ajax.body = JSON.stringify(selItms);
+                    var date = this.$.dpPricesDate != null ? this.$.dpPricesDate.value : "";
+
+                    this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit}, "reqModels" : selItms, "pricesDate" : date });
                     this.$.grid_generatebyreq_ajax.generateRequest();
                 } else {
                     this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1199,13 +1287,21 @@
                     }
                 }
             },
+
             _requesitionResponse: function (e) {
+                debugger;;
                 if (e.detail.status === 200) {
-                    if (this.datarequesition.eReasonCode === 1) {
+                  
+                        var selItms = {
+                            "noProcedimento": this.$.priceAgreement.valueText,
+                            "noFornecedor": this.$.supplierNoId.value ,
+                            "nomeFornecedor": this.$.SupplierNameId.value,
+                            "valorConsumido": this.$.amountId.value
+                        }
+                        this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
+                        this.$.grid_updateAgreementByVendor_ajax.generateRequest();
                         this._openToast(this.datarequesition.eMessage);
-                    } else {
-                        this._openToastError(this.datarequesition.eMessage);
-                    }
+                   
                 } else {
                     this._openToastError("Occorreu um erro na geração de requisições.");
                 }
@@ -1214,7 +1310,13 @@
             _goBack: function (e) {
                 window.history.back();
             },
-
+            _openReqModelDlg: function () {
+                var date = this.$.dpPricesDate.value;
+                if (this.$.dpPricesDate.validate()) {
+                    this.$.dlgDate.close();
+                    this.$.dialog.open();
+                }
+            },
          });
     });
     </script>

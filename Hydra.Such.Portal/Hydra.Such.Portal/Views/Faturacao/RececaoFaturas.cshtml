@@ -354,6 +354,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.BillingReceptions[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.BillingReceptions);
                     this.$.ajax_Export.generateRequest();
                 },

@@ -267,8 +267,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_TelemoveisEquipamentos([FromBody] List<TelemoveisEquipamentosView> dp)
+        public async Task<JsonResult> ExportToExcel_TelemoveisEquipamentos([FromBody] List<TelemoveisEquipamentosView> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -283,33 +285,117 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Telemóveis Equipamentos");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("IMEI / Nº Série");
-                row.CreateCell(1).SetCellValue("Tipo");
-                row.CreateCell(2).SetCellValue("Marca");
-                row.CreateCell(3).SetCellValue("Modelo");
-                row.CreateCell(4).SetCellValue("Estado");
-                row.CreateCell(5).SetCellValue("Cor");
-                row.CreateCell(6).SetCellValue("Observações");
-                row.CreateCell(7).SetCellValue("Devolvido");
-                row.CreateCell(8).SetCellValue("Utilizador");
-                row.CreateCell(9).SetCellValue("Data Alteração");
+                int Col = 0;
+
+                if (dp["imei"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("IMEI / Nº Série");
+                    Col = Col + 1;
+                }
+                if (dp["tipo_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
+                if (dp["marca"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Marca");
+                    Col = Col + 1;
+                }
+                if (dp["modelo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Modelo");
+                    Col = Col + 1;
+                }
+                if (dp["estado_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["cor"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cor");
+                    Col = Col + 1;
+                }
+                if (dp["observacoes"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["devolvido_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Devolvido");
+                    Col = Col + 1;
+                }
+                if (dp["utilizador"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador");
+                    Col = Col + 1;
+                }
+                if (dp["dataAlteracao_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Alteração");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (TelemoveisEquipamentosView item in dp)
+                    foreach (TelemoveisEquipamentosView item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.Imei);
-                        row.CreateCell(1).SetCellValue(item.Tipo_Show);
-                        row.CreateCell(2).SetCellValue(item.Marca);
-                        row.CreateCell(3).SetCellValue(item.Modelo);
-                        row.CreateCell(4).SetCellValue(item.Estado_Show);
-                        row.CreateCell(5).SetCellValue(item.Cor);
-                        row.CreateCell(6).SetCellValue(item.Observacoes);
-                        row.CreateCell(7).SetCellValue(item.Devolvido_Show);
-                        row.CreateCell(8).SetCellValue(item.Utilizador);
-                        row.CreateCell(9).SetCellValue(item.DataAlteracao_Show);
+
+                        if (dp["imei"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Imei);
+                            Col = Col + 1;
+                        }
+                        if (dp["tipo_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Tipo_Show);
+                            Col = Col + 1;
+                        }
+                        if (dp["marca"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Marca);
+                            Col = Col + 1;
+                        }
+                        if (dp["modelo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Modelo);
+                            Col = Col + 1;
+                        }
+                        if (dp["estado_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Estado_Show);
+                            Col = Col + 1;
+                        }
+                        if (dp["cor"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Cor);
+                            Col = Col + 1;
+                        }
+                        if (dp["observacoes"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Observacoes);
+                            Col = Col + 1;
+                        }
+                        if (dp["devolvido_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Devolvido_Show);
+                            Col = Col + 1;
+                        }
+                        if (dp["utilizador"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Utilizador);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataAlteracao_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataAlteracao_Show);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

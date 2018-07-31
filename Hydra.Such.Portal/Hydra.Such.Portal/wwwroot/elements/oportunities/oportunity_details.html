@@ -431,7 +431,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-6 ">
+                                        <div class="col-md-9 ">
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
                                     </div>
@@ -442,7 +442,6 @@
                                                 <div class="row break_clear">
                                                     <div class="col-md-4">
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Limite Esclarecimentos</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" on-value-changed="_limitClarificationDateDateChanged" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -454,7 +453,6 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Erros e Omissões</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" on-value-changed="_errorsOmissionsDateChanged" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -466,7 +464,6 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Entrega Proposta</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" on-value-changed="_propDeliveryDateChanged" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -478,7 +475,6 @@
                                                     </div>
                                                     <div class="col-md-3" hidden>
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Audiência Prévia</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="previousHearingDate" name="previousHearingDate" on-value-changed="_previousHearingDateChanged" value="{{data.previousHearing}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -490,7 +486,6 @@
                                                     </div>
                                                     <div class="col-md-3" hidden>
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Relatório Final</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" on-value-changed="_finalReporDateChanged" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -502,7 +497,6 @@
                                                     </div>
                                                     <div class="col-md-3" hidden>
                                                         <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Habilitação Documental</label>
-                                                        <br />
                                                         <div class="row">
                                                             <div class="col-md-8" style="padding-right: 5px;">
                                                                 <vaadin-date-picker id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>

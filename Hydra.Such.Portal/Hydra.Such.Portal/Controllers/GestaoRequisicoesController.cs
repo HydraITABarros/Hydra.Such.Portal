@@ -1687,8 +1687,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_RequisicoesValidar([FromBody] List<RequisitionViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_RequisicoesValidar([FromBody] List<RequisitionViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -1703,37 +1705,137 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Requisições a Validar");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Requisição");
-                row.CreateCell(1).SetCellValue("Estado");
-                row.CreateCell(2).SetCellValue("Urgente");
-                row.CreateCell(3).SetCellValue("Compra a Dinheiro");
-                row.CreateCell(4).SetCellValue("Trabalho já executado");
-                row.CreateCell(5).SetCellValue("Requisição Nutrição");
-                row.CreateCell(6).SetCellValue("Código Região");
-                row.CreateCell(7).SetCellValue("Código Área Funcional");
-                row.CreateCell(8).SetCellValue("Código Centro Responsabilidade");
-                row.CreateCell(9).SetCellValue("Observações");
-                row.CreateCell(10).SetCellValue("Data requisição");
-                row.CreateCell(11).SetCellValue("Valor Estimado");
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["state"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["urgent"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Urgente");
+                    Col = Col + 1;
+                }
+                if (dp["buyCash"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Compra a Dinheiro");
+                    Col = Col + 1;
+                }
+                if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Trabalho já executado");
+                    Col = Col + 1;
+                }
+                if (dp["requestNutrition"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Requisição Nutrição");
+                    Col = Col + 1;
+                }
+                if (dp["regionCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["comments"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data requisição");
+                    Col = Col + 1;
+                }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Estimado");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (RequisitionViewModel item in dp)
+                    foreach (RequisitionViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
-                        row.CreateCell(1).SetCellValue(item.State.ToString());
-                        row.CreateCell(2).SetCellValue(item.Urgent.ToString());
-                        row.CreateCell(3).SetCellValue(item.BuyCash.ToString());
-                        row.CreateCell(4).SetCellValue(item.AlreadyPerformed.ToString());
-                        row.CreateCell(5).SetCellValue(item.RequestNutrition.ToString());
-                        row.CreateCell(6).SetCellValue(item.RegionCode);
-                        row.CreateCell(7).SetCellValue(item.FunctionalAreaCode);
-                        row.CreateCell(8).SetCellValue(item.CenterResponsibilityCode);
-                        row.CreateCell(9).SetCellValue(item.Comments);
-                        row.CreateCell(10).SetCellValue(item.RequisitionDate);
-                        row.CreateCell(11).SetCellValue(item.EstimatedValue.ToString());
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["state"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.State.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["urgent"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Urgent.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["buyCash"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.BuyCash.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["regionCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegionCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["comments"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Comments);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString());
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
@@ -1755,8 +1857,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_GestaoRequisicoes([FromBody] List<RequisitionViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_GestaoRequisicoes([FromBody] List<RequisitionViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -1771,57 +1875,237 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Gestão Requisições");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Requisição");
-                row.CreateCell(1).SetCellValue("Estado");
-                row.CreateCell(2).SetCellValue("Urgente");
-                row.CreateCell(3).SetCellValue("Compra a Dinheiro");
-                row.CreateCell(4).SetCellValue("Trabalho já executado");
-                row.CreateCell(5).SetCellValue("Requisição Nutrição");
-                row.CreateCell(6).SetCellValue("Orçamento");
-                row.CreateCell(7).SetCellValue("Mercado Local");
-                row.CreateCell(8).SetCellValue("Região Mercado Local");
-                row.CreateCell(9).SetCellValue("Data Mercado Local");
-                row.CreateCell(10).SetCellValue("Código Região");
-                row.CreateCell(11).SetCellValue("Código Área Funcional");
-                row.CreateCell(12).SetCellValue("Código Centro Responsabilidade");
-                row.CreateCell(13).SetCellValue("Observações");
-                row.CreateCell(14).SetCellValue("Nº Consulta Mercado");
-                row.CreateCell(15).SetCellValue("Nº Encomenda");
-                row.CreateCell(16).SetCellValue("Reposição Stock");
-                row.CreateCell(17).SetCellValue("Reclamação");
-                row.CreateCell(18).SetCellValue("Nº Requisição Reclamada");
-                row.CreateCell(19).SetCellValue("Data requisição");
-                row.CreateCell(20).SetCellValue("Utilizador Criação");
-                row.CreateCell(21).SetCellValue("Valor Estimado");
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["state"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["urgent"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Urgente");
+                    Col = Col + 1;
+                }
+                if (dp["buyCash"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Compra a Dinheiro");
+                    Col = Col + 1;
+                }
+                if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Trabalho já executado");
+                    Col = Col + 1;
+                }
+                if (dp["requestNutrition"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Requisição Nutrição");
+                    Col = Col + 1;
+                }
+                if (dp["budget"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Orçamento");
+                    Col = Col + 1;
+                }
+                if (dp["localMarket"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["regionCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["comments"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
+                    Col = Col + 1;
+                }
+                if (dp["orderNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Encomenda");
+                    Col = Col + 1;
+                }
+                if (dp["stockReplacement"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Reposição Stock");
+                    Col = Col + 1;
+                }
+                if (dp["reclamation"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Reclamação");
+                    Col = Col + 1;
+                }
+                if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada");
+                    Col = Col + 1;
+                }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data requisição");
+                    Col = Col + 1;
+                }
+                if (dp["createUser"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador Criação");
+                    Col = Col + 1;
+                }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Estimado");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (RequisitionViewModel item in dp)
+                    foreach (RequisitionViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
-                        row.CreateCell(1).SetCellValue(item.State.ToString());
-                        row.CreateCell(2).SetCellValue(item.Urgent.ToString());
-                        row.CreateCell(3).SetCellValue(item.BuyCash.ToString());
-                        row.CreateCell(4).SetCellValue(item.AlreadyPerformed.ToString());
-                        row.CreateCell(5).SetCellValue(item.RequestNutrition.ToString());
-                        row.CreateCell(6).SetCellValue(item.Budget.ToString());
-                        row.CreateCell(7).SetCellValue(item.LocalMarket.ToString());
-                        row.CreateCell(8).SetCellValue(item.LocalMarketRegion);
-                        row.CreateCell(9).SetCellValue(item.LocalMarketDate.ToString());
-                        row.CreateCell(10).SetCellValue(item.RegionCode);
-                        row.CreateCell(11).SetCellValue(item.FunctionalAreaCode);
-                        row.CreateCell(12).SetCellValue(item.CenterResponsibilityCode);
-                        row.CreateCell(13).SetCellValue(item.Comments);
-                        row.CreateCell(14).SetCellValue(item.MarketInquiryNo);
-                        row.CreateCell(15).SetCellValue(item.OrderNo);
-                        row.CreateCell(16).SetCellValue(item.StockReplacement.ToString());
-                        row.CreateCell(17).SetCellValue(item.Reclamation.ToString());
-                        row.CreateCell(18).SetCellValue(item.RequestReclaimNo);
-                        row.CreateCell(19).SetCellValue(item.RequisitionDate);
-                        row.CreateCell(20).SetCellValue(item.CreateUser);
-                        row.CreateCell(21).SetCellValue(item.EstimatedValue.ToString());
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["state"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.State.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["urgent"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Urgent.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["buyCash"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.BuyCash.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["budget"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Budget.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["localMarket"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalMarket.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalMarketRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["regionCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegionCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["comments"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Comments);
+                            Col = Col + 1;
+                        }
+                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MarketInquiryNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["orderNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.OrderNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StockReplacement.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["reclamation"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Reclamation.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequestReclaimNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["createUser"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateUser);
+                            Col = Col + 1;
+                        }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString());
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
@@ -1843,8 +2127,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_PontosSituacaoRequisicoes([FromBody] List<StateOfPlayViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_PontosSituacaoRequisicoes([FromBody] List<StateOfPlayViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -1859,21 +2145,57 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Pontos Situação de Requisições");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Requisição");
-                row.CreateCell(1).SetCellValue("Lido");
-                row.CreateCell(2).SetCellValue("Pergunta");
-                row.CreateCell(3).SetCellValue("Resposta");
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["readStringValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Lido");
+                    Col = Col + 1;
+                }
+                if (dp["question"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Pergunta");
+                    Col = Col + 1;
+                }
+                if (dp["answer"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Resposta");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (StateOfPlayViewModel item in dp)
+                    foreach (StateOfPlayViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.RequisitionNo);
-                        row.CreateCell(1).SetCellValue(item.ReadStringValue);
-                        row.CreateCell(2).SetCellValue(item.Question);
-                        row.CreateCell(3).SetCellValue(item.Answer);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["readStringValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ReadStringValue);
+                            Col = Col + 1;
+                        }
+                        if (dp["question"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Question);
+                            Col = Col + 1;
+                        }
+                        if (dp["answer"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Answer);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

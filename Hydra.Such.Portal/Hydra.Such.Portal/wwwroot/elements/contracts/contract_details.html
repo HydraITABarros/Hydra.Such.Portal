@@ -429,7 +429,7 @@
                                                                 <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
@@ -445,13 +445,13 @@
                                                         </div>
                                                         <div class="row break_clear">
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
@@ -481,13 +481,13 @@
                                                                 <vaadin-text-field value="{{data.relatedContract}}" maxlength="20" id="relatedContract" name="relatedContract" label="Referência do contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                             </div>
                                                         </div>
                                                         <div class="row break_clear">
@@ -859,7 +859,6 @@
                                                                 <div class="input-group">
                                                                     <vaadin-text-field value="{{dataNav.nBilledInvoices}}" id="_IRnBilledInvoices" name="_IRnBilledInvoices" label="Nº Faturas Registadas" disabled> </vaadin-text-field>
                                                                     <span class="input-group-btn">
-                                                                        <br />
                                                                         <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceList" title="Ver Faturas"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
                                                                     </span>
                                                                 </div>
@@ -873,7 +872,6 @@
                                                                 <div class="input-group">
                                                                     <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled> </vaadin-text-field>
                                                                     <span class="input-group-btn">
-                                                                        <br />
                                                                         <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceLinesList" title="Ver Linhas Fatura"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
                                                                     </span>
                                                                 </div>
@@ -1096,7 +1094,7 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange">
+                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -1124,16 +1122,6 @@
                                         <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" on-value-changed="_ConvertDecimals" label="Quantidade" disabled="{{ _lockFields }}" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnit" name="_CLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ _lockFields }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLMeasureUnit" name="_CLMeasureUnit" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ _lockFields }}"
                                                         items="[[CBMeasureUnits]]"
                                                         text-path="value"
@@ -1153,17 +1141,6 @@
                                         <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBRegions]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}">
-                                        <template>
-                                            <table width="300px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLRegion" name="_CLRegion" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}"
                                                         items="[[CBRegions]]"
                                                         text-path="value"
@@ -1172,18 +1149,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                  
-                                        <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
-                                        <template>
-                                            <table width="500px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLFunctionalArea" name="_CLFunctionalArea" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}"
                                                         items="[[CBFunctionalAreas]]"
                                                         text-path="value"
@@ -1192,17 +1157,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table width="550px">
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _lockFields }}"
                                                         items="[[CBResponsabilityCenterCodes]]"
                                                         text-path="value"
@@ -1229,16 +1183,6 @@
                                         <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{ _lockFields }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLResponsible" name="_CLResponsible" value="{{_CLResponsible}}" label="Responsável" disabled="{{ _lockFields }}"
                                                         items="[[CBEmployees]]"
                                                         text-path="value"
@@ -1247,16 +1191,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ _lockFields }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-
                                         <such-selectbox id="_CLServiceClient" name="_CLServiceClient" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ _lockFields }}"
                                                         items="[[CBServiceClients]]"
                                                         text-path="value"
@@ -1268,7 +1202,7 @@
 
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
+                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -2186,7 +2120,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         //this.$.mClients.validate() &
@@ -2341,7 +2274,6 @@
                         }
 
                         this._lockFields = this.data.changeStatus == 2 || !this._permissions.update;
-                        debugger;
                         this._showContractLinesForm = this.data.changeStatus == 2 && this._permissions.update ? "none" : "";
                         this._showButtons = this.data.changeStatus != 2 && !this._permissions.update ? "none" : "";
                     }
@@ -2537,42 +2469,47 @@
                         this._openToastError("Este contrato não contém Propostas.");
                     }
 
-                },
+                }, 
 
                 //#################################
                 //        CONTRACT LINES
                 //#################################
                 _createContractLine: function () {
-                    this.dataLines.lines.unshift({
-                        contractNo: this.data.contractNo,
-                        versionNo: this.data.versionNo,
-                        contractType: 3,
-                        type: this._CLContractLineType,
-                        codeMeasureUnit: this._CLMeasureUnit,
-                        codeRegion: this._CLRegion,
-                        frequency: this._CLFrequency,
-                        versionStartDate: this._CLVersionStartDate,
-                        serviceClientNo: this._CLServiceClient,
-                        code: this._CLCode,
-                        unitPrice: this._CLUnitPrice,
-                        codeFunctionalArea: this._CLFunctionalArea,
-                        interventionHours: this._CLInterventionHours,
-                        versionEndDate: this._CLVersionEndDate,
-                        invoiceGroup: this._CLInvoiceGroup,
-                        description: this._CLDescription,
-                        lineDiscount: this._CLDiscountLine,
-                        codeResponsabilityCenter: this._CLResponsabilityCenter,
-                        totalTechinicians: this._CLTotalTechnicians,
-                        responsibleNo: this._CLResponsible,
-                        createContract: this._CLCreateContract,
-                        quantity: this._CLQuantity,
-                        billable: this._CLBillable
-                    });
-                    this.$.grid_contractlines.clearCache();
+    
+                    if (this.$._CLInvoiceGroup.validate() && this.$._CLContractLineType.validate()) {
+                        this.dataLines.lines.unshift({
+                            contractNo: this.data.contractNo,
+                            versionNo: this.data.versionNo,
+                            contractType: 3,
+                            type: this._CLContractLineType,
+                            codeMeasureUnit: this._CLMeasureUnit,
+                            codeRegion: this._CLRegion,
+                            frequency: this._CLFrequency,
+                            versionStartDate: this._CLVersionStartDate,
+                            serviceClientNo: this._CLServiceClient,
+                            code: this._CLCode,
+                            unitPrice: this._CLUnitPrice,
+                            codeFunctionalArea: this._CLFunctionalArea,
+                            interventionHours: this._CLInterventionHours,
+                            versionEndDate: this._CLVersionEndDate,
+                            invoiceGroup: this._CLInvoiceGroup,
+                            description: this._CLDescription,
+                            lineDiscount: this._CLDiscountLine,
+                            codeResponsabilityCenter: this._CLResponsabilityCenter,
+                            totalTechinicians: this._CLTotalTechnicians,
+                            responsibleNo: this._CLResponsible,
+                            createContract: this._CLCreateContract,
+                            quantity: this._CLQuantity,
+                            billable: this._CLBillable
+                        });
+                        this.$.grid_contractlines.clearCache();
 
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
+                        this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Inserir dados em falta!");
+                    }
                 },
                 _updateContractLines: function () {
                     this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";

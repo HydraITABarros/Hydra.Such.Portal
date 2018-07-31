@@ -30,5 +30,8 @@ namespace Hydra.Such.Data.ViewModel
         public string strSalePrice { get; set; }
         public string strPriceCost { get; set; }
         public bool Selected { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

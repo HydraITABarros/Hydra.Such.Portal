@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -195,8 +196,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Viaturas([FromBody] List<ViaturasViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Viaturas([FromBody] List<ViaturasViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -211,41 +214,157 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Viaturas");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Matrícula");
-                row.CreateCell(1).SetCellValue("Data Matrícula");
-                row.CreateCell(2).SetCellValue("Estado");
-                row.CreateCell(3).SetCellValue("Tipo Viatura");
-                row.CreateCell(4).SetCellValue("Código Marca");
-                row.CreateCell(5).SetCellValue("Marca");
-                row.CreateCell(6).SetCellValue("Código Modelo");
-                row.CreateCell(7).SetCellValue("Modelo");
-                row.CreateCell(8).SetCellValue("Código Região");
-                row.CreateCell(9).SetCellValue("Código Área Funcional");
-                row.CreateCell(10).SetCellValue("Código Centro Responsabilidade");
-                row.CreateCell(11).SetCellValue("Utilizador Criação");
-                row.CreateCell(12).SetCellValue("Data/Hora Modificação");
-                row.CreateCell(13).SetCellValue("Utilizador Modificação");
+                int Col = 0;
+
+                if (dp["matricula"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Matrícula");
+                    Col = Col + 1;
+                }
+                if (dp["dataMatricula"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Matrícula");
+                    Col = Col + 1;
+                }
+                if (dp["estadoDescricao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["tipoViatura"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo Viatura");
+                    Col = Col + 1;
+                }
+                if (dp["codigoMarca"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Marca");
+                    Col = Col + 1;
+                }
+                if (dp["marca"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Marca");
+                    Col = Col + 1;
+                }
+                if (dp["codigoModelo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Modelo");
+                    Col = Col + 1;
+                }
+                if (dp["modelo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Modelo");
+                    Col = Col + 1;
+                }
+                if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["utilizadorCriacao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador Criação");
+                    Col = Col + 1;
+                }
+                if (dp["dataHoraModificacao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data/Hora Modificação");
+                    Col = Col + 1;
+                }
+                if (dp["utilizadorModificacao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador Modificação");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ViaturasViewModel item in dp)
+                    foreach (ViaturasViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.Matricula);
-                        row.CreateCell(1).SetCellValue(item.DataMatricula);
-                        row.CreateCell(2).SetCellValue(item.EstadoDescricao);
-                        row.CreateCell(3).SetCellValue(item.TipoViatura.Descricao);
-                        row.CreateCell(4).SetCellValue(item.CodigoMarca);
-                        row.CreateCell(5).SetCellValue(item.Marca.Descricao);
-                        row.CreateCell(6).SetCellValue(item.CodigoModelo);
-                        row.CreateCell(7).SetCellValue(item.Modelo.Descricao);
-                        row.CreateCell(8).SetCellValue(item.CodigoRegiao);
-                        row.CreateCell(9).SetCellValue(item.CodigoAreaFuncional);
-                        row.CreateCell(10).SetCellValue(item.CodigoCentroResponsabilidade);
-                        row.CreateCell(11).SetCellValue(item.UtilizadorCriacao);
-                        row.CreateCell(12).SetCellValue(item.DataHoraModificacao);
-                        row.CreateCell(13).SetCellValue(item.UtilizadorModificacao);
+
+                        if (dp["matricula"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Matricula);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataMatricula"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataMatricula);
+                            Col = Col + 1;
+                        }
+                        if (dp["estadoDescricao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EstadoDescricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["tipoViatura"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TipoViatura.Descricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoMarca"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoMarca);
+                            Col = Col + 1;
+                        }
+                        if (dp["marca"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Marca.Descricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoModelo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoModelo);
+                            Col = Col + 1;
+                        }
+                        if (dp["modelo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Modelo.Descricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoRegiao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoAreaFuncional);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoCentroResponsabilidade);
+                            Col = Col + 1;
+                        }
+                        if (dp["utilizadorCriacao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.UtilizadorCriacao);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataHoraModificacao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataHoraModificacao);
+                            Col = Col + 1;
+                        }
+                        if (dp["utilizadorModificacao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.UtilizadorModificacao);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

@@ -671,6 +671,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },
@@ -706,7 +708,9 @@
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "user": { hidden: false, label: "Utilizador" },
                         "billable": { hidden: false, label: "Faturável" },
-                        "folhaHoras": { hidden: false, label: "Folha de Horas" }
+                        "folhaHoras": { hidden: false, label: "Folha de Horas" },
+                        "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
+                        "serviceClientDescription": { hidden: false, label: "Serviço Cliente" }
                     };
 
                     if (sessionStorage["premovproj.ToggleColumn"]) {

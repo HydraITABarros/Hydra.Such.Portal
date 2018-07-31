@@ -134,6 +134,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string Nome_Utilizador_Logado { get; set; }
         public string Nome_Utilizador { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
+
         public TemposPACCPView TemposPaCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public ICollection<RegistoActasView> RegistoDeAtas { get; set; }

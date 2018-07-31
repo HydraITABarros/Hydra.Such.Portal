@@ -6752,8 +6752,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_PedidosAquisicao([FromBody] List<ProcedimentoCCPView> dp)
+        public async Task<JsonResult> ExportToExcel_PedidosAquisicao([FromBody] List<ProcedimentoCCPView> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -6768,29 +6770,97 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Pedidos de Aquisição");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº");
-                row.CreateCell(1).SetCellValue("Estado");
-                row.CreateCell(2).SetCellValue("Nome Processo");
-                row.CreateCell(3).SetCellValue("Gestor Processo");
-                row.CreateCell(4).SetCellValue("Valor Preço Base");
-                row.CreateCell(5).SetCellValue("Código Região");
-                row.CreateCell(6).SetCellValue("Codigo Área Funcional");
-                row.CreateCell(7).SetCellValue("Código Centro Responsabilidade");
+                int Col = 0;
+
+                if (dp["no"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
+                    Col = Col + 1;
+                }
+                if (dp["estado"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["nomeProcesso"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Processo");
+                    Col = Col + 1;
+                }
+                if (dp["gestorProcesso"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Gestor Processo");
+                    Col = Col + 1;
+                }
+                if (dp["valorPrecoBase"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Preço Base");
+                    Col = Col + 1;
+                }
+                if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Codigo Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ProcedimentoCCPView item in dp)
+                    foreach (ProcedimentoCCPView item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.No);
-                        row.CreateCell(1).SetCellValue(item.Estado.ToString());
-                        row.CreateCell(2).SetCellValue(item.NomeProcesso);
-                        row.CreateCell(3).SetCellValue(item.GestorProcesso);
-                        row.CreateCell(4).SetCellValue(item.ValorPrecoBase.ToString());
-                        row.CreateCell(5).SetCellValue(item.CodigoRegiao);
-                        row.CreateCell(6).SetCellValue(item.CodigoAreaFuncional);
-                        row.CreateCell(7).SetCellValue(item.CodigoCentroResponsabilidade);
+
+                        if (dp["no"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.No);
+                            Col = Col + 1;
+                        }
+                        if (dp["estado"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Estado.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["nomeProcesso"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NomeProcesso);
+                            Col = Col + 1;
+                        }
+                        if (dp["gestorProcesso"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.GestorProcesso);
+                            Col = Col + 1;
+                        }
+                        if (dp["valorPrecoBase"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ValorPrecoBase.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoRegiao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoAreaFuncional);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoCentroResponsabilidade);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
