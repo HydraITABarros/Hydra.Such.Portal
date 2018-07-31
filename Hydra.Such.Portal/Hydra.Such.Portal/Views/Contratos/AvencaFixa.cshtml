@@ -9,7 +9,10 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-
+@*<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />*@
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 
@@ -64,7 +67,7 @@
                 font-size: 13px !important;
             }
         </style>
-
+        <iron-ajax url="/PopulateDropdowns/GetContractInvoicePeriods" last-response="{{CBInvoicePeriods}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GetPedingAvencaFixa" last-response="{{result}}" id="ajax_getpeding" method="post" handle-as="json" content-type="application/json" on-response="_gridListPedingResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
@@ -103,9 +106,21 @@
             </paper-menu-button>
             <!--end ColumnToggle-->
         </div>
-        
+
         @*<h2 class="separator">Autorizar Faturação Contratos</h2>*@
-        <vaadin-grid id="avencaFixaTable" aria-label="Tabela Avença Fixa" items="[[result]]" class="editGrid">
+        <vaadin-grid id="avencaFixaTable" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Avença Fixa" items="[[result]]" class="editGrid">
+            <vaadin-grid-selection-column id="selectColumn" resizable hidden="{{ _NotshowColCheckBox }}">
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.document_No.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="document_No">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="document_No"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.document_No}} 
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -170,7 +185,7 @@
                     {{item.numberOfInvoices}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceTotal.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceTotal">Total a Faturar</vaadin-grid-sorter>
                     <vaadin-grid-filter path="invoiceTotal"></vaadin-grid-filter>
@@ -233,16 +248,43 @@
                     [[ _parseRepCenterCode(item.responsabilityCenterCode) ]]
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.startDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startDate">Data Inicial</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startDate"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.startDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.expiryDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="expiryDate">Data Expiração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="expiryDate"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.expiryDate}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.registerDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="nextInvoiceDate">Data Próxima Fatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nextInvoiceDate"></vaadin-grid-filter>
+                    <vaadin-grid-sorter path="registerDate">Data Próxima Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="registerDate"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.registerDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoicePeriod.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoicePeriod">Período Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoicePeriod"></vaadin-grid-filter>
+                </template>
+                <template>
+                    [[ _parseinvoicePeriod(item.invoicePeriod) ]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceGroupValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceGroupValue">Grupo Fatura</vaadin-grid-sorter>
                     <vaadin-grid-filter path="invoiceGroupValue"></vaadin-grid-filter>
@@ -251,7 +293,7 @@
                     {{item.invoiceGroupValue}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceGroupCount.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceGroupCount">Quantidade de Linhas Agrupadas</vaadin-grid-sorter>
                     <vaadin-grid-filter path="invoiceGroupCount"></vaadin-grid-filter>
@@ -277,9 +319,16 @@
                         type: Boolean,
                         value: true
                     },
+                    _NotshowColCheckBox: {
+                        type: Boolean,
+                        value: false
+                    },
                     checked: {
                         type: Boolean,
                         value: true
+                    },
+                    selectedItems: {
+                        type: Array,
                     },
                     _columns: {
                         type: Object,
@@ -360,13 +409,18 @@
                     }
                 },
                 _count: function () {
-                    if (this.result != null || this.result != undefined || this.result.length != 0) {
-                        this.$.ajax_count.body = JSON.stringify(this.result);
-                        this.$.ajax_count.generateRequest();
-                        //this.$.avencaFixaTable.clearCache();
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        if (this.result != null || this.result != undefined || this.result.length != 0) {
+                            this.$.ajax_count.body = JSON.stringify(this.selectedItems);
+                            this.$.ajax_count.generateRequest();
+                            //this.$.avencaFixaTable.clearCache();
+                        }
+                        else {
+                            this.openToastError("Não existem linhas disponíveis para contabilizar.");
+                        }
                     }
                     else {
-                        this.openToastError("Não existem linhas disponiíveis para contabilizar.");
+                        this.openToastError("As linhas não foram selecionadas.");
                     }
                 },
 
@@ -400,7 +454,15 @@
                     return "";
 
                 },
+                _parseinvoicePeriod: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBInvoicePeriods.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
 
+                },
                 _parseRepCenterCode: function (param) {
                     if (param != undefined) {
                         var sel = this.CBResponsabilityCenterCodes.find(x => x.id == param);
@@ -411,9 +473,11 @@
 
                 },
                 _openPending: function (param) {
+                    this._NotshowColCheckBox = true;
                     this.$.ajax_getpeding.generateRequest();
                 },
                 _openInvice: function (param) {
+                    this._NotshowColCheckBox = false;
                     this.$.ajax_getall.generateRequest();
                 },
 
@@ -426,7 +490,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Contratos/ExportToExcelDownload_AvencaFixa?sFileName=' + FileName;
                 },
@@ -434,6 +497,7 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
+                        "document_No": { hidden: false, label: "Nº" },
                         "contractNo": { hidden: false, label: "Nº Contrato" },
                         "description": { hidden: false, label: "Descrição" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
@@ -447,7 +511,12 @@
                         "regionCode": { hidden: false, label: "Cód. Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        "registerDate": { hidden: false, label: "Data Próxima Fatura" }
+                        "startDate": { hidden: false, label: "Data Inicial" },
+                        "expiryDate": { hidden: false, label: "Data Expiração" },
+                        "invoicePeriod": { hidden: false, label: "Período Fatura" },
+                        "registerDate": { hidden: false, label: "Data Próxima Fatura" },
+                        "invoiceGroupValue": { hidden: false, label: "Grupo Fatura" },
+                        "invoiceGroupCount": { hidden: false, label: "Quantidade de Linhas Agrupadas" }
                     };
 
                     if (sessionStorage["avencafixa.ToggleColumn"]) {
