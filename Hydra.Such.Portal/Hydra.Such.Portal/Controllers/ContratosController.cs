@@ -1566,8 +1566,19 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
-            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
+            List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
+            foreach (FaturacaoContratosViewModel itm in data)
+            {
+                List<AutorizarFaturaçãoContratos> contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo/*,itm.InvoiceGroupValue*/);
+                if (contract_List != null && contract_List.Count > 0)
+                {
+                    foreach (AutorizarFaturaçãoContratos item in contract_List)
+                    {
+                        contractList.Add(item);
+                    }
+                }
+            }
 
             foreach (var item in contractList)
             {

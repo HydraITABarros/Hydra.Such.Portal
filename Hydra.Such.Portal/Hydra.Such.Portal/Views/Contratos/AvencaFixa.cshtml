@@ -372,6 +372,7 @@
                 _generateInvoice: function () {
                     //if (this.result == null || this.result == undefined || this.result.length == 0)
                     //{
+                    this.selectedItems = [];
                     this._locked = true;
                     this.$.ajax_generate.body = JSON.stringify(this.result);
                     this.$.ajax_generate.generateRequest();
@@ -473,10 +474,12 @@
 
                 },
                 _openPending: function (param) {
+                    this.selectedItems = [];
                     this._NotshowColCheckBox = true;
                     this.$.ajax_getpeding.generateRequest();
                 },
                 _openInvice: function (param) {
+                    this.selectedItems = [];
                     this._NotshowColCheckBox = false;
                     this.$.ajax_getall.generateRequest();
                 },
