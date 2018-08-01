@@ -845,7 +845,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
                     data.eMessage = "";
-                    if (PreRequesitionLines.Count == 0)
+                    if (PreRequesitionLines.Count > 0)
                     {
 
                     if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
