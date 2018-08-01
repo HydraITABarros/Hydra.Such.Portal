@@ -179,15 +179,14 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSCreatePreInvoiceLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            //try
+            //{
+            return await WS_Client.CreateMultipleAsync(NAVCreate);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
         
         private static WSCreatePreInvoiceLine.Type ConvertType (string type)

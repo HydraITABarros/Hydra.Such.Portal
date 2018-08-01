@@ -205,7 +205,7 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <such-selectbox id="mOpenOrderLinesId" value="{{codStockUnit}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange"
+                <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange"
                                 items="[[cbopenorderlines]]"
                                 text-path="numb"
                                 value-path="line_No"
@@ -221,7 +221,7 @@
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
             </div>
             <div class="col-md-3 ">
-                <vaadin-text-field id="prodCodId" name="prodCodName" label="Descrição Produto" value="{{prodCod}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
             </div>
             <div class="col-md-3">
                 <such-selectbox id="unitofMeasureCodeId" value="" label="Unidade Medida" disabled
@@ -633,7 +633,12 @@
                     notify: true,
                     value: ""
                 },
-                prodCod: {
+                productNo: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                prodDescription: {
                     type: String,
                     notify: true,
                     value: ""
@@ -803,13 +808,18 @@
             _openPriceAgreementOnChange: function (e) {
                 if (e.detail.value != null && e.detail.value != "") {
                     var linhaAcordo = this.$.priceAgreement.activeItem;
-                    this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
-                    this.$.prodCodId.value = linhaAcordo.descricaoProduto;
-                    this.$.supplierNoId.value = linhaAcordo.noFornecedor;
-                    this.$.qtyID.value = "0";
-                    this.$.QtyforMeasId.value = linhaAcordo.qtdPorUM;
-                    this.$.unitofMeasureCodeId.value = linhaAcordo.u;
-                    this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                    if (linhaAcordo != null) {
+                        this.cbopenorderlines = [{ "documentNO": "", "line_No": "", "numb": linhaAcordo.codProduto, "description": linhaAcordo.descricaoProduto}];
+
+                        this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
+                        this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
+                        this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
+                        this.$.supplierNoId.value = linhaAcordo.noFornecedor;
+                        this.$.qtyID.value = "0";
+                        this.$.QtyforMeasId.value = linhaAcordo.qtdPorUM;
+                        this.$.unitofMeasureCodeId.value = linhaAcordo.um;
+                        this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                    }
                 }
             },
             _DatePriceGridChange:function (e) {
@@ -872,20 +882,22 @@
             _openOrderLinesOnChange: function (e) {
                 if (e.detail.value) {
                     var proj = this.$.mOpenOrderLinesId.activeItem;
-                    this.$.supplierNoId.value = proj.buyFromVendorNo;
-                    this.$.prodCodId.value = proj.description;
-                    this.$.qtyID.value = "0";
-                    this.$.QtyforMeasId.value = proj.qtyperUnitofMeasure.toString();
-                    this.$.unitCostId.value = proj.unitCost.toString();
-                    this.$.amountId.value = proj.amount.toString();
-                    this.$.unitofMeasureCodeId.value = proj.unitofMeasureCode;
-                    if (proj.locationCode != "") {
-                        this.$.codStockUnitId.value = proj.locationCode;
+                    if (proj != null) {
+                        this.$.supplierNoId.value = proj.buyFromVendorNo;
+                        this.$.txtProdDescription.value = proj.description;
+                        this.$.qtyID.value = "0";
+                        this.$.QtyforMeasId.value = proj.qtyperUnitofMeasure.toString();
+                        this.$.unitCostId.value = proj.unitCost.toString();
+                        this.$.amountId.value = proj.amount.toString();
+                        this.$.unitofMeasureCodeId.value = proj.unitofMeasureCode;
+                        if (proj.locationCode != "") {
+                            this.$.codStockUnitId.value = proj.locationCode;
+                        }
+                        this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
+                        this.$.ajax_supplierresult.generateRequest();
                     }
-                    this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
-                    this.$.ajax_supplierresult.generateRequest();
                 }
-                },
+            },
 
             //Get all values from the product selected in the grid
             //Works with functions _GridprodChangeResult and _supplierGridResponse
@@ -1001,6 +1013,7 @@
                         this.$.descriptionUnitId.value != "")
                     //Validações
                     {
+                        debugger;
                         this.data.unshift({
                             productionUnitNo: this.$.prodUnitNoId.value,
                             productUnitDescription: this.$.descriptionUnitId.value,
@@ -1009,7 +1022,7 @@
                             localCode: this.$.codStockUnitId.value,
                             productNo: this._numb,
                             supplierNo: this.$.supplierNoId.value,
-                            description: this.$.prodCodId.value,
+                            description: this.$.txtProdDescription.value,
                             unitMeasureCode: this.$.unitofMeasureCodeId.value,
                             quantity: this.$.qtyID.value,
                             quantitybyUnitMeasure: this.$.QtyforMeasId.value,
@@ -1054,7 +1067,7 @@
                             localCode: this.$.codStockUnitId.value,
                             productNo: this._numb,
                             supplierNo: this.$.supplierNoId.value,
-                            description: this.$.prodCodId.value,
+                            description: this.$.txtProdDescription.value,
                             unitMeasureCode: this.$.unitofMeasureCodeId.value,
                             quantity: this.$.qtyID.value,
                             quantitybyUnitMeasure: this.$.QtyforMeasId.value,

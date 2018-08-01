@@ -844,17 +844,19 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-
+                                        <div class="col-lg-3">
+                                            <vaadin-date-picker label="Data Última Fatura" id="_LastInvoiceDate" name="_LastInvoiceDate" value="{{data.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </div>
                                         <div class="col-md-3  alignPoga">
                                             <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" id="contractAvencaFixa" disabled="{{ _lockFields }}">Contrato Avença Fixa</vaadin-checkbox>
                                         </div>
-                                        <div class="col-md-3  alignPoga">
-                                            <vaadin-checkbox checked="{{data.variableAvengeAgrement}}" id="contractAvencaVariavel" disabled="{{ _lockFields }}">Contrato Avença Variável</vaadin-checkbox>
-                                        </div>
-
+                                      
                                     </div>
 
                                     <div class="row break_clear">
+                                        <div class="col-md-3  alignPoga">
+                                            <vaadin-checkbox checked="{{data.variableAvengeAgrement}}" id="contractAvencaVariavel" disabled="{{ _lockFields }}">Contrato Avença Variável</vaadin-checkbox>
+                                        </div>
                                         <div class="col-md-3 ">
                                             <vaadin-checkbox checked="{{data.batchInvoices}}" id="mergeInvoices" disabled="{{ _lockFields }}">Juntar Faturas</vaadin-checkbox>
                                         </div>

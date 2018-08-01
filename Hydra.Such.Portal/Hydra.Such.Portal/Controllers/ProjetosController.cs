@@ -1698,7 +1698,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<SPInvoiceListViewModel> result = DBProjectMovements.GetAllAutorized().OrderBy(x => x.ClientName).ToList();
+                List<SPInvoiceListViewModel> result = DBProjectMovements.GetAllAutorized();
                 List<NAVClientsViewModel> ClientList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, null);
 
                 if (result.Count > 0)
@@ -1718,6 +1718,7 @@ namespace Hydra.Such.Portal.Controllers
                         lst.ClientName = customer != null ? customer.Name : string.Empty;
                         lst.ClientVATReg = customer != null ? customer.VATRegistrationNo_ : string.Empty;
                     }
+                    return Json(result.OrderBy(x => x.ClientName).ToList());
                 }
                 return Json(result);
             }
@@ -1731,6 +1732,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
         {
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            ErrorHandler result = new ErrorHandler();
+
             if (data != null)
             {
                 List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
@@ -1755,41 +1761,89 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (var header in groupedbyclient)
                     {
-                        Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
-                        TCreatePreInvoice.Wait();
-
-                        if (TCreatePreInvoice.IsCompletedSuccessfully)
+                        try
                         {
-                            string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
+                            execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
 
-                            List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
+                            TCreatePreInvoice.Wait();
 
-                            foreach (var lines in data)
+                            if (TCreatePreInvoice.IsCompletedSuccessfully)
                             {
-                                if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
+                                string headerNo = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                execDetails += "Criada a fatura núm " + headerNo;
+
+                                try
                                 {
-                                    linesList.Add(lines);
+                                    List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
+                                    foreach (var lines in data)
+                                    {
+                                        if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
+                                        {
+                                            linesList.Add(lines);
+                                        }
+                                    }
+
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, _configws);
+                                    TCreatePreInvoiceLine.Wait();
+
+                                    if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
+                                    {
+                                        execDetails += " Linhas criadas com sucesso.";
+                                        //update to Invoiced = true
+                                        foreach (var updatelist in linesList)
+                                        {
+                                            MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(updatelist.LineNo).FirstOrDefault();
+                                            mov.Faturada = true;
+                                            DBProjectMovements.Update(mov);
+                                        }
+                                        result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
+                                    }
                                 }
-                            }
-
-                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, HeaderNo, _configws);
-                            TCreatePreInvoiceLine.Wait();
-
-                            if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
-                            {
-                                //update to Invoiced = true
-                                foreach (var updatelist in linesList)
+                                catch (Exception ex)
                                 {
-                                    MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(updatelist.LineNo).FirstOrDefault();
-                                    mov.Faturada = true;
-                                    DBProjectMovements.Update(mov);
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
                                 }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            if (!hasErrors)
+                                hasErrors = true;
+
+                            execDetails += " Erro ao criar a fatura: ";
+                            errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + " " + errorMessage));
+                        }
+                    }
+                    if (hasErrors)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreram erros na criação de faturas.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Faturas criadas com sucesso.";
                     }
                 }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel agrupar os registos";
+                }
             }
-            return Json(data);
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Selecione registos para faturar";
+            }
+            return Json(result);
         }
         #endregion
 
