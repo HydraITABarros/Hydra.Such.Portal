@@ -501,7 +501,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
                             newdp.DescriçãoUnidadeProduto = prodUnit.Descrição;
-
+                            newdp.DataPPreçoFornecedor = pricesDate;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
                             newdp = DBShoppingNecessity.Create(newdp);
