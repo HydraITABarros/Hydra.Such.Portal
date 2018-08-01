@@ -209,8 +209,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_UnidadesArmazenamento([FromBody] List<StockkeepingUnitViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_UnidadesArmazenamento([FromBody] List<StockkeepingUnitViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -225,35 +227,127 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Unidades Armazenamento");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº de Produto");
-                row.CreateCell(1).SetCellValue("Cód. Localização");
-                row.CreateCell(2).SetCellValue("Descrição");
-                row.CreateCell(3).SetCellValue("Inventário");
-                row.CreateCell(4).SetCellValue("Bloqueado");
-                row.CreateCell(5).SetCellValue("Cód. Unidade Medida Produto");
-                row.CreateCell(6).SetCellValue("Custo Unitário");
-                row.CreateCell(7).SetCellValue("Valor em Armazem");
-                row.CreateCell(8).SetCellValue("Nº Prateleiras");
-                row.CreateCell(9).SetCellValue("Nº Fornecedor");
-                row.CreateCell(10).SetCellValue("Cód. Produto Fornecedor");
+                int Col = 0;
+
+                if (dp["productNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº de Produto");
+                    Col = Col + 1;
+                }
+                if (dp["code"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Localização");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["inventory"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Inventário");
+                    Col = Col + 1;
+                }
+                if (dp["blocked"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Bloqueado");
+                    Col = Col + 1;
+                }
+                if (dp["codeUnitMeasure"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Unidade Medida Produto");
+                    Col = Col + 1;
+                }
+                if (dp["unitCost"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Custo Unitário");
+                    Col = Col + 1;
+                }
+                if (dp["wareHouseValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor em Armazem");
+                    Col = Col + 1;
+                }
+                if (dp["shelfNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Prateleiras");
+                    Col = Col + 1;
+                }
+                if (dp["vendorNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Fornecedor");
+                    Col = Col + 1;
+                }
+                if (dp["vendorItemNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Produto Fornecedor");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (StockkeepingUnitViewModel item in dp)
+                    foreach (StockkeepingUnitViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ProductNo);
-                        row.CreateCell(1).SetCellValue(item.Code);
-                        row.CreateCell(2).SetCellValue(item.Description);
-                        row.CreateCell(3).SetCellValue(item.Inventory.ToString());
-                        row.CreateCell(4).SetCellValue(item.Blocked.ToString());
-                        row.CreateCell(5).SetCellValue(item.CodeUnitMeasure);
-                        row.CreateCell(6).SetCellValue(item.UnitCost.ToString());
-                        row.CreateCell(7).SetCellValue(item.WareHouseValue.ToString());
-                        row.CreateCell(8).SetCellValue(item.ShelfNo);
-                        row.CreateCell(9).SetCellValue(item.VendorNo);
-                        row.CreateCell(10).SetCellValue(item.VendorItemNo);
+
+                        if (dp["productNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProductNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["code"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Code);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["inventory"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Inventory.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["blocked"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Blocked.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["codeUnitMeasure"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeUnitMeasure);
+                            Col = Col + 1;
+                        }
+                        if (dp["unitCost"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["wareHouseValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.WareHouseValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["shelfNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ShelfNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["vendorNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VendorNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["vendorItemNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VendorItemNo);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

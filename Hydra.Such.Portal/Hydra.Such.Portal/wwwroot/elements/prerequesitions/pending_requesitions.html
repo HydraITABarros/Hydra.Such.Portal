@@ -171,11 +171,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="RequisitionDate">Data Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionDate" />
+                    <vaadin-grid-sorter path="createDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDate" />
                 </template>
                 <template>
-                    {{item.requisitionDate}}
+                    {{item.createDate}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable>
@@ -198,11 +198,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="approvalDate">Data/Hora Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="approvalDate" />
+                    <vaadin-grid-sorter path="approvalDateString">Data/Hora Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvalDateString" />
                 </template>
                 <template>
-                    {{item.approvalDate}}
+                    {{item.approvalDateString}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -223,31 +223,31 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="150px" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending" on-tap="_ToApproved" disabled="{{_permissionsCreate}}">Enviar para Aprovação</paper-button>
+                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="230px" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
                     <center>
                         <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
-                        <paper-button class="btnRemove tableBtn" raised on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>

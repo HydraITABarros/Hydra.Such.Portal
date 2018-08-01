@@ -56,6 +56,10 @@ namespace Hydra.Such.Data.ViewModel.Telemoveis
         public string Marca_Show { get; set; }
         public string DataAlteracao_Show { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
+
         public ICollection<TelemoveisMovimentosView> TelemoveisMovimentos_List { get; set; }
     }
 }

@@ -257,7 +257,6 @@
                 <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
         </div>
-        <br />
         @* Grid *@
 
         <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
@@ -576,7 +575,15 @@
                 <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
-
+        <paper-dialog id="dlgDate" style="height:200px; width:300px">
+            <div>
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpPricesDate" name="dpPricesDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_openReqModelDlg">Seguinte</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
         <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -751,24 +758,47 @@
                         }
                     },
             ready: function () {
-                        var prodUnitId = @ViewBag.ProductivityUnitId;
-                        var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
-                        //get premissions to CRUD
-                        this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
-                         if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
-                             this._permissionssubMenu = true;
-                        }
-                         if (prodUnitId != null && prodUnitDesc != "") {
-                             this.prodUnitNo = prodUnitId;
-                             this.descriptionUnit = prodUnitDesc;
+                var prodUnitId = @ViewBag.ProductivityUnitId;
+                var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                //get premissions to CRUD
+                this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
+                if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
+                    this._permissionssubMenu = true;
+                }
+                if (prodUnitId != null && prodUnitDesc != "") {
+                    this.prodUnitNo = prodUnitId;
+                    this.descriptionUnit = prodUnitDesc;
+                } else {
+                    this.prodUnitNo = "";
+                    this.descriptionUnit = "";
+                    this._NotSelectedprodUnit = true;
+                    this.$.ajax_prodUnit.generateRequest();
+                }
+                this._setDefaultDateForDatePickers();
+            },
+            _setDefaultDateForDatePickers: function () { 
+                try {
+                    if (this.$.dpPricesDate == null)
+                        return;
 
-                         } else {
-                             this.prodUnitNo = "";
-                             this.descriptionUnit = "";
-                             this._NotSelectedprodUnit = true;
-                             this.$.ajax_prodUnit.generateRequest();
+                    var today = new Date();
 
-                         }
+                    var dd = today.getDate();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+
+                    var mm = today.getMonth() + 1; //January is 0!
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var yyyy = today.getFullYear();
+
+                    var today = yyyy + '-' + mm + '-' + dd; //value="2018-07-31"
+
+                    this.$.dpPricesDate.value = today;
+                }
+                catch (err) { }
             },
             _openPriceAgreementOnChange: function (e) {
                 if (e.detail.value != null && e.detail.value != "") {
@@ -1134,7 +1164,8 @@
                 this.$.ToastError.open();
             },
             _requestModels: function() {
-                this.$.dialog.open();
+                //this.$.dialog.open();
+                this.$.dlgDate.open();
                 if (this.resultModelRequisition == null ||
                     this.resultModelRequisition == undefined ||
                     this.resultModelRequisition.length == 0) {
@@ -1170,7 +1201,9 @@
             _confirm: function (selectedItem, selectedItems) {
                 if (this.selectedItems != null && this.selectedItems != "") {
                     var selItms = this.selectedItems;
-                    this.$.grid_generatebyreq_ajax.body = JSON.stringify(selItms);
+                    var date = this.$.dpPricesDate != null ? this.$.dpPricesDate.value : "";
+
+                    this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit}, "reqModels" : selItms, "pricesDate" : date });
                     this.$.grid_generatebyreq_ajax.generateRequest();
                 } else {
                     this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1277,7 +1310,13 @@
             _goBack: function (e) {
                 window.history.back();
             },
-
+            _openReqModelDlg: function () {
+                var date = this.$.dpPricesDate.value;
+                if (this.$.dpPricesDate.validate()) {
+                    this.$.dlgDate.close();
+                    this.$.dialog.open();
+                }
+            },
          });
     });
     </script>

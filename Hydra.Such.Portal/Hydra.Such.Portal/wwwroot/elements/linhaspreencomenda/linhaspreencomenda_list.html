@@ -254,13 +254,13 @@
                     {{item.nomeFornecedor_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentoaCriar_Show.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentoACriar_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="documentoaCriar_Show">Documento a Criar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="documentoaCriar_Show" />
+                    <vaadin-grid-sorter path="documentoACriar_Show">Documento a Criar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentoACriar_Show" />
                 </template>
                 <template>
-                    {{item.documentoaCriar_Show}}
+                    {{item.documentoACriar_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.criarDocumento.hidden }}">
@@ -619,7 +619,7 @@
                         "codigoLocalizacao": { hidden: false, label: "Código Localização" },
                         "numFornecedor": { hidden: false, label: "Código Fornecedor" },
                         "nomeFornecedor_Show": { hidden: false, label: "Nome Fornecedor" },
-                        "documentoaCriar_Show": { hidden: false, label: "Documento a Criar" },
+                        "documentoACriar_Show": { hidden: false, label: "Documento a Criar" },
                         "criarDocumento": { hidden: false, label: "Criar Documento" },
                         "numRequisicao": { hidden: false, label: "Nº Requisição" },
                         "numLinhaRequisicao": { hidden: false, label: "Nº Linha Requisição" },

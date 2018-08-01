@@ -345,9 +345,7 @@
                                     style="display: none;">
                     </such-selectbox>
                 </div>
-            </div>
-            <div class="row" hidden="{{ !_permissions.create }}">
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                     <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
             </div>
@@ -710,9 +708,7 @@
                         <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                     </vaadin-grid-filter>-->
                 </template>
-                mp
                 <template>
-                    he
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>

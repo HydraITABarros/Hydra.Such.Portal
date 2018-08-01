@@ -107,6 +107,9 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? ActionCode { get; set; }
         public bool? History { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
         public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
         public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
         public List<ContractLineViewModel> Lines { get; set; }

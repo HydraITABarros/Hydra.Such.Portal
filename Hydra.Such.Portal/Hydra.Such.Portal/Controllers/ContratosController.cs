@@ -1781,7 +1781,6 @@ namespace Hydra.Such.Portal.Controllers
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
                 List<int> groups = new List<int>();
-
                 if (groupInvoice != null && groupInvoice != "")
                 {
                     int Codgroup = Convert.ToInt32(groupInvoice);
@@ -1798,8 +1797,9 @@ namespace Hydra.Such.Portal.Controllers
                         NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                         PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                         PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
-                        if (Contract.SentData != null && Contract.SentData != "")
-                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
+                        if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
                         if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
                             PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
                         PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
@@ -1807,21 +1807,23 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
                         if (Contract.DueDate != null && Contract.DueDate != "")
                             PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
+                       
                         PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
                         //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
                         PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
                         PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
                         if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
                             PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+                       
                         string mes = DateTime.Now.ToString("MMMM");
                         PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
                         PreInvoiceToCreate.Observacoes = obs;
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                        if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
-                            PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
-
+                        if (Contract.StartData != null && Contract.StartData != "")
+                            PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
+                       
                         PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
                         PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
                         PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
@@ -1886,8 +1888,8 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                         PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
                         if (Contract.SentData != null && Contract.SentData != "")
-                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.SentData);
-                        if(Contract.ContractStartDate!="" && Contract.ContractEndDate !="")
+                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+                        if(Contract.ContractStartDate != "" && Contract.ContractEndDate !="")
                            PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
                         PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
                         PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
@@ -1906,8 +1908,8 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                        if (Contract.StartDateFirstContract != null && Contract.StartDateFirstContract != "")
-                            PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartDateFirstContract);
+                        if (Contract.StartData != null && Contract.StartData != "")
+                            PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
                        
                         PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
                         PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
@@ -1936,6 +1938,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                     PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
+                                    
                                     LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                 }
                             }
@@ -2247,8 +2250,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Oportunidades([FromBody] List<ContractViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Oportunidades([FromBody] List<ContractViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -2263,39 +2268,147 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Oportunidades");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Oportunidade");
-                row.CreateCell(1).SetCellValue("Data Inicio");
-                row.CreateCell(2).SetCellValue("Data Fim");
-                row.CreateCell(3).SetCellValue("Nº Contacto");
-                row.CreateCell(4).SetCellValue("Nº Cliente");
-                row.CreateCell(5).SetCellValue("Nome Cliente");
-                row.CreateCell(6).SetCellValue("Descrição");
-                row.CreateCell(7).SetCellValue("Estado");
-                row.CreateCell(8).SetCellValue("Cód. Região");
-                row.CreateCell(9).SetCellValue("Cód. Área Funcional");
-                row.CreateCell(10).SetCellValue("Cód. Centro Responsabilidade");
-                row.CreateCell(11).SetCellValue("Nº Versão");
-                row.CreateCell(12).SetCellValue("Valor Total");
+                int Col = 0;
+
+                if (dp["contractNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Oportunidade");
+                    Col = Col + 1;
+                }
+                if (dp["startData"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicio");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim");
+                    Col = Col + 1;
+                }
+                if (dp["contactNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Contacto");
+                    Col = Col + 1;
+                }
+                if (dp["clientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["clientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["statusDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["versionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    Col = Col + 1;
+                }
+                if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Total");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ContractViewModel item in dp)
+                    foreach (ContractViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ContractNo);
-                        row.CreateCell(1).SetCellValue(item.StartData);
-                        row.CreateCell(2).SetCellValue(item.DueDate);
-                        row.CreateCell(3).SetCellValue(item.ContactNo);
-                        row.CreateCell(4).SetCellValue(item.ClientNo);
-                        row.CreateCell(5).SetCellValue(item.ClientName);
-                        row.CreateCell(6).SetCellValue(item.Description);
-                        row.CreateCell(7).SetCellValue(item.StatusDescription);
-                        row.CreateCell(8).SetCellValue(item.CodeRegion);
-                        row.CreateCell(9).SetCellValue(item.CodeFunctionalArea);
-                        row.CreateCell(10).SetCellValue(item.CodeResponsabilityCenter);
-                        row.CreateCell(11).SetCellValue(item.VersionNo);
-                        row.CreateCell(12).SetCellValue(item.TotalProposalValue.ToString());
+
+                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["startData"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartData);
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DueDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["contactNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContactNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["statusDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TotalProposalValue.ToString());
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
@@ -2317,8 +2430,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Propostas([FromBody] List<ContractViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Propostas([FromBody] List<ContractViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -2333,39 +2448,147 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Propostas");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Proposta");
-                row.CreateCell(1).SetCellValue("Nº Oportunidade");
-                row.CreateCell(2).SetCellValue("Data Inicio");
-                row.CreateCell(3).SetCellValue("Data Fim");
-                row.CreateCell(4).SetCellValue("Nº Contacto");
-                row.CreateCell(5).SetCellValue("Nº Cliente");
-                row.CreateCell(6).SetCellValue("Nome Cliente");
-                row.CreateCell(7).SetCellValue("Descrição");
-                row.CreateCell(8).SetCellValue("Estado");
-                row.CreateCell(9).SetCellValue("Cód. Região");
-                row.CreateCell(10).SetCellValue("Cód. Área Funcional");
-                row.CreateCell(11).SetCellValue("Cód. Centro Responsabilidade");
-                row.CreateCell(12).SetCellValue("Nº Versão");
+                int Col = 0;
+
+                if (dp["contractNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Proposta");
+                    Col = Col + 1;
+                }
+                if (dp["oportunityNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Oportunidade");
+                    Col = Col + 1;
+                }
+                if (dp["startData"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicio");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim");
+                    Col = Col + 1;
+                }
+                if (dp["contactNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Contacto");
+                    Col = Col + 1;
+                }
+                if (dp["clientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["clientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["statusDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["versionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ContractViewModel item in dp)
+                    foreach (ContractViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ContractNo);
-                        row.CreateCell(1).SetCellValue(item.OportunityNo);
-                        row.CreateCell(2).SetCellValue(item.StartData);
-                        row.CreateCell(3).SetCellValue(item.DueDate);
-                        row.CreateCell(4).SetCellValue(item.ContactNo);
-                        row.CreateCell(5).SetCellValue(item.ClientNo);
-                        row.CreateCell(6).SetCellValue(item.ClientName);
-                        row.CreateCell(7).SetCellValue(item.Description);
-                        row.CreateCell(8).SetCellValue(item.StatusDescription);
-                        row.CreateCell(9).SetCellValue(item.CodeRegion);
-                        row.CreateCell(10).SetCellValue(item.CodeFunctionalArea);
-                        row.CreateCell(11).SetCellValue(item.CodeResponsabilityCenter);
-                        row.CreateCell(12).SetCellValue(item.VersionNo);
+
+                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["oportunityNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.OportunityNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["startData"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartData);
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DueDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["contactNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContactNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["statusDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
@@ -2387,8 +2610,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_Contratos([FromBody] List<ContractViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_Contratos([FromBody] List<ContractViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -2403,35 +2628,127 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Contratos");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Contrato");
-                row.CreateCell(1).SetCellValue("Data Inicio");
-                row.CreateCell(2).SetCellValue("Data Fim");
-                row.CreateCell(3).SetCellValue("Nº Cliente");
-                row.CreateCell(4).SetCellValue("Nome Cliente");
-                row.CreateCell(5).SetCellValue("Âmbito dos Serviços");
-                row.CreateCell(6).SetCellValue("Estado");
-                row.CreateCell(7).SetCellValue("Cód. Região");
-                row.CreateCell(8).SetCellValue("Cód. Área Funcional");
-                row.CreateCell(9).SetCellValue("Cód. Centro Responsabilidade");
-                row.CreateCell(10).SetCellValue("Nº Versão");
+                int Col = 0;
+
+                if (dp["contractNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Contrato");
+                    Col = Col + 1;
+                }
+                if (dp["startData"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicio");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim");
+                    Col = Col + 1;
+                }
+                if (dp["clientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["clientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Âmbito dos Serviços");
+                    Col = Col + 1;
+                }
+                if (dp["statusDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["versionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ContractViewModel item in dp)
+                    foreach (ContractViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ContractNo);
-                        row.CreateCell(1).SetCellValue(item.StartData);
-                        row.CreateCell(2).SetCellValue(item.DueDate);
-                        row.CreateCell(3).SetCellValue(item.ClientNo);
-                        row.CreateCell(4).SetCellValue(item.ClientName);
-                        row.CreateCell(5).SetCellValue(item.Description);
-                        row.CreateCell(6).SetCellValue(item.StatusDescription);
-                        row.CreateCell(7).SetCellValue(item.CodeRegion);
-                        row.CreateCell(8).SetCellValue(item.CodeFunctionalArea);
-                        row.CreateCell(9).SetCellValue(item.CodeResponsabilityCenter);
-                        row.CreateCell(10).SetCellValue(item.VersionNo);
+
+                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["startData"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartData);
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DueDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["statusDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }
@@ -2453,8 +2770,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_AvencaFixa([FromBody] List<FaturacaoContratosViewModel> dp)
+        public async Task<JsonResult> ExportToExcel_AvencaFixa([FromBody] List<FaturacaoContratosViewModel> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -2469,43 +2788,157 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Avença Fixa");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Contrato");
-                row.CreateCell(1).SetCellValue("Situação");
-                row.CreateCell(2).SetCellValue("Descrição");
-                row.CreateCell(3).SetCellValue("Nº Cliente");
-                row.CreateCell(4).SetCellValue("Nome Cliente");
-                row.CreateCell(5).SetCellValue("Valor da Fatura");
-                row.CreateCell(6).SetCellValue("Nº Faturas a Emitir");
-                row.CreateCell(7).SetCellValue("Total a Faturar");
-                row.CreateCell(8).SetCellValue("Valor do Contrato");
-                row.CreateCell(9).SetCellValue("Valor por Faturar");
-                row.CreateCell(10).SetCellValue("Valor Faturado");
-                row.CreateCell(11).SetCellValue("Cód. Região");
-                row.CreateCell(12).SetCellValue("Cód. Área Funcional");
-                row.CreateCell(13).SetCellValue("Cód. Centro Responsabilidade");
-                row.CreateCell(14).SetCellValue("Data Próxima Fatura");
+                int Col = 0;
+
+                if (dp["contractNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Contrato");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["clientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["clientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor da Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["numberOfInvoices"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Faturas a Emitir");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceTotal"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Total a Faturar");
+                    Col = Col + 1;
+                }
+                if (dp["contractValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor do Contrato");
+                    Col = Col + 1;
+                }
+                if (dp["valueToInvoice"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor por Faturar");
+                    Col = Col + 1;
+                }
+                if (dp["billedValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Faturado");
+                    Col = Col + 1;
+                }
+                if (dp["regionCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["registerDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Próxima Fatura");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (FaturacaoContratosViewModel item in dp)
+                    foreach (FaturacaoContratosViewModel item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.ContractNo);
-                        row.CreateCell(1).SetCellValue(item.Situation);
-                        row.CreateCell(2).SetCellValue(item.Description);
-                        row.CreateCell(3).SetCellValue(item.ClientNo);
-                        row.CreateCell(4).SetCellValue(item.ClientName);
-                        row.CreateCell(5).SetCellValue(item.InvoiceValue.ToString());
-                        row.CreateCell(6).SetCellValue(item.NumberOfInvoices.ToString());
-                        row.CreateCell(7).SetCellValue(item.InvoiceTotal.ToString());
-                        row.CreateCell(8).SetCellValue(item.ContractValue.ToString());
-                        row.CreateCell(9).SetCellValue(item.ValueToInvoice.ToString());
-                        row.CreateCell(10).SetCellValue(item.BilledValue.ToString());
-                        row.CreateCell(11).SetCellValue(item.RegionCode);
-                        row.CreateCell(12).SetCellValue(item.FunctionalAreaCode);
-                        row.CreateCell(13).SetCellValue(item.ResponsabilityCenterCode);
-                        row.CreateCell(14).SetCellValue(item.RegisterDate);
+
+                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["numberOfInvoices"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NumberOfInvoices.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceTotal"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceTotal.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["contractValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["valueToInvoice"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ValueToInvoice.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["billedValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.BilledValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["regionCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegionCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["registerDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegisterDate);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

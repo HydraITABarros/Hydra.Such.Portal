@@ -226,7 +226,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnEdit" raised on-tap="_detailsAcess">Ficha</paper-button>
+                        <paper-button class="btnEdit tableBtn" on-tap="_detailsAcess" title="Ficha"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -280,6 +280,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },

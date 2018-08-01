@@ -120,7 +120,7 @@
                                 </template>
                                 <template>
                                     <center>
-                                        <paper-button raised class="btnRemove" on-tap="_redirectToRequisitionDetails"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Requisição</paper-button>
+                                        <paper-button raised class="btnRemove tableBtn" on-tap="_redirectToRequisitionDetails" title="Ver Requisição"><i class="fa fa-eye" aria-hidden="true"></i></paper-button>
                                     </center>
                                 </template>
                             </vaadin-grid-column>
@@ -178,6 +178,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this._statesOfPlay1[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this._statesOfPlay1);
                     this.$.ajax_Export.generateRequest();
                 },

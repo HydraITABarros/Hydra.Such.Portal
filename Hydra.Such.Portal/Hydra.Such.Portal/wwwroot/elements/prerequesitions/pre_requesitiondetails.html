@@ -397,52 +397,35 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="UrgentId" checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="ExclusiveId" checked="{{data.exclusive}}">Exclusivo</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="AlreadyExecutedId" checked="{{data.alreadyExecuted}}">Já Executado</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="SampleId" checked="{{data.sample}}">Amostra</vaadin-checkbox>
                                         </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="EquipmentId" checked="{{data.equipment}}">Equipamento</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="MoneyBuyId" checked="{{data.moneyBuy}}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="StockReplacementId" checked="{{data.stockReplacement}}">Reposição de Stock</vaadin-checkbox>
                                         </div>
-
-                                        <div class="col-md-2">
+                                        <div class="col-sm-2">
                                             <vaadin-checkbox id="ComplaintId" checked="{{data.complaint}}">Reclamação</vaadin-checkbox>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                        </div>
-
-                                        <div class="col-md-2">
                                         </div>
                                     </div>
 
@@ -458,7 +441,6 @@
                                         <div class="col-md-3">
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.openOrderNo}}" disabled></vaadin-text-field>
@@ -1591,7 +1573,7 @@
                 },
 
                 _createnewreq: function (e) {
-
+                    debugger;
                     this.data.area = this._areaid;
                     this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                     this.$.page_validator_req_ajax.generateRequest();

@@ -288,8 +288,10 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_TelemoveisCartoes([FromBody] List<TelemoveisCartoesView> dp)
+        public async Task<JsonResult> ExportToExcel_TelemoveisCartoes([FromBody] List<TelemoveisCartoesView> Lista)
         {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -304,27 +306,87 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Telemóveis Cartões");
                 IRow row = excelSheet.CreateRow(0);
-                row.CreateCell(0).SetCellValue("Nº Cartão");
-                row.CreateCell(1).SetCellValue("Tipo Serviço");
-                row.CreateCell(2).SetCellValue("Estado");
-                row.CreateCell(3).SetCellValue("Conta SUCH");
-                row.CreateCell(4).SetCellValue("Código Região");
-                row.CreateCell(5).SetCellValue("Código Área Funcional");
-                row.CreateCell(6).SetCellValue("Código Centro Responsabilidade");
+                int Col = 0;
+
+                if (dp["numCartao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cartão");
+                    Col = Col + 1;
+                }
+                if (dp["tipoServico_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo Serviço");
+                    Col = Col + 1;
+                }
+                if (dp["estado_Show"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["contaSuch"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Conta SUCH");
+                    Col = Col + 1;
+                }
+                if (dp["codRegiao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["codAreaFuncional"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (TelemoveisCartoesView item in dp)
+                    foreach (TelemoveisCartoesView item in Lista)
                     {
+                        Col = 0;
                         row = excelSheet.CreateRow(count);
-                        row.CreateCell(0).SetCellValue(item.NumCartao);
-                        row.CreateCell(1).SetCellValue(item.TipoServico_Show);
-                        row.CreateCell(2).SetCellValue(item.Estado_Show);
-                        row.CreateCell(3).SetCellValue(item.ContaSuch);
-                        row.CreateCell(4).SetCellValue(item.CodRegiao);
-                        row.CreateCell(5).SetCellValue(item.CodAreaFuncional);
-                        row.CreateCell(6).SetCellValue(item.CodCentroResponsabilidade);
+
+                        if (dp["numCartao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NumCartao);
+                            Col = Col + 1;
+                        }
+                        if (dp["tipoServico_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TipoServico_Show);
+                            Col = Col + 1;
+                        }
+                        if (dp["estado_Show"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Estado_Show);
+                            Col = Col + 1;
+                        }
+                        if (dp["contaSuch"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContaSuch);
+                            Col = Col + 1;
+                        }
+                        if (dp["codRegiao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodRegiao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codAreaFuncional"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodAreaFuncional);
+                            Col = Col + 1;
+                        }
+                        if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade);
+                            Col = Col + 1;
+                        }
                         count++;
                     }
                 }

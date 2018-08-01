@@ -338,7 +338,7 @@
                     var ajax_request = this.$.grid_databound_ajax;
                     debugger;
                     if (data.detail.status === 200) {
-                        this._openToast(this.deletedData.eMessage);
+                        this._openToast("Oportunidade eliminada com sucesso");
                         if (this.deletedData.eReasonCode == 1) {
                             ajax_request.body = JSON.stringify({ "AreaId": self._areaid, "Archived": self._archived, "ContractNo": self._contractno });
                             ajax_request.generateRequest();
@@ -402,6 +402,8 @@
 
                 _exportEXCEL: function () {
                     //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },

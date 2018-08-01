@@ -26,6 +26,9 @@ namespace Hydra.Such.Data.ViewModel
         public string EmailContact { get; set; }
         public string Notes { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
 
         public ContactViewModel()
         {

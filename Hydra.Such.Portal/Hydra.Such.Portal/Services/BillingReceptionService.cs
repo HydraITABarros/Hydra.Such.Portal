@@ -45,37 +45,42 @@ namespace Hydra.Such.Portal.Services
 
                 item.Id = DBNumerationConfigurations.GetNextNumeration(Cfg, autoGenId, isRec);
             }
-
-            item = repo.Create(item);
-
-            RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
-            wfItem.IdRecFaturacao = item.Id;
-            wfItem.AreaWorkflow = Data.EnumHelper.GetDescriptionFor(typeof(BillingReceptionAreas), (int)BillingReceptionAreas.Contabilidade);
-            wfItem.Descricao = "Entrada fatura em receção";
-            wfItem.CriadoPor = item.CriadoPor;
-            wfItem.Data = DateTime.Now;
-            wfItem.DataCriacao = DateTime.Now;
-            wfItem.Estado = (int)BillingReceptionStates.Rececao;//TODO: Identificar estados possivels “Receção/Conferência”
-
-            repo.Create(wfItem);
-
-            try
+            if (item.Id != "" && item.Id != null)
             {
-                repo.SaveChanges();
+                item = repo.Create(item);
 
-                //Update Last Numeration Used
-                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(Cfg);
-                ConfigNumerations.ÚltimoNºUsado = wfItem.IdRecFaturacao;
-                ConfigNumerations.UtilizadorModificação = item.CriadoPor;
-                DBNumerationConfigurations.Update(ConfigNumerations);
-               
+                RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
+                wfItem.IdRecFaturacao = item.Id;
+                wfItem.AreaWorkflow = Data.EnumHelper.GetDescriptionFor(typeof(BillingReceptionAreas), (int)BillingReceptionAreas.Contabilidade);
+                wfItem.Descricao = "Entrada fatura em receção";
+                wfItem.CriadoPor = item.CriadoPor;
+                wfItem.Data = DateTime.Now;
+                wfItem.DataCriacao = DateTime.Now;
+                wfItem.Estado = (int)BillingReceptionStates.Rececao;//TODO: Identificar estados possivels “Receção/Conferência”
+
+                repo.Create(wfItem);
+
+                try
+                {
+                    repo.SaveChanges();
+
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(Cfg);
+                    ConfigNumerations.ÚltimoNºUsado = wfItem.IdRecFaturacao;
+                    ConfigNumerations.UtilizadorModificação = item.CriadoPor;
+                    DBNumerationConfigurations.Update(ConfigNumerations);
+
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+                return item;
             }
-            catch (Exception ex)
+            else
             {
-                return null;
+                return item;
             }
-
-            return item;
         }
         
         public string CreateNumeration(BillingReceptionModel item)
