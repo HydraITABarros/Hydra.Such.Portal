@@ -42,7 +42,14 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay" id="getStatesOfPlay_ajax" last-response="{{_statesOfPlay1}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay"
+                   id="getStatesOfPlay_ajax"
+                   last-response="{{_statesOfPlay1}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_PontosSituacaoRequisicoes"
                    last-response="{{export}}"
@@ -78,17 +85,69 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
-                        <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{_selectedItem}}">
-                            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                        <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{activeItem}}">
+
+                            <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                                 <template class="header">
-                                    <vaadin-grid-sorter path="requisitionNo" direction="desc">Requisição</vaadin-grid-sorter>
+                                    <vaadin-grid-sorter path="requisitionNo" direction="desc">Nº Requisição</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="requisitionNo" />
                                 </template>
                                 <template>
                                     {{item.requisitionNo}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.readStringValue.hidden }}">
+
+                            <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.stateOfPlayId.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="stateOfPlayId" direction="desc">Nº Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="stateOfPlayId" />
+                                </template>
+                                <template>
+                                    {{item.stateOfPlayId}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.question.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="question">Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="question" />
+                                </template>
+                                <template>
+                                    {{item.question}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.questionDateText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionDateText">Data do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionDateText" />
+                                </template>
+                                <template>
+                                    {{item.questionDateText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.questionTimeText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionTimeText">Hora do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionTimeText" />
+                                </template>
+                                <template>
+                                    {{item.questionTimeText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.questionedByText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionedByText">Utilizador do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionedByText" />
+                                </template>
+                                <template>
+                                    {{item.questionedByText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.readStringValue.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="readStringValue" />
@@ -97,16 +156,8 @@
                                     {{ item.readStringValue }}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.question.hidden }}">
-                                <template class="header">
-                                    <vaadin-grid-sorter path="question">Pergunta</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="question" />
-                                </template>
-                                <template>
-                                    {{item.question}}
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.answer.hidden }}">
+
+                            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.answer.hidden }}">
                                 <template class="header">
                                     <vaadin-grid-sorter path="answer">Resposta</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="answer" />
@@ -115,7 +166,38 @@
                                     {{item.answer}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="60px" resizable>
+
+                            <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.answerDateText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answerDateText">Data da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answerDateText" />
+                                </template>
+                                <template>
+                                    {{item.answerDateText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.answerTimeText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answerTimeText">Hora da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answerTimeText" />
+                                </template>
+                                <template>
+                                    {{item.answerTimeText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.answeredByText.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answeredByText">Utilizador da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answeredByText" />
+                                </template>
+                                <template>
+                                    {{item.answeredByText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="50px" resizable>
                                 <template class="header">
                                 </template>
                                 <template>
@@ -139,8 +221,8 @@
                         type: Boolean,
                         value: true
                     },
-                    _selectedItem: {
-                        observer: '_onItemSelected'
+                    activeItem: {
+                        observer: '_rowSelected'
                     },
                     _columns: {
                         type: Object,
@@ -167,12 +249,16 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
-                _onItemSelected: function (item) {
+                _rowSelected: function (item) {
+                    debugger;
+                    this.$.grdItems.selectedItems = item ? [item] : [];
                     if (item != null) {
                         window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqid=" + item.requisitionNo + "&lineid=" + item.stateOfPlayId;
                     }
                 },
                 _redirectToRequisitionDetails: function (e) {
+                    debugger;
+                    e.preventDefault();
                     window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
                 },
 
@@ -193,10 +279,17 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "requisitionNo": { hidden: false, label: "Requisição" },
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "stateOfPlayId": { hidden: false, label: "Nº Pedido" },
+                        "question": { hidden: false, label: "Pedido" },
+                        "questionDateText": { hidden: false, label: "Data do Pedido" },
+                        "questionTimeText": { hidden: false, label: "Hora do Pedido" },
+                        "questionedByText": { hidden: false, label: "Utilizador do Pedido" },
                         "readStringValue": { hidden: false, label: "Lido" },
-                        "question": { hidden: false, label: "Pergunta" },
-                        "answer": { hidden: false, label: "Resposta" }
+                        "answer": { hidden: false, label: "Resposta" },
+                        "answerDateText": { hidden: false, label: "Data da Resposta" },
+                        "answerTimeText": { hidden: false, label: "Hora da Resposta" },
+                        "answeredByText": { hidden: false, label: "Utilizador da Resposta" }
                     };
 
                     if (sessionStorage["stateofplaydetails.ToggleColumn"]) {

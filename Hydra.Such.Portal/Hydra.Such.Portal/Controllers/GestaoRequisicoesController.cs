@@ -1518,9 +1518,26 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        //public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
+        //{
+        //    UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+        //    if (userPermissions != null && userPermissions.Read.Value)
+        //    {
+        //        ViewBag.UPermissions = userPermissions;
+        //        ViewBag.RequisitionNo = reqId;
+        //        ViewBag.AutoOpenDialogOnLineNo = lineId;
+
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        return Redirect(Url.Content("~/Error/AccessDenied"));
+        //    }
+        //}
+
         [HttpPost]
 
-        public JsonResult GetStatesOfPlay(string id)
+        public JsonResult GetStatesOfPlay([FromBody] string id)
         {
             List<StateOfPlayViewModel> items;
             if (string.IsNullOrEmpty(id))
@@ -2149,7 +2166,32 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (dp["requisitionNo"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Requisição");
+                    row.CreateCell(Col).SetCellValue("Nº Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["stateOfPlayId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Pedido");
+                    Col = Col + 1;
+                }
+                if (dp["question"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Pedido");
+                    Col = Col + 1;
+                }
+                if (dp["questionDateText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data do Pedido");
+                    Col = Col + 1;
+                }
+                if (dp["questionTimeText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora do Pedido");
+                    Col = Col + 1;
+                }
+                if (dp["questionedByText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador do Pedido");
                     Col = Col + 1;
                 }
                 if (dp["readStringValue"]["hidden"].ToString() == "False")
@@ -2157,14 +2199,24 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Lido");
                     Col = Col + 1;
                 }
-                if (dp["question"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Pergunta");
-                    Col = Col + 1;
-                }
                 if (dp["answer"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Resposta");
+                    Col = Col + 1;
+                }
+                if (dp["answerDateText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data da Resposta");
+                    Col = Col + 1;
+                }
+                if (dp["answerTimeText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora da Resposta");
+                    Col = Col + 1;
+                }
+                if (dp["answeredByText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador da Resposta");
                     Col = Col + 1;
                 }
 
@@ -2181,9 +2233,9 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.RequisitionNo);
                             Col = Col + 1;
                         }
-                        if (dp["readStringValue"]["hidden"].ToString() == "False")
+                        if (dp["stateOfPlayId"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.ReadStringValue);
+                            row.CreateCell(Col).SetCellValue(item.StateOfPlayId);
                             Col = Col + 1;
                         }
                         if (dp["question"]["hidden"].ToString() == "False")
@@ -2191,9 +2243,44 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Question);
                             Col = Col + 1;
                         }
+                        if (dp["questionDateText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuestionDateText);
+                            Col = Col + 1;
+                        }
+                        if (dp["questionTimeText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuestionTimeText);
+                            Col = Col + 1;
+                        }
+                        if (dp["questionedByText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuestionedByText);
+                            Col = Col + 1;
+                        }
+                        if (dp["readStringValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ReadStringValue);
+                            Col = Col + 1;
+                        }
                         if (dp["answer"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Answer);
+                            Col = Col + 1;
+                        }
+                        if (dp["answerDateText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AnswerDateText);
+                            Col = Col + 1;
+                        }
+                        if (dp["answerTimeText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AnswerTimeText);
+                            Col = Col + 1;
+                        }
+                        if (dp["answeredByText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AnsweredByText);
                             Col = Col + 1;
                         }
                         count++;
