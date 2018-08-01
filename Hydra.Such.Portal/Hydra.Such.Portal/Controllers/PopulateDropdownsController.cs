@@ -343,7 +343,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetpriceAgreementByDate([FromBody] DateTime date,string area)
         {
-            
             try
             {
                 if (area.Length <= 1)
@@ -362,7 +361,6 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
-
         }
      
 
