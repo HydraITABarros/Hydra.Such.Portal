@@ -1125,7 +1125,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                   
                     Decimal lineQuantity = 1;
-
+                    int? CountDuplicate = contractLinesList.Where(x => x.NºContrato == line.NºContrato && x.GrupoFatura == line.GrupoFatura).Count();
                     if (ContractNoDuplicate != line.NºContrato || InvoiceGroupDuplicate != line.GrupoFatura)
                     {
                         ContractNoDuplicate = line.NºContrato;
@@ -1158,26 +1158,58 @@ namespace Hydra.Such.Portal.Controllers
                         Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
 
                         DateTime nextInvoice = lastDay;
+                        DateTime? lastInvoiceDate = null;
                         int lastInvoice = 0;
                         int invoiceNumber = 0;
-
+                        if (item.DataExpiração != null && current >= item.DataExpiração)
+                        {
+                            current = item.DataExpiração.Value;
+                        }
                         if (line.Quantidade != 0)
                         {
                             lineQuantity = line.Quantidade == null ? 0 : line.Quantidade.Value;
                         }
-
-                        if (item.ÚltimaDataFatura == null)
+                        if (CountDuplicate != null && CountDuplicate > 1)
+                        {
+                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, line.GrupoFatura);
+                            if (GetReqClientCont != null)
+                            {
+                                lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;
+                                if (lastInvoiceDate != null)
+                                {
+                                    nextInvoice = lastInvoiceDate.Value;
+                                    lastInvoice = lastInvoiceDate.Value.Month;
+                                }
+                                else
+                                {
+                                    if (item.DataInicial != null)
+                                    {
+                                        nextInvoice = item.DataInicial.Value;
+                                        lastInvoice = item.DataInicial.Value.Month;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (item.DataInicial != null)
+                                {
+                                    nextInvoice = item.DataInicial.Value;
+                                    lastInvoice = item.DataInicial.Value.Month;
+                                }
+                            }
+                        }
+                        else if (item.ÚltimaDataFatura != null)
+                        {
+                            nextInvoice = item.ÚltimaDataFatura.Value;
+                            lastInvoice = item.ÚltimaDataFatura.Value.Month;
+                        }
+                        else
                         {
                             if (item.DataInicial != null)
                             {
                                 nextInvoice = item.DataInicial.Value;
                                 lastInvoice = item.DataInicial.Value.Month;
                             }
-                        }
-                        else
-                        {
-                            nextInvoice = item.ÚltimaDataFatura.Value;
-                            lastInvoice = item.ÚltimaDataFatura.Value.Month;
                         }
 
                         int MonthDiff = 0;
@@ -1205,7 +1237,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 1;
-                                        nextInvoice = LastInvoice.AddMonths(1);
+                                        if (LastInvoice == item.DataExpiração)
+                                        {
+                                            nextInvoice = LastInvoice;
+                                        }
+                                        else
+                                        {
+                                            nextInvoice = LastInvoice.AddMonths(1);
+                                        }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
                                     else
@@ -1238,7 +1277,14 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                     {
                                         invoiceNumber = 0;
-                                        nextInvoice = nextInvoice.AddMonths(2);
+                                        if (LastInvoice == item.DataExpiração)
+                                        {
+                                            nextInvoice = LastInvoice;
+                                        }
+                                        else
+                                        {
+                                            nextInvoice = LastInvoice.AddMonths(2);
+                                        }
                                         lineQuantity = lineQuantity * 2;
                                     }
                                     break;
@@ -1259,7 +1305,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 3;
-                                        nextInvoice = LastInvoice.AddMonths(3);
+                                        if (LastInvoice == item.DataExpiração)
+                                        {
+                                            nextInvoice = LastInvoice;
+                                        }
+                                        else
+                                        {
+                                            nextInvoice = LastInvoice.AddMonths(3);
+                                        }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
                                     else
@@ -1286,7 +1339,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 6;
-                                        nextInvoice = LastInvoice.AddMonths(6);
+                                        if (LastInvoice == item.DataExpiração)
+                                        {
+                                            nextInvoice = LastInvoice;
+                                        }
+                                        else
+                                        {
+                                            nextInvoice = LastInvoice.AddMonths(3);
+                                        }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
                                     else
@@ -1312,7 +1372,14 @@ namespace Hydra.Such.Portal.Controllers
                                             AddMonth = 0;
                                         }
                                         MonthDiff = MonthDiff + AddMonth;
-                                        invoiceNumber = MonthDiff / 12;
+                                        if (LastInvoice == item.DataExpiração)
+                                        {
+                                            nextInvoice = LastInvoice;
+                                        }
+                                        else
+                                        {
+                                            nextInvoice = LastInvoice.AddMonths(12);
+                                        }
                                         nextInvoice = LastInvoice.AddMonths(12);
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
