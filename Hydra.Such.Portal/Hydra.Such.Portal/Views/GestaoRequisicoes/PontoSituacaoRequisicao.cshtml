@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Ponto de Situação de Requisição";
+    ViewData["Title"] = "Ponto de Situação de Requisição (" + @ViewBag.RequisitionNo + ")";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -34,10 +34,41 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax url="/GestaoRequisicoes/AddStateOfPlay" id="addStateOfPlay_ajax" last-response="{{AddStateOfPlayResponse}}" on-response="_addStateOfPlayResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/GestaoRequisicoes/ConfirmStateOfPlayReading" id="confirmReading_ajax" last-response="{{ConfirmReadingResponse}}" on-response="_confirmReadingResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay" id="getStatesOfPlay_ajax" last-response="{{StatesOfPlay}}" on-response="_getStatesOfPlayResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/GestaoRequisicoes/SendResponse" id="sendResponse_ajax" last-response="{{SendResponseResult}}" on-response="_sendResponseResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/AddStateOfPlay"
+                   id="addStateOfPlay_ajax"
+                   last-response="{{AddStateOfPlayResponse}}"
+                   on-response="_addStateOfPlayResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/ConfirmStateOfPlayReading"
+                   id="confirmReading_ajax"
+                   last-response="{{ConfirmReadingResponse}}"
+                   on-response="_confirmReadingResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetStatesOfPlay"
+                   id="getStatesOfPlay_ajax"
+                   last-response="{{StatesOfPlay}}"
+                   on-response="_getStatesOfPlayResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/SendResponse"
+                   id="sendResponse_ajax"
+                   last-response="{{SendResponseResult}}"
+                   on-response="_sendResponseResult"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -53,16 +84,18 @@
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
                         <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{StatesOfPlay}}" class="grid" active-item="{{_selectedItem}}">
-                            <vaadin-grid-column width="60px" resizable>
+
+                            <vaadin-grid-column width="50px" resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="readStringValue" />
+                                    <vaadin-grid-sorter path="stateOfPlayId" direction="desc">Nº Ponto Situação</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="stateOfPlayId" />
                                 </template>
                                 <template>
-                                    {{ item.readStringValue }}
+                                    {{ item.stateOfPlayId }}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+
+                            <vaadin-grid-column width="150px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="question">Pergunta</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="question" />
@@ -71,13 +104,84 @@
                                     {{item.question}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionDateText">Data do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionDateText" />
+                                </template>
+                                <template>
+                                    {{item.questionDateText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionTimeText">Hora do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionTimeText" />
+                                </template>
+                                <template>
+                                    {{item.questionTimeText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="questionedByText">Utilizador do Pedido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="questionedByText" />
+                                </template>
+                                <template>
+                                    {{item.questionedByText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="50px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="readStringValue" />
+                                </template>
+                                <template>
+                                    {{ item.readStringValue }}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="answer">Resposta</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="answer" />
                                 </template>
                                 <template>
                                     {{item.answer}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answerDateText">Data da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answerDateText" />
+                                </template>
+                                <template>
+                                    {{item.answerDateText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answerTimeText">Hora da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answerTimeText" />
+                                </template>
+                                <template>
+                                    {{item.answerTimeText}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answeredByText">Utilizador da Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answeredByText" />
+                                </template>
+                                <template>
+                                    {{item.answeredByText}}
                                 </template>
                             </vaadin-grid-column>
                         </vaadin-grid>
@@ -96,7 +200,9 @@
                                 <span id="lblQuestionDate">{{_getDate(_selectedItem.questionDate)}}</span>
                             </div>
                             <div class="col-md-6 alignRight">
-                                <span id="lblQuestionedBy">{{_selectedItem.questionedBy}}</span>
+                                <span id="lblQuestionedBy">{{_selectedItem.questionedByText}}</span>
+                            </div>
+                            <div>
                             </div>
                         </div>
                         <div class="row break_clear">
@@ -119,7 +225,7 @@
                                 <span id="lblAnswerDate">{{_getDate(_selectedItem.answerDate)}}</span>
                             </div>
                             <div class="col-md-6 alignRight">
-                                <span id="lblAnsweredBy">{{_selectedItem.answeredBy}}</span>
+                                <span id="lblAnsweredBy">{{_selectedItem.answeredByText}}</span>
                             </div>
                         </div>
                         <div class="row break_clear">
@@ -161,6 +267,7 @@
                     }
                 },
                 ready: function () {
+                    debugger;
                     this.$.getStatesOfPlay_ajax.body = JSON.stringify(this._requisitionNo);
                     this.$.getStatesOfPlay_ajax.generateRequest();
                 },
@@ -197,12 +304,12 @@
                 _closeDetailsDialog: function () {
                     this._selectedItem = null;
                     this.$.dlgDetails.close();
+
+                    this.$.getStatesOfPlay_ajax.generateRequest();
+                    this.$.grdItems.clearCache();
                 },
                 _parseBool: function (value) {
                     return value ? "Sim" : "Não";
-                },
-                _getDate: function (date) {
-                    return this._getDatePart(date) + "  " + this._getTimePart(date);
                 },
                 _getDatePart: function (date) {
                     if (date != undefined) {
@@ -214,6 +321,9 @@
                             "-" + tmpDate.getFullYear().toString();
                     }
                     return "";
+                },
+                _getDate: function (date) {
+                    return this._getDatePart(date) + "  " + this._getTimePart(date);
                 },
                 _getTimePart: function (date) {
                     if (date != undefined) {
@@ -237,6 +347,7 @@
                     return false;
                 },
                 _addStateOfPlay: function () {
+                    debugger;
                     if (this._validateUserInputForNewItem()) {
                         var newItem = {
                             requisitionNo: this._requisitionNo,
