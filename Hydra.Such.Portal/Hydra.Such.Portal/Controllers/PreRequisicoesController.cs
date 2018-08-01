@@ -766,6 +766,13 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             item.SentReqToAprove = false;
                         }
+
+                        if(item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+                        
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault().CódigoLocalização;
                     }
                     if (AproveList != null && AproveList.Count > 0)
                     {
@@ -847,7 +854,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
                     data.eMessage = "";
-                    if (PreRequesitionLines.Count == 0)
+                    if (PreRequesitionLines.Count > 0)
                     {
 
                         if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))

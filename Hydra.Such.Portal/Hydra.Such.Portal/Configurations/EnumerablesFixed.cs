@@ -621,6 +621,24 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Terminado"
             } };
 
+
+        public static readonly List<EnumData> ContractType = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Contratos"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Contratos Internos"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Quotas"
+            }};
+
         public static readonly List<EnumData> ProjectCategories = new List<EnumData>(){
             new EnumData()
             {
