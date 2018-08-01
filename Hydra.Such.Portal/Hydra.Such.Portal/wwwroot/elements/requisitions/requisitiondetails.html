@@ -1340,7 +1340,7 @@
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button class="btnRemove" raised on-tap="_deleteRequisitionLine">Eliminar</paper-button>
+                                                <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </template>
@@ -2335,7 +2335,9 @@
                     }
                 },
                 _redirectToStatOfPlay: function () {
-                    window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
+                    debugger;
+                    window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqId=" + this._requisitionid;
+                    //window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
                 _goBack: function (e) {
                     window.history.back();

@@ -228,6 +228,23 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<Contratos> GetAllByContractTypeAndType(ContractType contractType, int Type)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+
+                    return ctx.Contratos.Where(x => x.TipoContrato == (int)contractType && x.Tipo == Type).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<Contratos> GetAllHistoric(int ContractType)
         {
             try
@@ -385,7 +402,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                     RazãoArquivo = x.ArchiveReason,
                     ValorBaseProcedimento = x.BaseValueProcedure,
                     AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
-                    Historico = x.History
+                    Historico = x.History,
+                    Tipo= x.Type
                 };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
@@ -540,7 +558,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
                 ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
                 ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
-                History = x.Historico
+                History = x.Historico,
+                Type= x.Tipo ?? 0
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

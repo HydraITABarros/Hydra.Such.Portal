@@ -76,7 +76,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetProjectDim([FromBody] string ProjectNo)
         {
-            
+
             ProjectListItemViewModel result = new ProjectListItemViewModel();
 
             List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
@@ -93,7 +93,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<PréRequisição> PreRequisition = null;
             PreRequisition = DBPreRequesition.GetAll(User.Identity.Name, Area);
-            
+
             List<PreRequesitionsViewModel> result = new List<PreRequesitionsViewModel>();
 
 
@@ -110,7 +110,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (PR != null && !String.IsNullOrEmpty(PreRequesitionsNo))
                 {
                     ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
-                    
+
                     PR.Área = PR.Área;
                     PR.CódigoRegião = CU.RegiãoPorDefeito ?? null;
                     PR.CódigoÁreaFuncional = CU.AreaPorDefeito ?? null;
@@ -173,13 +173,13 @@ namespace Hydra.Such.Portal.Controllers
                     DBPreRequesition.Update(PR);
 
 
-                    List <Anexos> AllAttachments = DBAttachments.GetById(PreRequesitionsNo);
+                    List<Anexos> AllAttachments = DBAttachments.GetById(PreRequesitionsNo);
                     if (AllAttachments.Count > 0)
                     {
                         foreach (Anexos Attach in AllAttachments)
                         {
                             DBAttachments.Delete(Attach);
-                        } 
+                        }
                     }
                     return Json(PR);
                 }
@@ -190,8 +190,8 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
                     return Json(data);
                 }
-                
-               
+
+
             }
             catch (Exception e)
             {
@@ -200,8 +200,8 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro inesperado ao limpar os campos.";
                 return Json(data);
             }
-            
-            
+
+
         }
 
         #region Pre Requesition Details
@@ -222,13 +222,13 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
-        
+
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
-                
+
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -339,7 +339,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
-        
+
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
 
@@ -360,7 +360,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                
+
 
                 PréRequisição createNew = new PréRequisição();
                 createNew.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito;
@@ -378,8 +378,8 @@ namespace Hydra.Such.Portal.Controllers
                 reqID.FunctionalAreaCode = createNew.CódigoÁreaFuncional;
                 reqID.ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade;
                 return Json(reqID);
-            } 
-            
+            }
+
 
         }
 
@@ -547,13 +547,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Verify if contract have Invoices Or Projects
                     List<LinhasPréRequisição> lines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
-                    foreach(var linestodelete in lines)
+                    foreach (var linestodelete in lines)
                     {
                         DBPreRequesitionLines.Delete(linestodelete);
                     }
                     // Delete Contract 
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
-                    
+
                     result.eReasonCode = 1;
                     result.eMessage = "Pré-Requisição eliminada com sucesso.";
                     //}
@@ -592,15 +592,17 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBNAV2017EncomendaAberto.GetByDimValue(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, DimValueID).Select(x => new DDMessageString()
             {
                 id = x.Code
-            }).GroupBy(x => new {
+            }).GroupBy(x => new
+            {
                 x.id
-            }).Select(x => new DDMessageString {
-               id = x.Key.id
+            }).Select(x => new DDMessageString
+            {
+                id = x.Key.id
             }).ToList();
 
             return Json(result);
         }
-        
+
         #endregion
 
         #region Numeração Pré-Requisição
@@ -627,9 +629,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json("");
         }
         #endregion
-        
+
         #region Requesition Model Lines
-        
+
         public IActionResult RequisiçõesModeloLista(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
@@ -656,7 +658,7 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
             return Json(result);
         }
-        
+
         public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel req, string id)
         {
             ErrorHandler result = new ErrorHandler()
@@ -678,7 +680,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     reqLines.UpdateAgreedPrices();
 
-                    List <LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+                    List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
                     reqLines.ForEach(x =>
                     {
                         LinhasPréRequisição newline = new LinhasPréRequisição();
@@ -788,9 +790,9 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
             }
-            
-         
-          
+
+
+
 
             return Json(result);
         }
@@ -855,217 +857,219 @@ namespace Hydra.Such.Portal.Controllers
                     if (PreRequesitionLines.Count > 0)
                     {
 
-                    if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
-                    {
-                        data.eReasonCode = 2;
-                        data.eMessage = "O campo Nº Requisição Reclamada deve ser preenchido.";
-                        return Json(data);
-                    }
-                   
-                    if (data.MoneyBuy == true)
-                    {
-                        if(PreRequesitionLines != null)
+                        if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
                         {
-                            foreach (var lines in PreRequesitionLines)
+                            data.eReasonCode = 2;
+                            data.eMessage = "O campo Nº Requisição Reclamada deve ser preenchido.";
+                            return Json(data);
+                        }
+
+                        if (data.MoneyBuy == true)
+                        {
+                            if (PreRequesitionLines != null)
                             {
-                                if (lines.CustoUnitário == null || (lines.NºFornecedor == null || lines.NºFornecedor == ""))
+                                foreach (var lines in PreRequesitionLines)
                                 {
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Os campos Custo Unitário e Nº Fornecedor das linhas devem ser todos preenchidos.";
-                                    return Json(data);
+                                    if (lines.CustoUnitário == null || (lines.NºFornecedor == null || lines.NºFornecedor == ""))
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Os campos Custo Unitário e Nº Fornecedor das linhas devem ser todos preenchidos.";
+                                        return Json(data);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (data.Equipment == true)
-                    {
-                        if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                        if (data.Equipment == true)
                         {
-                            data.eReasonCode = 4;
-                            data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
-                            return Json(data);
-                        }
-                        else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
-                        {
-                            data.eReasonCode = 4;
-                            data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
-                            return Json(data);
-                        }
-                    }
-
-                    //Get VATPostingGroup Info
-                    List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
-                    var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
-                    var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
-                    
-                    List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
-                    PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
-
-                    List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
-                        x => x.OpenOrderLineNo,
-                        x => x,
-                        (key, items) => new RequisitionViewModel
-                        {
-                            RequestReclaimNo = data.ClaimedRequesitionNo,
-                            Urgent = data.Urgent,
-                            Area = data.Area,
-                            Immobilized = data.Immobilized,
-                            Exclusive = data.Exclusive,
-                            AlreadyPerformed = data.AlreadyExecuted,
-                            Sample = data.Sample,
-                            Equipment = data.Equipment,
-                            BuyCash = data.MoneyBuy,
-                            StockReplacement = data.StockReplacement,
-                            Reclamation = data.Complaint,
-                            RegionCode = data.RegionCode,
-                            FunctionalAreaCode = data.FunctionalAreaCode,
-                            CenterResponsibilityCode = data.ResponsabilityCenterCode,
-                            Vehicle = data.Vehicle,
-                            ProjectNo = data.ProjectNo,
-                            ReceivedDate = data.ReceptionDate,
-                            Comments = data.Notes,
-                            RepairWithWarranty = data.WarrantyRepair,
-                            Emm = data.EMM,
-                            WarehouseDeliveryDate = data.DeliveryWarehouseDate,
-                            LocalCollection = data.CollectionLocal,
-                            CollectionAddress = data.CollectionAddress,
-                            CollectionPostalCode = data.CollectionPostalCode,
-                            CollectionLocality = data.CollectionLocality,
-                            CollectionContact = data.CollectionContact,
-                            CollectionResponsibleReception = data.CollectionReceptionResponsible,
-                            LocalDelivery = data.DeliveryLocal,
-                            DeliveryAddress = data.DeliveryAddress,
-                            DeliveryPostalCode = data.DeliveryPostalCode,
-                            LocalityDelivery = data.DeliveryLocality,
-                            ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
-                            InvoiceNo = data.InvoiceNo,
-                            State = RequisitionStates.Pending,
-                            CreateUser = User.Identity.Name,
-
-                            Lines = items.Select(line => new RequisitionLineViewModel()
+                            if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
                             {
-
-                                LocalCode = line.LocalCode,
-                                Code = line.Code,
-                                Description = line.Description,
-                                UnitMeasureCode = line.UnitMeasureCode,
-                                QuantityToRequire = line.QuantityToRequire,
-                                UnitCost = line.UnitCost,
-                                ProjectNo = line.ProjectNo,
-                                MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
-                                Vehicle = line.Vehicle,
-                                SupplierNo = line.SupplierNo,
-                                RegionCode = line.RegionCode,
-                                FunctionalAreaCode = line.FunctionalAreaCode,
-                                CenterResponsibilityCode = line.CenterResponsibilityCode,
-                                OpenOrderNo = line.OpenOrderNo,
-                                OpenOrderLineNo = line.OpenOrderLineNo,
-                            }).ToList()
-                        }).ToList();
-                    
-                    //Set VATPostingGroup Info
-                    newlistOpenOrder.ForEach(header =>
-                    {
-                        header.Lines.ForEach(line => {
-                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
-                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
-                        });
-                    });
-                    
-                    data = CreateRequesition(newlistOpenOrder, data);
-                    
-                    List < PreRequisitionLineViewModel > GroupedList = new List<PreRequisitionLineViewModel>();
-                    PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto ==0|| x.NºLinhaEncomendaAberto==null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
-                                        
-                    List<RequisitionViewModel> newlist = GroupedList.GroupBy(
-                        x => x.ArmazemCDireta,
-                        x => x,
-                        (key, items) => new RequisitionViewModel
-                        {
-                            RequestReclaimNo = data.ClaimedRequesitionNo,
-                            Urgent = data.Urgent,
-                            Area = data.Area,
-                            Immobilized = data.Immobilized,
-                            Exclusive = data.Exclusive,
-                            AlreadyPerformed = data.AlreadyExecuted,
-                            Sample = data.Sample,
-                            Equipment = data.Equipment,
-                            BuyCash = data.MoneyBuy,
-                            StockReplacement = data.StockReplacement,
-                            Reclamation = data.Complaint,
-                            RegionCode = data.RegionCode,
-                            FunctionalAreaCode = data.FunctionalAreaCode,
-                            CenterResponsibilityCode = data.ResponsabilityCenterCode,
-                            Vehicle = data.Vehicle,
-                            ProjectNo = data.ProjectNo,
-                            ReceivedDate = data.ReceptionDate,
-                            Comments = data.Notes,
-                            RepairWithWarranty = data.WarrantyRepair,
-                            Emm = data.EMM,
-                            WarehouseDeliveryDate = data.DeliveryWarehouseDate,
-                            LocalCollection = data.CollectionLocal,
-                            CollectionAddress = data.CollectionAddress,
-                            CollectionPostalCode = data.CollectionPostalCode,
-                            CollectionLocality = data.CollectionLocality,
-                            CollectionContact = data.CollectionContact,
-                            CollectionResponsibleReception = data.CollectionReceptionResponsible,
-                            LocalDelivery = data.DeliveryLocal,
-                            DeliveryAddress = data.DeliveryAddress,
-                            DeliveryPostalCode = data.DeliveryPostalCode, 
-                            LocalityDelivery = data.DeliveryLocality,
-                            ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
-                            InvoiceNo = data.InvoiceNo,
-                            State = RequisitionStates.Pending,
-                            CreateUser = User.Identity.Name,
-                            
-                            Lines = items.Select(line => new RequisitionLineViewModel()
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
                             {
-                                
-                                LocalCode = line.LocalCode,
-                                Code = line.Code,
-                                Description = line.Description,
-                                UnitMeasureCode = line.UnitMeasureCode,
-                                QuantityToRequire = line.QuantityToRequire,
-                                UnitCost = line.UnitCost,
-                                ProjectNo = line.ProjectNo,
-                                MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
-                                Vehicle = line.Vehicle,
-                                SupplierNo = line.SupplierNo,
-                                RegionCode = line.RegionCode,
-                                FunctionalAreaCode = line.FunctionalAreaCode,
-                                CenterResponsibilityCode = line.CenterResponsibilityCode,
-                                OpenOrderNo = line.OpenOrderNo,
-                                OpenOrderLineNo = line.OpenOrderLineNo,
-                            }).ToList()
-                        }).ToList();
-
-                    //Set VATPostingGroup Info
-                    newlist.ForEach(header =>
-                    {
-                        header.Lines.ForEach(line => {
-                            line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
-                            line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
-                        });
-                    });
-                    data = CreateRequesition(newlist, data);
-                    
-                    if (data.eReasonCode == 1 && newlist.Count > 0 || newlistOpenOrder.Count > 0)
-                    {
-                        //if all items have been created delete pre-requisition lines
-                        DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
-                        
-                        var successMessages = data.eMessages.Where(x => x.Type == TraceType.Success).Select(x => x.Message).ToArray();
-                        if (successMessages.Length > 0)
-                        {
-                            data.eMessage += " " + string.Join(";", successMessages);
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
+                                return Json(data);
+                            }
                         }
-                    }
-                    else
-                    {
-                        data.eReasonCode = 0;
-                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
-                    }
+
+                        //Get VATPostingGroup Info
+                        List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
+                        var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
+                        var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+
+                        List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
+                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                        List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
+                            x => x.OpenOrderLineNo,
+                            x => x,
+                            (key, items) => new RequisitionViewModel
+                            {
+                                RequestReclaimNo = data.ClaimedRequesitionNo,
+                                Urgent = data.Urgent,
+                                Area = data.Area,
+                                Immobilized = data.Immobilized,
+                                Exclusive = data.Exclusive,
+                                AlreadyPerformed = data.AlreadyExecuted,
+                                Sample = data.Sample,
+                                Equipment = data.Equipment,
+                                BuyCash = data.MoneyBuy,
+                                StockReplacement = data.StockReplacement,
+                                Reclamation = data.Complaint,
+                                RegionCode = data.RegionCode,
+                                FunctionalAreaCode = data.FunctionalAreaCode,
+                                CenterResponsibilityCode = data.ResponsabilityCenterCode,
+                                Vehicle = data.Vehicle,
+                                ProjectNo = data.ProjectNo,
+                                ReceivedDate = data.ReceptionDate,
+                                Comments = data.Notes,
+                                RepairWithWarranty = data.WarrantyRepair,
+                                Emm = data.EMM,
+                                WarehouseDeliveryDate = data.DeliveryWarehouseDate,
+                                LocalCollection = data.CollectionLocal,
+                                CollectionAddress = data.CollectionAddress,
+                                CollectionPostalCode = data.CollectionPostalCode,
+                                CollectionLocality = data.CollectionLocality,
+                                CollectionContact = data.CollectionContact,
+                                CollectionResponsibleReception = data.CollectionReceptionResponsible,
+                                LocalDelivery = data.DeliveryLocal,
+                                DeliveryAddress = data.DeliveryAddress,
+                                DeliveryPostalCode = data.DeliveryPostalCode,
+                                LocalityDelivery = data.DeliveryLocality,
+                                ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
+                                InvoiceNo = data.InvoiceNo,
+                                State = RequisitionStates.Pending,
+                                CreateUser = User.Identity.Name,
+
+                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                {
+
+                                    LocalCode = line.LocalCode,
+                                    Code = line.Code,
+                                    Description = line.Description,
+                                    UnitMeasureCode = line.UnitMeasureCode,
+                                    QuantityToRequire = line.QuantityToRequire,
+                                    UnitCost = line.UnitCost,
+                                    ProjectNo = line.ProjectNo,
+                                    MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
+                                    Vehicle = line.Vehicle,
+                                    SupplierNo = line.SupplierNo,
+                                    RegionCode = line.RegionCode,
+                                    FunctionalAreaCode = line.FunctionalAreaCode,
+                                    CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo,
+                                }).ToList()
+                            }).ToList();
+
+                        //Set VATPostingGroup Info
+                        newlistOpenOrder.ForEach(header =>
+                        {
+                            header.Lines.ForEach(line =>
+                            {
+                                line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                            });
+                        });
+
+                        data = CreateRequesition(newlistOpenOrder, data);
+
+                        List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                        List<RequisitionViewModel> newlist = GroupedList.GroupBy(
+                            x => x.ArmazemCDireta,
+                            x => x,
+                            (key, items) => new RequisitionViewModel
+                            {
+                                RequestReclaimNo = data.ClaimedRequesitionNo,
+                                Urgent = data.Urgent,
+                                Area = data.Area,
+                                Immobilized = data.Immobilized,
+                                Exclusive = data.Exclusive,
+                                AlreadyPerformed = data.AlreadyExecuted,
+                                Sample = data.Sample,
+                                Equipment = data.Equipment,
+                                BuyCash = data.MoneyBuy,
+                                StockReplacement = data.StockReplacement,
+                                Reclamation = data.Complaint,
+                                RegionCode = data.RegionCode,
+                                FunctionalAreaCode = data.FunctionalAreaCode,
+                                CenterResponsibilityCode = data.ResponsabilityCenterCode,
+                                Vehicle = data.Vehicle,
+                                ProjectNo = data.ProjectNo,
+                                ReceivedDate = data.ReceptionDate,
+                                Comments = data.Notes,
+                                RepairWithWarranty = data.WarrantyRepair,
+                                Emm = data.EMM,
+                                WarehouseDeliveryDate = data.DeliveryWarehouseDate,
+                                LocalCollection = data.CollectionLocal,
+                                CollectionAddress = data.CollectionAddress,
+                                CollectionPostalCode = data.CollectionPostalCode,
+                                CollectionLocality = data.CollectionLocality,
+                                CollectionContact = data.CollectionContact,
+                                CollectionResponsibleReception = data.CollectionReceptionResponsible,
+                                LocalDelivery = data.DeliveryLocal,
+                                DeliveryAddress = data.DeliveryAddress,
+                                DeliveryPostalCode = data.DeliveryPostalCode,
+                                LocalityDelivery = data.DeliveryLocality,
+                                ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
+                                InvoiceNo = data.InvoiceNo,
+                                State = RequisitionStates.Pending,
+                                CreateUser = User.Identity.Name,
+
+                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                {
+
+                                    LocalCode = line.LocalCode,
+                                    Code = line.Code,
+                                    Description = line.Description,
+                                    UnitMeasureCode = line.UnitMeasureCode,
+                                    QuantityToRequire = line.QuantityToRequire,
+                                    UnitCost = line.UnitCost,
+                                    ProjectNo = line.ProjectNo,
+                                    MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
+                                    Vehicle = line.Vehicle,
+                                    SupplierNo = line.SupplierNo,
+                                    RegionCode = line.RegionCode,
+                                    FunctionalAreaCode = line.FunctionalAreaCode,
+                                    CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo,
+                                }).ToList()
+                            }).ToList();
+
+                        //Set VATPostingGroup Info
+                        newlist.ForEach(header =>
+                        {
+                            header.Lines.ForEach(line =>
+                            {
+                                line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                            });
+                        });
+                        data = CreateRequesition(newlist, data);
+
+                        if (data.eReasonCode == 1 && newlist.Count > 0 || newlistOpenOrder.Count > 0)
+                        {
+                            //if all items have been created delete pre-requisition lines
+                            DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+
+                            var successMessages = data.eMessages.Where(x => x.Type == TraceType.Success).Select(x => x.Message).ToArray();
+                            if (successMessages.Length > 0)
+                            {
+                                data.eMessage += " " + string.Join(";", successMessages);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                        }
                     }
                     else
                     {
@@ -1133,7 +1137,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CopyFile.DocType = 2;
                                 CopyFile.Url = NewFileName;
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
-                                if(newFile != null)
+                                if (newFile != null)
                                 {
                                     System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
                                     DBAttachments.Delete(file);
@@ -1176,12 +1180,12 @@ namespace Hydra.Such.Portal.Controllers
                     data.eReasonCode = 0;
                     data.eMessage = "A numeração configurada não é compativel com a inserida.";
                 }
-               
+
             }
             if (newlist.Count > 0 && totalItems == newlist.Count)
             {
                 //if all items have been created delete pre-requisition lines
-                
+
 
                 DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
                 //data.eMessage += createdReqIds;
@@ -1210,9 +1214,9 @@ namespace Hydra.Such.Portal.Controllers
 
             List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
 
-            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name,1));
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
-            if (result != null && result.Count >0)
+            if (result != null && result.Count > 0)
             {
                 foreach (ApprovalMovementsViewModel req in result)
                 {
@@ -1247,14 +1251,14 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            if (ApprovalMovResult.eReasonCode !=3 && ApprovalMovResult.eReasonCode != 2)
+            if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
             {
                 ApprovalMovResult.eReasonCode = 1;
                 ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
             }
             return Json(ApprovalMovResult);
         }
-        
+
         #endregion
 
         #region Numeração Requisição
@@ -1283,7 +1287,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Attachments
         [HttpPost]
         [Route("PreRequisicoes/FileUpload")]
-        [Route ("PreRequisicoes/FileUpload/{id}/{linha}")]
+        [Route("PreRequisicoes/FileUpload/{id}/{linha}")]
         public JsonResult FileUpload(string id, int linha)
         {
             try
@@ -1310,7 +1314,7 @@ namespace Hydra.Such.Portal.Controllers
                             newfile.UtilizadorCriação = User.Identity.Name;
 
                             DBAttachments.Create(newfile);
-                            if(newfile.NºLinha == 0)
+                            if (newfile.NºLinha == 0)
                             {
                                 System.IO.File.Delete(path);
                             }
@@ -1348,7 +1352,7 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
         }
 
-        
+
         [HttpPost]
         public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
         {
