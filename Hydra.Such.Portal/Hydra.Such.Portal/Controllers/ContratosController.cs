@@ -1170,9 +1170,9 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.DataInicial != null)
                             {
-                                //nextInvoice = item.ÚltimaDataFatura.Value;
+                                nextInvoice = item.DataInicial.Value;
                                 lastInvoice = item.DataInicial.Value.Month;
-                               }
+                            }
                         }
                         else
                         {
@@ -1180,36 +1180,148 @@ namespace Hydra.Such.Portal.Controllers
                             lastInvoice = item.ÚltimaDataFatura.Value.Month;
                         }
 
-
-
+                        int MonthDiff = 0;
+                        int rest = 0;
+                        int AddMonth = 0;
+                        DateTime LastInvoice = lastDay;
                         if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
                         {
                             switch (item.PeríodoFatura)
                             {
                                 case 1:
-                                    nextInvoice = nextInvoice.AddMonths(1);
-                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 1;
-                                    lineQuantity = lineQuantity * 1;
+                                    MonthDiff = (GetMonthDiff(current, nextInvoice));
+                                    if (MonthDiff >= 0)
+                                    {
+                                        rest = MonthDiff % 1;
+                                        AddMonth = 1 - rest;
+                                        if (AddMonth != 1)
+                                        {
+                                            LastInvoice = current.AddMonths(AddMonth);
+                                        }
+                                        else
+                                        {
+                                            LastInvoice = current;
+                                            AddMonth = 0;
+                                        }
+                                        MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 1;
+                                        nextInvoice = LastInvoice.AddMonths(1);
+                                        lineQuantity = lineQuantity * MonthDiff;
+                                    }
+                                    else
+                                    {
+                                        invoiceNumber = 0;
+                                        nextInvoice = nextInvoice.AddMonths(1);
+                                        lineQuantity = lineQuantity * 1;
+                                    }
                                     break;
                                 case 2:
-                                    nextInvoice = nextInvoice.AddMonths(2);
-                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 2;
-                                    lineQuantity = lineQuantity * 2;
+                                    MonthDiff = (GetMonthDiff(current, nextInvoice));
+                                    if (MonthDiff >= 0)
+                                    {
+                                        rest = MonthDiff % 2;
+                                        AddMonth = 2 - rest;
+                                        if (AddMonth != 2)
+                                        {
+                                            LastInvoice = current.AddMonths(AddMonth);
+                                        }
+                                        else
+                                        {
+                                            LastInvoice = current;
+                                            AddMonth = 0;
+                                        }
+                                        MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 2;
+                                        nextInvoice = LastInvoice.AddMonths(2);
+                                        lineQuantity = lineQuantity * MonthDiff;
+                                    }
+                                    else
+                                    {
+                                        invoiceNumber = 0;
+                                        nextInvoice = nextInvoice.AddMonths(2);
+                                        lineQuantity = lineQuantity * 2;
+                                    }
                                     break;
                                 case 3:
-                                    nextInvoice = nextInvoice.AddMonths(3);
-                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 3;
-                                    lineQuantity = lineQuantity * 3;
+                                    MonthDiff = (GetMonthDiff(current, nextInvoice));
+                                    if (MonthDiff >= 0)
+                                    {
+                                        rest = MonthDiff % 3;
+                                        AddMonth = 3 - rest;
+                                        if (AddMonth != 3)
+                                        {
+                                            LastInvoice = current.AddMonths(AddMonth);
+                                        }
+                                        else
+                                        {
+                                            LastInvoice = current;
+                                            AddMonth = 0;
+                                        }
+                                        MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 3;
+                                        nextInvoice = LastInvoice.AddMonths(3);
+                                        lineQuantity = lineQuantity * MonthDiff;
+                                    }
+                                    else
+                                    {
+                                        invoiceNumber = 0;
+                                        nextInvoice = nextInvoice.AddMonths(3);
+                                        lineQuantity = lineQuantity * 3;
+                                    }
                                     break;
                                 case 4:
-                                    nextInvoice = nextInvoice.AddMonths(6);
-                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 6;
-                                    lineQuantity = lineQuantity * 6;
+                                    MonthDiff = (GetMonthDiff(current, nextInvoice));
+                                    if (MonthDiff >= 0)
+                                    {
+                                        rest = MonthDiff % 6;
+                                        AddMonth = 6 - rest;
+                                        if (AddMonth != 6)
+                                        {
+                                            LastInvoice = current.AddMonths(AddMonth);
+                                        }
+                                        else
+                                        {
+                                            LastInvoice = current;
+                                            AddMonth = 0;
+                                        }
+                                        MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 6;
+                                        nextInvoice = LastInvoice.AddMonths(6);
+                                        lineQuantity = lineQuantity * MonthDiff;
+                                    }
+                                    else
+                                    {
+                                        invoiceNumber = 0;
+                                        nextInvoice = nextInvoice.AddMonths(6);
+                                        lineQuantity = lineQuantity * 6;
+                                    }
                                     break;
                                 case 5:
-                                    nextInvoice = nextInvoice.AddMonths(12);
-                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 12;
-                                    lineQuantity = lineQuantity * 12;
+                                    MonthDiff = (GetMonthDiff(current, nextInvoice));
+                                    if (MonthDiff >= 0)
+                                    {
+                                        rest = MonthDiff % 12;
+                                        AddMonth = 12 - rest;
+                                        if (AddMonth != 12)
+                                        {
+                                            LastInvoice = current.AddMonths(AddMonth);
+                                        }
+                                        else
+                                        {
+                                            LastInvoice = current;
+                                            AddMonth = 0;
+                                        }
+                                        MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 12;
+                                        nextInvoice = LastInvoice.AddMonths(12);
+                                        lineQuantity = lineQuantity * MonthDiff;
+                                    }
+                                    else
+                                    {
+                                        invoiceNumber = 0;
+                                        nextInvoice = nextInvoice.AddMonths(12);
+                                        lineQuantity = lineQuantity * 12;
+                                    }
                                     break;
                                 case 6:
                                     //
