@@ -21,12 +21,18 @@ namespace Hydra.Such.Data.ViewModel.Compras
 
         public string Question { get; set; }
         public DateTime QuestionDate { get; set; }
+        public string QuestionDateText { get; set; }
+        public string QuestionTimeText { get; set; }
         public string QuestionedBy { get; set; }
+        public string QuestionedByText { get; set; }
 
         public string Answer { get; set; }
         public DateTime? AnswerDate { get; set; }
+        public string AnswerDateText { get; set; }
+        public string AnswerTimeText { get; set; }
         public string AnsweredBy { get; set; }
-        
+        public string AnsweredByText { get; set; }
+
         /// <summary>
         /// Indicates whether the question has been read
         /// </summary>

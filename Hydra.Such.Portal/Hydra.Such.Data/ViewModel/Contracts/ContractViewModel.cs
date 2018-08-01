@@ -106,6 +106,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string PreviousHearingTime { get; set; }
         public int? ActionCode { get; set; }
         public bool? History { get; set; }
+        public int Type { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

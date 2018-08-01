@@ -171,11 +171,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="RequisitionDate">Data Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionDate" />
+                    <vaadin-grid-sorter path="createDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDate" />
                 </template>
                 <template>
-                    {{item.requisitionDate}}
+                    {{item.createDate}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable>
@@ -198,11 +198,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="approvalDate">Data/Hora Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="approvalDate" />
+                    <vaadin-grid-sorter path="approvalDateString">Data/Hora Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvalDateString" />
                 </template>
                 <template>
-                    {{item.approvalDate}}
+                    {{item.approvalDateString}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>

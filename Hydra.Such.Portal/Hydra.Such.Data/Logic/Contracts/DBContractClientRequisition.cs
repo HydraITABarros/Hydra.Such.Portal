@@ -137,6 +137,22 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static RequisiçõesClienteContrato GetByContractAndGroup(string ContractNo, int? group)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == ContractNo && x.GrupoFatura == group).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
 
 
         public static RequisiçõesClienteContrato ParseToDB(ContractClientRequisitionViewModel  ObjectToParse)
