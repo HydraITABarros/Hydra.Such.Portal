@@ -131,10 +131,16 @@ namespace Hydra.Such.Data.Logic.Request
                     StateOfPlayId = item.NºPedido,
                     Question = item.PedidoDePontoSituação,
                     QuestionDate = item.DataPedido,
+                    QuestionDateText = item.DataPedido == null ? "" : item.DataPedido.ToString("yyyy-MM-dd"),
+                    QuestionTimeText = item.DataPedido == null ? "" : item.DataPedido.ToString("HH:mm"),
                     QuestionedBy = item.UtilizadorPedido,
+                    QuestionedByText = item.UtilizadorPedido == null ? "" : DBUserConfigurations.GetById(item.UtilizadorPedido).Nome,
                     Answer = item.Resposta,
                     AnswerDate = item.DataResposta,
+                    AnswerDateText = item.DataResposta == null ? "" : item.DataResposta.Value.ToString("yyyy-MM-dd"),
+                    AnswerTimeText = item.DataResposta == null ? "" : item.DataResposta.Value.ToString("HH:mm"),
                     AnsweredBy = item.UtilizadorResposta,
+                    AnsweredByText = item.UtilizadorResposta == null ? "" : DBUserConfigurations.GetById(item.UtilizadorResposta).Nome,
                     Read = item.ConfirmaçãoLeitura
                 };
             }

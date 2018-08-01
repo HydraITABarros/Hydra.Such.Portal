@@ -139,7 +139,15 @@ namespace Hydra.Such.Portal.Controllers
 
             if ((Archived == 0 || ContractNo == "") && (Historic == 0))
             {
-                ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
+                if (requestParams["Type"] != null)
+                {
+                    int type = int.Parse(requestParams["Type"].ToString());
+                    ContractsList = DBContracts.GetAllByContractTypeAndType(ContractType.Contract, type);
+                }
+                else
+                {
+                    ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
+                }
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else if (Historic == 1)

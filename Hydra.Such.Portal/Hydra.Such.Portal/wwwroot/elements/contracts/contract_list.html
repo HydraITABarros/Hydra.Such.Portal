@@ -12,6 +12,10 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -98,6 +102,13 @@
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
+                   id="getTypeContract_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetListContractsByArea"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
@@ -117,6 +128,11 @@
                    on-response="_exportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContratTypes" 
+                   last-response="{{CBContractType}}" auto 
+                   method="post"
+                   handle-as="json" 
+                   content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -126,6 +142,7 @@
             </template>
             <template is="dom-if" if="{{ !_contractno }}">
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
+                <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_filterOptionSelected" title="Exibir" items='[[ _filterMenuItems ]]'></such-dropdown-menu>
                 <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
 
@@ -145,6 +162,15 @@
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    [[ _clType(item.type) ]]
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -299,6 +325,10 @@
                         type: Boolean,
                         value: false
                     },
+                    _filterMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Todos" }, { value: 2, description: "Contratos" }, { value: 3, description: "Contratos Internos" }, { value: 4, description: "Quotas" }]
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -342,7 +372,6 @@
                 },
 
                 _redirectToContractHistory: function () {
-                    debugger;
                     var grid = this.$.gridContracts;
                     if (this._showMessage == "Exibir Histórico") {
                         this._showMessage = "Exibir Ativos";
@@ -358,7 +387,31 @@
                         this._isHistoric = false;
                     }
                 },
+                _filterOptionSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
 
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this.ready();
+                            break;
+                        case 2:// Contratos
+                            this.$.getTypeContract_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "Type": 1 });
+                            this.$.getTypeContract_ajax.generateRequest();
+                            break;
+                        case 3:// Contratos Internos
+                            this.$.getTypeContract_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "Type": 2 });
+                            this.$.getTypeContract_ajax.generateRequest();
+                            break;
+                        case 4:// Quotas
+                            this.$.getTypeContract_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "Type": 3 });
+                            this.$.getTypeContract_ajax.generateRequest();
+                            break;
+                    }
+                },
                 _RemoveFromHistoric: function (e) {
                     var Project = e.model.item;
                     var ajax_request = this.$.grid_removeFromHistoric_ajax;
@@ -454,6 +507,15 @@
                 },
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _clType: function (param) {
+                    if (param != undefined && this.CBContractType != undefined) {
+                        var sel = this.CBContractType.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
                 },
                 _toArray: function (obj) {
                     return Object.keys(obj).map(function (key) {

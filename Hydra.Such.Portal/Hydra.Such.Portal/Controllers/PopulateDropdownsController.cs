@@ -63,6 +63,15 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContratTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractType;
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
         public JsonResult GetNumerations()
         {
             List<DDMessage> result = DBNumerationConfigurations.GetAll().Select(x => new DDMessage()
