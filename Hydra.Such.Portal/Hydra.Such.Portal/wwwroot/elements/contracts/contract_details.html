@@ -443,7 +443,7 @@
                                                                 <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
@@ -459,13 +459,13 @@
                                                         </div>
                                                         <div class="row break_clear">
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
@@ -2154,11 +2154,11 @@
                         this.$.mFirstContractReference.validate() &
                         //this.$.mClientRequisitionNo.validate() &
                         this.$.mPromiseNo.validate() &
-                        this.$.mStartData.validate() &
+                        //this.$.mStartData.validate() &
                         this.$.mStatus.validate() &
                         //this.$.mReceiptDateRequisition.validate() &
                         this.$.versionNo.validate() &
-                        this.$.dueDate.validate() &
+                        //this.$.dueDate.validate() &
                         this.$.mChangeStatus.validate() &
                         //this.$.mServiceObject.validate() &
                         this.$.ShippingAddress.validate() &
