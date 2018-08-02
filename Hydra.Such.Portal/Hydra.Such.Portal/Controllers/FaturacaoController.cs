@@ -22,6 +22,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.Logic.ComprasML;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -788,6 +789,20 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
+        }
+        [HttpPost]
+        public JsonResult Existlink([FromBody] string sFileName)
+        {
+            string name = sFileName.Remove(0, 5);
+            name=name.Replace('/', '\\');
+            string link = Directory.GetCurrentDirectory()+"\\wwwroot" + name;
+            if (System.IO.File.Exists(link))
+            {
+                return Json("1");
+            }
+            return Json("0");
+
+
         }
 
         [HttpPost]

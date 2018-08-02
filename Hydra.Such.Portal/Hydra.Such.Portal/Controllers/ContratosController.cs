@@ -1949,6 +1949,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
                                     PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
@@ -2040,7 +2041,8 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                     PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
-                                    
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
+
                                     LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                 }
                             }

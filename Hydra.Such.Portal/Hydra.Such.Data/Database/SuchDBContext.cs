@@ -132,6 +132,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -2804,6 +2805,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºHorasIntervenção).HasColumnName("Nº Horas Intervenção");
 
+                entity.Property(e => e.NºProjeto)
+                    .HasColumnName("Nº Projeto")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.NºResponsável)
                     .HasColumnName("Nº Responsável")
                     .HasMaxLength(20);
@@ -2876,6 +2881,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
+
+                entity.Property(e => e.NºProjeto)
+                    .HasColumnName("Nº Projeto")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.PreçoUnitário).HasColumnName("Preço Unitário");
 

@@ -2151,7 +2151,6 @@
                         //this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
                         this.$.mProposalNo.validate() &
-                        //this.$.mPaymentTerms.validate() &
                         this.$.mStartDateFirstContract.validate() &
                         this.$.mFirstContractReference.validate() &
                         //this.$.mClientRequisitionNo.validate() &
@@ -2181,6 +2180,11 @@
                         if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
                             this.$.mFeeUnits.validate();
                             this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            return false;
+                        }
+                        if (this.$.mPaymentTerms.value == "" || this.$.mPaymentTerms.value == undefined) {
+                            this.$.mPaymentTerms.validate();
+                            this._openToastError("É obrigatório o método de pagamento");
                             return false;
                         }
                         if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined) {
