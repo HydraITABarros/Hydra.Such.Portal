@@ -29,7 +29,8 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                   
+                    Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
+                    Document_TypeSpecified = true,
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
                     VAT_Registration_No = PreInvoiceToCreate.ClientVATReg
                 }
@@ -41,15 +42,9 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSCreatePreInvoice.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+
+            return await WS_Client.CreateAsync(NAVCreate);
+            
         }
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoiceHeader(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)

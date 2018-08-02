@@ -156,10 +156,11 @@
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
+                   on-response="_getMovementsResponse"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/CreateInvoiceLines"
-                   last-response="{{lines}}"
+                   last-response="{{CreateInvoiceResponse}}"
                    method="post"
                    handle-as="json"
                    id="page_autorizelines_ajax"
@@ -389,6 +390,21 @@
         </vaadin-grid>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ CreateInvoiceResponse.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ _isSuccess(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{ _hasErrors }}">
+                <div style="text-align: right;">
+                    <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                </div>
+            </template>
+        </paper-toast>
     </template>
 
 
@@ -432,7 +448,11 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
@@ -463,36 +483,48 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _toggleToastMultiple: function () {
+                    //check For Errors or exceptions
+                    var errors = this.CreateInvoiceResponse.eMessages.find(x => x.type != 1);
+                    this._hasErrors = !(errors == undefined);
+                    if (this._hasErrors)
+                        //keep open
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        //close
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.CreateInvoiceResponse.eMessages = [];
+                },
+                _isError: function (type) {
+                    //Used to show or hide close button
+                    if (!this._hasErrors)
+                        this._hasErrors = type != 1;
+                    return type != 1;
+                },
+                _getMovementsResponse: function (e) {
+                    if (this.result == null) {
+                        this.openToastError("Ocorreu um erro ao obter os registos.");
+                    }
+                },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;
                     this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
                     this.$.page_autorizelines_ajax.generateRequest();
                     //console.log(this.selectedItems);
                 },
 
                 _CreateLinesResponse: function (e) {
-                    var message = this.lines.eReasonCode;
-                    switch (message) {
-
-                        case 1: this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
-                            this.$.ToastMessageSuccess.open();
-                            break;
-                        case 2: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
-                            this.$.ToastMessageError.open();
-                            break;
-                        case 3: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
-                            this.$.ToastMessageError.open();
-                            break;
-                        case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
-                            this.$.ToastMessageError.open();
+                    if (this.CreateInvoiceResponse.eReasonCode == 1) {
+                        this.openToast("Faturas criadas com sucesso");
                     }
-
+                    else {
+                        if (this.CreateInvoiceResponse.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this.openToastError(this.CreateInvoiceResponse.eMessage);
+                    }
                     this.$.page_databound_ajax.generateRequest();
                     this.$.projectInvoiceAutorization.clearCache();
-                    this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
-                    this.$.ToastMessageSuccess.open();
-
-                    //window.location.href = "/AutorizacaoFaturacao";
                 },
 
                 _exportEXCEL: function () {
