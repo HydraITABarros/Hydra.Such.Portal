@@ -1558,6 +1558,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 items = DBStateOfPlay.GetAll()
                     .ParseToViewModel()
+                    .Where(x => x.AnswerDate == null)
                     .OrderBy(x => x.Read)
                     .ToList();
             }
@@ -1645,16 +1646,17 @@ namespace Hydra.Such.Portal.Controllers
                     string emailBody = string.Format(htmlTemplateMessage, item.RequisitionNo, item.QuestionDate.ToShortDateString(), item.Question, item.Answer);
 
                     var sendMailResult = mailSender.SendMailAsync(User.Identity.Name, item.QuestionedBy, "Resposta a pedido de ponto de situação", emailBody);
-                    if (sendMailResult.IsCompletedSuccessfully)
-                    {
+
+                    //if (sendMailResult.IsCompletedSuccessfully)
+                    //{
                         result.eReasonCode = 1;
                         result.eMessage = "Resposta enviada com sucesso.";
-                    }
-                    else
-                    {
-                        result.eReasonCode = 2;
-                        result.eMessage = "Não foi possível enviar email ao utilizador que criou o pedido (" + item.QuestionedBy + ")";
-                    }
+                    //}
+                    //else
+                    //{
+                    //    result.eReasonCode = 2;
+                    //    result.eMessage = "Não foi possível enviar email ao utilizador que criou o pedido (" + item.QuestionedBy + ")";
+                    //}
                 }
             }
             item.eReasonCode = result.eReasonCode;
