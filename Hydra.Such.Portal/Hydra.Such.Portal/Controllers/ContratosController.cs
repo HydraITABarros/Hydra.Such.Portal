@@ -1152,7 +1152,23 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 NumMeses = 1;
                             }
-                            contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
+                            decimal SumPrice = 0;
+                            foreach (LinhasContratos itm in contractLinesList)
+                            {
+                                if (itm.PreçoUnitário != null)
+                                {
+                                    if (SumPrice != 0)
+                                    {
+                                        SumPrice = SumPrice + itm.PreçoUnitário.Value;
+                                    }
+                                    else
+                                    {
+                                        SumPrice = itm.PreçoUnitário.Value;
+                                    }
+                                    
+                                }
+                            }
+                            contractVal = Math.Round(NumMeses * SumPrice, 2);
                         }
 
                         List<NAVSalesInvoiceLinesViewModel> salesList = null;
