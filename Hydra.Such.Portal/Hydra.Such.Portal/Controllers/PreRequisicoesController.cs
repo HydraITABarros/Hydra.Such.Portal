@@ -1113,6 +1113,16 @@ namespace Hydra.Such.Portal.Controllers
                     createReq = DBRequest.Create(createReq);
                     if (createReq != null)
                     {
+                        //Create Workflow
+                        var ctx = new SuchDBContext();
+                        var logEntry = new RequisicoesRegAlteracoes();
+                        logEntry.NºRequisição = createReq.NºRequisição;
+                        logEntry.Estado = (int)RequisitionStates.Pending; //PENDENTE = 0
+                        logEntry.ModificadoEm = DateTime.Now;
+                        logEntry.ModificadoPor = User.Identity.Name;
+                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                        ctx.SaveChanges();
+
                         //copy files
                         var preReq = data.PreRequesitionsNo;
                         List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);

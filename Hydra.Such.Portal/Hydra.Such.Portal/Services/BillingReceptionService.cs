@@ -404,7 +404,6 @@ namespace Hydra.Such.Portal.Services
                     }
                     catch
                     {
-                        //TODO: Rever comportamento no caso de erro
                         item.eReasonCode = 2;
                         item.eMessage = "Não foi possivel abrir a Factura Nº De Encomenda:" + item.NumEncomenda;
                     }
@@ -443,7 +442,7 @@ namespace Hydra.Such.Portal.Services
                     }
                     catch
                     {
-                        //TODO: Rever comportamento no caso de erro
+                        
                         item.eReasonCode = 2;
                         item.eMessage = "Não foi possivel abrir a Factura nº:"+ item.Id;
                     }

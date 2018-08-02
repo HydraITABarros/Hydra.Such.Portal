@@ -514,7 +514,7 @@
                 },
 
                 _CreateLinesResponse: function (e) {
-                    if (this.CreateInvoiceResponse == 1) {
+                    if (this.CreateInvoiceResponse.eReasonCode == 1) {
                         this.openToast("Faturas criadas com sucesso");
                     }
                     else {
