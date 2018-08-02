@@ -1779,6 +1779,7 @@
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
+                        window.history.back();
                     }
                     else {
                         this._openToastError(this.Requisition.eMessage);
@@ -1936,7 +1937,7 @@
                     }
                 },
                 _createRequisitionLine: function () {
-                    debugger
+                    //debugger
                     if (this._validateUserInputForLine()) {
                         var newReqLine = {
                             requestNo: this.$.requisitionNo.value,

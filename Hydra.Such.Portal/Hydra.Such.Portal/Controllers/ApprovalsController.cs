@@ -157,6 +157,16 @@ namespace Hydra.Such.Portal.Controllers
                                         requisition.UpdateUser = User.Identity.Name;
                                         DBRequest.Update(requisition.ParseToDB());
 
+                                        //Create Workflow
+                                        var ctx = new SuchDBContext();
+                                        var logEntry = new RequisicoesRegAlteracoes();
+                                        logEntry.NºRequisição = requisition.RequisitionNo;
+                                        logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
+                                        logEntry.ModificadoEm = DateTime.Now;
+                                        logEntry.ModificadoPor = User.Identity.Name;
+                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                        ctx.SaveChanges();
+
                                         //Update Requisition Lines Data
                                         requisition.Lines.ForEach(line =>
                                         {
@@ -209,6 +219,16 @@ namespace Hydra.Such.Portal.Controllers
                                 requisition.UpdateUser = User.Identity.Name;
                                 requisition.Comments += rejectionComments;
                                 DBRequest.Update(requisition.ParseToDB());
+
+                                //Create Workflow
+                                var ctx = new SuchDBContext();
+                                var logEntry = new RequisicoesRegAlteracoes();
+                                logEntry.NºRequisição = requisition.RequisitionNo;
+                                logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
+                                logEntry.ModificadoEm = DateTime.Now;
+                                logEntry.ModificadoPor = User.Identity.Name;
+                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                ctx.SaveChanges();
 
                                 result.eReasonCode = 100;
                                 result.eMessage = "A requisição foi rejeitada com sucesso.";
