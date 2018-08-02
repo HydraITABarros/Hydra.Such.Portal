@@ -64,7 +64,6 @@
         <iron-ajax url="/Administracao/GetListConfigNumerations"
                    last-response="{{result}}"
                    id="ajax_update"
-                   auto
                    method="post"
                    on-response="_updateResponse"
                    handle-as="json"
@@ -79,27 +78,29 @@
             </div>
         </template>
 
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <paper-collapse-group>
-                <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
-                    <div class="panel-body">
-                        <div class="row break_clear">
-                            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+        
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
 
-                            <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+                        <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
 
-                            <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
 
-                            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
 
-                            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
 
+                        <template is="dom-if" if="{{ _permissions.create }}">
                             <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
-                        </div>
+                        </template>
                     </div>
-                </paper-collapse-item>
-            </paper-collapse-group>
-        </template>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+        
 
         <vaadin-grid id="numerationsTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
             <vaadin-grid-column resizable width="150px">

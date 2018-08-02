@@ -108,6 +108,20 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+        public static List<AutorizarFaturaçãoContratos> GetAllByContGroup(string ContractNo/*, int? Group*/)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AutorizarFaturaçãoContratos.Where(x => x.NºContrato == ContractNo /*&& x.GrupoFatura == Group*/).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static List<AutorizarFaturaçãoContratos> GetPedding()
         {
