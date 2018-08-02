@@ -364,6 +364,10 @@
                     if (this.AddStateOfPlayResponse.eReasonCode == "1") {
                         this._selectedItem = this.AddStateOfPlayResponse;
                         this._openToast(this.AddStateOfPlayResponse.eMessage);
+
+                        this._selectedItem = null;
+                        this.$.dlgDetails.close();
+
                         this.$.getStatesOfPlay_ajax.generateRequest();
                         this.$.grdItems.clearCache();
 
@@ -398,6 +402,11 @@
                 _sendResponseResult: function () {
                     if (this.SendResponseResult.eReasonCode == "1") {
                         this._openToast(this.SendResponseResult.eMessage);
+
+                        this._selectedItem = null;
+                        this.$.dlgDetails.close();
+
+                        this.$.getStatesOfPlay_ajax.generateRequest();
                         this.$.grdItems.clearCache();
                     }
                     else {

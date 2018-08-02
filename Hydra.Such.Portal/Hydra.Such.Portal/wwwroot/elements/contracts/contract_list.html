@@ -164,20 +164,20 @@
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    [[ _clType(item.type) ]]
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
-                <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
                 </template>
                 <template>
                     {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" />
+                </template>
+                <template>
+                    [[ _clType(item.type) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
@@ -476,6 +476,7 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
+                        "type": { hidden: false, label: "Tipo" },
                         "startData": { hidden: false, label: "Data Inicio" },
                         "dueDate": { hidden: false, label: "Data Fim" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
