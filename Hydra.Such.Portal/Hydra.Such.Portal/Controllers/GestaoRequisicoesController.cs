@@ -892,6 +892,20 @@ namespace Hydra.Such.Portal.Controllers
 
                                             bool keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
+                                            if (keepOpen == false)
+                                            {
+                                                using (var ctx = new SuchDBContext())
+                                                {
+                                                    var logEntry = new RequisicoesRegAlteracoes();
+                                                    logEntry.NºRequisição = item.RequisitionNo;
+                                                    logEntry.Estado = (int)RequisitionStates.Received;
+                                                    logEntry.ModificadoEm = DateTime.Now;
+                                                    logEntry.ModificadoPor = User.Identity.Name;
+                                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                    ctx.SaveChanges();
+                                                }
+                                            }
+
                                             item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
                                             item.UpdateUser = User.Identity.Name;
                                             item.UpdateDate = DateTime.Now;

@@ -1779,6 +1779,7 @@
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
+                        window.history.back();
                     }
                     else {
                         this._openToastError(this.Requisition.eMessage);
@@ -1936,7 +1937,7 @@
                     }
                 },
                 _createRequisitionLine: function () {
-                    debugger
+                    //debugger
                     if (this._validateUserInputForLine()) {
                         var newReqLine = {
                             requestNo: this.$.requisitionNo.value,
@@ -2071,6 +2072,7 @@
                                 this._isCreate = this.Requisition.requisitionNo == null;
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
+                
                             }
                             else
                                 this._isCreate = false;
@@ -2310,6 +2312,7 @@
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                             this.$.stateDescription_ajax.generateRequest();
+                            
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();
@@ -2317,6 +2320,7 @@
                         catch (err) {
                             //refresh page or inform user;
                         }
+                        location.reload();
                     }
                     else {
                         this._openToastError(this.regist.eMessage);
