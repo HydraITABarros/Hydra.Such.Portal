@@ -1148,7 +1148,9 @@
                         this._loadOrders();
                     }
                 },
+
                 _loadOrders: function (supplierId) {
+                    debugger;;
                     if (supplierId != null) {
                         this.$.orders_databound_ajax.body = JSON.stringify(supplierId);
                     }
