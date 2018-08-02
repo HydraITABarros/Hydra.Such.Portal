@@ -2857,6 +2857,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Contrato");
                     Col = Col + 1;
                 }
+                if (dp["type"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Inicio");
@@ -2919,6 +2924,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["contractNo"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["type"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Type);
                             Col = Col + 1;
                         }
                         if (dp["startData"]["hidden"].ToString() == "False")
