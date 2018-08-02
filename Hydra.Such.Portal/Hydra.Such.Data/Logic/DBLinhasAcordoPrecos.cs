@@ -154,6 +154,27 @@ namespace Hydra.Such.Data.Logic
             return false;
         }
 
+        public static List<LinhasAcordoPrecos> GetForDimensions(DateTime date, string respCenterId, string regionId, string funcAreaId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos
+                        .Where(x => x.Cresp == respCenterId 
+                                 && x.Area == funcAreaId
+                                 && x.Regiao == regionId
+                                 && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         #endregion
     }
 }
