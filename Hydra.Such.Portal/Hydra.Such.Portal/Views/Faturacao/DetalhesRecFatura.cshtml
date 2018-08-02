@@ -1475,15 +1475,16 @@
                     }                 
                 },
                 _linkExistResponse: function (e) {
-                    if (this.linkExist == 1) {
-                        var txt;
+                    var txt = true;
+                    if (this.linkExist != 1) {
+
                         if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
                             txt = true;
                         } else {
                             txt = false;
                         }
                     }
-                    else {
+                    if(txt==true) {
                         if (txt == true) {
                             var workflow = null;
                             var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
