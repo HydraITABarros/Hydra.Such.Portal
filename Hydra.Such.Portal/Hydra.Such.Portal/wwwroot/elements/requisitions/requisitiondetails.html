@@ -2072,6 +2072,7 @@
                                 this._isCreate = this.Requisition.requisitionNo == null;
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
+                
                             }
                             else
                                 this._isCreate = false;
@@ -2311,6 +2312,7 @@
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                             this.$.stateDescription_ajax.generateRequest();
+                            
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();
@@ -2318,6 +2320,7 @@
                         catch (err) {
                             //refresh page or inform user;
                         }
+                        location.reload();
                     }
                     else {
                         this._openToastError(this.regist.eMessage);
