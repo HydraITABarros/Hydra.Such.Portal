@@ -45,6 +45,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<EmailsAprovações> EmailsAprovações { get; set; }
         public virtual DbSet<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }
         public virtual DbSet<FichasTécnicasPratos> FichasTécnicasPratos { get; set; }
+        public virtual DbSet<FichaProduto> FichaProduto { get; set; }
         public virtual DbSet<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public virtual DbSet<FolhasDeHoras> FolhasDeHoras { get; set; }
         public virtual DbSet<FornecedoresAcordoPrecos> FornecedoresAcordoPrecos { get; set; }
@@ -125,6 +126,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
         public virtual DbSet<UnidadeDeArmazenamento> UnidadeDeArmazenamento { get; set; }
         public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
+        public virtual DbSet<UnidadeMedida> UnidadeMedida { get; set; }
         public virtual DbSet<UnidadePrestação> UnidadePrestação { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
@@ -2441,55 +2443,243 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Fichas Técnicas Pratos_Classificação Fichas Técnicas1");
             });
 
-            modelBuilder.Entity<FluxoTrabalhoListaControlo>(entity =>
+            modelBuilder.Entity<FichaProduto>(entity =>
             {
-                entity.HasKey(e => new { e.No, e.Estado, e.Data, e.Hora });
+                entity.HasKey(e => e.Nº);
 
-                entity.ToTable("Fluxo Trabalho Lista Controlo");
+                entity.ToTable("Ficha Produto");
 
-                entity.Property(e => e.No).HasMaxLength(10);
+                entity.Property(e => e.Nº)
+                    .HasColumnName("Nº")
+                    .HasColumnType("text")
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.Data).HasColumnType("date");
+                entity.Property(e => e.Descrição)
+                    .HasColumnName("Descrição")
+                    .HasColumnType("text")
+                    .HasMaxLength(200);
 
-                entity.Property(e => e.Comentario).HasColumnType("text");
+                entity.Property(e => e.ListaDeMateriais)
+                    .HasColumnName("Lista De Materiais");
 
-                entity.Property(e => e.Comentario2).HasColumnType("text");
+                entity.Property(e => e.UnidadeMedidaBase)
+                    .HasColumnName("Unidade Medida Base")
+                    .HasColumnType("text")
+                    .HasMaxLength(10);
 
-                entity.Property(e => e.DataHoraCriacao).HasColumnType("datetime");
+                entity.Property(e => e.Descrição)
+                    .HasColumnName("Nº Prateleira")
+                    .HasColumnType("text")
+                    .HasMaxLength(10);
 
-                entity.Property(e => e.DataHoraModificacao).HasColumnType("datetime");
+                entity.Property(e => e.PreçoUnitário)
+                    .HasColumnName("Preço Unitário");
 
-                entity.Property(e => e.DataResposta).HasColumnType("date");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário");
 
-                entity.Property(e => e.EstadoAnterior).HasColumnName("Estado Anterior");
+                entity.Property(e => e.Inventário)
+                    .HasColumnName("Inventário");
 
-                entity.Property(e => e.EstadoSeguinte).HasColumnName("Estado Seguinte");
+                entity.Property(e => e.Imagem)
+                    .HasColumnName("Imagem");
 
-                entity.Property(e => e.NomeUser)
-                    .HasColumnName("Nome User")
-                    .HasMaxLength(60)
-                    .IsUnicode(false);
+                entity.Property(e => e.ValorEnergético)
+                    .HasColumnName("Valor Energético");
 
-                entity.Property(e => e.Resposta).HasColumnType("text");
+                entity.Property(e => e.ValorEnergético100g)
+                    .HasColumnName("Valor Energético 100g");
 
-                entity.Property(e => e.User)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                entity.Property(e => e.Proteínas)
+                    .HasColumnName("Proteínas");
 
-                entity.Property(e => e.UtilizadorCriacao)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                entity.Property(e => e.Proteínas100g)
+                    .HasColumnName("Proteínas 100g");
 
-                entity.Property(e => e.UtilizadorModificacao)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                entity.Property(e => e.Glícidos)
+                    .HasColumnName("Glícidos");
 
-                entity.HasOne(d => d.NoNavigation)
-                    .WithMany(p => p.FluxoTrabalhoListaControlo)
-                    .HasForeignKey(d => d.No)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Fluxo Trabalho Lista Controlo_Procedimentos CCP");
+                entity.Property(e => e.Glícidos100g)
+                    .HasColumnName("Glícidos 100g");
+
+                entity.Property(e => e.Lípidos)
+                    .HasColumnName("Lípidos");
+
+                entity.Property(e => e.Lípidos100g)
+                    .HasColumnName("Lípidos 100g");
+
+                entity.Property(e => e.FibraAlimentar)
+                    .HasColumnName("Fibra Alimentar");
+
+                entity.Property(e => e.FibraAlimentar100g)
+                    .HasColumnName("Fibra Alimentar 100g");
+
+                entity.Property(e => e.QuantUnidadeMedida)
+                    .HasColumnName("Quant Unidade Medida");
+
+                entity.Property(e => e.GramasPorQuantUnidMedida)
+                    .HasColumnName("Gramas Por Quant Unid Medida");
+
+                entity.Property(e => e.TipoRefeição)
+                    .HasColumnName("Tipo Refeição")
+                    .HasColumnType("text")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DescriçãoRefeição)
+                    .HasColumnName("Descrição Refeição")
+                    .HasColumnType("text")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Taras)
+                    .HasColumnName("Taras");
+
+                entity.Property(e => e.ÁcidosGordosSaturados)
+                    .HasColumnName("Ácidos Gordos Saturados");
+
+                entity.Property(e => e.Açucares)
+                    .HasColumnName("Açucares");
+
+                entity.Property(e => e.Sal)
+                    .HasColumnName("Sal");
+
+                entity.Property(e => e.Cereais)
+                    .HasColumnName("Cereais");
+
+                entity.Property(e => e.Crustáceos)
+                    .HasColumnName("Crustáceos");
+
+                entity.Property(e => e.Ovos)
+                    .HasColumnName("Ovos");
+
+                entity.Property(e => e.Peixes)
+                    .HasColumnName("Peixes");
+
+                entity.Property(e => e.Amendoins)
+                    .HasColumnName("Amendoins");
+
+                entity.Property(e => e.Soja)
+                    .HasColumnName("Soja");
+
+                entity.Property(e => e.Leite)
+                    .HasColumnName("Leite");
+
+                entity.Property(e => e.FrutasDeCascaRija)
+                    .HasColumnName("Frutas De Casca Rija");
+
+                entity.Property(e => e.Aipo)
+                    .HasColumnName("Aipo");
+
+                entity.Property(e => e.Mostarda)
+                    .HasColumnName("Mostarda");
+
+                entity.Property(e => e.SementesDeSésamo)
+                    .HasColumnName("Sementes De Sésamo");
+
+                entity.Property(e => e.DióxidoDeEnxofreESulfitos)
+                    .HasColumnName("Dióxido De Enxofre E Sulfitos");
+
+                entity.Property(e => e.Tremoço)
+                    .HasColumnName("Tremoço");
+
+                entity.Property(e => e.Moluscos)
+                    .HasColumnName("Moluscos");
+
+                entity.Property(e => e.Descrição)
+                    .HasColumnName("Tipo");
+
+                entity.Property(e => e.VitaminaA)
+                    .HasColumnName("Vitamina A");
+
+                entity.Property(e => e.VitaminaD)
+                    .HasColumnName("Vitamina D");
+
+                entity.Property(e => e.Descrição)
+                    .HasColumnName("Colesterol");
+
+                entity.Property(e => e.Sodio)
+                    .HasColumnName("Sodio");
+
+                entity.Property(e => e.Potacio)
+                    .HasColumnName("Potacio");
+
+                entity.Property(e => e.Calcio)
+                    .HasColumnName("Calcio");
+
+                entity.Property(e => e.Ferro)
+                    .HasColumnName("Ferro");
+
+                entity.Property(e => e.Edivel)
+                    .HasColumnName("Edivel");
+
+                entity.Property(e => e.Alcool)
+                    .HasColumnName("Alcool");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
+
+            modelBuilder.Entity<FluxoTrabalhoListaControlo>(entity =>
+        {
+            entity.HasKey(e => new { e.No, e.Estado, e.Data, e.Hora });
+
+            entity.ToTable("Fluxo Trabalho Lista Controlo");
+
+            entity.Property(e => e.No).HasMaxLength(10);
+
+            entity.Property(e => e.Data).HasColumnType("date");
+
+            entity.Property(e => e.Comentario).HasColumnType("text");
+
+            entity.Property(e => e.Comentario2).HasColumnType("text");
+
+            entity.Property(e => e.DataHoraCriacao).HasColumnType("datetime");
+
+            entity.Property(e => e.DataHoraModificacao).HasColumnType("datetime");
+
+            entity.Property(e => e.DataResposta).HasColumnType("date");
+
+            entity.Property(e => e.EstadoAnterior).HasColumnName("Estado Anterior");
+
+            entity.Property(e => e.EstadoSeguinte).HasColumnName("Estado Seguinte");
+
+            entity.Property(e => e.NomeUser)
+                .HasColumnName("Nome User")
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.Property(e => e.Resposta).HasColumnType("text");
+
+            entity.Property(e => e.User)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.Property(e => e.UtilizadorCriacao)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.Property(e => e.UtilizadorModificacao)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.NoNavigation)
+                .WithMany(p => p.FluxoTrabalhoListaControlo)
+                .HasForeignKey(d => d.No)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Fluxo Trabalho Lista Controlo_Procedimentos CCP");
+        });
 
             modelBuilder.Entity<FolhasDeHoras>(entity =>
             {
@@ -8157,6 +8347,41 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.QtdPorUnidadeMedida)
                     .HasColumnName("Qtd por Unidade Medida")
                     .HasColumnType("decimal(, 2)");
+            });
+
+            modelBuilder.Entity<UnidadeMedida>(entity =>
+            {
+                entity.HasKey(e => new { e.Code });
+
+                entity.ToTable("Unidade Medida");
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("Code")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("Code")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("Description")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<UnidadePrestação>(entity =>
