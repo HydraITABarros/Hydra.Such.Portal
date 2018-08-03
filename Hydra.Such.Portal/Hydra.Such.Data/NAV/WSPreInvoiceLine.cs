@@ -153,7 +153,7 @@ namespace Hydra.Such.Data.NAV
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    Document_No = HeaderNo,
-                   Type = ConvertType(x.Type.ToString()),
+                   Type = ConvertInvoiceLineType(x.Type.ToString()),
                    No = x.Code,
                    Description = x.Description,
                    QuantitySpecified = true,
@@ -197,6 +197,27 @@ namespace Hydra.Such.Data.NAV
                     return WSCreatePreInvoiceLine.Type.Resource;
                 case "2":
                     return WSCreatePreInvoiceLine.Type.Item;
+                case "3":
+                    return WSCreatePreInvoiceLine.Type.G_L_Account;
+                case "4":
+                    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
+                case "5":
+                    return WSCreatePreInvoiceLine.Type.Charge_Item;
+                default:
+                    return WSCreatePreInvoiceLine.Type._blank_;
+            }
+        }
+
+
+        //problem with order
+        private static WSCreatePreInvoiceLine.Type ConvertInvoiceLineType(string type)
+        {
+            switch (type)
+            {
+                case "1":
+                    return WSCreatePreInvoiceLine.Type.Item;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
                 case "4":
