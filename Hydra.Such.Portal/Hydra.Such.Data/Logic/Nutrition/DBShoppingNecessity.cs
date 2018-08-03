@@ -122,13 +122,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-        public static bool Delete(DiárioRequisiçãoUnidProdutiva ObjectToDelete)
+
+        public static bool Delete(List<DiárioRequisiçãoUnidProdutiva> itemsToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.DiárioRequisiçãoUnidProdutiva.Remove(ObjectToDelete);
+                    ctx.DiárioRequisiçãoUnidProdutiva.RemoveRange(itemsToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -139,6 +140,13 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
                 return false;
             }
+        }
+
+        public static bool Delete(DiárioRequisiçãoUnidProdutiva ObjectToDelete)
+        {
+            List<DiárioRequisiçãoUnidProdutiva> itemsToDelete = new List<DiárioRequisiçãoUnidProdutiva>();
+            itemsToDelete.Add(ObjectToDelete);
+            return Delete(itemsToDelete);
         }
 
         public static List<DiárioRequisiçãoUnidProdutiva> GetByLineNo(int LineNo)
@@ -156,6 +164,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
         #endregion
+
+
         #region Parse Utilities
         public static DailyRequisitionProductiveUnitViewModel ParseToViewModel(this DiárioRequisiçãoUnidProdutiva item)
         {
@@ -204,6 +214,58 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     parsedItems.Add(x.ParseToViewModel()));
             return parsedItems;
         }
+
+
+        public static DiárioRequisiçãoUnidProdutiva ParseToDB(this DailyRequisitionProductiveUnitViewModel item)
+        {
+            if (item != null)
+            {
+                return new DiárioRequisiçãoUnidProdutiva()
+                {
+                    //id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
+                    NºLinha = item.LineNo,
+                    Descrição = item.Description,
+                    DataHoraCriação = item.CreateDateTime,
+                    UtilizadorCriação = item.CreateUser,
+                    DataPPreçoFornecedor =  DateTime.Parse(item.DateByPriceSupplier),
+                    CustoUnitárioDireto = item.DirectUnitCost,
+                    DataReceçãoEsperada = DateTime.Parse(item.ExpectedReceptionDate),
+                    CodigoLocalização = item.LocalCode,
+                    TipoRefeição = item.MealType,
+                    NºEncomendaAberto = item.OpenOrderNo,
+                    NºLinhaEncomendaAberto = item.OrderLineOpenNo,
+                    NºProduto = item.ProductNo,
+                    DescriçãoUnidadeProduto = item.ProductUnitDescription,
+                    NºUnidadeProdutiva = item.ProductionUnitNo,
+                    NºProjeto = item.ProjectNo,
+                    Quantidade = item.Quantity,
+                    QuantidadePorUnidMedida = item.QuantitybyUnitMeasure,
+                    NomeFornecedor = item.SupplierName,
+                    NºFornecedor = item.SupplierNo,
+                    CodigoProdutoFornecedor = item.SupplierProductCode,
+                    DescriçãoProdutoFornecedor = item.SupplierProductDescription,
+                    TabelaPreçosFornecedor = item.TableSupplierPrice,
+                    Valor = item.TotalValue,
+                    CódUnidadeMedida = item.UnitMeasureCode,
+                    DataHoraModificação = item.UpdateDateTime,
+                    UtilizadorModificação = item.UpdateUser,
+                    NºDocumento = item.DocumentNo,
+                    Observações = item.Observation
+                };
+            }
+            return null;
+        }
+
+        public static List<DiárioRequisiçãoUnidProdutiva> ParseToDB(this List<DailyRequisitionProductiveUnitViewModel> items)
+        {
+            List<DiárioRequisiçãoUnidProdutiva> parsedItems = new List<DiárioRequisiçãoUnidProdutiva>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+
+
         #endregion
     }
 }

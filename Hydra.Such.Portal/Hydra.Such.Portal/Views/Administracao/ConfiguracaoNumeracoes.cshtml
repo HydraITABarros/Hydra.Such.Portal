@@ -290,6 +290,12 @@
                     if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations") {
                         if (e.detail.status === 200) {
                             this.openToast("Numerações atualizadas.");
+                            //this.$.piDescription.value = "";
+                            //this.$.piPrefix.value = "";
+                            //this.$.piDigitNumber.value = "";
+                            //this.$.piIncrementNumber.value = "";
+                            //this.$.pcAuto.checked = false;
+                            //this.$.pcManual.checked = false;
                         }
                         else {
                             this.openToastError("Occorreu um erro ao atualizar as numerações.");

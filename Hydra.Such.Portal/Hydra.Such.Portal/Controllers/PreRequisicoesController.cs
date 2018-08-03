@@ -790,10 +790,6 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
             }
-
-
-
-
             return Json(result);
         }
 
