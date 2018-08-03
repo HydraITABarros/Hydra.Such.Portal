@@ -1139,7 +1139,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ContractNoDuplicate = line.NºContrato;
                         InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
-
                         Decimal contractVal = 0;
                         if (item.TipoContrato != 1 || item.TipoContrato != 4)
                         {
@@ -1557,6 +1556,7 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
+                            
                             GrupoFatura = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value,
                             Descrição = item.Descrição,
                             NºCliente = item.NºCliente,
@@ -1594,6 +1594,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
+                        NºProjeto = line.NºProjeto,
                         GrupoFatura = line.GrupoFatura == null ? -1 : line.GrupoFatura.Value,
                         NºLinha = line.NºLinha,
                         Tipo = line.Tipo.ToString(),

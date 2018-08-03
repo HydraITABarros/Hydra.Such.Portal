@@ -32,7 +32,10 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg
+                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
+                    Contract_No=PreInvoiceToCreate.DocumentNo
+                    
+                   
                 }
             };
 
