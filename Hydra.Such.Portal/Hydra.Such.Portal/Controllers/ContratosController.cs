@@ -1139,7 +1139,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ContractNoDuplicate = line.NºContrato;
                         InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
-
                         Decimal contractVal = 0;
                         if (item.TipoContrato != 1 || item.TipoContrato != 4)
                         {
@@ -1557,6 +1556,7 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
+                            
                             GrupoFatura = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value,
                             Descrição = item.Descrição,
                             NºCliente = item.NºCliente,
@@ -1594,6 +1594,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
+                        NºProjeto = line.NºProjeto,
                         GrupoFatura = line.GrupoFatura == null ? -1 : line.GrupoFatura.Value,
                         NºLinha = line.NºLinha,
                         Tipo = line.Tipo.ToString(),
@@ -3089,9 +3090,39 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                if (dp["startDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicial");
+                    Col = Col + 1;
+                }
+                if (dp["expiryDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Expiração");
+                    Col = Col + 1;
+                }
                 if (dp["registerDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Próxima Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Período Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade de Linhas Agrupadas");
+                    Col = Col + 1;
+                }
+                if (dp["document_No"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
                     Col = Col + 1;
                 }
 
@@ -3168,9 +3199,39 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
                             Col = Col + 1;
                         }
+                        if (dp["startDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["expiryDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ExpiryDate);
+                            Col = Col + 1;
+                        }
                         if (dp["registerDate"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegisterDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoicePeriod.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupCount.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["document_No"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Document_No);
                             Col = Col + 1;
                         }
                         count++;

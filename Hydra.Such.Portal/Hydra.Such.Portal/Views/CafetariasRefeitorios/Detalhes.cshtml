@@ -1,0 +1,477 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Cafetaria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<h1 class="title">Cafetaria / Refeitório</h1>
+
+<x-coffeeshopdetails _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdetails>
+
+<dom-module id="x-coffeeshopdetails">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+        </style>
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/CafetariasRefeitorios/GetCoffeeShop"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="item_databound"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
+        @*POPULATE DROPDOWNS*@
+        <iron-ajax url="/PopulateDropdowns/GetNutritionCoffeShopTypes" last-response="{{CBCoffeShopTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductivityUnits" last-response="{{CBProductivityUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        @*EXTRAS*@
+        @*<iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectBillingInfo" last-response="{{PBInfo}}" id="projectBillingData_Ajax" on-response="_projectBillingDataResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PKInfo}}" id="projectKitchenData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button class="tablinks" on-tap="_redirectToNewCoffeeShopForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+                 <template is="dom-if" if="{{ _permissions.read }}">
+                    <paper-button class="tablinks" on-tap="_redirectToCoffeeShopDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; registo receitas</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _permissions.read }}">
+
+                    <paper-button class="tablinks" on-tap="_redirectToMealRegistry"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; registo nº refeições</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _permissions.read }}">
+                    <paper-button class="tablinks" on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir folha de caixa</paper-button>
+                    <paper-button class="tablinks" on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir consumos</paper-button>
+                    <paper-button class="tablinks" on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir registo de refeições</paper-button>
+                </template>
+            </template>
+        </div>
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="formContract">
+                    <div class="panel panel-default">
+                        @*<div class="panel-heading">Cabeçalho</div>*@
+                <div class="panel-body">
+                    <div>
+                        <div class="row break_clear">
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBProductivityUnits]]" id="productivityUnits" item-value-path="id" item-label-path="value" value="{{data.productivityUnitNo}}" label="Unidade Produtiva" disabled="{{ !_permissions.update }}"
+                                                  required error-message="Este campo é obrigatório">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBCoffeShopTypes]]" id="types" item-value-path="id" item-label-path="value" value="{{data.type}}" label="Tipo" disabled="{{ !_permissions.update }}"
+                                                  required error-message="Este campo é obrigatório">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-text-field id="code" name="code" label="Código" value="{{data.code}}" disabled="true"></vaadin-text-field>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-3 ">
+                                <vaadin-date-picker label="Data Inicio Exploração" id="startDateExploration" name="startDateExploration" value="{{data.startDateExploration}}" disabled="{{ !_permissions.update }}"
+                                                    required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-date-picker label="Data Fim Exploração" id="endDateExploration" name="endDateExploration" value="{{data.endDateExploration}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBWarehouses]]" id="warehouse" item-value-path="id" item-label-path="value" value="{{data.warehouse}}" label="Armazém" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBWarehouses]]" id="localWarehouse" item-value-path="id" item-label-path="value" value="{{data.warehouseSupplier}}" label="Armazém Local" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="500px">
+                                            <tr>
+                                                <td width="10%">[[item.id]]</td>
+                                                <td width="90%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="550px">
+                                            <tr>
+                                                <td width="20%">[[item.id]]</td>
+                                                <td width="80%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-combo-box items="[[CBProjects]]" id="projects" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Projeto" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <table width="180px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-3 ">
+                                <vaadin-text-field value="{{data.totalRevenues}}" id="totalRevenues" name="totalRevenues" label="Total Receitas" disabled> </vaadin-text-field>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-text-field value="{{data.totalConsumption}}" id="totalConsumption" name="totalConsumption" label="Total Consumos" disabled> </vaadin-text-field>
+                            </div>
+                            <div class="col-md-3 ">
+                                <vaadin-text-field value="{{data.numberOfMeals}}" id="numberOfMeals" name="numberOfMeals" label="Nº Refeições" disabled> </vaadin-text-field>
+                            </div>
+                            <div class="col-md-3 ">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="marginSpace">
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <template is="dom-if" if="{{ _isCreate }}">
+                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                            </template>
+                            <template is="dom-if" if="{{ !_isCreate }}">
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                    @*<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>*@
+                                </template>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+</div>
+                </iron-form>
+            </div>
+        </div>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-coffeeshopdetails',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true,
+                        observer: '_formTypeChanged'
+                    },
+                },
+                _formTypeChanged: function (isNewItemForm, oldValue) {
+                    if (isNewItemForm && this._permissions.update) {
+                        this.$.productivityUnits.disabled = false;
+                        this.$.types.disabled = false;
+                        this.$.startDateExploration.disabled = false;
+                    }
+                    else
+                    {
+                        this.$.productivityUnits.disabled = true;
+                        this.$.types.disabled = true;
+                        this.$.startDateExploration.disabled = true;
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function () {
+                    if (this.$.productivityUnits.validate() &
+                        this.$.types.validate() &
+                        this.$.startDateExploration.validate()){
+                            return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+
+                ready: function () {
+                    this.$.item_databound.body = JSON.stringify({
+                        "productivityUnitNo": @ViewBag.ProductivityUnityNo,
+                        "type": @ViewBag.Type,
+                        "code": @ViewBag.Code,
+                        "explorationStartDate": "@ViewBag.ExplorationStartDate"
+                    });
+                    this.$.item_databound.generateRequest();
+                    //debugger;;
+                    this._isCreate = this._coffeeShopIsNullOrEmpty();
+                },
+
+                //CRUDS
+                _create: function () {
+                    if (this._validateData()) {
+                        this.$.item_databound.url = "/CafetariasRefeitorios/CreateCoffeeShop"
+                        this.$.item_databound.body = JSON.stringify(this.data);
+                        this.$.item_databound.generateRequest();
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        this.$.item_databound.url = "/CafetariasRefeitorios/UpdateCoffeeShop";
+                        this.$.item_databound.body = JSON.stringify(this.data);
+                        this.$.item_databound.generateRequest();
+                    }
+                },
+                _delete: function () {
+                    this.$.item_databound.url = "/CafetariasRefeitorios/DeleteCoffeeShop";
+                    var ajax_request = this.$.item_databound;
+
+                    var itemToDelete = this.data;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a cafetaria / refeitório?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(itemToDelete);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _coffeeShopIsNullOrEmpty: function () {
+                    if ("@ViewBag.ProductivityUnityNo" == "0")
+                        return true;
+                    if ("@ViewBag.Type" == "0")
+                        return true;
+                    if ("@ViewBag.Code" == "0")
+                        return true;
+                    if ("@ViewBag.ExplorationStartDate" == "")
+                        return true;
+
+                    //Not Empty
+                    return false;
+                },
+                _redirectToNewCoffeeShopForm: function (e) {
+                    window.location.href = "/CafetariasRefeitorios/Detalhes";
+                },
+                _redirectToCoffeeShopDiary: function (e) {
+                    window.location.href = "/DiarioCafeterias/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+                },
+
+                _redirectToMealRegistry: function (e) {
+                    window.location.href = "/RegistoNoRefeicoes/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+
+                },
+
+                _notImplemented: function(e) {
+                    alert("Funcionalidade não implementada. A aguardar especificação.");
+                },
+                //RESPONSE PROCESSORS
+                _responseProcessor: function (data) {
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("Get") !== -1) {
+
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            //debugger;;
+                            if (this.data.eReasonCode == "1"){
+                                this._isCreate = false;
+                                this._openToast(this.data.eMessage);
+                                this.$.item_databound.url = "/CafetariasRefeitorios/GetCoffeeShop";
+                            }
+                            else {
+                                this._isCreate = true;
+                                this._openToastError(this.data.eMessage);
+                            }
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode == "1") {
+                                this._openToast(this.data.eMessage);
+                                this.$.item_databound.url = "/CafetariasRefeitorios/GetCoffeeShop";
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
+                        }
+                        else if (data.detail.url.indexOf("Delete") !== -1) {
+                            if (this.data.eReasonCode == "1") {
+                                this._isCreate = false;
+                                this._openToast(this.data.eMessage);
+                                this.$.item_databound.url = "/CafetariasRefeitorios/GetCoffeeShop";
+                                setTimeout(function () {
+                                    window.location.href = "/CafetariasRefeitorios";
+                                }, 2500);
+                            }
+                            else {
+                                this._isCreate = false;
+                                this._openToastError(this.data.eMessage);
+                            }
+                        }
+                    } else {
+                        //debugger;;
+                        this._openToastError("Ocorreu um erro desconhecido.")
+                    }
+                },
+                _openCashFlowReport: function (e) {
+                    debugger;;
+                    //window.open("@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo, "_blank");
+                    this.$.rptContainer.src = "@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo; //this._getPDFContent();
+                    this.$.rptDialog.open();
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+                _goBack: function (e) {
+                    window.history.back();
+                },
+            });
+        });
+    </script>
+</dom-module>

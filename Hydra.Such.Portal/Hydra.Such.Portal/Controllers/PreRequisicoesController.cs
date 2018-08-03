@@ -939,6 +939,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
                                 InvoiceNo = data.InvoiceNo,
                                 State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
@@ -1016,6 +1017,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
                                 InvoiceNo = data.InvoiceNo,
                                 State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()

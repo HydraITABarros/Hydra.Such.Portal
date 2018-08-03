@@ -4304,6 +4304,74 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+        #region Unidade Medida
+        public IActionResult UnidadeMedida(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetUnidadeMedida()
+        {
+            List<UnidadeMedidaViewModel> result = DBUnidadeMedida.GetAll().Select(x => new UnidadeMedidaViewModel()
+            {
+                Code = x.Code,
+                Description = x.Description,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação
+            }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult DeleteUnidadeMedida([FromBody] UnidadeMedidaViewModel data)
+        {
+            var result = DBUnidadeMedida.Delete(DBUnidadeMedida.ParseToDatabase(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateUnidadeMedida([FromBody] List<UnidadeMedidaViewModel> data)
+        {
+
+            data.ForEach(x =>
+            {
+                UnidadeMedida UnidadeMedida = new UnidadeMedida()
+                {
+                    Code = x.Code,
+                    Description = x.Description,
+                };
+
+                if (DBUnidadeMedida.GetById(x.Code) != null)
+                {
+                    UnidadeMedida.UtilizadorCriação = x.CreateUser;
+                    UnidadeMedida.DataHoraCriação = x.CreateDate.HasValue ? x.CreateDate : (DateTime?)null;
+                    UnidadeMedida.DataHoraModificação = DateTime.Now;
+                    UnidadeMedida.UtilizadorModificação = User.Identity.Name;
+                    DBUnidadeMedida.Update(UnidadeMedida);
+                }
+                else
+                {
+                    UnidadeMedida.DataHoraCriação = DateTime.Now;
+                    UnidadeMedida.UtilizadorCriação = User.Identity.Name;
+                    DBUnidadeMedida.Create(UnidadeMedida);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+        
         #region Acordo de Preços
 
         public IActionResult AcordoPrecos_List()

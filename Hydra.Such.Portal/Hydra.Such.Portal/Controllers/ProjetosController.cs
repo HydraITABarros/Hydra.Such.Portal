@@ -2485,6 +2485,7 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+                string InvoiceClient = "";
                 dp.ForEach(x =>
                 {
                     if (x.Code != null)
@@ -2495,7 +2496,32 @@ namespace Hydra.Such.Portal.Controllers
                             DBProjectDiary.Delete(newdp);
                             if (newdp.Quantidade != null && newdp.Quantidade > 0)
                             {
-
+                                if (!String.IsNullOrEmpty(newdp.FaturaANºCliente))
+                                {
+                                    if (InvoiceClient != "")
+                                    {
+                                        InvoiceClient = newdp.FaturaANºCliente;
+                                    }
+                                    else
+                                    {
+                                        Projetos cProject = DBProjects.GetById(newdp.NºProjeto);
+                                        if (cProject != null)
+                                        {
+                                            InvoiceClient = cProject.NºCliente;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (InvoiceClient == "")
+                                    {
+                                        Projetos cProject = DBProjects.GetById(newdp.NºProjeto);
+                                        if (cProject != null)
+                                        {
+                                            InvoiceClient = cProject.NºCliente;
+                                        }
+                                    }
+                                }
                                 PréMovimentosProjeto ProjectMovement = new PréMovimentosProjeto()
                                 {
                                     NºProjeto = newdp.NºProjeto,
@@ -2519,7 +2545,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Faturável = newdp.Faturável,
                                     Registado = false,
                                     Faturada = false,
-                                    FaturaANºCliente = newdp.FaturaANºCliente,
+                                    FaturaANºCliente = InvoiceClient,
                                     Moeda = newdp.Moeda,
                                     ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
                                     TipoRefeição = newdp.TipoRefeição,
