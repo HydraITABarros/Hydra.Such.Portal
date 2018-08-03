@@ -148,6 +148,23 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/Existlink"
+                   last-response="{{ linkExist }}"
+                   id="page_linkExist_ajax"
+                   on-response="_linkExistResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Faturacao/Existlink"
+                   last-response="{{ linkExist }}"
+                   id="page_linkOpen_ajax"
+                   on-response="_linkOpenResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/Faturacao/GetUserProfileById"
                    last-response="{{ userProfile }}"
@@ -158,7 +175,7 @@
         </iron-ajax>
         <iron-ajax url="/Faturacao/UpdateBillingList"
                    id="updateDestination"
-                    last-response="{{ updateDestinItem }}"
+                   last-response="{{ updateDestinItem }}"
                    on-response="_updateDestinationResponse"
                    method="post"
                    handle-as="json"
@@ -294,10 +311,10 @@
                         </such-selectbox>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor"  required error-message="Este campo é obrigatório"></vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor" required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-date-picker label="Data Doc. Fornecedor" id="dpDataDocFornecedor" disabled="{{ !_permissions.update }}" value="{{ data.dataDocFornecedor }}"  required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Doc. Fornecedor" id="dpDataDocFornecedor" disabled="{{ !_permissions.update }}" value="{{ data.dataDocFornecedor }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.numAcordoFornecedor}}" id="txtNumAcordoFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Acordo Fornecedor"></vaadin-text-field>
@@ -614,7 +631,6 @@
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
                                         <div>[[item.value]]</div>
                                     </paper-item-body>
                                 </paper-icon-item>
@@ -630,7 +646,6 @@
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.id]]</div>
                                             <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
@@ -697,7 +712,6 @@
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
                                         <div>[[item.value]]</div>
                                     </paper-item-body>
                                 </paper-icon-item>
@@ -742,7 +756,6 @@
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
                                         <div>[[item.value]]</div>
                                     </paper-item-body>
                                 </paper-icon-item>
@@ -1020,9 +1033,9 @@
                     },
                     TiposDestinatarios: {
                         type: Array,
-                        value: [{ "id": 0, "value" : "Interno" }, { "id" : 1, "value" : "Externo" }],
+                        value: [{ "id": 0, "value": "Interno" }, { "id": 1, "value": "Externo" }],
                     },
-                    _descricaoProblema:{
+                    _descricaoProblema: {
                         type: String,
                         value: "",
                     },
@@ -1042,7 +1055,7 @@
                         type: Boolean,
                         value: true,
                     },
-                   _destinatario: {
+                    _destinatario: {
                         type: Number,
                         value: 0,
                     },
@@ -1110,6 +1123,10 @@
                         type: String,
                         value: "",
                     },
+                    _link: {
+                        type: String,
+                        value: "",
+                    },
                     _hiddeAnswerButton: {
                         type: Boolean,
                         value: true,
@@ -1122,13 +1139,17 @@
                         type: Array,
                         value: null,
                     },
+                    _existeLink: {
+                        type: Boolean,
+                        value: false,
+                    },
                     _docIsValid: {
                         type: Boolean,
                         value: false,
                     },
                     _accountingMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Pendente" },{ value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 5, description: "Resolvido" }],
+                        value: [{ value: 1, description: "Pendente" }, { value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 5, description: "Resolvido" }],
                     },
                     _provisioningMenuItems: {
                         type: Array,
@@ -1165,7 +1186,7 @@
                         this._isInvoice = this.data.tipoDocumento == 2;//Fatura
                         this._isCreditMemo = this.data.tipoDocumento == 3;//Nota de Crédito
                         this._showWorkflowData = this.data.estado >= this._states.Rececao;
-                        if (this.data.estado==2){
+                        if (this.data.estado == 2) {
                             this._checkPending = false;
                         }
                         ////Ponto de situação
@@ -1212,7 +1233,7 @@
                         this._showHiddenProvisioning = false;
                         this._hiddeSendButton = false;
                     }
-                    if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil"){
+                    if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil") {
                         this._showHiddenPendingList = false;
                     }
                 },
@@ -1224,6 +1245,7 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
+                    debugger;;
                     if (this.$.cmbDocumentTypes.validate()) {
                         if (this._docIsValid) {
                             return true;
@@ -1246,15 +1268,41 @@
                 _clFormatDateWorkflow: function (param) {
                     if (param != undefined) {
                         var data = new Date(param);
-                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+                        var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
                         if (dataFormatada != undefined) {
                             return dataFormatada;
                         }
                     }
                     return "";
                 },
+                _validateSendPending: function () {
+                    if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                        var selState = this.States.find(x => x.id == this.data.estado);
+                        var stateDescription = selState != null ? selState.value : this.data.estado;
+                        this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                        return false;
+                    }
+                    if (this.data.codFornecedor == "") {
+                        this._openToastError("O Fornecedor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.numDocFornecedor == "") {
+                        this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.valor == "") {
+                        this._openToastError("O valor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.codRegiao == "") {
+                        this._openToastError("Tem que selecionar a Região.");
+                        return false;
+                    }
+                    return true;
+  
+                },
                 _validateInputForAccounting: function () {
-                   if (this._validateInputForNew()) { 
+                    if (this._validateInputForNew()) {
                         if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
                             var selState = this.States.find(x => x.id == this.data.estado);
                             var stateDescription = selState != null ? selState.value : this.data.estado;
@@ -1416,6 +1464,65 @@
                             this._docIsValid = true;
                         else
                             this._openToastError(this.preventDuplicateDocsResponse.eMessage);
+                    }
+                },
+                _linkOpenResponse: function (e) {
+                    if (this.linkExist == 1) {
+                        window.open(this._link);
+                    }
+                    else {
+                        this._openToastError("Não existe Documento Digitalizado!");
+                    }                 
+                },
+                _linkExistResponse: function (e) {
+                    var txt = true;
+                    if (this.linkExist != 1) {
+
+                        if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
+                            txt = true;
+                        } else {
+                            txt = false;
+                        }
+                    }
+                    if(txt==true) {
+                        if (txt == true) {
+                            var workflow = null;
+                            var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
+                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                            if (this._isInternalDestination == true) {
+                                workflow = {
+                                    id: 0,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbProblemas.value,
+                                    codProblema: "RF1P",
+                                    descricao: this.$.txtdescricaoProblema.value,
+                                    destinatario: this.$.txtdestinatarioArea.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email,
+                                    area: Area.value,
+                                    areaWorkflow: this.$.txtArea2.value,
+                                    codDestino: this.$.txtCodDestino.value,
+                                    attached: this.Anexos
+                                };
+                            }
+                            else {
+                                workflow = {
+                                    id: 0,
+                                    idRecFaturacao: this.data.id,
+                                    codTipoProblema: this.$.cmbMotivos.value,
+                                    codProblema: "RF4P",
+                                    descricao: this.$.txtmotivo.value,
+                                    comentario: this.$.txtCommentdgl.value,
+                                    enderecoFornecedor: selVendor.email,
+                                    attached: this.Anexos
+                                };
+                            }
+                            this.Anexos = null;
+                            this.data.workflowItems.push(workflow);
+                            this.$.page_send_ajax.body = JSON.stringify(this.data);
+                            this.$.page_send_ajax.generateRequest();
+                        }
+                        this.$.dialogSendPeding.close();
                     }
                 },
                 _orderSelected: function (e) {
@@ -1695,59 +1802,18 @@
                     var validar = false;// caso ja seja pendente
                     if (this.data.estado == 1) {
                         validar = true;
-                    }else if (this._validateInputForAccounting()) {
+                    } else if (this._validateSendPending()) {
                         validar = true;
                     }
                     if (validar == true) {
-                        var txt;
-                        if (confirm("O documento não está digitalizado. Confirma que pretende à mesma enviar para Pendente?")) {
-                            txt = true;
-                        } else {
-                            txt = false;
-                        }
-
-                        if (txt == true) {
-                            var workflow = null;
-                            var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
-                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                            if (this._isInternalDestination == true) {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbProblemas.value,
-                                    codProblema: "RF1P",
-                                    descricao: this.$.txtdescricaoProblema.value,
-                                    destinatario: this.$.txtdestinatarioArea.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    area: Area.value,
-                                    areaWorkflow: this.$.txtArea2.value,
-                                    codDestino: this.$.txtCodDestino.value,
-                                    attached: this.Anexos
-                                };
-                            }
-                            else {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbMotivos.value,
-                                    codProblema: "RF4P",
-                                    descricao: this.$.txtmotivo.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    attached: this.Anexos
-                                };
-                            }
-                            this.Anexos = null;
-                            this.data.workflowItems.push(workflow);
-                            this.$.page_send_ajax.body = JSON.stringify(this.data);
-                            this.$.page_send_ajax.generateRequest();
-                        }
-                        this.$.dialogSendPeding.close();
-
+                        this._createLink();
+                        var ajax_request = this.$.page_linkExist_ajax;
+                        ajax_request.body = JSON.stringify(this._link);
+                        ajax_request.generateRequest();
+                       
                     }
                 },
-                _openDocument: function (e) {
+                _createLink: function () {
                     var fields
                     var data;
                     var ano;
@@ -1758,19 +1824,26 @@
                         mes = fields[1];
                         ano = fields[2];
                     }
-                    else
-                    {
+                    else {
                         data = new Date();
-                        mes = data.getMonth()+1;
-                        ano = data.getYear();
+                        mes = data.getMonth() + 1;
+                        ano = data.getFullYear().toString();
                     }
                     // remover para ex 2011 ficar 11
-                    ano = ano.substr(1);
-                    ano = ano.substr(1)
-                    var pdfName = "RF" + this.data.id + ".pdf";
-                    var link = "../../FacturasFornecedor/" + ano + mes + "/" + pdfName;
-                    window.open(link);
+                    ano = ano.substring(2);
+
+                    var pdfName = "RF"+this.data.id+".pdf";
+                    this._link = "../../FacturasFornecedor/"+ano+mes+"/" + pdfName;
+                    
                 },
+
+                _openDocument: function (e) {
+                    this._createLink();
+                    var ajax_request = this.$.page_linkOpen_ajax;
+                    ajax_request.body = JSON.stringify(this._link);
+                    ajax_request.generateRequest();
+                },
+
                 _updateDestinationResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (updateDestinItem != undefined) {

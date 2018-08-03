@@ -1,4 +1,4 @@
-﻿
+﻿@model Hydra.Such.Data.ViewModel.Nutrition.ProductivityUnitViewModel
 @{
     ViewData["Title"] = "Detalhes";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -62,8 +62,10 @@
         <iron-ajax url="/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="grid_priceAgreement_ajax" last-response="{{priceAgreement}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/NecessidadeCompras/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="products_ajax" last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <style>
             vaadin-combo-box {
@@ -197,15 +199,21 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange"
+                <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange" hidden
                                 items="[[priceAgreement]]"
                                 text-path="noProcedimento"
                                 value-path="noFornecedor"
                                 fields='[{"field":"noProcedimento", "name":"Nº Procedimento"},{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
                 </such-selectbox>
+                <such-selectbox id="cmbProducts" label="Produto" on-value-changed="_productChanged"
+                                items="[[Products]]"
+                                text-path="descricaoProduto"
+                                value-path="codProduto"
+                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
+                </such-selectbox>
             </div>
             <div class="col-md-3">
-                <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange"
+                <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange" hidden
                                 items="[[cbopenorderlines]]"
                                 text-path="numb"
                                 value-path="line_No"
@@ -718,6 +726,10 @@
                     type: String,
                     notify: true,
                     value: ""
+                },
+                prodUnit: {
+                    type: Object,
+                    value: @Html.Raw(Json.Serialize(ViewBag.ProductivityUnit)),
                 }
             },
             observers: [
@@ -781,7 +793,7 @@
                 }
                 this._setDefaultDateForDatePickers();
             },
-            _setDefaultDateForDatePickers: function () { 
+            _setDefaultDateForDatePickers: function () {
                 try {
                     if (this.$.dpPricesDate == null)
                         return;
@@ -822,6 +834,21 @@
                     }
                 }
             },
+            _productChanged: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var linhaAcordo = this.$.cmbProducts.activeItem;
+                    if (linhaAcordo != null) {
+                        this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
+                        this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
+                        this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
+                        this.$.supplierNoId.value = linhaAcordo.noFornecedor;
+                        this.$.qtyID.value = "0";
+                        this.$.QtyforMeasId.value = linhaAcordo.qtdPorUM;
+                        this.$.unitofMeasureCodeId.value = linhaAcordo.um;
+                        this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                    }
+                }
+            },
             _DatePriceGridChange:function (e) {
                 if (e.detail.value != null && e.detail.value != "" &&
                     this._numbGrid != null && this._numbGrid != "" &&
@@ -847,9 +874,16 @@
                 if (e.detail.value != null && e.detail.value) {
                     this.$.grid_priceAgreement_ajax.body = JSON.stringify(e.detail.value);
                     this.$.grid_priceAgreement_ajax.params = {
-                        "area": this._prodArea
+                        "produtivityUnitId": this.prodUnit.productivityUnitNo
                     };
                     this.$.grid_priceAgreement_ajax.generateRequest();
+
+                    
+                    this.$.products_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.products_ajax.params = {
+                        "produtivityUnitId": this.prodUnit.productivityUnitNo
+                    };
+                    this.$.products_ajax.generateRequest();
                 }
                 if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
                     this.$.ajax_result.body = JSON.stringify(this._numb);
@@ -1065,7 +1099,7 @@
                             expectedReceptionDate: this.$.dpExpectedReceiptId.value,
                             dateByPriceSupplier: this.$.dpVendedorPriceId.value,
                             localCode: this.$.codStockUnitId.value,
-                            productNo: this._numb,
+                            productNo: this.$.cmbProducts.value,// this._numb,
                             supplierNo: this.$.supplierNoId.value,
                             description: this.$.txtProdDescription.value,
                             unitMeasureCode: this.$.unitofMeasureCodeId.value,
@@ -1076,9 +1110,9 @@
                             supplierProductCode: this.$.supplierProdCodeId.value,
                             supplierProductDescription: this.$.supplierProdDescriptionId.value,
                             supplierName: this.$.SupplierNameId.value,
-                            documentNo: this._documentNo,
-                            openOrderNo: this._documentNo,
-                            orderLineOpenNo: this._lineNo
+                            //documentNo: this._documentNo,
+                            //openOrderNo: this._documentNo,
+                            //orderLineOpenNo: this._lineNo
                         });
 
 
@@ -1134,11 +1168,11 @@
                             this._openToastError("Occorreu um erro ao atualizar.");
                         }
             },
-            
+
             priceAgreementByVendor: function(e) {
                 if (e.detail.status === 200) {
-                   
-                     
+
+
                 } else {
                     this._openToastError("Occorreu um erro ao atualizar.");
                 }
@@ -1213,10 +1247,12 @@
             },
             _confirm: function (selectedItem, selectedItems) {
                 if (this.selectedItems != null && this.selectedItems != "") {
+                    
                     var selItms = this.selectedItems;
                     var date = this.$.dpPricesDate != null ? this.$.dpPricesDate.value : "";
 
-                    this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit}, "reqModels" : selItms, "pricesDate" : date });
+                    //this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit }, "reqprodUnits": selItms, "pricesDate": date });
+                    this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels" : selItms, "pricesDate" : date });
                     this.$.grid_generatebyreq_ajax.generateRequest();
                 } else {
                     this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1232,6 +1268,7 @@
                         this.$.ajax_getgrid.generateRequest();
                         this.$.gridneedshopping.clearCache();
                         this._openToast(this.genbyreqresult.eMessage);
+                        this.$.dialog.close();
                     }
                     else
                     {
@@ -1304,7 +1341,7 @@
             _requesitionResponse: function (e) {
                 debugger;;
                 if (e.detail.status === 200) {
-                  
+
                         var selItms = {
                             "noProcedimento": this.$.priceAgreement.valueText,
                             "noFornecedor": this.$.supplierNoId.value ,
@@ -1314,7 +1351,7 @@
                         this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
                         this.$.grid_updateAgreementByVendor_ajax.generateRequest();
                         this._openToast(this.datarequesition.eMessage);
-                   
+
                 } else {
                     this._openToastError("Occorreu um erro na geração de requisições.");
                 }

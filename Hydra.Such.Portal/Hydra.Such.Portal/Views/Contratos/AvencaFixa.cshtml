@@ -112,15 +112,16 @@
             <vaadin-grid-selection-column id="selectColumn" resizable hidden="{{ _NotshowColCheckBox }}">
             </vaadin-grid-selection-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.document_No.hidden }}">
+            <vaadin-grid-column width="50px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="document_No">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="document_No"></vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.document_No}} 
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showContract" title="Ver Contracto"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -303,6 +304,17 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.document_No.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="document_No">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="document_No"></vaadin-grid-filter>
+                </template>
+                <template>
+                    {{item.document_No}}
+                </template>
+            </vaadin-grid-column>
+
+
         </vaadin-grid>
 
 
@@ -388,6 +400,19 @@
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
+                },
+
+                _showContract: function (e) {
+                    debugger;
+                    if (e != null) {
+                        var index = this.result.indexOf(e.model.item);
+                        var contractNo = e.model.item.contractNo;
+                        //var version = e.model.item.versionNo;
+
+                        if (contractNo != null) {
+                            window.location.href = "/Contratos/DetalhesContrato/" + contractNo;// + "?version=" + item.versionNo + "&" + "isHistoric=false";
+                        }
+                    }
                 },
 
                 _invoiceGenResponse: function (e) {
@@ -500,7 +525,6 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "document_No": { hidden: false, label: "Nº" },
                         "contractNo": { hidden: false, label: "Nº Contrato" },
                         "description": { hidden: false, label: "Descrição" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
@@ -516,10 +540,11 @@
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "startDate": { hidden: false, label: "Data Inicial" },
                         "expiryDate": { hidden: false, label: "Data Expiração" },
-                        "invoicePeriod": { hidden: false, label: "Período Fatura" },
                         "registerDate": { hidden: false, label: "Data Próxima Fatura" },
+                        "invoicePeriod": { hidden: false, label: "Período Fatura" },
                         "invoiceGroupValue": { hidden: false, label: "Grupo Fatura" },
-                        "invoiceGroupCount": { hidden: false, label: "Quantidade de Linhas Agrupadas" }
+                        "invoiceGroupCount": { hidden: false, label: "Quantidade de Linhas Agrupadas" },
+                        "document_No": { hidden: false, label: "Nº" }
                     };
 
                     if (sessionStorage["avencafixa.ToggleColumn"]) {

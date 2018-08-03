@@ -2069,6 +2069,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
                                     PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
@@ -2160,7 +2161,8 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                     PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
-                                    
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
+
                                     LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                 }
                             }
@@ -2857,6 +2859,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Contrato");
                     Col = Col + 1;
                 }
+                if (dp["type"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Inicio");
@@ -2919,6 +2926,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["contractNo"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["type"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Type);
                             Col = Col + 1;
                         }
                         if (dp["startData"]["hidden"].ToString() == "False")
@@ -3077,9 +3089,39 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                if (dp["startDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicial");
+                    Col = Col + 1;
+                }
+                if (dp["expiryDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Expiração");
+                    Col = Col + 1;
+                }
                 if (dp["registerDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Próxima Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Período Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade de Linhas Agrupadas");
+                    Col = Col + 1;
+                }
+                if (dp["document_No"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
                     Col = Col + 1;
                 }
 
@@ -3156,9 +3198,39 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
                             Col = Col + 1;
                         }
+                        if (dp["startDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["expiryDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ExpiryDate);
+                            Col = Col + 1;
+                        }
                         if (dp["registerDate"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegisterDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoicePeriod.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupCount.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["document_No"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Document_No);
                             Col = Col + 1;
                         }
                         count++;

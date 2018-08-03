@@ -350,21 +350,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetpriceAgreementByDate([FromBody] DateTime date,string area)
+        public JsonResult GetpriceAgreementByDate([FromBody] DateTime date, int produtivityUnitId)
         {
             try
             {
-                if (area.Length <= 1)
-                {
-                    area = "0" + area;
-                }
-                List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
-                result = DBLinhasAcordoPrecos.GetAllByDateArea("10", date).ToList();
-                if (result != null && result.Count > 0)
-                {
-                    return Json(result);
-                }
-                return null;
+                var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
+                List<LinhasAcordoPrecos> result = DBLinhasAcordoPrecos.GetForDimensions(date, prodUnit.CódigoCentroResponsabilidade, prodUnit.CódigoRegião, prodUnit.CódigoÁreaFuncional);
+                return Json(result);
             }
             catch (Exception e)
             {

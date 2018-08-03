@@ -31,24 +31,28 @@ namespace Hydra.Such.Portal.Controllers
 
         #region Necessidade de Compras
         
-        public IActionResult Detalhes(int? id)
+        public IActionResult Detalhes(int id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.NecessidadeCompras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
-                if (id != null && id > 0)
+                ProductivityUnitViewModel productivityUnit;
+                if (id > 0)
                 {
+                    productivityUnit = DBProductivityUnits.GetById(id).ParseToViewModel();
+
                     ViewBag.ProductivityUnityNo = id;
-                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int)id);
-                    ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
-                    ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+                    ViewBag.ProductivityUnitId = productivityUnit.ProductivityUnitNo;//.NºUnidadeProdutiva;
+                    ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
                     ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
+                    ViewBag.ProductivityUnit = productivityUnit;
                 }
                 else
                 {
                     ViewBag.ProductivityUnitId = 0;
                     ViewBag.ProductivityUnitDesc = "";
+                    ViewBag.ProductivityUnit = new ProductivityUnitViewModel();
                 }
                 return View();
             }
@@ -400,7 +404,7 @@ namespace Hydra.Such.Portal.Controllers
         //public JsonResult GenerateByRequesition([FromBody] List<RequisitionViewModel> data, [FromBody] string pricesDate)
         public JsonResult GenerateByRequesition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
-            UnidadesProdutivas prodUnit = requestParams["prodUnit"].ToObject<UnidadesProdutivas>();
+            ProductivityUnitViewModel prodUnit = requestParams["prodUnit"].ToObject<ProductivityUnitViewModel>();
             List<RequisitionViewModel> data = requestParams["reqModels"].ToObject<List<RequisitionViewModel>>();
             string pricesDateValue = requestParams["pricesDate"].ToObject<string>();
 
@@ -422,7 +426,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     //Obter preços do acordo de preços caso existam
                     var tmpUpdatePrices = result.ParseToTemplateViewModel();
-                    tmpUpdatePrices.UpdateAgreedPrices(pricesDate);
+                    tmpUpdatePrices.UpdateAgreedPrices(pricesDate, prodUnit.CodeResponsabilityCenter, prodUnit.CodeRegion, prodUnit.CodeFunctionalArea);
                     result = tmpUpdatePrices.ParseToDB();
 
                     if (result != null && result.Count > 0)
@@ -483,7 +487,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
 
                             DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva();
-                            newdp.NºUnidadeProdutiva = prodUnit.NºUnidadeProdutiva;
+                            newdp.NºUnidadeProdutiva = prodUnit.ProductivityUnitNo;
                             newdp.Quantidade = 0;
                             newdp.DataReceçãoEsperada = string.IsNullOrEmpty(rpu.ReceivedDate)
                                 ? (DateTime?)null
@@ -500,7 +504,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NomeFornecedor = supVal;
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
-                            newdp.DescriçãoUnidadeProduto = prodUnit.Descrição;
+                            newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.DataPPreçoFornecedor = pricesDate;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
