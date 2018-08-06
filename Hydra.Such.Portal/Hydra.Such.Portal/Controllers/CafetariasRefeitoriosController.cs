@@ -39,6 +39,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
+      
 
         [HttpPost]
        
@@ -212,5 +213,215 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(item);
         }
+
+        #region DiárioCafeterias
+        public IActionResult RegistoNoRefeicoes(int NºUnidadeProdutiva, int CódigoCafetaria)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Diário_Cafetarias_Refeitórios);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CoffeeShopNo = CódigoCafetaria;
+                ViewBag.ProdutiveUnityNo = NºUnidadeProdutiva;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetCoffeShopDiary([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            try
+            {
+                List<DiárioCafetariaRefeitório> CoffeeShopDiaryList;
+
+                if (data != null)
+                {
+                    CoffeeShopDiaryList = DBCoffeeShopsDiary.GetByIdsList((int)data.ProdutiveUnityNo, (int)data.CoffeShopCode, User.Identity.Name);
+
+                    List<CoffeeShopDiaryViewModel> result = new List<CoffeeShopDiaryViewModel>();
+                    CoffeeShopDiaryList.ForEach(x => result.Add(DBCoffeeShopsDiary.ParseToViewModel(x)));
+                    foreach (var res in result)
+                    {
+                        if (res.MealType > 0)
+                        {
+                            res.DescriptionTypeMeal = DBMealTypes.GetById((int)res.MealType).Descrição;
+                        }
+
+                    }
+
+                    return Json(result);
+                }
+
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public JsonResult GetCoffeShopDiaryDetails([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            try
+            {
+                CoffeeShopDiaryViewModel coffeShopPar = new CoffeeShopDiaryViewModel();
+                if (data != null)
+                {
+                    coffeShopPar.DateToday = DateTime.Today.ToString("yyyy-MM-dd");
+                    coffeShopPar.CoffeShopCode = data.CoffeShopCode;
+                    coffeShopPar.ProdutiveUnityNo = data.ProdutiveUnityNo;
+                }
+                else
+                {
+                    coffeShopPar.DateToday = DateTime.Today.ToString("yyyy-MM-dd");
+                }
+
+                return Json(coffeShopPar);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public JsonResult CreateCoffeeShopsDiary([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    DiárioCafetariaRefeitório newline = new DiárioCafetariaRefeitório();
+                    newline = DBCoffeeShopsDiary.ParseToDB(data);
+                    newline.Utilizador = User.Identity.Name;
+                    newline.UtilizadorCriação = User.Identity.Name;
+                    DBCoffeeShopsDiary.Create(newline);
+
+                    if (newline.NºLinha > 0)
+                    {
+                        return Json(true);
+                    }
+                    return Json(false);
+                }
+
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
+        }
+
+        public JsonResult DeleteCoffeeShopsDiaryLine([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    DiárioCafetariaRefeitório lineToRemove = new DiárioCafetariaRefeitório();
+                    lineToRemove = DBCoffeeShopsDiary.GetById(data.LineNo);
+
+                    DBCoffeeShopsDiary.Delete(lineToRemove);
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+        }
+
+        public JsonResult UpdateCoffeeShopsDiaryLine([FromBody] List<CoffeeShopDiaryViewModel> data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<DiárioCafetariaRefeitório> linesToUpdate = new List<DiárioCafetariaRefeitório>();
+                    linesToUpdate = DBCoffeeShopsDiary.ParseToDBList(data);
+                    linesToUpdate.ForEach(x => DBCoffeeShopsDiary.Update(x));
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+        }
+
+        public JsonResult MealRegistryLineRegister([FromBody] List<CoffeeShopDiaryViewModel> data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    int? id = data.Find(x => x.User == User.Identity.Name).CoffeShopCode;
+                    CafetariasRefeitórios CoffeeShop = DBCoffeeShops.GetByCode((int)id);
+
+                    foreach (var linesToRegist in data)
+                    {
+                        MovimentosCafetariaRefeitório MovementsToCreate = new MovimentosCafetariaRefeitório();
+                        MovementsToCreate.CódigoCafetariaRefeitório = linesToRegist.CoffeShopCode;
+                        MovementsToCreate.NºUnidadeProdutiva = linesToRegist.ProdutiveUnityNo;
+                        MovementsToCreate.DataRegisto = linesToRegist.RegistryDate != "" ? DateTime.Parse(linesToRegist.RegistryDate) : (DateTime?)null;
+                        MovementsToCreate.NºRecurso = linesToRegist.ResourceNo;
+                        MovementsToCreate.Descrição = linesToRegist.Description;
+                        MovementsToCreate.Tipo = CoffeeShop.Tipo;
+                        if (linesToRegist.MovementType == 2 || linesToRegist.MovementType == 3)
+                        {
+                            MovementsToCreate.Valor = linesToRegist.Value * (-1);
+                        }
+                        else
+                        {
+                            MovementsToCreate.Valor = linesToRegist.Value;
+                        }
+
+                        MovementsToCreate.TipoMovimento = linesToRegist.MovementType;
+                        MovementsToCreate.Quantidade = linesToRegist.Quantity;
+                        MovementsToCreate.TipoRefeição = linesToRegist.MealType;
+                        MovementsToCreate.DescriçãoTipoRefeição = linesToRegist.DescriptionTypeMeal;
+                        MovementsToCreate.CódigoRegião = CoffeeShop.CódigoRegião ?? "";
+                        MovementsToCreate.CódigoÁreaFuncional = CoffeeShop.CódigoÁreaFuncional ?? "";
+                        MovementsToCreate.CódigoCentroResponsabilidade = CoffeeShop.CódigoCentroResponsabilidade ?? "";
+                        MovementsToCreate.Utilizador = User.Identity.Name;
+                        MovementsToCreate.DataHoraSistemaRegisto = DateTime.Now;
+                        MovementsToCreate.DataHoraCriação = DateTime.Now;
+                        MovementsToCreate.UtilizadorCriação = User.Identity.Name;
+
+                        DBCoffeeShopMovements.Create(MovementsToCreate);
+                        if (MovementsToCreate.NºMovimento > 0)
+                        {
+                            DiárioCafetariaRefeitório lineToRemove = new DiárioCafetariaRefeitório();
+                            lineToRemove = DBCoffeeShopsDiary.GetById(linesToRegist.LineNo);
+                            DBCoffeeShopsDiary.Delete(lineToRemove);
+                        }
+                    }
+
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+        }
+        #endregion
     }
 }

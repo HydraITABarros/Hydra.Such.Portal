@@ -776,6 +776,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódServiçoCliente = x.ServiceClientNo;
                             CLine.GrupoFatura = x.InvoiceGroup;
                             CLine.CriaContrato = x.CreateContract;
+                            CLine.NºProjeto = x.ProjectNo;
                             CLine.UtilizadorModificação = User.Identity.Name;
                             DBContractLines.Update(CLine);
                         }
@@ -1556,7 +1557,6 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
-                            
                             GrupoFatura = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value,
                             Descrição = item.Descrição,
                             NºCliente = item.NºCliente,
@@ -2069,7 +2069,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
-                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContactNo;
                                     PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
