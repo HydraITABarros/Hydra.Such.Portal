@@ -401,23 +401,23 @@ namespace Hydra.Such.Portal.Controllers
 
                             DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva();
                             newdp.NºUnidadeProdutiva = prodUnit.ProductivityUnitNo;
+                            newdp.CodigoLocalização = prodUnit.Warehouse;
+                            newdp.NºProjeto = prodUnit.ProjectKitchen;
+                            newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.Quantidade = 0;
                             newdp.DataReceçãoEsperada = string.IsNullOrEmpty(rpu.ReceivedDate)
                                 ? (DateTime?)null
                                 : DateTime.Parse(rpu.ReceivedDate);
-                            newdp.CodigoLocalização = rpu.LocalCode;
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
                             newdp.CustoUnitárioDireto = lr.CustoUnitário;
-                            newdp.NºProjeto = lr.NºProjeto;
                             newdp.NºFornecedor = lr.NºFornecedor;
                             newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
                             newdp.CodigoProdutoFornecedor = lr.CódigoProdutoFornecedor;
                             newdp.NomeFornecedor = supVal;
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
-                            newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.DataPPreçoFornecedor = pricesDate;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
