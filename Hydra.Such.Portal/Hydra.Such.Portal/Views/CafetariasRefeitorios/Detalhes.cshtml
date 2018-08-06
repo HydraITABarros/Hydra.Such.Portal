@@ -23,8 +23,6 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
-<h1 class="title">Cafetaria / Refeitório</h1>
-
 <x-coffeeshopdetails _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdetails>
 
 <dom-module id="x-coffeeshopdetails">
@@ -342,7 +340,6 @@
                         "explorationStartDate": "@ViewBag.ExplorationStartDate"
                     });
                     this.$.item_databound.generateRequest();
-                    //debugger;;
                     this._isCreate = this._coffeeShopIsNullOrEmpty();
                 },
 
@@ -404,11 +401,11 @@
                     window.location.href = "/CafetariasRefeitorios/Detalhes";
                 },
                 _redirectToCoffeeShopDiary: function (e) {
-                    window.location.href = "/DiarioCafeterias/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+                    window.location.href = "../DiarioCafeterias/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
                 },
 
                 _redirectToMealRegistry: function (e) {
-                    window.location.href = "/RegistoNoRefeicoes/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+                    window.location.href = "../RegistoNoRefeicoes/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
 
                 },
 
@@ -421,7 +418,6 @@
                         if (data.detail.url.indexOf("Get") !== -1) {
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
-                            //debugger;;
                             if (this.data.eReasonCode == "1"){
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
@@ -454,12 +450,10 @@
                             }
                         }
                     } else {
-                        //debugger;;
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
                 _openCashFlowReport: function (e) {
-                    debugger;;
                     //window.open("@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo, "_blank");
                     this.$.rptContainer.src = "@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo; //this._getPDFContent();
                     this.$.rptDialog.open();
@@ -470,7 +464,7 @@
                 },
                 _goBack: function (e) {
                     window.history.back();
-                },
+                }
             });
         });
     </script>

@@ -4371,7 +4371,92 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
-        
+
+        #region Unidade Medida Produto
+        public IActionResult UnidadeMedidaProduto(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetUnidadeMedidaProduto()
+        {
+            List<UnitMeasureProductViewModel> result = DBUnitMeasureProduct.GetAll().Select(x => new UnitMeasureProductViewModel()
+            {
+                ProductNo = x.NºProduto,
+                Code = x.Código,
+                QtdUnitMeasure = x.QtdPorUnidadeMedida,
+                Length = x.Comprimento,
+                Width = x.Largura,
+                Heigth = x.Altura,
+                Cubage = x.Cubagem,
+                Weight = x.Peso,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+                UpdateDate = x.DataHoraModificação,
+                UpdateUser = x.UtilizadorModificação
+            }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult DeleteUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel data)
+        {
+            var result = DBUnitMeasureProduct.Delete(DBUnitMeasureProduct.ParseToDb(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateUnidadeMedidaProduto([FromBody] List<UnitMeasureProductViewModel> data)
+        {
+
+            data.ForEach(x =>
+            {
+                UnidadeMedidaProduto UnidadeMedidaProduto = new UnidadeMedidaProduto()
+                {
+                    NºProduto = x.ProductNo,
+                    Código = x.Code,
+                    QtdPorUnidadeMedida = x.QtdUnitMeasure,
+                    Comprimento = x.Length,
+                    Largura = x.Width,
+                    Altura = x.Heigth,
+                    Cubagem = x.Cubage,
+                    Peso = x.Weight,
+                    DataHoraCriação = x.CreateDate,
+                    UtilizadorCriação = x.CreateUser,
+                    DataHoraModificação = x.UpdateDate,
+                    UtilizadorModificação = x.UpdateUser
+                };
+
+                if (DBUnitMeasureProduct.GetById(x.ProductNo) != null)
+                {
+                    UnidadeMedidaProduto.UtilizadorCriação = x.CreateUser;
+                    UnidadeMedidaProduto.DataHoraCriação = x.CreateDate.HasValue ? x.CreateDate : (DateTime?)null;
+                    UnidadeMedidaProduto.DataHoraModificação = DateTime.Now;
+                    UnidadeMedidaProduto.UtilizadorModificação = User.Identity.Name;
+                    DBUnitMeasureProduct.Update(UnidadeMedidaProduto);
+                }
+                else
+                {
+                    UnidadeMedidaProduto.DataHoraCriação = DateTime.Now;
+                    UnidadeMedidaProduto.UtilizadorCriação = User.Identity.Name;
+                    DBUnitMeasureProduct.Create(UnidadeMedidaProduto);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
         #region Acordo de Preços
 
         public IActionResult AcordoPrecos_List()

@@ -439,6 +439,19 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetUnitOfMeasureByCodeeSUCH()
+        {
+            List<DDMessageString> result = DBUnidadeMedida.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetRequestStatus()
         {
@@ -1700,6 +1713,18 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<NAVProductsViewModel> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductseSUCH()
+        {
+            List<DDMessageString> result = DBFichaProduto.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Nº,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
         }
 
         [HttpPost]

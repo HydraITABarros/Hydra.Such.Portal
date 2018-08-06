@@ -1,10 +1,9 @@
 ﻿
 @{
-    ViewData["Title"] = "DiarioCafeterias";
+    ViewData["Title"] = "Diário de Cafetarias";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="title">Diário de Cafetarias</h1>
 
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
@@ -19,7 +18,10 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
-
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html"-->
@@ -57,21 +59,21 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Nutricao/GetCoffeShopDiaryDetails"
+        <iron-ajax url="/CafetariasRefeitorios/GetCoffeShopDiaryDetails"
                    last-response="{{diary}}"
                    method="post"
                    handle-as="json"
                    id="diary_databound"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/GetCoffeShopDiary"
+        <iron-ajax url="/CafetariasRefeitorios/GetCoffeShopDiary"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/CreateCoffeeShopsDiary"
+        <iron-ajax url="/CafetariasRefeitorios/CreateCoffeeShopsDiary"
                    last-response="{{created}}"
                    method="post"
                    handle-as="json"
@@ -79,7 +81,7 @@
                    on-response="_responseCreated"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/DeleteCoffeeShopsDiaryLine"
+        <iron-ajax url="/CafetariasRefeitorios/DeleteCoffeeShopsDiaryLine"
                    last-response="{{deleted}}"
                    method="post"
                    handle-as="json"
@@ -87,7 +89,7 @@
                    on-response="_responseDeleted"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/UpdateCoffeeShopsDiaryLine"
+        <iron-ajax url="/CafetariasRefeitorios/UpdateCoffeeShopsDiaryLine"
                    last-response="{{updated}}"
                    method="post"
                    handle-as="json"
@@ -95,7 +97,7 @@
                    on-response="_responseUpdate"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/CoffeeShopsDiaryLineRegister"
+        <iron-ajax url="/CafetariasRefeitorios/CoffeeShopsDiaryLineRegister"
                    last-response="{{registed}}"
                    method="post"
                    handle-as="json"
@@ -105,44 +107,49 @@
 
         <iron-ajax url="/PopulateDropdowns/GetTiposMovimento" last-response="{{CBMovementType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-form id="formCoffeeShopDiary">
-            <div class="row">
-                <div class="col-lg-2">
-                    <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
-                </div>
-                <div class="col-lg-2">
-                    <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
-                </div>
-                <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-2">
-                    <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-2">
-                    <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
-                </div>
-                <div class="col-lg-2">
-                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
-                </div>
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        </div>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                    </div>
 
-            </div>
-            <div class="row">
-                <div class="col-lg-1">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
-                    </template>
                 </div>
-            </div>
-        </iron-form>
+                <div class="row">
+                    <div class="col-lg-1">
+                        <template is="dom-if" if="{{ _permissions.create }}">
+                            <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
+                        </template>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
@@ -256,7 +263,6 @@
         },
         ready: function () {
             //GET CONTRACT DATA
-            debugger;
             this.$.diary_databound.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
             this.$.diary_databound.generateRequest();
 
@@ -325,8 +331,7 @@
         },
 
         _responseUpdate: function (updated) {
-            var self = this;
-            debugger;
+            var self = this;     
             if (updated.detail.status === 200) {
                 if (this.updated == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -350,7 +355,6 @@
         },
         _responseRegister: function (registed) {
             var self = this;
-            debugger;
             if (registed.detail.status === 200) {
                 if (this.registed == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -373,6 +377,9 @@
         _openToastError: function (message) {
             this.$.ToastError.text = message;
             this.$.ToastError.open();
+        },
+        _goBack: function (e) {
+            window.history.back();
         }
         });
     });
