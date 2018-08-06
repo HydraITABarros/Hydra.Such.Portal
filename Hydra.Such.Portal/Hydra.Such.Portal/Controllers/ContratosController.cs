@@ -1031,7 +1031,7 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
                     StartDate = StartDate,
-                    ExpiryDate = ExpiryDate,
+                    ExpiryDate = ExpiryDate,                  
                     InvoicePeriod = InvoicePeriod
                 });
             }
@@ -1645,6 +1645,7 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
+                
                 if (CountLines != null && CountLines > 1)
                 {
                     RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
@@ -1667,6 +1668,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
                         {
+                       
                             int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
                             if (findDate == 2)
                             {
