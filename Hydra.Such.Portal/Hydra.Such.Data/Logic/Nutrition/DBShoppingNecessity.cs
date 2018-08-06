@@ -220,38 +220,68 @@ namespace Hydra.Such.Data.Logic.Nutrition
         {
             if (item != null)
             {
-                return new DiárioRequisiçãoUnidProdutiva()
-                {
-                    //id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
-                    NºLinha = item.LineNo,
-                    Descrição = item.Description,
-                    DataHoraCriação = item.CreateDateTime,
-                    UtilizadorCriação = item.CreateUser,
-                    DataPPreçoFornecedor =  DateTime.Parse(item.DateByPriceSupplier),
-                    CustoUnitárioDireto = item.DirectUnitCost,
-                    DataReceçãoEsperada = DateTime.Parse(item.ExpectedReceptionDate),
-                    CodigoLocalização = item.LocalCode,
-                    TipoRefeição = item.MealType,
-                    NºEncomendaAberto = item.OpenOrderNo,
-                    NºLinhaEncomendaAberto = item.OrderLineOpenNo,
-                    NºProduto = item.ProductNo,
-                    DescriçãoUnidadeProduto = item.ProductUnitDescription,
-                    NºUnidadeProdutiva = item.ProductionUnitNo,
-                    NºProjeto = item.ProjectNo,
-                    Quantidade = item.Quantity,
-                    QuantidadePorUnidMedida = item.QuantitybyUnitMeasure,
-                    NomeFornecedor = item.SupplierName,
-                    NºFornecedor = item.SupplierNo,
-                    CodigoProdutoFornecedor = item.SupplierProductCode,
-                    DescriçãoProdutoFornecedor = item.SupplierProductDescription,
-                    TabelaPreçosFornecedor = item.TableSupplierPrice,
-                    Valor = item.TotalValue,
-                    CódUnidadeMedida = item.UnitMeasureCode,
-                    DataHoraModificação = item.UpdateDateTime,
-                    UtilizadorModificação = item.UpdateUser,
-                    NºDocumento = item.DocumentNo,
-                    Observações = item.Observation
-                };
+                var x =  new DiárioRequisiçãoUnidProdutiva();
+                x.NºLinha = item.LineNo;
+                x.Descrição = item.Description;
+                    x.DataHoraCriação = item.CreateDateTime;
+                    x.UtilizadorCriação = item.CreateUser;
+                    x.DataPPreçoFornecedor = DateTime.Parse(item.DateByPriceSupplier);
+                    x.CustoUnitárioDireto = item.DirectUnitCost;
+                    x.DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceptionDate);
+                    x.CodigoLocalização = item.LocalCode;
+                    x.TipoRefeição = item.MealType;
+                    x.NºEncomendaAberto = item.OpenOrderNo;
+                    x.NºLinhaEncomendaAberto = item.OrderLineOpenNo;
+                    x.NºProduto = item.ProductNo;
+                    x.DescriçãoUnidadeProduto = item.ProductUnitDescription;
+                    x.NºUnidadeProdutiva = item.ProductionUnitNo;
+                    x.NºProjeto = item.ProjectNo;
+                    x.Quantidade = item.Quantity;
+                    x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
+                    x.NomeFornecedor = item.SupplierName;
+                    x.NºFornecedor = item.SupplierNo;
+                    x.CodigoProdutoFornecedor = item.SupplierProductCode;
+                    x.DescriçãoProdutoFornecedor = item.SupplierProductDescription;
+                    x.TabelaPreçosFornecedor = item.TableSupplierPrice;
+                    x.Valor = item.TotalValue;
+                    x.CódUnidadeMedida = item.UnitMeasureCode;
+                    x.DataHoraModificação = item.UpdateDateTime;
+                    x.UtilizadorModificação = item.UpdateUser;
+                    x.NºDocumento = item.DocumentNo;
+                x.Observações = item.Observation;
+                return x;
+                //return new DiárioRequisiçãoUnidProdutiva()
+                //{
+                //    //id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
+                //    NºLinha = item.LineNo,
+                //    Descrição = item.Description,
+                //    DataHoraCriação = item.CreateDateTime,
+                //    UtilizadorCriação = item.CreateUser,
+                //    DataPPreçoFornecedor =  DateTime.Parse(item.DateByPriceSupplier),
+                //    CustoUnitárioDireto = item.DirectUnitCost,
+                //    DataReceçãoEsperada = DateTime.Parse(item.ExpectedReceptionDate),
+                //    CodigoLocalização = item.LocalCode,
+                //    TipoRefeição = item.MealType,
+                //    NºEncomendaAberto = item.OpenOrderNo,
+                //    NºLinhaEncomendaAberto = item.OrderLineOpenNo,
+                //    NºProduto = item.ProductNo,
+                //    DescriçãoUnidadeProduto = item.ProductUnitDescription,
+                //    NºUnidadeProdutiva = item.ProductionUnitNo,
+                //    NºProjeto = item.ProjectNo,
+                //    Quantidade = item.Quantity,
+                //    QuantidadePorUnidMedida = item.QuantitybyUnitMeasure,
+                //    NomeFornecedor = item.SupplierName,
+                //    NºFornecedor = item.SupplierNo,
+                //    CodigoProdutoFornecedor = item.SupplierProductCode,
+                //    DescriçãoProdutoFornecedor = item.SupplierProductDescription,
+                //    TabelaPreçosFornecedor = item.TableSupplierPrice,
+                //    Valor = item.TotalValue,
+                //    CódUnidadeMedida = item.UnitMeasureCode,
+                //    DataHoraModificação = item.UpdateDateTime,
+                //    UtilizadorModificação = item.UpdateUser,
+                //    NºDocumento = item.DocumentNo,
+                //    Observações = item.Observation
+                //};
             }
             return null;
         }

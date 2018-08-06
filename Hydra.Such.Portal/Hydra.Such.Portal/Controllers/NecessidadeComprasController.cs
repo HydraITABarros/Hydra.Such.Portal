@@ -496,7 +496,7 @@ namespace Hydra.Such.Portal.Controllers
                         req.UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva);
                         req.RequestNutrition = true;
                         req.RequisitionDate = DateTime.Now.ToString();
-                        req.ReceivedDate = expextedDate.ToString();
+                        req.ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty;
                         req.CreateUser = User.Identity.Name;
                         req.CreateDate = DateTime.Now.ToString();
                         req.State = RequisitionStates.Pending;
@@ -630,13 +630,13 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        requisition.eReasonCode = 0;
+                        requisition.eReasonCode = 2;
                         requisition.eMessage = "Ocorreu um erro ao criar a requisição.";
                     }
                 }
                 else
                 {
-                    requisition.eReasonCode = 0;
+                    requisition.eReasonCode = 2;
                     requisition.eMessage = "Não foi possivel gerar numeração para a requisição.";
                 }
 
