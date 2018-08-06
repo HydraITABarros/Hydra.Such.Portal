@@ -452,7 +452,6 @@
                 },
 
                 _createMealRegistry: function () {
-                    debugger;
                     this.diary.ResourceNo = this._resourceNo;
                     this.diary.MealType = this._mealType;
                     this.$.create_databound_ajax.body = JSON.stringify(this.diary);
@@ -460,7 +459,6 @@
                 },
 
                 _responseCreated: function (created) {
-                    debugger;
                     var self = this;
                     if (created.detail.status === 200) {
                         if (this.created == true) {
@@ -488,7 +486,6 @@
 
                 _responseUpdate: function (updated) {
                     var self = this;
-                    debugger;
                     if (updated.detail.status === 200) {
                         if (this.updated == true) {
                             this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -525,7 +522,6 @@
 
                 _responseRegister: function (registed) {
                     var self = this;
-                    debugger;
                     if (registed.detail.status === 200) {
                         if (this.registed == true) {
                             this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -551,7 +547,6 @@
                 },
 
                 _setResourceData: function (e) {
-                    debugger;
                     var item = this.CBResourceNo.find(x => x.id == e);
                     if (item != null) {
                         this.$.description.value = item.value;
@@ -559,7 +554,6 @@
                 },
 
                 _setTypeMealData: function (e) {
-                    debugger;
                     var item = this.CBMealType.find(x => x.id == e);
                     if (item != null) {
                         this.$.descriptionTypeMeal.value = item.value;

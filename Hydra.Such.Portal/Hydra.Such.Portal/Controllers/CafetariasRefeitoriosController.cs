@@ -231,6 +231,22 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
         }
 
+        public IActionResult DiarioCafeterias(int NºUnidadeProdutiva, int CódigoCafetaria)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Diário_Cafetarias_Refeitórios);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CoffeeShopNo = CódigoCafetaria;
+                ViewBag.ProdutiveUnityNo = NºUnidadeProdutiva;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public JsonResult GetCoffeShopDiary([FromBody] CoffeeShopDiaryViewModel data)
         {
             try
