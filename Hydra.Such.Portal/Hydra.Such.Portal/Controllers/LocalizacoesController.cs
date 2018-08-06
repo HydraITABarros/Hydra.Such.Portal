@@ -6,15 +6,25 @@ using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     //TODO: Confirmar se é para renomear para Existências
     public class LocalizacoesController : Controller
     {
+        private readonly NAVConfigurations _config;
+
+        public LocalizacoesController(IOptions<NAVConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Existencias);
@@ -34,6 +44,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetLocations()
         {
             List<LocationViewModel> result = DBLocations.GetAll().ParseToViewModel();
+            result.ForEach(x =>
+            {
+                x.RegionText = !string.IsNullOrEmpty(x.Region) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.Region, User.Identity.Name, x.Region).FirstOrDefault().Name : "";
+                x.LockedText = x.Locked.HasValue ? x.Locked == true ? "Sim" : "Não" : "";
+            });
+
             return Json(result);
         }
 

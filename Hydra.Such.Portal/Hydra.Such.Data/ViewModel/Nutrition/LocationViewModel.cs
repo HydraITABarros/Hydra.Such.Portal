@@ -16,7 +16,9 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string ZipCode { get; set; }
         public string Email { get; set; }
         public bool? Locked { get; set; }
+        public string LockedText { get; set; }
         public string Region { get; set; }
+        public string RegionText { get; set; }
         public string Area { get; set; }
         public string ResponsabilityCenter { get; set; }
         public string SupplierLocation { get; set; }
