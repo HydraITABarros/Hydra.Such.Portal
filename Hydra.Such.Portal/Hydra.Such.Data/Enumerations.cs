@@ -256,5 +256,15 @@ namespace Hydra.Such.Data
             [Description("Conta CG")]
             ContaCG,
         }
+
+        public enum ProjectDiaryMovementTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Consumo,
+            Venda,
+            [Description("Devolução")]
+            Devolucao
+        }
     }
 }

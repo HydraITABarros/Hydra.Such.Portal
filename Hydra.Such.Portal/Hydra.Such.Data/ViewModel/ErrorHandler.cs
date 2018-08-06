@@ -22,6 +22,23 @@ namespace Hydra.Such.Data.ViewModel
             this.eMessage = message;
         }
     }
+
+    public class Result : ErrorHandler
+    {
+        public object Value { get; set; }
+        
+        public Result()
+        {
+            eMessages = new List<TraceInformation>();
+        }
+
+        public Result(int reasonCode, string message) : base()
+        {
+            this.eReasonCode = reasonCode;
+            this.eMessage = message;
+        }
+    }
+
     public class TraceInformation
     {
         public TraceInformation(TraceType type, string message)

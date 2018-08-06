@@ -503,25 +503,28 @@ namespace Hydra.Such.Portal.Controllers
 
                         data.ForEach(item =>
                         {
-                            RequisitionLineViewModel line = new RequisitionLineViewModel();
-                            line.Type = 2;
-                            line.Code = item.ProductNo;
-                            line.Description = item.Description;
-                            line.UnitMeasureCode = item.UnitMeasureCode;
-                            line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
-                            line.LocalCode = item.LocalCode;
-                            line.QuantityToRequire = item.Quantity;
-                            line.UnitCost = item.DirectUnitCost;
-                            line.SupplierNo = item.SupplierNo;
-                            line.ExpectedReceivingDate = item.ExpectedReceptionDate;
-                            line.SupplierProductCode = item.SupplierProductCode;
-                            line.FunctionalAreaCode = req.FunctionalAreaCode;
-                            line.CenterResponsibilityCode = req.CenterResponsibilityCode;
-                            line.RegionCode = req.RegionCode;
-                            line.CreateUser = User.Identity.Name;
-                        //line.NºEncomendaAberto = item.OpenOrderNo;
-                        //line.NºLinhaEncomendaAberto = string.IsNullOrEmpty(item.OrderLineOpenNo) ? 0 : Convert.ToInt32(item.OrderLineOpenNo);
-                        req.Lines.Add(line);
+                            if (item.Quantity.HasValue && item.Quantity > 0)
+                            {
+                                RequisitionLineViewModel line = new RequisitionLineViewModel();
+                                line.Type = 2;
+                                line.Code = item.ProductNo;
+                                line.Description = item.Description;
+                                line.UnitMeasureCode = item.UnitMeasureCode;
+                                line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
+                                line.QuantityToRequire = item.Quantity;
+                                line.UnitCost = item.DirectUnitCost;
+                                line.SupplierNo = item.SupplierNo;
+                                line.ExpectedReceivingDate = item.ExpectedReceptionDate;
+                                line.SupplierProductCode = item.SupplierProductCode;
+                                line.FunctionalAreaCode = req.FunctionalAreaCode;
+                                line.CenterResponsibilityCode = req.CenterResponsibilityCode;
+                                line.RegionCode = req.RegionCode;
+                                line.CreateUser = User.Identity.Name;
+                                line.ProjectNo = productivityUnit.ProjetoCozinha;
+                                line.LocalCode = productivityUnit.Armazém;
+                                
+                                req.Lines.Add(line);
+                            }
                         });
 
                         try
