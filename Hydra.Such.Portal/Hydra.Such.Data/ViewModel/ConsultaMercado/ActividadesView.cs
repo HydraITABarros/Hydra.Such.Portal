@@ -11,5 +11,6 @@ namespace Hydra.Such.Data.ViewModel.ConsultaMercado
         public string Descricao { get; set; }
 
         public ICollection<ActividadesPorFornecedorView> ActividadesPorFornecedor { get; set; }
+        public ICollection<ActividadesPorProdutoView> ActividadesPorProduto { get; set; }
     }
 }
