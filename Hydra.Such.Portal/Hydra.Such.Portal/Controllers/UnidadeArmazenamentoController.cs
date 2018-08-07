@@ -97,7 +97,7 @@ namespace Hydra.Such.Portal.Controllers
             FichaProdutoViewModel product = DBFichaProduto.ParseToViewModel(DBFichaProduto.GetById(idProduct));
             return Json(product);
         }
-        
+
         public JsonResult CreateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
         {
             string eReasonCode = "";
@@ -116,11 +116,11 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult DeleteUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
         {
-           
+
             string eReasonCode = "";
             //Create new 
             eReasonCode = DBStockkeepingUnit.Delete(DBStockkeepingUnit.ParseToDb(data)) == true ? "103" : "";
-            
+
             if (String.IsNullOrEmpty(eReasonCode))
             {
                 return Json(null);
@@ -131,7 +131,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult  UpdateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
+        public JsonResult UpdateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
         {
             string eReasonCode = "";
             //Create new 
