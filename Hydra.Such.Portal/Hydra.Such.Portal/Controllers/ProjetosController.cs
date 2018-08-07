@@ -1591,6 +1591,8 @@ namespace Hydra.Such.Portal.Controllers
             string projectNo = requestParams["projectNo"].ToString();
 
             var project = DBProjects.GetById(projectNo);
+            
+            ProjectBillingAuthorization p = new ProjectBillingAuthorization(project);
             if (project != null)
             {
                 try

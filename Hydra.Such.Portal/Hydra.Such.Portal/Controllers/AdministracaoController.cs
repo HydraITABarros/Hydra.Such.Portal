@@ -186,7 +186,7 @@ namespace Hydra.Such.Portal.Controllers
                 IdUtilizador = data.IdUser,
                 Nome = data.Name,
                 Administrador = data.Administrator,
-                Ativo = data.Active,
+                Ativo = data.Active.HasValue ? data.Active.Value : false,
                 RegiãoPorDefeito = data.Regiao,
                 AreaPorDefeito = data.Area,
                 CentroRespPorDefeito = data.Cresp,
@@ -251,7 +251,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 userConfig.IdUtilizador = data.IdUser;
                 userConfig.Nome = data.Name;
-                userConfig.Ativo = data.Active;
+                userConfig.Ativo = data.Active.HasValue ? data.Active.Value : false;
                 userConfig.Administrador = data.Administrator;
                 userConfig.RegiãoPorDefeito = data.Regiao;
                 userConfig.AreaPorDefeito = data.Area;

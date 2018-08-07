@@ -1482,7 +1482,7 @@
                     },
                 },
                 observers: [
-                    '_onCacheLoaded(data,Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers,Requisition)'
+                    '_onCacheLoaded(Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers)'
                 ],
                 _registerMenuItemSelected: function (e) {
                     if (e.detail.value == 0)
@@ -1619,9 +1619,11 @@
                     var errors = this.Requisition.eMessages.find(x => x.type == 0);
                     this._hasErrors = !(errors == undefined);
                 },
-                _onCacheLoaded: function (data, Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers, Requisition) {
-                    if (!this.Flag) {
-                        //debugger;
+                _onCacheLoaded: function (Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers) {
+                    //Ensure all items are chached
+                    var totalItemsToCache = 8;  //(Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers)
+                    this.itemsToCache = this.itemsToCache == undefined ? 1 : (this.itemsToCache + 1);
+                    if (this.itemsToCache == totalItemsToCache) {
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                         if (this._requisitionstatus === 6) {
                             this._isArchived = true;
@@ -1817,7 +1819,7 @@
                             return sel.name;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getUnitOfMeasureDescription: function (param) {
                     if (param != undefined && this.UnitsOfMmeasure != undefined) {
@@ -1826,7 +1828,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getResponsCenterDescription: function (param) {
                     if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
@@ -1835,7 +1837,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getRegionDescription: function (param) {
                     if (param != undefined && this.LProjectRegionCodes != undefined) {
@@ -1844,8 +1846,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
-
+                    return param;
                 },
                 _getAreaDescription: function (param) {
                     if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
@@ -1854,7 +1855,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
 
                 },
                 _getLocalCodeDescription: function (param) {
@@ -1864,7 +1865,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getVATBusinessDescription: function (param) {
                     if (param != undefined && this.VATBusinessPostingGroups != undefined) {

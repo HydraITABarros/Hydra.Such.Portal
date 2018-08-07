@@ -9,9 +9,18 @@ namespace Hydra.Such.Data.ViewModel.Projects
 {
     public class ProjectBillingAuthorization : ProjectDetailsViewModel
     {
+        private Projetos project;
+        
         public ProjectBillingAuthorization()
         {
             this.Movements = new List<ProjectDiaryViewModel>();
+        }
+
+        public ProjectBillingAuthorization(Projetos project)
+        {
+            this.project = project;
+            //if (project != null)
+            //    this.Movements = project.MovimentosDeProjeto;
         }
 
         public List<ProjectDiaryViewModel> Movements { get; set; }
