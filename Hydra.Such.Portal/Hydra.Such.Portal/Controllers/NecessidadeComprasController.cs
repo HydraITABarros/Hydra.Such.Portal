@@ -91,7 +91,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
         {
             ErrorHandler result = new ErrorHandler();
-            string notupdate = "";
             if (dp != null)
             {
                 List<DiárioRequisiçãoUnidProdutiva> previousList;
@@ -320,10 +319,13 @@ namespace Hydra.Such.Portal.Controllers
             ProductivityUnitViewModel prodUnit = requestParams["prodUnit"].ToObject<ProductivityUnitViewModel>();
             List<RequisitionViewModel> data = requestParams["reqModels"].ToObject<List<RequisitionViewModel>>();
             string pricesDateValue = requestParams["pricesDate"].ToObject<string>();
+            string expectedReceipDateValue = requestParams["expectedReceipDate"].ToObject<string>();
 
-            DateTime pricesDate;
-            if (!DateTime.TryParse(pricesDateValue, out pricesDate))
+            if (!DateTime.TryParse(pricesDateValue, out DateTime pricesDate))
                 pricesDate = DateTime.Now;
+
+            if (!DateTime.TryParse(expectedReceipDateValue, out DateTime expectedReceipDate))
+                expectedReceipDate = DateTime.MinValue;
 
             ErrorHandler resultValidation = new ErrorHandler();
             string rqWithOutLines = "";
@@ -346,6 +348,9 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         foreach (LinhasRequisição lr in result)
                         {
+                            supVal = string.Empty;
+                            prodVal = string.Empty;
+
                             //Get Supplier by Code 
                             List<DDMessageString> supplierval = DBNAV2017Supplier
                                 .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
@@ -405,9 +410,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºProjeto = prodUnit.ProjectKitchen;
                             newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.Quantidade = 0;
-                            newdp.DataReceçãoEsperada = string.IsNullOrEmpty(rpu.ReceivedDate)
-                                ? (DateTime?)null
-                                : DateTime.Parse(rpu.ReceivedDate);
+                            newdp.DataReceçãoEsperada = expectedReceipDate.CompareTo(DateTime.MinValue) > 0 ? expectedReceipDate : (DateTime?)null;
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
@@ -477,7 +480,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
         {
             ErrorHandler result = new ErrorHandler();
-            int rLinesNotCreated = 0;
             if (data != null && data.Count > 0)
             {
                 int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
