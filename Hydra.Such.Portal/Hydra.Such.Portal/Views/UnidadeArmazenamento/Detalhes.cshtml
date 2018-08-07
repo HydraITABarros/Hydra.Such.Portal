@@ -123,14 +123,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetProducts"
+        <iron-ajax url="/PopulateDropdowns/GetProductseSUCH"
                    last-response="{{ProductNoList}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocations"
+        <iron-ajax url="/PopulateDropdowns/GetLocationsPortal"
                    last-response="{{LocalizacaoList}}"
                    auto
                    method="post"
@@ -151,7 +151,7 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCodeeSUCH"
                    last-response="{{UnitsProductList}}"
                    auto
                    method="post"
@@ -162,10 +162,10 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </template>
-            <paper-button class="tablinks" on-tap="_redirectToList"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Exibir Lista</paper-button>
+            <paper-button id="btnCriar" class="btnEdit tablinks" value="createBtt" on-tap="_createNewStockeepingUnit" disabled="{{ !_permissions.create }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnGuardar" class="btnEdit tablinks" value="updateBtt" on-tap="_updateStockeepingUnit" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnEliminar" class="btnRemove tablinks" value="deleteBtt" on-tap="_deleteStockeepingUnit" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <paper-button id="btnMovimento" class="btnSave tablinks" value="deleteBtt" on-tap="_goProductMovement">&nbsp; Movimentos</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -173,7 +173,6 @@
                 <iron-form id="formContract">
 
                     <div class="panel panel-default">
-                        <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
@@ -190,8 +189,7 @@
                                                 <template>
                                                     <table width="250px">
                                                         <tr>
-                                                            <td width="30%">[[item.id]]</td>
-                                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                                            <td width="100%"><b>[[item.id]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -205,8 +203,7 @@
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                            <div>[[item.id]]</div>
+                                                            <div><b>[[item.id]]</b>  -  [[item.value]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -239,7 +236,7 @@
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div><b>[[item.value]]</b></div>
                                                             <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
@@ -249,19 +246,19 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddvendorItemNo" name="ddvendorItemNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}"></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        @*<div class="col-md-3 ">
                                             <vaadin-text-field id="dditemCategoryCode" name="dditemCategoryCode" label="Cód. Categoria Produto" value="{{result.codeProcuctCategory}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddproductGroupCode" name="ddproductGroupCode" label="Cód. Grupo Produto" value="{{result.codeProcuctGroup}}" disabled></vaadin-text-field>
-                                        </div>
+                                        </div>*@
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddunitsProductCod" name="ddunitsProductCod" label="Cód Unidade Medida Produto" item-value-path="id" item-label-path="id" value="{{result.codeUnitMeasure}}">
+                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddunitsProductCod" name="ddunitsProductCod" label="Cód Unidade Medida Produto" item-value-path="id" item-label-path="value" value="{{result.codeUnitMeasure}}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div><b>[[item.value]]</b></div>
                                                             <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
@@ -280,30 +277,14 @@
                                     </div>
                                 </div>
                             </iron-pages>
-
-
                         </div>
                     </div>
                 </iron-form>
-                <div class="marginSpace" id="ddmarginSpace">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button raised id="btnSaveLine" class="btnEdit" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                </div>
-                <div class="marginSpace2" id="ddmarginSpace2">
-                    <template is="dom-if" if="{{ _permissions.update }}">
-                        <paper-button raised id="btnSaveLine" class="btnEdit" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    </template>
-                    <template is="dom-if" if="{{ _permissions.delete }}">
-                        <paper-button raised id="btnSaveLine" class="btnRemove" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                    </template>
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_goProductMovement">&nbsp; Movimento</paper-button>
-                </div>
             </div>
         </div>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
     </template>
 
     <script>
@@ -322,31 +303,53 @@
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
                 },
+
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.ProductNo);
                     this.$.page_databound_ajax.generateRequest();
+
                     //Inserir
-                    if (@ViewBag.ButtonHide==1)
+                    if (@ViewBag.ButtonHide == 1) {
+                        $(this.$.btnCriar).removeClass('hidden');
+                        $(this.$.btnGuardar).addClass('hidden');
+                        $(this.$.btnEliminar).addClass('hidden');
+                        $(this.$.btnMovimento).addClass('hidden');
+                    } else {
+                        $(this.$.btnCriar).addClass('hidden');
+                        $(this.$.btnGuardar).removeClass('hidden');
+                        $(this.$.btnEliminar).removeClass('hidden');
+                        $(this.$.btnMovimento).removeClass('hidden');
+                    }
+                    @*if (@ViewBag.ButtonHide==1) {
                         this.$.ddmarginSpace2.style.display = 'none';
                     //Actualizar
                     else
-                      this.$.ddmarginSpace.style.display = 'none';
-
+                      this.$.ddmarginSpace.style.display = 'none';*@
                 },
+
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
+
                 openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
                 _redirectToNewUnitForm: function (item) {
                     this.result = null;
                     this.$.ddproductNo.disabled = false;
-                    this.$.ddmarginSpace2.style.display = 'none';
-                    this.$.ddmarginSpace.style.display = 'inline';
+
+                    $(this.$.btnCriar).removeClass('hidden');
+                    $(this.$.btnGuardar).addClass('hidden');
+                    $(this.$.btnEliminar).addClass('hidden');
+                    $(this.$.btnMovimento).addClass('hidden');
+
+                    //this.$.ddmarginSpace2.style.display = 'none';
+                    //this.$.ddmarginSpace.style.display = 'inline';
                 },
+
                 _getDescriptionGroup: function (e) {
                     if (this.$.ddproductNo.value != null) {
                         this.$.ajax_get.url = "/UnidadeArmazenamento/GetProductId";
@@ -354,8 +357,8 @@
                         this.$.ajax_get.generateRequest();
                     }
                 },
-                _createNewStockeepingUnit: function (e) {
 
+                _createNewStockeepingUnit: function (e) {
                     if (this.$.ddproductNo.value != null && this.$.ddproductNo.value !="") {
                         var objectNew = {
                             ProductNo : this.$.ddproductNo.value,
@@ -370,18 +373,17 @@
                             VendorNo : this.$.ddvendorNo.value,
                             VendorItemNo : this.$.ddvendorItemNo.value,
                             LastCostDirect: this.$.ddlastCostDirect.value,
-                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
                             PriceSale: this.$.ddpriceSales.value,
                             CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
-
                         this.$.ajax_update.url = "/UnidadeArmazenamento/CreateUnitStockeeping";
                             this.$.ajax_update.body = JSON.stringify(objectNew);
                             this.$.ajax_update.generateRequest();
-
                     }
                 },
+
                 _updateStockeepingUnit: function (e) {
                     if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
                         var objectNew = {
@@ -397,8 +399,8 @@
                             VendorNo: this.$.ddvendorNo.value,
                             VendorItemNo: this.$.ddvendorItemNo.value,
                             LastCostDirect: this.$.ddlastCostDirect.value,
-                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
                             PriceSale: this.$.ddpriceSales.value,
                             CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
@@ -407,8 +409,8 @@
                         this.$.ajax_update.generateRequest();
                     }
                 },
-                _deleteStockeepingUnit: function (e) {
 
+                _deleteStockeepingUnit: function (e) {
                     if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
                         var objectNew = {
                             ProductNo: this.$.ddproductNo.value,
@@ -423,17 +425,17 @@
                             VendorNo: this.$.ddvendorNo.value,
                             VendorItemNo: this.$.ddvendorItemNo.value,
                             LastCostDirect: this.$.ddlastCostDirect.value,
-                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
                             PriceSale: this.$.ddpriceSales.value,
                             CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
-
                         this.$.ajax_update.url = "/UnidadeArmazenamento/DeleteUnitStockeeping";
                         this.$.ajax_update.body = JSON.stringify(objectNew);
                         this.$.ajax_update.generateRequest();
                     }
                 },
+
                 _updateResponse: function (e) {
 
                     if (this.result == "101") {
@@ -444,43 +446,59 @@
                         this.openToast('Registo eliminado');
                         this.result = null;
                         this.$.ddproductNo.disabled = false;
-                        this.$.ddmarginSpace2.style.display = 'none';
-                        this.$.ddmarginSpace.style.display = 'inline';
+
+                        $(this.$.btnCriar).removeClass('hidden');
+                        $(this.$.btnGuardar).addClass('hidden');
+                        $(this.$.btnEliminar).addClass('hidden');
+                        $(this.$.btnMovimento).addClass('hidden');
+
+                        //this.$.ddmarginSpace2.style.display = 'none';
+                        //this.$.ddmarginSpace.style.display = 'inline';
                     } else {
                         this.openToast("Actualizado com Sucesso!");
-                        this.$.ddproductNo.value = "",
-                        this.$.ddcodLocalitation.value = "",
-                        this.$.dddescription.value = "",
-                        this.$.ddinventory.value = "",
-                        this.$.ddblocked.checked = false,
-                        this.$.ddunitCost.value = "",
-                        this.$.ddvalueWareHouse.value = "",
-                        this.$.ddcodeWareHouse.checked = false,
-                        this.$.ddshelfNo.value = "",
-                        this.$.ddvendorNo.value = "",
-                        this.$.ddvendorItemNo.value = "",
-                        this.$.ddlastCostDirect.value = "",
-                        this.$.dditemCategoryCode.value = "",
-                        this.$.ddproductGroupCode.value = "",
-                        this.$.ddpriceSales.value = "",
-                        this.$.ddunitsProductCod.value="",
-                        this.$.ddproductNo.disabled = false;
+
+                        $(this.$.btnCriar).addClass('hidden');
+                        $(this.$.btnGuardar).removeClass('hidden');
+                        $(this.$.btnEliminar).removeClass('hidden');
+                        $(this.$.btnMovimento).removeClass('hidden');
+
+                        //this.$.ddproductNo.value = "",
+                        //this.$.ddcodLocalitation.value = "",
+                        //this.$.dddescription.value = "",
+                        //this.$.ddinventory.value = "",
+                        //this.$.ddblocked.checked = false,
+                        //this.$.ddunitCost.value = "",
+                        //this.$.ddvalueWareHouse.value = "",
+                        //this.$.ddcodeWareHouse.checked = false,
+                        //this.$.ddshelfNo.value = "",
+                        //this.$.ddvendorNo.value = "",
+                        //this.$.ddvendorItemNo.value = "",
+                        //this.$.ddlastCostDirect.value = "",
+                            //this.$.dditemCategoryCode.value = "",
+                            //this.$.ddproductGroupCode.value = "",
+                        //this.$.ddpriceSales.value = "",
+                        //this.$.ddunitsProductCod.value="",
+                        //this.$.ddproductNo.disabled = false;
                     }
                 },
+
                 _comboProductNoResponse: function (e) {
-                    if (this.getProductresult[0] != null) {
-                        this.$.dddescription.value = this.getProductresult[0].name;
-                        this.$.dditemCategoryCode.value = this.getProductresult[0].itemCategoryCode;
-                        this.$.ddproductGroupCode.value = this.getProductresult[0].productGroupCode;
-                        this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
+                    //debugger;
+                    if (this.getProductresult != null) {
+                        this.$.dddescription.value = this.getProductresult.descricao;
+                        //this.$.dditemCategoryCode.value = this.getProductresult[0].itemCategoryCode;
+                        //this.$.ddproductGroupCode.value = this.getProductresult[0].productGroupCode;
+                        //this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
                     }
 
                 },
+
                 _goProductMovement: function (e) {
                     this.$.ajax_check.url = "/UnidadeArmazenamento/SetSessionMovimentoProduto";
                     this.$.ajax_check.body = JSON.stringify(this.result);
                     this.$.ajax_check.generateRequest();
                 },
+
                 _sessionResponse: function (e) {
 
                     if (this.checkSession == true)
@@ -488,6 +506,7 @@
                     else
                         this.openToastError('Necessita de Nº Produto');
                 },
+
                 _redirectToList: function (e) {
                     window.location.href = "/UnidadeArmazenamento";
                 },
@@ -495,6 +514,7 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
             });
         });
     </script>
