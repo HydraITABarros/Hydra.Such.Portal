@@ -12,6 +12,9 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
         public virtual DbSet<AcordoPrecos> AcordoPrecos { get; set; }
+        public virtual DbSet<Actividades> Actividades { get; set; }
+        public virtual DbSet<ActividadesPorFornecedor> ActividadesPorFornecedor { get; set; }
+        public virtual DbSet<ActividadesPorProduto> ActividadesPorProduto { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
         public virtual DbSet<AnexosErros> AnexosErros { get; set; }
         public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
@@ -23,6 +26,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<CatálogoManutenção> CatálogoManutenção { get; set; }
         public virtual DbSet<ClassificaçãoFichasTécnicas> ClassificaçãoFichasTécnicas { get; set; }
         public virtual DbSet<Compras> Compras { get; set; }
+        public virtual DbSet<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
         public virtual DbSet<Configuração> Configuração { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
@@ -31,6 +35,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
+        public virtual DbSet<ConsultaMercado> ConsultaMercado { get; set; }
         public virtual DbSet<Contactos> Contactos { get; set; }
         public virtual DbSet<Contratos> Contratos { get; set; }
         public virtual DbSet<DestinosFinaisResíduos> DestinosFinaisResíduos { get; set; }
@@ -50,8 +55,15 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<FolhasDeHoras> FolhasDeHoras { get; set; }
         public virtual DbSet<FornecedoresAcordoPrecos> FornecedoresAcordoPrecos { get; set; }
         public virtual DbSet<GruposAprovação> GruposAprovação { get; set; }
+        public virtual DbSet<HistoricoCondicoesPropostasFornecedores> HistoricoCondicoesPropostasFornecedores { get; set; }
+        public virtual DbSet<HistoricoConsultaMercado> HistoricoConsultaMercado { get; set; }
+        public virtual DbSet<HistoricoLinhasCondicoesPropostasFornecedores> HistoricoLinhasCondicoesPropostasFornecedores { get; set; }
+        public virtual DbSet<HistoricoLinhasConsultaMercado> HistoricoLinhasConsultaMercado { get; set; }
+        public virtual DbSet<HistoricoSeleccaoEntidades> HistoricoSeleccaoEntidades { get; set; }
         public virtual DbSet<Instrutores> Instrutores { get; set; }
         public virtual DbSet<LinhasAcordoPrecos> LinhasAcordoPrecos { get; set; }
+        public virtual DbSet<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }
+        public virtual DbSet<LinhasConsultaMercado> LinhasConsultaMercado { get; set; }
         public virtual DbSet<LinhasContratos> LinhasContratos { get; set; }
         public virtual DbSet<LinhasFaturaçãoContrato> LinhasFaturaçãoContrato { get; set; }
         public virtual DbSet<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
@@ -105,6 +117,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<RequisicoesRegAlteracoes> RequisicoesRegAlteracoes { get; set; }
         public virtual DbSet<RequisiçõesSimplificadas> RequisiçõesSimplificadas { get; set; }
         public virtual DbSet<RhRecursosFh> RhRecursosFh { get; set; }
+        public virtual DbSet<SeleccaoEntidades> SeleccaoEntidades { get; set; }
         public virtual DbSet<Serviços> Serviços { get; set; }
         public virtual DbSet<ServiçosCliente> ServiçosCliente { get; set; }
         public virtual DbSet<TabelaConfRecursosFh> TabelaConfRecursosFh { get; set; }
@@ -133,6 +146,15 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
+
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
+//            }
+//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -294,6 +316,66 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DtFim).HasColumnType("datetime");
 
                 entity.Property(e => e.DtInicio).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Actividades>(entity =>
+            {
+                entity.HasKey(e => e.CodActividade);
+
+                entity.Property(e => e.CodActividade)
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Descricao).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<ActividadesPorFornecedor>(entity =>
+            {
+                entity.ToTable("Actividades_por_Fornecedor");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.ActividadesPorFornecedor)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Actividades_por_Fornecedor_Actividades");
+            });
+
+            modelBuilder.Entity<ActividadesPorProduto>(entity =>
+            {
+                entity.ToTable("Actividades_por_Produto");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.ActividadesPorProduto)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Actividades_por_Produto_Actividades");
             });
 
             modelBuilder.Entity<Anexos>(entity =>
@@ -844,6 +926,87 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Compras_Config Mercado Local");
             });
 
+            modelBuilder.Entity<CondicoesPropostasFornecedores>(entity =>
+            {
+                entity.HasKey(e => e.IdCondicaoPropostaFornecedores);
+
+                entity.ToTable("Condicoes_Propostas_Fornecedores");
+
+                entity.HasIndex(e => new { e.NumConsultaMercado, e.CodFornecedor, e.Alternativa })
+                    .HasName("IX_Condicoes_Propostas_Fornecedores")
+                    .IsUnique();
+
+                entity.Property(e => e.IdCondicaoPropostaFornecedores).HasColumnName("ID_Condicao_Proposta_Fornecedores");
+
+                entity.Property(e => e.Alternativa)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodTermosPagamento)
+                    .HasColumnName("Cod_Termos_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.DataProposta)
+                    .HasColumnName("Data_Proposta")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.EnviarPedidoProposta)
+                    .HasColumnName("Enviar_Pedido_Proposta")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FornecedorSelecionado)
+                    .HasColumnName("Fornecedor_Selecionado")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NomeFornecedor)
+                    .HasColumnName("Nome_Fornecedor")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Notificado).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .IsRequired()
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.ValidadeProposta)
+                    .HasColumnName("Validade_Proposta")
+                    .HasMaxLength(10);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.CondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.CondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Projetos");
+            });
+
             modelBuilder.Entity<ConfigMercadoLocal>(entity =>
             {
                 entity.HasKey(e => e.RegiaoMercadoLocal);
@@ -1219,6 +1382,151 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<ConsultaMercado>(entity =>
+            {
+                entity.HasKey(e => e.NumConsultaMercado);
+
+                entity.ToTable("Consulta_Mercado");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AdjudicacaoEm)
+                    .HasColumnName("Adjudicacao_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.AdjudicacaoPor)
+                    .HasColumnName("Adjudicacao_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .IsRequired()
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProjecto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ConsultaEm)
+                    .HasColumnName("Consulta_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ConsultaPor)
+                    .HasColumnName("Consulta_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataLimite)
+                    .HasColumnName("Data_Limite")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataPedidoCotacao)
+                    .HasColumnName("Data_Pedido_Cotacao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Destino).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EspecificacaoTecnica)
+                    .HasColumnName("Especificacao_Tecnica")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Estado).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Fase).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FiltroActividade)
+                    .HasColumnName("Filtro_Actividade")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.FornecedorSelecionado)
+                    .HasColumnName("Fornecedor_Selecionado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Modalidade).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NegociacaoContratacaoEm)
+                    .HasColumnName("Negociacao_Contratacao_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NegociacaoContratacaoPor)
+                    .HasColumnName("Negociacao_Contratacao_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumDocumentoCompra)
+                    .HasColumnName("Num_Documento_Compra")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumRequisicao)
+                    .HasColumnName("Num_Requisicao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PedidoCotacaoCriadoEm)
+                    .HasColumnName("Pedido_Cotacao_Criado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.PedidoCotacaoCriadoPor)
+                    .IsRequired()
+                    .HasColumnName("Pedido_Cotacao_Criado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PedidoCotacaoOrigem)
+                    .HasColumnName("Pedido_Cotacao_Origem")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.SeleccaoEfectuada)
+                    .HasColumnName("Seleccao_Efectuada")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.UtilizadorRequisicao)
+                    .HasColumnName("Utilizador_Requisicao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ValorAdjudicado).HasColumnName("Valor_Adjudicado");
+
+                entity.Property(e => e.ValorPedidoCotacao).HasColumnName("Valor_Pedido_Cotacao");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.ConsultaMercado)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Consulta_Mercado_Actividades");
+
+                entity.HasOne(d => d.CodProjectoNavigation)
+                    .WithMany(p => p.ConsultaMercado)
+                    .HasForeignKey(d => d.CodProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Consulta_Mercado_Projetos");
             });
 
             modelBuilder.Entity<Contactos>(entity =>
@@ -2814,6 +3122,492 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<HistoricoCondicoesPropostasFornecedores>(entity =>
+            {
+                entity.HasKey(e => new { e.IdCondicaoPropostaFornecedores, e.NumConsultaMercado, e.NumVersao, e.CodFornecedor });
+
+                entity.ToTable("Historico_Condicoes_Propostas_Fornecedores");
+
+                entity.Property(e => e.IdCondicaoPropostaFornecedores).HasColumnName("ID_Condicao_Proposta_Fornecedores");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
+
+                entity.Property(e => e.CodFornecedor)
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Alternativa)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodTermosPagamento)
+                    .HasColumnName("Cod_Termos_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.DataProposta)
+                    .HasColumnName("Data_Proposta")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.EnviarPedidoProposta)
+                    .HasColumnName("Enviar_Pedido_Proposta")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FornecedorSelecionado)
+                    .HasColumnName("Fornecedor_Selecionado")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NomeFornecedor)
+                    .HasColumnName("Nome_Fornecedor")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Notificado).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.ValidadeProposta)
+                    .HasColumnName("Validade_Proposta")
+                    .HasMaxLength(10);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Condicoes_Propostas_Fornecedores_Projetos");
+            });
+
+            modelBuilder.Entity<HistoricoConsultaMercado>(entity =>
+            {
+                entity.HasKey(e => new { e.NumConsultaMercado, e.NumVersao });
+
+                entity.ToTable("Historico_Consulta_Mercado");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
+
+                entity.Property(e => e.AdjudicacaoEm)
+                    .HasColumnName("Adjudicacao_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.AdjudicacaoPor)
+                    .HasColumnName("Adjudicacao_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .IsRequired()
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProjecto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ConsultaEm)
+                    .HasColumnName("Consulta_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ConsultaPor)
+                    .HasColumnName("Consulta_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataLimite)
+                    .HasColumnName("Data_Limite")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataPedidoCotacao)
+                    .HasColumnName("Data_Pedido_Cotacao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Destino).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EspecificacaoTecnica)
+                    .HasColumnName("Especificacao_Tecnica")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Estado).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Fase).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FiltroActividade)
+                    .HasColumnName("Filtro_Actividade")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.FornecedorSelecionado)
+                    .HasColumnName("Fornecedor_Selecionado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Modalidade).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NegociacaoContratacaoEm)
+                    .HasColumnName("Negociacao_Contratacao_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NegociacaoContratacaoPor)
+                    .HasColumnName("Negociacao_Contratacao_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumDocumentoCompra)
+                    .HasColumnName("Num_Documento_Compra")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumRequisicao)
+                    .HasColumnName("Num_Requisicao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PedidoCotacaoCriadoEm)
+                    .HasColumnName("Pedido_Cotacao_Criado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.PedidoCotacaoCriadoPor)
+                    .IsRequired()
+                    .HasColumnName("Pedido_Cotacao_Criado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PedidoCotacaoOrigem)
+                    .HasColumnName("Pedido_Cotacao_Origem")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.SeleccaoEfectuada)
+                    .HasColumnName("Seleccao_Efectuada")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.UtilizadorRequisicao)
+                    .HasColumnName("Utilizador_Requisicao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ValorAdjudicado).HasColumnName("Valor_Adjudicado");
+
+                entity.Property(e => e.ValorPedidoCotacao).HasColumnName("Valor_Pedido_Cotacao");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.HistoricoConsultaMercado)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Consulta_Mercado_Actividades");
+
+                entity.HasOne(d => d.CodProjectoNavigation)
+                    .WithMany(p => p.HistoricoConsultaMercado)
+                    .HasForeignKey(d => d.CodProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Consulta_Mercado_Projetos");
+            });
+
+            modelBuilder.Entity<HistoricoLinhasCondicoesPropostasFornecedores>(entity =>
+            {
+                entity.HasKey(e => new { e.NumLinha, e.NumConsultaMercado, e.NumVersao, e.CodFornecedor, e.Alternativa });
+
+                entity.ToTable("Historico_Linhas_Condicoes_Propostas_Fornecedores");
+
+                entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
+
+                entity.Property(e => e.CodFornecedor)
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Alternativa).HasMaxLength(20);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodUnidadeMedida)
+                    .HasColumnName("Cod_Unidade_Medida")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataEntregaPrevista)
+                    .HasColumnName("Data_Entrega_Prevista")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataEntregaPrometida)
+                    .HasColumnName("Data_Entrega_Prometida")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.EstadoRespostaFornecedor)
+                    .HasColumnName("Estado_Resposta_Fornecedor")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MotivoRejeicao)
+                    .HasColumnName("Motivo_Rejeicao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PercentagemDescontoLinha).HasColumnName("Percentagem_Desconto_Linha");
+
+                entity.Property(e => e.PrazoEntrega)
+                    .HasColumnName("Prazo_Entrega")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.PrecoFornecedor)
+                    .HasColumnName("Preco_Fornecedor")
+                    .HasColumnType("decimal(18, 6)");
+
+                entity.Property(e => e.QuantidadeAAdjudicar).HasColumnName("Quantidade_A_Adjudicar");
+
+                entity.Property(e => e.QuantidadeAEncomendar).HasColumnName("Quantidade_A_Encomendar");
+
+                entity.Property(e => e.QuantidadeAdjudicada).HasColumnName("Quantidade_Adjudicada");
+
+                entity.Property(e => e.QuantidadeEncomendada).HasColumnName("Quantidade_Encomendada");
+
+                entity.Property(e => e.QuantidadeRespondida).HasColumnName("Quantidade_Respondida");
+
+                entity.Property(e => e.RespostaFornecedor)
+                    .HasColumnName("Resposta_Fornecedor")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Validade).HasMaxLength(10);
+
+                entity.Property(e => e.ValorAdjudicadoDl).HasColumnName("Valor_Adjudicado_DL");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Linhas_Condicoes_Propostas_Fornecedores_Projetos");
+            });
+
+            modelBuilder.Entity<HistoricoLinhasConsultaMercado>(entity =>
+            {
+                entity.HasKey(e => new { e.NumLinha, e.NumConsultaMercado, e.NumVersao });
+
+                entity.ToTable("Historico_Linhas_Consulta_Mercado");
+
+                entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .IsRequired()
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodUnidadeMedida)
+                    .IsRequired()
+                    .HasColumnName("Cod_Unidade_Medida")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CriadoEm)
+                    .HasColumnName("Criado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.CriadoPor)
+                    .IsRequired()
+                    .HasColumnName("Criado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CustoTotalObjectivo).HasColumnName("Custo_Total_Objectivo");
+
+                entity.Property(e => e.CustoTotalPrevisto).HasColumnName("Custo_Total_Previsto");
+
+                entity.Property(e => e.CustoUnitarioObjectivo).HasColumnName("Custo_Unitario_Objectivo");
+
+                entity.Property(e => e.CustoUnitarioPrevisto).HasColumnName("Custo_Unitario_Previsto");
+
+                entity.Property(e => e.DataEntregaPrevista)
+                    .HasColumnName("Data_Entrega_Prevista")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Descricao).HasMaxLength(50);
+
+                entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
+
+                entity.Property(e => e.ModificadoEm)
+                    .HasColumnName("Modificado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ModificadoPor)
+                    .HasColumnName("Modificado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumRequisicao)
+                    .IsRequired()
+                    .HasColumnName("Num_Requisicao")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.HistoricoLinhasConsultaMercado)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.HistoricoLinhasConsultaMercado)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Projetos");
+
+                entity.HasOne(d => d.NumRequisicaoNavigation)
+                    .WithMany(p => p.HistoricoLinhasConsultaMercado)
+                    .HasForeignKey(d => d.NumRequisicao)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Requisição");
+            });
+
+            modelBuilder.Entity<HistoricoSeleccaoEntidades>(entity =>
+            {
+                entity.HasKey(e => new { e.IdSeleccaoEntidades, e.NumConsultaMercado, e.NumVersao, e.CodFornecedor });
+
+                entity.ToTable("Historico_Seleccao_Entidades");
+
+                entity.Property(e => e.IdSeleccaoEntidades).HasColumnName("ID_Seleccao_Entidades");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
+
+                entity.Property(e => e.CodFornecedor)
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CidadeFornecedor)
+                    .HasColumnName("Cidade_Fornecedor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodTermosPagamento)
+                    .HasColumnName("Cod_Termos_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.NomeFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Nome_Fornecedor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Selecionado).HasDefaultValueSql("((0))");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.HistoricoSeleccaoEntidades)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Historico_Seleccao_Entidades_Actividades");
+            });
+
             modelBuilder.Entity<Instrutores>(entity =>
             {
                 entity.HasKey(e => e.Nº);
@@ -2878,6 +3672,223 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<LinhasCondicoesPropostasFornecedores>(entity =>
+            {
+                entity.HasKey(e => e.NumLinha);
+
+                entity.ToTable("Linhas_Condicoes_Propostas_Fornecedores");
+
+                entity.HasIndex(e => new { e.NumConsultaMercado, e.CodFornecedor, e.Alternativa })
+                    .HasName("IX_Linhas_Condicoes_Propostas_Fornecedores")
+                    .IsUnique();
+
+                entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
+
+                entity.Property(e => e.Alternativa)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodUnidadeMedida)
+                    .HasColumnName("Cod_Unidade_Medida")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataEntregaPrevista)
+                    .HasColumnName("Data_Entrega_Prevista")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataEntregaPrometida)
+                    .HasColumnName("Data_Entrega_Prometida")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.EstadoRespostaFornecedor)
+                    .HasColumnName("Estado_Resposta_Fornecedor")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MotivoRejeicao)
+                    .HasColumnName("Motivo_Rejeicao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .IsRequired()
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PercentagemDescontoLinha).HasColumnName("Percentagem_Desconto_Linha");
+
+                entity.Property(e => e.PrazoEntrega)
+                    .HasColumnName("Prazo_Entrega")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.PrecoFornecedor)
+                    .HasColumnName("Preco_Fornecedor")
+                    .HasColumnType("decimal(18, 6)");
+
+                entity.Property(e => e.QuantidadeAAdjudicar).HasColumnName("Quantidade_A_Adjudicar");
+
+                entity.Property(e => e.QuantidadeAEncomendar).HasColumnName("Quantidade_A_Encomendar");
+
+                entity.Property(e => e.QuantidadeAdjudicada).HasColumnName("Quantidade_Adjudicada");
+
+                entity.Property(e => e.QuantidadeEncomendada).HasColumnName("Quantidade_Encomendada");
+
+                entity.Property(e => e.QuantidadeRespondida).HasColumnName("Quantidade_Respondida");
+
+                entity.Property(e => e.RespostaFornecedor)
+                    .HasColumnName("Resposta_Fornecedor")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Validade).HasMaxLength(10);
+
+                entity.Property(e => e.ValorAdjudicadoDl).HasColumnName("Valor_Adjudicado_DL");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Projetos");
+            });
+
+            modelBuilder.Entity<LinhasConsultaMercado>(entity =>
+            {
+                entity.HasKey(e => e.NumLinha);
+
+                entity.ToTable("Linhas_Consulta_Mercado");
+
+                entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .IsRequired()
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .IsRequired()
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .IsRequired()
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodUnidadeMedida)
+                    .IsRequired()
+                    .HasColumnName("Cod_Unidade_Medida")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CriadoEm)
+                    .HasColumnName("Criado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.CriadoPor)
+                    .IsRequired()
+                    .HasColumnName("Criado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CustoTotalObjectivo).HasColumnName("Custo_Total_Objectivo");
+
+                entity.Property(e => e.CustoTotalPrevisto).HasColumnName("Custo_Total_Previsto");
+
+                entity.Property(e => e.CustoUnitarioObjectivo).HasColumnName("Custo_Unitario_Objectivo");
+
+                entity.Property(e => e.CustoUnitarioPrevisto).HasColumnName("Custo_Unitario_Previsto");
+
+                entity.Property(e => e.DataEntregaPrevista)
+                    .HasColumnName("Data_Entrega_Prevista")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Descricao).HasMaxLength(50);
+
+                entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
+
+                entity.Property(e => e.ModificadoEm)
+                    .HasColumnName("Modificado_Em")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ModificadoPor)
+                    .HasColumnName("Modificado_Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .IsRequired()
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumProjecto)
+                    .IsRequired()
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumRequisicao)
+                    .IsRequired()
+                    .HasColumnName("Num_Requisicao")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.LinhasConsultaMercado)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas_Consulta_Mercado_Actividades");
+
+                entity.HasOne(d => d.NumProjectoNavigation)
+                    .WithMany(p => p.LinhasConsultaMercado)
+                    .HasForeignKey(d => d.NumProjecto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas_Consulta_Mercado_Projetos");
+
+                entity.HasOne(d => d.NumRequisicaoNavigation)
+                    .WithMany(p => p.LinhasConsultaMercado)
+                    .HasForeignKey(d => d.NumRequisicao)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas_Consulta_Mercado_Requisição");
             });
 
             modelBuilder.Entity<LinhasContratos>(entity =>
@@ -7275,6 +8286,57 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NomeEmpregado).HasMaxLength(100);
 
                 entity.Property(e => e.NomeRecurso).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SeleccaoEntidades>(entity =>
+            {
+                entity.HasKey(e => e.IdSeleccaoEntidades);
+
+                entity.ToTable("Seleccao_Entidades");
+
+                entity.Property(e => e.IdSeleccaoEntidades).HasColumnName("ID_Seleccao_Entidades");
+
+                entity.Property(e => e.CidadeFornecedor)
+                    .HasColumnName("Cidade_Fornecedor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodActividade)
+                    .IsRequired()
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodFormaPagamento)
+                    .HasColumnName("Cod_Forma_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CodFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Cod_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodTermosPagamento)
+                    .HasColumnName("Cod_Termos_Pagamento")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.NomeFornecedor)
+                    .IsRequired()
+                    .HasColumnName("Nome_Fornecedor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .IsRequired()
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Selecionado).HasDefaultValueSql("((0))");
+
+                entity.HasOne(d => d.CodActividadeNavigation)
+                    .WithMany(p => p.SeleccaoEntidades)
+                    .HasForeignKey(d => d.CodActividade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Seleccao_Entidades_Actividades");
             });
 
             modelBuilder.Entity<Serviços>(entity =>
