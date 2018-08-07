@@ -1031,7 +1031,7 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
                     StartDate = StartDate,
-                    ExpiryDate = ExpiryDate,                  
+                    ExpiryDate = ExpiryDate,   
                     InvoicePeriod = InvoicePeriod
                 });
             }
@@ -1668,7 +1668,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
                         {
-                       
+                            
                             int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
                             if (findDate == 2)
                             {

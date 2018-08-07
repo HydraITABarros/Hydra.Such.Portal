@@ -24,6 +24,8 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html"
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
@@ -244,6 +246,13 @@
                    method="post"
                    handle-as="json"
                    on-response="_viewLinkResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetWorkflowAttached"
+                   last-response="{{ attacheds }}"
+                   id="getAnexos_ajax"
+                   method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <div class="subMenu">
@@ -603,6 +612,19 @@
                             </template>
                         </template>
                     </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="comentario">Anexo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="comentario" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.attachedIs }}">
+                                <center>
+                                    <paper-button class="btnSave tableBtn" on-tap="_showAttached" title="Anexo"><i class="fa fa-paperclip" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
                 </vaadin-grid>
             </div>
 
@@ -683,24 +705,18 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
-                    </div>
 
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
+                    <div class="col-sm-4" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-upload id="uploadRequest" files="{{files}}"></vaadin-upload>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                    <div class="col-sm-3">
+                        <div class="buttons">
+                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                        </div>
                     </div>
                 </div>
             </paper-dialog>
@@ -746,10 +762,32 @@
                     </div>
                 </div>
             </paper-dialog>
-
-
+            <paper-dialog id="dialogAttached" class="dialgoBox" modal>
+                <vaadin-grid id="grdAttachedView" aria-label="grdAttachedView" items="[[attacheds]]" selected-items={{attachedItems}} active-item="{{attachedItem}}" class="grid" multi-sort="true">
+                    <vaadin-grid-selection-column auto-select hidden="{{_showOptionDestitation}}">
+                    </vaadin-grid-selection-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="id">Caminho</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="id" />
+                        </template>
+                        <template>
+                            {{item.file}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="tipoDocumento">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="tipoDocumento" />
+                        </template>
+                        <template>
+                            {{item.description}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+                <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
+            </paper-dialog>
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
-
                 <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
@@ -1035,6 +1073,7 @@
                         type: Array,
                         value: [{ "id": 0, "value": "Interno" }, { "id": 1, "value": "Externo" }],
                     },
+                  
                     _descricaoProblema: {
                         type: String,
                         value: "",
@@ -1155,6 +1194,10 @@
                         type: Array,
                         value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
                     },
+                    _uploadurl: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UploadURL)),
+                    }
                 },
                 observers: [
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
@@ -1299,7 +1342,7 @@
                         return false;
                     }
                     return true;
-  
+
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
@@ -1472,7 +1515,7 @@
                     }
                     else {
                         this._openToastError("Não existe Documento Digitalizado!");
-                    }                 
+                    }
                 },
                 _linkExistResponse: function (e) {
                     var txt = true;
@@ -1485,45 +1528,63 @@
                         }
                     }
                     if(txt==true) {
-                        if (txt == true) {
-                            var workflow = null;
-                            var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
-                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                            if (this._isInternalDestination == true) {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbProblemas.value,
-                                    codProblema: "RF1P",
-                                    descricao: this.$.txtdescricaoProblema.value,
-                                    destinatario: this.$.txtdestinatarioArea.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    area: Area.value,
-                                    areaWorkflow: this.$.txtArea2.value,
-                                    codDestino: this.$.txtCodDestino.value,
-                                    attached: this.Anexos
+                        var workflow = null;
+                        var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                        var anexado = false;
+                        debugger;;
+                        if (this.files != null) {
+                            var anexoNew;
+                            for (i = 0; i < this.files.length; i++) { 
+                                anexoNew = {
+                                    file: this._uploadurl + this.files[i].name,
+                                    description: "sdwde"
                                 };
+                                if (this.Anexos == null) {
+                                    this.Anexos = [anexoNew];
+                                }
+                                else
+                                    this.Anexos.push(anexoNew);
                             }
-                            else {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbMotivos.value,
-                                    codProblema: "RF4P",
-                                    descricao: this.$.txtmotivo.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    attached: this.Anexos
-                                };
-                            }
-                            this.Anexos = null;
-                            this.data.workflowItems.push(workflow);
-                            this.$.page_send_ajax.body = JSON.stringify(this.data);
-                            this.$.page_send_ajax.generateRequest();
+                            anexado = true;
+                            
                         }
-                        this.$.dialogSendPeding.close();
+                        if (this._isInternalDestination == true) {
+                            workflow = {
+                                id: 0,
+                                idRecFaturacao: this.data.id,
+                                codTipoProblema: this.$.cmbProblemas.value,
+                                codProblema: "RF1P",
+                                descricao: this.$.txtdescricaoProblema.value,
+                                destinatario: this.$.txtdestinatarioArea.value,
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email,
+                                area: Area.value,
+                                areaWorkflow: this.$.txtArea2.value,
+                                codDestino: this.$.txtCodDestino.value,
+                                attached: this.Anexos,
+                                attachedIs: anexado
+                            };
+                        }
+                        else {
+                            workflow = {
+                                id: 0,
+                                idRecFaturacao: this.data.id,
+                                codTipoProblema: this.$.cmbMotivos.value,
+                                codProblema: "RF4P",
+                                descricao: this.$.txtmotivo.value,
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email,
+                                attached: this.Anexos,
+                                attachedIs: anexado
+                            };
+                        }
+                        this.Anexos = null;
+                        this.data.workflowItems.push(workflow);
+                        this.$.page_send_ajax.body = JSON.stringify(this.data);
+                        this.$.page_send_ajax.generateRequest();
                     }
+                    this.$.dialogSendPeding.close()
                 },
                 _orderSelected: function (e) {
                     var order = this.$.sbOrders.activeItem;
@@ -1712,7 +1773,12 @@
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;
-
+                        var Anexados = false;
+                        if (this.Anexos != undefined) {
+                            if (this.Anexos.length > 0) {
+                                anexado = true;
+                            }
+                        }
                         var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
@@ -1727,7 +1793,8 @@
                             area: userProfile,
                             areaWorkflow: userProfile,
                             codDestino: this.$.txtCodDestino.value,
-                            attached: this.Anexos
+                            attached: this.Anexos,
+                            attachedIs: Anexados
                         };
 
                         this.data.workflowItems.push(workflow);
@@ -1758,7 +1825,12 @@
                             //**/
                             var userProfile = this.userProfile;
                             var Area = idWork.area;
-
+                            var Anexados= false;
+                            if (this.Anexos != undefined) {
+                                if (this.Anexos.length > 0) {
+                                    anexado = true;
+                                }
+                            }
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             workflow = {
                                 id: idWork.id + 1,
@@ -1773,7 +1845,8 @@
                                 area: userProfile,
                                 areaWorkflow: userProfile,
                                 codDestino: this.$.txtCodDestino.value,
-                                attached: this.Anexos
+                                attached: this.Anexos,
+                                attachedIs: Anexados
                             };
 
                             this.data.workflowItems.push(workflow);
@@ -1794,7 +1867,6 @@
                     }
                     else
                         this.Anexos.push(anexoNew);
-
                     this.$.txtNomeFicheiro.value = "";
                     this.$.txtDescricaoAnexo.value = "";
                  },
@@ -1810,7 +1882,7 @@
                         var ajax_request = this.$.page_linkExist_ajax;
                         ajax_request.body = JSON.stringify(this._link);
                         ajax_request.generateRequest();
-                       
+
                     }
                 },
                 _createLink: function () {
@@ -1834,7 +1906,7 @@
 
                     var pdfName = "RF"+this.data.id+".pdf";
                     this._link = "../../FacturasFornecedor/"+ano+mes+"/" + pdfName;
-                    
+
                 },
 
                 _openDocument: function (e) {
@@ -2032,7 +2104,7 @@
                     }
                 },
                 _dlgUpdateDesti: function (selectedItem, selectedItems) {
-                    debugger;
+                    debugger;;
                     if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
                         if (this.selectedItems != null && this.selectedItems != "") {
                             var selItms = this.selectedItems;
@@ -2048,6 +2120,19 @@
                     else {
                         this._openToastError("Não foi selecionada nenhum Destinatário.");
                     }
+                },
+                _showAttached: function (attachedItem, attachedItems) {
+                    debugger;;
+                    var attachedView = attachedItem.model.__data.item;
+                    if (attachedView != null && attachedView != "") {
+                        this.attacheds = null;
+                        this.$.getAnexos_ajax.body = JSON.stringify(attachedView);
+                        this.$.getAnexos_ajax.generateRequest();
+                        this.$.dialogAttached.open();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+
                 },
                 _clFormatStatus: function (param) {
                     if (param != undefined) {

@@ -147,14 +147,14 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -337,19 +337,16 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodFornecedor)
-                    .IsRequired()
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.ActividadesPorFornecedor)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Actividades_por_Fornecedor_Actividades");
             });
 
@@ -362,19 +359,16 @@ namespace Hydra.Such.Data.Database
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto)
-                    .IsRequired()
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.ActividadesPorProduto)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Actividades_por_Produto_Actividades");
             });
 
@@ -938,12 +932,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.IdCondicaoPropostaFornecedores).HasColumnName("ID_Condicao_Proposta_Fornecedores");
 
-                entity.Property(e => e.Alternativa)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                entity.Property(e => e.Alternativa).HasMaxLength(20);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
@@ -952,7 +943,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.CodFornecedor)
-                    .IsRequired()
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
 
@@ -964,31 +954,21 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Proposta")
                     .HasColumnType("date");
 
-                entity.Property(e => e.EnviarPedidoProposta)
-                    .HasColumnName("Enviar_Pedido_Proposta")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.EnviarPedidoProposta).HasColumnName("Enviar_Pedido_Proposta");
 
-                entity.Property(e => e.FornecedorSelecionado)
-                    .HasColumnName("Fornecedor_Selecionado")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.FornecedorSelecionado).HasColumnName("Fornecedor_Selecionado");
 
                 entity.Property(e => e.NomeFornecedor)
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Notificado).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.NumConsultaMercado)
-                    .IsRequired()
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.ValidadeProposta)
                     .HasColumnName("Validade_Proposta")
@@ -997,13 +977,16 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.CondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumConsultaMercadoNavigation)
+                    .WithMany(p => p.CondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumConsultaMercado)
+                    .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Consulta_Mercado");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.CondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Projetos");
             });
 
@@ -1404,17 +1387,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodAreaFuncional)
-                    .IsRequired()
                     .HasColumnName("Cod_Area_Funcional")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade)
-                    .IsRequired()
                     .HasColumnName("Cod_Centro_Responsabilidade")
                     .HasMaxLength(20);
 
@@ -1423,17 +1403,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProjecto)
-                    .IsRequired()
                     .HasColumnName("Cod_Projecto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodRegiao)
-                    .IsRequired()
                     .HasColumnName("Cod_Regiao")
                     .HasMaxLength(20);
 
@@ -1455,15 +1432,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
-                entity.Property(e => e.Destino).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.EspecificacaoTecnica)
-                    .HasColumnName("Especificacao_Tecnica")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Estado).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Fase).HasDefaultValueSql("((0))");
+                entity.Property(e => e.EspecificacaoTecnica).HasColumnName("Especificacao_Tecnica");
 
                 entity.Property(e => e.FiltroActividade)
                     .HasColumnName("Filtro_Actividade")
@@ -1472,8 +1441,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FornecedorSelecionado)
                     .HasColumnName("Fornecedor_Selecionado")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.Modalidade).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NegociacaoContratacaoEm)
                     .HasColumnName("Negociacao_Contratacao_Em")
@@ -1496,7 +1463,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.PedidoCotacaoCriadoPor)
-                    .IsRequired()
                     .HasColumnName("Pedido_Cotacao_Criado_Por")
                     .HasMaxLength(50);
 
@@ -1504,9 +1470,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Pedido_Cotacao_Origem")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.SeleccaoEfectuada)
-                    .HasColumnName("Seleccao_Efectuada")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.SeleccaoEfectuada).HasColumnName("Seleccao_Efectuada");
 
                 entity.Property(e => e.UtilizadorRequisicao)
                     .HasColumnName("Utilizador_Requisicao")
@@ -1519,13 +1483,11 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.ConsultaMercado)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Consulta_Mercado_Actividades");
 
                 entity.HasOne(d => d.CodProjectoNavigation)
                     .WithMany(p => p.ConsultaMercado)
                     .HasForeignKey(d => d.CodProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Consulta_Mercado_Projetos");
             });
 
@@ -3140,12 +3102,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.Alternativa)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                entity.Property(e => e.Alternativa).HasMaxLength(20);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
@@ -3161,26 +3120,17 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Proposta")
                     .HasColumnType("date");
 
-                entity.Property(e => e.EnviarPedidoProposta)
-                    .HasColumnName("Enviar_Pedido_Proposta")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.EnviarPedidoProposta).HasColumnName("Enviar_Pedido_Proposta");
 
-                entity.Property(e => e.FornecedorSelecionado)
-                    .HasColumnName("Fornecedor_Selecionado")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.FornecedorSelecionado).HasColumnName("Fornecedor_Selecionado");
 
                 entity.Property(e => e.NomeFornecedor)
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Notificado).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.ValidadeProposta)
                     .HasColumnName("Validade_Proposta")
@@ -3189,13 +3139,11 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Condicoes_Propostas_Fornecedores_Actividades");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Condicoes_Propostas_Fornecedores_Projetos");
             });
 
@@ -3220,17 +3168,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodAreaFuncional)
-                    .IsRequired()
                     .HasColumnName("Cod_Area_Funcional")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade)
-                    .IsRequired()
                     .HasColumnName("Cod_Centro_Responsabilidade")
                     .HasMaxLength(20);
 
@@ -3239,17 +3184,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProjecto)
-                    .IsRequired()
                     .HasColumnName("Cod_Projecto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodRegiao)
-                    .IsRequired()
                     .HasColumnName("Cod_Regiao")
                     .HasMaxLength(20);
 
@@ -3271,15 +3213,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
-                entity.Property(e => e.Destino).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.EspecificacaoTecnica)
-                    .HasColumnName("Especificacao_Tecnica")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Estado).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Fase).HasDefaultValueSql("((0))");
+                entity.Property(e => e.EspecificacaoTecnica).HasColumnName("Especificacao_Tecnica");
 
                 entity.Property(e => e.FiltroActividade)
                     .HasColumnName("Filtro_Actividade")
@@ -3288,8 +3222,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FornecedorSelecionado)
                     .HasColumnName("Fornecedor_Selecionado")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.Modalidade).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NegociacaoContratacaoEm)
                     .HasColumnName("Negociacao_Contratacao_Em")
@@ -3312,7 +3244,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.PedidoCotacaoCriadoPor)
-                    .IsRequired()
                     .HasColumnName("Pedido_Cotacao_Criado_Por")
                     .HasMaxLength(50);
 
@@ -3320,9 +3251,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Pedido_Cotacao_Origem")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.SeleccaoEfectuada)
-                    .HasColumnName("Seleccao_Efectuada")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.SeleccaoEfectuada).HasColumnName("Seleccao_Efectuada");
 
                 entity.Property(e => e.UtilizadorRequisicao)
                     .HasColumnName("Utilizador_Requisicao")
@@ -3335,13 +3264,11 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.HistoricoConsultaMercado)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Consulta_Mercado_Actividades");
 
                 entity.HasOne(d => d.CodProjectoNavigation)
                     .WithMany(p => p.HistoricoConsultaMercado)
                     .HasForeignKey(d => d.CodProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Consulta_Mercado_Projetos");
             });
 
@@ -3366,17 +3293,14 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Alternativa).HasMaxLength(20);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto)
-                    .IsRequired()
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
 
@@ -3392,16 +3316,13 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prometida")
                     .HasColumnType("date");
 
-                entity.Property(e => e.EstadoRespostaFornecedor)
-                    .HasColumnName("Estado_Resposta_Fornecedor")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.EstadoRespostaFornecedor).HasColumnName("Estado_Resposta_Fornecedor");
 
                 entity.Property(e => e.MotivoRejeicao)
                     .HasColumnName("Motivo_Rejeicao")
                     .HasMaxLength(100);
 
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
 
@@ -3425,9 +3346,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.QuantidadeRespondida).HasColumnName("Quantidade_Respondida");
 
-                entity.Property(e => e.RespostaFornecedor)
-                    .HasColumnName("Resposta_Fornecedor")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.RespostaFornecedor).HasColumnName("Resposta_Fornecedor");
 
                 entity.Property(e => e.Validade).HasMaxLength(10);
 
@@ -3436,13 +3355,11 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Linhas_Condicoes_Propostas_Fornecedores_Projetos");
             });
 
@@ -3461,37 +3378,30 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodAreaFuncional)
-                    .IsRequired()
                     .HasColumnName("Cod_Area_Funcional")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade)
-                    .IsRequired()
                     .HasColumnName("Cod_Centro_Responsabilidade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto)
-                    .IsRequired()
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodRegiao)
-                    .IsRequired()
                     .HasColumnName("Cod_Regiao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodUnidadeMedida)
-                    .IsRequired()
                     .HasColumnName("Cod_Unidade_Medida")
                     .HasMaxLength(20);
 
@@ -3500,7 +3410,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.CriadoPor)
-                    .IsRequired()
                     .HasColumnName("Criado_Por")
                     .HasMaxLength(50);
 
@@ -3529,31 +3438,26 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumRequisicao)
-                    .IsRequired()
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.HistoricoLinhasConsultaMercado)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Actividades");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoLinhasConsultaMercado)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Projetos");
 
                 entity.HasOne(d => d.NumRequisicaoNavigation)
                     .WithMany(p => p.HistoricoLinhasConsultaMercado)
                     .HasForeignKey(d => d.NumRequisicao)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Requisição");
             });
 
@@ -3580,7 +3484,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
@@ -3593,18 +3496,12 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.NomeFornecedor)
-                    .IsRequired()
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(50);
-
-                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Selecionado).HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.HistoricoSeleccaoEntidades)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Historico_Seleccao_Entidades_Actividades");
             });
 
@@ -3686,27 +3583,21 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
 
-                entity.Property(e => e.Alternativa)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                entity.Property(e => e.Alternativa).HasMaxLength(20);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodFornecedor)
-                    .IsRequired()
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto)
-                    .IsRequired()
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
 
@@ -3722,21 +3613,17 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prometida")
                     .HasColumnType("date");
 
-                entity.Property(e => e.EstadoRespostaFornecedor)
-                    .HasColumnName("Estado_Resposta_Fornecedor")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.EstadoRespostaFornecedor).HasColumnName("Estado_Resposta_Fornecedor");
 
                 entity.Property(e => e.MotivoRejeicao)
                     .HasColumnName("Motivo_Rejeicao")
                     .HasMaxLength(100);
 
                 entity.Property(e => e.NumConsultaMercado)
-                    .IsRequired()
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
 
@@ -3760,9 +3647,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.QuantidadeRespondida).HasColumnName("Quantidade_Respondida");
 
-                entity.Property(e => e.RespostaFornecedor)
-                    .HasColumnName("Resposta_Fornecedor")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.RespostaFornecedor).HasColumnName("Resposta_Fornecedor");
 
                 entity.Property(e => e.Validade).HasMaxLength(10);
 
@@ -3771,13 +3656,16 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
+
+                entity.HasOne(d => d.NumConsultaMercadoNavigation)
+                    .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
+                    .HasForeignKey(d => d.NumConsultaMercado)
+                    .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Consulta_Mercado");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Projetos");
             });
 
@@ -3790,37 +3678,30 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodAreaFuncional)
-                    .IsRequired()
                     .HasColumnName("Cod_Area_Funcional")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodCentroResponsabilidade)
-                    .IsRequired()
                     .HasColumnName("Cod_Centro_Responsabilidade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodLocalizacao)
-                    .IsRequired()
                     .HasColumnName("Cod_Localizacao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto)
-                    .IsRequired()
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodRegiao)
-                    .IsRequired()
                     .HasColumnName("Cod_Regiao")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.CodUnidadeMedida)
-                    .IsRequired()
                     .HasColumnName("Cod_Unidade_Medida")
                     .HasMaxLength(20);
 
@@ -3829,7 +3710,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.CriadoPor)
-                    .IsRequired()
                     .HasColumnName("Criado_Por")
                     .HasMaxLength(50);
 
@@ -3858,36 +3738,35 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.NumConsultaMercado)
-                    .IsRequired()
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumProjecto)
-                    .IsRequired()
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumRequisicao)
-                    .IsRequired()
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.LinhasConsultaMercado)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas_Consulta_Mercado_Actividades");
+
+                entity.HasOne(d => d.NumConsultaMercadoNavigation)
+                    .WithMany(p => p.LinhasConsultaMercado)
+                    .HasForeignKey(d => d.NumConsultaMercado)
+                    .HasConstraintName("FK_Linhas_Consulta_Mercado_Consulta_Mercado");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.LinhasConsultaMercado)
                     .HasForeignKey(d => d.NumProjecto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas_Consulta_Mercado_Projetos");
 
                 entity.HasOne(d => d.NumRequisicaoNavigation)
                     .WithMany(p => p.LinhasConsultaMercado)
                     .HasForeignKey(d => d.NumRequisicao)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas_Consulta_Mercado_Requisição");
             });
 
@@ -8301,7 +8180,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.CodActividade)
-                    .IsRequired()
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
 
@@ -8310,7 +8188,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.CodFornecedor)
-                    .IsRequired()
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
 
@@ -8319,24 +8196,22 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10);
 
                 entity.Property(e => e.NomeFornecedor)
-                    .IsRequired()
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.NumConsultaMercado)
-                    .IsRequired()
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.Preferencial).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Selecionado).HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.CodActividadeNavigation)
                     .WithMany(p => p.SeleccaoEntidades)
                     .HasForeignKey(d => d.CodActividade)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Seleccao_Entidades_Actividades");
+
+                entity.HasOne(d => d.NumConsultaMercadoNavigation)
+                    .WithMany(p => p.SeleccaoEntidades)
+                    .HasForeignKey(d => d.NumConsultaMercado)
+                    .HasConstraintName("FK_Seleccao_Entidades_Consulta_Mercado");
             });
 
             modelBuilder.Entity<Serviços>(entity =>
