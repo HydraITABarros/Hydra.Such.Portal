@@ -24,8 +24,8 @@ namespace Hydra.Such.Data.Database
         public string CodUnidadeMedida { get; set; }
         public DateTime? DataEntregaPrevista { get; set; }
         public string NumRequisicao { get; set; }
-        public int LinhaRequisicao { get; set; }
-        public DateTime CriadoEm { get; set; }
+        public int? LinhaRequisicao { get; set; }
+        public DateTime? CriadoEm { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }

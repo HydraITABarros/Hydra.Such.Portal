@@ -26,12 +26,13 @@ namespace Hydra.Such.Data.Database
         public string CodActividade { get; set; }
         public decimal? PercentagemDescontoLinha { get; set; }
         public decimal? ValorAdjudicadoDl { get; set; }
-        public int EstadoRespostaFornecedor { get; set; }
+        public int? EstadoRespostaFornecedor { get; set; }
         public DateTime? DataEntregaPrometida { get; set; }
         public bool? RespostaFornecedor { get; set; }
         public decimal? QuantidadeRespondida { get; set; }
 
         public Actividades CodActividadeNavigation { get; set; }
+        public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
         public Projetos NumProjectoNavigation { get; set; }
     }
 }

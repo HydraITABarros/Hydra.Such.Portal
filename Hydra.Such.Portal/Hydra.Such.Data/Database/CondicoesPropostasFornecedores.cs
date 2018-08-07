@@ -14,7 +14,7 @@ namespace Hydra.Such.Data.Database
         public string CodTermosPagamento { get; set; }
         public string CodFormaPagamento { get; set; }
         public bool? FornecedorSelecionado { get; set; }
-        public DateTime DataProposta { get; set; }
+        public DateTime? DataProposta { get; set; }
         public string NumProjecto { get; set; }
         public bool? Preferencial { get; set; }
         public string NomeFornecedor { get; set; }
@@ -22,6 +22,7 @@ namespace Hydra.Such.Data.Database
         public bool? Notificado { get; set; }
 
         public Actividades CodActividadeNavigation { get; set; }
+        public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
         public Projetos NumProjectoNavigation { get; set; }
     }
 }

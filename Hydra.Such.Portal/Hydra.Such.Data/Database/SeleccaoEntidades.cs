@@ -17,5 +17,6 @@ namespace Hydra.Such.Data.Database
         public bool? Preferencial { get; set; }
 
         public Actividades CodActividadeNavigation { get; set; }
+        public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
     }
 }
