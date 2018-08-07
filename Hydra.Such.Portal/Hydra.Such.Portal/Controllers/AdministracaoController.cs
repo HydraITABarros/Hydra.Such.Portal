@@ -143,7 +143,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProcedimentosEmailEnvioParaArea = userConfig.ProcedimentosEmailEnvioParaArea;
                 result.ProcedimentosEmailEnvioParaArea2 = userConfig.ProcedimentosEmailEnvioParaArea2;
                 result.ReceptionConfig = userConfig.PerfilNumeraçãoRecDocCompras;
-                if(userConfig.Rfperfil.HasValue)
+                if (userConfig.Rfperfil.HasValue)
                     result.RFPerfil = (Enumerations.BillingReceptionAreas)userConfig.Rfperfil;
                 if (userConfig.RfperfilVisualizacao.HasValue)
                     result.RFPerfilVisualizacao = (Enumerations.BillingReceptionUserProfiles)userConfig.RfperfilVisualizacao;
@@ -5827,7 +5827,7 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-        
+
         public IActionResult ConfigDestinatariosDetalhes([FromQuery] string id)
         {
             //UserAccessesViewModel UPerm = GetPermissions("Administracao");

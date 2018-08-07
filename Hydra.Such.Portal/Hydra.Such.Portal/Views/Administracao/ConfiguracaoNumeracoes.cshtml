@@ -83,7 +83,7 @@
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row break_clear">
-                        <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="50"></vaadin-text-field></div>
 
                         <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
 
@@ -108,7 +108,7 @@
                     Descrição
                 </template>
                 <template>
-                    <vaadin-text-field name="description" value="{{item.description}}" maxlength="20"></vaadin-text-field>
+                    <vaadin-text-field name="description" value="{{item.description}}" maxlength="50"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 

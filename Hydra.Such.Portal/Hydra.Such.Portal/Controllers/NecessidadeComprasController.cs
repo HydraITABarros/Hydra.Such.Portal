@@ -91,7 +91,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
         {
             ErrorHandler result = new ErrorHandler();
-            string notupdate = "";
             if (dp != null)
             {
                 List<DiárioRequisiçãoUnidProdutiva> previousList;
@@ -320,10 +319,13 @@ namespace Hydra.Such.Portal.Controllers
             ProductivityUnitViewModel prodUnit = requestParams["prodUnit"].ToObject<ProductivityUnitViewModel>();
             List<RequisitionViewModel> data = requestParams["reqModels"].ToObject<List<RequisitionViewModel>>();
             string pricesDateValue = requestParams["pricesDate"].ToObject<string>();
+            string expectedReceipDateValue = requestParams["expectedReceipDate"].ToObject<string>();
 
-            DateTime pricesDate;
-            if (!DateTime.TryParse(pricesDateValue, out pricesDate))
+            if (!DateTime.TryParse(pricesDateValue, out DateTime pricesDate))
                 pricesDate = DateTime.Now;
+
+            if (!DateTime.TryParse(expectedReceipDateValue, out DateTime expectedReceipDate))
+                expectedReceipDate = DateTime.MinValue;
 
             ErrorHandler resultValidation = new ErrorHandler();
             string rqWithOutLines = "";
@@ -346,6 +348,9 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         foreach (LinhasRequisição lr in result)
                         {
+                            supVal = string.Empty;
+                            prodVal = string.Empty;
+
                             //Get Supplier by Code 
                             List<DDMessageString> supplierval = DBNAV2017Supplier
                                 .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
@@ -401,23 +406,21 @@ namespace Hydra.Such.Portal.Controllers
 
                             DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva();
                             newdp.NºUnidadeProdutiva = prodUnit.ProductivityUnitNo;
+                            newdp.CodigoLocalização = prodUnit.Warehouse;
+                            newdp.NºProjeto = prodUnit.ProjectKitchen;
+                            newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.Quantidade = 0;
-                            newdp.DataReceçãoEsperada = string.IsNullOrEmpty(rpu.ReceivedDate)
-                                ? (DateTime?)null
-                                : DateTime.Parse(rpu.ReceivedDate);
-                            newdp.CodigoLocalização = rpu.LocalCode;
+                            newdp.DataReceçãoEsperada = expectedReceipDate.CompareTo(DateTime.MinValue) > 0 ? expectedReceipDate : (DateTime?)null;
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
                             newdp.CustoUnitárioDireto = lr.CustoUnitário;
-                            newdp.NºProjeto = lr.NºProjeto;
                             newdp.NºFornecedor = lr.NºFornecedor;
                             newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
                             newdp.CodigoProdutoFornecedor = lr.CódigoProdutoFornecedor;
                             newdp.NomeFornecedor = supVal;
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
-                            newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.DataPPreçoFornecedor = pricesDate;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
@@ -477,7 +480,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
         {
             ErrorHandler result = new ErrorHandler();
-            int rLinesNotCreated = 0;
             if (data != null && data.Count > 0)
             {
                 int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
@@ -503,25 +505,28 @@ namespace Hydra.Such.Portal.Controllers
 
                         data.ForEach(item =>
                         {
-                            RequisitionLineViewModel line = new RequisitionLineViewModel();
-                            line.Type = 2;
-                            line.Code = item.ProductNo;
-                            line.Description = item.Description;
-                            line.UnitMeasureCode = item.UnitMeasureCode;
-                            line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
-                            line.LocalCode = item.LocalCode;
-                            line.QuantityToRequire = item.Quantity;
-                            line.UnitCost = item.DirectUnitCost;
-                            line.SupplierNo = item.SupplierNo;
-                            line.ExpectedReceivingDate = item.ExpectedReceptionDate;
-                            line.SupplierProductCode = item.SupplierProductCode;
-                            line.FunctionalAreaCode = req.FunctionalAreaCode;
-                            line.CenterResponsibilityCode = req.CenterResponsibilityCode;
-                            line.RegionCode = req.RegionCode;
-                            line.CreateUser = User.Identity.Name;
-                        //line.NºEncomendaAberto = item.OpenOrderNo;
-                        //line.NºLinhaEncomendaAberto = string.IsNullOrEmpty(item.OrderLineOpenNo) ? 0 : Convert.ToInt32(item.OrderLineOpenNo);
-                        req.Lines.Add(line);
+                            if (item.Quantity.HasValue && item.Quantity > 0)
+                            {
+                                RequisitionLineViewModel line = new RequisitionLineViewModel();
+                                line.Type = 2;
+                                line.Code = item.ProductNo;
+                                line.Description = item.Description;
+                                line.UnitMeasureCode = item.UnitMeasureCode;
+                                line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
+                                line.QuantityToRequire = item.Quantity;
+                                line.UnitCost = item.DirectUnitCost;
+                                line.SupplierNo = item.SupplierNo;
+                                line.ExpectedReceivingDate = item.ExpectedReceptionDate;
+                                line.SupplierProductCode = item.SupplierProductCode;
+                                line.FunctionalAreaCode = req.FunctionalAreaCode;
+                                line.CenterResponsibilityCode = req.CenterResponsibilityCode;
+                                line.RegionCode = req.RegionCode;
+                                line.CreateUser = User.Identity.Name;
+                                line.ProjectNo = productivityUnit.ProjetoCozinha;
+                                line.LocalCode = productivityUnit.Armazém;
+                                
+                                req.Lines.Add(line);
+                            }
                         });
 
                         try

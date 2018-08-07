@@ -1,6 +1,6 @@
 ﻿@model Hydra.Such.Data.ViewModel.Nutrition.ProductivityUnitViewModel
 @{
-    ViewData["Title"] = "Detalhes";
+    ViewData["Title"] = "Detalhes " + ViewBag.ProductivityUnitDesc;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -164,47 +164,34 @@
             }
         </style>
 
+        <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden>
+        </vaadin-text-field>
+        <vaadin-combo-box items="[[prodUnitValresult]]" id="prodUnitId" on-value-changed="_prodUnitChange" item-value-path="id" item-label-path="id" value="" label="Nº Unidade Produtiva" hidden>
+            <template>
+                <table width="350px">
+                    <tr>
+                        <td width="30%">[[item.id]]</td>
+                        <td width="70%"><b>[[item.value]]</b></td>
+                    </tr>
+                </table>
+            </template>
+        </vaadin-combo-box>
+        <vaadin-text-field id="descriptionUnitId" name="descriptionUnitName" label="Descrição" value="{{descriptionUnit}}" hidden></vaadin-text-field>
+        <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange" hidden
+                        items="[[priceAgreement]]"
+                        text-path="noProcedimento"
+                        value-path="noFornecedor"
+                        fields='[{"field":"noProcedimento", "name":"Nº Procedimento"},{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
+        </such-selectbox>
+
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden="{{ _NotSelectedprodUnit }}">
-                </vaadin-text-field>
-                <vaadin-combo-box items="[[prodUnitValresult]]" id="prodUnitId" on-value-changed="_prodUnitChange" item-value-path="id" item-label-path="id" value="" label="Nº Unidade Produtiva" hidden="{{ !_NotSelectedprodUnit }}">
-                    <template>
-                        <table width="350px">
-                            <tr>
-                                <td width="30%">[[item.id]]</td>
-                                <td width="70%"><b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-md-3">
-                <vaadin-text-field id="descriptionUnitId" name="descriptionUnitName" label="Descrição" value="{{descriptionUnit}}" disabled></vaadin-text-field>
-            </div>
-            <div class="col-md-3">
-                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{dpExpectedReceipt}}"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{_expectedReceiptDate}}"></vaadin-date-picker>
             </div>
             <div class="col-md-3 ">
-                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-            </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-3">
-                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização"
-                                items="[[locationsresult]]"
-                                text-path="value"
-                                value-path="id"
-                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                </such-selectbox>
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="{{_pricesDate}}" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="col-md-3">
-                <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange" hidden
-                                items="[[priceAgreement]]"
-                                text-path="noProcedimento"
-                                value-path="noFornecedor"
-                                fields='[{"field":"noProcedimento", "name":"Nº Procedimento"},{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
-                </such-selectbox>
                 <such-selectbox id="cmbProducts" label="Produto" on-value-changed="_productChanged"
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
@@ -212,24 +199,19 @@
                                 fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
                 </such-selectbox>
             </div>
-            
             <div class="col-md-3">
                 <vaadin-text-field id="qtyID" name="qtyName" pattern="^[0-9]\d*(\.\d+)?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
-            </div>
-            <div class="col-md-3 ">
-                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
+                
                 <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
             </div>
-            <div class="col-md-3 ">
+            <div class="col-md-3">
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
             </div>
-            @*<div class="col-md-3 ">
-            <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
-        </div>*@
+
             <div class="col-md-3">
                 <such-selectbox id="unitofMeasureCodeId" value="" label="Unidade Medida" disabled
                                 items="[[unitmeasureresult]]"
@@ -238,20 +220,41 @@
                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
-            
+            <div class="col-md-3 ">
+                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row" hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3 ">
+                <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
+            </div>
+            @*<div class="col-md-3 ">
+            <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
+        </div>*@
+            <div class="col-md-3">
+                <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
+            </div>
+            <div class="col-md-3">
+                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
+            </div>
             <div class="col-md-3">
                 <vaadin-text-field id="amountId" name="amountName" class="alignRight" label="Valor total" value="{{amount}}" on-value-changed="_calcTotals" disabled> <div slot="suffix">€</div></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
+                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" hidden
+                                items="[[locationsresult]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
+                
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
+                
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -270,7 +273,7 @@
         @* Grid *@
 
         <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
-            <vaadin-grid-column width="160px" resizable>
+            @*<vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="productionUnitNo">Nº Unidade Produtiva </vaadin-grid-sorter>
                     <vaadin-grid-filter path="productionUnitNo" />
@@ -298,7 +301,7 @@
                         {{item.productUnitDescription}}
                     </template>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceptionDate">Data Receção Esperada</vaadin-grid-sorter>
@@ -329,7 +332,7 @@
 
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            @*<vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localCode" />
@@ -351,7 +354,7 @@
                         [[_parseLocalCode(item.localCode)]]
                     </template>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
@@ -585,9 +588,12 @@
                 <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
-        <paper-dialog id="dlgDate" style="height:200px; width:300px">
+        <paper-dialog id="dlgDate" style="height:270px; width:300px">
             <div>
-                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpPricesDate" name="dpPricesDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptDateDlg" name="dpExpectedReceiptDateDlg" value="[[_expectedReceiptDate]]" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div>
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpPricesDate" name="dpPricesDate" value="[[_pricesDate]]" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_openReqModelDlg">Seguinte</paper-button>
@@ -628,7 +634,12 @@
                         notify: true,
                         value: ""
                     },
-                    dpExpectedReceipt: {
+                    _expectedReceiptDate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _pricesDate: {
                         type: String,
                         notify: true,
                         value: ""
@@ -1156,10 +1167,10 @@
                             this.$.ajax_getgrid.generateRequest();
                             this.$.gridneedshopping.clearCache();
 
-                            this.$.prodUnitNoId.value = "";
-                            this.$.descriptionUnitId.value = "";
-                            this.$.dpExpectedReceiptId.value = "";
-                            this.$.dpVendedorPriceId.value = "";
+                            //this.$.prodUnitNoId.value = "";
+                            //this.$.descriptionUnitId.value = "";
+                            //this.$.dpExpectedReceiptId.value = "";
+                            //this.$.dpVendedorPriceId.value = "";
                             this.$.supplierNoId.value = "";
                             this.$.qtyID.value = "";
                             this.$.QtyforMeasId.value = "";
@@ -1260,9 +1271,10 @@
 
                         var selItms = this.selectedItems;
                         var date = this.$.dpPricesDate != null ? this.$.dpPricesDate.value : "";
+                        var expectedReceipDate = this.$.dpExpectedReceiptDateDlg != null ? this.$.dpExpectedReceiptDateDlg.value : "";
 
                         //this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit }, "reqprodUnits": selItms, "pricesDate": date });
-                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date });
+                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate  });
                         this.$.grid_generatebyreq_ajax.generateRequest();
                     } else {
                         this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1385,7 +1397,8 @@
                 },
                 _openReqModelDlg: function () {
                     var date = this.$.dpPricesDate.value;
-                    if (this.$.dpPricesDate.validate()) {
+                    if (this.$.dpExpectedReceiptDateDlg.validate() &&
+                        this.$.dpPricesDate.validate()) {
                         this.$.dlgDate.close();
                         this.$.dialog.open();
                     }

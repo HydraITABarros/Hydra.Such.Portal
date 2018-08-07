@@ -21,7 +21,9 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CodeRegion { get; set; }
         public string CodeFunctionalArea { get; set; }
         public string CodeResponsabilityCenter { get; set; }
-            
-        
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
     }
 }
