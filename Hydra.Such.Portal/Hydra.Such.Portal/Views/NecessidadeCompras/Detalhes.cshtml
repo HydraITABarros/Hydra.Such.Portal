@@ -186,10 +186,10 @@
 
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{dpExpectedReceipt}}"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{_expectedReceiptDate}}"></vaadin-date-picker>
             </div>
             <div class="col-md-3 ">
-                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="{{_pricesDate}}" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="col-md-3">
                 <such-selectbox id="cmbProducts" label="Produto" on-value-changed="_productChanged"
@@ -588,9 +588,12 @@
                 <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
         </paper-dialog>
-        <paper-dialog id="dlgDate" style="height:200px; width:300px">
+        <paper-dialog id="dlgDate" style="height:270px; width:300px">
             <div>
-                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpPricesDate" name="dpPricesDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptDateDlg" name="dpExpectedReceiptDateDlg" value="[[_expectedReceiptDate]]" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div>
+                <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpPricesDate" name="dpPricesDate" value="[[_pricesDate]]" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_openReqModelDlg">Seguinte</paper-button>
@@ -631,7 +634,12 @@
                         notify: true,
                         value: ""
                     },
-                    dpExpectedReceipt: {
+                    _expectedReceiptDate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _pricesDate: {
                         type: String,
                         notify: true,
                         value: ""
@@ -1161,8 +1169,8 @@
 
                             //this.$.prodUnitNoId.value = "";
                             //this.$.descriptionUnitId.value = "";
-                            this.$.dpExpectedReceiptId.value = "";
-                            this.$.dpVendedorPriceId.value = "";
+                            //this.$.dpExpectedReceiptId.value = "";
+                            //this.$.dpVendedorPriceId.value = "";
                             this.$.supplierNoId.value = "";
                             this.$.qtyID.value = "";
                             this.$.QtyforMeasId.value = "";
@@ -1263,9 +1271,10 @@
 
                         var selItms = this.selectedItems;
                         var date = this.$.dpPricesDate != null ? this.$.dpPricesDate.value : "";
+                        var expectedReceipDate = this.$.dpExpectedReceiptDateDlg != null ? this.$.dpExpectedReceiptDateDlg.value : "";
 
                         //this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit }, "reqprodUnits": selItms, "pricesDate": date });
-                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date });
+                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate  });
                         this.$.grid_generatebyreq_ajax.generateRequest();
                     } else {
                         this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1388,7 +1397,8 @@
                 },
                 _openReqModelDlg: function () {
                     var date = this.$.dpPricesDate.value;
-                    if (this.$.dpPricesDate.validate()) {
+                    if (this.$.dpExpectedReceiptDateDlg.validate() &&
+                        this.$.dpPricesDate.validate()) {
                         this.$.dlgDate.close();
                         this.$.dialog.open();
                     }
