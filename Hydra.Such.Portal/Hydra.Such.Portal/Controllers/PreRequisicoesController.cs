@@ -772,7 +772,7 @@ namespace Hydra.Such.Portal.Controllers
                             item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
                         }
                         
-                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault().CódigoLocalização;
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
                     }
                     if (AproveList != null && AproveList.Count > 0)
                     {
