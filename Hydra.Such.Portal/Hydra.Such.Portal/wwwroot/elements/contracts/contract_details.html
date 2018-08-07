@@ -290,7 +290,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.description}}" maxlength="100" id="Description" name="Description" label="Âmbito dos Serviços" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.description}}" maxlength="100" id="mDescription" name="mDescription" label="Âmbito dos Serviços" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
@@ -495,13 +495,13 @@
                                                                 <vaadin-text-field value="{{data.relatedContract}}" maxlength="20" id="relatedContract" name="relatedContract" label="Referência do contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}" ></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}" ></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}" ></vaadin-date-picker>
                                                             </div>
                                                         </div>
                                                         <div class="row break_clear">
@@ -2140,13 +2140,13 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    debugger;;
                     if (this.$.contractNo.validate() &
-                        this.$.Description.validate() &
+                        this.$.mDescription.validate() &
                         //this.$.mClients.validate() &
                         //this.$.mFeeUnits.validate() &
                         //this.$.mCodeRegion.validate() &
                         this.$.mContractTypes.validate() &
-                        this.$.mStartDateFirstContract.validate() &
                         //this.$.mFunctionalArea.validate() &
                         //this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
@@ -2161,7 +2161,7 @@
                         this.$.versionNo.validate() &
                         //this.$.dueDate.validate() &
                         this.$.mChangeStatus.validate() &
-                        //this.$.mServiceObject.validate() &
+                        this.$.mServiceObject.validate() &
                         this.$.ShippingAddress.validate() &
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
@@ -2190,7 +2190,7 @@
                         if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined) {
                             this.$.mCodeRegion.validate();
                             this._openToastError("É obrigatória seleção de Cód. Região.");
-                            return false;
+                            return false;                         
                         }
                         return true;
                     }
@@ -2208,6 +2208,8 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
+                        debugger;;
+                        this.data.contractType = 3;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
@@ -2372,7 +2374,7 @@
                         if (this.validateResponse == "") {
                             this._executeRequest("/Contratos/CreateContract", this.data);
                         } else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
+                            this._openToastError(this.validateResponse);
                         }
                     }
                 },

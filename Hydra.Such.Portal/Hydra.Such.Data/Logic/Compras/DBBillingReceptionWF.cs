@@ -134,7 +134,8 @@ namespace Hydra.Such.Data.Logic.Request
                     CodProblema = item.CodProblema,
                     EnderecoEnvio = item.EnderecoEnvio,
                     EnderecoFornecedor = item.EnderecoFornecedor,
-                    Comentario = item.Comentario
+                    Comentario = item.Comentario,
+                    AttachedIs=item.Anexo
                 };
     
             }
@@ -171,7 +172,8 @@ namespace Hydra.Such.Data.Logic.Request
                     CodProblema = item.CodProblema,
                     EnderecoEnvio = item.EnderecoEnvio,
                     EnderecoFornecedor = item.EnderecoFornecedor,
-                    Comentario = item.Comentario
+                    Comentario = item.Comentario,
+                    Anexo=item.AttachedIs
                 };
             }
             return null;

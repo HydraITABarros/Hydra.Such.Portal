@@ -32,12 +32,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private BillingReceptionService billingRecService;
+        private readonly GeneralConfigurations _generalConfig;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
             billingRecService = new BillingReceptionService();
             this._hostingEnvironment = _hostingEnvironment;
         }
@@ -58,11 +60,13 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesRecFatura(string id)
         {
+
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
                 ViewBag.Id = id;
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
@@ -287,6 +291,15 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
+
+        [HttpPost]
+        public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
+        {
+            List<BillingRecWorkflowModelAttached> items = DBBillingReceptionWFAttach.ParseToViewModel(DBBillingReceptionWFAttach.GetById(item.Id));
+            return Json(items);
+        }
+
+         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
@@ -899,7 +912,47 @@ namespace Hydra.Such.Portal.Controllers
                 item.eMessage = "O registo não pode ser nulo";
             }
             return Json(item);
-
         }
+
+        #region ANEXOS
+
+        [HttpPost]
+        [Route("Faturacao/FileUpload")]
+        public JsonResult FileUpload()
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string filename = Path.GetFileName(file.FileName);
+                        //full_filename = id + "_" + filename;
+                        full_filename = filename;
+                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+       
+        #endregion  
+
     }
 }

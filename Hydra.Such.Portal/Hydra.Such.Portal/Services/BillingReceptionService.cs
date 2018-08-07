@@ -279,6 +279,7 @@ namespace Hydra.Such.Portal.Services
             wfItem.Utilizador = postedByUserName;
 
             repo.Create(wfItem);
+  
             if (wfItemLast.Attached != null)
             {
                 int id=0;
