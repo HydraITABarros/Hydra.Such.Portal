@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hydra.Such.Data.ViewModel.ConsultaMercado
+namespace Hydra.Such.Data.ViewModel.PedidoCotacao
 {
     public class ActividadesPorProdutoView : ErrorHandler
     {
