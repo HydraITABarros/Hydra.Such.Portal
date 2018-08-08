@@ -1,0 +1,879 @@
+﻿
+@{
+    ViewData["Title"] = "Artigos Produtos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<x-produtos></x-produtos>
+
+<dom-module id="x-produtos">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+        </style>
+
+        <iron-ajax url="/Produtos/GetAllProdutos"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/ExportToExcel_Produtos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*<iron-ajax last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_update"
+                   on-response="_updateResponse"
+                   content-type="application/json">
+        </iron-ajax>*@
+
+        <iron-ajax url="/Produtos/UpdateCreate_Produtos"
+                   last-response="{{result}}"
+                   method="post"
+                   on-response="_updateCreateResponse"
+                   handle-as="json"
+                   id="ajax_updateCreate"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Importar Produtos" closed>
+                <div class="panel-body">
+                    <div class="row" id="importarProdutos">
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <vaadin-upload id="UploadRequest"
+                                               method="POST"
+                                               headers="{'Accept': 'application/json'}"
+                                               accept=".xlsx"
+                                               timeout=3000000
+                                               max-files="1">
+                                    <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                                </vaadin-upload>
+                            </div>
+                            <div class="col-sm-1 alignPoga">
+                                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_uploadEXCEL">Guardar</paper-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <vaadin-grid id="gridProdutos" aria-label="gridProdutos" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.no.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.no}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.descricao}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.listaDeMateriaisText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="listaDeMateriaisText">Lista de Materiais</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="listaDeMateriaisText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.listaDeMateriaisText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.unidadeMedidaBase.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unidadeMedidaBase">Unidade Medida Base</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unidadeMedidaBase" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.unidadeMedidaBase}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noPrateleira.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noPrateleira">Nº Prateleira</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noPrateleira" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.noPrateleira}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.precoUnitario.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="precoUnitario">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="precoUnitario" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.precoUnitario}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoUnitario.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoUnitario" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.custoUnitario}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.inventario.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="inventario">Inventário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="inventario" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.inventario}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEnergetico.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorEnergetico">Valor Energético</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorEnergetico" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.valorEnergetico}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEnergetico100g.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorEnergetico100g">Valor Energético 100g</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorEnergetico100g" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.valorEnergetico100g}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proteinas.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proteinas">Proteínas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proteinas" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.proteinas}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proteinas100g.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proteinas100g">Proteínas 100g</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proteinas100g" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.proteinas100g}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.glicidos.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="glicidos">Glícidos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="glicidos" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.glicidos}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.glicidos100g.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="glicidos100g">Glícidos 100g</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="glicidos100g" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.glicidos100g}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.lipidos.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="lipidos">Lípidos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="lipidos" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.lipidos}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.lipidos100g.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="lipidos100g">Lípidos 100g</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="lipidos100g" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.lipidos100g}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fibraAlimentar.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fibraAlimentar">Fibra Alimentar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fibraAlimentar" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.fibraAlimentar}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fibraAlimentar100g.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fibraAlimentar100g">Fibra Alimentar 100g</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fibraAlimentar100g" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.fibraAlimentar100g}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantUnidadeMedida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantUnidadeMedida">Quantidade Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantUnidadeMedida" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.quantUnidadeMedida}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.gramasPorQuantUnidMedida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="gramasPorQuantUnidMedida">Gramas Por Quantidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="gramasPorQuantUnidMedida" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.gramasPorQuantUnidMedida}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoRefeicao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoRefeicao">Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoRefeicao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.tipoRefeicao}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricaoRefeicao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoRefeicao">Descrição Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoRefeicao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.descricaoRefeicao}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tarasText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tarasText">Taras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tarasText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.tarasText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.acidosGordosSaturados.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="acidosGordosSaturados">Ácidos Gordos Saturados</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="acidosGordosSaturados" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.acidosGordosSaturados}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.acucares.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="acucares">Açucares</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="acucares" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.acucares}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sal.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="sal">Sal</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sal" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.sal}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.cereaisText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cereaisText">Cereais</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cereaisText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.cereaisText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.crustaceosText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="crustaceosText">Crustáceos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="crustaceosText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.crustaceosText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ovosText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="ovosText">Ovos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ovosText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.ovosText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.peixesText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="peixesText">Peixes</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="peixesText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.peixesText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.amendoinsText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="amendoinsText">Amendoins</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="amendoinsText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.amendoinsText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sojaText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="sojaText">Soja</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sojaText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.sojaText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.leiteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="leiteText">Leite</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="leiteText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.leiteText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.frutasDeCascaRijaText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="frutasDeCascaRijaText">Frutas De Casca Rija</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="frutasDeCascaRijaText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.frutasDeCascaRijaText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aipoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="aipoText">Aipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="aipoText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.aipoText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mostardaText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mostardaText">Mostarda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mostardaText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.mostardaText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sementesDeSesamoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="sementesDeSesamoText">Sementes De Sésamo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sementesDeSesamoText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.sementesDeSesamoText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dioxidoDeEnxofreESulfitosText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dioxidoDeEnxofreESulfitosText">Dióxido De Enxofre E Sulfitos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dioxidoDeEnxofreESulfitosText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.dioxidoDeEnxofreESulfitosText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tremocoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tremocoText">Tremoço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tremocoText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.tremocoText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.moluscosText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="moluscosText">Moluscos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="moluscosText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.moluscosText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoText" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.tipoText}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.vitaminaA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vitaminaA">Vitamina A</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vitaminaA" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.vitaminaA}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.vitaminaD.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vitaminaD">Vitamina D</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vitaminaD" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.vitaminaD}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.colesterol.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="colesterol">Colesterol</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="colesterol" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.colesterol}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+          
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sodio.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="sodio">Sódio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sodio" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.sodio}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+          
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.potacio.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="potacio">Potácio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="potacio" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.potacio}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+          
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.calcio.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="calcio">Cálcio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="calcio" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.calcio}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+           
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ferro.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="ferro">Ferro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ferro" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.ferro}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+           
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.edivel.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="edivel">Edível</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="edivel" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.edivel}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+           
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.alcool.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="alcool">Alcool</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alcool" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.alcool}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
+            upload.addEventListener('file-reject', function (event) {
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-produtos',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                },
+
+                ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridProdutos);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Produtos/Detalhes/" + item.productNo;
+                    }
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _redirectToNewUnitForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Produtos/Detalhes";
+                    }
+                },
+
+                _uploadEXCEL: function () {
+                    //debugger;
+                    var urlFile = "/Produtos/OnPostImport_Produtos";
+                    var toastSuccess = this.$.ToastMessage;
+                    var toastError = this.$.ToastError;
+                    var data = new FormData();
+                    var uploadFile = this.$.UploadRequest.files;
+                    var ajaxImport = this.$.ajax_updateCreate;
+                    var ajaxGetALL = this.$.page_databound_ajax;
+                    var vaadinGrid = this.$.gridProdutos;
+                    for (var i = 0; i < uploadFile.length; i++) {
+                        data.append(uploadFile[i].name, uploadFile[i]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: urlFile,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (ListToCreate) {
+                            //debugger;
+                            ajaxImport.body = JSON.stringify(ListToCreate);
+                            ajaxImport.generateRequest();
+                            toastSuccess.text = "Tabela atualizada com sucesso.";
+                            toastSuccess.open();
+                            ajaxGetALL.generateRequest();
+                            vaadinGrid.clearCache();
+                        },
+                        error: function () {
+                            toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
+                            toastError.open();
+                        }
+                    });
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Produtos/ExportToExcelDownload_Produtos?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "no": { hidden: false, label: "Nº" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "listaDeMateriaisText": { hidden: false, label: "Lista De Materiais" },
+                        "unidadeMedidaBase": { hidden: false, label: "Unidade Medida Base" },
+                        "noPrateleira": { hidden: false, label: "Nº Prateleira" },
+                        "precoUnitario": { hidden: false, label: "Preço Unitário" },
+                        "custoUnitario": { hidden: false, label: "Custo Unitário" },
+                        "inventario": { hidden: false, label: "Inventário" },
+                        "valorEnergetico": { hidden: false, label: "Valor Energético" },
+                        "valorEnergetico100g": { hidden: false, label: "Valor Energético 100g" },
+                        "proteinas": { hidden: false, label: "Proteínas" },
+                        "proteinas100g": { hidden: false, label: "Proteínas 100g" },
+                        "glicidos": { hidden: false, label: "Glícidos" },
+                        "glicidos100g": { hidden: false, label: "Glícidos 100g" },
+                        "lipidos": { hidden: false, label: "Lípidos" },
+                        "lipidos100g": { hidden: false, label: "Lípidos 100g" },
+                        "fibraAlimentar": { hidden: false, label: "Fibra Alimentar" },
+                        "fibraAlimentar100g": { hidden: false, label: "Fibra Alimentar 100g" },
+                        "quantUnidadeMedida": { hidden: false, label: "Quantidade Unidade Medida" },
+                        "gramasPorQuantUnidMedida": { hidden: false, label: "Gramas Por Quantidade Unidade Medida" },
+                        "tipoRefeicao": { hidden: false, label: "Tipo Refeição" },
+                        "descricaoRefeicao": { hidden: false, label: "Descrição Refeição" },
+                        "tarasText": { hidden: false, label: "Taras" },
+                        "acidosGordosSaturados": { hidden: false, label: "Ácidos Gordos Saturados" },
+                        "acucares": { hidden: false, label: "Açúcares" },
+                        "sal": { hidden: false, label: "Sal" },
+                        "cereaisText": { hidden: false, label: "Cereais" },
+                        "crustaceosText": { hidden: false, label: "Crustáceos" },
+                        "ovosText": { hidden: false, label: "Ovos" },
+                        "peixesText": { hidden: false, label: "Peixes" },
+                        "amendoinsText": { hidden: false, label: "Amendoins" },
+                        "sojaText": { hidden: false, label: "Soja" },
+                        "leiteText": { hidden: false, label: "Leite" },
+                        "frutasDeCascaRijaText": { hidden: false, label: "Frutas De Casca Rija" },
+                        "aipoText": { hidden: false, label: "Aipo" },
+                        "mostardaText": { hidden: false, label: "Mostarda" },
+                        "sementesDeSesamoText": { hidden: false, label: "Sementes De Sésamo" },
+                        "dioxidoDeEnxofreESulfitosText": { hidden: false, label: "Dióxido De Enxofre E Súlfitos" },
+                        "tremocoText": { hidden: false, label: "Tremoço" },
+                        "moluscosText": { hidden: false, label: "Moluscos" },
+                        "tipoText": { hidden: false, label: "Tipo" },
+                        "vitaminaA": { hidden: false, label: "Vitamina A" },
+                        "vitaminaD": { hidden: false, label: "Vitamina D" },
+                        "colesterol": { hidden: false, label: "Colesterol" },
+                        "sodio": { hidden: false, label: "Sódio" },
+                        "potacio": { hidden: false, label: "Potácio" },
+                        "calcio": { hidden: false, label: "Cálcio" },
+                        "ferro": { hidden: false, label: "Ferro" },
+                        "edivel": { hidden: false, label: "Edível" },
+                        "alcool": { hidden: false, label: "Alcool" },
+                    };
+
+                    if (sessionStorage["produtos.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(sessionStorage["produtos.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        sessionStorage["produtos.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+            /* end - ColumnToggle */
+
+            });
+        });
+    </script>
+</dom-module>
+

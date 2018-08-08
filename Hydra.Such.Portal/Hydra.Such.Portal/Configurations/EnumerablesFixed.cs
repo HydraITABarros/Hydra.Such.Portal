@@ -2387,6 +2387,19 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Encomenda"
             }
         };
+
+        public static readonly List<EnumData> ProdutosTipo = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Alimento"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Prato"
+            }
+        };
     }
 
     public class EnumDataString

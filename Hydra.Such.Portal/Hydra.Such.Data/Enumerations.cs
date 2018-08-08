@@ -135,6 +135,8 @@ namespace Hydra.Such.Data
             [Description("Pré-Encomendas")]
             PréEncomendas = 51,
             [Description("Administração Geral")]
+            Localizações = 52,
+            [Description("Localizações")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]
             AdminAprovacoes = 101,
