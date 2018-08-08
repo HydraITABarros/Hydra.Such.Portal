@@ -277,6 +277,7 @@ namespace Hydra.Such.Portal.Services
             wfItem.Descricao = wfItemLast.Descricao;
             wfItem.Comentario = wfItemLast.Comentario;
             wfItem.Utilizador = postedByUserName;
+            wfItem.Anexo = wfItemLast.AttachedIs;
 
             repo.Create(wfItem);
   

@@ -258,6 +258,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
+
+
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -265,7 +267,9 @@ namespace Hydra.Such.Portal.Controllers
             BillingReceptionModel updatedItem = null;
             if (item != null)
             {
-                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
+
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                UploadFile(workflow);
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
                 item.WorkflowItems.Add(workflow);
@@ -292,6 +296,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
+       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -818,6 +823,14 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
+        [HttpGet]
+        public FileStreamResult OpenLinkAttached(string id)
+        {
+
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+        }
+
+     
         [HttpPost]
         public JsonResult CheckIfDocumentExists([FromBody] BillingReceptionModel item)
         {
@@ -917,30 +930,55 @@ namespace Hydra.Such.Portal.Controllers
         #region ANEXOS
 
         [HttpPost]
-        [Route("Faturacao/FileUpload")]
-        public JsonResult FileUpload()
+        [Route("Faturacao/ExistFile")]
+        public JsonResult ExistFile()
         {
             try
             {
+              
                 var files = Request.Form.Files;
                 string full_filename;
                 foreach (var file in files)
                 {
-                    try
+                    string filename = Path.GetFileName(file.FileName);
+                    full_filename = filename;
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+
+                    if (System.IO.File.Exists(path))
                     {
-                        string filename = Path.GetFileName(file.FileName);
-                        //full_filename = id + "_" + filename;
-                        full_filename = filename;
-                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
-                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
-                        {
-                            file.CopyTo(dd);
-                            dd.Dispose();
-                        }
+                        throw new System.ArgumentException();
                     }
-                    catch (Exception ex)
+                } 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+        public JsonResult UploadFile(BillingRecWorkflowModel workflow)
+        {
+            try
+            {
+
+                foreach (var file in workflow.Attached)
+                {
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, file.File);
+                    if (!System.IO.File.Exists(path))
                     {
-                        throw;
+                        try
+                        {
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                
+                                dd.Dispose();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
                     }
                 }
             }
@@ -951,8 +989,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json("");
         }
 
-       
-        #endregion  
+
+
+        #endregion
 
     }
 }
