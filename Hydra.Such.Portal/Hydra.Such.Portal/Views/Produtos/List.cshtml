@@ -111,7 +111,7 @@
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <paper-button class="tablinks" on-tap="_redirectToNewProdutoForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -714,9 +714,9 @@
                 },
 
                 _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/Produtos/Detalhes/" + item.productNo;
-                    }
+                    //if (item != null) {
+                    //    window.location.href = "/Produtos/Detalhes/" + item.productNo;
+                    //}
                 },
 
                 openToast: function (message) {
@@ -729,10 +729,10 @@
                     this.$.ToastError.open();
                 },
 
-                _redirectToNewUnitForm: function (item) {
-                    if (item != null) {
-                        window.location.href = "/Produtos/Detalhes";
-                    }
+                _redirectToNewProdutoForm: function (item) {
+                    //if (item != null) {
+                    //    window.location.href = "/Produtos/Detalhes";
+                    //}
                 },
 
                 _uploadEXCEL: function () {
