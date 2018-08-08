@@ -2301,6 +2301,11 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.Descricao = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.Descricao = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         toCreate.CriadoPor = User.Identity.Name;
                         toCreate.DataHoraCriacao = DateTime.Now;
 
@@ -2318,6 +2323,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             toUpdate.Descricao = resource.Name;
                             toUpdate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        else
+                        {
+                            toUpdate.Descricao = null;
+                            toUpdate.FamiliaRecurso = null;
                         }
                         toUpdate.CriadoPor = x.UtilizadorCriacao;
                         toUpdate.DataHoraCriacao = x.DataHoraCriacao;
@@ -2582,8 +2592,12 @@ namespace Hydra.Such.Portal.Controllers
                         toCreate.CustoUnitario = x.CustoUnitario;
                         if (Vendor != null)
                             toCreate.NomeFornecedor = Vendor.Name;
+                        else
+                            toCreate.NomeFornecedor = null;
                         if (Product != null)
                             toCreate.DescricaoProduto = Product.Name;
+                        else
+                            toCreate.DescricaoProduto = null;
                         toCreate.Um = x.Um;
                         toCreate.QtdPorUm = x.QtdPorUm;
                         toCreate.PesoUnitario = x.PesoUnitario;
@@ -2610,8 +2624,12 @@ namespace Hydra.Such.Portal.Controllers
                         toUpdate.CustoUnitario = x.CustoUnitario;
                         if (Vendor != null)
                             toUpdate.NomeFornecedor = Vendor.Name;
+                        else
+                            toUpdate.NomeFornecedor = null;
                         if (Product != null)
                             toUpdate.DescricaoProduto = Product.Name;
+                        else
+                            toUpdate.DescricaoProduto = null;
                         toUpdate.Um = x.Um;
                         toUpdate.QtdPorUm = x.QtdPorUm;
                         toUpdate.PesoUnitario = x.PesoUnitario;
@@ -2797,8 +2815,15 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.NomeRecurso = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.NomeRecurso = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         if (employee != null)
                             toCreate.NomeEmpregado = employee.Name;
+                        else
+                            toCreate.NomeEmpregado = null;
                         toCreate.CriadoPor = User.Identity.Name;
                         toCreate.DataHoraCriacao = DateTime.Now;
 
@@ -2813,8 +2838,15 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.NomeRecurso = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.NomeRecurso = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         if (employee != null)
                             toCreate.NomeEmpregado = employee.Name;
+                        else
+                            toCreate.NomeEmpregado = null;
                         toUpdate.CriadoPor = x.UtilizadorCriacao;
                         toUpdate.DataHoraCriacao = x.DataHoraCriacao;
                         toUpdate.AlteradoPor = User.Identity.Name;
