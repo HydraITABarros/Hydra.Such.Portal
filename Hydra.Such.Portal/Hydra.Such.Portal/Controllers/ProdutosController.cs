@@ -52,6 +52,32 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Detalhes(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProductNo = id ?? "";
+                if (ViewBag.ProductNo != "")
+                {
+                    ViewBag.NoProductDisable = true;
+                    ViewBag.ButtonHide = 0;
+                }
+                else
+                {
+                    ViewBag.NoProductDisable = false;
+                    ViewBag.ButtonHide = 1;
+                }
+
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public JsonResult GetAllProdutos()
         {
             List<FichaProdutoViewModel> result = DBFichaProduto.ParseToViewModel(DBFichaProduto.GetAll());
