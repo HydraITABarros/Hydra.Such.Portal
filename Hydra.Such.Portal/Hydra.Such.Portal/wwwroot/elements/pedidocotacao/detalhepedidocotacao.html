@@ -1,0 +1,224 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<dom-module id="x-pedidocotacaodetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            .grey {
+                color: rgba(48, 64, 84, 0.61);
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+        </style>
+
+        <iron-ajax url="/ConsultaMercado/GetDetalheConsultaMercado"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
+            <paper-button id="btnCreate" raised class="tablinks" on-tap="_create" disabled="{{ !_isCreate }}" title="Criar" style="background-color:#71BCC1"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
+            <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+            </div>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pedidocotacaodetails',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _id: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isUpdate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _functionsMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Estado Anterior" }, { value: 3, description: "Estado Seguinte" }, { value: 4, description: "Registo Propostas" }, { value: 5, description: "Exportar Propostas" }, { value: 6, description: "Criar Alternativa" }, { value: 7, description: "Criar Encomenda Compra" }, { value: 8, description: "Encomenda Aberta de Compra" }],
+                    }
+                },
+                _functionsMenuItemSelected: function (e) {
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1: //
+                            
+                            break;
+                        case 2://
+
+                            break;
+                        case 3://
+
+                            break;
+                        case 4://
+
+                            break;
+                        case 5://
+
+                            break;
+                        case 6://
+
+                            break;
+                        case 7://
+
+                            break;
+                        case 8://
+
+                            break;
+                    }
+                },
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "NumConsultaMercado": this._id });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._id == "") {
+                        this._isCreate = true;
+                    }
+
+                },
+
+                _validateData: function () {
+
+                    return true;
+                },
+
+                _setFieldsEditability(data) {
+                    var _self = this;
+
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _goBack: function (e) {
+                    window.history.back();
+                }
+            });
+        });
+    </script>
+</dom-module>

@@ -2024,6 +2024,34 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult Get_Consulta_Mercado_Destino()
+        {
+            List<EnumData> result = EnumerablesFixed.Destino;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Consulta_Mercado_Estado()
+        {
+            List<EnumData> result = EnumerablesFixed.Estado;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Consulta_Mercado_Fase()
+        {
+            List<EnumData> result = EnumerablesFixed.Fase;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult Get_Consulta_Mercado_Modalidade()
+        {
+            List<EnumData> result = EnumerablesFixed.Modalidade;
+            return Json(result);
+        }
     }
 
 
