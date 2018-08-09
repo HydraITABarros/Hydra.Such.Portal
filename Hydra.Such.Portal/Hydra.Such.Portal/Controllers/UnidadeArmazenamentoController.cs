@@ -40,7 +40,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -54,7 +54,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Detalhes(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProductNo = id ?? "";
@@ -151,7 +151,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult MovimentoProdutos(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
@@ -589,15 +589,6 @@ namespace Hydra.Such.Portal.Controllers
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Movimentos de Produtos.xlsx");
         }
 
-
-
-
-
-
-
-
-
-
         //3
         [HttpPost]
         public JsonResult OnPostImport_UnidadesArmazenamento()
@@ -749,6 +740,8 @@ namespace Hydra.Such.Portal.Controllers
                         toCreate.Descrição = product.Descricao;
                         if (localizacao != null)
                             toCreate.CódLocalização = x.Code;
+                        else
+                            toCreate.CódLocalização = null;
                         toCreate.Inventário = x.Inventory;
                         toCreate.NºPrateleira = x.ShelfNo;
                         toCreate.Bloqueado = x.Blocked.HasValue ? x.Blocked.ToString().ToLower() == "sim" ? true : false : false;
@@ -756,9 +749,13 @@ namespace Hydra.Such.Portal.Controllers
                         toCreate.ValorEmArmazem = x.WareHouseValue;
                         if (fornecedor != null)
                             toCreate.NºFornecedor = x.VendorNo;
+                        else
+                            toCreate.NºFornecedor = null;
                         toCreate.CódProdForn = x.VendorItemNo;
                         if (unidadeMedida != null)
                             toCreate.CódUnidadeMedidaProduto = x.CodeUnitMeasure;
+                        else
+                            toCreate.CódUnidadeMedidaProduto = null;
                         toCreate.CustoUnitário = x.UnitCost;
                         toCreate.UltimoCustoDirecto = x.LastCostDirect;
                         toCreate.PreçoDeVenda = x.PriceSale;
@@ -772,23 +769,23 @@ namespace Hydra.Such.Portal.Controllers
                         toUpdate.NºProduto = x.ProductNo;
                         toUpdate.Descrição = product.Descricao;
                         if (localizacao != null)
-                        {
                             toUpdate.CódLocalização = x.Code;
-                        }
+                        else
+                            toUpdate.CódLocalização = null;
                         toUpdate.Inventário = x.Inventory;
                         toUpdate.NºPrateleira = x.ShelfNo;
                         toUpdate.Bloqueado = x.Blocked.HasValue ? x.Blocked.ToString().ToLower() == "sim" ? true : false : false;
                         toUpdate.ArmazémPrincipal = x.CodeWareHouse.HasValue ? x.CodeWareHouse.ToString().ToLower() == "sim" ? true : false : false;
                         toUpdate.ValorEmArmazem = x.WareHouseValue;
                         if (fornecedor != null)
-                        {
                             toUpdate.NºFornecedor = x.VendorNo;
-                        }
+                        else
+                            toUpdate.NºFornecedor = null;
                         toUpdate.CódProdForn = x.VendorItemNo;
                         if (unidadeMedida != null)
-                        {
                             toUpdate.CódUnidadeMedidaProduto = x.CodeUnitMeasure;
-                        }
+                        else
+                            toUpdate.CódUnidadeMedidaProduto = null;
                         toUpdate.CustoUnitário = x.UnitCost;
                         toUpdate.UltimoCustoDirecto = x.LastCostDirect;
                         toUpdate.PreçoDeVenda = x.PriceSale;
@@ -801,18 +798,6 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }

@@ -2017,6 +2017,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetProdutosTipos()
+        {
+            List<EnumData> result = EnumerablesFixed.ProdutosTipo;
+
+            return Json(result);
+        }
     }
 
 
