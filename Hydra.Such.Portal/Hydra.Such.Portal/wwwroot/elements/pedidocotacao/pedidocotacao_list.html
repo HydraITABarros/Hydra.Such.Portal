@@ -8,10 +8,13 @@
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -52,6 +55,11 @@
             </style>
         </custom-style>
 
+        <!--<iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Destino" last-response="{{ddDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Estado" last-response="{{ddEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Fase" last-response="{{ddFase}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Modalidade" last-response="{{ddModalidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+
         <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado"
                    last-response="{{result}}"
                    method="post"
@@ -60,10 +68,18 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -101,8 +117,6 @@
                     {{item.codProjecto}}
                 </template>
             </vaadin-grid-column>
-
-
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
@@ -204,20 +218,20 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.destino.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="destino">Destino</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="destino" />
+                    <vaadin-grid-sorter path="destino_Show">Destino</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="destino_Show" />
                 </template>
                 <template>
-                    {{item.destino}}
+                    {{item.destino_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
+                    <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado_Show" />
                 </template>
                 <template>
-                    {{item.estado}}
+                    {{item.estado_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.utilizadorRequisicao.hidden }}">
@@ -241,28 +255,29 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.especificacaoTecnica.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="especificacaoTecnica">Especificação Técnica</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="especificacaoTecnica" />
                 </template>
                 <template>
-                    {{item.especificacaoTecnica}}
+                    <center>
+                        <vaadin-checkbox checked="{{item.especificacaoTecnica}}" disabled></vaadin-checkbox>
+                    </center>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.fase.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="fase">Fase</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fase" />
+                    <vaadin-grid-sorter path="fase_Show">Fase</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fase_Show" />
                 </template>
                 <template>
-                    {{item.fase}}
+                    {{item.fase_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.modalidade.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="modalidade">Modalidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="modalidade" />
+                    <vaadin-grid-sorter path="modalidade_Show">Modalidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="modalidade_Show" />
                 </template>
                 <template>
-                    {{item.modalidade}}
+                    {{item.modalidade_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoCriadoEm.hidden }}">
@@ -376,10 +391,11 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.seleccaoEfectuada.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="seleccaoEfectuada">Selecção Efectuada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="seleccaoEfectuada" />
                 </template>
                 <template>
-                    {{item.seleccaoEfectuada}}
+                    <center>
+                        <vaadin-checkbox checked="{{item.seleccaoEfectuada}}" disabled></vaadin-checkbox>
+                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -408,7 +424,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/?tipo=" + item.tipo + "&imei=" + item.imei;
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
                     }
                 },
                 _create: function (item) {

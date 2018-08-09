@@ -2134,6 +2134,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+
                         if (Contract.StartData != null && Contract.StartData != "")
                             PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
                        
