@@ -41,13 +41,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
-        public static ConsultaMercado GetConsultaMercadoToList(string Num_Consulta_Mercado)
+        public static ConsultaMercado GetDetalheConsultaMercado(string NumConsultaMercado)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == Num_Consulta_Mercado).FirstOrDefault();
+                    return ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == NumConsultaMercado).FirstOrDefault();
                 }
             }
             catch (Exception e)
@@ -154,7 +154,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         PedidoCotacaoOrigem = ConsultaMercado.PedidoCotacaoOrigem,
                         ValorAdjudicado = ConsultaMercado.ValorAdjudicado,
                         CodFormaPagamento = ConsultaMercado.CodFormaPagamento,
-                        SeleccaoEfectuada = ConsultaMercado.SeleccaoEfectuada
+                        SeleccaoEfectuada = ConsultaMercado.SeleccaoEfectuada,
+                        Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
+                        Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
+                        Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
+                        Modalidade_Show = ConsultaMercado.Modalidade == 0 ? "Consulta Alargada" : ConsultaMercado.Modalidade == 1 ? "Ajuste Direto" : string.Empty
                     }).ToList();
                 }
             }
@@ -167,11 +171,20 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         public static ConsultaMercadoView CastConsultaMercadoToView(ConsultaMercado ObjectToTransform)
         {
             ConsultaMercado consultaMercado = new ConsultaMercado();
+            List<LinhasConsultaMercado> linhasConsultaMercado = new List<LinhasConsultaMercado>();
+            List<CondicoesPropostasFornecedores> condicoesPropostasFornecedores = new List<CondicoesPropostasFornecedores>();
+            List<LinhasCondicoesPropostasFornecedores> linhasCondicoesPropostasFornecedores = new List<LinhasCondicoesPropostasFornecedores>();
+            List<SeleccaoEntidades> seleccaoEntidades = new List<SeleccaoEntidades>();
+
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     consultaMercado = ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == ObjectToTransform.NumConsultaMercado).FirstOrDefault();
+                    linhasConsultaMercado = ctx.LinhasConsultaMercado.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    condicoesPropostasFornecedores = ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    linhasCondicoesPropostasFornecedores = ctx.LinhasCondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                 }
             }
             catch (Exception e)
@@ -214,35 +227,17 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 PedidoCotacaoOrigem = ObjectToTransform.PedidoCotacaoOrigem,
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
-                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada
+                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
+                Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
+                Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
+                Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
+                Modalidade_Show = ObjectToTransform.Modalidade == 0 ? "Consulta Alargada" : ObjectToTransform.Modalidade == 1 ? "Ajuste Direto" : string.Empty
             };
 
-            if (consultaMercado.CondicoesPropostasFornecedores != null && consultaMercado.CondicoesPropostasFornecedores.Count > 0)
-            {
-                List<CondicoesPropostasFornecedoresView> CondicoesPropostasFornecedoresList = new List<CondicoesPropostasFornecedoresView>();
-                foreach (var cpf in consultaMercado.CondicoesPropostasFornecedores)
-                {
-                    CondicoesPropostasFornecedoresList.Add(CastCondicoesPropostasFornecedoresToView(cpf));
-                }
-
-                view.CondicoesPropostasFornecedores = CondicoesPropostasFornecedoresList;
-            }
-
-            if (consultaMercado.LinhasCondicoesPropostasFornecedores != null && consultaMercado.LinhasCondicoesPropostasFornecedores.Count > 0)
-            {
-                List<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedoresList = new List<LinhasCondicoesPropostasFornecedoresView>();
-                foreach (var lcpf in consultaMercado.LinhasCondicoesPropostasFornecedores)
-                {
-                    LinhasCondicoesPropostasFornecedoresList.Add(CastLinhasCondicoesPropostasFornecedoresToView(lcpf));
-                }
-
-                view.LinhasCondicoesPropostasFornecedores = LinhasCondicoesPropostasFornecedoresList;
-            }
-
-            if (consultaMercado.LinhasConsultaMercado != null && consultaMercado.LinhasConsultaMercado.Count > 0)
+            if (linhasConsultaMercado != null && linhasConsultaMercado.Count > 0)
             {
                 List<LinhasConsultaMercadoView> linhasConsultaMercadoList = new List<LinhasConsultaMercadoView>();
-                foreach (var lcm in consultaMercado.LinhasConsultaMercado)
+                foreach (var lcm in linhasConsultaMercado)
                 {
                     linhasConsultaMercadoList.Add(CastLinhasConsultaMercadoToView(lcm));
                 }
@@ -250,10 +245,32 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 view.LinhasConsultaMercado = linhasConsultaMercadoList;
             }
 
-            if (consultaMercado.SeleccaoEntidades != null && consultaMercado.SeleccaoEntidades.Count > 0)
+            if (condicoesPropostasFornecedores != null && condicoesPropostasFornecedores.Count > 0)
+            {
+                List<CondicoesPropostasFornecedoresView> CondicoesPropostasFornecedoresList = new List<CondicoesPropostasFornecedoresView>();
+                foreach (var cpf in condicoesPropostasFornecedores)
+                {
+                    CondicoesPropostasFornecedoresList.Add(CastCondicoesPropostasFornecedoresToView(cpf));
+                }
+
+                view.CondicoesPropostasFornecedores = CondicoesPropostasFornecedoresList;
+            }
+
+            if (linhasCondicoesPropostasFornecedores != null && linhasCondicoesPropostasFornecedores.Count > 0)
+            {
+                List<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedoresList = new List<LinhasCondicoesPropostasFornecedoresView>();
+                foreach (var lcpf in linhasCondicoesPropostasFornecedores)
+                {
+                    LinhasCondicoesPropostasFornecedoresList.Add(CastLinhasCondicoesPropostasFornecedoresToView(lcpf));
+                }
+
+                view.LinhasCondicoesPropostasFornecedores = LinhasCondicoesPropostasFornecedoresList;
+            }
+
+            if (seleccaoEntidades != null && seleccaoEntidades.Count > 0)
             {
                 List<SeleccaoEntidadesView> seleccaoEntidadesList = new List<SeleccaoEntidadesView>();
-                foreach (var se in consultaMercado.SeleccaoEntidades)
+                foreach (var se in seleccaoEntidades)
                 {
                     seleccaoEntidadesList.Add(CastSeleccaoEntidadesToView(se));
                 }

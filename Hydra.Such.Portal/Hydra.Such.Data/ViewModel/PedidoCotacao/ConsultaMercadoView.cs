@@ -46,7 +46,13 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public ICollection<LinhasConsultaMercadoView> LinhasConsultaMercado { get; set; }
         public ICollection<SeleccaoEntidadesView> SeleccaoEntidades { get; set; }
 
-        //Campos tratados
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
 
+        //Campos tratados
+        public string Destino_Show { get; set; }
+        public string Estado_Show { get; set; }
+        public string Fase_Show { get; set; }
+        public string Modalidade_Show { get; set; }
     }
 }
