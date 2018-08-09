@@ -2018,9 +2018,37 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProdutosUnidadesMedidas()
+        {
+            List<DDMessageString> result = DBUnidadeMedida.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProdutosTipos()
         {
-            List<EnumData> result = EnumerablesFixed.ProdutosTipo;
+            List<DDMessage> result = EnumerablesFixed.ProdutosTipo.Select(x => new DDMessage()
+            {
+                id = x.Id,
+                value = x.Value
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProdutosTiposRefeicao()
+        {
+            List<DDMessageString> result = DBTiposRefeicao.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Código.ToString(),
+                value = x.Descrição
+            }).ToList();
 
             return Json(result);
         }

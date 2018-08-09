@@ -4470,7 +4470,7 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorModificação = x.UpdateUser
                 };
 
-                if (DBUnitMeasureProduct.GetById(x.ProductNo) != null)
+                if (DBUnitMeasureProduct.GetByProdutoCode(x.ProductNo, x.Code) != null)
                 {
                     UnidadeMedidaProduto.UtilizadorCriação = x.CreateUser;
                     UnidadeMedidaProduto.DataHoraCriação = x.CreateDate.HasValue ? x.CreateDate : (DateTime?)null;

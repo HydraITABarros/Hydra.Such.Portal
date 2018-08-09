@@ -10,13 +10,13 @@ namespace Hydra.Such.Data.Logic.Nutrition
     public static class DBUnitMeasureProduct
     {
         #region CRUD
-        public static UnidadeMedidaProduto GetById(string NºProduto)
+        public static List<UnidadeMedidaProduto> GetByProduto(string NºProduto)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto).FirstOrDefault();
+                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto).ToList();
                 }
             }
             catch (Exception ex)
@@ -24,13 +24,13 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-        public static UnidadeMedidaProduto GetByProdCode(string NºProduto, string Cod)
+        public static UnidadeMedidaProduto GetByProdutoCode(string NºProduto, string Cod)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto && x.Código==Cod).FirstOrDefault();
+                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto && x.Código == Cod).FirstOrDefault();
                 }
             }
             catch (Exception ex)

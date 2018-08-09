@@ -57,15 +57,15 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.ProductNo = id ?? "";
-                if (ViewBag.ProductNo != "")
+                ViewBag.No = id ?? "";
+                if (ViewBag.No != "")
                 {
-                    ViewBag.NoProductDisable = true;
+                    ViewBag.NoDisable = true;
                     ViewBag.ButtonHide = 0;
                 }
                 else
                 {
-                    ViewBag.NoProductDisable = false;
+                    ViewBag.NoDisable = false;
                     ViewBag.ButtonHide = 1;
                 }
 
@@ -105,6 +105,213 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        public JsonResult GetProdutoNo([FromBody]string noProduto)
+        {
+            FichaProdutoViewModel result = DBFichaProduto.ParseToViewModel(DBFichaProduto.GetById(noProduto));
+            result.ListUnidadeMedidaProduto = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetByProduto(noProduto));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Atualiza um Produto
+        public JsonResult UpdateProduto([FromBody] FichaProdutoViewModel Produto)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (string.IsNullOrEmpty(Produto.UnidadeMedidaBase))
+                    Produto.UnidadeMedidaBase = null;
+                if (DBFichaProduto.Update(DBFichaProduto.ParseToDatabase(Produto)) != null)
+                {
+                    result.eReasonCode = 0;
+                    result.eMessage = "Foi atualizado com sucesso o Produto.";
+                }
+                else
+                {
+                    result.eReasonCode = 10;
+                    result.eMessage = "Ocorreu um erro ao atualizar o Produto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Apaga um Produto
+        public JsonResult DeleteProduto([FromBody] FichaProdutoViewModel Produto)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (DBUnitMeasureProduct.Delete(DBUnitMeasureProduct.GetByProduto(Produto.No)) == true)
+                {
+                    if (DBFichaProduto.Delete(DBFichaProduto.GetById(Produto.No)) == true)
+                    {
+                        result.eReasonCode = 0;
+                        result.eMessage = "Foi eliminado com sucesso o Produto.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 10;
+                        result.eMessage = "Ocorreu um erro ao eliminar o Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 20;
+                    result.eMessage = "Ocorreu um erro ao eliminar as Unidades de Medidas de Produtos.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Cria uma nova Unidade Medida de Produto
+        public JsonResult CreateUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel UMP)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (DBUnitMeasureProduct.GetByProdutoCode(UMP.ProductNo, UMP.Code) == null)
+                {
+                    UMP.CreateDate = DateTime.Now;
+                    UMP.CreateUser = User.Identity.Name;
+
+                    if (DBUnitMeasureProduct.Create(DBUnitMeasureProduct.ParseToDb(UMP)) != null)
+                    {
+                        result.eReasonCode = 0;
+                        result.eMessage = "Foi adicionado com sucesso a Unidade de Medida de Produto.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 10;
+                        result.eMessage = "Ocorreu um erro ao criar a Unidade de Medida de Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 20;
+                    result.eMessage = "Já existe uma Unidade de Medida de Produto com este Código de Medida.";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Atualiza uma Unidade Medida Produto
+        public JsonResult UpdateUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel UMP)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(UMP)) != null)
+                {
+                    result.eReasonCode = 0;
+                    result.eMessage = "Foi atualizado com sucesso a Unidade de Medida de Produto.";
+                }
+                else
+                {
+                    result.eReasonCode = 10;
+                    result.eMessage = "Ocorreu um erro ao atualizar a Unidade de Medida de Produto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Apaga uma Unidade Medida Produto
+        public JsonResult DeleteUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel UMP)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (DBUnitMeasureProduct.Delete(DBUnitMeasureProduct.ParseToDb(UMP)) == true)
+                {
+                    result.eReasonCode = 0;
+                    result.eMessage = "Foi eliminado com sucesso a Unidade de Medida de Produto.";
+                }
+                else
+                {
+                    result.eReasonCode = 10;
+                    result.eMessage = "Ocorreu um erro ao eliminar a Unidade de Medida de Produto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        public IActionResult Movimentos(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Localizações);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public bool SetSessionMovimentoProduto([FromBody] FichaProdutoViewModel data)
+        {
+            if (data.No != null)
+            {
+                HttpContext.Session.SetString("productNo", data.No);
+                return true;
+            }
+            return false;
+        }
+
+        public JsonResult GetMovementProduct()
+        {
+            List<ProductMovementViewModel> result;
+            if (HttpContext.Session.GetString("productNo") == null)
+            {
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetAll());
+            }
+            else
+            {
+                string nProduct = HttpContext.Session.GetString("productNo");
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetByNoProduto(nProduct));
+                HttpContext.Session.Remove("productNo");
+            }
+            return Json(result);
+        }
+
+
+
+
+
+
 
         #region EXCEL
         //1
