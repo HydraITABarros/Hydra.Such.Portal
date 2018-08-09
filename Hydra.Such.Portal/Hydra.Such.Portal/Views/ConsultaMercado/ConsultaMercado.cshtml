@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.ConsultaMercado>
+
+@{
+    ViewData["Title"] = "Pedido de Cotação";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/pedidocotacao/pedidocotacao_list.html">
+
+<x-pedidocotacaolist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pedidocotacaolist>
