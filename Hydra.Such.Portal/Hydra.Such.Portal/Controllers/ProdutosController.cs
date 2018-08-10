@@ -22,6 +22,9 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data;
 using System;
 
+using System.Web;
+using System.Drawing;
+
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
@@ -108,9 +111,65 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetProdutoNo([FromBody]string noProduto)
         {
-            FichaProdutoViewModel result = DBFichaProduto.ParseToViewModel(DBFichaProduto.GetById(noProduto));
-            result.ListUnidadeMedidaProduto = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetByProduto(noProduto));
+            FichaProdutoViewModel result = new FichaProdutoViewModel();
 
+            if (!string.IsNullOrEmpty(noProduto))
+            {
+                result = DBFichaProduto.ParseToViewModel(DBFichaProduto.GetById(noProduto));
+                result.ListUnidadeMedidaProduto = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetByProduto(noProduto));
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Cria um Produto
+        public JsonResult CreateProduto([FromBody] FichaProdutoViewModel Produto)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                //Get Ficha de Produto Numeration
+                int idNumeration = DBNumerationConfigurations.GetAll().Where(x => x.Descrição == "Numeração Produtos").FirstOrDefault().Id;
+                string ProdutoNo = DBNumerationConfigurations.GetNextNumeration(idNumeration, true, false);
+
+                //Update Last Numeration Used
+                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(idNumeration);
+                ConfigNumerations.ÚltimoNºUsado = ProdutoNo;
+                DBNumerationConfigurations.Update(ConfigNumerations);
+
+                //New Produto
+                Produto.No = ProdutoNo;
+                Produto.DataHoraCriacao = DateTime.Now;
+                Produto.UtilizadorCriacao = User.Identity.Name;
+
+                if (DBFichaProduto.GetById(Produto.No) == null)
+                {
+                    if (string.IsNullOrEmpty(Produto.UnidadeMedidaBase))
+                        Produto.UnidadeMedidaBase = null;
+                    if (DBFichaProduto.Create(DBFichaProduto.ParseToDatabase(Produto)) != null)
+                    {
+                        result.aux = Produto.No;
+                        result.eReasonCode = 0;
+                        result.eMessage = "Foi criado com sucesso o Produto.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 20;
+                        result.eMessage = "Ocorreu um erro ao criar o Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 10;
+                    result.eMessage = "Verifique a tabela de configuração de numeração de produtos.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
             return Json(result);
         }
 
@@ -121,6 +180,10 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
+                //Update Produto
+                Produto.DataHoraModificacao = DateTime.Now;
+                Produto.UtilizadorModificacao = User.Identity.Name;
+
                 if (string.IsNullOrEmpty(Produto.UnidadeMedidaBase))
                     Produto.UnidadeMedidaBase = null;
                 if (DBFichaProduto.Update(DBFichaProduto.ParseToDatabase(Produto)) != null)
@@ -185,6 +248,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (DBUnitMeasureProduct.GetByProdutoCode(UMP.ProductNo, UMP.Code) == null)
                 {
+                    //New Unidade Medida Produto
                     UMP.CreateDate = DateTime.Now;
                     UMP.CreateUser = User.Identity.Name;
 
@@ -221,6 +285,10 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
+                //Update Unidade Medida Produto
+                UMP.UpdateDate = DateTime.Now;
+                UMP.UpdateUser = User.Identity.Name;
+
                 if (DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(UMP)) != null)
                 {
                     result.eReasonCode = 0;
@@ -306,12 +374,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-
-
-
-
-
-
 
         #region EXCEL
         //1
@@ -1397,8 +1459,45 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
+        public ActionResult ShowImage(string ProdutoNo)
+        {
+            try
+            {
+                byte[] fileBytes = null;
+                string contentType = null;
+
+                FichaProduto Produto = DBFichaProduto.GetById(ProdutoNo);
+                fileBytes = Produto.Imagem;
+                contentType = "image/jpeg";
+
+                return File(fileBytes, contentType);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
 
 
+        [HttpPost]
+        public JsonResult Upload_Imagem()
+        {
+            FichaProdutoViewModel Produto = new FichaProdutoViewModel();
+            var files = Request.Form.Files;
+            IFormFile file = files[0];
+            byte[] imagem = null;
+
+            if (file.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    file.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    imagem = fileBytes;
+                }
+            }
+            return Json(imagem);
+        }
 
 
 

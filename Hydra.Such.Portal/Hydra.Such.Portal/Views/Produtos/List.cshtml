@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Artigos Produtos";
+    ViewData["Title"] = "Produtos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -706,6 +706,7 @@
                 },
 
                 _rowSelected: function (item) {
+                    //debugger;
                     if (item != null) {
                         window.location.href = "/Produtos/Detalhes/" + item.no;
                     }
@@ -747,12 +748,12 @@
                         processData: false,
                         data: data,
                         success: function (ListToCreate) {
-                            //debugger;
                             ajaxImport.body = JSON.stringify(ListToCreate);
                             ajaxImport.generateRequest();
                             toastSuccess.text = "Tabela atualizada com sucesso.";
                             toastSuccess.open();
-                            ajaxGetALL.generateRequest();
+                            //ajaxGetALL.generateRequest();
+                            location.reload();
                             vaadinGrid.clearCache();
                         },
                         error: function () {

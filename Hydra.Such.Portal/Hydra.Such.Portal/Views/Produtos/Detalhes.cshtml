@@ -26,6 +26,9 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
 <x-produtodetalhe></x-produtodetalhe>
 
 <dom-module id="x-produtodetalhe">
@@ -94,6 +97,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Produtos/CreateProduto"
+                   last-response="{{createProduto}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createProduto_ajax"
+                   on-response="_createProduto_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Produtos/UpdateProduto"
                    last-response="{{updateProduto}}"
                    method="post"
@@ -139,6 +151,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Produtos/ShowImage"
+                   last-response="{{image}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_showImage_ajax"
+                   on-response="_showImage_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetProdutosUnidadesMedidas"
                    last-response="{{ProdutoUnidadesMedidas}}"
                    auto
@@ -174,7 +195,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button id="btnCriar" class="btnEdit tablinks" value="createBtt" on-tap="_createNewStockeepingUnit" disabled="{{ !_permissions.create }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnCriar" class="btnEdit tablinks" value="createBtt" on-tap="_createProduto" disabled="{{ !_permissions.create }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             <paper-button id="btnGuardar" class="btnEdit tablinks" value="updateBtt" on-tap="_updateProduto" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button id="btnEliminar" class="btnRemove tablinks" value="deleteBtt" on-tap="_deleteProduto" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             <paper-button id="btnMovimento" class="btnSave tablinks" value="goMovement" on-tap="_goProductMovement"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Movimentos</paper-button>
@@ -195,79 +216,104 @@
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
                                 <div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddno" name="ddno" label="Nº" value="{{result.no}}" disabled></vaadin-text-field>
+                                    <div class="col-md-12">
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddno" name="ddno" label="Nº" value="{{result.no}}" disabled></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddinventario" name="ddinventario" label="Inventário" value="{{result.inventario}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoTipos]]" id="ddtipo" name="ddtipo" label="Tipo" item-value-path="id" item-label-path="value" value="{{result.tipo}}">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoTiposRefeicao]]" id="ddtipoRefeicao" name="ddtipoRefeicao" label="Tipo Refeição" item-value-path="id" item-label-path="id" value="{{result.tipoRefeicao}}" on-value-changed="_getTipoRefeicaoDescricao">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.id]]</b> - [[item.value]]</td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="dddescricaoRefeicao" name="dddescricaoRefeicao" label="Descrição Tipo Refeição" value="{{result.descricaoRefeicao}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddnoPrateleira" name="ddnoPrateleira" label="Nº Prateleira" value="{{result.noPrateleira}}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-7">
+                                                    <vaadin-upload id="UploadRequest"
+                                                                   method="POST"
+                                                                   headers="{'Accept': 'application/json'}"
+                                                                   accept=".jpg"
+                                                                   timeout=3000000
+                                                                   max-files="1">
+                                                        <span slot="drop-label">Coloque aqui a sua imagem...</span>
+                                                    </vaadin-upload>
+                                                </div>
+
+                                                <div class="col-sm-1" style="padding-top:-200px">
+                                                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_uploadImagem">Guardar</paper-button>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}">
-                                                <template>
-                                                    <table width="250px">
-                                                        <tr>
-                                                            <td width="100%"><b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        <div class="col-md-2" style="align-items:center">
+                                            <figure style="align-self:center">
+                                                <img src="@Url.Action("ShowImage", "Produtos", new { ProdutoNo = this.ViewBag.No })" alt="" width="225" height="300" />
+                                            </figure>
                                         </div>
                                     </div>
 
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
 
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddinventario" name="ddinventario" label="Inventário" value="{{result.inventario}}" disabled></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddnoPrateleira" name="ddnoPrateleira" label="Nº Prateleira" value="{{result.noPrateleira}}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[ProdutoTipos]]" id="ddtipo" name="ddtipo" label="Tipo" item-value-path="id" item-label-path="value" value="{{result.tipo}}">
-                                                <template>
-                                                    <table width="250px">
-                                                        <tr>
-                                                            <td width="100%"><b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[ProdutoTiposRefeicao]]" id="ddtipoRefeicao" name="ddtipoRefeicao" label="Tipo Refeição" item-value-path="id" item-label-path="id" value="{{result.tipoRefeicao}}" on-value-changed="_getTipoRefeicaoDescricao">
-                                                <template>
-                                                    <table width="250px">
-                                                        <tr>
-                                                            <td width="100%"><b>[[item.id]]</b> - [[item.value]]</td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="dddescricaoRefeicao" name="dddescricaoRefeicao" label="Descrição Tipo Refeição" value="{{result.descricaoRefeicao}}" disabled></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddimagem" name="ddimagem" label="Imagem" value="{{result.imagem}}"></vaadin-text-field>
-                                        </div>
-                                    </div>
 
 
                                     <!------------ UNIDADE MEDIDA PRODUTO ------------>
@@ -497,7 +543,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </iron-pages>
                         </div>
                     </div>
@@ -510,12 +555,24 @@
     </template>
 
     <script>
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
+            upload.addEventListener('file-reject', function (event) {
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-produtodetalhe',
                 properties: {
-
                     selected: {
                         type: Number,
                         value: 0
@@ -524,10 +581,16 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                    _produtoNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                 },
 
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.No);
+                    //debugger;
+                    this.$.page_databound_ajax.body = JSON.stringify('@ViewBag.No');
                     this.$.page_databound_ajax.generateRequest();
 
                     //Inserir
@@ -583,7 +646,7 @@
 
                 _createUMP: function() {
                     //debugger;
-                    if (this.$.ddno.value != "") {
+                    if (this.$.ddno.value != null) {
                         if (this.$.ddUMPcode.value != "") {
                             if (this.$.ddUMPqtdUnitMeasure.validate()) {
                                 this.$.page_createUMP_ajax.body = JSON.stringify({
@@ -603,7 +666,7 @@
                         }
                     }
                     else {
-                        this.openToastError('O campo Nº de Produto não têm valor.');
+                        this.openToastError('Primeiro tem que criar o produto.');
                     }
                 },
 
@@ -683,6 +746,22 @@
                     };
                 },
 
+                _createProduto: function (e) {
+                    //debugger;
+                    this.$.page_createProduto_ajax.body = JSON.stringify(this.result);
+                    this.$.page_createProduto_ajax.generateRequest();
+                },
+
+                _createProduto_Response: function (e) {
+                    debugger;
+                    if (this.createProduto.eReasonCode == 0) {
+                        this.openToast(this.createProduto.eMessage);
+                        window.location.href = "/Produtos/Detalhes/" + this.createProduto.aux;
+                    } else {
+                        this.openToastError(this.createProduto.eMessage);
+                    };
+                },
+
                 _updateProduto: function (e) {
                     //debugger;
                     this.$.page_updateProduto_ajax.body = JSON.stringify(this.result);
@@ -690,10 +769,11 @@
                 },
 
                 _updateProduto_Response: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.updateProduto.eReasonCode == 0) {
                         this.openToast(this.updateProduto.eMessage);
-                        this.$.page_databound_ajax.generateRequest();
+                        //this.$.page_databound_ajax.generateRequest();
+                        location.reload();
                     } else {
                         this.openToastError(this.updateProduto.eMessage);
                     };
@@ -751,10 +831,42 @@
                         this.openToastError('Necessita de Nº Produto');
                 },
 
-
-
-
-
+                _uploadImagem: function () {
+                    debugger;
+                    var _self = this;
+                    var urlFile = "/Produtos/Upload_Imagem/";
+                    var toastSuccess = _self.$.ToastMessage;
+                    var toastError = _self.$.ToastError;
+                    var data = new FormData();
+                    var uploadFile = _self.$.UploadRequest.files;
+                    var ajaxImport = _self.$.page_updateProduto_ajax;
+                    var ajaxGetALL = _self.$.page_databound_ajax;
+                    var vaadinGrid = _self.$.tabUnidadeMedidaProduto;
+                    for (var i = 0; i < uploadFile.length; i++) {
+                        data.append(uploadFile[i].name, uploadFile[i]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: urlFile,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (imagem) {
+                            debugger;
+                            _self.result.imagem = imagem;
+                            ajaxImport.body = JSON.stringify(_self.result);
+                            ajaxImport.generateRequest();
+                            toastSuccess.text = "Produto atualizado com sucesso.";
+                            toastSuccess.open();
+                            ajaxGetALL.generateRequest();
+                            vaadinGrid.clearCache();
+                        },
+                        error: function () {
+                            toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
+                            toastError.open();
+                        }
+                    });
+                },
 
                 _goBack: function (e) {
                     window.history.back();
@@ -764,4 +876,5 @@
         });
     </script>
 </dom-module>
+
 
