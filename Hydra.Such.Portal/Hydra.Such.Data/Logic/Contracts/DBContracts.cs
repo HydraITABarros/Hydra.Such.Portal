@@ -561,9 +561,9 @@ namespace Hydra.Such.Data.Logic.Contracts
                 History = x.Historico,
                 Type= x.Tipo ?? 0
             };
-
-            result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
-
+            if (x.NºCliente!=null && x.NºCliente!="") {
+                result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
+            }
             return result;
 
         }

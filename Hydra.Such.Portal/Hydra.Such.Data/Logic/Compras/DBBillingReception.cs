@@ -170,7 +170,7 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.DataResolucao= !item.DataResolucao.HasValue ? "" : item.DataResolucao.Value.ToString("yyyy-MM-dd");
                 parsedItem.AreaUltimaInteracao = item.AreaUltimaInteracao;
                 parsedItem.UserUltimaInteracao = item.UserUltimaInteracao;
-
+                parsedItem.DescricaoStatus = Convert.ToString((Enumerations.BillingReceptionStates)item.Estado);
 
                 return parsedItem;
             }

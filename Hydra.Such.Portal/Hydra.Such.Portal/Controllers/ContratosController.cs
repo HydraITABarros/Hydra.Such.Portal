@@ -1654,10 +1654,14 @@ namespace Hydra.Such.Portal.Controllers
                         if(GetReqClientCont.DataÚltimaFatura != null)
                         {
                             DateTime Lastdate = GetReqClientCont.DataÚltimaFatura.Value;
+                            DateTime Newdate = GetReqClientCont.DataÚltimaFatura.Value;
                             string Month = Lastdate.ToString("MMMM").ToUpper();
                             string Year = Lastdate.Year.ToString();
                             ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
                             InvoiceBorrowed = Month+"/"+Year;
+                            //actualiar data ultima fatura
+                            GetReqClientCont.DataÚltimaFatura = Newdate.AddMonths(1);
+                            DBContractClientRequisition.Update(GetReqClientCont);
                         }
                     }
                 }
@@ -1720,9 +1724,15 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
+                    if (contractLine.ÚltimaDataFatura != null) {
+                        DateTime NewTime = contractLine.ÚltimaDataFatura.Value;
+                        contractLine.ÚltimaDataFatura = NewTime.AddMonths(1);
+                        DBContracts.Update(contractLine);
+                    }
                 }
                 if (item.Situação == "" || item.Situação == null)
                 {
+                    
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -1794,13 +1804,7 @@ namespace Hydra.Such.Portal.Controllers
                     cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
-
-                //if (cContract != null && cContract.Arquivado == true)
-                //{
-                //    UPerm.Update = false;
-                //    UPerm.Delete = false;
-                //}
-
+           
                 if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico)";
