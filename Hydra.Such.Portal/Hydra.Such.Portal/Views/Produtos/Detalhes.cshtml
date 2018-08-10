@@ -26,6 +26,9 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
 <x-produtodetalhe></x-produtodetalhe>
 
 <dom-module id="x-produtodetalhe">
@@ -86,11 +89,98 @@
             }
         </style>
 
-        <iron-ajax url="/UnidadeArmazenamento/GetUnitStockeepingId"
+        <iron-ajax url="/Produtos/GetProdutoNo"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/CreateProduto"
+                   last-response="{{createProduto}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createProduto_ajax"
+                   on-response="_createProduto_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/UpdateProduto"
+                   last-response="{{updateProduto}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updateProduto_ajax"
+                   on-response="_updateProduto_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/DeleteProduto"
+                   last-response="{{deleteProduto}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteProduto_ajax"
+                   on-response="_deleteProduto_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/CreateUnidadeMedidaProduto"
+                   last-response="{{createUMP}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createUMP_ajax"
+                   on-response="_createUMP_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/UpdateUnidadeMedidaProduto"
+                   last-response="{{updateUMP}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updateUMP_ajax"
+                   on-response="_updateUMP_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/DeleteUnidadeMedidaProduto"
+                   last-response="{{deleteUMP}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteUMP_ajax"
+                   on-response="_deleteUMP_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Produtos/ShowImage"
+                   last-response="{{image}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_showImage_ajax"
+                   on-response="_showImage_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProdutosUnidadesMedidas"
+                   last-response="{{ProdutoUnidadesMedidas}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProdutosTipos"
+                   last-response="{{ProdutoTipos}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProdutosTiposRefeicao"
+                   last-response="{{ProdutoTiposRefeicao}}"
+                   auto
+                   method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
 
@@ -102,68 +192,13 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax last-response="{{result}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_update"
-                   on-response="_updateResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax last-response="{{getProductresult}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_get"
-                   on-response="_comboProductNoResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetProductseSUCH"
-                   last-response="{{ProductNoList}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetLocationsPortal"
-                   last-response="{{LocalizacaoList}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetNAVVendor"
-                   last-response="{{VendorList}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetLocations"
-                   last-response="{{WareHouseList}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCodeeSUCH"
-                   last-response="{{UnitsProductList}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button id="btnCriar" class="btnEdit tablinks" value="createBtt" on-tap="_createNewStockeepingUnit" disabled="{{ !_permissions.create }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            <paper-button id="btnGuardar" class="btnEdit tablinks" value="updateBtt" on-tap="_updateStockeepingUnit" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button id="btnEliminar" class="btnRemove tablinks" value="deleteBtt" on-tap="_deleteStockeepingUnit" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <paper-button id="btnCriar" class="btnEdit tablinks" value="createBtt" on-tap="_createProduto" disabled="{{ !_permissions.create }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnGuardar" class="btnEdit tablinks" value="updateBtt" on-tap="_updateProduto" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnEliminar" class="btnRemove tablinks" value="deleteBtt" on-tap="_deleteProduto" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <paper-button id="btnMovimento" class="btnSave tablinks" value="goMovement" on-tap="_goProductMovement"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Movimentos</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -181,43 +216,180 @@
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
                                 <div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[ProductNoList]]" id="ddproductNo" name="ddproductNo" label="Nº de Produto" item-value-path="id" item-label-path="id" value="{{result.productNo}}" disabled="@ViewBag.NoProductDisable" on-change="_getDescriptionGroup">
-                                                <template>
-                                                    <table width="250px">
-                                                        <tr>
-                                                            <td width="100%"><b>[[item.id]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="dddescription" name="dddescription" label="Descrição" value="{{result.description}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[LocalizacaoList]]" id="ddcodLocalitation" name="ddcodLocalitation" label="Cód. Localização" item-value-path="id" item-label-path="id" value="{{result.code}}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div><b>[[item.id]]</b>  -  [[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
+                                    <div class="col-md-12">
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddno" name="ddno" label="Nº" value="{{result.no}}" disabled></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddinventario" name="ddinventario" label="Inventário" value="{{result.inventario}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoTipos]]" id="ddtipo" name="ddtipo" label="Tipo" item-value-path="id" item-label-path="value" value="{{result.tipo}}">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-combo-box items="[[ProdutoTiposRefeicao]]" id="ddtipoRefeicao" name="ddtipoRefeicao" label="Tipo Refeição" item-value-path="id" item-label-path="id" value="{{result.tipoRefeicao}}" on-value-changed="_getTipoRefeicaoDescricao">
+                                                        <template>
+                                                            <table width="250px">
+                                                                <tr>
+                                                                    <td width="100%"><b>[[item.id]]</b> - [[item.value]]</td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="dddescricaoRefeicao" name="dddescricaoRefeicao" label="Descrição Tipo Refeição" value="{{result.descricaoRefeicao}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddnoPrateleira" name="ddnoPrateleira" label="Nº Prateleira" value="{{result.noPrateleira}}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-7">
+                                                    <vaadin-upload id="UploadRequest"
+                                                                   method="POST"
+                                                                   headers="{'Accept': 'application/json'}"
+                                                                   accept=".jpg"
+                                                                   timeout=3000000
+                                                                   max-files="1">
+                                                        <span slot="drop-label">Coloque aqui a sua imagem...</span>
+                                                    </vaadin-upload>
+                                                </div>
+
+                                                <div class="col-sm-1" style="padding-top:-200px">
+                                                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_uploadImagem">Guardar</paper-button>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddinventory" name="ddinventory" label="Inventário" value="{{result.inventory}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddshelfNo" name="ddshelfNo" label="Nº Prateleiras" value="{{result.shelfNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-2 alignPoga">
-                                            <vaadin-checkbox id="ddblocked" name="ddblocked" checked="{{result.blocked}}" disabled="{{ !_isCreate}}">Bloqueado</vaadin-checkbox>
+                                        <div class="col-md-2" style="align-items:center">
+                                            <figure style="align-self:center">
+                                                <img src="@Url.Action("ShowImage", "Produtos", new { ProdutoNo = this.ViewBag.No })" alt="" width="225" height="300" />
+                                            </figure>
                                         </div>
                                     </div>
+
+
+
+
+                                    <!------------ UNIDADE MEDIDA PRODUTO ------------>
+
+
+                                    <paper-collapse-group>
+                                        <paper-collapse-item class="panel-heading" header="Unidade Medida Produto" closed>
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-md-3 ">
+                                                        <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddUMPcode" name="ddUMPcode" label="Unidade Medida Base" item-value-path="id" item-label-path="value">
+                                                            <template>
+                                                                <table width="250px">
+                                                                    <tr>
+                                                                        <td width="100%"><b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-md-3 ">
+                                                        <vaadin-text-field id="ddUMPqtdUnitMeasure" name="ddUMPqtdUnitMeasure" label="Qtd. Por Unidade Medida" value="{{result.qtdUnitMeasure}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-sm-1" style="padding-top:32px">
+                                                        <center>
+                                                            <paper-button id="btn_createUnidadeMedidaProduto" class="btnSave tableBtn" raised on-tap="_createUMP" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+
+                                    <vaadin-grid id="tabUnidadeMedidaProduto" aria-label="tabUnidadeMedidaProduto" items="{{ result.listUnidadeMedidaProduto }}" class="editGrid" multi-sort="true">
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="code" style="text-align:center;">Unidade Medida</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="code"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="tabUnidadeMedidaProdutoCode" name="tabUnidadeMedidaProdutoCode" item-value-path="id" item-label-path="value" value="{{item.code}}" disabled>
+                                                    <template>
+                                                        <table width="250px">
+                                                            <tr>
+                                                                <td width="100%"><b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="qtdUnitMeasure" style="text-align:center;">Qtd. Por Unidade Medida</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="qtdUnitMeasure"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field id="tabUnidadeMedidaProdutoqtdUnitMeasure" value="{{item.qtdUnitMeasure}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_updateUnidadeMedidaProduto" class="btnSave tableBtn" raised on-tap="_updateUMP" disabled="{{ !_permissions.update }}" title="Gravar"><i class="fa fa-save" aria-hidden="true"></i></paper-button>
+                                                    <paper-button id="btn_deleteUnidadeMedidaProduto" class="btnRemove tableBtn" raised on-tap="_deleteUMP" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
                                 </div>
 
 
@@ -225,49 +397,80 @@
                                 <!--Valores Energéticos-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 verticalCenter">
-                                            <vaadin-checkbox id="ddcodeWareHouse" name="ddcodeWareHouse" checked="{{result.codeWareHouse}}">Armazém Principal</vaadin-checkbox>
-                                        </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvalueWareHouse" type="number" name="ddvalueWareHouse" label="Valor Armazém" value="{{result.wareHouseValue}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[VendorList]]" id="ddvendorNo" name="ddvendorNo" label="Nº Fornecedor" item-value-path="id" item-label-path="value" value="{{result.vendorNo}}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div><b>[[item.value]]</b></div>
-                                                            <div>[[item.id]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvendorItemNo" name="ddvendorItemNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}"></vaadin-text-field>
+                                            <vaadin-text-field id="ddproteinas" name="ddproteinas" label="Proteínas" value="{{result.proteinas}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddunitsProductCod" name="ddunitsProductCod" label="Cód Unidade Medida Produto" item-value-path="id" item-label-path="value" value="{{result.codeUnitMeasure}}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div><b>[[item.value]]</b></div>
-                                                            <div>[[item.id]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <vaadin-text-field id="ddglicidos" name="ddglicidos" label="Glícidos" value="{{result.glicidos}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
+
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddunitCost" type="number" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}"></vaadin-text-field>
+                                            <vaadin-text-field id="ddlipidos" name="ddlipidos" label="Lípidos" value="{{result.lipidos}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
+                                    </div>
+
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddlastCostDirect" name="ddlastCostDirect" label="Último Custo Directo" value="{{result.lastCostDirect}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="ddfibraAlimentar" name="ddfibraAlimentar" label="Fibra Alimentar" value="{{result.fibraAlimentar}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
+
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddpriceSales" type="number" name="ddpriceSales" label="Preço de Venda" value="{{result.priceSale}}"></vaadin-text-field>
+                                            <vaadin-text-field id="ddvalorEnergetico" name="ddvalorEnergetico" label="Valor Energético" value="{{result.valorEnergetico}}" disabled maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddvitaminaA" name="ddvitaminaA" label="Vitamina A" value="{{result.vitaminaA}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddvitaminaD" name="ddvitaminaD" label="Vitamina D" value="{{result.vitaminaD}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddcolesterol" name="ddcolesterol" label="Colesterol" value="{{result.colesterol}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddsodio" name="ddsodio" label="Sódio (NA)" value="{{result.sodio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddacidosGordosSaturados" name="ddacidosGordosSaturados" label="Ácidos Gordos Saturados" value="{{result.acidosGordosSaturados}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddacucares" name="ddacucares" label="Açucares" value="{{result.acucares}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddsal" name="ddsal" label="Sal" value="{{result.sal}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddpotacio" name="ddpotacio" label="Potácio (k)" value="{{result.potacio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddcalcio" name="ddcalcio" label="Cálcio (Ca)" value="{{result.calcio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddferro" name="ddferro" label="Ferro" value="{{result.ferro}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddedivel" name="ddedivel" label="Edível" value="{{result.edivel}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -276,8 +479,70 @@
 
                                 <!--Valores Alergénios-->
                                 <div>
-                                </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddcereais" name="ddcereais" checked="{{result.cereais}}">Cereais Que Contêm Glúten</vaadin-checkbox>
+                                        </div>
 
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddcrustaceos" name="ddcrustaceos" checked="{{result.crustaceos}}">Crustáceos e Produtos à Base de Crustáceos</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddovos" name="ddovos" checked="{{result.ovos}}">Ovos e Produtos à Base de Ovos</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddpeixes" name="ddpeixes" checked="{{result.peixes}}">Peixes e Produtos à Base de Peixes</vaadin-checkbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddamendoins" name="ddamendoins" checked="{{result.amendoins}}">Amendoins e Produtos à Base de Amendoins</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddsoja" name="ddsoja" checked="{{result.soja}}">Soja e Produtos à Base de Soja</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddleite" name="ddleite" checked="{{result.leite}}">Leite e Produtos à Base de Leite</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddfrutasDeCascaRija" name="ddfrutasDeCascaRija" checked="{{result.frutasDeCascaRija}}">Frutas de Casca Rija e Produtos à Base de Frutas de Casca Rija</vaadin-checkbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddaipo" name="ddaipo" checked="{{result.aipo}}">Aipo e Produtos à Base de Aipo</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddmostarda" name="ddmostarda" checked="{{result.mostarda}}">Mostarda e Produtos à Base de Mostarda</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddsementesDeSesamo" name="ddsementesDeSesamo" checked="{{result.sementesDeSesamo}}">Sementes de Sésamo e Produtos à Base de Sementes de Sésamo</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="dddioxidoDeEnxofreESulfitos" name="dddioxidoDeEnxofreESulfitos" checked="{{result.dioxidoDeEnxofreESulfitos}}">Dióxido de Enxofre e Sulfitos em Concentração Superior a 10 mg/kg ou 10 mg/l</vaadin-checkbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddtremoco" name="ddtremoco" checked="{{result.tremoco}}">Tremoço e Produtos à Base de Tremoço</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-checkbox id="ddmoluscos" name="ddmoluscos" checked="{{result.moluscos}}">Moluscos e Produtos à Base de Moluscos</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                </div>
                             </iron-pages>
                         </div>
                     </div>
@@ -290,12 +555,24 @@
     </template>
 
     <script>
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            upload.addEventListener('upload-response', function (event) {
+                console.log('upload xhr after server response: ', event.detail.xhr);
+                event.detail.file.error = 'Custom server error message.';
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+
+            upload.addEventListener('file-reject', function (event) {
+                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+            });
+        });
 
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-produtodetalhe',
                 properties: {
-
                     selected: {
                         type: Number,
                         value: 0
@@ -304,10 +581,16 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                    _produtoNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                 },
 
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.ProductNo);
+                    //debugger;
+                    this.$.page_databound_ajax.body = JSON.stringify('@ViewBag.No');
                     this.$.page_databound_ajax.generateRequest();
 
                     //Inserir
@@ -322,11 +605,6 @@
                         $(this.$.btnEliminar).removeClass('hidden');
                         $(this.$.btnMovimento).removeClass('hidden');
                     }
-                    @*if (@ViewBag.ButtonHide==1) {
-                        this.$.ddmarginSpace2.style.display = 'none';
-                    //Actualizar
-                    else
-                      this.$.ddmarginSpace.style.display = 'none';*@
                 },
 
                 openToast: function (message) {
@@ -339,164 +617,208 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _redirectToNewUnitForm: function (item) {
-                    this.result = null;
-                    this.$.ddproductNo.disabled = false;
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
 
-                    $(this.$.btnCriar).removeClass('hidden');
-                    $(this.$.btnGuardar).addClass('hidden');
-                    $(this.$.btnEliminar).addClass('hidden');
-                    $(this.$.btnMovimento).addClass('hidden');
+                    if (e.target.name == "ddproteinas" | e.target.name == "ddglicidos" | e.target.name == "ddlipidos") {
+                        var proteinas = parseFloat(0);
+                        var glicidos = parseFloat(0);
+                        var lipidos = parseFloat(0);
 
-                    //this.$.ddmarginSpace2.style.display = 'none';
-                    //this.$.ddmarginSpace.style.display = 'inline';
-                },
+                        if (this.$.ddproteinas.value != undefined)
+                            proteinas = parseFloat(this.$.ddproteinas.value);
+                        if (this.$.ddglicidos.value != undefined)
+                            glicidos = parseFloat(this.$.ddglicidos.value);
+                        if (this.$.ddlipidos.value != undefined)
+                            lipidos = parseFloat(this.$.ddlipidos.value);
 
-                _getDescriptionGroup: function (e) {
-                    if (this.$.ddproductNo.value != null) {
-                        this.$.ajax_get.url = "/UnidadeArmazenamento/GetProductId";
-                        this.$.ajax_get.body = JSON.stringify(this.$.ddproductNo.value);
-                        this.$.ajax_get.generateRequest();
+                        this.$.ddvalorEnergetico.value = (proteinas * 4) + (glicidos * 4) + (lipidos * 9)
                     }
                 },
 
-                _createNewStockeepingUnit: function (e) {
-                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value !="") {
-                        var objectNew = {
-                            ProductNo : this.$.ddproductNo.value,
-                            Code: this.$.ddcodLocalitation.value,
-                            Description: this.$.dddescription.value,
-                            Inventory: this.$.ddinventory.value,
-                            Blocked : this.$.ddblocked.checked,
-                            UnitCost : this.$.ddunitCost.value,
-                            WareHouseValue: this.$.ddvalueWareHouse.value,
-                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
-                            ShelfNo : this.$.ddshelfNo.value,
-                            VendorNo : this.$.ddvendorNo.value,
-                            VendorItemNo : this.$.ddvendorItemNo.value,
-                            LastCostDirect: this.$.ddlastCostDirect.value,
-                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value,
-                            CodeUnitMeasure: this.$.ddunitsProductCod.value
-                        }
-                        this.$.ajax_update.url = "/UnidadeArmazenamento/CreateUnitStockeeping";
-                            this.$.ajax_update.body = JSON.stringify(objectNew);
-                            this.$.ajax_update.generateRequest();
-                    }
-                },
-
-                _updateStockeepingUnit: function (e) {
-                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
-                        var objectNew = {
-                            ProductNo: this.$.ddproductNo.value,
-                            Code: this.$.ddcodLocalitation.value,
-                            Description: this.$.dddescription.value,
-                            Inventory: this.$.ddinventory.value,
-                            Blocked: this.$.ddblocked.checked,
-                            UnitCost: this.$.ddunitCost.value,
-                            WareHouseValue: this.$.ddvalueWareHouse.value,
-                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
-                            ShelfNo: this.$.ddshelfNo.value,
-                            VendorNo: this.$.ddvendorNo.value,
-                            VendorItemNo: this.$.ddvendorItemNo.value,
-                            LastCostDirect: this.$.ddlastCostDirect.value,
-                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value,
-                            CodeUnitMeasure: this.$.ddunitsProductCod.value
-                        }
-                        this.$.ajax_update.url = "/UnidadeArmazenamento/UpdateUnitStockeeping";
-                        this.$.ajax_update.body = JSON.stringify(objectNew);
-                        this.$.ajax_update.generateRequest();
-                    }
-                },
-
-                _deleteStockeepingUnit: function (e) {
-                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
-                        var objectNew = {
-                            ProductNo: this.$.ddproductNo.value,
-                            Code: this.$.ddcodLocalitation.value,
-                            Description: this.$.dddescription.value,
-                            Inventory: this.$.ddinventory.value,
-                            Blocked: this.$.ddblocked.checked,
-                            UnitCost: this.$.ddunitCost.value,
-                            WareHouseValue: this.$.ddvalueWareHouse.value,
-                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
-                            ShelfNo: this.$.ddshelfNo.value,
-                            VendorNo: this.$.ddvendorNo.value,
-                            VendorItemNo: this.$.ddvendorItemNo.value,
-                            LastCostDirect: this.$.ddlastCostDirect.value,
-                            //CodeProcuctCategory: this.$.dditemCategoryCode.value,
-                            //CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value,
-                            CodeUnitMeasure: this.$.ddunitsProductCod.value
-                        }
-                        this.$.ajax_update.url = "/UnidadeArmazenamento/DeleteUnitStockeeping";
-                        this.$.ajax_update.body = JSON.stringify(objectNew);
-                        this.$.ajax_update.generateRequest();
-                    }
-                },
-
-                _updateResponse: function (e) {
-
-                    if (this.result == "101") {
-                        this.openToastError('Registo duplicado!');
-                    } else if (this.result == "102") {
-                        this.openToastError('Registo não atualização');
-                    } else if (this.result == "103") {
-                        this.openToast('Registo eliminado');
-                        this.result = null;
-                        this.$.ddproductNo.disabled = false;
-
-                        $(this.$.btnCriar).removeClass('hidden');
-                        $(this.$.btnGuardar).addClass('hidden');
-                        $(this.$.btnEliminar).addClass('hidden');
-                        $(this.$.btnMovimento).addClass('hidden');
-
-                        //this.$.ddmarginSpace2.style.display = 'none';
-                        //this.$.ddmarginSpace.style.display = 'inline';
-                    } else {
-                        this.openToast("Actualizado com Sucesso!");
-
-                        $(this.$.btnCriar).addClass('hidden');
-                        $(this.$.btnGuardar).removeClass('hidden');
-                        $(this.$.btnEliminar).removeClass('hidden');
-                        $(this.$.btnMovimento).removeClass('hidden');
-
-                        //this.$.ddproductNo.value = "",
-                        //this.$.ddcodLocalitation.value = "",
-                        //this.$.dddescription.value = "",
-                        //this.$.ddinventory.value = "",
-                        //this.$.ddblocked.checked = false,
-                        //this.$.ddunitCost.value = "",
-                        //this.$.ddvalueWareHouse.value = "",
-                        //this.$.ddcodeWareHouse.checked = false,
-                        //this.$.ddshelfNo.value = "",
-                        //this.$.ddvendorNo.value = "",
-                        //this.$.ddvendorItemNo.value = "",
-                        //this.$.ddlastCostDirect.value = "",
-                            //this.$.dditemCategoryCode.value = "",
-                            //this.$.ddproductGroupCode.value = "",
-                        //this.$.ddpriceSales.value = "",
-                        //this.$.ddunitsProductCod.value="",
-                        //this.$.ddproductNo.disabled = false;
-                    }
-                },
-
-                _comboProductNoResponse: function (e) {
+                _getTipoRefeicaoDescricao: function (e) {
                     //debugger;
-                    if (this.getProductresult != null) {
-                        this.$.dddescription.value = this.getProductresult.descricao;
-                        //this.$.dditemCategoryCode.value = this.getProductresult[0].itemCategoryCode;
-                        //this.$.ddproductGroupCode.value = this.getProductresult[0].productGroupCode;
-                        //this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
-                    }
+                    if (e.target.value != "")
+                        this.$.dddescricaoRefeicao.value = e.target.__data.selectedItem.value;
+                    else
+                        this.$.dddescricaoRefeicao.value = "";
+                },
 
+                _createUMP: function() {
+                    //debugger;
+                    if (this.$.ddno.value != null) {
+                        if (this.$.ddUMPcode.value != "") {
+                            if (this.$.ddUMPqtdUnitMeasure.validate()) {
+                                this.$.page_createUMP_ajax.body = JSON.stringify({
+                                    productNo: this.$.ddno.value,
+                                    code: this.$.ddUMPcode.value,
+                                    qtdUnitMeasure: this.$.ddUMPqtdUnitMeasure.value
+                                });
+                                this.$.page_createUMP_ajax.generateRequest();
+                                this.$.tabUnidadeMedidaProduto.clearCache();
+                            }
+                            else {
+                                this.openToastError('O valor do campo Qtd. Por Unidade Medida não é válido.');
+                            }
+                        }
+                        else {
+                            this.openToastError('O campo Unidade Medida Base não têm valor.');
+                        }
+                    }
+                    else {
+                        this.openToastError('Primeiro tem que criar o produto.');
+                    }
+                },
+
+                _createUMP_Response: function (e) {
+                    //debugger;
+                    if (this.createUMP.eReasonCode == 0) {
+                        this.openToast(this.createUMP.eMessage);
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this.openToastError(this.createUMP.eMessage);
+                    };
+                },
+
+                _updateUMP: function (e) {
+                    //debugger;
+                    var index = this.result.listUnidadeMedidaProduto.indexOf(e.model.item);
+
+                    this.$.page_updateUMP_ajax.body = JSON.stringify({
+                        productNo: e.model.item.productNo,
+                        code: e.model.item.code,
+                        qtdUnitMeasure: e.model.item.qtdUnitMeasure
+                    });
+                    this.$.page_updateUMP_ajax.generateRequest();
+                    this.$.tabUnidadeMedidaProduto.clearCache();
+                },
+
+                _updateUMP_Response: function (e) {
+                    //debugger;
+                    if (this.updateUMP.eReasonCode == 0) {
+                        this.openToast(this.updateUMP.eMessage);
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this.openToastError(this.updateUMP.eMessage);
+                    };
+                },
+
+                _deleteUMP: function (e) {
+                    //debugger;
+                    var index = this.result.listUnidadeMedidaProduto.indexOf(e.model.item);
+                    var productNo = e.model.item.productNo;
+                    var code = e.model.item.code;
+                    var ajax_request = this.$.page_deleteUMP_ajax;
+                    var tab = this.$.tabUnidadeMedidaProduto;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Unidade de Medida do Produto?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteUMP) {
+                            if (deleteUMP) {
+                                ajax_request.body = JSON.stringify({
+                                    productNo: productNo,
+                                    code: code
+                                });
+                                ajax_request.generateRequest();
+                                tab.clearCache();
+                            }
+                        }
+                    });
+                },
+
+                _deleteUMP_Response: function (e) {
+                    //debugger;
+                    if (this.deleteUMP.eReasonCode == 0) {
+                        this.openToast(this.deleteUMP.eMessage);
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this.openToastError(this.deleteUMP.eMessage);
+                    };
+                },
+
+                _createProduto: function (e) {
+                    //debugger;
+                    this.$.page_createProduto_ajax.body = JSON.stringify(this.result);
+                    this.$.page_createProduto_ajax.generateRequest();
+                },
+
+                _createProduto_Response: function (e) {
+                    debugger;
+                    if (this.createProduto.eReasonCode == 0) {
+                        this.openToast(this.createProduto.eMessage);
+                        window.location.href = "/Produtos/Detalhes/" + this.createProduto.aux;
+                    } else {
+                        this.openToastError(this.createProduto.eMessage);
+                    };
+                },
+
+                _updateProduto: function (e) {
+                    //debugger;
+                    this.$.page_updateProduto_ajax.body = JSON.stringify(this.result);
+                    this.$.page_updateProduto_ajax.generateRequest();
+                },
+
+                _updateProduto_Response: function (e) {
+                    debugger;
+                    if (this.updateProduto.eReasonCode == 0) {
+                        this.openToast(this.updateProduto.eMessage);
+                        //this.$.page_databound_ajax.generateRequest();
+                        location.reload();
+                    } else {
+                        this.openToastError(this.updateProduto.eMessage);
+                    };
+                },
+
+                _deleteProduto: function (e) {
+                    //debugger;
+                    var productNo = this.$.ddno.value;
+                    var ajax_request = this.$.page_deleteProduto_ajax;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Produto?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteProduto) {
+                            if (deleteProduto) {
+                                ajax_request.body = JSON.stringify({
+                                    no: productNo
+                                });
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _deleteProduto_Response: function (e) {
+                    //debugger;
+                    if (this.deleteProduto.eReasonCode == 0) {
+                        this.openToast(this.deleteProduto.eMessage);
+                        window.location.href = "/Produtos/List";
+                    } else {
+                        this.openToastError(this.deleteProduto.eMessage);
+                    };
                 },
 
                 _goProductMovement: function (e) {
-                    this.$.ajax_check.url = "/UnidadeArmazenamento/SetSessionMovimentoProduto";
+                    this.$.ajax_check.url = "/Produtos/SetSessionMovimentoProduto";
                     this.$.ajax_check.body = JSON.stringify(this.result);
                     this.$.ajax_check.generateRequest();
                 },
@@ -504,13 +826,46 @@
                 _sessionResponse: function (e) {
 
                     if (this.checkSession == true)
-                        window.location.href = "/UnidadeArmazenamento/MovimentoProdutos";
+                        window.location.href = "/Produtos/Movimentos";
                     else
                         this.openToastError('Necessita de Nº Produto');
                 },
 
-                _redirectToList: function (e) {
-                    window.location.href = "/UnidadeArmazenamento";
+                _uploadImagem: function () {
+                    debugger;
+                    var _self = this;
+                    var urlFile = "/Produtos/Upload_Imagem/";
+                    var toastSuccess = _self.$.ToastMessage;
+                    var toastError = _self.$.ToastError;
+                    var data = new FormData();
+                    var uploadFile = _self.$.UploadRequest.files;
+                    var ajaxImport = _self.$.page_updateProduto_ajax;
+                    var ajaxGetALL = _self.$.page_databound_ajax;
+                    var vaadinGrid = _self.$.tabUnidadeMedidaProduto;
+                    for (var i = 0; i < uploadFile.length; i++) {
+                        data.append(uploadFile[i].name, uploadFile[i]);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: urlFile,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (imagem) {
+                            debugger;
+                            _self.result.imagem = imagem;
+                            ajaxImport.body = JSON.stringify(_self.result);
+                            ajaxImport.generateRequest();
+                            toastSuccess.text = "Produto atualizado com sucesso.";
+                            toastSuccess.open();
+                            ajaxGetALL.generateRequest();
+                            vaadinGrid.clearCache();
+                        },
+                        error: function () {
+                            toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
+                            toastError.open();
+                        }
+                    });
                 },
 
                 _goBack: function (e) {
@@ -521,4 +876,5 @@
         });
     </script>
 </dom-module>
+
 

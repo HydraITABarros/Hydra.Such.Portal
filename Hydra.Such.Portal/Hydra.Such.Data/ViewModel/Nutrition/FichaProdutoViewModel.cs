@@ -109,5 +109,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
+
+        public List<UnitMeasureProductViewModel> ListUnidadeMedidaProduto { get; set; }
     }
 }
