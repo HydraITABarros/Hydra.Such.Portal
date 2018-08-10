@@ -11,6 +11,61 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
     {
         #region Actividades
 
+        public static List<Actividades> GetAllActividadesToList()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Actividades.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesView CastActividadesToView(Actividades ObjectToTransform)
+        {
+            Actividades actividades = new Actividades();
+
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    actividades = ctx.Actividades.Where(p => p.CodActividade == ObjectToTransform.CodActividade).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            ActividadesView view = new ActividadesView()
+            {
+                CodActividade = ObjectToTransform.CodActividade,
+                Descricao = ObjectToTransform.Descricao
+            };
+
+            return view;
+        }
+
+        public static Actividades GetDetalheActividades(string CodActividade)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Actividades.Where(p => p.CodActividade == CodActividade).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
 

@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.Actividades>
+
+@{
+    ViewData["Title"] = "Actividades";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/pedidocotacao/actividades_list.html">
+
+<x-actividadelist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-actividadelist>
