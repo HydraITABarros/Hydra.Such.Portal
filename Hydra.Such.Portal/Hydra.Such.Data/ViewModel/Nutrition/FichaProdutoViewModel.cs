@@ -7,10 +7,12 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
     public class FichaProdutoViewModel : ErrorHandler
     {
         public string No { get; set; }
+        public string Code { get; set; }
         public string Descricao { get; set; }
         public bool? ListaDeMateriais { get; set; }
         public string ListaDeMateriaisText { get; set; }
         public string UnidadeMedidaBase { get; set; }
+        public string UnidadeMedidaBaseText { get; set; }
         public string NoPrateleira { get; set; }
         public decimal? PrecoUnitario { get; set; }
         public string PrecoUnitarioText { get; set; }
