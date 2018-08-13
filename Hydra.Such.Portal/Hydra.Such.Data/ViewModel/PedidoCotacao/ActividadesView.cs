@@ -12,5 +12,8 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
 
         public ICollection<ActividadesPorFornecedorView> ActividadesPorFornecedor { get; set; }
         public ICollection<ActividadesPorProdutoView> ActividadesPorProduto { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

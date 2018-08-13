@@ -263,11 +263,11 @@
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                    <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                    <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-4">
@@ -357,7 +357,7 @@
                                                     </div>
 
                                                     <div class="col-md-3 ">
-                                                        <vaadin-text-field id="ddUMPqtdUnitMeasure" name="ddUMPqtdUnitMeasure" label="Qtd. Por Unidade Medida" value="{{result.qtdUnitMeasure}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                        <vaadin-text-field id="ddUMPqtdUnitMeasure" name="ddUMPqtdUnitMeasure" label="Qtd. Por Unidade Medida" value="{{result.qtdUnitMeasure}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-sm-1" style="padding-top:32px">
@@ -396,7 +396,7 @@
                                                 <vaadin-grid-filter path="qtdUnitMeasure"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="tabUnidadeMedidaProdutoqtdUnitMeasure" value="{{item.qtdUnitMeasure}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                <vaadin-text-field id="tabUnidadeMedidaProdutoqtdUnitMeasure" value="{{item.qtdUnitMeasure}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -423,75 +423,75 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddproteinas" name="ddproteinas" label="Proteínas" value="{{result.proteinas}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddproteinas" name="ddproteinas" label="Proteínas" value="{{result.proteinas}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddglicidos" name="ddglicidos" label="Glícidos" value="{{result.glicidos}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddglicidos" name="ddglicidos" label="Glícidos" value="{{result.glicidos}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddlipidos" name="ddlipidos" label="Lípidos" value="{{result.lipidos}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddfibraAlimentar" name="ddfibraAlimentar" label="Fibra Alimentar" value="{{result.fibraAlimentar}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvalorEnergetico" name="ddvalorEnergetico" label="Valor Energético" value="{{result.valorEnergetico}}" disabled maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvitaminaA" name="ddvitaminaA" label="Vitamina A" value="{{result.vitaminaA}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvitaminaD" name="ddvitaminaD" label="Vitamina D" value="{{result.vitaminaD}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddlipidos" name="ddlipidos" label="Lípidos" value="{{result.lipidos}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddcolesterol" name="ddcolesterol" label="Colesterol" value="{{result.colesterol}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddfibraAlimentar" name="ddfibraAlimentar" label="Fibra Alimentar" value="{{result.fibraAlimentar}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddsodio" name="ddsodio" label="Sódio (NA)" value="{{result.sodio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddvalorEnergetico" name="ddvalorEnergetico" label="Valor Energético" value="{{result.valorEnergetico}}" disabled type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddacidosGordosSaturados" name="ddacidosGordosSaturados" label="Ácidos Gordos Saturados" value="{{result.acidosGordosSaturados}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddvitaminaA" name="ddvitaminaA" label="Vitamina A" value="{{result.vitaminaA}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddacucares" name="ddacucares" label="Açucares" value="{{result.acucares}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-                                    </div>
-
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddsal" name="ddsal" label="Sal" value="{{result.sal}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddpotacio" name="ddpotacio" label="Potácio (k)" value="{{result.potacio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddcalcio" name="ddcalcio" label="Cálcio (Ca)" value="{{result.calcio}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddferro" name="ddferro" label="Ferro" value="{{result.ferro}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddvitaminaD" name="ddvitaminaD" label="Vitamina D" value="{{result.vitaminaD}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddedivel" name="ddedivel" label="Edível" value="{{result.edivel}}" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                            <vaadin-text-field id="ddcolesterol" name="ddcolesterol" label="Colesterol" value="{{result.colesterol}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddsodio" name="ddsodio" label="Sódio (NA)" value="{{result.sodio}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddacidosGordosSaturados" name="ddacidosGordosSaturados" label="Ácidos Gordos Saturados" value="{{result.acidosGordosSaturados}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddacucares" name="ddacucares" label="Açucares" value="{{result.acucares}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddsal" name="ddsal" label="Sal" value="{{result.sal}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddpotacio" name="ddpotacio" label="Potácio (k)" value="{{result.potacio}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddcalcio" name="ddcalcio" label="Cálcio (Ca)" value="{{result.calcio}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddferro" name="ddferro" label="Ferro" value="{{result.ferro}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddedivel" name="ddedivel" label="Edível" value="{{result.edivel}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>

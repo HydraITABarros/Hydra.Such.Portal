@@ -8,6 +8,9 @@
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <x-contact-details _permissions='@Html.Raw(Json.Serialize(ViewBag.UserPermissions))'></x-contact-details>
 <dom-module id="x-contact-details">
@@ -19,6 +22,9 @@
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById" on-response="_onGetContactByIdResponse"></iron-ajax>
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="create_contact_request" url="/Contactos/CreateContact" on-response="_onContactResponse"></iron-ajax>
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -30,7 +36,7 @@
         </template>
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
+                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -45,10 +51,15 @@
                 <vaadin-text-field id="city" name="city" label="Cidade" value="{{contact.city}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{contact.regiao}}" label="Região" disabled="{{ !_permissions.update }}"
+                                items="[[CBRegions]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -70,6 +81,10 @@
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="EmailContact" name="EmailContact" label="Email Contato" value="{{contact.emailContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+
+            <div class="col-md-6">
+                <such-textarea rows="5" value="{{contact.notes}}" id="notes" name="notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
             </div>
         </div>
         <div class="marginSpace">

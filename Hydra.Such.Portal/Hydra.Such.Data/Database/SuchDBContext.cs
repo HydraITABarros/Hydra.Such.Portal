@@ -1516,6 +1516,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Função Contato")
                     .HasMaxLength(30);
 
+                entity.Property(e => e.Regiao)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.Nif)
                     .HasColumnName("NIF")
                     .HasMaxLength(20);
