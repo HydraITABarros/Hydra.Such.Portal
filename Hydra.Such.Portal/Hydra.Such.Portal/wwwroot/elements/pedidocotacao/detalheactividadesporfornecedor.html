@@ -19,7 +19,7 @@
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
-<dom-module id="x-pedidocotacaodetails">
+<dom-module id="x-actividadeporfornecedordetails">
     <template>
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -68,22 +68,40 @@
             }
         </style>
 
-        <iron-ajax url="/ConsultaMercado/GetDetalheConsultaMercado"
+        <iron-ajax url="/ActividadesPorFornecedor/DetalheActividadePorFornecedor"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
-                   content-type="application/json">
-        </iron-ajax>
+                   content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Destino" last-response="{{LDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ActividadesPorFornecedor/CreateActividadePorFornecedor"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createactividade"
+                   on-response="_createResponseProcessor"
+                   content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Actividades/GetAllActividades" last-response="{{LActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ActividadesPorFornecedor/UpdateActividadePorFornecedor"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_updateactividade"
+                   on-response="_updateResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ActividadesPorFornecedor/DeleteActividadePorFornecedor"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_deleteactividade"
+                   on-response="_deleteResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Actividades/GetAllActividades" id="ajax_actividades_options" last-response="{{LActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
@@ -91,71 +109,31 @@
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
 
-            <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">Cabeçalho</div>
             <div class="panel-body">
-                <div>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.numConsultaMercado}}" id="numConsultaMercado" name="numConsultaMercado" label="Nº Consulta Mercado" disabled="true"> </vaadin-text-field>
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.descricao}}" id="descricao" name="descricao" label="Descrição"> </vaadin-text-field>
-                        </div>
-                        <div class="col-sm-3">
-                            <such-selectbox id="codProjecto" value="{{data.codProjecto}}" label="Cód. Projecto"
-                                            items="[[CBJobNo]]"
-                                            text-path="no"
-                                            value-path="no"
-                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
-                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            </such-selectbox>
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-combo-box value="{{data.destino}}" label="Destino" items="[[LDestino]]" item-value-path="destino" id="destino" item-label-path="value">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
+                <div class="row break_clear">
+                    <div class="col-md-4 ">
+                        <vaadin-text-field value="{{data.id}}" id="id_L" name="id_L" label="ID" disabled="true"> </vaadin-text-field>
                     </div>
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <such-selectbox id="codRegiao" name="codRegiao" value="{{data.codRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
-                                            items="[[CBRegions]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                            required error-message="Este campo é obrigatório">
-
-                            </such-selectbox>
-                        </div>
-                        <div class="col-sm-3">
-                            <such-selectbox id="codAreaFuncional" name="codAreaFuncional" value="{{data.codAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
-                                            items="[[CBFunctionalAreas]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                            </such-selectbox>
-                        </div>
-                        <div class="col-sm-3">
-                            <such-selectbox id="codCentroResponsabilidade" name="codCentroResponsabilidade" value="{{data.codCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
-                                            items="[[CBResponsabilityCenterCodes]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                            </such-selectbox>
-                        </div>
-                        <div class="col-sm-3">
-
-                        </div>
+                    <div class="col-md-4 ">
+                        <such-selectbox id="codFornecedor" label="Nº Fornecedor" value="{{data.codFornecedor}}"
+                                        items="[[Suppliers]]"
+                                        text-path="name"
+                                        value-path="no_"
+                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                        disabled="{{ !_permissions.update }}">
+                        </such-selectbox>
+                    </div>
+                    <div class="col-md-4 ">
+                        <such-selectbox id="codActividade" label="Cód. Actividade" value="{{data.codActividade}}"
+                                        items="[[LActividades]]"
+                                        text-path="codActividade"
+                                        value-path="codActividade"
+                                        fields='[{"field":"codActividade", "name":"Cód. Actividade"}, {"field":"descricao", "name":"Descrição"}]'
+                                        disabled="{{ !_permissions.update }}">
+                        </such-selectbox>
                     </div>
                 </div>
             </div>
@@ -169,7 +147,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-pedidocotacaodetails',
+                is: 'x-actividadeporfornecedordetails',
                 properties: {
                     _permissions: {
                         type: Array
@@ -190,56 +168,98 @@
                     _isUpdate: {
                         type: Boolean,
                         value: false
-                    },
-                    _functionsMenuItems: {
-                        type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Estado Anterior" }, { value: 3, description: "Estado Seguinte" }, { value: 4, description: "Registo Propostas" }, { value: 5, description: "Exportar Propostas" }, { value: 6, description: "Criar Alternativa" }, { value: 7, description: "Criar Encomenda Compra" }, { value: 8, description: "Encomenda Aberta de Compra" }],
-                    }
-                },
-                _functionsMenuItemSelected: function (e) {
-                    var item = e.detail.value;
-                    if (item == null)
-                        return;
-                    switch (item.value) {
-                        case 1: //
-
-                            break;
-                        case 2://
-
-                            break;
-                        case 3://
-
-                            break;
-                        case 4://
-
-                            break;
-                        case 5://
-
-                            break;
-                        case 6://
-
-                            break;
-                        case 7://
-
-                            break;
-                        case 8://
-
-                            break;
                     }
                 },
                 ready: function () {
                     //GET PROJECT DATA
-                    this.$.page_databound_ajax.body = JSON.stringify({ "NumConsultaMercado": this._id });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "Id": this._id });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this._id == "") {
                         this._isCreate = true;
                     }
+                },
 
+                _create: function () {
+                    debugger
+                    if (this._validateData()) {
+
+                        this.$.ajax_createactividade.body = JSON.stringify({
+                            "codFornecedor": this.$.codFornecedor.value,
+                            "codActividade": this.$.codActividade.value
+                        });
+                        this.$.ajax_createactividade.generateRequest();
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _update: function () {
+                    debugger
+                    if (this._validateData()) {
+
+                        this.$.ajax_updateactividade.body = JSON.stringify({
+                            "id": this.$.id_L.value,
+                            "codFornecedor": this.$.codFornecedor.value,
+                            "codActividade": this.$.codActividade.value
+                        });
+                        this.$.ajax_updateactividade.generateRequest();
+                    }
+                },
+                _updateResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _delete: function () {
+                    debugger
+                    if (this._validateData()) {
+                        var ajax_request = this.$.ajax_deleteactividade;
+                        ajax_request.body = JSON.stringify({
+                            "id": this.$.id_L.value,
+                            "codFornecedor": this.$.codFornecedor.value,
+                            "codActividade": this.$.codActividade.value
+                        });
+
+                        this._confirmAndExecuteActionToast(
+                            "Confirma a eliminação da Actividade Por Fornecedor?",
+                            ajax_request
+                        );
+                    }
+                },
+                _deleteResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                        window.history.back();
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
                 },
 
                 _validateData: function () {
-
+                    if (this.$.codActividade.value != "") {
+                        if (this.$.codFornecedor.value != "") {
+                            return true;
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Cód. Fornecedor.");
+                            return false;
+                        }
+                        return true;
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Cód. Actividade.");
+                        return false;
+                    }
                     return true;
                 },
 
