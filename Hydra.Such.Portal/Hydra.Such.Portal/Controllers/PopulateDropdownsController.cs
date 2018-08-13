@@ -1799,6 +1799,7 @@ namespace Hydra.Such.Portal.Controllers
             //ADICIONA OS PRODUTOS DA FICHA DE PRODUTO
             List<FichaProduto> FichaProdutos = DBFichaProduto.GetAll();
 
+            //REMOVE TODOS OS PRODUTOS CUJO O ID ESTEJA NA TABELA FICHA PRODUTO
             products.RemoveAll(x => FichaProdutos.Any(y => y.Nº == x.Code));
 
             FichaProdutos.ForEach(x =>
@@ -1814,7 +1815,7 @@ namespace Hydra.Such.Portal.Controllers
                 products.Add(Product);
             });
 
-            return Json(products);
+            return Json(products.OrderBy(x => x.Code));
         }
 
         [HttpPost]
