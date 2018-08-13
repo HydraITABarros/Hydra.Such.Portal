@@ -146,7 +146,8 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json"  content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
@@ -2277,10 +2278,12 @@
                     if (item != null) {
                         this.$.txtProductDesciption.value = item.name;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                        this.$.unitCostId.value = item.unitCost;
                     }
                     else {
                         this.$.txtProductDesciption.value = "";
                         this.$.CBUnitsOfMmeasure.value = "";
+                        this.$.unitCostId.value = "";
                     }
                 },
                 _RespChange: function (e) {

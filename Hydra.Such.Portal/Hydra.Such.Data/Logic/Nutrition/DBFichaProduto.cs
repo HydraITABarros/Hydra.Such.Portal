@@ -110,6 +110,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return new FichaProdutoViewModel()
                 {
                     No = x.Nº,
+                    Code = x.Nº,
                     Descricao = x.Descrição,
                     ListaDeMateriais = x.ListaDeMateriais,
                     UnidadeMedidaBase = x.UnidadeMedidaBase,
