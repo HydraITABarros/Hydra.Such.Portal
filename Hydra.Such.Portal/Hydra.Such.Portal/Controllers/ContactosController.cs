@@ -17,6 +17,7 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json.Linq;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -247,6 +248,10 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetContacts()
         {
             List<ContactViewModel> result = DBContacts.GetAll().ParseToViewModel();
+            result.ForEach(CT =>
+            {
+                CT.RegiaoText = CT.Regiao != null ? DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "";
+            });
             return Json(result);
         }
 
@@ -274,12 +279,77 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (dp["id"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("ID");
+                    row.CreateCell(Col).SetCellValue("Nº");
                     Col = Col + 1;
                 }
                 if (dp["name"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Nome");
+                    Col = Col + 1;
+                }
+                if (dp["address"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Endereço");
+                    Col = Col + 1;
+                }
+                if (dp["zipCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Postal");
+                    Col = Col + 1;
+                }
+                if (dp["city"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cidade");
+                    Col = Col + 1;
+                }
+                if (dp["regiaoText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região");
+                    Col = Col + 1;
+                }
+                if (dp["phone"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Telefone");
+                    Col = Col + 1;
+                }
+                if (dp["email"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Email");
+                    Col = Col + 1;
+                }
+                if (dp["vATNumber"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("NIF");
+                    Col = Col + 1;
+                }
+                if (dp["personContact"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Pessoa Contato");
+                    Col = Col + 1;
+                }
+                if (dp["phoneContact"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Telefone Contato");
+                    Col = Col + 1;
+                }
+                if (dp["contactFunction"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Função Contato");
+                    Col = Col + 1;
+                }
+                if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Telemovel Contato");
+                    Col = Col + 1;
+                }
+                if (dp["emailContact"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Email Contato");
+                    Col = Col + 1;
+                }
+                if (dp["notes"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Notas");
                     Col = Col + 1;
                 }
 
@@ -299,6 +369,71 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["name"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Name);
+                            Col = Col + 1;
+                        }
+                        if (dp["address"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Address);
+                            Col = Col + 1;
+                        }
+                        if (dp["zipCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ZipCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["city"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.City);
+                            Col = Col + 1;
+                        }
+                        if (dp["regiaoText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegiaoText);
+                            Col = Col + 1;
+                        }
+                        if (dp["phone"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Phone);
+                            Col = Col + 1;
+                        }
+                        if (dp["email"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Email);
+                            Col = Col + 1;
+                        }
+                        if (dp["vATNumber"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VATNumber);
+                            Col = Col + 1;
+                        }
+                        if (dp["personContact"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.PersonContact);
+                            Col = Col + 1;
+                        }
+                        if (dp["phoneContact"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.PhoneContact);
+                            Col = Col + 1;
+                        }
+                        if (dp["contactFunction"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContactFunction);
+                            Col = Col + 1;
+                        }
+                        if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MobilePhoneContact);
+                            Col = Col + 1;
+                        }
+                        if (dp["emailContact"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EmailContact);
+                            Col = Col + 1;
+                        }
+                        if (dp["notes"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Notes);
                             Col = Col + 1;
                         }
                         count++;

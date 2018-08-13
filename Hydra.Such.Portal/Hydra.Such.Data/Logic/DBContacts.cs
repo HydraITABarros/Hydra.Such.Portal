@@ -160,6 +160,7 @@ namespace Hydra.Such.Data.Logic
                     Email = item.Email,
                     EmailContact = item.EmailContato,
                     Address = item.Endereço,
+                    Regiao = item.Regiao,
                     ContactFunction = item.FunçãoContato,
                     VATNumber = item.Nif,
                     Notes = item.Notas,
