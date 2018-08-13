@@ -395,9 +395,9 @@
                         "dataUltimaInteracao": { hidden: false, label: "Data Última Interação" }
                     };
 
-                    if (sessionStorage["rececaofaturas.ToggleColumn"]) {
+                    if (localStorage["rececaofaturas.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["rececaofaturas.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["rececaofaturas.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -409,7 +409,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["rececaofaturas.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["rececaofaturas.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

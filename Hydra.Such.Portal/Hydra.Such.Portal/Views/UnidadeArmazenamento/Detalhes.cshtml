@@ -309,7 +309,8 @@
                 },
 
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.ProductNo);
+                    debugger;
+                    this.$.page_databound_ajax.body = JSON.stringify('@ViewBag.ProductNo');
                     this.$.page_databound_ajax.generateRequest();
 
                     //Inserir

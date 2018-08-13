@@ -29,6 +29,8 @@
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
 <x-produtodetalhe></x-produtodetalhe>
 
 <dom-module id="x-produtodetalhe">
@@ -160,6 +162,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsPortal"
+                   id="filteredProducts_ajax"
+                   auto
+                   last-response="{{Products}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetProdutosUnidadesMedidas"
                    last-response="{{ProdutoUnidadesMedidas}}"
                    auto
@@ -220,7 +231,17 @@
                                         <div class="col-md-10">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="ddno" name="ddno" label="Nº" value="{{result.no}}" disabled></vaadin-text-field>
+                                                    @*<vaadin-text-field id="ddno" name="ddno" label="Nº" value="{{result.no}}" disabled></vaadin-text-field>*@
+
+                                                    <such-selectbox id="ddno" label="Nº"
+                                                                    value="{{result.code}}"
+                                                                    items="[[Products]]"
+                                                                    text-path="code"
+                                                                    value-path="code"
+                                                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                    disabled="{{ !_permissions.update }}"
+                                                                    on-value-changed="_onProductChanged">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-4">
@@ -590,6 +611,8 @@
 
                 ready: function () {
                     //debugger;
+                    var _self = this;
+
                     this.$.page_databound_ajax.body = JSON.stringify('@ViewBag.No');
                     this.$.page_databound_ajax.generateRequest();
 
@@ -599,11 +622,13 @@
                         $(this.$.btnGuardar).addClass('hidden');
                         $(this.$.btnEliminar).addClass('hidden');
                         $(this.$.btnMovimento).addClass('hidden');
+                        _self.$.ddno.disabled = false;
                     } else {
                         $(this.$.btnCriar).addClass('hidden');
                         $(this.$.btnGuardar).removeClass('hidden');
                         $(this.$.btnEliminar).removeClass('hidden');
                         $(this.$.btnMovimento).removeClass('hidden');
+                        _self.$.ddno.disabled = true;
                     }
                 },
 
@@ -633,6 +658,20 @@
                             lipidos = parseFloat(this.$.ddlipidos.value);
 
                         this.$.ddvalorEnergetico.value = (proteinas * 4) + (glicidos * 4) + (lipidos * 9)
+                    }
+                },
+
+                _onProductChanged: function (e) {
+                    var item = this.Products.find(x => x.code == e.detail.value);
+                    if (item != null) {
+                        this.$.dddescricao.value = item.Name;
+                        this.$.ddprecoUnitario.value = item.lastCostDirect;
+                        this.$.ddcustoUnitario.value = item.unitCost;
+                    }
+                    else {
+                        this.$.dddescricao.value = "";
+                        this.$.ddprecoUnitario.value = "";
+                        this.$.ddcustoUnitario.value = "";
                     }
                 },
 
