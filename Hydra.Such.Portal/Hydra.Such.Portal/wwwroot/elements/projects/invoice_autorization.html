@@ -578,9 +578,9 @@
                         "commitmentNumber": { hidden: false, label: "Nº Compromisso" }
                     };
 
-                    if (sessionStorage["invoice-autorization.ToggleColumn"]) {
+                    if (localStorage["invoice-autorization.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["invoice-autorization.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["invoice-autorization.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -592,7 +592,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["invoice-autorization.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["invoice-autorization.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

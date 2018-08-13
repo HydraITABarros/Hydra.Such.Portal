@@ -8,10 +8,13 @@
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -21,7 +24,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
-<dom-module id="x-telemoveiscartoeslist">
+<dom-module id="x-actividadeporfornecedorlist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -52,7 +55,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/TelemoveisCartoes/GetAllCartoes"
+        <iron-ajax url="/ActividadesPorFornecedor/GetAllActividadesPorFornecedor"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -60,7 +63,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/TelemoveisCartoes/ExportToExcel_TelemoveisCartoes"
+        <iron-ajax url="/ActividadesPorFornecedor/ExportToExcel_ActividadesPorFornecedor"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -71,7 +74,7 @@
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -90,68 +93,32 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="CartoesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numCartao.hidden }}">
+        <vaadin-grid aria-label="ActividadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.id.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="numCartao">Nº Cartão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numCartao" />
+                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
                 </template>
                 <template>
-                    {{item.numCartao}}
+                    {{item.id}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoServico_Show.hidden }}">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoServico_Show">Tipo Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoServico_Show" />
+                    <vaadin-grid-sorter path="codFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codFornecedor" />
                 </template>
                 <template>
-                    {{item.tipoServico_Show}}
+                    {{item.codFornecedor}}
                 </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.estado_Show.hidden }}">
+            </vaadin-grid-column>j
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codActividade.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado_Show" />
+                    <vaadin-grid-sorter path="codActividade">Cód. Actividade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codActividade" />
                 </template>
                 <template>
-                    {{item.estado_Show}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contaSuch.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contaSuch">Conta SUCH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contaSuch" />
-                </template>
-                <template>
-                    {{item.contaSuch}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codRegiao">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codRegiao" />
-                </template>
-                <template>
-                    {{item.codRegiao}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codAreaFuncional" />
-                </template>
-                <template>
-                    {{item.codAreaFuncional}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codCentroResponsabilidade" />
-                </template>
-                <template>
-                    {{item.codCentroResponsabilidade}}
+                    {{item.codActividade}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -160,10 +127,11 @@
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
+
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-telemoveiscartoeslist',
+                is: 'x-actividadeporfornecedorlist',
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
@@ -180,12 +148,12 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisCartoes/DetalheTelemoveisCartoes/?numCartao=" + item.numCartao;
+                        window.location.href = "/ActividadesPorFornecedor/DetalheActividadePorFornecedor/" + item.id;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/TelemoveisCartoes/DetalheTelemoveisCartoes/";
+                        window.location.href = "/ActividadesPorFornecedor/DetalheActividadePorFornecedor/";
                     }
                 },
                 ready: function () {
@@ -221,23 +189,19 @@
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
-                    location.href = '../TelemoveisCartoes/ExportToExcelDownload_TelemoveisCartoes?sFileName=' + FileName;
+                    location.href = '../ActividadesPorFornecedor/ExportToExcelDownload_ActividadesPorFornecedor?sFileName=' + FileName;
                 },
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "numCartao": { hidden: false, label: "Nº Cartão" },
-                        "tipoServico_Show": { hidden: false, label: "Tipo Serviço" },
-                        "estado_Show": { hidden: false, label: "Estado" },
-                        "contaSuch": { hidden: false, label: "Conta SUCH" },
-                        "codRegiao": { hidden: false, label: "Código Região" },
-                        "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
-                        "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" }
+                        "id": { hidden: false, label: "ID" },
+                        "codFornecedor": { hidden: false, label: "Cód. Fornecedor" },
+                        "codActividade": { hidden: false, label: "Cód. Actividade" }
                     };
 
-                    if (localStorage["telemoveiscartoesList.ToggleColumn"]) {
+                    if (sessionStorage["actividadeporfornecedorList.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(localStorage["telemoveiscartoesList.ToggleColumn"]);
+                        var storedColumns = JSON.parse(sessionStorage["actividadeporfornecedorList.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -249,7 +213,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        localStorage["telemoveiscartoesList.ToggleColumn"] = JSON.stringify(this._columns);
+                        sessionStorage["actividadeporfornecedorList.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
@@ -264,6 +228,7 @@
                     });
                 }
                 /* end - ColumnToggle */
+
             });
         });
     </script>

@@ -281,9 +281,9 @@
                         "codeResponsabilityCenter": { hidden: false, label: "Centro Responsabilidade" }
                     };
 
-                    if (sessionStorage["reqtemplates.ToggleColumn"]) {
+                    if (localStorage["reqtemplates.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["reqtemplates.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["reqtemplates.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -295,7 +295,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["reqtemplates.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["reqtemplates.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

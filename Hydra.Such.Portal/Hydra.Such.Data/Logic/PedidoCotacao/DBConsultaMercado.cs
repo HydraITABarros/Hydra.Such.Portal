@@ -66,10 +66,181 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static Actividades Create(Actividades ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Actividades.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static Actividades Update(Actividades ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Actividades.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static Actividades Delete(Actividades ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Actividades.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+
         #endregion
 
 
         #region Actividades_por_Fornecedor
+
+        public static List<ActividadesPorFornecedor> GetAllActividadesPorFornecedorToList()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ActividadesPorFornecedor.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorFornecedorView CastActividadesPorFornecedorToView(ActividadesPorFornecedor ObjectToTransform)
+        {
+            ActividadesPorFornecedor actividadesPorFornecedor = new ActividadesPorFornecedor();
+
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    actividadesPorFornecedor = ctx.ActividadesPorFornecedor.Where(p => p.Id == ObjectToTransform.Id).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            ActividadesPorFornecedorView view = new ActividadesPorFornecedorView()
+            {
+                Id = ObjectToTransform.Id,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodFornecedor = ObjectToTransform.CodFornecedor
+            };
+
+            return view;
+        }
+
+        public static ActividadesPorFornecedor GetDetalheActividadesPorFornecedor(string Id)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ActividadesPorFornecedor.Where(p => p.Id == int.Parse(Id)).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorFornecedor Create(ActividadesPorFornecedor ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorFornecedor.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+
+                    ObjectToCreate = ctx.ActividadesPorFornecedor.Where(p => p.CodActividade == ObjectToCreate.CodActividade).Where(p => p.CodFornecedor == ObjectToCreate.CodFornecedor).LastOrDefault();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorFornecedor Update(ActividadesPorFornecedor ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorFornecedor.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static ActividadesPorFornecedor Delete(ActividadesPorFornecedor ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorFornecedor.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         #endregion
 

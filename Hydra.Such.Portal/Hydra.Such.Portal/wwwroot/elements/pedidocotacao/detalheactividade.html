@@ -67,12 +67,36 @@
             }
         </style>
 
-        <iron-ajax url="/Actividades/DetalheActividades"
+        <iron-ajax url="/Actividades/DetalheActividade"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Actividades/CreateActividade"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createactividade"
+                   on-response="_createResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Actividades/UpdateActividade"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_updateactividade"
+                   on-response="_updateResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Actividades/DeleteActividade"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_deleteactividade"
+                   on-response="_deleteResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
@@ -85,7 +109,14 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-
+                <div class="row break_clear">
+                    <div class="col-md-3 ">
+                        <vaadin-text-field value="{{data.codActividade}}" maxlength="20" id="codActividade" name="codActividade" label="Cód. Actividade"> </vaadin-text-field>
+                    </div>
+                    <div class="col-md-9 ">
+                        <vaadin-text-field value="{{data.descricao}}" maxlength="30" id="descricao" name="descricao" label="Descrição"> </vaadin-text-field>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -97,12 +128,12 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-pedidocotacaodetails',
+                is: 'x-actividadedetails',
                 properties: {
                     _permissions: {
                         type: Array
                     },
-                    _id: {
+                    _codactividade: {
                         type: String,
                         notify: true,
                         value: ""
@@ -122,17 +153,84 @@
                 },
                 ready: function () {
                     //GET PROJECT DATA
-                    this.$.page_databound_ajax.body = JSON.stringify({ "CodActividade": this._id });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "CodActividade": this._codactividade });
                     this.$.page_databound_ajax.generateRequest();
 
-                    if (this._id == "") {
+                    if (this._codactividade == "") {
                         this._isCreate = true;
                     }
 
                 },
 
-                _validateData: function () {
+                _create: function () {
+                    if (this._validateData()) {
 
+                        this.$.ajax_createactividade.body = JSON.stringify({
+                            "codActividade": this.$.codActividade.value,
+                            "descricao": this.$.descricao.value
+                        });
+                        this.$.ajax_createactividade.generateRequest();
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _update: function () {
+                    if (this._validateData()) {
+
+                        this.$.ajax_updateactividade.body = JSON.stringify({
+                            "codActividade": this.$.codActividade.value,
+                            "descricao": this.$.descricao.value
+                        });
+                        this.$.ajax_updateactividade.generateRequest();
+                    }
+
+                },
+                _updateResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _delete: function () {
+                    if (this._validateData()) {
+                        var ajax_request = this.$.ajax_deleteactividade;
+                        ajax_request.body = JSON.stringify({
+                            "codActividade": this.$.codActividade.value,
+                            "descricao": this.$.descricao.value
+                        });
+
+                        this._confirmAndExecuteActionToast(
+                            "Confirma a eliminação da Actividade?",
+                            ajax_request
+                        );
+                    }
+                },
+                _deleteResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                        window.history.back();
+                    } else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _validateData: function () {
+                    if (this.$.codActividade.validate() & this.$.codActividade.value != "") {
+                        return true;
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Código.");
+                        return false;
+                    }
                     return true;
                 },
 

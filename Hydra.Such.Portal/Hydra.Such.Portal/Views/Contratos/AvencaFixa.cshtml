@@ -547,9 +547,9 @@
                         "document_No": { hidden: false, label: "Nº" }
                     };
 
-                    if (sessionStorage["avencafixa.ToggleColumn"]) {
+                    if (localStorage["avencafixa.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["avencafixa.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["avencafixa.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -561,7 +561,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["avencafixa.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["avencafixa.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

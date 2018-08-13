@@ -79,7 +79,7 @@
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -505,9 +505,9 @@
                         "seleccaoEfectuada": { hidden: false, label: "Selecção Efectuada" }
                     };
 
-                    if (sessionStorage["pedidocotacaoList.ToggleColumn"]) {
+                    if (localStorage["pedidocotacaoList.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["pedidocotacaoList.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["pedidocotacaoList.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -519,7 +519,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["pedidocotacaoList.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["pedidocotacaoList.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

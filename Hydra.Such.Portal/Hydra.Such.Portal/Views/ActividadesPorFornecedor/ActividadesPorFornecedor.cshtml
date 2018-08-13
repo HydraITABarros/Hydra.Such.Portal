@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.ActividadesPorFornecedor>
+
+@{
+    ViewData["Title"] = "Actividades Por Fornecedor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/pedidocotacao/actividadesporfornecedor_list.html">
+
+<x-actividadeporfornecedorlist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-actividadeporfornecedorlist>
