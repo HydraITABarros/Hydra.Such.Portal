@@ -200,7 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     return Json("A numeração configurada para contratos não permite inserção manual.");
                 }
-                else if (data.Id == "" && !CfgNumeration.Automático.Value)
+                else if ((data.Id == "" || data.Id == null) && !CfgNumeration.Automático.Value)
                 {
                     return Json("É obrigatório inserir o Nº de Contrato.");
                 }
@@ -415,7 +415,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetProblems()
         {
 
-            List<DDMessageRelated> result = billingRecService.GetProblem().Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetProblem("RF1P").Select(x => new DDMessageRelated()
             {
                 id = x.Tipo,
                 value = x.Descricao,
@@ -428,7 +428,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetUAProblems()
         {
-            List<DDMessageRelated> result = billingRecService.GetProblemAnswer("RF5P").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetProblem("RF5P").Select(x => new DDMessageRelated()
             {
                 id = x.Tipo,
                 value = x.Descricao,
@@ -461,7 +461,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (userPendingProfile == 1 && userDestinyProfile == 0)
                 {
                     AnswerType = "RF1R";
-                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                    result = billingRecService.GetProblem(AnswerType).ToList();
                 } 
             }
 
@@ -470,7 +470,7 @@ namespace Hydra.Such.Portal.Controllers
                 if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
                 {
                     AnswerType = "RF5R";
-                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                    result = billingRecService.GetProblem(AnswerType).ToList();
                 }
             }
             

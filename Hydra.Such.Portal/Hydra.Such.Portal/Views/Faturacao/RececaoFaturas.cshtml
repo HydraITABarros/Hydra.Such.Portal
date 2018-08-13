@@ -55,6 +55,7 @@
                 }
             </style>
         </custom-style>
+        <iron-ajax auto url="/PopulateDropdowns/GetBillingReceptionStates" last-response="{{ States }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/GetBillingReceptions"
                    auto
@@ -116,11 +117,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
+                    <vaadin-grid-sorter path="descricaoStatus">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoStatus" />
                 </template>
                 <template>
-                    {{item.estado}}
+                    [[ _clFormatStatus(item.estado) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.dataRececao.hidden }}">
@@ -421,6 +422,15 @@
                             value: obj[key]
                         };
                     });
+                },
+                _clFormatStatus: function (param) {
+                    if (param != undefined) {
+                        var sel = this.States.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
                 },
                 /* end - ColumnToggle */
 
