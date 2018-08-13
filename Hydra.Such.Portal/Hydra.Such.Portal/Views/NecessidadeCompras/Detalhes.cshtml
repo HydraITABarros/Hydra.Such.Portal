@@ -177,7 +177,7 @@
             </template>
         </vaadin-combo-box>
         <vaadin-text-field id="descriptionUnitId" name="descriptionUnitName" label="Descrição" value="{{descriptionUnit}}" hidden></vaadin-text-field>
-        <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" on-value-changed="_openPriceAgreementOnChange" hidden
+        <such-selectbox id="priceAgreement" value="" label="Acordo de Preços"  hidden
                         items="[[priceAgreement]]"
                         text-path="noProcedimento"
                         value-path="noFornecedor"
@@ -542,7 +542,7 @@
 
         <!-- Paper Dialog Movimentos de Projeto-->
         <paper-dialog id="dialog" class="dialgoBox">
-            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <h2 class="dialogTitle">Modelos de Requisições</h2>
             <vaadin-grid aria-label="Modelos de Requisições" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="ModelRequisitionTable" items="[[resultModelRequisition]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
@@ -1267,6 +1267,7 @@
                     return "";
                 },
                 _confirm: function (selectedItem, selectedItems) {
+                    debugger;;
                     if (this.selectedItems != null && this.selectedItems != "") {
 
                         var selItms = this.selectedItems;

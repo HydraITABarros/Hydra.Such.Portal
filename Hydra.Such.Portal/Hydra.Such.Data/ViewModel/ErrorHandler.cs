@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel
     {
         public int eReasonCode { get; set; }
         public string eMessage { get; set; }
+        public string aux { get; set; }
 
         public List<TraceInformation> eMessages { get; set; }
 

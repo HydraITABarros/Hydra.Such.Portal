@@ -25,7 +25,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html"
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
@@ -311,11 +311,11 @@
                 <div class="row break_clear">
                     <div class="col-sm-3">
                         <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Nº Fornecedor"
+                                       required error-message="Este campo é obrigatório"
                                         items="[[ Vendors ]]"
                                         text-path="name"
                                         value-path="no_"
                                         fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
-                                        disabled="{{ !_permissions.update }}"
                                         on-value-changed="_supplierSelected">
                         </such-selectbox>
                     </div>
@@ -715,7 +715,7 @@
                                        headers="{'Accept': 'application/json'}"
                                        timeout=15000 files="{{files}}"></vaadin-upload>
                     </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
@@ -1293,17 +1293,19 @@
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
-                    if (this.$.cmbDocumentTypes.validate()) {
-                        if (this._docIsValid) {
-                            return true;
-                        }
-                        else if (!this._docIsValid) {
-                            if (this.$.dpDataDocFornecedor.validate() && this.$.txtNumDocFornecedor.validate() && this.$.sbVendors.validate()) {
+                    debugger;;
+                    if (this.$.cmbDocumentTypes.validate() & this.$.txtNumDocFornecedor.validate() & this.$.dpDataDocFornecedor.validate()) {
+                        if (this.$.sbVendors.value != "" && this.$.sbVendors.value != undefined) {
+                            if (this._docIsValid) {
+                                return true;
+                            }
+                            else if (!this._docIsValid) {
                                 this._openToastError("Já foi criada receção de fatura para o documento.");
                             }
-                            else {
-                                this._openToastError("Verifique os dados inseridos.");
-                            }
+                        }
+                        else {
+                            this.$.sbVendors.validate()
+                            this._openToastError("Inserir Fornecedor!");
                         }
                     }
                     else {

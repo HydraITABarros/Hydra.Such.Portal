@@ -184,14 +184,11 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         #region GETS
         
-        public List<RecFacturasProblemas> GetAnswerProblem(string Type)
+        public List<RecFacturasProblemas> GetQuestionsProblem(string Type)
         {
-            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Type).ToList();
+            return ctx.RecFacturasProblemas.Where(x => x.Codigo == Type && x.Tipo != "" && x.Bloqueado != true).ToList();
         }
-        public List<RecFacturasProblemas> GetQuestionsProblem()
-        {
-            return ctx.RecFacturasProblemas.Where(x => x.Codigo == "RF1P").ToList();
-        }
+       
         public List<RecFacturasProblemas> GetQuestionsID(string id,string type)
         {
             return ctx.RecFacturasProblemas.Where(x => x.Codigo == id && x.Tipo == type).ToList();
