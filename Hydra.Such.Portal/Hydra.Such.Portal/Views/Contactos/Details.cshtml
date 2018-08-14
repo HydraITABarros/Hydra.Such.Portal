@@ -24,8 +24,7 @@
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
-        <template is="dom-if" if="{{ !_isCreate }}">
+        @*<template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -33,7 +32,17 @@
                     <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </div>
-        </template>
+        </template>*@
+
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <paper-button id="btnCreateNew" class="btnEdit tablinks" on-tap="_redirectToNewContactForm" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
+            <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_createContact" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnUpdate" class="btnSave tablinks" on-tap="_updateContact" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="btnRemove tablinks" on-tap="_deleteContact" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+        </div>
+
         <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
@@ -87,7 +96,8 @@
                 <such-textarea rows="5" value="{{contact.notes}}" id="notes" name="notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
             </div>
         </div>
-        <div class="marginSpace">
+
+        @*<div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_createContact"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
@@ -99,7 +109,7 @@
                     <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
             </template>
-        </div>
+        </div>*@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -129,6 +139,20 @@
 
                     if (this._contactId == "")
                         this._isCreate = true;
+
+                    //Inserir
+                    debugger;
+                    if (this._contactId  == "") {
+                        $(this.$.btnCreateNew).addClass('hidden');
+                        $(this.$.btnCreate).removeClass('hidden');
+                        $(this.$.btnUpdate).addClass('hidden');
+                        $(this.$.btnCancel).addClass('hidden');
+                    } else {
+                        $(this.$.btnCreateNew).removeClass('hidden');
+                        $(this.$.btnCreate).addClass('hidden');
+                        $(this.$.btnUpdate).removeClass('hidden');
+                        $(this.$.btnCancel).removeClass('hidden');
+                    }
                 },
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
