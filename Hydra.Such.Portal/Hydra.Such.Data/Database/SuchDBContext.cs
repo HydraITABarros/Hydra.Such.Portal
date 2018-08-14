@@ -1793,6 +1793,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UnidadePrestação).HasColumnName("Unidade Prestação");
 
+                entity.Property(e => e.NºVEP)
+                    .HasColumnName("Nº VEP")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
