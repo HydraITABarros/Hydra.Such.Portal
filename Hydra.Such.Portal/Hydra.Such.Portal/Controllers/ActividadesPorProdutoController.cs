@@ -17,16 +17,16 @@ using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    public class ActividadesPorFornecedorController : Controller
+    public class ActividadesPorProdutoController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ActividadesPorFornecedorController(IHostingEnvironment _hostingEnvironment)
+        public ActividadesPorProdutoController(IHostingEnvironment _hostingEnvironment)
         {
             this._hostingEnvironment = _hostingEnvironment;
         }
 
-        public IActionResult ActividadesPorFornecedor()
+        public IActionResult ActividadesPorProduto()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PedidoCotacao);
 
@@ -42,14 +42,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllActividadesPorFornecedor()
+        public JsonResult GetAllActividadesPorProduto()
         {
-            List<ActividadesPorFornecedor> result = DBConsultaMercado.GetAllActividadesPorFornecedorToList();
-            List<ActividadesPorFornecedorView> list = new List<ActividadesPorFornecedorView>();
+            List<ActividadesPorProduto> result = DBConsultaMercado.GetAllActividadesPorProdutoToList();
+            List<ActividadesPorProdutoView> list = new List<ActividadesPorProdutoView>();
 
-            foreach (ActividadesPorFornecedor actporforn in result)
+            foreach (ActividadesPorProduto actporforn in result)
             {
-                list.Add(DBConsultaMercado.CastActividadesPorFornecedorToView(actporforn));
+                list.Add(DBConsultaMercado.CastActividadesPorProdutoToView(actporforn));
             }
 
             //return Json(result);
@@ -57,7 +57,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        public IActionResult DetalheActividadePorFornecedor(string id)
+        public IActionResult DetalheActividadePorProduto(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PedidoCotacao);
 
@@ -75,15 +75,15 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult DetalheActividadePorFornecedor([FromBody] ActividadesPorFornecedorView data)
+        public JsonResult DetalheActividadePorProduto([FromBody] ActividadesPorProdutoView data)
         {
             if (data != null)
             {
-                ActividadesPorFornecedor actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(data.Id.ToString());
+                ActividadesPorProduto actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(data.Id.ToString());
 
-                if (actividadesPorFornecedor != null)
+                if (actividadesPorProduto != null)
                 {
-                    ActividadesPorFornecedorView result = DBConsultaMercado.CastActividadesPorFornecedorToView(actividadesPorFornecedor);
+                    ActividadesPorProdutoView result = DBConsultaMercado.CastActividadesPorProdutoToView(actividadesPorProduto);
 
                     return Json(result);
                 }
@@ -95,22 +95,22 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult CreateActividadePorFornecedor([FromBody] ActividadesPorFornecedorView item)
+        public JsonResult CreateActividadePorProduto([FromBody] ActividadesPorProdutoView item)
         {
             if (item != null)
             {
-                ActividadesPorFornecedor actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(item.Id.ToString());
+                ActividadesPorProduto actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(item.Id.ToString());
 
-                if (actividadesPorFornecedor != null)
+                if (actividadesPorProduto != null)
                 {
                     item.eReasonCode = -1;
-                    item.eMessage = string.Format("Já existe uma Actividade por Fornecedor com o mesmo ID!");
+                    item.eMessage = string.Format("Já existe uma Actividade por Produto com o mesmo ID!");
                 }
                 else
                 {
-                    ActividadesPorFornecedor novo = new ActividadesPorFornecedor()
+                    ActividadesPorProduto novo = new ActividadesPorProduto()
                     {
-                        CodFornecedor = item.CodFornecedor,
+                        CodProduto = item.CodProduto,
                         CodActividade = item.CodActividade
                     };
 
@@ -121,15 +121,15 @@ namespace Hydra.Such.Portal.Controllers
                     catch
                     {
                         item.eReasonCode = -1;
-                        item.eMessage = "Ocorreu um erro ao criar a Actividade por Fornecedor!";
+                        item.eMessage = "Ocorreu um erro ao criar a Actividade por Produto!";
                         return Json(item);
                     }
 
-                    actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(novo.Id.ToString());
-                    item = DBConsultaMercado.CastActividadesPorFornecedorToView(actividadesPorFornecedor);
+                    actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(novo.Id.ToString());
+                    item = DBConsultaMercado.CastActividadesPorProdutoToView(actividadesPorProduto);
 
                     item.eReasonCode = 1;
-                    item.eMessage = "Actividade por Fornecedor criada com sucesso!";
+                    item.eMessage = "Actividade por Produto criada com sucesso!";
                 }
             }
 
@@ -137,31 +137,31 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateActividadePorFornecedor([FromBody] ActividadesPorFornecedorView item)
+        public JsonResult UpdateActividadePorProduto([FromBody] ActividadesPorProdutoView item)
         {
             if (item != null)
             {
-                ActividadesPorFornecedor actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(item.Id.ToString());
+                ActividadesPorProduto actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(item.Id.ToString());
 
-                if (actividadesPorFornecedor != null)
+                if (actividadesPorProduto != null)
                 {
-                    actividadesPorFornecedor.CodActividade = item.CodActividade;
-                    actividadesPorFornecedor.CodFornecedor = item.CodFornecedor;
+                    actividadesPorProduto.CodActividade = item.CodActividade;
+                    actividadesPorProduto.CodProduto = item.CodProduto;
 
                     try
                     {
-                        DBConsultaMercado.Update(actividadesPorFornecedor);
+                        DBConsultaMercado.Update(actividadesPorProduto);
 
-                        actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(item.Id.ToString());
-                        item = DBConsultaMercado.CastActividadesPorFornecedorToView(actividadesPorFornecedor);
+                        actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(item.Id.ToString());
+                        item = DBConsultaMercado.CastActividadesPorProdutoToView(actividadesPorProduto);
 
                         item.eReasonCode = 1;
-                        item.eMessage = "Actividade por Fornecedor actualizada com sucesso!";
+                        item.eMessage = "Actividade por Produto actualizada com sucesso!";
                     }
                     catch
                     {
                         item.eReasonCode = -1;
-                        item.eMessage = "Ocorreu um erro ao gravar a Actividade por Fornecedor!";
+                        item.eMessage = "Ocorreu um erro ao gravar a Actividade por Produto!";
                         return Json(item);
                     }
                 }
@@ -178,25 +178,25 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult DeleteActividadePorFornecedor([FromBody] ActividadesPorFornecedorView item)
+        public JsonResult DeleteActividadePorProduto([FromBody] ActividadesPorProdutoView item)
         {
             if (item != null)
             {
-                ActividadesPorFornecedor actividadesPorFornecedor = DBConsultaMercado.GetDetalheActividadesPorFornecedor(item.Id.ToString());
+                ActividadesPorProduto actividadesPorProduto = DBConsultaMercado.GetDetalheActividadesPorProduto(item.Id.ToString());
 
-                if (actividadesPorFornecedor != null)
+                if (actividadesPorProduto != null)
                 {
                     try
                     {
-                        DBConsultaMercado.Delete(actividadesPorFornecedor);
+                        DBConsultaMercado.Delete(actividadesPorProduto);
 
                         item.eReasonCode = 1;
-                        item.eMessage = "Actividade por Fornecedor eliminada com sucesso!";
+                        item.eMessage = "Actividade por Produto eliminada com sucesso!";
                     }
                     catch
                     {
                         item.eReasonCode = -1;
-                        item.eMessage = "Ocorreu um erro ao eliminar a Actividade por Fornecedor!";
+                        item.eMessage = "Ocorreu um erro ao eliminar a Actividade por Produto!";
                         return Json(item);
                     }
                 }
@@ -216,7 +216,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_ActividadesPorFornecedor([FromBody] List<ActividadesPorFornecedorView> Lista)
+        public async Task<JsonResult> ExportToExcel_ActividadesPorProduto([FromBody] List<ActividadesPorProdutoView> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
@@ -232,24 +232,24 @@ namespace Hydra.Such.Portal.Controllers
             {
                 IWorkbook workbook;
                 workbook = new XSSFWorkbook();
-                ISheet excelSheet = workbook.CreateSheet("Actividades Por Fornecedor");
+                ISheet excelSheet = workbook.CreateSheet("Actividades Por Produto");
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
                 if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("ID"); Col = Col + 1; }
-                if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Fornecedor"); Col = Col + 1; }
+                if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1; }
                 if (dp["codActividade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Actividade"); Col = Col + 1; }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ActividadesPorFornecedorView item in Lista)
+                    foreach (ActividadesPorProdutoView item in Lista)
                     {
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
                         if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Id); Col = Col + 1; }
-                        if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFornecedor); Col = Col + 1; }
+                        if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProduto); Col = Col + 1; }
                         if (dp["codActividade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodActividade); Col = Col + 1; }
                         count++;
                     }
@@ -264,10 +264,10 @@ namespace Hydra.Such.Portal.Controllers
             return Json(sFileName);
         }
         //2
-        public IActionResult ExportToExcelDownload_ActividadesPorFornecedor(string sFileName)
+        public IActionResult ExportToExcelDownload_ActividadesPorProduto(string sFileName)
         {
             sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Actividades Por Fornecedor.xlsx");
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Actividades Por Produto.xlsx");
         }
 
         #endregion

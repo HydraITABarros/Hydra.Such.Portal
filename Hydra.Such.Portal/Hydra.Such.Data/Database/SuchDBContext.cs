@@ -345,9 +345,7 @@ namespace Hydra.Such.Data.Database
             {
                 entity.ToTable("Actividades_por_Produto");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CodActividade)
                     .HasColumnName("Cod_Actividade")
