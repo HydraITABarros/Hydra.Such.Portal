@@ -225,6 +225,7 @@ namespace Hydra.Such.Portal.Services
             //Update Header
             RecFacturasProblemas questao = new RecFacturasProblemas();
             item.Estado = BillingReceptionStates.Pendente;
+            RececaoFaturacaoWorkflow LastID =  DBBillingReceptionWf.GetAll().LastOrDefault();
             if (wfItemLast.CodProblema != null)
             {
                 questao = GetQuestionID(wfItemLast.CodProblema, wfItemLast.CodTipoProblema);
@@ -277,17 +278,20 @@ namespace Hydra.Such.Portal.Services
             wfItem.Descricao = wfItemLast.Descricao;
             wfItem.Comentario = wfItemLast.Comentario;
             wfItem.Utilizador = postedByUserName;
+            wfItem.Anexo = wfItemLast.AttachedIs;
 
             repo.Create(wfItem);
+  
             if (wfItemLast.Attached != null)
             {
-                int id=0;
-                int IDFatura = GetWorkFlow(item);
+                int id = 0;
+                int Idwork = GetWorkFlow(item);
+                item.WorkflowItems.LastOrDefault().Id = Idwork+1;
                 RececaoFaturacaoWorkflowAnexo wfAnexoItem = new RececaoFaturacaoWorkflowAnexo();
                 foreach (BillingRecWorkflowModelAttached attached in wfItemLast.Attached)
                 {
                     wfAnexoItem = DBBillingReceptionWFAttach.ParseToDB(attached);
-                    wfAnexoItem.Idwokflow = IDFatura+1;
+                    wfAnexoItem.Idwokflow = Idwork + 1;
                     wfAnexoItem.Id = id;
                     repo.Create(wfAnexoItem);                 
                 }
@@ -313,12 +317,11 @@ namespace Hydra.Such.Portal.Services
 
                     SendEmailBillingReception Email = new SendEmailBillingReception
                     {
-                        Subject = "eSUCH - Recepção da Factura :" + item.Id,
+                        Subject = "eSUCH - Recepção da Factura : " + item.Id,
                         From = "plataforma@such.pt"
                     };
 
-                    //Email.To.Add(wfItem.EnderecoFornecedor);
-                    Email.To.Add("rui.santos99@hotmail.com");
+                    Email.To.Add(wfItem.EnderecoFornecedor);
 
                     Email.Body = MakeEmailBodyContent("Solicita-se a validação da fatura enviada em anexo:", item.Id, item.CodFornecedor, item.DataUltimaInteracao, item.Valor.ToString(), postedByUserName);
 
@@ -404,7 +407,6 @@ namespace Hydra.Such.Portal.Services
                     }
                     catch
                     {
-                        //TODO: Rever comportamento no caso de erro
                         item.eReasonCode = 2;
                         item.eMessage = "Não foi possivel abrir a Factura Nº De Encomenda:" + item.NumEncomenda;
                     }
@@ -443,7 +445,7 @@ namespace Hydra.Such.Portal.Services
                     }
                     catch
                     {
-                        //TODO: Rever comportamento no caso de erro
+                        
                         item.eReasonCode = 2;
                         item.eMessage = "Não foi possivel abrir a Factura nº:"+ item.Id;
                     }
@@ -505,22 +507,18 @@ namespace Hydra.Such.Portal.Services
         {
             if (id != null && id != "")
             {
-                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x=> x.Codigo==id).LastOrDefault();
+                RecFaturacaoConfigDestinatarios destino = repo.GetDestination().Where(x => x.Codigo == id).LastOrDefault();
                 return destino;
             }
             else
                 return null;
         }
 
-        public List<RecFacturasProblemas> GetProblemAnswer(string Type)
+        public List<RecFacturasProblemas> GetProblem(string Type)
         {
-            return repo.GetAnswerProblem(Type);
+            return repo.GetQuestionsProblem(Type);
         }
 
-        public List<RecFacturasProblemas> GetProblem()
-        {
-            return repo.GetQuestionsProblem();
-        }
         public RecFacturasProblemas GetQuestionID(string id,string type)
         {
             if (!string.IsNullOrEmpty(id))
@@ -677,7 +675,7 @@ namespace Hydra.Such.Portal.Services
         public int GetWorkFlow(BillingReceptionModel item)
         {
 
-            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetLastById(item.Id);
+            RececaoFaturacaoWorkflow LastWork = DBBillingReceptionWf.GetAll().FirstOrDefault();
             return LastWork.Id;
         }
     }

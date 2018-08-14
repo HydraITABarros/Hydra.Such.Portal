@@ -1,36 +1,30 @@
 ﻿
 @{
-    ViewData["Title"] = "Movimento de Produtos";
+    ViewData["Title"] = "Movimentos de Produtos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
-
-@*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*mixin*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*ironform*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
-@*button*@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*toast*@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-@*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 
-
-<h1 class="title">@ViewData["Title"]</h1>
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <x-productmovement></x-productmovement>
 
@@ -56,7 +50,6 @@
             </style>
         </custom-style>
 
-        @*POPULATE GRID*@
         <iron-ajax url="/UnidadeArmazenamento/GetMovementProduct"
                    last-response="{{result}}"
                    method="post"
@@ -66,7 +59,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*POPULATE Update*@
         <iron-ajax last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -75,14 +67,43 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="row">
+        <iron-ajax url="/UnidadeArmazenamento/ExportToExcel_MovimentosProdutos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*<div class="row">
             <div class="col-lg-2">
                 <h2 class="separator">Registos</h2>
             </div>
+        </div>*@
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid id="gridMovement" aria-label="gridMovement" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable width="160px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.movementNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementNo">Nº de Movimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="movementNo" />
@@ -91,7 +112,8 @@
                     <vaadin-text-field value="{{item.movementNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dateRegister.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dateRegister">Data do Registo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dateRegister" />
@@ -100,7 +122,8 @@
                     <vaadin-text-field value="{{item.dateRegister}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.movementType.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo de Movimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="movementType" />
@@ -109,7 +132,8 @@
                     <vaadin-text-field value="{{item.movementType}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.documentNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="documentNo">Nº de Documento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="documentNo" />
@@ -118,7 +142,8 @@
                     <vaadin-text-field value="{{item.documentNo}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.productNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="productNo">Nº do Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="productNo" />
@@ -127,7 +152,8 @@
                     <vaadin-text-field value="{{item.productNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -136,7 +162,8 @@
                     <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codLocation.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codLocation">Código de Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codLocation" />
@@ -145,7 +172,8 @@
                     <vaadin-text-field value="{{item.codLocation}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.quantity.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity" />
@@ -154,7 +182,8 @@
                     <vaadin-text-field value="{{item.quantity}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.unitCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost" />
@@ -163,7 +192,8 @@
                     <vaadin-text-field value="{{item.unitCost}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.val.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="val">Valor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="val" />
@@ -172,7 +202,8 @@
                     <vaadin-text-field value="{{item.val}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº de Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
@@ -181,7 +212,8 @@
                     <vaadin-text-field value="{{item.projectNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Código de Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -190,7 +222,8 @@
                     <vaadin-text-field value="{{item.codeRegion}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Código de Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -199,7 +232,8 @@
                     <vaadin-text-field value="{{item.codeFunctionalArea}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Código Centro de Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -225,6 +259,7 @@
         if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
             DeleteValue = false;
         }
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-productmovement',
@@ -241,8 +276,18 @@
                         type: Boolean,
                         value: DeleteValue
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
+
                 ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
                     this.$.page_databound_ajax.generateRequest();
 
                     var _this = this;
@@ -251,6 +296,7 @@
                     });
                     $(window).trigger('resize');
                 },
+
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.gridMovement);
                     var parentHeight = $(this).offsetParent().height();
@@ -258,16 +304,86 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
+
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
+
                 openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
 
+                _exportEXCEL: function () {
+                    debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
 
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    debugger
+                    var FileName = this.export;
+                    location.href = '../UnidadeArmazenamento/ExportToExcelDownload_MovimentosProdutos?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "movementNo": { hidden: false, label: "Nº de Movimento" },
+                        "dateRegister": { hidden: false, label: "Data do Registo" },
+                        "movementType": { hidden: false, label: "Tipo de Movimento" },
+                        "documentNo": { hidden: false, label: "Nº de Documento" },
+                        "productNo": { hidden: false, label: "Nº do Produto" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "codLocation": { hidden: false, label: "Código de Localização" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "val": { hidden: false, label: "Valor" },
+                        "projectNo": { hidden: false, label: "Nº de Projeto" },
+                        "codeRegion": { hidden: false, label: "Código de Região" },
+                        "codeFunctionalArea": { hidden: false, label: "Código de Área" },
+                        "codeResponsabilityCenter": { hidden: false, label: "Código Centro de Responsabilidade" }
+                    };
+
+                    if (localStorage["productmovement.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["productmovement.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["productmovement.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+            /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
 
             });
         });

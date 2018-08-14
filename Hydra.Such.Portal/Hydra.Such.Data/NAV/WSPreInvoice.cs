@@ -32,7 +32,10 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg
+                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
+                    Contract_No=PreInvoiceToCreate.DocumentNo
+                    
+                   
                 }
             };
 
@@ -115,7 +118,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed)
         {
             DateTime now = DateTime.Now;
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
@@ -130,7 +133,9 @@ namespace Hydra.Such.Data.NAV
                     Shipment_Start_Time = now.AddHours(1),
                     Shipment_Start_TimeSpecified = true,
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
-                    Document_TypeSpecified = true
+                    Document_TypeSpecified = true,
+                    Periodo_de_Fact_Contrato = ContractInvoicePeriod,
+                    Data_Serv_Prestado = InvoiceBorrowed
 
                 }
             };

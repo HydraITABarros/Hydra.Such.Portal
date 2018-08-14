@@ -62,7 +62,17 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Localizacoes/CreateLocation"
+                   last-response="{{createdData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_create_location"
+                   on-response="_responseCreateProcessor"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/Localizacoes/DeleteLocation"
                    last-response="{{deletedData}}"
@@ -70,15 +80,26 @@
                    handle-as="json"
                    id="ajax_delete_project"
                    on-response="_responseDeleteProcessor"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json">
+        </iron-ajax>
 
-        <template is="dom-if" if="{{ !_isCreate }}">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <div class="subMenu">
-                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewLocation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Nova</paper-button>
-                </div>
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <template is="dom-if" if="{{ _isCreate }}">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
             </template>
-        </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button id="btnUpdate" class="btnSave tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button id="btnCancel" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </template>
+        </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
@@ -121,7 +142,7 @@
                         <vaadin-text-field value="{{data.email}}" maxlength="50" id="LEmail" name="LEmail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.locked}}" disabled="{{ !_permissions.update }}">Bloqueado</vaadin-checkbox>
+                        <vaadin-checkbox id ="LLocked" checked="{{data.locked}}" disabled="{{ !_permissions.update }}">Bloqueado</vaadin-checkbox>
                     </div>
                 </div>
             </div>
@@ -172,25 +193,27 @@
                 <br />
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[CBShipLocationCodes]]" item-value-path="id" item-label-path="value" value="{{data.shipLocationCode}}" label="Código Local Entrega" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[CBShipLocationCodes]]" item-value-path="id" item-label-path="value" id="LShipLocationCode" value="{{data.shipLocationCode}}" label="Código Local Entrega" disabled="{{ !_permissions.update }}">
                             <template>
                                 <b>[[item.value]]</b>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[CBEmployees]]" item-value-path="id" item-label-path="value" value="{{data.warehouseManager}}" label="Responsável Armazém" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[CBEmployees]]" item-value-path="id" item-label-path="value" ID="LWarehouseManager" value="{{data.warehouseManager}}" label="Responsável Armazém" disabled="{{ !_permissions.update }}">
                             <template>
                                 <b>[[item.value]]</b>
                             </template>
                         </vaadin-combo-box>
-
+                    </div>
+                    <div class="col-lg-3 alignPoga">
+                        <vaadin-checkbox checked="{{data.warehouseEnvironment}}" id="LWarehouseEnvironment" disabled="{{ !_permissions.update }}">Armazém Ambiente</vaadin-checkbox>
                     </div>
                 </div>
             </div>
         </iron-pages>
 
-        <div class="marginSpace">
+        @*<div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -202,12 +225,11 @@
                 </template>
                 <template is="dom-if" if="{{ _permissions.delete }}">
                     <center>
-                        @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
                         <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </template>
-        </div>
+        </div>*@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -270,7 +292,28 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        this._executeRequest("/Localizacoes/CreateLocation", this.data)
+
+                        debugger;
+                        this.$.ajax_create_location.body = JSON.stringify({
+                            code: this.$.LCode.value,
+                            name: this.$.LName.value,
+                            address: this.$.LAddress.value,
+                            city: this.$.LCity.value,
+                            mobilePhone: this.$.LPhone.value,
+                            fax: this.$.LFax.value,
+                            contact: this.$.LContact.value,
+                            zipCode: this.$.LZipCode.value,
+                            email: this.$.LEmail.value,
+                            locked: this.$.LLocked.__data.checked,
+                            region: this.$.RegionCode.value,
+                            area: this.$.FunctionalAreaCode.value,
+                            responsabilityCenter: this.$.ResponsabilityCenterCode.value,
+                            supplierLocation: this.$.LSupplierLocation.value,
+                            shipLocationCode: this.$.LShipLocationCode.value,
+                            warehouseManager: this.$.LWarehouseManager.value,
+                            warehouseEnvironment: this.$.LWarehouseEnvironment.__data.checked
+                        });
+                        this.$.ajax_create_location.generateRequest();
                     }
                 },
                 _update: function () {
@@ -303,6 +346,19 @@
                 },
 
                 //Responses Processors
+                _responseCreateProcessor: function (e) {
+                    debugger;
+                    if (this.createdData.eReasonCode == 100) {
+                        this._openToast(this.createdData.eMessage);
+                        setTimeout(
+                            function () {
+                                window.location.href = "/Localizacoes";
+                            }, 2500);
+                    } else {
+                        this._openToastError(this.createdData.eMessage);
+                    }
+                },
+
                 _responseProcessor: function (data) {
                     var self = this;
                     if (this.data.code != "" && this.data.code != null) {
@@ -341,6 +397,10 @@
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
                 },
+
+                _goBack: function (e) {
+                    window.history.back();
+                }
             });
         });
     </script>

@@ -320,9 +320,9 @@
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }
                     };
 
-                    if (sessionStorage["requisitions.ToggleColumn"]) {
+                    if (localStorage["requisitions.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["requisitions.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["requisitions.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -334,7 +334,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["requisitions.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["requisitions.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

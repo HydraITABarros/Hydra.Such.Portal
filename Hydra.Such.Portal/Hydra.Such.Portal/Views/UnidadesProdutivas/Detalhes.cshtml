@@ -123,7 +123,7 @@
 
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button class="tablinks" on-tap="_redirectToNewForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" on-tap="_redirectToNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </template>
             <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Produtos p/ Criação de Encomendas</paper-button>
@@ -518,8 +518,8 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        var urlParams = "?code=" + item.code;
-                        window.location.href = "/UnidadesProdutivas/DetalhesCafetariasRefeitorios/" + urlParams;
+                        var urlParams = "?productivityUnitNo=" + item.productivityUnitNo + "&type=" + item.type + "&code=" + item.code + "&explorationStartDate=" + item.startDateExploration;
+                        window.location.href = "/CafetariasRefeitorios/Detalhes/" + urlParams;
                     }
                 },
                 _openToast: function (message) {

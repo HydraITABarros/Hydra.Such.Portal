@@ -9,6 +9,8 @@ namespace Hydra.Such.Data.Database
         {
             Anexos = new HashSet<Anexos>();
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
+            HistoricoLinhasConsultaMercado = new HashSet<HistoricoLinhasConsultaMercado>();
+            LinhasConsultaMercado = new HashSet<LinhasConsultaMercado>();
             LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
             MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
@@ -91,6 +93,8 @@ namespace Hydra.Such.Data.Database
         public Viaturas ViaturaNavigation { get; set; }
         public ICollection<Anexos> Anexos { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
+        public ICollection<HistoricoLinhasConsultaMercado> HistoricoLinhasConsultaMercado { get; set; }
+        public ICollection<LinhasConsultaMercado> LinhasConsultaMercado { get; set; }
         public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }

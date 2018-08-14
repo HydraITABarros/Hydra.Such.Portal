@@ -28,7 +28,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<dom-module id="x-oportunitydetails">
+<dom-module id="x-oportunitydetails" _history="@ViewBag.Historic">
     <template>
 
         <!-- STYLES -->
@@ -222,7 +222,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
             </template>
-            <paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
+            <!--<paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true" hidden></i>&nbsp; Consulta de arquivos</paper-button>-->
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
                 <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
@@ -1239,6 +1239,10 @@
                     _permissions: {
                         type: Array
                     },
+                    _history:{
+                        type: String,
+                        value: "",
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -1262,6 +1266,7 @@
                         type: Boolean,
                         value: true
                     },
+                   
                     _elementsDisabled: {
                         type: Boolean,
                         value: true
@@ -1453,6 +1458,7 @@
                 },
                 ready: function () {
                     //GET CONTRACT DATA
+                    debugger;;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
                     this.$.page_databound_ajax.generateRequest();
@@ -1460,6 +1466,7 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
+                
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1473,7 +1480,6 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _validateData: function () {
-                    debugger;
                     //Validate function of such-element doesn't work. Ensure validation message
                     //this.$.mClients.validate();
                     //this.$.contactNo.validate();
@@ -1522,13 +1528,8 @@
                             this._openToastError("É obrigatória seleção de uma unidade de prestação.");
                             return false;
                         }
-                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
-                            (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
-                            this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
-                            return false;
-                        }
-                        if ((this.$.mClients.value == "" && this.$.mClients.value == undefined) &&
-                            (this.$.contactNo.value == "" && this.$.contactNo.value == undefined)) {
+                        if ((this.$.mClients.value == "" || this.$.mClients.value == undefined) &&
+                            (this.$.contactNo.value == "" || this.$.contactNo.value == undefined)) {
                             this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
                             return false;
                         }

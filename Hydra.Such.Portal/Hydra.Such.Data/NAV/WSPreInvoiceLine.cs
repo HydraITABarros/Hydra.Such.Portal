@@ -116,7 +116,8 @@ namespace Hydra.Such.Data.NAV
                    Unit_PriceSpecified = true,
                    //Amount = x.ValorVenda.Value,
                    //AmountSpecified = true,
-                   Contract_No=x.NºContrato,
+                   Contract_No_Portal=x.NºContrato,
+                   Job_No= x.NºProjeto,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
@@ -153,7 +154,7 @@ namespace Hydra.Such.Data.NAV
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    Document_No = HeaderNo,
-                   Type = ConvertType(x.Type.ToString()),
+                   Type = ConvertInvoiceLineType(x.Type.ToString()),
                    No = x.Code,
                    Description = x.Description,
                    QuantitySpecified = true,
@@ -164,8 +165,10 @@ namespace Hydra.Such.Data.NAV
                    Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0,
                    Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0,
                    Line_No = counter += 10000,
-                   Line_NoSpecified = true
-                   
+                   Line_NoSpecified = true,
+                   Job_No=x.ProjectNo,
+                   Contract_No_Portal= x.DocumentNo
+
                    //Job_Journal_Line_No_Portal = x.LineNo,
                    //Job_Journal_Line_No_PortalSpecified = true,
 
@@ -197,6 +200,27 @@ namespace Hydra.Such.Data.NAV
                     return WSCreatePreInvoiceLine.Type.Resource;
                 case "2":
                     return WSCreatePreInvoiceLine.Type.Item;
+                case "3":
+                    return WSCreatePreInvoiceLine.Type.G_L_Account;
+                case "4":
+                    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
+                case "5":
+                    return WSCreatePreInvoiceLine.Type.Charge_Item;
+                default:
+                    return WSCreatePreInvoiceLine.Type._blank_;
+            }
+        }
+
+
+        //problem with order
+        private static WSCreatePreInvoiceLine.Type ConvertInvoiceLineType(string type)
+        {
+            switch (type)
+            {
+                case "1":
+                    return WSCreatePreInvoiceLine.Type.Item;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
                 case "4":

@@ -482,27 +482,27 @@
                     },
                     _showTodasMessage: {
                         type: String,
-                        value: "Mostrar Todas"
+                        value: "Todas"
                     },
                     _showPendentesMessage: {
                         type: String,
-                        value: "Mostrar Pendentes"
+                        value: "Pendentes"
                     },
                     _showPorValidarMessage: {
                         type: String,
-                        value: "Mostrar por Validar"
+                        value: "Por Validar"
                     },
                     _showPorIntegrarAjCustoMessage: {
                         type: String,
-                        value: "Mostrar por Integrar Aj. Custo"
+                        value: "Por Integrar Aj. Custo"
                     },
                     _showPorIntegrarKmMessage: {
                         type: String,
-                        value: "Mostrar por Integrar km"
+                        value: "Por Integrar km"
                     },
                     _showHistoryMessage: {
                         type: String,
-                        value: "Mostrar Histórico"
+                        value: "Histórico"
                     },
                     _columns: {
                         type: Object,
@@ -858,37 +858,37 @@
                     var _self = this;
 
                     if (this._pendentes == 0) {
-                        this._showPendentesMessage = "Mostrar Pendentes";
+                        this._showPendentesMessage = "Pendentes";
                         $(_self.$.gridOpcaoGeral).removeClass('hidden');
                         $(_self.$.gridOpcaoPendentes).addClass('hidden');
                     } else {
-                        this._showPendentesMessage = "Mostrar Todas";
+                        this._showPendentesMessage = "Todas";
                         $(_self.$.gridOpcaoGeral).addClass('hidden');
                         $(_self.$.gridOpcaoPendentes).removeClass('hidden');
                     }
 
                     if (this._porValidar == 0) {
-                        this._showPorValidarMessage = "Mostrar por Validar";
+                        this._showPorValidarMessage = "Por Validar";
                     } else {
-                        this._showPorValidarMessage = "Mostrar Todas";
+                        this._showPorValidarMessage = "Todas";
                     }
 
                     if (this._porIntegrarAjCusto == 0) {
-                        this._showPorIntegrarAjCustoMessage = "Mostrar por Integrar Aj. Custo";
+                        this._showPorIntegrarAjCustoMessage = "Por Integrar Aj. Custo";
                     } else {
-                        this._showPorIntegrarAjCustoMessage = "Mostrar Todas";
+                        this._showPorIntegrarAjCustoMessage = "Todas";
                     }
 
                     if (this._porIntegrarKm == 0) {
-                        this._showPorIntegrarKmMessage = "Mostrar por Integrar km";
+                        this._showPorIntegrarKmMessage = "Por Integrar km";
                     } else {
-                        this._showPorIntegrarKmMessage = "Mostrar Todas";
+                        this._showPorIntegrarKmMessage = "Todas";
                     }
 
                     if (this._history == 0) {
-                        this._showHistoryMessage = "Mostrar Histórico";
+                        this._showHistoryMessage = "Histórico";
                     } else {
-                        this._showHistoryMessage = "Mostrar Todas";
+                        this._showHistoryMessage = "Todas";
                     }
                 },
 
@@ -972,9 +972,9 @@
                         "observacoes": { hidden: false, label: "Observações" }
                     };
 
-                    if (sessionStorage["folhadehoralist.ToggleColumn"]) {
+                    if (localStorage["folhadehoralist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["folhadehoralist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["folhadehoralist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -986,7 +986,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["folhadehoralist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["folhadehoralist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
@@ -1014,9 +1014,9 @@
                         "integradoresEmRHKM": { hidden: false, label: "Integradores km" }
                     };
 
-                    if (sessionStorage["folhadehoralist.ToggleColumnPendentes"]) {
+                    if (localStorage["folhadehoralist.ToggleColumnPendentes"]) {
                         var keysPendentes = Object.keys(columnsPendentes);
-                        var storedColumnsPendentes = JSON.parse(sessionStorage["folhadehoralist.ToggleColumnPendentes"]);
+                        var storedColumnsPendentes = JSON.parse(localStorage["folhadehoralist.ToggleColumnPendentes"]);
                         for (var i = 0; i < keysPendentes.length; i++) {
                             columnsPendentes[keysPendentes[i]] = storedColumnsPendentes[keysPendentes[i]];
                         }
@@ -1029,7 +1029,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columnsPendentes.' + columnPendentesIndex + '.hidden', (!this._columnsPendentes[columnPendentesIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["folhadehoralist.ToggleColumnPendentes"] = JSON.stringify(this._columnsPendentes);
+                        localStorage["folhadehoralist.ToggleColumnPendentes"] = JSON.stringify(this._columnsPendentes);
                     }
                 },
                 _getColumnItemClassPendentes: function (columnPendentesIndex) {

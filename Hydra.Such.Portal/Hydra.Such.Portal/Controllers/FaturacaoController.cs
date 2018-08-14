@@ -22,6 +22,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.Logic.ComprasML;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -31,12 +32,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private BillingReceptionService billingRecService;
+        private readonly GeneralConfigurations _generalConfig;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public FaturacaoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
             billingRecService = new BillingReceptionService();
             this._hostingEnvironment = _hostingEnvironment;
         }
@@ -57,11 +60,13 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesRecFatura(string id)
         {
+
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
                 ViewBag.Id = id;
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.BillingReceptionStates = EnumHelper.GetItemsAsDictionary(typeof(BillingReceptionStates));
@@ -195,7 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     return Json("A numeração configurada para contratos não permite inserção manual.");
                 }
-                else if (data.Id == "" && !CfgNumeration.Automático.Value)
+                else if ((data.Id == "" || data.Id == null) && !CfgNumeration.Automático.Value)
                 {
                     return Json("É obrigatório inserir o Nº de Contrato.");
                 }
@@ -253,6 +258,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
+
+
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -260,7 +267,9 @@ namespace Hydra.Such.Portal.Controllers
             BillingReceptionModel updatedItem = null;
             if (item != null)
             {
-                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();                
+
+                BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+                UploadFile(workflow);
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
                 workflow.DataCriacao = DateTime.Now;
                 item.WorkflowItems.Add(workflow);
@@ -286,6 +295,16 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
+
+       
+        [HttpPost]
+        public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
+        {
+            List<BillingRecWorkflowModelAttached> items = DBBillingReceptionWFAttach.ParseToViewModel(DBBillingReceptionWFAttach.GetById(item.Id));
+            return Json(items);
+        }
+
+         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
@@ -396,7 +415,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetProblems()
         {
 
-            List<DDMessageRelated> result = billingRecService.GetProblem().Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetProblem("RF1P").Select(x => new DDMessageRelated()
             {
                 id = x.Tipo,
                 value = x.Descricao,
@@ -409,7 +428,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetUAProblems()
         {
-            List<DDMessageRelated> result = billingRecService.GetProblemAnswer("RF5P").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetProblem("RF5P").Select(x => new DDMessageRelated()
             {
                 id = x.Tipo,
                 value = x.Descricao,
@@ -442,7 +461,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (userPendingProfile == 1 && userDestinyProfile == 0)
                 {
                     AnswerType = "RF1R";
-                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                    result = billingRecService.GetProblem(AnswerType).ToList();
                 } 
             }
 
@@ -451,7 +470,7 @@ namespace Hydra.Such.Portal.Controllers
                 if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
                 {
                     AnswerType = "RF5R";
-                    result = billingRecService.GetProblemAnswer(AnswerType).ToList();
+                    result = billingRecService.GetProblem(AnswerType).ToList();
                 }
             }
             
@@ -789,7 +808,29 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
         }
+        [HttpPost]
+        public JsonResult Existlink([FromBody] string sFileName)
+        {
+            string name = sFileName.Remove(0, 5);
+            name=name.Replace('/', '\\');
+            string link = Directory.GetCurrentDirectory()+"\\wwwroot" + name;
+            if (System.IO.File.Exists(link))
+            {
+                return Json("1");
+            }
+            return Json("0");
 
+
+        }
+
+        [HttpGet]
+        public FileStreamResult OpenLinkAttached(string id)
+        {
+
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+        }
+
+     
         [HttpPost]
         public JsonResult CheckIfDocumentExists([FromBody] BillingReceptionModel item)
         {
@@ -884,7 +925,73 @@ namespace Hydra.Such.Portal.Controllers
                 item.eMessage = "O registo não pode ser nulo";
             }
             return Json(item);
-
         }
+
+        #region ANEXOS
+
+        [HttpPost]
+        [Route("Faturacao/ExistFile")]
+        public JsonResult ExistFile()
+        {
+            try
+            {
+              
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    string filename = Path.GetFileName(file.FileName);
+                    full_filename = filename;
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+
+                    if (System.IO.File.Exists(path))
+                    {
+                        throw new System.ArgumentException();
+                    }
+                } 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+        public JsonResult UploadFile(BillingRecWorkflowModel workflow)
+        {
+            try
+            {
+
+                foreach (var file in workflow.Attached)
+                {
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, file.File);
+                    if (!System.IO.File.Exists(path))
+                    {
+                        try
+                        {
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                
+                                dd.Dispose();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+
+
+        #endregion
+
     }
 }

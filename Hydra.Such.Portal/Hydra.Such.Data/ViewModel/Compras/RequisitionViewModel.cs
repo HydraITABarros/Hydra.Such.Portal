@@ -91,6 +91,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public List<RequisitionLineViewModel> Lines { get; set; }
         public List<RequisitionChangeLog> ChangeLog { get; set; }
 
+        public RequisitionViewModel()
+        {
+            this.Lines = new List<RequisitionLineViewModel>();
+            this.ChangeLog = new List<RequisitionChangeLog>();
+        }
+
         public decimal GetTotalValue()
         {
             decimal value = 0;

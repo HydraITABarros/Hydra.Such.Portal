@@ -23,6 +23,7 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Microsoft.AspNetCore.Hosting;
+using System.Globalization;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -775,6 +776,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódServiçoCliente = x.ServiceClientNo;
                             CLine.GrupoFatura = x.InvoiceGroup;
                             CLine.CriaContrato = x.CreateContract;
+                            CLine.NºProjeto = x.ProjectNo;
                             CLine.UtilizadorModificação = User.Identity.Name;
                             DBContractLines.Update(CLine);
                         }
@@ -1029,7 +1031,7 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
                     StartDate = StartDate,
-                    ExpiryDate = ExpiryDate,
+                    ExpiryDate = ExpiryDate,   
                     InvoicePeriod = InvoicePeriod
                 });
             }
@@ -1138,7 +1140,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ContractNoDuplicate = line.NºContrato;
                         InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
-
                         Decimal contractVal = 0;
                         if (item.TipoContrato != 1 || item.TipoContrato != 4)
                         {
@@ -1260,6 +1261,11 @@ namespace Hydra.Such.Portal.Controllers
                                             AddMonth = 0;
                                         }
                                         MonthDiff = MonthDiff + AddMonth;
+                                        if (MonthDiff == 0 && AddMonth == 0)
+                                        {
+                                            MonthDiff = 1;
+                                        }
+                                        
                                         invoiceNumber = MonthDiff / 1;
                                         if (LastInvoice == item.DataExpiração)
                                         {
@@ -1267,7 +1273,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         else
                                         {
-                                            nextInvoice = LastInvoice.AddMonths(1);
+                                            if (AddMonth == 0)
+                                            {
+                                                nextInvoice = LastInvoice.AddMonths(1);
+                                            }
+                                            else
+                                            {
+                                                nextInvoice = LastInvoice;
+                                            }
                                         }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
@@ -1293,7 +1306,7 @@ namespace Hydra.Such.Portal.Controllers
                                             LastInvoice = current;
                                             AddMonth = 0;
                                         }
-                                        MonthDiff = MonthDiff + AddMonth;
+                                        //MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 2;
                                         nextInvoice = LastInvoice.AddMonths(2);
                                         lineQuantity = lineQuantity * MonthDiff;
@@ -1307,7 +1320,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         else
                                         {
-                                            nextInvoice = LastInvoice.AddMonths(2);
+                                            if (AddMonth == 0)
+                                            {
+                                                nextInvoice = LastInvoice.AddMonths(2);
+                                            }
+                                            else
+                                            {
+                                                nextInvoice = LastInvoice;
+                                            }
                                         }
                                         lineQuantity = lineQuantity * 2;
                                     }
@@ -1327,7 +1347,7 @@ namespace Hydra.Such.Portal.Controllers
                                             LastInvoice = current;
                                             AddMonth = 0;
                                         }
-                                        MonthDiff = MonthDiff + AddMonth;
+                                        //MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 3;
                                         if (LastInvoice == item.DataExpiração)
                                         {
@@ -1335,7 +1355,15 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         else
                                         {
-                                            nextInvoice = LastInvoice.AddMonths(3);
+                                            if (AddMonth == 0)
+                                            {
+                                                nextInvoice = LastInvoice.AddMonths(3);
+                                            }
+                                            else
+                                            {
+                                                nextInvoice = LastInvoice;
+                                            }
+                                            
                                         }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
@@ -1361,7 +1389,7 @@ namespace Hydra.Such.Portal.Controllers
                                             LastInvoice = current;
                                             AddMonth = 0;
                                         }
-                                        MonthDiff = MonthDiff + AddMonth;
+                                        //MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 6;
                                         if (LastInvoice == item.DataExpiração)
                                         {
@@ -1369,7 +1397,14 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         else
                                         {
-                                            nextInvoice = LastInvoice.AddMonths(3);
+                                            if (AddMonth == 0)
+                                            {
+                                                nextInvoice = LastInvoice.AddMonths(6);
+                                            }
+                                            else
+                                            {
+                                                nextInvoice = LastInvoice;
+                                            }
                                         }
                                         lineQuantity = lineQuantity * MonthDiff;
                                     }
@@ -1395,14 +1430,22 @@ namespace Hydra.Such.Portal.Controllers
                                             LastInvoice = current;
                                             AddMonth = 0;
                                         }
-                                        MonthDiff = MonthDiff + AddMonth;
+                                        //MonthDiff = MonthDiff + AddMonth;
+                                        invoiceNumber = MonthDiff / 12;
                                         if (LastInvoice == item.DataExpiração)
                                         {
                                             nextInvoice = LastInvoice;
                                         }
                                         else
                                         {
-                                            nextInvoice = LastInvoice.AddMonths(12);
+                                            if (AddMonth == 0)
+                                            {
+                                                nextInvoice = LastInvoice.AddMonths(12);
+                                            }
+                                            else
+                                            {
+                                                nextInvoice = LastInvoice;
+                                            }
                                         }
                                         nextInvoice = LastInvoice.AddMonths(12);
                                         lineQuantity = lineQuantity * MonthDiff;
@@ -1551,6 +1594,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
+                        NºProjeto = line.NºProjeto,
                         GrupoFatura = line.GrupoFatura == null ? -1 : line.GrupoFatura.Value,
                         NºLinha = line.NºLinha,
                         Tipo = line.Tipo.ToString(),
@@ -1598,9 +1642,98 @@ namespace Hydra.Such.Portal.Controllers
 
             foreach (var item in contractList)
             {
+                int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
+                string ContractInvoicePeriod = "";
+                string InvoiceBorrowed = "";
+                
+                if (CountLines != null && CountLines > 1)
+                {
+                    RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
+                    if (GetReqClientCont != null)
+                    {
+                        if(GetReqClientCont.DataÚltimaFatura != null)
+                        {
+                            DateTime Lastdate = GetReqClientCont.DataÚltimaFatura.Value;
+                            DateTime Newdate = GetReqClientCont.DataÚltimaFatura.Value;
+                            string Month = Lastdate.ToString("MMMM").ToUpper();
+                            string Year = Lastdate.Year.ToString();
+                            ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
+                            InvoiceBorrowed = Month+"/"+Year;
+                            //actualiar data ultima fatura
+                            GetReqClientCont.DataÚltimaFatura = Newdate.AddMonths(1);
+                            DBContractClientRequisition.Update(GetReqClientCont);
+                        }
+                    }
+                }
+                else
+                {
+                    Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                    if (contractLine != null)
+                    {
+                        if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
+                        {
+                            
+                            int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
+                            if (findDate == 2)
+                            {
+                                contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ","");
+                                if (contractLine.PróximoPeríodoFact.Length == 8)
+                                {
+                                    DateTime? date = Convert.ToDateTime(contractLine.PróximoPeríodoFact);
+                                    string Month =""; string Year = "";
+                                    if (date != null)
+                                    {
+                                        Month = date.Value.ToString("MMMM").ToUpper();
+                                        Year = date.Value.Year.ToString();
+                                    }
+                                    ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
+                                    if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
+                                    {
+                                        InvoiceBorrowed = ContractInvoicePeriod;
+                                    }
+                                    else
+                                    {
+                                        InvoiceBorrowed = Month + "/" + Year;
+                                    }
+                                }
+                            }
+                            else if (findDate == 4)
+                            {
+                                string proxperFacRep = contractLine.PróximoPeríodoFact.Replace(" ", "");
+                                string[] ProxPerFac = proxperFacRep.Split('a');
+                                if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
+                                {
+                                    DateTime? date = Convert.ToDateTime(ProxPerFac[1]);
+                                    string Month = ""; string Year = "";
+                                    if (date != null)
+                                    {
+                                        Month = date.Value.ToString("MMMM").ToUpper();
+                                        Year = date.Value.Year.ToString();
+                                    }
+                                    ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
+                                    if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
+                                    {
+                                        InvoiceBorrowed = ContractInvoicePeriod;
+                                    }
+                                    else
+                                    {
+                                        InvoiceBorrowed = Month + "/" + Year;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    if (contractLine.ÚltimaDataFatura != null) {
+                        DateTime NewTime = contractLine.ÚltimaDataFatura.Value;
+                        contractLine.ÚltimaDataFatura = NewTime.AddMonths(1);
+                        DBContracts.Update(contractLine);
+                    }
+                }
                 if (item.Situação == "" || item.Situação == null)
                 {
-                    Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                    
+                    Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
                     if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -1671,13 +1804,7 @@ namespace Hydra.Such.Portal.Controllers
                     cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
-
-                //if (cContract != null && cContract.Arquivado == true)
-                //{
-                //    UPerm.Update = false;
-                //    UPerm.Delete = false;
-                //}
-
+           
                 if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico)";
@@ -1857,7 +1984,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PropostasContrato(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -1948,7 +2075,8 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
-                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContactNo;
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
@@ -2010,6 +2138,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+
                         if (Contract.StartData != null && Contract.StartData != "")
                             PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
                        
@@ -2040,7 +2169,8 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                     PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
-                                    
+                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
+
                                     LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                 }
                             }
@@ -2737,6 +2867,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Contrato");
                     Col = Col + 1;
                 }
+                if (dp["type"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Inicio");
@@ -2799,6 +2934,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["contractNo"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["type"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Type);
                             Col = Col + 1;
                         }
                         if (dp["startData"]["hidden"].ToString() == "False")
@@ -2957,9 +3097,39 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                if (dp["startDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicial");
+                    Col = Col + 1;
+                }
+                if (dp["expiryDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Expiração");
+                    Col = Col + 1;
+                }
                 if (dp["registerDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Próxima Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Período Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Fatura");
+                    Col = Col + 1;
+                }
+                if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade de Linhas Agrupadas");
+                    Col = Col + 1;
+                }
+                if (dp["document_No"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
                     Col = Col + 1;
                 }
 
@@ -3036,9 +3206,39 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
                             Col = Col + 1;
                         }
+                        if (dp["startDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["expiryDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ExpiryDate);
+                            Col = Col + 1;
+                        }
                         if (dp["registerDate"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegisterDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["invoicePeriod"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoicePeriod.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupValue.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["invoiceGroupCount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InvoiceGroupCount.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["document_No"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Document_No);
                             Col = Col + 1;
                         }
                         count++;

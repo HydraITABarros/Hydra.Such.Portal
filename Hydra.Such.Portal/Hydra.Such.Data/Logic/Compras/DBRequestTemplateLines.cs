@@ -146,7 +146,7 @@ namespace Hydra.Such.Data.Logic.Request
         #endregion
 
         #region Parse Utilities
-        public static void UpdateAgreedPrices(this List<RequisitionTemplateLineViewModel> reqLines, DateTime pricesDate)
+        public static void UpdateAgreedPrices(this List<RequisitionTemplateLineViewModel> reqLines, DateTime pricesDate, string respCenter, string region, string functionalArea)
         {
             if (reqLines == null || reqLines.Count == 0)
                 return;
@@ -156,7 +156,10 @@ namespace Hydra.Such.Data.Logic.Request
             using (var ctx = new SuchDBContext())
             {
                 acordosPrecos = ctx.LinhasAcordoPrecos
-                    .Where(x => reqLines.Select(y => y.SupplierNo).Distinct().Contains(x.NoFornecedor)
+                    .Where(x => reqLines.Select(y => y.Code).Distinct().Contains(x.CodProduto)
+                                && x.Cresp == respCenter
+                                && x.Regiao == region
+                                && x.Area == functionalArea
                                 && x.DtValidadeInicio <= pricesDate
                                 && x.DtValidadeFim >= pricesDate)
                     .ToList();
@@ -165,7 +168,7 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 for (int i = 0; i < reqLines.Count; i++)
                 {
-                    var acordo = acordosPrecos.FirstOrDefault(x => x.NoFornecedor == reqLines[i].SupplierNo && x.CodProduto == reqLines[i].Code);
+                    var acordo = acordosPrecos.FirstOrDefault(x => x.CodProduto == reqLines[i].Code);
                     if (acordo != null)
                     {
                         if (acordo.CustoUnitario.HasValue)

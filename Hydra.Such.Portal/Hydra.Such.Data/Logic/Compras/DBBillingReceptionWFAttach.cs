@@ -32,6 +32,21 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<RececaoFaturacaoWorkflowAnexo> GetById(int id)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RececaoFaturacaoWorkflowAnexo.Where(x => x.Idwokflow == id).ToList();
+                    //.ParseToViewModel();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region Parse Utilities

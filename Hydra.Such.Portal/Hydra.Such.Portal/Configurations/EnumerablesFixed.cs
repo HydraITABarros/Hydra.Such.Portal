@@ -2387,6 +2387,96 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Encomenda"
             }
         };
+
+        public static readonly List<EnumData> ProdutosTipo = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Alimento"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Prato"
+            }
+        };
+
+        //Pedidos de Cotação - Destino
+        public static readonly List<EnumData> Destino = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Armazém"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Projeto"
+            }
+        };
+
+        //Pedidos de Cotação - Estado
+        public static readonly List<EnumData> Estado = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Aberto"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Liberto"
+            }
+        };
+
+        //Pedidos de Cotação - Fase
+        public static readonly List<EnumData> Fase = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Abertura"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Consulta"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Negociação e Contratação"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Adjudicação"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Fecho"
+            }
+        };
+
+        //Pedidos de Cotação - Modalidade
+        public static readonly List<EnumData> Modalidade = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Consulta Alargada"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Ajuste Direto"
+            }
+        };
+
     }
 
     public class EnumDataString

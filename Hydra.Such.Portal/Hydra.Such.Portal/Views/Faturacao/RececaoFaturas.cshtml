@@ -55,6 +55,7 @@
                 }
             </style>
         </custom-style>
+        <iron-ajax auto url="/PopulateDropdowns/GetBillingReceptionStates" last-response="{{ States }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Faturacao/GetBillingReceptions"
                    auto
@@ -116,11 +117,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
+                    <vaadin-grid-sorter path="descricaoStatus">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoStatus" />
                 </template>
                 <template>
-                    {{item.estado}}
+                    [[ _clFormatStatus(item.estado) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.dataRececao.hidden }}">
@@ -394,9 +395,9 @@
                         "dataUltimaInteracao": { hidden: false, label: "Data Última Interação" }
                     };
 
-                    if (sessionStorage["rececaofaturas.ToggleColumn"]) {
+                    if (localStorage["rececaofaturas.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["rececaofaturas.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["rececaofaturas.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -408,7 +409,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["rececaofaturas.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["rececaofaturas.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
@@ -421,6 +422,15 @@
                             value: obj[key]
                         };
                     });
+                },
+                _clFormatStatus: function (param) {
+                    if (param != undefined) {
+                        var sel = this.States.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
                 },
                 /* end - ColumnToggle */
 

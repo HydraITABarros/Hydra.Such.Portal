@@ -110,7 +110,15 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.proposalNo}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
@@ -120,7 +128,7 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-
+            
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
@@ -285,6 +293,10 @@
                         type: String,
                         value: "false"
                     },
+                    _isHistoricVisible: {
+                        type: Boolean,
+                        value: false
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -293,7 +305,6 @@
                     },
                 },
                 _rowSelected: function (item) {
-                    debugger;
                     this.$.grid.selectedItems = item ? [item] : [];
                     if (item != null) {
                         window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
@@ -349,15 +360,16 @@
                 },
                 _showHistoryButton: function (item) {
                     if (item != null) {
-                        debugger;;
                         this._archived = this._archived == 1 ? 0 : 1;
 
                         if (this._archived == 1) {
                             this._showHistory = "Exibir ativas";
                             this._isHistoric = "true";
+                            this._isHistoricVisible = true;
                         } else {
                             this._showHistory = "Exibir histórico";
                             this._isHistoric = "false";
+                            this._isHistoricVisible = false;
                         }
 
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
@@ -432,9 +444,9 @@
                         "totalProposalValue": { hidden: false, label: "Valor Total" }
                     };
 
-                    if (sessionStorage["oportunitieslist.ToggleColumn"]) {
+                    if (localStorage["oportunitieslist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["oportunitieslist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["oportunitieslist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -446,7 +458,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["oportunitieslist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["oportunitieslist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

@@ -772,7 +772,7 @@ namespace Hydra.Such.Portal.Controllers
                             item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
                         }
                         
-                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault().CódigoLocalização;
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
                     }
                     if (AproveList != null && AproveList.Count > 0)
                     {
@@ -790,10 +790,6 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
             }
-
-
-
-
             return Json(result);
         }
 
@@ -943,6 +939,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
                                 InvoiceNo = data.InvoiceNo,
                                 State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
@@ -1020,6 +1017,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
                                 InvoiceNo = data.InvoiceNo,
                                 State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
@@ -1113,6 +1111,16 @@ namespace Hydra.Such.Portal.Controllers
                     createReq = DBRequest.Create(createReq);
                     if (createReq != null)
                     {
+                        //Create Workflow
+                        var ctx = new SuchDBContext();
+                        var logEntry = new RequisicoesRegAlteracoes();
+                        logEntry.NºRequisição = createReq.NºRequisição;
+                        logEntry.Estado = (int)RequisitionStates.Pending; //PENDENTE = 0
+                        logEntry.ModificadoEm = DateTime.Now;
+                        logEntry.ModificadoPor = User.Identity.Name;
+                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                        ctx.SaveChanges();
+
                         //copy files
                         var preReq = data.PreRequesitionsNo;
                         List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);

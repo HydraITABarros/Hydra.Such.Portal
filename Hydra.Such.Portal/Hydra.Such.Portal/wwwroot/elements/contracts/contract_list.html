@@ -164,20 +164,20 @@
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    [[ _clType(item.type) ]]
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
-                <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
                 </template>
                 <template>
                     {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.type.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" />
+                </template>
+                <template>
+                    [[ _clType(item.type) ]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
@@ -227,8 +227,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" />
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" />
                 </template>
                 <template>
                     {{item.statusDescription}}
@@ -476,6 +476,7 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
+                        "type": { hidden: false, label: "Tipo" },
                         "startData": { hidden: false, label: "Data Inicio" },
                         "dueDate": { hidden: false, label: "Data Fim" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
@@ -488,9 +489,9 @@
                         "versionNo": { hidden: false, label: "Nº Versão" }
                     };
 
-                    if (sessionStorage["contractlist.ToggleColumn"]) {
+                    if (localStorage["contractlist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["contractlist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["contractlist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -502,7 +503,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["contractlist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["contractlist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string TipoProblema { get; set; }
         public string Descricao { get; set; }
         public string DescricaoProblema { get; set; }
+        public string DescricaoStatus { get; set; }
         public string DataPassaPendente { get; set; }
         public string AreaPendente { get; set; }
         public string AreaPendente2 { get; set; }

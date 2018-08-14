@@ -1586,73 +1586,102 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
         {
+            Result result = new Result();
             int areaId = int.Parse(requestParams["areaId"].ToString());
             string projectNo = requestParams["projectNo"].ToString();
 
-            try
+            var project = DBProjects.GetById(projectNo);
+            
+            ProjectBillingAuthorization p = new ProjectBillingAuthorization(project);
+            if (project != null)
             {
-                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
+                try
                 {
-                    LineNo = x.NºLinha,
-                    ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                    MovementType = x.TipoMovimento,
-                    Type = x.Tipo,
-                    Code = x.Código,
-                    Description = x.Descrição,
-                    Quantity = x.Quantidade,
-                    MeasurementUnitCode = x.CódUnidadeMedida,
-                    LocationCode = x.CódLocalização,
-                    ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
-                    FunctionalAreaCode = x.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                    User = x.Utilizador,
-                    UnitCost = x.CustoUnitário,
-                    TotalCost = x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário,
-                    TotalPrice = x.PreçoTotal,
-                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                    Currency = x.Moeda,
-                    Billable = x.Faturável,
-                    Billed = (bool)x.Faturada,
-                    Registered = x.Registado,
-                    InvoiceToClientNo = x.FaturaANºCliente,
-                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
-                    ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
-                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                }).OrderBy(x => x.ClientName).ToList();
+                    var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                    
 
-                if (result.Count > 0)
-                {
-                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    foreach (var lst in result)
+                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
                     {
-                        if (lst.MovementType == 3)
-                        {
-                            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                        }
+                        LineNo = x.NºLinha,
+                        ProjectNo = x.NºProjeto,
+                        Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                        MovementType = x.TipoMovimento,
+                        Type = x.Tipo,
+                        Code = x.Código,
+                        Description = x.Descrição,
+                        Quantity = x.Quantidade,
+                        MeasurementUnitCode = x.CódUnidadeMedida,
+                        LocationCode = x.CódLocalização,
+                        ProjectContabGroup = x.GrupoContabProjeto,
+                        RegionCode = x.CódigoRegião,
+                        FunctionalAreaCode = x.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                        User = x.Utilizador,
+                        UnitCost = x.CustoUnitário,
+                        TotalCost = x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário,
+                        TotalPrice = x.PreçoTotal,
+                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                        Currency = x.Moeda,
+                        Billable = x.Faturável,
+                        Billed = (bool)x.Faturada,
+                        Registered = x.Registado,
+                        InvoiceToClientNo = x.FaturaANºCliente,
+                        CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
+                        ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                        ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
+                    }).OrderBy(x => x.ClientName).ToList();
 
-                        if (!String.IsNullOrEmpty(lst.Currency))
+                    if (projectMovements.Count > 0)
+                    {
+                        var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                        foreach (var lst in projectMovements)
                         {
-                            lst.UnitPrice = lst.UnitValueToInvoice;
+                            if (lst.MovementType == 3)
+                            {
+                                lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                            }
+
+                            if (!String.IsNullOrEmpty(lst.Currency))
+                            {
+                                lst.UnitPrice = lst.UnitValueToInvoice;
+                            }
                         }
+                        List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                     }
-                    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                }
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
 
+                    if (project.Estado.HasValue && (project.Estado == 3 || project.Estado == 4))
+                    {
+                        result.eReasonCode = 1;
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "O estado do projeto não permite autorizar a faturação.";
+                    }
+                    result.Value = projectMovements;
+                }
+                catch (Exception ex)
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Ocorreu um erro ao obter os movimentos.";
+                    result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
+                    result.Value = new List<ProjectDiaryViewModel>();
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi possivel obter o projecto.";
+                result.Value = new List<ProjectDiaryViewModel>();
+            }
+            return Json(result);
         }
 
         private class InvoiceMessages
@@ -2485,6 +2514,7 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+                string InvoiceClient = "";
                 dp.ForEach(x =>
                 {
                     if (x.Code != null)
@@ -2495,7 +2525,32 @@ namespace Hydra.Such.Portal.Controllers
                             DBProjectDiary.Delete(newdp);
                             if (newdp.Quantidade != null && newdp.Quantidade > 0)
                             {
-
+                                if (!String.IsNullOrEmpty(newdp.FaturaANºCliente))
+                                {
+                                    if (InvoiceClient != "")
+                                    {
+                                        InvoiceClient = newdp.FaturaANºCliente;
+                                    }
+                                    else
+                                    {
+                                        Projetos cProject = DBProjects.GetById(newdp.NºProjeto);
+                                        if (cProject != null)
+                                        {
+                                            InvoiceClient = cProject.NºCliente;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (InvoiceClient == "")
+                                    {
+                                        Projetos cProject = DBProjects.GetById(newdp.NºProjeto);
+                                        if (cProject != null)
+                                        {
+                                            InvoiceClient = cProject.NºCliente;
+                                        }
+                                    }
+                                }
                                 PréMovimentosProjeto ProjectMovement = new PréMovimentosProjeto()
                                 {
                                     NºProjeto = newdp.NºProjeto,
@@ -2519,7 +2574,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Faturável = newdp.Faturável,
                                     Registado = false,
                                     Faturada = false,
-                                    FaturaANºCliente = newdp.FaturaANºCliente,
+                                    FaturaANºCliente = InvoiceClient,
                                     Moeda = newdp.Moeda,
                                     ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
                                     TipoRefeição = newdp.TipoRefeição,
