@@ -55,11 +55,6 @@
             </style>
         </custom-style>
 
-        <!--<iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Destino" last-response="{{ddDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Estado" last-response="{{ddEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Fase" last-response="{{ddFase}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Modalidade" last-response="{{ddModalidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-
         <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado"
                    last-response="{{result}}"
                    method="post"
@@ -164,11 +159,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataPedidoCotacao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataPedidoCotacao">Data Pedido Cotação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoCotacao" />
+                    <vaadin-grid-sorter path="dataPedidoCotacao_Show">Data Pedido Cotação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedidoCotacao_Show" />
                 </template>
                 <template>
-                    {{item.dataPedidoCotacao}}
+                    {{item.dataPedidoCotacao_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.fornecedorSelecionado.hidden }}">
@@ -245,11 +240,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataLimite.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataLimite">Data Limite</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataLimite" />
+                    <vaadin-grid-sorter path="dataLimite_Show">Data Limite</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataLimite_Show" />
                 </template>
                 <template>
-                    {{item.dataLimite}}
+                    {{item.dataLimite_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.especificacaoTecnica.hidden }}">
@@ -282,11 +277,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoCriadoEm.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="pedidoCotacaoCriadoEm">Pedido Cotação Criado Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="pedidoCotacaoCriadoEm" />
+                    <vaadin-grid-sorter path="pedidoCotacaoCriadoEm_Show">Pedido Cotação Criado Em</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pedidoCotacaoCriadoEm_Show" />
                 </template>
                 <template>
-                    {{item.pedidoCotacaoCriadoEm}}
+                    {{item.pedidoCotacaoCriadoEm_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoCriadoPor.hidden }}">
@@ -300,11 +295,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.consultaEm.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="consultaEm">Consulta Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="consultaEm" />
+                    <vaadin-grid-sorter path="consultaEm_Show">Consulta Em</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="consultaEm_Show" />
                 </template>
                 <template>
-                    {{item.consultaEm}}
+                    {{item.consultaEm_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.consultaPor.hidden }}">
@@ -318,11 +313,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.negociacaoContratacaoEm.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="negociacaoContratacaoEm">Negociação Contratação Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="negociacaoContratacaoEm" />
+                    <vaadin-grid-sorter path="negociacaoContratacaoEm_Show">Negociação Contratação Em</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="negociacaoContratacaoEm_Show" />
                 </template>
                 <template>
-                    {{item.negociacaoContratacaoEm}}
+                    {{item.negociacaoContratacaoEm_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.negociacaoContratacaoPor.hidden }}">
@@ -336,11 +331,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.adjudicacaoEm.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="adjudicacaoEm">Adjudicação Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="adjudicacaoEm" />
+                    <vaadin-grid-sorter path="adjudicacaoEm_Show">Adjudicação Em</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjudicacaoEm_Show" />
                 </template>
                 <template>
-                    {{item.adjudicacaoEm}}
+                    {{item.adjudicacaoEm_Show}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.adjudicacaoPor.hidden }}">

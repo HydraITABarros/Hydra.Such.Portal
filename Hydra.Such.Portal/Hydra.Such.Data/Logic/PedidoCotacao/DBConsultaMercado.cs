@@ -498,7 +498,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
-                        Modalidade_Show = ConsultaMercado.Modalidade == 0 ? "Consulta Alargada" : ConsultaMercado.Modalidade == 1 ? "Ajuste Direto" : string.Empty
+                        Modalidade_Show = ConsultaMercado.Modalidade == 0 ? "Consulta Alargada" : ConsultaMercado.Modalidade == 1 ? "Ajuste Direto" : string.Empty,
+                        DataPedidoCotacao_Show = ConsultaMercado.DataPedidoCotacao == null ? "" : ConsultaMercado.DataPedidoCotacao.Value.ToString("yyyy-MM-dd"),
+                        DataLimite_Show = ConsultaMercado.DataLimite == null ? "" : ConsultaMercado.DataLimite.Value.ToString("yyyy-MM-dd"),
+                        PedidoCotacaoCriadoEm_Show = ConsultaMercado.PedidoCotacaoCriadoEm == null ? "" : ConsultaMercado.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd"),
+                        ConsultaEm_Show = ConsultaMercado.ConsultaEm == null ? "" : ConsultaMercado.ConsultaEm.Value.ToString("yyyy-MM-dd"),
+                        NegociacaoContratacaoEm_Show = ConsultaMercado.NegociacaoContratacaoEm == null ? "" : ConsultaMercado.NegociacaoContratacaoEm.Value.ToString("yyyy-MM-dd"),
+                        AdjudicacaoEm_Show = ConsultaMercado.AdjudicacaoEm == null ? "" : ConsultaMercado.AdjudicacaoEm.Value.ToString("yyyy-MM-dd")
                     }).ToList();
                 }
             }
@@ -576,7 +582,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
                 Modalidade_Show = ObjectToTransform.Modalidade == 0 ? "Consulta Alargada" : ObjectToTransform.Modalidade == 1 ? "Ajuste Direto" : string.Empty,
-                NumVersoesArquivadas_CalcField = historicoConsultaMercado == null ? "0" : historicoConsultaMercado == string.Empty ? "0" : historicoConsultaMercado
+                NumVersoesArquivadas_CalcField = historicoConsultaMercado == null ? "0" : historicoConsultaMercado == string.Empty ? "0" : historicoConsultaMercado,
+                DataPedidoCotacao_Show = ObjectToTransform.DataPedidoCotacao == null ? "" : ObjectToTransform.DataPedidoCotacao.Value.ToString("yyyy-MM-dd"),
+                DataLimite_Show = ObjectToTransform.DataLimite == null ? "" : ObjectToTransform.DataLimite.Value.ToString("yyyy-MM-dd"),
+                PedidoCotacaoCriadoEm_Show = ObjectToTransform.PedidoCotacaoCriadoEm == null ? "" : ObjectToTransform.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd"),
+                ConsultaEm_Show = ObjectToTransform.ConsultaEm == null ? "" : ObjectToTransform.ConsultaEm.Value.ToString("yyyy-MM-dd"),
+                NegociacaoContratacaoEm_Show = ObjectToTransform.NegociacaoContratacaoEm == null ? "" : ObjectToTransform.NegociacaoContratacaoEm.Value.ToString("yyyy-MM-dd"),
+                AdjudicacaoEm_Show = ObjectToTransform.AdjudicacaoEm == null ? "" : ObjectToTransform.AdjudicacaoEm.Value.ToString("yyyy-MM-dd")
             };
 
             if (linhasConsultaMercado != null && linhasConsultaMercado.Count > 0)
@@ -670,7 +682,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CriadoEm = ObjectToTransform.CriadoEm,
                 CriadoPor = ObjectToTransform.CriadoPor,
                 ModificadoEm = ObjectToTransform.ModificadoEm,
-                ModificadoPor = ObjectToTransform.ModificadoPor
+                ModificadoPor = ObjectToTransform.ModificadoPor,
+                DataEntregaPrevista_Show = ObjectToTransform.DataEntregaPrevista == null ? "" : ObjectToTransform.DataEntregaPrevista.Value.ToString("yyyy-MM-dd")
             };
 
             return view;
