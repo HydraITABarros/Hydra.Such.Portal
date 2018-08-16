@@ -247,6 +247,120 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
         #region Actividades_por_Produto
 
+        public static List<ActividadesPorProduto> GetAllActividadesPorProdutoToList()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ActividadesPorProduto.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorProdutoView CastActividadesPorProdutoToView(ActividadesPorProduto ObjectToTransform)
+        {
+            ActividadesPorProduto actividadesPorProduto = new ActividadesPorProduto();
+
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    actividadesPorProduto = ctx.ActividadesPorProduto.Where(p => p.Id == ObjectToTransform.Id).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            ActividadesPorProdutoView view = new ActividadesPorProdutoView()
+            {
+                Id = ObjectToTransform.Id,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodProduto = ObjectToTransform.CodProduto
+            };
+
+            return view;
+        }
+
+        public static ActividadesPorProduto GetDetalheActividadesPorProduto(string Id)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ActividadesPorProduto.Where(p => p.Id == int.Parse(Id)).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorProduto Create(ActividadesPorProduto ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorProduto.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+
+                    ObjectToCreate = ctx.ActividadesPorProduto.Where(p => p.CodActividade == ObjectToCreate.CodActividade).Where(p => p.CodProduto == ObjectToCreate.CodProduto).LastOrDefault();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static ActividadesPorProduto Update(ActividadesPorProduto ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorProduto.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static ActividadesPorProduto Delete(ActividadesPorProduto ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ActividadesPorProduto.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         #endregion
 
 
@@ -401,6 +515,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             List<CondicoesPropostasFornecedores> condicoesPropostasFornecedores = new List<CondicoesPropostasFornecedores>();
             List<LinhasCondicoesPropostasFornecedores> linhasCondicoesPropostasFornecedores = new List<LinhasCondicoesPropostasFornecedores>();
             List<SeleccaoEntidades> seleccaoEntidades = new List<SeleccaoEntidades>();
+            //HistoricoConsultaMercado historicoConsultaMercado = new HistoricoConsultaMercado();
+            string historicoConsultaMercado = string.Empty;
 
             try
             {
@@ -411,6 +527,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                     condicoesPropostasFornecedores = ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     linhasCondicoesPropostasFornecedores = ctx.LinhasCondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+
+                    historicoConsultaMercado = ctx.HistoricoConsultaMercado.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).Max(p => p.NumVersao).ToString();
                 }
             }
             catch (Exception e)
@@ -457,7 +575,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
-                Modalidade_Show = ObjectToTransform.Modalidade == 0 ? "Consulta Alargada" : ObjectToTransform.Modalidade == 1 ? "Ajuste Direto" : string.Empty
+                Modalidade_Show = ObjectToTransform.Modalidade == 0 ? "Consulta Alargada" : ObjectToTransform.Modalidade == 1 ? "Ajuste Direto" : string.Empty,
+                NumVersoesArquivadas_CalcField = historicoConsultaMercado == null ? "0" : historicoConsultaMercado == string.Empty ? "0" : historicoConsultaMercado
             };
 
             if (linhasConsultaMercado != null && linhasConsultaMercado.Count > 0)

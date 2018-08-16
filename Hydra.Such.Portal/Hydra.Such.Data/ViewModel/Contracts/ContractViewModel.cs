@@ -64,14 +64,17 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string SignatureDate { get; set; }
         public string CustomerShipmentDate { get; set; }
         public int? ProvisionUnit { get; set; }
+        public string ProvisionUnitText { get; set; }
         public string ContractReference { get; set; }
         public decimal? TotalProposalValue { get; set; }
         public string PhysicalFileLocation { get; set; }
         public string OportunityNo { get; set; }
         public string ProposalNo { get; set; }
         public string ContactNo { get; set; }
+        public string ContactNoText { get; set; }
         public string DateProposedState { get; set; }
         public int? OrderOrigin { get; set; }
+        public string OrderOriginText { get; set; }
         public string OrdOrderSource { get; set; }
         public string InternalNumeration { get; set; }
         public string ProposalChangeDate { get; set; }
@@ -107,6 +110,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? ActionCode { get; set; }
         public bool? History { get; set; }
         public int Type { get; set; }
+        public string NoVEP { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

@@ -54,5 +54,8 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public string Estado_Show { get; set; }
         public string Fase_Show { get; set; }
         public string Modalidade_Show { get; set; }
+
+        //Campos Calculados
+        public string NumVersoesArquivadas_CalcField { get; set; }
     }
 }
