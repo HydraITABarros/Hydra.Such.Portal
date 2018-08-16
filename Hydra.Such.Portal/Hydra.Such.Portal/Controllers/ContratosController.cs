@@ -2273,6 +2273,7 @@ namespace Hydra.Such.Portal.Controllers
                                     thisHeader.Estado = 7;
                                 }
                                 thisHeader.TipoContrato = originType;
+                                thisHeader.Tipo = 1; //CONTRATO
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;
                                 thisHeader.NºProposta = contractNo;
@@ -2337,6 +2338,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
                                 thisHeader.TipoContrato = originType;
+                                thisHeader.Tipo = 1; //CONTRATO
                                 thisHeader.NºOportunidade = contractNo;
                                 thisHeader.NºProposta = newNumeration;
                                 thisHeader.NºDeContrato = contractNo;
