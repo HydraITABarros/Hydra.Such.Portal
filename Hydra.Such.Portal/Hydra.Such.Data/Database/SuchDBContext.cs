@@ -345,9 +345,7 @@ namespace Hydra.Such.Data.Database
             {
                 entity.ToTable("Actividades_por_Produto");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CodActividade)
                     .HasColumnName("Cod_Actividade")
@@ -1031,6 +1029,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumeraçãoPréRequisições).HasColumnName("Numeração Pré Requisições");
 
                 entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
+
+                entity.Property(e => e.NumeracaoProdutos).HasColumnName("NumeracaoProdutos");
+
+                entity.Property(e => e.NumeracaoConsultaMercado).HasColumnName("ConsultaMercado");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -1792,6 +1794,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.TipoProposta).HasColumnName("Tipo Proposta");
 
                 entity.Property(e => e.UnidadePrestação).HasColumnName("Unidade Prestação");
+
+                entity.Property(e => e.NºVEP)
+                    .HasColumnName("Nº VEP")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

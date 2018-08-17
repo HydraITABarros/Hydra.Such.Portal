@@ -87,7 +87,8 @@
     </nav>
     <!--========== END app navbar -->
     <!-- APP ASIDE ==========-->
-    <aside id="menubar" class="menubar light">
+    <aside id="menubar" class="menubar light menubar-resizable">
+        <div class="after"></div>
 
         <div class="menubar-scroll">
             <div class="menubar-scroll-inner">
@@ -207,6 +208,7 @@
                                 <ul class="submenu">
                                     <li>@Html.ActionLink("Actividades", "Actividades", "Actividades", null, null)</li>
                                     <li>@Html.ActionLink("Actividades Por Fornecedor", "ActividadesPorFornecedor", "ActividadesPorFornecedor", null, null)</li>
+                                    <li>@Html.ActionLink("Actividades Por Produto", "ActividadesPorProduto", "ActividadesPorProduto", null, null)</li>
                                     <li>@Html.ActionLink("Consulta de Mercado", "ConsultaMercado", "ConsultaMercado", null, null)</li>
                                 </ul>
                             </li>

@@ -149,11 +149,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetUtilizadoresByArea()
         {
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            List<DDMessageString> result = DBUserConfigurations.GetAll().Where(x => x.Rfperfil == (int)userConfig.RFPerfil).Select(x => new DDMessageString()
+            List<DDMessageString> result = new List<DDMessageString>();
+            if (userConfig.RFPerfil != null)
             {
-                id = x.IdUtilizador,
-                value = x.Nome
-            }).ToList();
+                result = DBUserConfigurations.GetAll().Where(x => x.Rfperfil == (int)userConfig.RFPerfil).Select(x => new DDMessageString()
+                {
+                    id = x.IdUtilizador,
+                    value = x.Nome
+                }).ToList();
+            }
             return Json(result);
         }
         [HttpPost]

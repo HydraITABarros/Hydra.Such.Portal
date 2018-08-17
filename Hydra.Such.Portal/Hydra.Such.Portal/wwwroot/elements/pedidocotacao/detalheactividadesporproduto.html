@@ -19,7 +19,7 @@
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
-<dom-module id="x-actividadeporfornecedordetails">
+<dom-module id="x-actividadeporprodutodetails">
     <template>
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -68,7 +68,7 @@
             }
         </style>
 
-        <iron-ajax url="/ActividadesPorFornecedor/DetalheActividadePorFornecedor"
+        <iron-ajax url="/ActividadesPorProduto/DetalheActividadePorProduto"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -76,7 +76,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/ActividadesPorFornecedor/CreateActividadePorFornecedor"
+        <iron-ajax url="/ActividadesPorProduto/CreateActividadePorProduto"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -84,7 +84,7 @@
                    on-response="_createResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/ActividadesPorFornecedor/UpdateActividadePorFornecedor"
+        <iron-ajax url="/ActividadesPorProduto/UpdateActividadePorProduto"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -92,7 +92,7 @@
                    on-response="_updateResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/ActividadesPorFornecedor/DeleteActividadePorFornecedor"
+        <iron-ajax url="/ActividadesPorProduto/DeleteActividadePorProduto"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -100,6 +100,7 @@
                    on-response="_deleteResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetProducts" id="ajax_item_options" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Actividades/GetAllActividades" id="ajax_actividades_options" last-response="{{LActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -118,11 +119,11 @@
                         <vaadin-text-field value="{{data.id}}" id="id_L" name="id_L" label="ID" disabled="true"> </vaadin-text-field>
                     </div>
                     <div class="col-md-4 ">
-                        <such-selectbox id="codFornecedor" label="Nº Fornecedor" value="{{data.codFornecedor}}"
-                                        items="[[Suppliers]]"
-                                        text-path="name"
-                                        value-path="no_"
-                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                        <such-selectbox id="codProduto" label="Nº Produto" value="{{data.codProduto}}"
+                                        items="[[CBItems]]"
+                                        text-path="code"
+                                        value-path="code"
+                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
                                         disabled="{{ !_permissions.update }}">
                         </such-selectbox>
                     </div>
@@ -147,7 +148,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-actividadeporfornecedordetails',
+                is: 'x-actividadeporprodutodetails',
                 properties: {
                     _permissions: {
                         type: Array
@@ -184,7 +185,7 @@
                     if (this._validateData()) {
 
                         this.$.ajax_createactividade.body = JSON.stringify({
-                            "codFornecedor": this.$.codFornecedor.value,
+                            "codProduto": this.$.codProduto.value,
                             "codActividade": this.$.codActividade.value
                         });
                         this.$.ajax_createactividade.generateRequest();
@@ -204,7 +205,7 @@
 
                         this.$.ajax_updateactividade.body = JSON.stringify({
                             "id": this.$.id_L.value,
-                            "codFornecedor": this.$.codFornecedor.value,
+                            "codProduto": this.$.codProduto.value,
                             "codActividade": this.$.codActividade.value
                         });
                         this.$.ajax_updateactividade.generateRequest();
@@ -223,12 +224,12 @@
                         var ajax_request = this.$.ajax_deleteactividade;
                         ajax_request.body = JSON.stringify({
                             "id": this.$.id_L.value,
-                            "codFornecedor": this.$.codFornecedor.value,
+                            "codProduto": this.$.codProduto.value,
                             "codActividade": this.$.codActividade.value
                         });
 
                         this._confirmAndExecuteActionToast(
-                            "Confirma a eliminação da Actividade Por Fornecedor?",
+                            "Confirma a eliminação da Actividade Por Produto?",
                             ajax_request
                         );
                     }
@@ -244,11 +245,11 @@
 
                 _validateData: function () {
                     if (this.$.codActividade.value != "") {
-                        if (this.$.codFornecedor.value != "") {
+                        if (this.$.codProduto.value != "") {
                             return true;
                         }
                         else {
-                            this._showErrorMessage("Falta preencher o campo Cód. Fornecedor.");
+                            this._showErrorMessage("Falta preencher o campo Cód. Produto.");
                             return false;
                         }
                         return true;

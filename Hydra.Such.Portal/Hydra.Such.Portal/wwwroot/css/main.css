@@ -433,8 +433,27 @@ paper-toast {
         text-align: center;
     }
 }
+/* menu bar resizable*/
+.menubar-resizable .after {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    width: 15px;
+    top: 0;
+    bottom: 0;
+    right: -3px;
+    background: transparent;
+    cursor: col-resize;
+}
+.menubar-fold .menubar-resizable .after {
+    display: none;
+}
 
 @media (max-width: 1199px) {
+    .menubar-resizable .after {
+        display: none;
+    }
+
     .nav-side-menu {
         position: relative;
         width: 100%;

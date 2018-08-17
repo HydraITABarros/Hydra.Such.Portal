@@ -317,9 +317,9 @@
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </template>
+                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+                <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <!--</template>-->
                 <!--<paper-button id="btnContractArchive" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>-->
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
@@ -511,26 +511,25 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <table width="300px">
-                                                        <tr>
-                                                            <td width="30%">[[item.id]]</td>
-                                                            <td width="70%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>-->
-
-                                            <such-selectbox id="mPaymentTerms" name="mPaymentTerms" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}"
-                                                            items="[[CBPaymentTerms]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            required error-message="Este campo é obrigatório"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                            </such-selectbox>
-                                        </div>
+                                        <!--<div class="col-md-3 ">-->
+                                        <!--<vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <template>
+                                                <table width="300px">
+                                                    <tr>
+                                                        <td width="30%">[[item.id]]</td>
+                                                        <td width="70%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>-->
+                                        <!--<such-selectbox id="mPaymentTerms" name="mPaymentTerms" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}"
+                                                        items="[[CBPaymentTerms]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        required error-message="Este campo é obrigatório"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>-->
+                                        <!--</div>-->
                                     </div>
 
                                     <div class="row break_clear">
@@ -629,10 +628,10 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3">
-                                            <vaadin-checkbox checked="{{data.batchInvoices}}" disabled="{{ !_permissions.update }}">Juntar Faturas</vaadin-checkbox>
+                                            <vaadin-checkbox id="mbatchInvoices" checked="{{data.batchInvoices}}" disabled="{{ !_permissions.update }}">Juntar Faturas</vaadin-checkbox>
                                         </div>
                                         <div class="col-md-3">
-                                            <vaadin-checkbox checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
+                                            <vaadin-checkbox id="mcontractLinesInBilling" checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
                                     </div>
                                 </div>
@@ -644,14 +643,14 @@
                                         <paper-button raised hidden="{{ _readOnly }}" id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
                                 </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised hidden="{{ _readOnly }}" id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
-                                </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised hidden="{{ _readOnly }}" id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
+                                <!--<template is="dom-if" if="{{ !_isCreate }}">-->
+                                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                    <paper-button raised hidden="{{ _readOnly }}" id="btnUpdate" class="btnSave" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                    <!--</template>-->
+                                <!--</template>-->
+                                <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                                <paper-button raised hidden="{{ _readOnly }}" id="btnDelete" class="btnRemove" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                <!--</template>-->
                             </div>
                         </div>
                         <!--</paper-collapse-item>
@@ -801,7 +800,7 @@
                                         <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
-                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ !_permissions.update }}">Fáturavel</vaadin-checkbox>
+                                        <vaadin-checkbox id="_CLBillable" checked="{{_CLBillable}}" disabled="{{ !_permissions.update }}">Fáturavel</vaadin-checkbox>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -917,7 +916,7 @@
                                     </div>
 
                                     <div class="col-lg-2 alignPoga">
-                                        <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ !_permissions.update }}">Criar Contrato</vaadin-checkbox>
+                                        <vaadin-checkbox id="_CLCreateContract" checked="{{_CLCreateContract}}" disabled="{{ !_permissions.update }}">Criar Contrato</vaadin-checkbox>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -925,9 +924,9 @@
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-lg-2">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <paper-button raised hidden="{{ _readOnly }}" id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                        </template>
+                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                            <paper-button raised hidden="{{ _readOnly }}" id="btnCreateLine" class="btnSave" on-tap="_createContractLine" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        <!--</template>-->
                                     </div>
                                 </div>
                             </paper-collapse-item>
@@ -1305,9 +1304,9 @@
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised hidden="{{ _readOnly }}" id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
+                            <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                            <paper-button raised hidden="{{ _readOnly }}" id="btnSaveLine" class="btnSave" on-tap="_updateContractLines" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <!--</template>-->
                         </div>
                     </div>
                 </iron-form>
@@ -1711,7 +1710,6 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
 
-
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
@@ -1784,10 +1782,10 @@
                             this._openToastError("É obrigatória seleção de uma unidade de prestação.");
                             return false;
                         }
-                        if (this.$.mPaymentTerms.value == "" || this.$.mPaymentTerms.value == undefined || this.$.mPaymentTerms.value == null) {
-                            this._openToastError("É obrigatória seleção de Cód. Termos Pagamento.");
-                            return false;
-                        }
+                        //if (this.$.mPaymentTerms.value == "" || this.$.mPaymentTerms.value == undefined || this.$.mPaymentTerms.value == null) {
+                        //    this._openToastError("É obrigatória seleção de Cód. Termos Pagamento.");
+                        //    return false;
+                        //}
 
                         return true;
                     }
@@ -1936,6 +1934,9 @@
                 _responseProcessor: function (data) {
                     this._showArchiveReason();
                     var self = this;
+
+                    self._setFieldsEditability(self.data);
+
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         //this.data.area = this._areaid;
@@ -1944,7 +1945,6 @@
                         //this.$.grid_databound_ajax_proposals.body = JSON.stringify({ "AreaId": this._areaid });
                         this.$.grid_databound_ajax_proposals.body = JSON.stringify();
                         this.$.grid_databound_ajax_proposals.generateRequest();
-
 
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
@@ -2365,6 +2365,7 @@
                     }
                 },
                 _responseParseToContract: function (e) {
+                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
@@ -2467,6 +2468,109 @@
                                 }
                             }
                         });
+                    }
+                },
+
+                _setFieldsEditability(data) {
+                    debugger;
+                    var _self = this;
+
+                    if (_self._isCreate & data.status == 2) {
+                        $(_self.$.btnUpdate).addClass('hidden');
+                    }
+                    else {
+                        $(_self.$.btnUpdate).removeClass('hidden');
+                    }
+
+                    if (data.status == 2) { //ENVIADA
+                        //GERAL
+                        _self.$.contractNo.disabled = true;
+                        _self.$.Description.disabled = true;
+                        _self.$.contactNo.disabled = true;
+                        _self.$.mClients.disabled = true;
+                        _self.$.mOrderOrigin.disabled = true;
+                        _self.$.mOrdOrderSource.disabled = true;
+                        _self.$.txtRelatedContractNo.disabled = true;
+                        _self.$.versionNo.disabled = true;
+                        _self.$.mStartData.disabled = true;
+                        _self.$.DueDate.disabled = true;
+                        _self.$.mStatus.disabled = true;
+                        _self.$.mCustomerShipmentDate.disabled = true;
+                        _self.$.mProposalChangeDate.disabled = true;
+                        _self.$.mInternalNumeration.disabled = true;
+                        _self.$.mTotalProposalValue.disabled = true;
+                        _self.$.mCodeRegion.disabled = true;
+                        _self.$.mFunctionalArea.disabled = true;
+                        _self.$.mResponsabilityCenter.disabled = true;
+                        _self.$.mFeeUnits.disabled = true;
+                        _self.$.mOportunity.disabled = true;
+                        _self.$.mBaseValueProcedure.disabled = true;
+                        _self.$.mNotes.disabled = true;
+
+                        //ENVIO
+                        _self.$.codeShippingAddress.disabled = true;
+                        _self.$.ShippingName.disabled = true;
+                        _self.$.ShippingAddress.disabled = true;
+                        _self.$.shippingZipCode.disabled = true;
+                        _self.$.ShippingLocality.disabled = true;
+                        _self.$.mClientRequisitionNo.disabled = true;
+
+                        //DETALHES FATURA
+                        _self.$.mBillingTypes.disabled = true;
+                        _self.$.mMaintenanceTypes.disabled = true;
+                        _self.$.mProvisioningFee.disabled = true;
+                        _self.$.mc.disabled = true;
+                        _self.$.mDisplacementFee.disabled = true;
+                        _self.$.mInvoicePeriods.disabled = true;
+                        _self.$.mNextInvoiceDate.disabled = true;
+                        _self.$.mNextBillingPeriod.disabled = true;
+                        _self.$.mbatchInvoices.disabled = true;
+                        _self.$.mcontractLinesInBilling.disabled = true;
+
+                        //$(_self.$.btnUpdate).addClass('hidden');
+                        $(_self.$.btnDelete).addClass('hidden');
+
+                        //DATAS LIMITE FASES DO PROCESSO
+                        _self.$.mLimitClarificationDate.disabled = true;
+                        _self.$.mLimitClarificationTime.disabled = true;
+                        _self.$.mErrorsOmissionsDate.disabled = true;
+                        _self.$.mErrorsOmissionsTime.disabled = true;
+                        _self.$.mProposalDelivery.disabled = true;
+                        _self.$.proposalDeliveryTime.disabled = true;
+                        _self.$.mFinalReportDate.disabled = true;
+                        _self.$.mFinalReportTime.disabled = true;
+                        _self.$.mDocumentationHabilitationDate.disabled = true;
+                        _self.$.mDocumentationHabilitationTime.disabled = true;
+                        _self.$.mPreviousHearing.disabled = true;
+                        _self.$.mPreviousHearingTime.disabled = true;
+
+                        //LINHAS
+                        _self.$._CLContractLineType.disabled = true;
+                        _self.$._CLCode.disabled = true;
+                        _self.$._CLDescription.disabled = true;
+                        _self.$._CLQuantity.disabled = true;
+                        _self.$._CLMeasureUnit.disabled = true;
+                        _self.$._CLUnitPrice.disabled = true;
+                        _self.$._CLDiscountLine.disabled = true;
+                        _self.$._CLBillable.disabled = true;
+                        _self.$._CLRegion.disabled = true;
+                        _self.$._CLFunctionalArea.disabled = true;
+                        _self.$._CLResponsabilityCenter.disabled = true;
+                        _self.$._CLFrequency.disabled = true;
+                        _self.$._CLInterventionHours.disabled = true;
+                        _self.$._CLTotalTechnicians.disabled = true;
+                        _self.$._CLVersionStartDate.disabled = true;
+                        _self.$._CLVersionEndDate.disabled = true;
+                        _self.$._CLResponsible.disabled = true;
+                        _self.$._CLServiceClient.disabled = true;
+                        _self.$._CLInvoiceGroup.disabled = true;
+                        _self.$._CLCreateContract.disabled = true;
+
+                        $(_self.$.btnCreateLine).addClass('hidden');
+
+                        $(_self.$.grid_contractlines).addClass('disabled');
+
+                        $(_self.$.btnSaveLine).addClass('hidden');
                     }
                 },
 

@@ -781,6 +781,8 @@ namespace Hydra.Such.Portal.Controllers
                 SimplifiedProceduresNumeration = Cfg.NumeraçãoProcedimentoSimplificado,
                 SimplifiedReqTemplatesNumeration = Cfg.NumeraçãoModReqSimplificadas,
                 SimplifiedRequisitionNumeration = Cfg.NumeraçãoRequisiçõesSimplificada,
+                ProdutosNumeration = Cfg.NumeracaoProdutos,
+                ConsultaMercadoNumeration = Cfg.NumeracaoConsultaMercado,
                 DinnerEndTime = Cfg.FimHoraJantar,
                 DinnerStartTime = Cfg.InicioHoraJantar,
                 LunchEndTime = Cfg.FimHoraAlmoco,
@@ -814,6 +816,8 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoProcedimentoSimplificado = data.SimplifiedProceduresNumeration;
             configObj.NumeraçãoModReqSimplificadas = data.SimplifiedReqTemplatesNumeration;
             configObj.NumeraçãoRequisiçõesSimplificada = data.SimplifiedRequisitionNumeration;
+            configObj.NumeracaoProdutos = data.ProdutosNumeration;
+            configObj.NumeracaoConsultaMercado = data.ConsultaMercadoNumeration;
             configObj.FimHoraJantar = data.DinnerEndTime;
             configObj.InicioHoraJantar = data.DinnerStartTime;
             configObj.InicioHoraAlmoco = data.LunchStartTime;

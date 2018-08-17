@@ -39,7 +39,8 @@ namespace Hydra.Such.Data.Logic
                             VendorProductNo = (string)temp.Vendor_Item_No_,
                             LastCostDirect = (decimal)temp.Last_Direct_Cost,
                             VendorNo = (string)temp.Vendor_No_,
-                            VATProductPostingGroup = (string)temp.VATProductPostingGroup
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup,
+                            UnitCost = (decimal)temp.UnitCost
                         });
                     }
                 }

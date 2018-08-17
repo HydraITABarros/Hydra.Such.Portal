@@ -403,7 +403,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                     ValorBaseProcedimento = x.BaseValueProcedure,
                     AudiênciaPrévia = string.IsNullOrEmpty(x.PreviousHearing) ? (DateTime?)null : DateTime.Parse(x.PreviousHearing),
                     Historico = x.History,
-                    Tipo= x.Type
+                    Tipo= x.Type,
+                    NºVEP = x.NoVEP
                 };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
@@ -559,7 +560,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
                 ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
                 History = x.Historico,
-                Type= x.Tipo ?? 0
+                Type= x.Tipo ?? 0,
+                NoVEP = x.NºVEP
             };
             if (x.NºCliente!=null && x.NºCliente!="") {
                 result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
