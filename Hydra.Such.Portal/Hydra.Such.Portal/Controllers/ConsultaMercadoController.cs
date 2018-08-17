@@ -93,7 +93,75 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        #region Linhas Consulta Mercado
 
+        [HttpPost]
+        public JsonResult CreateLinhaConsultaMercado([FromBody] LinhasConsultaMercadoView data)
+        {
+            bool result = false;
+            try
+            {
+                LinhasConsultaMercado linhaConsultaMercado = new LinhasConsultaMercado();
+                linhaConsultaMercado.CodActividade = data.CodActividade;
+                linhaConsultaMercado.CodAreaFuncional = data.CodAreaFuncional;
+                linhaConsultaMercado.CodCentroResponsabilidade = data.CodCentroResponsabilidade;
+                linhaConsultaMercado.CodLocalizacao = data.CodLocalizacao;
+                linhaConsultaMercado.CodProduto = data.CodProduto;
+                linhaConsultaMercado.CodRegiao = data.CodRegiao;
+                linhaConsultaMercado.CodUnidadeMedida = data.CodUnidadeMedida;
+                linhaConsultaMercado.CriadoEm = DateTime.Now;
+                linhaConsultaMercado.CriadoPor = User.Identity.Name;
+                linhaConsultaMercado.CustoTotalObjectivo = data.CustoTotalObjectivo;
+                linhaConsultaMercado.CustoTotalPrevisto = data.CustoTotalPrevisto;
+                linhaConsultaMercado.CustoUnitarioObjectivo = data.CustoUnitarioObjectivo;
+                linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
+                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : default(DateTime);
+                linhaConsultaMercado.Descricao = data.Descricao;
+                linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
+                linhaConsultaMercado.ModificadoEm = data.ModificadoEm;
+                linhaConsultaMercado.ModificadoPor = data.ModificadoPor;
+                linhaConsultaMercado.NumConsultaMercado = data.NumConsultaMercado;
+                //linhaConsultaMercado.NumLinha = data.NumLinha;
+                linhaConsultaMercado.NumProjecto = data.NumProjecto;
+                linhaConsultaMercado.NumRequisicao = data.NumRequisicao;
+                linhaConsultaMercado.Quantidade = data.Quantidade;
+
+                var dbCreateResult = DBConsultaMercado.Create(linhaConsultaMercado);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+
+        }
+
+
+        [HttpPost]
+        public JsonResult DeleteLinhaConsultaMercado([FromBody] LinhasConsultaMercado data)
+        {
+            bool result = false;
+            try
+            {
+                if (DBConsultaMercado.Delete(data) != null)
+                    result = true;
+                else
+                    result = false;
+                
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        #endregion
 
         #region EXCEL
 

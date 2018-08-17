@@ -643,6 +643,64 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
         #region Linhas_Consulta_Mercado
 
+
+        public static LinhasConsultaMercado Create(LinhasConsultaMercado ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToCreate.CriadoEm = DateTime.Now;
+                    ctx.LinhasConsultaMercado.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static LinhasConsultaMercado Update(LinhasConsultaMercado ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.LinhasConsultaMercado.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static LinhasConsultaMercado Delete(LinhasConsultaMercado ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.LinhasConsultaMercado.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static LinhasConsultaMercadoView CastLinhasConsultaMercadoToView(LinhasConsultaMercado ObjectToTransform)
         {
             LinhasConsultaMercado linhasConsultaMercado = new LinhasConsultaMercado();
