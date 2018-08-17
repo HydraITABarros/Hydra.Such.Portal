@@ -101,6 +101,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/DeleteConsultaMercado"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_consultaMercado"
+                   on-response="_deleteConsultaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado"
                    last-response="{{LinhaConsultaMercadoCreated}}"
                    method="post"
@@ -135,7 +144,6 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
-            <paper-button id="btnCreate" raised class="tablinks" on-tap="_create" disabled="{{ !_isCreate }}" title="Criar" style="background-color:#71BCC1"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
 
@@ -759,8 +767,33 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
 
+                _update: function () {
+
+                },
+                _updateResponse: function (e) {
+
+                },
+
+                _delete: function () {
+                    var ajax_request = this.$.ajax_delete_consultaMercado;
+                    ajax_request.body = JSON.stringify({ "NumConsultaMercado": this.data.numConsultaMercado });
+
+                    this._confirmAndExecuteActionToast(
+                        "Tem a certeza que pretende remover a Consulta ao Mercado " + this.data.numConsultaMercado + "?",
+                        ajax_request
+                    );
+                },
+                _deleteConsultaResponse: function (e) {
+                    var self = this;
+                    if (this.deletedData.eReasonCode != 0) {
+                        this._showErrorMessage("Não é possivel eliminar a Consulta ao Mercado.");
+                    } else {
+                        this._showMessage('Consulta ao Mercado eliminada com sucesso.');
+                        window.history.back();
+                    }
+                },
+
                 _createLinha: function () {
-                    debugger
                     this.$.page_createLinha_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
                         codProduto: this.$._CBItems.value,
@@ -786,14 +819,6 @@
                         //modificadoPor: this.$..value,
                         dataEntregaPrevista_Show: this.$.dataEntregaPrevista.value
                     });
-
-                    //this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
-
-                    //var sav = this.$.ajax_update_pedido.generateRequest();
-                    //var lin = this.$.page_createLinha_ajax.generateRequest();
-
-                    //Promise.all([sav.completes, lin.completes]).then(function (requests) {
-                    //})
 
                     this.$.page_createLinha_ajax.generateRequest();
                     this.$.tabLinhas.clearCache();
@@ -840,10 +865,13 @@
                         this._showMessage('Linha eliminada com sucesso');
                         this.$.tabLinhas.clearCache();
                     } else {
-                        this._showMessage('Não foi possível eliminar a Linha!')
+                        this._showMessage('Não foi possível eliminar a Linha!');
+                        setTimeout(
+                            function () {
+                                window.location.replace("/");
+                            }, 2500);
                     }
                 },
-
 
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {

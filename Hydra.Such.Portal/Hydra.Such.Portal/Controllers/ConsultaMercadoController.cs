@@ -93,6 +93,56 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+
+        [HttpPost]
+        public JsonResult CreateConsultaMercado()
+        {
+            ConsultaMercado consultaMercado = DBConsultaMercado.Create(User.Identity.Name);
+            
+            if (consultaMercado == null || consultaMercado.NumConsultaMercado == "")
+                return Json("");
+
+            return Json(consultaMercado.NumConsultaMercado);
+
+        }
+
+
+        [HttpPost]
+        public JsonResult DeleteConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            if (data != null)
+            {
+                if (DBConsultaMercado.Delete(data.NumConsultaMercado))
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = "Consulta ao Mercado removida com sucesso"
+                    };
+                }
+                else
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 4,
+                        eMessage = "Não foi possível remover a Consulta ao Mercado"
+                    };
+                }
+                return Json(result);
+            }
+            else
+            {
+                result = new ErrorHandler()
+                {
+                    eReasonCode = -1,
+                    eMessage = "Sem dados"
+                };
+                
+                return Json(result);
+            }
+        }
+
         #region Linhas Consulta Mercado
 
         [HttpPost]

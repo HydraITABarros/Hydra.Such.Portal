@@ -63,6 +63,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/CreateConsultaMercado"
+                   last-response="{{NewConsultaMercado}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createconsulta"
+                   on-response="_newConsultaMercadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -93,7 +102,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="TelemoveisGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="ConsultaMercadoGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -395,6 +404,7 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -422,10 +432,29 @@
                         window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
                     }
                 },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
                 _create: function (item) {
-                    if (item != null) {
-                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/";
-                    }
+                    this.$.ajax_createconsulta.body = JSON.stringify();
+                    this.$.ajax_createconsulta.generateRequest();
+
+                },
+                _newConsultaMercadoResponse: function (e) {
+                    if (this.NewConsultaMercado == "") {
+                        this._openToast("Não é possível criar uma Nova Consulta");
+                    } else {
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + this.NewConsultaMercado;
+                    };
                 },
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);

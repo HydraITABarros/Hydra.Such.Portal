@@ -396,18 +396,51 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
-        public static ConsultaMercado Create(ConsultaMercado ObjectToCreate)
+        //public static ConsultaMercado Create(ConsultaMercado ObjectToCreate)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            ObjectToCreate.PedidoCotacaoCriadoEm = DateTime.Now;
+        //            ctx.ConsultaMercado.Add(ObjectToCreate);
+        //            ctx.SaveChanges();
+        //        }
+
+        //        return ObjectToCreate;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return null;
+        //    }
+        //}
+
+        public static ConsultaMercado Create(string UserID)
         {
             try
             {
+                Configuração config = DBConfigurations.GetById(1);
+
+                ConsultaMercado consultaMercado = new ConsultaMercado()
+                {
+                    NumConsultaMercado = DBNumerationConfigurations.GetNextNumeration(config.NumeracaoConsultaMercado.Value, true, false),
+                    PedidoCotacaoCriadoPor = UserID,
+                    PedidoCotacaoCriadoEm = DateTime.Now
+                };
+
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToCreate.PedidoCotacaoCriadoEm = DateTime.Now;
-                    ctx.ConsultaMercado.Add(ObjectToCreate);
+                    ctx.ConsultaMercado.Add(consultaMercado);
                     ctx.SaveChanges();
                 }
 
-                return ObjectToCreate;
+
+                ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(config.NumeracaoConsultaMercado.Value);
+                ConfigNum.ÚltimoNºUsado = consultaMercado.NumConsultaMercado;
+                ConfigNum.UtilizadorModificação = UserID;
+                DBNumerationConfigurations.Update(ConfigNum);
+
+                return consultaMercado;
             }
             catch (Exception e)
             {
@@ -450,6 +483,28 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
 
                 return null;
+            }
+        }
+
+        public static bool Delete(string NumConsultaMercado)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.LinhasConsultaMercado.RemoveRange(_context.LinhasConsultaMercado.Where(lcm => lcm.NumConsultaMercado == NumConsultaMercado));
+                _context.CondicoesPropostasFornecedores.RemoveRange(_context.CondicoesPropostasFornecedores.Where(cpf => cpf.NumConsultaMercado == NumConsultaMercado));
+                _context.LinhasCondicoesPropostasFornecedores.RemoveRange(_context.LinhasCondicoesPropostasFornecedores.Where(lcpf => lcpf.NumConsultaMercado == NumConsultaMercado));
+                _context.SeleccaoEntidades.RemoveRange(_context.SeleccaoEntidades.Where(se => se.NumConsultaMercado == NumConsultaMercado));
+                _context.ConsultaMercado.RemoveRange(_context.ConsultaMercado.Where(cm => cm.NumConsultaMercado == NumConsultaMercado));
+
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
         }
 
