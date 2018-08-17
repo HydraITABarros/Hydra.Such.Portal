@@ -135,11 +135,12 @@ namespace Hydra.Such.Portal.Controllers
                 if (string.IsNullOrEmpty(Produto.No))
                 {
                     //Get Ficha de Produto Numeration
-                    int idNumeration = DBNumerationConfigurations.GetAll().Where(x => x.Descrição == "Numeração Produtos").FirstOrDefault().Id;
-                    string ProdutoNo = DBNumerationConfigurations.GetNextNumeration(idNumeration, true, false);
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProdutosNumerationConfigurationId = Configs.NumeracaoProdutos.Value;
+                    string ProdutoNo = DBNumerationConfigurations.GetNextNumeration(ProdutosNumerationConfigurationId, true, false);
 
                     //Update Last Numeration Used
-                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(idNumeration);
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProdutosNumerationConfigurationId);
                     ConfigNumerations.ÚltimoNºUsado = ProdutoNo;
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
