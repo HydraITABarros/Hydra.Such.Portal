@@ -422,22 +422,22 @@
                     <div class="col-sm-3">
                         <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled ></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field  label="Valor" type="text" value="{{data.valor}}" pattern="[0-9]+([\.][0-9]+)?" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
 
@@ -1598,12 +1598,9 @@
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-
+                        debugger;
                         if (vendorId == "") {
                             this.$.sbVendors.value = order.buyFromVendorNo;
-                            this.$.cmbRegions.value = order.regionId;
-                            this.$.cmbFunctionalAreas.value = order.functionalAreaId;
-                            this.$.cmbResponsabilityCenters.value = order.respCenterId;
                             //this.$.txtLocal.value = order.locationCode;
                         }
                         //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
@@ -1614,6 +1611,10 @@
                             this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
                             return;
                         }
+                        this.$.cmbRegions.value = order.regionId;
+                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
+
                         this.$.txtLocal.value = order.locationCode;
                         //this.$.txtValorEncomendaOriginal.value = order.
                         this.$.txtQuantidadeEncomenda.value = order.quantity;
