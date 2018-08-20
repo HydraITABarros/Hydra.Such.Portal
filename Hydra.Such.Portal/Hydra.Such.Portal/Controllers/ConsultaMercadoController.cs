@@ -108,6 +108,41 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
+        public JsonResult UpdateConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (data != null)
+                {
+                    ConsultaMercado consultaMercado = DBConsultaMercado.Update(data);
+                    if (consultaMercado == null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Ocorreu um erro";
+                        return Json(result);
+                    }
+
+                    result.eReasonCode = 0;
+                    result.eMessage = "Sucesso";
+                    return Json(result);
+                }
+                else
+                {
+                    result.eReasonCode = -1;
+                    result.eMessage = "Sem dados";
+                    return Json(result);
+                }
+            }
+            catch (Exception e)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Ocorreu um erro";
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
         public JsonResult DeleteConsultaMercado([FromBody] ConsultaMercadoView data)
         {
             ErrorHandler result = new ErrorHandler();
@@ -165,7 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                 linhaConsultaMercado.CustoTotalPrevisto = data.CustoTotalPrevisto;
                 linhaConsultaMercado.CustoUnitarioObjectivo = data.CustoUnitarioObjectivo;
                 linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
-                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : default(DateTime);
+                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null;
                 linhaConsultaMercado.Descricao = data.Descricao;
                 linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
                 linhaConsultaMercado.ModificadoEm = data.ModificadoEm;

@@ -101,6 +101,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/UpdateConsultaMercado"
+                   last-response="{{ConsultaMercadoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_update_consultamercado"
+                   on-response="_updateConsultaMercadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/DeleteConsultaMercado"
                    last-response="{{deletedData}}"
                    method="post"
@@ -252,7 +261,7 @@
                                     <such-selectbox id="codActividade" value="{{data.codActividade}}" label="Cód. Actividade"
                                                     items="[[CBActividades]]"
                                                     text-path="codActividade"
-                                                    value-path="descricao"
+                                                    value-path="codActividade"
                                                     fields='[{"field":"codActividade", "name":"Cód. Actividade"}, {"field":"descricao", "name":"Descrição"}]'
                                                     disabled="{{ !_permissions.update }}">
                                     </such-selectbox>
@@ -274,7 +283,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <vaadin-combo-box value="{{data.fase}}" label="Fase" items="[[LFase]]" item-value-path="id" id="fase" item-label-path="value">
+                                    <vaadin-combo-box value="{{data.fase}}" label="Fase" items="[[LFase]]" item-value-path="id" id="fase" item-label-path="value" disabled="true">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -292,7 +301,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <br />
-                                    <vaadin-checkbox checked="{{data.especificacaoTecnica}}">Especificação Técnica</vaadin-checkbox>
+                                    <vaadin-checkbox id="especificacaoTecnica" checked="{{data.especificacaoTecnica}}">Especificação Técnica</vaadin-checkbox>
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -673,7 +682,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Estado Anterior" }, { value: 3, description: "Estado Seguinte" }, { value: 4, description: "Registo Propostas" }, { value: 5, description: "Exportar Propostas" }, { value: 6, description: "Criar Alternativa" }, { value: 7, description: "Criar Encomenda Compra" }, { value: 8, description: "Encomenda Aberta de Compra" }],
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Selecção Entidades" }, { value: 7, description: "Propostas Fornecedores" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
@@ -685,7 +694,7 @@
                         return;
                     switch (item.value) {
                         case 1: //
-
+                            this._confirmarPedido();
                             break;
                         case 2://
 
@@ -703,9 +712,6 @@
 
                             break;
                         case 7://
-
-                            break;
-                        case 8://
 
                             break;
                     }
@@ -726,10 +732,56 @@
                     return true;
                 },
 
-                _setFieldsEditability(data) {
-                    var _self = this;
+                _confirmarPedido: function () {
+                    
+                    if (this.$.fase.value == 4) {
+                        this._openToast("Não é possível Confirmar o Pedido, porque a Fase já se encontra no último estado!")
+                        return;
+                    }
+
+                    if (this.$._CBLocations.value == "") {
+                        this._openToast("O código de Localização tem que estar preenchido!")
+                        return;
+                    }
+
+                    for (i = 0; i < this.data.linhasConsultaMercado.length; i++) {
+                        if ((this.data.linhasConsultaMercado[i].codUnidadeMedida == null) || (this.data.linhasConsultaMercado[i].codUnidadeMedida == "")) {
+                            this._showErrorMessage("Existem linhas sem Unidade de Medida definida!")
+                            return;
+                        }
+                    }
+
 
                 },
+                _fecharPedido: function () {
+
+                },
+                _estadoAnterior: function () {
+
+                },
+                _estadoSeguinte: function () {
+
+                },
+                _copiarConsultaMercado: function () {
+
+                },
+                _seleccaoEntidades: function () {
+
+                },
+                _propostasFornecedores: function () {
+
+                },
+
+                _setFieldsEditability(data) {
+                    var _self = this;
+                    
+                    if (data.fase != 0) {
+                        _self.$.descricao.disabled = (data.fase != 0);
+                    }
+
+
+                },
+
 
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -768,10 +820,15 @@
                 },
 
                 _update: function () {
-
+                    this.$.ajax_update_consultamercado.body = JSON.stringify(this.data);
+                    this.$.ajax_update_consultamercado.generateRequest();
                 },
-                _updateResponse: function (e) {
-
+                _updateConsultaMercadoResponse: function (e) {
+                    if (this.ConsultaMercadoUpdated.eReasonCode != 0) {
+                        this._showErrorMessage("Ocorreu um erro na gravação da Consulta de Mercado");
+                    } else {
+                        this._showMessage("Consulta de Mercado gravada com sucesso.")
+                    }
                 },
 
                 _delete: function () {
@@ -873,6 +930,11 @@
                     }
                 },
 
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    self._setFieldsEditability(self.data);
+                },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
