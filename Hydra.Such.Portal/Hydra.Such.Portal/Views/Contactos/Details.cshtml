@@ -8,6 +8,9 @@
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <x-contact-details _permissions='@Html.Raw(Json.Serialize(ViewBag.UserPermissions))'></x-contact-details>
 <dom-module id="x-contact-details">
@@ -19,7 +22,9 @@
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById" on-response="_onGetContactByIdResponse"></iron-ajax>
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="create_contact_request" url="/Contactos/CreateContact" on-response="_onContactResponse"></iron-ajax>
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
-        <template is="dom-if" if="{{ !_isCreate }}">
+        <iron-ajax url="/PopulateDropdowns/GetAllRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        @*<template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -27,10 +32,20 @@
                     <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </div>
-        </template>
+        </template>*@
+
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <paper-button id="btnCreateNew" class="btnEdit tablinks" on-tap="_redirectToNewContactForm" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
+            <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_createContact" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnUpdate" class="btnSave tablinks" on-tap="_updateContact" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="btnRemove tablinks" on-tap="_deleteContact" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+        </div>
+
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
+                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -45,10 +60,15 @@
                 <vaadin-text-field id="city" name="city" label="Cidade" value="{{contact.city}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{contact.regiao}}" label="Região" disabled="{{ !_permissions.update }}"
+                                items="[[CBRegions]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -71,8 +91,13 @@
             <div class="col-lg-3">
                 <vaadin-text-field id="EmailContact" name="EmailContact" label="Email Contato" value="{{contact.emailContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
+
+            <div class="col-md-6">
+                <such-textarea rows="5" value="{{contact.notes}}" id="notes" name="notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+            </div>
         </div>
-        <div class="marginSpace">
+
+        @*<div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_createContact"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
@@ -84,7 +109,7 @@
                     <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
             </template>
-        </div>
+        </div>*@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -114,6 +139,20 @@
 
                     if (this._contactId == "")
                         this._isCreate = true;
+
+                    //Inserir
+                    debugger;
+                    if (this._contactId  == "") {
+                        $(this.$.btnCreateNew).addClass('hidden');
+                        $(this.$.btnCreate).removeClass('hidden');
+                        $(this.$.btnUpdate).addClass('hidden');
+                        $(this.$.btnCancel).addClass('hidden');
+                    } else {
+                        $(this.$.btnCreateNew).removeClass('hidden');
+                        $(this.$.btnCreate).addClass('hidden');
+                        $(this.$.btnUpdate).removeClass('hidden');
+                        $(this.$.btnCancel).removeClass('hidden');
+                    }
                 },
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;

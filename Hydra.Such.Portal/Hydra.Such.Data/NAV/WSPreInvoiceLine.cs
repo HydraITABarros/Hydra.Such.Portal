@@ -165,8 +165,10 @@ namespace Hydra.Such.Data.NAV
                    Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0,
                    Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0,
                    Line_No = counter += 10000,
-                   Line_NoSpecified = true
-                   
+                   Line_NoSpecified = true,
+                   Job_No=x.ProjectNo,
+                   Contract_No_Portal= x.DocumentNo
+
                    //Job_Journal_Line_No_Portal = x.LineNo,
                    //Job_Journal_Line_No_PortalSpecified = true,
 

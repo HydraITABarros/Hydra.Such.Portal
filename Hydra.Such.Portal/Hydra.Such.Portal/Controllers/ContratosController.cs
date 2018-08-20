@@ -776,6 +776,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódServiçoCliente = x.ServiceClientNo;
                             CLine.GrupoFatura = x.InvoiceGroup;
                             CLine.CriaContrato = x.CreateContract;
+                            CLine.NºProjeto = x.ProjectNo;
                             CLine.UtilizadorModificação = User.Identity.Name;
                             DBContractLines.Update(CLine);
                         }
@@ -964,7 +965,15 @@ namespace Hydra.Such.Portal.Controllers
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
             List<EnumData> status = EnumerablesFixed.ProposalsStatus;
-            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+            List<EnumData> origemPedido = EnumerablesFixed.RequestOrigin;
+
+            result.ForEach(x =>
+            {
+                x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault() : "";
+                x.ContactNoText = DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, x.ContactNo, 0).FirstOrDefault() != null ? DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, x.ContactNo, 0).FirstOrDefault().Name : "";
+                x.OrderOriginText = x.OrderOrigin != null ? origemPedido.Where(y => y.Id == x.OrderOrigin).Select(y => y.Value).FirstOrDefault() : "";
+                x.ProvisionUnitText = DBFetcUnit.GetAll().Where(y => y.Código == x.ProvisionUnit).FirstOrDefault() != null ? DBFetcUnit.GetAll().Where(y => y.Código == x.ProvisionUnit).FirstOrDefault().Descrição : "";
+            });
             return Json(result);
         }
 
@@ -1030,7 +1039,7 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
                     StartDate = StartDate,
-                    ExpiryDate = ExpiryDate,
+                    ExpiryDate = ExpiryDate,   
                     InvoicePeriod = InvoicePeriod
                 });
             }
@@ -1139,7 +1148,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ContractNoDuplicate = line.NºContrato;
                         InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
-
                         Decimal contractVal = 0;
                         if (item.TipoContrato != 1 || item.TipoContrato != 4)
                         {
@@ -1594,6 +1602,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
+                        NºProjeto = line.NºProjeto,
                         GrupoFatura = line.GrupoFatura == null ? -1 : line.GrupoFatura.Value,
                         NºLinha = line.NºLinha,
                         Tipo = line.Tipo.ToString(),
@@ -1644,6 +1653,7 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
+                
                 if (CountLines != null && CountLines > 1)
                 {
                     RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
@@ -1652,10 +1662,14 @@ namespace Hydra.Such.Portal.Controllers
                         if(GetReqClientCont.DataÚltimaFatura != null)
                         {
                             DateTime Lastdate = GetReqClientCont.DataÚltimaFatura.Value;
+                            DateTime Newdate = GetReqClientCont.DataÚltimaFatura.Value;
                             string Month = Lastdate.ToString("MMMM").ToUpper();
                             string Year = Lastdate.Year.ToString();
                             ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
                             InvoiceBorrowed = Month+"/"+Year;
+                            //actualiar data ultima fatura
+                            GetReqClientCont.DataÚltimaFatura = Newdate.AddMonths(1);
+                            DBContractClientRequisition.Update(GetReqClientCont);
                         }
                     }
                 }
@@ -1666,6 +1680,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
                         {
+                            
                             int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
                             if (findDate == 2)
                             {
@@ -1717,9 +1732,15 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
+                    if (contractLine.ÚltimaDataFatura != null) {
+                        DateTime NewTime = contractLine.ÚltimaDataFatura.Value;
+                        contractLine.ÚltimaDataFatura = NewTime.AddMonths(1);
+                        DBContracts.Update(contractLine);
+                    }
                 }
                 if (item.Situação == "" || item.Situação == null)
                 {
+                    
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -1791,13 +1812,7 @@ namespace Hydra.Such.Portal.Controllers
                     cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
-
-                //if (cContract != null && cContract.Arquivado == true)
-                //{
-                //    UPerm.Update = false;
-                //    UPerm.Delete = false;
-                //}
-
+           
                 if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico)";
@@ -1977,7 +1992,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PropostasContrato(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Propostas);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -2068,7 +2083,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
-                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContactNo;
                                     PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
@@ -2131,6 +2146,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                         PreInvoiceToCreate.FacturaCAF = true;
                         PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+
                         if (Contract.StartData != null && Contract.StartData != "")
                             PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
                        
@@ -2257,6 +2273,7 @@ namespace Hydra.Such.Portal.Controllers
                                     thisHeader.Estado = 7;
                                 }
                                 thisHeader.TipoContrato = originType;
+                                thisHeader.Tipo = 1; //CONTRATO
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;
                                 thisHeader.NºProposta = contractNo;
@@ -2321,6 +2338,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
                                 thisHeader.TipoContrato = originType;
+                                thisHeader.Tipo = 1; //CONTRATO
                                 thisHeader.NºOportunidade = contractNo;
                                 thisHeader.NºProposta = newNumeration;
                                 thisHeader.NºDeContrato = contractNo;
@@ -2496,22 +2514,12 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (dp["contractNo"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Nº Oportunidade");
+                    row.CreateCell(Col).SetCellValue("Oportunidade");
                     Col = Col + 1;
                 }
-                if (dp["startData"]["hidden"].ToString() == "False")
+                if (dp["description"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Data Inicio");
-                    Col = Col + 1;
-                }
-                if (dp["dueDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Fim");
-                    Col = Col + 1;
-                }
-                if (dp["contactNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Contacto");
+                    row.CreateCell(Col).SetCellValue("Âmbito do Serviço");
                     Col = Col + 1;
                 }
                 if (dp["clientNo"]["hidden"].ToString() == "False")
@@ -2524,14 +2532,59 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nome Cliente");
                     Col = Col + 1;
                 }
-                if (dp["description"]["hidden"].ToString() == "False")
+                if (dp["contactNoText"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Descrição");
+                    row.CreateCell(Col).SetCellValue("Contato");
                     Col = Col + 1;
                 }
-                if (dp["statusDescription"]["hidden"].ToString() == "False")
+                if (dp["orderOriginText"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Estado");
+                    row.CreateCell(Col).SetCellValue("Origem do Pedido");
+                    Col = Col + 1;
+                }
+                if (dp["ordOrderSource"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Origem do Pedido Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["proposalNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Proposta");
+                    Col = Col + 1;
+                }
+                if (dp["versionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    Col = Col + 1;
+                }
+                if (dp["startData"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicial Prevista");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Expiração Prevista");
+                    Col = Col + 1;
+                }
+                if (dp["customerShipmentDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Envio");
+                    Col = Col + 1;
+                }
+                if (dp["proposalChangeDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Alteração");
+                    Col = Col + 1;
+                }
+                if (dp["internalNumeration"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Numeração Interna");
+                    Col = Col + 1;
+                }
+                if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Total");
                     Col = Col + 1;
                 }
                 if (dp["codeRegion"]["hidden"].ToString() == "False")
@@ -2546,17 +2599,57 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Respon.");
                     Col = Col + 1;
                 }
-                if (dp["versionNo"]["hidden"].ToString() == "False")
+                if (dp["provisionUnitText"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    row.CreateCell(Col).SetCellValue("Unidade de Prestação");
                     Col = Col + 1;
                 }
-                if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                if (dp["noVEP"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Valor Total");
+                    row.CreateCell(Col).SetCellValue("Nº VEP");
+                    Col = Col + 1;
+                }
+                if (dp["baseValueProcedure"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Base Procedimento");
+                    Col = Col + 1;
+                }
+                if (dp["notes"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Notas");
+                    Col = Col + 1;
+                }
+                if (dp["limitClarificationDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data - Limite Esclarecimentos");
+                    Col = Col + 1;
+                }
+                if (dp["limitClarificationTime"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora - Limite Esclarecimentos");
+                    Col = Col + 1;
+                }
+                if (dp["errorsOmissionsDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data - Erros e Omissões");
+                    Col = Col + 1;
+                }
+                if (dp["errorsOmissionsTime"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora - Erros e Omissões");
+                    Col = Col + 1;
+                }
+                if (dp["proposalDelivery"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data - Entrega Proposta");
+                    Col = Col + 1;
+                }
+                if (dp["proposalDeliveryTime"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora - Entrega Propost");
                     Col = Col + 1;
                 }
 
@@ -2573,19 +2666,9 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ContractNo);
                             Col = Col + 1;
                         }
-                        if (dp["startData"]["hidden"].ToString() == "False")
+                        if (dp["description"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.StartData);
-                            Col = Col + 1;
-                        }
-                        if (dp["dueDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.DueDate);
-                            Col = Col + 1;
-                        }
-                        if (dp["contactNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ContactNo);
+                            row.CreateCell(Col).SetCellValue(item.Description);
                             Col = Col + 1;
                         }
                         if (dp["clientNo"]["hidden"].ToString() == "False")
@@ -2598,14 +2681,59 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ClientName);
                             Col = Col + 1;
                         }
-                        if (dp["description"]["hidden"].ToString() == "False")
+                        if (dp["contactNoText"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Description);
+                            row.CreateCell(Col).SetCellValue(item.ContactNoText);
                             Col = Col + 1;
                         }
-                        if (dp["statusDescription"]["hidden"].ToString() == "False")
+                        if (dp["orderOriginText"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
+                            row.CreateCell(Col).SetCellValue(item.OrderOriginText);
+                            Col = Col + 1;
+                        }
+                        if (dp["ordOrderSource"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.OrdOrderSource);
+                            Col = Col + 1;
+                        }
+                        if (dp["proposalNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProposalNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["startData"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartData);
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DueDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["customerShipmentDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CustomerShipmentDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["proposalChangeDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProposalChangeDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["internalNumeration"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.InternalNumeration);
+                            Col = Col + 1;
+                        }
+                        if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TotalProposalValue.ToString());
                             Col = Col + 1;
                         }
                         if (dp["codeRegion"]["hidden"].ToString() == "False")
@@ -2623,14 +2751,54 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
                             Col = Col + 1;
                         }
-                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        if (dp["provisionUnitText"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            row.CreateCell(Col).SetCellValue(item.ProvisionUnitText);
                             Col = Col + 1;
                         }
-                        if (dp["totalProposalValue"]["hidden"].ToString() == "False")
+                        if (dp["noVEP"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalProposalValue.ToString());
+                            row.CreateCell(Col).SetCellValue(item.NoVEP);
+                            Col = Col + 1;
+                        }
+                        if (dp["baseValueProcedure"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.BaseValueProcedure.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["notes"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Notes);
+                            Col = Col + 1;
+                        }
+                        if (dp["limitClarificationDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LimitClarificationDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["limitClarificationTime"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LimitClarificationTime);
+                            Col = Col + 1;
+                        }
+                        if (dp["errorsOmissionsDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ErrorsOmissionsDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["errorsOmissionsTime"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ErrorsOmissionsTime);
+                            Col = Col + 1;
+                        }
+                        if (dp["proposalDelivery"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProposalDelivery);
+                            Col = Col + 1;
+                        }
+                        if (dp["proposalDeliveryTime"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProposalDeliveryTime);
                             Col = Col + 1;
                         }
                         count++;

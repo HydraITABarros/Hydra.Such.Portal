@@ -17,6 +17,7 @@ namespace Hydra.Such.Data.Database
         public string Telefone { get; set; }
         public string Email { get; set; }
         public string Nif { get; set; }
+        public string Regiao { get; set; }
         public string PessoaContato { get; set; }
         public string TelefoneContato { get; set; }
         public string FunçãoContato { get; set; }

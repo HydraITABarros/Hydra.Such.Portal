@@ -292,9 +292,9 @@
                         "answeredByText": { hidden: false, label: "Utilizador da Resposta" }
                     };
 
-                    if (sessionStorage["stateofplaydetails.ToggleColumn"]) {
+                    if (localStorage["stateofplaydetails.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["stateofplaydetails.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["stateofplaydetails.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -306,7 +306,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["stateofplaydetails.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["stateofplaydetails.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

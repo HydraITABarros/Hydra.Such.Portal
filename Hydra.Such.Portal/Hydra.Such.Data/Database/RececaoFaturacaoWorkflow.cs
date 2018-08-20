@@ -24,6 +24,7 @@ namespace Hydra.Such.Data.Database
         public string CriadoPor { get; set; }
         public DateTime? DataModificacao { get; set; }
         public string ModificadoPor { get; set; }
+        public bool? Anexo { get; set; }
 
         public RecFacturasProblemas Cod { get; set; }
         public RececaoFaturacao IdRecFaturacaoNavigation { get; set; }

@@ -79,12 +79,16 @@
                     </li>
                 </ul>
 
+                <div class="page-title hidden-menubar-top hidden-float pull-right">
+                    @User.Identity.Name &nbsp;&nbsp;&nbsp;
+                </div>
             </div>
         </div><!-- navbar-container -->
     </nav>
     <!--========== END app navbar -->
     <!-- APP ASIDE ==========-->
-    <aside id="menubar" class="menubar light">
+    <aside id="menubar" class="menubar light menubar-resizable">
+        <div class="after"></div>
 
         <div class="menubar-scroll">
             <div class="menubar-scroll-inner">
@@ -134,8 +138,9 @@
                                     <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
                                 </a>
                                 <ul class="submenu">
+                                    <li>@Html.ActionLink("Produtos", "List", "Produtos", null, null)</li>
                                     <li>@Html.ActionLink("Unidades Armazenamento", "Index", "UnidadeArmazenamento", null, null)</li>
-                                    <li>@Html.ActionLink("Artigos - Produtos", "", "", null, null)</li>
+                                    <li>@Html.ActionLink("Unidade Medida Produto", "UnidadeMedidaProduto", "Nutricao", null, null)</li>
                                     <li>@Html.ActionLink("Diários Artigos-Produtos", "", "", null, null)</li>
                                     <li>@Html.ActionLink("Requisições Simplificadas", "Index", "RequisicoesSimplificadas", null, null)</li>
                                     <li>@Html.ActionLink("Fichas Técnicas", "Index", "FichasTecnicasPratos", null, null)</li>
@@ -193,6 +198,21 @@
                                     <li>@Html.ActionLink("Mod. Req. Simplificadas", "Index", "ModelosReqSimplificada", new { area = "" }, null)</li>
                                 </ul>
                             </li>
+
+                            <li class="has-submenu">
+                                <a href="javascript:void(0)" class="submenu-toggle">
+                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+                                    <span class="menu-text">Pedidos de Cotação</span>
+                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+                                </a>
+                                <ul class="submenu">
+                                    <li>@Html.ActionLink("Actividades", "Actividades", "Actividades", null, null)</li>
+                                    <li>@Html.ActionLink("Actividades Por Fornecedor", "ActividadesPorFornecedor", "ActividadesPorFornecedor", null, null)</li>
+                                    <li>@Html.ActionLink("Actividades Por Produto", "ActividadesPorProduto", "ActividadesPorProduto", null, null)</li>
+                                    <li>@Html.ActionLink("Consulta de Mercado", "ConsultaMercado", "ConsultaMercado", null, null)</li>
+                                </ul>
+                            </li>
+
                             <li class="has-submenu">
                                 <a href="javascript:void(0)" class="submenu-toggle">
                                     <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
@@ -263,11 +283,11 @@
                             <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Tipos Requisições", "TiposRequisicao", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Localizações", "Localizacoes", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Localizações (Armazéns)", "Localizacoes", "Administracao", null, null)</li>
                             <li>@Html.ActionLink("Unidades de Prestação", "UnidadePrestacao", "Administracao", null, null)</li>
 
                             <li>@Html.ActionLink("Config. Mercado Local", "ConfiguracaoMLResponsaveis", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Unidade de Medida", "UnidadeMedida", "Administracao", null, null)</li>
+                            <li>@Html.ActionLink("Unidade Medida", "UnidadeMedida", "Administracao", null, null)</li>
 
                             <!--FH-->
                             <li class="has-submenu">

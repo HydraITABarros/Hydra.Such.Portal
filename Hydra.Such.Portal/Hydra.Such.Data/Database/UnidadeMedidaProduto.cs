@@ -13,5 +13,9 @@ namespace Hydra.Such.Data.Database
         public decimal? Altura { get; set; }
         public decimal? Cubagem { get; set; }
         public decimal? Peso { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
     }
 }

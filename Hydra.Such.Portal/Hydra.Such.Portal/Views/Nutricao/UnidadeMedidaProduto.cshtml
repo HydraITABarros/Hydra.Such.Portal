@@ -1,36 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Unidade de Medida Produto";
+    ViewData["Title"] = "Unidade Medida Produto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*mixin*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*ironform*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
-@*button*@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*toast*@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-@*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html">
-
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
-
-
-<h1 class="title">@ViewData["Title"]</h1>
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <x-unitofmeasure></x-unitofmeasure>
 
@@ -53,10 +42,23 @@
                 paper-input {
                     max-width: 450px !important;
                 }
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                        padding: 0 0;
+                    };
+                    --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
+                }
             </style>
         </custom-style>
 
-        @*POPULATE GRID*@
         <iron-ajax url="/Nutricao/GetUnitOfMeasure"
                    last-response="{{result}}"
                    method="post"
@@ -66,7 +68,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*POPULATE Update*@
         <iron-ajax url="/Nutricao/CreateUnitOfMeasure"
                    last-response="{{createResult}}"
                    method="post"
@@ -76,15 +77,15 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*CRUD NEW PROFILEMODEL*@
-        <iron-ajax url="/PopulateDropdowns/GetProducts"
+        <iron-ajax url="/PopulateDropdowns/GetProductseSUCH"
                    last-response="{{ProductNoList}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCodeeSUCH"
                    last-response="{{CodeList}}"
                    auto
                    method="post"
@@ -92,79 +93,90 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" item-value-path="id" item-label-path="value" label="Nº Produto">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                                <td width="40%">[[item.id]]</td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
 
-            </div>
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[CodeList]]" id="ddCode" item-value-path="id" item-label-path="value" label="Código">
-                    <template>
-                        <table width="140px">
-                            <tr>
-                                <td width="80%"> <b>[[item.value]]</b></td>
-                                <td width="20%">[[item.id]]</td>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" item-value-path="id" item-label-path="value" label="Produto">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="100%">[[item.id]] - <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddQtdUnitMeasure" type="number" label="Qtd. Unidade de Medida"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddLength" type="number" label="Cumprimento"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddWidth" type="number" label="Largura"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddHeigth" type="number" label="Altura"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddCubage" type="number" label="Cubagem"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddWeight" type="number" label="Peso"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createUnitMeasure">Criar</paper-button>
-            </div>
-        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[CodeList]]" id="ddCode" item-value-path="id" item-label-path="value" label="Unidade Medida">
+                                <template>
+                                    <table width="140px">
+                                        <tr>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddQtdUnitMeasure" type="number" label="Qtd. Unidade de Medida"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddLength" type="number" label="Cumprimento"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddWidth" type="number" label="Largura"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddHeigth" type="number" label="Altura"></vaadin-text-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddCubage" type="number" label="Cubagem"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddWeight" type="number" label="Peso"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createUnitMeasure">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <vaadin-grid id="gridUnitMeasureProduct" aria-label="gridUnitMeasureProduct" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="productNo" />
+                    <vaadin-grid-sorter path="productNoText">Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="productNoText" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.productNo}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.productNoText}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="code" />
+                    <vaadin-grid-sorter path="codeText">Unidade de Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeText" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.codeText}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="150px">
@@ -221,21 +233,17 @@
                     <vaadin-text-field value="{{item.weight}}" type="number"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%" resizable>
+            <vaadin-grid-column width="50px" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
 
-        <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -340,10 +348,35 @@
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_update.url = "/Nutricao/UpdateUnitOfMeasure";
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                }
+
+                    var ajax_request = this.$.ajax_update;
+                    ajax_request.url = "/Nutricao/UpdateUnitOfMeasure";
+                    ajax_request.body = JSON.stringify(this.result);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Eliminar a Unidadede Medida Produto?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteUnidadeMedidaProduto) {
+                            if (deleteUnidadeMedidaProduto) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

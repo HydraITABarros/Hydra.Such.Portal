@@ -64,16 +64,17 @@
         </div>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.id.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.id.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
                 </template>
                 <template>
                     {{item.id}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="80%" resizable hidden$="{{ _columns.name.hidden }}">
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.name.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -82,6 +83,137 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.address.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="address" />
+                </template>
+                <template>
+                    {{item.address}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.zipCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="zipCode">Código Postal</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="zipCode" />
+                </template>
+                <template>
+                    {{item.zipCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.city.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="city" />
+                </template>
+                <template>
+                    {{item.city}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.regiaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoText">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoText" />
+                </template>
+                <template>
+                    {{item.regiaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.phone.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="phone">Telefone</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="phone" />
+                </template>
+                <template>
+                    {{item.phone}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.email.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="email">Email</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="email" />
+                </template>
+                <template>
+                    {{item.email}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.vatNumber.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vatNumber">NIF</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vatNumber" />
+                </template>
+                <template>
+                    {{item.vatNumber}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.personContact.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="personContact">Pessoa Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="personContact" />
+                </template>
+                <template>
+                    {{item.personContact}}
+                </template>
+            </vaadin-grid-column>
+            
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.phoneContact.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="phoneContact">Telefone Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="phoneContact" />
+                </template>
+                <template>
+                    {{item.phoneContact}}
+                </template>
+            </vaadin-grid-column>
+            
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.contactFunction.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactFunction">Função Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactFunction" />
+                </template>
+                <template>
+                    {{item.contactFunction}}
+                </template>
+            </vaadin-grid-column>
+            
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.mobilePhoneContact.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mobilePhoneContact">Telemovel Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mobilePhoneContact" />
+                </template>
+                <template>
+                    {{item.mobilePhoneContact}}
+                </template>
+            </vaadin-grid-column>
+            
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.emailContact.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailContact">Email Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailContact" />
+                </template>
+                <template>
+                    {{item.emailContact}}
+                </template>
+            </vaadin-grid-column>
+            
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.notes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notes" />
+                </template>
+                <template>
+                    {{item.notes}}
+                </template>
+            </vaadin-grid-column>
+
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <vaadin-grid-column width="10%">
                     <template class="header">
@@ -210,13 +342,26 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "id": { hidden: false, label: "ID" },
-                        "name": { hidden: false, label: "Nome" }
+                        "id": { hidden: false, label: "Nº" },
+                        "name": { hidden: false, label: "Nome" },
+                        "address": { hidden: false, label: "Endereço" },
+                        "zipCode": { hidden: false, label: "Código Postal" },
+                        "city": { hidden: false, label: "Cidade" },
+                        "regiaoText": { hidden: false, label: "Região" },
+                        "phone": { hidden: false, label: "Telefone" },
+                        "email": { hidden: false, label: "Email" },
+                        "vATNumber": { hidden: false, label: "NIF" },
+                        "personContact": { hidden: false, label: "Pessoa Contato" },
+                        "phoneContact": { hidden: false, label: "Telefone Contato" },
+                        "contactFunction": { hidden: false, label: "Função Contato" },
+                        "mobilePhoneContact": { hidden: false, label: "Telemovel Contato" },
+                        "emailContact": { hidden: false, label: "Email Contato" },
+                        "notes": { hidden: false, label: "Notas" }
                     };
 
-                    if (sessionStorage["contacts.ToggleColumn"]) {
+                    if (localStorage["contacts.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["contacts.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["contacts.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -228,7 +373,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["contacts.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["contacts.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

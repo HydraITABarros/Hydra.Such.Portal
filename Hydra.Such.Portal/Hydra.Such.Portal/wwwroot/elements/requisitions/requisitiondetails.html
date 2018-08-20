@@ -146,7 +146,8 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json"  content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
@@ -1482,7 +1483,7 @@
                     },
                 },
                 observers: [
-                    '_onCacheLoaded(data,Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers,Requisition)'
+                    '_onCacheLoaded(Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers)'
                 ],
                 _registerMenuItemSelected: function (e) {
                     if (e.detail.value == 0)
@@ -1619,9 +1620,11 @@
                     var errors = this.Requisition.eMessages.find(x => x.type == 0);
                     this._hasErrors = !(errors == undefined);
                 },
-                _onCacheLoaded: function (data, Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers, Requisition) {
-                    if (!this.Flag) {
-                        //debugger;
+                _onCacheLoaded: function (Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers) {
+                    //Ensure all items are chached
+                    var totalItemsToCache = 8;  //(Projects, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, Locations, Products, UnitsOfMmeasure, Suppliers)
+                    this.itemsToCache = this.itemsToCache == undefined ? 1 : (this.itemsToCache + 1);
+                    if (this.itemsToCache == totalItemsToCache) {
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                         if (this._requisitionstatus === 6) {
                             this._isArchived = true;
@@ -1817,7 +1820,7 @@
                             return sel.name;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getUnitOfMeasureDescription: function (param) {
                     if (param != undefined && this.UnitsOfMmeasure != undefined) {
@@ -1826,7 +1829,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getResponsCenterDescription: function (param) {
                     if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
@@ -1835,7 +1838,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getRegionDescription: function (param) {
                     if (param != undefined && this.LProjectRegionCodes != undefined) {
@@ -1844,8 +1847,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
-
+                    return param;
                 },
                 _getAreaDescription: function (param) {
                     if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
@@ -1854,7 +1856,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
 
                 },
                 _getLocalCodeDescription: function (param) {
@@ -1864,7 +1866,7 @@
                             return sel.value;
                         }
                     }
-                    return "";
+                    return param;
                 },
                 _getVATBusinessDescription: function (param) {
                     if (param != undefined && this.VATBusinessPostingGroups != undefined) {
@@ -2202,6 +2204,7 @@
                     }
                 },
                 _printRequisition: function () {
+                    debugger;;
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
                         this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
@@ -2275,10 +2278,12 @@
                     if (item != null) {
                         this.$.txtProductDesciption.value = item.name;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                        this.$.unitCostId.value = item.unitCost;
                     }
                     else {
                         this.$.txtProductDesciption.value = "";
                         this.$.CBUnitsOfMmeasure.value = "";
+                        this.$.unitCostId.value = "";
                     }
                 },
                 _RespChange: function (e) {

@@ -10,33 +10,31 @@ namespace Hydra.Such.Data.Logic.Nutrition
     public static class DBUnitMeasureProduct
     {
         #region CRUD
-        public static UnidadeMedidaProduto GetById(string NºProduto)
+        public static List<UnidadeMedidaProduto> GetByProduto(string NºProduto)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto).FirstOrDefault();
+                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto).ToList();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
-        public static UnidadeMedidaProduto GetByProdCode(string NºProduto, string Cod)
+        public static UnidadeMedidaProduto GetByProdutoCode(string NºProduto, string Cod)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto && x.Código==Cod).FirstOrDefault();
+                    return ctx.UnidadeMedidaProduto.Where(x => x.NºProduto == NºProduto && x.Código == Cod).FirstOrDefault();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -52,7 +50,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -62,16 +59,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.UnidadeMedidaProduto.Add(ObjectToCreate);
                     ctx.SaveChanges();
-
                 }
                 return ObjectToCreate;
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -82,6 +77,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.UnidadeMedidaProduto.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
@@ -90,7 +86,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -130,7 +125,11 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 Largura = x.Width,
                 Altura = x.Heigth,
                 Cubagem = x.Cubage,
-                Peso = x.Weight
+                Peso = x.Weight,
+                DataHoraCriação = x.CreateDate,
+                UtilizadorCriação = x.CreateUser,
+                DataHoraModificação = x.UpdateDate,
+                UtilizadorModificação = x.UpdateUser
             };
         }
 
@@ -140,15 +139,18 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 return new UnitMeasureProductViewModel()
                 {
-                   ProductNo=item.NºProduto,
-                   Code=item.Código,
-                   QtdUnitMeasure=item.QtdPorUnidadeMedida,
-                   Length=item.Comprimento,
-                   Width=item.Largura,
-                   Heigth=item.Altura,
-                   Cubage=item.Cubagem,
-                   Weight=item.Peso
-
+                   ProductNo = item.NºProduto,
+                   Code = item.Código,
+                   QtdUnitMeasure = item.QtdPorUnidadeMedida,
+                   Length = item.Comprimento,
+                   Width = item.Largura,
+                   Heigth = item.Altura,
+                   Cubage = item.Cubagem,
+                   Weight = item.Peso,
+                   CreateDate = item.DataHoraCriação,
+                   CreateUser = item.UtilizadorCriação,
+                   UpdateDate = item.DataHoraModificação,
+                   UpdateUser = item.UtilizadorModificação
                 };
             }
             return null;

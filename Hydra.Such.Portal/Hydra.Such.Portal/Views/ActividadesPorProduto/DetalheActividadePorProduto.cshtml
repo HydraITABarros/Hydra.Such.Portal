@@ -1,0 +1,10 @@
+﻿@model Hydra.Such.Data.Database.ActividadesPorProduto
+
+@{
+    ViewData["Title"] = "Detalhe Actividade Por Produto " + ViewBag.No; ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/pedidocotacao/detalheactividadesporproduto.html" />
+
+<x-actividadeporprodutodetails _id="@ViewBag.No" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-actividadeporprodutodetails>

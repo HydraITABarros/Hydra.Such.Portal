@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Unidades de Medidas";
+    ViewData["Title"] = "Unidade Medida";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -19,9 +20,9 @@
 <link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
 
-<x-UnidadeMedida></x-UnidadeMedida>
+<x-undademedida></x-undademedida>
 
-<dom-module id="x-UnidadeMedida">
+<dom-module id="x-undademedida">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -57,7 +58,6 @@
             </style>
         </custom-style>
 
-        @*POPULATE GRID*@
         <iron-ajax url="/Administracao/GetUnidadeMedida"
                    last-response="{{result}}"
                    method="post"
@@ -67,15 +67,15 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*POPULATE Update*@
         <iron-ajax url="/Administracao/UpdateUnidadeMedida"
-                   last-response="{{result}}"
+                   last-response="{{updateResult}}"
                    method="post"
                    handle-as="json"
                    id="ajax_update"
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
+
         <iron-ajax url="/Administracao/DeleteUnidadeMedida"
                    last-response="{{deleteResult}}"
                    method="post"
@@ -87,7 +87,7 @@
 
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button id="btnAddNew" class="tablinks" on-tap="_updateUnidadeMedida" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
 
@@ -104,13 +104,12 @@
                         </div>
 
                         <div class="col-lg-2 alignPoga">
-                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createPlaces" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createUnidadeMedida" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
                     </div>
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
-        <br />
 
         <vaadin-grid id="gridUnidadeMedida" aria-label="gridUnidadeMedida" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable width="150px">
@@ -138,7 +137,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteUnidadeMedida" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -150,33 +149,35 @@
 
     <script>
         var CreateValue = true, UpdateValue = true, DeleteValue = true;
-         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
             CreateValue = false;
         }
-        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
             UpdateValue = false;
         }
-        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
             DeleteValue = false;
         }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-UnidadeMedida',
+                is: 'x-undademedida',
                 properties: {
-                    _permissionsUpdate: {
-                        type: Boolean,
-                        value: UpdateValue
-                    },
                     _permissionsCreate: {
                         type: Boolean,
                         value: CreateValue
+                    },
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
                     },
                     _permissionsDelete: {
                         type: Boolean,
                         value: DeleteValue
                     },
                 },
+
                 ready: function () {
+                    debugger;
                     this.$.page_databound_ajax.generateRequest();
 
                     var _this = this;
@@ -204,7 +205,23 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _update: function () {
+                _createUnidadeMedida: function () {
+                    var Line = {
+                            code: this.$.ddCode.value,
+                            description: this.$.ddDescription.value,
+                        };
+                        if (this.result == null) {
+                            this.result = Line;
+                        }
+                        else {
+                            this.result.push(Line);
+                        }
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridUnidadeMedida.clearCache();
+                },
+
+                _updateUnidadeMedida: function () {
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                     this.$.gridUnidadeMedida.clearCache();
@@ -226,6 +243,33 @@
                     }
                 },
 
+                _deleteUnidadeMedida: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+
+                    var ajax_request = this.$.ajax_delete;
+                    ajax_request.body = JSON.stringify(data.model.item)
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Eliminar a Unidadede Medida?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteUnidadeMedida) {
+                            if (deleteUnidadeMedida) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _deleteResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
@@ -243,34 +287,9 @@
                     this.$.gridUnidadeMedida.clearCache();
                 },
 
-                _createPlaces: function () {
-                    var Line = {
-                            code: this.$.ddCode.value,
-                            description: this.$.ddDescription.value,
-                        };
-                        if (this.result == null) {
-                            this.result = Line;
-                        }
-                        else {
-                            this.result.push(Line);
-                        }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.generateRequest();
-                        this.$.gridUnidadeMedida.clearCache();
-
-                },
-
-                _deleteAccessProfile: function (data) {
-                    var index = this.result.indexOf(data.model.item);
-                    this.result.splice(index, 1);
-                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
-                    this.$.ajax_delete.generateRequest();
-                    this.$.gridUnidadeMedida.clearCache();
-                },
-
                 _goBack: function (e) {
                     window.history.back();
-                }
+                },
 
             });
         });

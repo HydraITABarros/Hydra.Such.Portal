@@ -50,6 +50,8 @@
                 }
             </style>
         </custom-style>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/GetListContractsProposals"
                    last-response="{{result}}"
                    method="post"
@@ -135,6 +137,15 @@
                 </template>
                 <template>
                     {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" />
+                </template>
+                <template>
+                    {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNo.hidden }}">
@@ -452,9 +463,9 @@
                         "versionNo": { hidden: false, label: "Nº Versão" }
                     };
 
-                    if (sessionStorage["proposals.ToggleColumn"]) {
+                    if (localStorage["proposals.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["proposals.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["proposals.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -466,7 +477,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["proposals.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["proposals.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

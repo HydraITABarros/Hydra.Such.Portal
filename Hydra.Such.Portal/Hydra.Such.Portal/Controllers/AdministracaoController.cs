@@ -143,7 +143,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ProcedimentosEmailEnvioParaArea = userConfig.ProcedimentosEmailEnvioParaArea;
                 result.ProcedimentosEmailEnvioParaArea2 = userConfig.ProcedimentosEmailEnvioParaArea2;
                 result.ReceptionConfig = userConfig.PerfilNumeraçãoRecDocCompras;
-                if(userConfig.Rfperfil.HasValue)
+                if (userConfig.Rfperfil.HasValue)
                     result.RFPerfil = (Enumerations.BillingReceptionAreas)userConfig.Rfperfil;
                 if (userConfig.RfperfilVisualizacao.HasValue)
                     result.RFPerfilVisualizacao = (Enumerations.BillingReceptionUserProfiles)userConfig.RfperfilVisualizacao;
@@ -186,7 +186,7 @@ namespace Hydra.Such.Portal.Controllers
                 IdUtilizador = data.IdUser,
                 Nome = data.Name,
                 Administrador = data.Administrator,
-                Ativo = data.Active,
+                Ativo = data.Active.HasValue ? data.Active.Value : false,
                 RegiãoPorDefeito = data.Regiao,
                 AreaPorDefeito = data.Area,
                 CentroRespPorDefeito = data.Cresp,
@@ -251,7 +251,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 userConfig.IdUtilizador = data.IdUser;
                 userConfig.Nome = data.Name;
-                userConfig.Ativo = data.Active;
+                userConfig.Ativo = data.Active.HasValue ? data.Active.Value : false;
                 userConfig.Administrador = data.Administrator;
                 userConfig.RegiãoPorDefeito = data.Regiao;
                 userConfig.AreaPorDefeito = data.Area;
@@ -781,6 +781,8 @@ namespace Hydra.Such.Portal.Controllers
                 SimplifiedProceduresNumeration = Cfg.NumeraçãoProcedimentoSimplificado,
                 SimplifiedReqTemplatesNumeration = Cfg.NumeraçãoModReqSimplificadas,
                 SimplifiedRequisitionNumeration = Cfg.NumeraçãoRequisiçõesSimplificada,
+                ProdutosNumeration = Cfg.NumeracaoProdutos,
+                ConsultaMercadoNumeration = Cfg.NumeracaoConsultaMercado,
                 DinnerEndTime = Cfg.FimHoraJantar,
                 DinnerStartTime = Cfg.InicioHoraJantar,
                 LunchEndTime = Cfg.FimHoraAlmoco,
@@ -814,6 +816,8 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoProcedimentoSimplificado = data.SimplifiedProceduresNumeration;
             configObj.NumeraçãoModReqSimplificadas = data.SimplifiedReqTemplatesNumeration;
             configObj.NumeraçãoRequisiçõesSimplificada = data.SimplifiedRequisitionNumeration;
+            configObj.NumeracaoProdutos = data.ProdutosNumeration;
+            configObj.NumeracaoConsultaMercado = data.ConsultaMercadoNumeration;
             configObj.FimHoraJantar = data.DinnerEndTime;
             configObj.InicioHoraJantar = data.DinnerStartTime;
             configObj.InicioHoraAlmoco = data.LunchStartTime;
@@ -2301,6 +2305,11 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.Descricao = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.Descricao = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         toCreate.CriadoPor = User.Identity.Name;
                         toCreate.DataHoraCriacao = DateTime.Now;
 
@@ -2318,6 +2327,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             toUpdate.Descricao = resource.Name;
                             toUpdate.FamiliaRecurso = resource.ResourceGroup;
+                        }
+                        else
+                        {
+                            toUpdate.Descricao = null;
+                            toUpdate.FamiliaRecurso = null;
                         }
                         toUpdate.CriadoPor = x.UtilizadorCriacao;
                         toUpdate.DataHoraCriacao = x.DataHoraCriacao;
@@ -2582,8 +2596,12 @@ namespace Hydra.Such.Portal.Controllers
                         toCreate.CustoUnitario = x.CustoUnitario;
                         if (Vendor != null)
                             toCreate.NomeFornecedor = Vendor.Name;
+                        else
+                            toCreate.NomeFornecedor = null;
                         if (Product != null)
                             toCreate.DescricaoProduto = Product.Name;
+                        else
+                            toCreate.DescricaoProduto = null;
                         toCreate.Um = x.Um;
                         toCreate.QtdPorUm = x.QtdPorUm;
                         toCreate.PesoUnitario = x.PesoUnitario;
@@ -2610,8 +2628,12 @@ namespace Hydra.Such.Portal.Controllers
                         toUpdate.CustoUnitario = x.CustoUnitario;
                         if (Vendor != null)
                             toUpdate.NomeFornecedor = Vendor.Name;
+                        else
+                            toUpdate.NomeFornecedor = null;
                         if (Product != null)
                             toUpdate.DescricaoProduto = Product.Name;
+                        else
+                            toUpdate.DescricaoProduto = null;
                         toUpdate.Um = x.Um;
                         toUpdate.QtdPorUm = x.QtdPorUm;
                         toUpdate.PesoUnitario = x.PesoUnitario;
@@ -2797,8 +2819,15 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.NomeRecurso = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.NomeRecurso = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         if (employee != null)
                             toCreate.NomeEmpregado = employee.Name;
+                        else
+                            toCreate.NomeEmpregado = null;
                         toCreate.CriadoPor = User.Identity.Name;
                         toCreate.DataHoraCriacao = DateTime.Now;
 
@@ -2813,8 +2842,15 @@ namespace Hydra.Such.Portal.Controllers
                             toCreate.NomeRecurso = resource.Name;
                             toCreate.FamiliaRecurso = resource.ResourceGroup;
                         }
+                        else
+                        {
+                            toCreate.NomeRecurso = null;
+                            toCreate.FamiliaRecurso = null;
+                        }
                         if (employee != null)
                             toCreate.NomeEmpregado = employee.Name;
+                        else
+                            toCreate.NomeEmpregado = null;
                         toUpdate.CriadoPor = x.UtilizadorCriacao;
                         toUpdate.DataHoraCriacao = x.DataHoraCriacao;
                         toUpdate.AlteradoPor = User.Identity.Name;
@@ -4371,7 +4407,92 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
-        
+
+        #region Unidade Medida Produto
+        public IActionResult UnidadeMedidaProduto(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminNutricao);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetUnidadeMedidaProduto()
+        {
+            List<UnitMeasureProductViewModel> result = DBUnitMeasureProduct.GetAll().Select(x => new UnitMeasureProductViewModel()
+            {
+                ProductNo = x.NºProduto,
+                Code = x.Código,
+                QtdUnitMeasure = x.QtdPorUnidadeMedida,
+                Length = x.Comprimento,
+                Width = x.Largura,
+                Heigth = x.Altura,
+                Cubage = x.Cubagem,
+                Weight = x.Peso,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+                UpdateDate = x.DataHoraModificação,
+                UpdateUser = x.UtilizadorModificação
+            }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult DeleteUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel data)
+        {
+            var result = DBUnitMeasureProduct.Delete(DBUnitMeasureProduct.ParseToDb(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateUnidadeMedidaProduto([FromBody] List<UnitMeasureProductViewModel> data)
+        {
+
+            data.ForEach(x =>
+            {
+                UnidadeMedidaProduto UnidadeMedidaProduto = new UnidadeMedidaProduto()
+                {
+                    NºProduto = x.ProductNo,
+                    Código = x.Code,
+                    QtdPorUnidadeMedida = x.QtdUnitMeasure,
+                    Comprimento = x.Length,
+                    Largura = x.Width,
+                    Altura = x.Heigth,
+                    Cubagem = x.Cubage,
+                    Peso = x.Weight,
+                    DataHoraCriação = x.CreateDate,
+                    UtilizadorCriação = x.CreateUser,
+                    DataHoraModificação = x.UpdateDate,
+                    UtilizadorModificação = x.UpdateUser
+                };
+
+                if (DBUnitMeasureProduct.GetByProdutoCode(x.ProductNo, x.Code) != null)
+                {
+                    UnidadeMedidaProduto.UtilizadorCriação = x.CreateUser;
+                    UnidadeMedidaProduto.DataHoraCriação = x.CreateDate.HasValue ? x.CreateDate : (DateTime?)null;
+                    UnidadeMedidaProduto.DataHoraModificação = DateTime.Now;
+                    UnidadeMedidaProduto.UtilizadorModificação = User.Identity.Name;
+                    DBUnitMeasureProduct.Update(UnidadeMedidaProduto);
+                }
+                else
+                {
+                    UnidadeMedidaProduto.DataHoraCriação = DateTime.Now;
+                    UnidadeMedidaProduto.UtilizadorCriação = User.Identity.Name;
+                    DBUnitMeasureProduct.Create(UnidadeMedidaProduto);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
         #region Acordo de Preços
 
         public IActionResult AcordoPrecos_List()
@@ -5742,7 +5863,7 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-        
+
         public IActionResult ConfigDestinatariosDetalhes([FromQuery] string id)
         {
             //UserAccessesViewModel UPerm = GetPermissions("Administracao");

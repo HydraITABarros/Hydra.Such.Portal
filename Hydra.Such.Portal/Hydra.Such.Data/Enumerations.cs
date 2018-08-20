@@ -134,7 +134,11 @@ namespace Hydra.Such.Data
             MercadoLocal = 50,
             [Description("Pré-Encomendas")]
             PréEncomendas = 51,
+            [Description("Pedido Cotação")]
+            PedidoCotacao = 52,
             [Description("Administração Geral")]
+            Localizações = 52,
+            [Description("Localizações")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]
             AdminAprovacoes = 101,
@@ -255,6 +259,16 @@ namespace Hydra.Such.Data
             Recurso,            
             [Description("Conta CG")]
             ContaCG,
+        }
+
+        public enum ProjectDiaryMovementTypes
+        {
+            [Description("")]
+            NaoDefinido,
+            Consumo,
+            Venda,
+            [Description("Devolução")]
+            Devolucao
         }
     }
 }

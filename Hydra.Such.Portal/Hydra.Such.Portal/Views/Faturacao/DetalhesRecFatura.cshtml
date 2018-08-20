@@ -24,6 +24,8 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
@@ -246,6 +248,13 @@
                    on-response="_viewLinkResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/GetWorkflowAttached"
+                   last-response="{{ attacheds }}"
+                   id="getAnexos_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -301,12 +310,12 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Nº Fornecedor"
+                        <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Fornecedor"
+                                       required error-message="Este campo é obrigatório"
                                         items="[[ Vendors ]]"
                                         text-path="name"
                                         value-path="no_"
                                         fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
-                                        disabled="{{ !_permissions.update }}"
                                         on-value-changed="_supplierSelected">
                         </such-selectbox>
                     </div>
@@ -413,22 +422,22 @@
                     <div class="col-sm-3">
                         <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled ></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field  label="Valor" type="text" value="{{data.valor}}" pattern="[0-9]+([\.][0-9]+)?" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
 
@@ -603,6 +612,19 @@
                             </template>
                         </template>
                     </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="comentario">Anexo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="comentario" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.attachedIs }}">
+                                <center>
+                                    <paper-button class="btnSave tableBtn" on-tap="_showAttached" title="Anexo"><i class="fa fa-paperclip" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
                 </vaadin-grid>
             </div>
 
@@ -683,24 +705,24 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiro"></vaadin-text-field>
-                    </div>
 
+                    </div>
+                    <div class="col-sm-4" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
+                                       method="POST"
+                                       headers="{'Accept': 'application/json'}"
+                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                    </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
-                        <paper-button class="btnSave" raised on-tap="_dlgAddAttached">&nbsp; Anexar</paper-button>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
-                        <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                    <div class="col-sm-3">
+                        <div class="buttons">
+                            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Cancel</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_dlgSend">&nbsp; Enviar</paper-button>
+                        </div>
                     </div>
                 </div>
             </paper-dialog>
@@ -728,11 +750,14 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
                     </div>
-                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-text-field label="Nome do Ficheito" type="file" id="txtNomeFicheiroResposta"></vaadin-text-field>
+                    <div class="col-sm-4" hidden="{{ !_isAnexarFicheiroResposta }}">
+                        <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
+                                       method="POST"
+                                       headers="{'Accept': 'application/json'}"
+                                       timeout=15000 files="{{files}}"></vaadin-upload>
                     </div>
 
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
@@ -746,10 +771,29 @@
                     </div>
                 </div>
             </paper-dialog>
-
-
+            <paper-dialog id="dialogAttached" class="dialgoBox" modal>
+                <vaadin-grid id="grdAttachedView" aria-label="grdAttachedView" items="[[attacheds]]" selected-items={{attachedItems}} active-item="{{attachedItem}}" class="grid" multi-sort="true">
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                                Caminho
+                        </template>
+                        <template>
+                            <a href="/Faturacao/OpenLinkAttached/{{item.file}}" target="_blank">{{item.file}}</a>
+                        </template>
+                    </vaadin-grid-column>
+                         
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                          Descrição
+                        </template>
+                        <template>
+                            {{item.description}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+                <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
+            </paper-dialog>
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
-
                 <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
@@ -1035,6 +1079,7 @@
                         type: Array,
                         value: [{ "id": 0, "value": "Interno" }, { "id": 1, "value": "Externo" }],
                     },
+                  
                     _descricaoProblema: {
                         type: String,
                         value: "",
@@ -1155,6 +1200,10 @@
                         type: Array,
                         value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
                     },
+                    _uploadurl: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UploadURL)),
+                    }
                 },
                 observers: [
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
@@ -1168,10 +1217,27 @@
                     else {
                         this._loadOrders();
                     }
+
+                    if (this._isCreate == true) {
+                        this.$.cmbDocumentTypes.value = 2; //Fatura
+
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
+                        if (dd < 10) {
+                            dd = '0' + dd
+                        }
+
+                        if (mm < 10) {
+                            mm = '0' + mm
+                        } 
+                        today = yyyy + '-' + mm + '-' + dd;
+                        this.$.dpDataRececao.value = today;
+                    }
                 },
 
                 _loadOrders: function (supplierId) {
-                    debugger;;
                     if (supplierId != null) {
                         this.$.orders_databound_ajax.body = JSON.stringify(supplierId);
                     }
@@ -1242,21 +1308,23 @@
                     this._loadOrders(e.detail.value);
                 },
                 _redirectToCreateForm: function () {
+                    debugger;
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
                     debugger;;
-                    if (this.$.cmbDocumentTypes.validate()) {
-                        if (this._docIsValid) {
-                            return true;
-                        }
-                        else if (!this._docIsValid) {
-                            if (this.$.dpDataDocFornecedor.validate() && this.$.txtNumDocFornecedor.validate() && this.$.sbVendors.validate()) {
+                    if (this.$.cmbDocumentTypes.validate() & this.$.txtNumDocFornecedor.validate() & this.$.dpDataDocFornecedor.validate()) {
+                        if (this.$.sbVendors.value != "" && this.$.sbVendors.value != undefined) {
+                            if (this._docIsValid) {
+                                return true;
+                            }
+                            else if (!this._docIsValid) {
                                 this._openToastError("Já foi criada receção de fatura para o documento.");
                             }
-                            else {
-                                this._openToastError("Verifique os dados inseridos.");
-                            }
+                        }
+                        else {
+                            this.$.sbVendors.validate()
+                            this._openToastError("Inserir Fornecedor!");
                         }
                     }
                     else {
@@ -1299,7 +1367,7 @@
                         return false;
                     }
                     return true;
-  
+
                 },
                 _validateInputForAccounting: function () {
                     if (this._validateInputForNew()) {
@@ -1472,7 +1540,7 @@
                     }
                     else {
                         this._openToastError("Não existe Documento Digitalizado!");
-                    }                 
+                    }
                 },
                 _linkExistResponse: function (e) {
                     var txt = true;
@@ -1485,57 +1553,73 @@
                         }
                     }
                     if(txt==true) {
-                        if (txt == true) {
-                            var workflow = null;
-                            var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
-                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                            if (this._isInternalDestination == true) {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbProblemas.value,
-                                    codProblema: "RF1P",
-                                    descricao: this.$.txtdescricaoProblema.value,
-                                    destinatario: this.$.txtdestinatarioArea.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    area: Area.value,
-                                    areaWorkflow: this.$.txtArea2.value,
-                                    codDestino: this.$.txtCodDestino.value,
-                                    attached: this.Anexos
+                        var workflow = null;
+                        var Area = this.Areas.find(x => x.id == this.$.txtAreadgl.value);
+                        if (Area == null)
+                            Area = "";
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                        var anexado = false;
+                        if (this.files != null) {
+                            var anexoNew;
+                            for (i = 0; i < this.files.length; i++) { 
+                                anexoNew = {
+                                    file: this.files[i].name,
+                                    description: this.$.txtDescricaoAnexo.value
                                 };
+                                if (this.Anexos == null) {
+                                    this.Anexos = [anexoNew];
+                                }
+                                else
+                                    this.Anexos.push(anexoNew);
                             }
-                            else {
-                                workflow = {
-                                    id: 0,
-                                    idRecFaturacao: this.data.id,
-                                    codTipoProblema: this.$.cmbMotivos.value,
-                                    codProblema: "RF4P",
-                                    descricao: this.$.txtmotivo.value,
-                                    comentario: this.$.txtCommentdgl.value,
-                                    enderecoFornecedor: selVendor.email,
-                                    attached: this.Anexos
-                                };
-                            }
-                            this.Anexos = null;
-                            this.data.workflowItems.push(workflow);
-                            this.$.page_send_ajax.body = JSON.stringify(this.data);
-                            this.$.page_send_ajax.generateRequest();
+                            anexado = true;
                         }
-                        this.$.dialogSendPeding.close();
+                        if (this._isInternalDestination == true) {
+                            workflow = {
+                                id: 0,
+                                idRecFaturacao: this.data.id,
+                                codTipoProblema: this.$.cmbProblemas.value,
+                                codProblema: "RF1P",
+                                descricao: this.$.txtdescricaoProblema.value,
+                                destinatario: this.$.txtdestinatarioArea.value,
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email,
+                                area: Area.value,
+                                areaWorkflow: this.$.txtArea2.value,
+                                codDestino: this.$.txtCodDestino.value,
+                                attached: this.Anexos,
+                                attachedIs: anexado
+                            };
+                        }
+                        else {
+                            workflow = {
+                                id: 0,
+                                idRecFaturacao: this.data.id,
+                                codTipoProblema: this.$.cmbMotivos.value,
+                                codProblema: "RF4P",
+                                descricao: this.$.txtmotivo.value,
+                                comentario: this.$.txtCommentdgl.value,
+                                enderecoFornecedor: selVendor.email,
+                                attached: this.Anexos,
+                                attachedIs: anexado
+                            };
+                        }
+                        this.files = null;
+                        this.Anexos = null;
+                        this.data.workflowItems.push(workflow);
+                        this.$.page_send_ajax.body = JSON.stringify(this.data);
+                        this.$.page_send_ajax.generateRequest();
                     }
+                    this.$.dialogSendPeding.close()
                 },
                 _orderSelected: function (e) {
                     var order = this.$.sbOrders.activeItem;
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-
+                        debugger;
                         if (vendorId == "") {
                             this.$.sbVendors.value = order.buyFromVendorNo;
-                            this.$.cmbRegions.value = order.regionId;
-                            this.$.cmbFunctionalAreas.value = order.functionalAreaId;
-                            this.$.cmbResponsabilityCenters.value = order.respCenterId;
                             //this.$.txtLocal.value = order.locationCode;
                         }
                         //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
@@ -1546,6 +1630,10 @@
                             this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
                             return;
                         }
+                        this.$.cmbRegions.value = order.regionId;
+                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
+
                         this.$.txtLocal.value = order.locationCode;
                         //this.$.txtValorEncomendaOriginal.value = order.
                         this.$.txtQuantidadeEncomenda.value = order.quantity;
@@ -1658,6 +1746,7 @@
                     }
                 },
                 _sendPending: function () {
+                    this.$.uploadRequest.files = [];
                     this.$.dialogSendPeding.open();
                 },
 
@@ -1712,7 +1801,22 @@
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;
-
+                        var Anexados = false;
+                        if (this.files != null) {
+                            var anexoNew;
+                            for (i = 0; i < this.files.length; i++) {
+                                anexoNew = {
+                                    file: this.files[i].name,
+                                    description: this.$.txtDescricaoAnexoResposta.value
+                                };
+                                if (this.Anexos == null) {
+                                    this.Anexos = [anexoNew];
+                                }
+                                else
+                                    this.Anexos.push(anexoNew);
+                            }
+                            Anexados = true;
+                        }
                         var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                         workflow = {
                             id: idWork.id + 1,
@@ -1727,9 +1831,10 @@
                             area: userProfile,
                             areaWorkflow: userProfile,
                             codDestino: this.$.txtCodDestino.value,
-                            attached: this.Anexos
+                            attached: this.Anexos,
+                            attachedIs: Anexados
                         };
-
+                        this.files = null;
                         this.data.workflowItems.push(workflow);
                         this.$.page_send_ajax.body = JSON.stringify(this.data);
                         this.$.page_send_ajax.generateRequest();
@@ -1741,7 +1846,6 @@
 
                 _dlgSendUA: function () {
                         if (this._validateInputForAnswer()) {
-                            debugger;
                             var answerDestinyProfile;
                             var userToAnswer = this.data.criadoPor;
 
@@ -1758,7 +1862,22 @@
                             //**/
                             var userProfile = this.userProfile;
                             var Area = idWork.area;
-
+                            var Anexados= false;
+                            if (this.files != null) {
+                                var anexoNew;
+                                for (i = 0; i < this.files.length; i++) {
+                                    anexoNew = {
+                                        file: this.files[i].name,
+                                        description: this.$.txtDescricaoAnexo.value
+                                    };
+                                    if (this.Anexos == null) {
+                                        this.Anexos = [anexoNew];
+                                    }
+                                    else
+                                        this.Anexos.push(anexoNew);
+                                }
+                                Anexados = true;
+                            }
                             var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
                             workflow = {
                                 id: idWork.id + 1,
@@ -1773,9 +1892,10 @@
                                 area: userProfile,
                                 areaWorkflow: userProfile,
                                 codDestino: this.$.txtCodDestino.value,
-                                attached: this.Anexos
+                                attached: this.Anexos,
+                                attachedIs: Anexados
                             };
-
+                            this.files = null;
                             this.data.workflowItems.push(workflow);
                             this.$.page_send_ajax.body = JSON.stringify(this.data);
                             this.$.page_send_ajax.generateRequest();
@@ -1784,21 +1904,10 @@
                         }
                 },
 
-                _dlgAddAttached: function () {
-                    var anexoNew = {
-                        file: this.$.txtNomeFicheiro.value,
-                        description: this.$.txtDescricaoAnexo.value
-                    };
-                    if (this.Anexos == null) {
-                        this.Anexos = [anexoNew];
-                    }
-                    else
-                        this.Anexos.push(anexoNew);
 
-                    this.$.txtNomeFicheiro.value = "";
-                    this.$.txtDescricaoAnexo.value = "";
-                 },
+
                 _dlgSend: function () {
+                    this.Anexos = null;
                     var validar = false;// caso ja seja pendente
                     if (this.data.estado == 1) {
                         validar = true;
@@ -1810,7 +1919,7 @@
                         var ajax_request = this.$.page_linkExist_ajax;
                         ajax_request.body = JSON.stringify(this._link);
                         ajax_request.generateRequest();
-                       
+
                     }
                 },
                 _createLink: function () {
@@ -1834,7 +1943,7 @@
 
                     var pdfName = "RF"+this.data.id+".pdf";
                     this._link = "../../FacturasFornecedor/"+ano+mes+"/" + pdfName;
-                    
+
                 },
 
                 _openDocument: function (e) {
@@ -2032,7 +2141,7 @@
                     }
                 },
                 _dlgUpdateDesti: function (selectedItem, selectedItems) {
-                    debugger;
+
                     if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
                         if (this.selectedItems != null && this.selectedItems != "") {
                             var selItms = this.selectedItems;
@@ -2048,6 +2157,27 @@
                     else {
                         this._openToastError("Não foi selecionada nenhum Destinatário.");
                     }
+                },
+                _dlgOpenFile: function (attachedItem, attachedItems) {
+                    var attachedView = attachedItem.model.__data.item;
+                    if (attachedView != null && attachedView != "") {
+                        window.open("../"+attachedView.file);
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+
+                },
+                _showAttached: function (attachedItem, attachedItems) {
+                    var attachedView = attachedItem.model.__data.item;
+                    if (attachedView != null && attachedView != "") {
+                        this.attacheds = null;
+                        this.$.getAnexos_ajax.body = JSON.stringify(attachedView);
+                        this.$.getAnexos_ajax.generateRequest();
+                        this.$.dialogAttached.open();
+                    } else {
+                        this._openToastError("Não foi selecionada nenhuma linha.");
+                    }
+
                 },
                 _clFormatStatus: function (param) {
                     if (param != undefined) {
