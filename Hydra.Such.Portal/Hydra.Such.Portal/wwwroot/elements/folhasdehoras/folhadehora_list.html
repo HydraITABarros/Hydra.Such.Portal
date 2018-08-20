@@ -972,9 +972,9 @@
                         "observacoes": { hidden: false, label: "Observações" }
                     };
 
-                    if (sessionStorage["folhadehoralist.ToggleColumn"]) {
+                    if (localStorage["folhadehoralist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["folhadehoralist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["folhadehoralist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -986,7 +986,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["folhadehoralist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["folhadehoralist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
@@ -1014,9 +1014,9 @@
                         "integradoresEmRHKM": { hidden: false, label: "Integradores km" }
                     };
 
-                    if (sessionStorage["folhadehoralist.ToggleColumnPendentes"]) {
+                    if (localStorage["folhadehoralist.ToggleColumnPendentes"]) {
                         var keysPendentes = Object.keys(columnsPendentes);
-                        var storedColumnsPendentes = JSON.parse(sessionStorage["folhadehoralist.ToggleColumnPendentes"]);
+                        var storedColumnsPendentes = JSON.parse(localStorage["folhadehoralist.ToggleColumnPendentes"]);
                         for (var i = 0; i < keysPendentes.length; i++) {
                             columnsPendentes[keysPendentes[i]] = storedColumnsPendentes[keysPendentes[i]];
                         }
@@ -1029,7 +1029,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columnsPendentes.' + columnPendentesIndex + '.hidden', (!this._columnsPendentes[columnPendentesIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["folhadehoralist.ToggleColumnPendentes"] = JSON.stringify(this._columnsPendentes);
+                        localStorage["folhadehoralist.ToggleColumnPendentes"] = JSON.stringify(this._columnsPendentes);
                     }
                 },
                 _getColumnItemClassPendentes: function (columnPendentesIndex) {

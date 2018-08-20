@@ -310,7 +310,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Nº Fornecedor"
+                        <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Fornecedor"
                                        required error-message="Este campo é obrigatório"
                                         items="[[ Vendors ]]"
                                         text-path="name"
@@ -422,22 +422,22 @@
                     <div class="col-sm-3">
                         <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled ></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field  label="Valor" type="text" value="{{data.valor}}" pattern="[0-9]+([\.][0-9]+)?" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
 
@@ -1217,6 +1217,24 @@
                     else {
                         this._loadOrders();
                     }
+
+                    if (this._isCreate == true) {
+                        this.$.cmbDocumentTypes.value = 2; //Fatura
+
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
+                        if (dd < 10) {
+                            dd = '0' + dd
+                        }
+
+                        if (mm < 10) {
+                            mm = '0' + mm
+                        } 
+                        today = yyyy + '-' + mm + '-' + dd;
+                        this.$.dpDataRececao.value = today;
+                    }
                 },
 
                 _loadOrders: function (supplierId) {
@@ -1290,6 +1308,7 @@
                     this._loadOrders(e.detail.value);
                 },
                 _redirectToCreateForm: function () {
+                    debugger;
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
@@ -1598,12 +1617,9 @@
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-
+                        debugger;
                         if (vendorId == "") {
                             this.$.sbVendors.value = order.buyFromVendorNo;
-                            this.$.cmbRegions.value = order.regionId;
-                            this.$.cmbFunctionalAreas.value = order.functionalAreaId;
-                            this.$.cmbResponsabilityCenters.value = order.respCenterId;
                             //this.$.txtLocal.value = order.locationCode;
                         }
                         //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
@@ -1614,6 +1630,10 @@
                             this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
                             return;
                         }
+                        this.$.cmbRegions.value = order.regionId;
+                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
+
                         this.$.txtLocal.value = order.locationCode;
                         //this.$.txtValorEncomendaOriginal.value = order.
                         this.$.txtQuantidadeEncomenda.value = order.quantity;

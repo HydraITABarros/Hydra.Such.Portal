@@ -20,6 +20,8 @@ namespace Hydra.Such.Data.ViewModel
         public int? DishesTechnicalSheetsNumeration { get; set; }
         public int? SimplifiedReqTemplatesNumeration { get; set; }
         public int? SimplifiedRequisitionNumeration { get; set; }
+        public int? ProdutosNumeration { get; set; }
+        public int? ConsultaMercadoNumeration { get; set; }
         public TimeSpan? LunchStartTime { get; set; }
         public TimeSpan? LunchEndTime { get; set; }
         public TimeSpan? DinnerStartTime { get; set; }

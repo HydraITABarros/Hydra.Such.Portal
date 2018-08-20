@@ -312,9 +312,9 @@
                         "projectTypeDescription": { hidden: false, label: "Tipo Projeto" }
                     };
 
-                    if (sessionStorage["projectlist.ToggleColumn"]) {
+                    if (localStorage["projectlist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["projectlist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["projectlist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -326,7 +326,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["projectlist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["projectlist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

@@ -18,6 +18,8 @@ namespace Hydra.Such.Data.ViewModel
         public string City { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
+        public string Regiao { get; set; }
+        public string RegiaoText { get; set; }
         public string VATNumber { get; set; }
         public string PersonContact { get; set; }
         public string PhoneContact { get; set; }
@@ -45,6 +47,7 @@ namespace Hydra.Such.Data.ViewModel
             this.City = string.Empty;
             this.Phone = string.Empty;
             this.Email = string.Empty;
+            this.Regiao = string.Empty;
             this.VATNumber = string.Empty;
             this.PersonContact = string.Empty;
             this.PhoneContact = string.Empty;

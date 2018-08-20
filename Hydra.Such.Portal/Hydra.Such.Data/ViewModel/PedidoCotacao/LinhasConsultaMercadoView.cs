@@ -29,5 +29,8 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public string CriadoPor { get; set; }
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
+
+        //Campos tratados
+        public string DataEntregaPrevista_Show { get; set; }
     }
 }

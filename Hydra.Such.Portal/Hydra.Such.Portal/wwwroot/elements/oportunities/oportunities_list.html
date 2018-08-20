@@ -101,15 +101,6 @@
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    {{item.contractNo}}
-                </template>
-            </vaadin-grid-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
@@ -119,37 +110,28 @@
                     {{item.proposalNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startData" />
+                    <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
                 </template>
                 <template>
-                    {{item.startData}}
-                </template>
-            </vaadin-grid-column>
-            
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dueDate" />
-                </template>
-                <template>
-                    {{item.dueDate}}
+                    {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contactNo" />
+                    <vaadin-grid-sorter path="description">Âmbito do Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    {{item.contactNo}}
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" />
@@ -169,57 +151,47 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contactNoText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
+                    <vaadin-grid-sorter path="contactNoText">Contato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNoText" />
                 </template>
                 <template>
-                    {{item.description}}
+                    {{item.contactNoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.orderOriginText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="statusDescription" />
+                    <vaadin-grid-sorter path="orderOriginText">Origem do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="orderOriginText" />
                 </template>
                 <template>
-                    {{item.statusDescription}}
+                    {{item.orderOriginText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ordOrderSource.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeRegion" />
+                    <vaadin-grid-sorter path="ordOrderSource">Origem do Pedido Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ordOrderSource" />
                 </template>
                 <template>
-                    {{item.codeRegion}}
+                    {{item.ordOrderSource}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proposalNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeFunctionalArea" />
+                    <vaadin-grid-sorter path="proposalNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalNo" />
                 </template>
                 <template>
-                    {{item.codeFunctionalArea}}
+                    {{item.proposalNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeResponsabilityCenter" />
-                </template>
-                <template>
-                    {{item.codeResponsabilityCenter}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.versionNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
@@ -229,13 +201,193 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.startData.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startData">Data Inicial Prevista</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" />
+                </template>
+                <template>
+                    {{item.startData}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dueDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dueDate">Data Expiração Prevista</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" />
+                </template>
+                <template>
+                    {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.customerShipmentDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerShipmentDate">Data Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerShipmentDate" />
+                </template>
+                <template>
+                    {{item.customerShipmentDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proposalChangeDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proposalChangeDate">Data Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalChangeDate" />
+                </template>
+                <template>
+                    {{item.proposalChangeDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.internalNumeration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="internalNumeration">Numeração Interna</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="internalNumeration" />
+                </template>
+                <template>
+                    {{item.internalNumeration}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.totalProposalValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalProposalValue">Valor Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalProposalValue" />
                 </template>
                 <template>
-                    {{item.totalProposalValue}}€
+                    {{item.totalProposalValue}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" />
+                </template>
+                <template>
+                    {{item.codeRegion}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Respon.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    {{item.codeResponsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.provisionUnitText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="provisionUnitText">Unidade de Prestação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="provisionUnitText" />
+                </template>
+                <template>
+                    {{item.provisionUnitText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noVEP.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noVEP">Nº VEP</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noVEP" />
+                </template>
+                <template>
+                    {{item.noVEP}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.baseValueProcedure.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="baseValueProcedure">Valor Base Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="baseValueProcedure" />
+                </template>
+                <template>
+                    {{item.baseValueProcedure}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.notes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notes" />
+                </template>
+                <template>
+                    {{item.notes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="limitClarificationDate">Data - Limite Esclarecimentos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="limitClarificationDate" />
+                </template>
+                <template>
+                    {{item.limitClarificationDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationTime.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="limitClarificationTime">Hora - Limite Esclarecimentos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="limitClarificationTime" />
+                </template>
+                <template>
+                    {{item.limitClarificationTime}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="errorsOmissionsDate">Data - Erros e Omissões</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="errorsOmissionsDate" />
+                </template>
+                <template>
+                    {{item.errorsOmissionsDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsTime.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="errorsOmissionsTime">Hora - Erros e Omissões</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="errorsOmissionsTime" />
+                </template>
+                <template>
+                    {{item.errorsOmissionsTime}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proposalDelivery.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proposalDelivery">Data - Entrega Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalDelivery" />
+                </template>
+                <template>
+                    {{item.proposalDelivery}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proposalDeliveryTime.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proposalDeliveryTime">Hora - Entrega Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalDeliveryTime" />
+                </template>
+                <template>
+                    {{item.proposalDeliveryTime}}
                 </template>
             </vaadin-grid-column>
 
@@ -347,7 +499,7 @@
                 _responseDeleteProcessor: function (data) {
                     var self = this;
                     var ajax_request = this.$.grid_databound_ajax;
-                    debugger;
+                    //debugger;
                     if (data.detail.status === 200) {
                         this._openToast("Oportunidade eliminada com sucesso");
                         if (this.deletedData.eReasonCode == 1) {
@@ -386,7 +538,7 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    debugger;
+                    //debugger;
                     data.preventDefault();
                     var ajax_request = this.$.ajax_delete_contract;
                     var object = data.model.item;
@@ -430,40 +582,58 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Oportunidade" },
-                        "startData": { hidden: false, label: "Data Inicio" },
-                        "dueDate": { hidden: false, label: "Data Fim" },
-                        "contactNo": { hidden: false, label: "Nº Contacto" },
+                        "description": { hidden: false, label: "Âmbito do Serviço" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
-                        "description": { hidden: false, label: "Descrição" },
-                        "statusDescription": { hidden: false, label: "Estado" },
+                        "contactNoText": { hidden: false, label: "Contato" },
+                        "orderOriginText": { hidden: false, label: "Origem do Pedido" },
+                        "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
+                        "proposalNo": { hidden: false, label: "Nº Proposta" },
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        "startData": { hidden: false, label: "Data Inicial Prevista" },
+                        "dueDate": { hidden: false, label: "Data Expiração Prevista" },
+                        "customerShipmentDate": { hidden: false, label: "Data Envio" },
+                        "proposalChangeDate": { hidden: false, label: "Data Alteração" },
+                        "internalNumeration": { hidden: false, label: "Numeração Interna" },
+                        "totalProposalValue": { hidden: false, label: "Valor Total" },
                         "codeRegion": { hidden: false, label: "Cód. Região" },
                         "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
-                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        "versionNo": { hidden: false, label: "Nº Versão" },
-                        "totalProposalValue": { hidden: false, label: "Valor Total" }
+                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Respon." },
+                        "provisionUnitText": { hidden: false, label: "Unidade de Prestação" },
+                        "noVEP": { hidden: false, label: "Nº VEP" },
+                        "baseValueProcedure": { hidden: false, label: "Valor Base Procedimento" },
+                        "notes": { hidden: false, label: "Notas" },
+                        "limitClarificationDate": { hidden: false, label: "Data - Limite Esclarecimentos" },
+                        "limitClarificationTime": { hidden: false, label: "Hora - Limite Esclarecimentos" },
+                        "errorsOmissionsDate": { hidden: false, label: "Data - Erros e Omissões" },
+                        "errorsOmissionsTime": { hidden: false, label: "Hora - Erros e Omissões" },
+                        "proposalDelivery": { hidden: false, label: "Data - Entrega Proposta" },
+                        "proposalDeliveryTime": { hidden: false, label: "Hora - Entrega Proposta" }
                     };
 
-                    if (sessionStorage["oportunitieslist.ToggleColumn"]) {
+                    if (localStorage["contacts.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["oportunitieslist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["contacts.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
                     };
                     this._columns = columns;
                 },
+
                 _toggleColumn: function (event) {
                     var columnIndex = JSON.parse(event.target.dataset.item).key;
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["oportunitieslist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["oportunitieslist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
+
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },
+
                 _toArray: function (obj) {
                     return Object.keys(obj).map(function (key) {
                         return {

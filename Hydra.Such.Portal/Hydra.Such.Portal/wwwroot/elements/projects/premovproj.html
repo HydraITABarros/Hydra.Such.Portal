@@ -713,9 +713,9 @@
                         "serviceClientDescription": { hidden: false, label: "Serviço Cliente" }
                     };
 
-                    if (sessionStorage["premovproj.ToggleColumn"]) {
+                    if (localStorage["premovproj.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["premovproj.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["premovproj.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -727,7 +727,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["premovproj.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["premovproj.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

@@ -275,9 +275,9 @@
                         "dataAlteracao_Show": { hidden: false, label: "Data Alteração" }
                     };
 
-                    if (sessionStorage["telemoveisequipamentosList.ToggleColumn"]) {
+                    if (localStorage["telemoveisequipamentosList.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(sessionStorage["telemoveisequipamentosList.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["telemoveisequipamentosList.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -289,7 +289,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        sessionStorage["telemoveisequipamentosList.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["telemoveisequipamentosList.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

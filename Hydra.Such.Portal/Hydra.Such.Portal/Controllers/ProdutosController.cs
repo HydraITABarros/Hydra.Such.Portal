@@ -24,6 +24,7 @@ using System;
 
 using System.Web;
 using System.Drawing;
+using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -129,17 +130,24 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                //Get Ficha de Produto Numeration
-                int idNumeration = DBNumerationConfigurations.GetAll().Where(x => x.Descrição == "Numeração Produtos").FirstOrDefault().Id;
-                string ProdutoNo = DBNumerationConfigurations.GetNextNumeration(idNumeration, true, false);
+                Produto.No = Produto.Code;
 
-                //Update Last Numeration Used
-                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(idNumeration);
-                ConfigNumerations.ÚltimoNºUsado = ProdutoNo;
-                DBNumerationConfigurations.Update(ConfigNumerations);
+                if (string.IsNullOrEmpty(Produto.No))
+                {
+                    //Get Ficha de Produto Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProdutosNumerationConfigurationId = Configs.NumeracaoProdutos.Value;
+                    string ProdutoNo = DBNumerationConfigurations.GetNextNumeration(ProdutosNumerationConfigurationId, true, false);
 
-                //New Produto
-                Produto.No = ProdutoNo;
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProdutosNumerationConfigurationId);
+                    ConfigNumerations.ÚltimoNºUsado = ProdutoNo;
+                    DBNumerationConfigurations.Update(ConfigNumerations);
+
+                    //New Produto
+                    Produto.No = ProdutoNo;
+                }
+
                 Produto.DataHoraCriacao = DateTime.Now;
                 Produto.UtilizadorCriacao = User.Identity.Name;
 
@@ -162,7 +170,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     result.eReasonCode = 10;
-                    result.eMessage = "Verifique a tabela de configuração de numeração de produtos.";
+                    result.eMessage = "Já existe um Produto com esse Número.";
                 }
             }
             catch (Exception ex)

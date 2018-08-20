@@ -10,5 +10,8 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public int Id { get; set; }
         public string CodFornecedor { get; set; }
         public string CodActividade { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

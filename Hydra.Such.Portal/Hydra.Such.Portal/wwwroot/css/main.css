@@ -4,6 +4,7 @@ html, body {
     font-size: 14px !important;
     color: black !important;
     background-color: whitesmoke !important;
+    --valo-disabled-text-color: rgba(0,0,0,.6);
 }
 
 .modal-backdrop {
@@ -115,6 +116,7 @@ ul.nav li:hover {
     color: white;
     cursor: pointer;
 }
+
 .btnEditPending {
     max-width: 180px !important;
     min-width: 50px !important;
@@ -123,6 +125,7 @@ ul.nav li:hover {
     color: white;
     cursor: pointer;
 }
+
 .roundrect {
     border-radius: 15px;
 }
@@ -184,10 +187,10 @@ ul.nav li:hover {
     height: auto;
 }
 
-.editGrid input {
-    border: none;
-    padding-left: 5px;
-}
+    .editGrid input {
+        border: none;
+        padding-left: 5px;
+    }
 
 .editDialogGrid {
     /*margin: 10px 20px;*/
@@ -197,18 +200,20 @@ ul.nav li:hover {
     /*height: 80%;*/
 }
 
-.editDialogGrid input {
-    border: none;
-    padding-left: 5px;
-}
+    .editDialogGrid input {
+        border: none;
+        padding-left: 5px;
+    }
+
 .grid {
     font-size: 13px;
 }
 
-.grid input {
-    border: none;
-    padding-left: 5px;
-}
+    .grid input {
+        border: none;
+        padding-left: 5px;
+    }
+
 .alignPoga {
     margin-top: 40px;
 }
@@ -224,11 +229,13 @@ ul.nav li:hover {
     background-color: #FA1114;
     color: black;
 }
+
 .toastMultiple {
     border-radius: 8px;
     background-color: #cecece;
     color: black;
 }
+
 paper-toast {
     z-index: 1001 !important;
 }
@@ -412,7 +419,41 @@ paper-toast {
             transition: all 1s ease;
         }
 
+
+.navbar-brand .brand-icon img {
+    max-height: 25px;
+}
+
+@media (max-width: 767px) {
+    a.navbar-brand {
+        margin: auto;
+        left: 0;
+        right: 0;
+        width: 200px;
+        text-align: center;
+    }
+}
+/* menu bar resizable*/
+.menubar-resizable .after {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    width: 15px;
+    top: 0;
+    bottom: 0;
+    right: -3px;
+    background: transparent;
+    cursor: col-resize;
+}
+.menubar-fold .menubar-resizable .after {
+    display: none;
+}
+
 @media (max-width: 1199px) {
+    .menubar-resizable .after {
+        display: none;
+    }
+
     .nav-side-menu {
         position: relative;
         width: 100%;
@@ -666,9 +707,9 @@ paper-tab {
     /*border-collapse: collapse;*/
 }
 
-paper-tab.iron-selected, paper-tab:hover {
-    background-color: #71BCC1;
-}
+    paper-tab.iron-selected, paper-tab:hover {
+        background-color: #71BCC1;
+    }
 /* Polymer Elements Defautls */
 
 
@@ -688,41 +729,41 @@ input:focus::-webkit-datetime-edit {
     padding: 0;
 }
 
-.column-toggle:hover {
-    color: white;
-}
+    .column-toggle:hover {
+        color: white;
+    }
 
-.column-toggle .list-group {
-    padding-left: 0;
-    margin-bottom: 0;
-}
+    .column-toggle .list-group {
+        padding-left: 0;
+        margin-bottom: 0;
+    }
 
-.column-toggle .dropdown-content {
-    max-height: 70vh !important;
-    max-width: 50vw !important;
-}
+    .column-toggle .dropdown-content {
+        max-height: 70vh !important;
+        max-width: 50vw !important;
+    }
 
-.column-toggle hr {
-    margin-top: 1px;
-    margin-bottom: 0px;
-}
+    .column-toggle hr {
+        margin-top: 1px;
+        margin-bottom: 0px;
+    }
 
-.column-toggle .list-group a {
-    border-radius: 0;
-    background: #f5f5f5;
-    color: grey !important;
-    border-left: none;
-    border-right: none;
-    border: none;
-}
+    .column-toggle .list-group a {
+        border-radius: 0;
+        background: #f5f5f5;
+        color: grey !important;
+        border-left: none;
+        border-right: none;
+        border: none;
+    }
 
-.column-toggle .list-group a:hover {
-    /*background: white;*/
-    color: black !important;
-    opacity: .6;
-}
+        .column-toggle .list-group a:hover {
+            /*background: white;*/
+            color: black !important;
+            opacity: .6;
+        }
 
-.column-toggle .list-group a.selected {
-    background: white;
-    color: black !important;
-}
+        .column-toggle .list-group a.selected {
+            background: white;
+            color: black !important;
+        }
