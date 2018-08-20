@@ -289,7 +289,7 @@
                                         <vaadin-text-field value="{{data.ordOrderSource}}" id="mOrdOrderSource" name="mOrdOrderSource" label="Origem do Pedido Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.proposalNo}}" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.proposalNo}}" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true" hidden="{{_hiddeproposalNo}}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
                                         <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
@@ -1413,6 +1413,10 @@
                         type: Boolean,
                         value: false
                     },
+                    _hiddeproposalNo: {
+                        type: Boolean,
+                        value: false
+                    },
                     _CLResponsible: {
                         type: String,
                         value: ""
@@ -1476,6 +1480,7 @@
                         _self.$.mOrderOrigin.disabled = true;
                         _self.$.mOrdOrderSource.disabled = true;
                         _self.$.mProposalNo.disabled = true;
+                        this._hiddeproposalNo = false;
                         _self.$.versionNo.disabled = true;
                         _self.$.mStartData.disabled = true;
                         _self.$.DueDate.disabled = true;
@@ -1518,6 +1523,9 @@
                         _self.$._CLCreateContract.disabled = true;
 
                         $(_self.$.grid_contractlines).addClass('disabled');
+                    }
+                    else {
+                        this._hiddeproposalNo = true;
                     }
                 },
                 _openToast: function (message) {
