@@ -270,5 +270,16 @@ namespace Hydra.Such.Data
             [Description("Devolução")]
             Devolucao
         }
+
+        public enum ResourceTypes
+        {
+            [Description("Mão-de-Obra")]
+            MaoDeObra,
+            Custo,
+            [Description("Serviço Externo")]
+            ServicoExterno,
+            Ferramenta,
+            Invoicing
+        }
     }
 }
