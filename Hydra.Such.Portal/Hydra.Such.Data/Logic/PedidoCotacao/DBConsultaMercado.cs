@@ -467,6 +467,24 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static ConsultaMercado Update(ConsultaMercadoView consultaMercadoView)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                ConsultaMercado consultaMercado = CastConsultaMercadoViewToConsultaMercado(consultaMercadoView);
+
+                _context.ConsultaMercado.Update(consultaMercado);
+                _context.SaveChanges();
+                
+                return consultaMercado;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static ConsultaMercado Delete(ConsultaMercado ObjectToDelete)
         {
             try
@@ -691,6 +709,54 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
 
             return view;
+        }
+
+        public static ConsultaMercado CastConsultaMercadoViewToConsultaMercado(ConsultaMercadoView ObjectToTransform)
+        {
+            ConsultaMercado consultaMercado = new ConsultaMercado()
+            {
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                CodProjecto = ObjectToTransform.CodProjecto,
+                Descricao = ObjectToTransform.Descricao,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                CodActividade = ObjectToTransform.CodActividade,
+                //DataPedidoCotacao = ObjectToTransform.DataPedidoCotacao,
+                DataPedidoCotacao = ObjectToTransform.DataPedidoCotacao_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataPedidoCotacao_Show) : (DateTime?)null,
+                FornecedorSelecionado = ObjectToTransform.FornecedorSelecionado,
+                NumDocumentoCompra = ObjectToTransform.NumDocumentoCompra,
+                CodLocalizacao = ObjectToTransform.CodLocalizacao,
+                FiltroActividade = ObjectToTransform.FiltroActividade,
+                ValorPedidoCotacao = ObjectToTransform.ValorPedidoCotacao,
+                Destino = ObjectToTransform.Destino,
+                Estado = ObjectToTransform.Estado,
+                UtilizadorRequisicao = ObjectToTransform.UtilizadorRequisicao,
+                //DataLimite = ObjectToTransform.DataLimite,
+                DataLimite = ObjectToTransform.DataLimite_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataLimite_Show) : (DateTime?)null,
+                EspecificacaoTecnica = ObjectToTransform.EspecificacaoTecnica,
+                Fase = ObjectToTransform.Fase,
+                Modalidade = ObjectToTransform.Modalidade,
+                PedidoCotacaoCriadoEm = ObjectToTransform.PedidoCotacaoCriadoEm,
+                PedidoCotacaoCriadoPor = ObjectToTransform.PedidoCotacaoCriadoPor,
+                ConsultaEm = ObjectToTransform.ConsultaEm,
+                ConsultaPor = ObjectToTransform.ConsultaPor,
+                NegociacaoContratacaoEm = ObjectToTransform.NegociacaoContratacaoEm,
+                NegociacaoContratacaoPor = ObjectToTransform.NegociacaoContratacaoPor,
+                AdjudicacaoEm = ObjectToTransform.AdjudicacaoEm,
+                AdjudicacaoPor = ObjectToTransform.AdjudicacaoPor,
+                NumRequisicao = ObjectToTransform.NumRequisicao,
+                PedidoCotacaoOrigem = ObjectToTransform.PedidoCotacaoOrigem,
+                ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
+                CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
+                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada
+            };
+
+            //Falta o cast das icollections
+
+
+            return (consultaMercado);
+
         }
 
         #endregion

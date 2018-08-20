@@ -1121,7 +1121,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
+        public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data, string dateCont)
         {
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
@@ -1137,7 +1137,8 @@ namespace Hydra.Such.Portal.Controllers
                 String ContractNoDuplicate = "";
                 int InvoiceGroupDuplicate = -1;
                 DateTime current = DateTime.Now;
-                DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
+                // DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
+                DateTime lastDay = Convert.ToDateTime(dateCont);
                 string Problema;
                 foreach (var line in contractLinesList)
                 {
@@ -1562,6 +1563,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Problema += "Falta Nota Encomenda";
                             }
                         }
+                       
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
@@ -1740,7 +1742,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (item.Situação == "" || item.Situação == null)
                 {
-                    
+                   
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -2084,7 +2086,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
                                     PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
                                     PreInvoiceLinesToCreate.NºContrato = Contract.ContactNo;
-                                    PreInvoiceLinesToCreate.NºProjeto = line.ProjectNo;
+                                    PreInvoiceLinesToCreate.NºProjeto = Contract.ContactNo;
                                     PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                     PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
                                     PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
