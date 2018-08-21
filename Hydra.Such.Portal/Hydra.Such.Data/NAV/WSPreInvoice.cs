@@ -134,6 +134,7 @@ namespace Hydra.Such.Data.NAV
                     Shipment_Start_TimeSpecified = true,
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
+                    Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Periodo_de_Fact_Contrato = ContractInvoicePeriod,
                     Data_Serv_Prestado = InvoiceBorrowed
 
