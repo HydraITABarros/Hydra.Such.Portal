@@ -8,6 +8,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.PedidoCotacao;
+using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -177,6 +178,126 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(result);
             }
         }
+
+        [HttpPost]
+        public JsonResult EstadoAnteriorConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    if (consultaMercado.Fase == Fases[4].Id)
+                    {
+                        consultaMercado.Estado = Estados[0].Id;
+                    }
+
+                    consultaMercado.Fase = (consultaMercado.Fase - 1) >= 0 ? (consultaMercado.Fase - 1) : Fases[0].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Mudança para Estado Anterior com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Anterior!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Anterior!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult EstadoSeguinteConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    if (consultaMercado.Fase == Fases[3].Id)
+                    {
+                        consultaMercado.Estado = Estados[1].Id;
+                    }
+
+                    consultaMercado.Fase = (consultaMercado.Fase + 1) <= 4 ? (consultaMercado.Fase + 1) : Fases[4].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    //Criar uma versão no histórico, com versão incrementada em 1
+                    HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
+
+                    if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
+                    {
+                        int _numversao = historicoconsultaMercado.NumVersao;
+
+                        //Histórico Linhas Consulta Mercado
+                        foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
+                        {
+                            DBConsultaMercado.Create_Hist(lin,_numversao);
+                        }
+
+                        //Histórico Condições Propostas Fornecedores
+                        foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Linhas Condições Propostas Fornecedores
+                        foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Selecção Entidades
+                        foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+                    }
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Mudança para Estado Seguinte com sucesso!";
+                    
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Seguinte!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Seguinte!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult CopiarConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+
+            return Json(data)
+        }
+
+
+        
 
         #region Linhas Consulta Mercado
 
