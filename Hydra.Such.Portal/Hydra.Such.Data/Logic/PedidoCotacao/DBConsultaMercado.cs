@@ -387,7 +387,39 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == NumConsultaMercado).FirstOrDefault();
+                    ConsultaMercado consultaMercado = ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == NumConsultaMercado).FirstOrDefault();
+                    List<LinhasConsultaMercado> linhasConsultaMercado = new List<LinhasConsultaMercado>();
+                    List<CondicoesPropostasFornecedores> condicoesPropostasFornecedores = new List<CondicoesPropostasFornecedores>();
+                    List<LinhasCondicoesPropostasFornecedores> linhasCondicoesPropostasFornecedores = new List<LinhasCondicoesPropostasFornecedores>();
+                    List<SeleccaoEntidades> seleccaoEntidades = new List<SeleccaoEntidades>();
+
+                    linhasConsultaMercado = ctx.LinhasConsultaMercado.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    condicoesPropostasFornecedores = ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    linhasCondicoesPropostasFornecedores = ctx.LinhasCondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+
+                    foreach (LinhasConsultaMercado lin in linhasConsultaMercado)
+                    {
+                        consultaMercado.LinhasConsultaMercado.Add(lin);
+                    }
+
+                    foreach (CondicoesPropostasFornecedores lin in condicoesPropostasFornecedores)
+                    {
+                        consultaMercado.CondicoesPropostasFornecedores.Add(lin);
+                    }
+
+                    foreach (LinhasCondicoesPropostasFornecedores lin in linhasCondicoesPropostasFornecedores)
+                    {
+                        consultaMercado.LinhasCondicoesPropostasFornecedores.Add(lin);
+                    }
+
+                    foreach (SeleccaoEntidades lin in seleccaoEntidades)
+                    {
+                        consultaMercado.SeleccaoEntidades.Add(lin);
+                    }
+
+
+                    return consultaMercado;
                 }
             }
             catch (Exception e)
@@ -1004,25 +1036,257 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
         #region Historico_Consulta_Mercado
 
+        public static HistoricoConsultaMercado Create(ConsultaMercado ObjectToCreate)
+        {
+            int _MaxVersao = 0;
+
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    _MaxVersao = ctx.HistoricoConsultaMercado.Where(p => p.NumConsultaMercado == ObjectToCreate.NumConsultaMercado).Max(p => p.NumVersao);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _MaxVersao = 0;
+            }
+            
+
+            HistoricoConsultaMercado historicoConsultaMercado = new HistoricoConsultaMercado()
+            {
+                NumConsultaMercado = ObjectToCreate.NumConsultaMercado,
+                NumVersao = (_MaxVersao + 1),
+                CodProjecto = ObjectToCreate.CodProjecto,
+                Descricao = ObjectToCreate.Descricao,
+                CodRegiao = ObjectToCreate.CodRegiao,
+                CodAreaFuncional = ObjectToCreate.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToCreate.CodCentroResponsabilidade,
+                CodActividade = ObjectToCreate.CodActividade,
+                DataPedidoCotacao = ObjectToCreate.DataPedidoCotacao,
+                FornecedorSelecionado = ObjectToCreate.FornecedorSelecionado,
+                NumDocumentoCompra = ObjectToCreate.NumDocumentoCompra,
+                CodLocalizacao = ObjectToCreate.CodLocalizacao,
+                FiltroActividade = ObjectToCreate.FiltroActividade,
+                ValorPedidoCotacao = ObjectToCreate.ValorPedidoCotacao,
+                Destino = ObjectToCreate.Destino,
+                Estado = ObjectToCreate.Estado,
+                UtilizadorRequisicao = ObjectToCreate.UtilizadorRequisicao,
+                DataLimite = ObjectToCreate.DataLimite,
+                EspecificacaoTecnica = ObjectToCreate.EspecificacaoTecnica,
+                Fase = ObjectToCreate.Fase,
+                Modalidade = ObjectToCreate.Modalidade,
+                PedidoCotacaoCriadoEm = ObjectToCreate.PedidoCotacaoCriadoEm,
+                PedidoCotacaoCriadoPor = ObjectToCreate.PedidoCotacaoCriadoPor,
+                ConsultaEm = ObjectToCreate.ConsultaEm,
+                ConsultaPor = ObjectToCreate.ConsultaPor,
+                NegociacaoContratacaoEm = ObjectToCreate.NegociacaoContratacaoEm,
+                NegociacaoContratacaoPor = ObjectToCreate.NegociacaoContratacaoPor,
+                AdjudicacaoEm = ObjectToCreate.AdjudicacaoEm,
+                AdjudicacaoPor = ObjectToCreate.AdjudicacaoPor,
+                NumRequisicao = ObjectToCreate.NumRequisicao,
+                PedidoCotacaoOrigem = ObjectToCreate.PedidoCotacaoOrigem,
+                ValorAdjudicado = ObjectToCreate.ValorAdjudicado,
+                CodFormaPagamento = ObjectToCreate.CodFormaPagamento,
+                SeleccaoEfectuada = ObjectToCreate.SeleccaoEfectuada
+            };
+
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.HistoricoConsultaMercado.Add(historicoConsultaMercado);
+
+                _context.SaveChanges();
+                return historicoConsultaMercado;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
 
         #region Historico_Linhas_Consulta_Mercado
+
+        public static HistoricoLinhasConsultaMercado Create_Hist(LinhasConsultaMercado ObjectToCreate, int numversao)
+        {
+            HistoricoLinhasConsultaMercado historicoLinhasConsultaMercado = new HistoricoLinhasConsultaMercado()
+            {
+                NumLinha = ObjectToCreate.NumLinha,
+                NumConsultaMercado = ObjectToCreate.NumConsultaMercado,
+                NumVersao = numversao,
+                CodProduto = ObjectToCreate.CodProduto,
+                Descricao = ObjectToCreate.Descricao,
+                NumProjecto = ObjectToCreate.NumProjecto,
+                CodRegiao = ObjectToCreate.CodRegiao,
+                CodAreaFuncional = ObjectToCreate.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToCreate.CodCentroResponsabilidade,
+                CodActividade = ObjectToCreate.CodActividade,
+                CodLocalizacao = ObjectToCreate.CodLocalizacao,
+                Quantidade = ObjectToCreate.Quantidade,
+                CustoUnitarioPrevisto = ObjectToCreate.CustoUnitarioPrevisto,
+                CustoTotalPrevisto = ObjectToCreate.CustoTotalPrevisto,
+                CustoUnitarioObjectivo = ObjectToCreate.CustoUnitarioObjectivo,
+                CustoTotalObjectivo = ObjectToCreate.CustoTotalObjectivo,
+                CodUnidadeMedida = ObjectToCreate.CodUnidadeMedida,
+                DataEntregaPrevista = ObjectToCreate.DataEntregaPrevista,
+                NumRequisicao = ObjectToCreate.NumRequisicao,
+                LinhaRequisicao = ObjectToCreate.LinhaRequisicao,
+                CriadoEm = ObjectToCreate.CriadoEm,
+                CriadoPor = ObjectToCreate.CriadoPor,
+                ModificadoEm = ObjectToCreate.ModificadoEm,
+                ModificadoPor = ObjectToCreate.ModificadoPor
+            };
+
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.HistoricoLinhasConsultaMercado.Add(historicoLinhasConsultaMercado);
+
+                _context.SaveChanges();
+                return historicoLinhasConsultaMercado;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         #endregion
 
 
         #region Historico_Condicoes_Propostas_Fornecedores
 
+        public static HistoricoCondicoesPropostasFornecedores Create_Hist(CondicoesPropostasFornecedores ObjectToCreate, int numversao)
+        {
+            HistoricoCondicoesPropostasFornecedores historicoCondicoesPropostasFornecedores = new HistoricoCondicoesPropostasFornecedores()
+            {
+                IdCondicaoPropostaFornecedores = ObjectToCreate.IdCondicaoPropostaFornecedores,
+                NumConsultaMercado = ObjectToCreate.NumConsultaMercado,
+                NumVersao = numversao,
+                CodFornecedor = ObjectToCreate.CodFornecedor,
+                Alternativa = ObjectToCreate.Alternativa,
+                CodActividade = ObjectToCreate.CodActividade,
+                ValidadeProposta = ObjectToCreate.ValidadeProposta,
+                CodTermosPagamento = ObjectToCreate.CodTermosPagamento,
+                CodFormaPagamento = ObjectToCreate.CodFormaPagamento,
+                FornecedorSelecionado = ObjectToCreate.FornecedorSelecionado,
+                DataProposta = ObjectToCreate.DataProposta,
+                NumProjecto = ObjectToCreate.NumProjecto,
+                Preferencial = ObjectToCreate.Preferencial,
+                NomeFornecedor = ObjectToCreate.NomeFornecedor,
+                EnviarPedidoProposta = ObjectToCreate.EnviarPedidoProposta,
+                Notificado = ObjectToCreate.Notificado
+            };
+
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.HistoricoCondicoesPropostasFornecedores.Add(historicoCondicoesPropostasFornecedores);
+
+                _context.SaveChanges();
+                return historicoCondicoesPropostasFornecedores;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
 
         #region Historico_Linhas_Condicoes_Propostas_Fornecedores
 
+        public static HistoricoLinhasCondicoesPropostasFornecedores Create_Hist(LinhasCondicoesPropostasFornecedores ObjectToCreate, int numversao)
+        {
+            HistoricoLinhasCondicoesPropostasFornecedores historicoLinhasCondicoesPropostasFornecedores = new HistoricoLinhasCondicoesPropostasFornecedores()
+            {
+                NumLinha = ObjectToCreate.NumLinha,
+                NumConsultaMercado = ObjectToCreate.NumConsultaMercado,
+                NumVersao = numversao,
+                CodFornecedor = ObjectToCreate.CodFornecedor,
+                Alternativa = ObjectToCreate.Alternativa,
+                CodProduto = ObjectToCreate.CodProduto,
+                Quantidade = ObjectToCreate.Quantidade,
+                NumProjecto = ObjectToCreate.NumProjecto,
+                CodLocalizacao = ObjectToCreate.CodLocalizacao,
+                PrecoFornecedor = ObjectToCreate.PrecoFornecedor,
+                DataEntregaPrevista = ObjectToCreate.DataEntregaPrevista,
+                Validade = ObjectToCreate.Validade,
+                QuantidadeAAdjudicar = ObjectToCreate.QuantidadeAAdjudicar,
+                MotivoRejeicao = ObjectToCreate.MotivoRejeicao,
+                QuantidadeAdjudicada = ObjectToCreate.QuantidadeAdjudicada,
+                QuantidadeAEncomendar = ObjectToCreate.QuantidadeAEncomendar,
+                QuantidadeEncomendada = ObjectToCreate.QuantidadeEncomendada,
+                CodUnidadeMedida = ObjectToCreate.CodUnidadeMedida,
+                PrazoEntrega = ObjectToCreate.PrazoEntrega,
+                CodActividade = ObjectToCreate.CodActividade,
+                PercentagemDescontoLinha = ObjectToCreate.PercentagemDescontoLinha,
+                ValorAdjudicadoDl = ObjectToCreate.ValorAdjudicadoDl,
+                EstadoRespostaFornecedor = ObjectToCreate.EstadoRespostaFornecedor,
+                DataEntregaPrometida = ObjectToCreate.DataEntregaPrometida,
+                RespostaFornecedor = ObjectToCreate.RespostaFornecedor,
+                QuantidadeRespondida = ObjectToCreate.QuantidadeRespondida
+            };
+
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.HistoricoLinhasCondicoesPropostasFornecedores.Add(historicoLinhasCondicoesPropostasFornecedores);
+
+                _context.SaveChanges();
+                return historicoLinhasCondicoesPropostasFornecedores;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
 
         #region Historico_Seleccao_Entidades
+
+        public static HistoricoSeleccaoEntidades Create_Hist(SeleccaoEntidades ObjectToCreate, int numversao)
+        {
+            HistoricoSeleccaoEntidades historicoSeleccaoEntidades = new HistoricoSeleccaoEntidades()
+            {
+                IdSeleccaoEntidades = ObjectToCreate.IdSeleccaoEntidades,
+                NumConsultaMercado = ObjectToCreate.NumConsultaMercado,
+                NumVersao = numversao,
+                CodFornecedor = ObjectToCreate.CodFornecedor,
+                NomeFornecedor = ObjectToCreate.NomeFornecedor,
+                CodActividade = ObjectToCreate.CodActividade,
+                CidadeFornecedor = ObjectToCreate.CidadeFornecedor,
+                CodTermosPagamento = ObjectToCreate.CodTermosPagamento,
+                CodFormaPagamento = ObjectToCreate.CodFormaPagamento,
+                Selecionado = ObjectToCreate.Selecionado,
+                Preferencial = ObjectToCreate.Preferencial
+            };
+
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.HistoricoSeleccaoEntidades.Add(historicoSeleccaoEntidades);
+
+                _context.SaveChanges();
+                return historicoSeleccaoEntidades;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         #endregion
 
