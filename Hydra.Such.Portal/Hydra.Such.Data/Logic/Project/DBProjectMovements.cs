@@ -72,7 +72,7 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<MovimentosDeProjeto> GetAllTableByAreaProjectNo(string user, int areaId, string projectNo)
+        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string user, string projectNo, bool billable)
         {
             try
             {
@@ -81,14 +81,9 @@ namespace Hydra.Such.Data.Logic.Project
                     return ctx.MovimentosDeProjeto
                         .Where(x => x.NºProjeto == projectNo &&
                                     x.TipoMovimento == 1 && //Consumo
-                                    x.Faturável == true && 
+                                    x.Faturável == billable && 
                                     x.FaturaçãoAutorizada == false)
                         .ToList();
-
-                        
-                    //return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
-                    //List<MovimentosDeProjeto> test = ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
-                    //return test;
                 }
             }
             catch (Exception ex)

@@ -450,24 +450,32 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (TReadNavProj.IsCompletedSuccessfully)
                     {
-                        //Update Project on NAV
-                        Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
-                        bool statusL = true;
-                        try
-                        {
-                            TUpdateNavProj.Wait();
-                        }
-                        catch (Exception ex)
+                        if (TReadNavProj.Result.WSJob == null)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = ex.InnerException.Message;
-                            statusL = false;
+                            data.eMessage = "Erro ao atualizar: O projeto não existe no NAV";
                         }
+                        else
+                        {
+                            //Update Project on NAV
+                            Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                            bool statusL = true;
+                            try
+                            {
+                                TUpdateNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = ex.InnerException.Message;
+                                statusL = false;
+                            }
 
-                        if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
-                        {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            }
                         }
                     }
                 }
@@ -1508,6 +1516,7 @@ namespace Hydra.Such.Portal.Controllers
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 User = x.Utilizador,
+                MealType = x.TipoRefeição,
                 UnitCost = x.CustoUnitário,
                 TotalCost = x.CustoTotal,
                 UnitPrice = x.PreçoUnitário,
@@ -1519,6 +1528,22 @@ namespace Hydra.Such.Portal.Controllers
                 ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
 
             }).ToList();
+            foreach (ProjectDiaryViewModel item in dp)
+            {
+                if (item.MealType != null)
+                {
+                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                    if (TRrow != null)
+                    {
+                        item.MealTypeDescription = TRrow.Descrição;
+                    }
+                }
+                else
+                {
+                    item.MealTypeDescription = "";
+                }
+                
+            }
 
             return Json(dp);
         }
@@ -1587,8 +1612,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
         {
             Result result = new Result();
-            int areaId = int.Parse(requestParams["areaId"].ToString());
             string projectNo = requestParams["projectNo"].ToString();
+
+            bool billable = true;
+            JValue billableValue = requestParams["billable"] as JValue;
+            if (billableValue != null)
+                billable = (bool)billableValue.Value;
+
 
             var project = DBProjects.GetById(projectNo);
             
@@ -1600,7 +1630,7 @@ namespace Hydra.Such.Portal.Controllers
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
                     
 
-                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
+                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable).Select(x => new ProjectDiaryViewModel()
                     {
                         LineNo = x.NºLinha,
                         ProjectNo = x.NºProjeto,
@@ -1623,9 +1653,22 @@ namespace Hydra.Such.Portal.Controllers
                         TotalPrice = x.PreçoTotal,
                         UnitValueToInvoice = x.ValorUnitárioAFaturar,
                         Currency = x.Moeda,
-                        Billable = x.Faturável,
-                        Billed = (bool)x.Faturada,
-                        Registered = x.Registado,
+                        Billable = x.Faturável.HasValue ? x.Faturável.Value : false,
+                        Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
+                        Registered = x.Registado.HasValue ? x.Registado.Value : false,
+                        ResourceType = x.TipoRecurso,
+                        ServiceClientCode = x.CódServiçoCliente,
+                        //ServiceClientDescription = x,
+                        ServiceGroupCode = x.CódGrupoServiço,
+                        ExternalGuideNo = x.NºGuiaExterna,
+                        ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
+                        ResidueGuideNo = x.NºGuiaResíduos,
+                        AdjustedDocument = x.DocumentoCorrigido,
+                        AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                        MealType = x.TipoRefeição,
+                        DocumentNo = x.NºDocumento,
+
                         InvoiceToClientNo = x.FaturaANºCliente,
                         CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                         ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
@@ -1923,6 +1966,7 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
+                MealType = x.TipoRefeição,
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
                 ServiceClientCode = x.CódServiçoCliente,
