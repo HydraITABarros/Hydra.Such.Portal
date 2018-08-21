@@ -293,7 +293,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CopiarConsultaMercado([FromBody] ConsultaMercadoView data)
         {
 
-            return Json(data)
+            return Json(data);
         }
 
 
