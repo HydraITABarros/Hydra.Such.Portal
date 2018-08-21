@@ -1030,10 +1030,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
 
-                entity.Property(e => e.NumeracaoProdutos).HasColumnName("NumeracaoProdutos");
-
-                entity.Property(e => e.NumeracaoConsultaMercado).HasColumnName("ConsultaMercado");
-
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -1498,6 +1494,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("CP")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -1517,10 +1517,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FunçãoContato)
                     .HasColumnName("Função Contato")
                     .HasMaxLength(30);
-
-                entity.Property(e => e.Regiao)
-                    .HasColumnName("Código Região")
-                    .HasMaxLength(20);
 
                 entity.Property(e => e.Nif)
                     .HasColumnName("NIF")
@@ -1755,6 +1751,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Requisição do Cliente")
                     .HasMaxLength(30);
 
+                entity.Property(e => e.NºVep)
+                    .HasColumnName("Nº VEP")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.ObjetoServiço).HasColumnName("Objeto Serviço");
 
                 entity.Property(e => e.OrigemDoPedido).HasColumnName("Origem do Pedido");
@@ -1794,10 +1794,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.TipoProposta).HasColumnName("Tipo Proposta");
 
                 entity.Property(e => e.UnidadePrestação).HasColumnName("Unidade Prestação");
-
-                entity.Property(e => e.NºVEP)
-                    .HasColumnName("Nº VEP")
-                    .HasMaxLength(20);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -1934,7 +1930,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoTotal).HasColumnName("Custo Total");
 
-                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
@@ -2044,7 +2042,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.PreçoTotal).HasColumnName("Preço Total");
 
-                entity.Property(e => e.PreçoUnitário).HasColumnName("Preço Unitário");
+                entity.Property(e => e.PreçoUnitário)
+                    .HasColumnName("Preço Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.PréRegisto).HasColumnName("Pré-Registo");
 
@@ -5325,7 +5325,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoTotal).HasColumnName("Custo Total");
 
-                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
@@ -5443,7 +5445,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.PreçoTotal).HasColumnName("Preço Total");
 
-                entity.Property(e => e.PreçoUnitário).HasColumnName("Preço Unitário");
+                entity.Property(e => e.PreçoUnitário)
+                    .HasColumnName("Preço Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.QuantidadeDevolvida).HasColumnName("Quantidade Devolvida");
 

@@ -392,6 +392,15 @@
                     {{item.folhaHoras}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.mealTypeDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mealTypeDescription">Tipo de Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mealTypeDescription" />
+                </template>
+                <template>
+                    {{item.mealTypeDescription}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -419,6 +428,7 @@
                         }
                     }
                 },
+              
                 ready: function () {
                     if (this.paramprojno != "") {
                         this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
@@ -498,7 +508,8 @@
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "user": { hidden: false, label: "Utilizador" },
                         "billable": { hidden: false, label: "Faturável" },
-                        "folhaHoras": { hidden: false, label: "Folha de Horas" }
+                        "folhaHoras": { hidden: false, label: "Folha de Horas" },
+                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" }
                     };
 
                     if (localStorage["jobledgerentry.ToggleColumn"]) {
@@ -518,6 +529,7 @@
                         localStorage["jobledgerentry.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
+                
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },

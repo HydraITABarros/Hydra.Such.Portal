@@ -41,6 +41,7 @@ namespace Hydra.Such.Data.ViewModel
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
         public int? MealType { get; set; }
+        public string MealTypeDescription { get; set; }
         //public int? FinalDestintyResidueCode { get; set; }
         //public string OriginalDocument { get; set; }
         //public string CorrectedDocument { get; set; }
