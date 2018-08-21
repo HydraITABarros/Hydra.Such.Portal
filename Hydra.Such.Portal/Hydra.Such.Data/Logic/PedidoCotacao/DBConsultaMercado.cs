@@ -423,7 +423,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
                 ConsultaMercado consultaMercado = new ConsultaMercado()
                 {
-                    NumConsultaMercado = DBNumerationConfigurations.GetNextNumeration(config.NumeracaoConsultaMercado.Value, true, false),
+                    NumConsultaMercado = DBNumerationConfigurations.GetNextNumeration(config.ConsultaMercado.Value, true, false),
                     PedidoCotacaoCriadoPor = UserID,
                     PedidoCotacaoCriadoEm = DateTime.Now
                 };
@@ -435,7 +435,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 }
 
 
-                ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(config.NumeracaoConsultaMercado.Value);
+                ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(config.ConsultaMercado.Value);
                 ConfigNum.ÚltimoNºUsado = consultaMercado.NumConsultaMercado;
                 ConfigNum.UtilizadorModificação = UserID;
                 DBNumerationConfigurations.Update(ConfigNum);
