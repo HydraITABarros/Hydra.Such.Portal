@@ -146,7 +146,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -5400,6 +5400,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.GrupoContabProjeto)
                     .HasColumnName("Grupo Contab. Projeto")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.GrupoFaturaDescricao).HasMaxLength(50);
 
                 entity.Property(e => e.Matricula).HasMaxLength(20);
 

@@ -61,6 +61,8 @@ namespace Hydra.Such.Data.Database
         public string CodigoLer { get; set; }
         public string Grupo { get; set; }
         public string Operacao { get; set; }
+        public int? GrupoFatura { get; set; }
+        public string GrupoFaturaDescricao { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }
