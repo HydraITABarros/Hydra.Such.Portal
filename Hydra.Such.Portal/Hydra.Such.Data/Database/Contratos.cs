@@ -92,8 +92,7 @@ namespace Hydra.Such.Data.Database
         public string RazãoArquivo { get; set; }
         public bool? Historico { get; set; }
         public int? Tipo { get; set; }
-        public string NºVEP { get; set; }
-
+        public string NºVep { get; set; }
 
         public ObjetosDeServiço ObjetoServiçoNavigation { get; set; }
         public ICollection<LinhasContratos> LinhasContratos { get; set; }

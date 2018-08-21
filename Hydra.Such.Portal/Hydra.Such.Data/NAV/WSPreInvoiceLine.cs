@@ -169,7 +169,7 @@ namespace Hydra.Such.Data.NAV
                    Line_NoSpecified = true,
                    Job_No=x.ProjectNo,
                    Contract_No_Portal= x.DocumentNo
-
+                   
                    //Job_Journal_Line_No_Portal = x.LineNo,
                    //Job_Journal_Line_No_PortalSpecified = true,
 
