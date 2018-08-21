@@ -2145,6 +2145,13 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.Modalidade;
             return Json(result);
         }
+
+        public JsonResult GetResourceTypes()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(ResourceTypes));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
     }
 
 

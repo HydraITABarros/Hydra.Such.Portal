@@ -1612,8 +1612,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
         {
             Result result = new Result();
-            int areaId = int.Parse(requestParams["areaId"].ToString());
             string projectNo = requestParams["projectNo"].ToString();
+
+            bool billable = true;
+            JValue billableValue = requestParams["billable"] as JValue;
+            if (billableValue != null)
+                billable = (bool)billableValue.Value;
+
 
             var project = DBProjects.GetById(projectNo);
             
@@ -1625,7 +1630,7 @@ namespace Hydra.Such.Portal.Controllers
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
                     
 
-                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
+                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable).Select(x => new ProjectDiaryViewModel()
                     {
                         LineNo = x.NºLinha,
                         ProjectNo = x.NºProjeto,
@@ -1648,9 +1653,22 @@ namespace Hydra.Such.Portal.Controllers
                         TotalPrice = x.PreçoTotal,
                         UnitValueToInvoice = x.ValorUnitárioAFaturar,
                         Currency = x.Moeda,
-                        Billable = x.Faturável,
-                        Billed = (bool)x.Faturada,
-                        Registered = x.Registado,
+                        Billable = x.Faturável.HasValue ? x.Faturável.Value : false,
+                        Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
+                        Registered = x.Registado.HasValue ? x.Registado.Value : false,
+                        ResourceType = x.TipoRecurso,
+                        ServiceClientCode = x.CódServiçoCliente,
+                        //ServiceClientDescription = x,
+                        ServiceGroupCode = x.CódGrupoServiço,
+                        ExternalGuideNo = x.NºGuiaExterna,
+                        ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
+                        ResidueGuideNo = x.NºGuiaResíduos,
+                        AdjustedDocument = x.DocumentoCorrigido,
+                        AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                        MealType = x.TipoRefeição,
+                        DocumentNo = x.NºDocumento,
+
                         InvoiceToClientNo = x.FaturaANºCliente,
                         CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                         ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
