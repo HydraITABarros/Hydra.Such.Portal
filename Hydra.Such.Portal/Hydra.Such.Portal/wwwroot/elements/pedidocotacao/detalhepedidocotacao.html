@@ -119,6 +119,33 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/EstadoAnteriorConsultaMercado"
+                   last-response="{{estadoAnteriorData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_estadoAnterior_consultaMercado"
+                   on-response="_estadoAnteriorConsultaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/ConsultaMercado/EstadoSeguinteConsultaMercado"
+                   last-response="{{estadoSeguinteData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_estadoSeguinte_consultaMercado"
+                   on-response="_estadoSeguinteConsultaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/ConsultaMercado/CopiarConsultaMercado"
+                   last-response="{{copiarData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_copiar_consultaMercado"
+                   on-response="_copiarConsultaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado"
                    last-response="{{LinhaConsultaMercadoCreated}}"
                    method="post"
@@ -700,10 +727,10 @@
 
                             break;
                         case 3://
-
+                            this._estadoAnterior();
                             break;
                         case 4://
-
+                            this._estadoSeguinte();
                             break;
                         case 5://
 
@@ -733,14 +760,13 @@
                 },
 
                 _confirmarPedido: function () {
-                    
                     if (this.$.fase.value == 4) {
-                        this._openToast("Não é possível Confirmar o Pedido, porque a Fase já se encontra no último estado!")
+                        this._showErrorMessage("Não é possível Confirmar o Pedido, porque a Fase já se encontra no último estado!")
                         return;
                     }
 
                     if (this.$._CBLocations.value == "") {
-                        this._openToast("O código de Localização tem que estar preenchido!")
+                        this._showErrorMessage("O código de Localização tem que estar preenchido!")
                         return;
                     }
 
@@ -751,24 +777,88 @@
                         }
                     }
 
+                    
+
 
                 },
+                _confirmarPedidoResponse: function () {
+
+                },
+
                 _fecharPedido: function () {
 
                 },
+                _fecharPedidoResponse: function () {
+
+                },
+
+
                 _estadoAnterior: function () {
+                    if (this.$.fase.value == 0) {
+                        this._showErrorMessage("Não há Estado Anterior!")
+                        return;
+                    }
 
+                    var ajax_request = this.$.ajax_estadoAnterior_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a alteração para o Estado Anterior?", ajax_request
+                    );
                 },
+                _estadoAnteriorConsultaResponse: function () {
+                    if (this.estadoAnteriorData.eReasonCode == 0) {
+                        this._showMessage(this.estadoAnteriorData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.estadoAnteriorData.eMessage);
+                    }
+                },
+
                 _estadoSeguinte: function () {
+                    var ajax_request = this.$.ajax_estadoSeguinte_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a alteração para o Estado Seguinte?", ajax_request
+                    );
                 },
+                _estadoSeguinteConsultaResponse: function () {
+                    debugger
+                    if (this.estadoSeguinteData.eReasonCode == 0) {
+                        this._showMessage(this.estadoSeguinteData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.estadoSeguinteData.eMessage);
+                    }
+                },
+
                 _copiarConsultaMercado: function () {
 
                 },
+                _copiarConsultaMercadoResponse: function () {
+
+                },
+
                 _seleccaoEntidades: function () {
 
                 },
+                _seleccaoEntidadesResponse: function () {
+
+                },
+
                 _propostasFornecedores: function () {
+
+                },
+                _propostasFornecedoresResponse: function () {
 
                 },
 
@@ -851,6 +941,7 @@
                 },
 
                 _createLinha: function () {
+                    debugger
                     this.$.page_createLinha_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
                         codProduto: this.$._CBItems.value,

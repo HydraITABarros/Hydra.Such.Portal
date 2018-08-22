@@ -6,6 +6,6 @@ namespace Hydra.Such.Data.ViewModel
 {
     public class NAVJobViewModel
     {
-        public string No_ { get; set; }
+        public string No_ { get; set; }      
     }
 }

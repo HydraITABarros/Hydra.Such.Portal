@@ -8,7 +8,6 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -29,6 +28,10 @@
 <!--end ColumnToggle-->
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 
 <dom-module id="x-invoice-autorization">
     <template>
@@ -151,6 +154,7 @@
             }
         </style>
         <iron-ajax url="/PopulateDropdowns/GetResourceTypes" last-response="{{ResourceTypes}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetTiposRefeicao" last-response="{{MealTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
                    last-response="{{result}}"
                    method="post"
@@ -190,15 +194,15 @@
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
-                <iron-form id="frmRequisition">
+                <iron-form>
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="col-md-8">
                                 <div class="row break_clear">
-                                    <div class="col-md-1 ">
+                                    <div class="col-md-2 ">
                                         <vaadin-text-field id="txtCodProjeto" name="txtCodProjeto" label="Nº Projeto" value="" disabled></vaadin-text-field>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
@@ -207,27 +211,32 @@
                                 </div>
 
                                 <div class="row break_clear">
-                                    <div class="col-md-1 ">
+                                    <div class="col-md-2 ">
                                         <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="" disabled></vaadin-text-field>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6">
                                         <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="" disabled></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="Obter detalhes Facturação Autorizada2 não existe" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-4 ">
-                                        <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="5"></vaadin-text-field>
-                                        <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura" value="" disabled></vaadin-text-field>
+                                        
+                                        <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura" value=""></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
                                         <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label="Data Prestação Serviços" value="15-10-2018"></vaadin-text-field>
                                     </div>
                                 </div>
+                                <div class="row break_clear">
+                                    <div class="col-md-2 ">
+                                        <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
+                            <div class="row break_clear">
                                 <div class="col-md-4 ">
                                     Total Const. Faturáveis .. 696.321,00
                                 </div>
@@ -246,11 +255,28 @@
 
                             </div>
                         </div>
-
                         <div class="row break_clear">
                             <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" class="editGrid">
-                                <vaadin-grid-selection-column auto-select>
-                                </vaadin-grid-selection-column>
+
+                                <vaadin-grid-column width="40px" flex-grow="0">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="date">Fat. Autorizada</vaadin-grid-sorter>
+                                        <!--<input aria-label="Select All" type="checkbox" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">-->
+                                    </template>
+                                    <template>
+                                        <input aria-label="Select Row" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <!--<vaadin-grid-column width="15%" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="selected">Autorizado</vaadin-grid-sorter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked="{{item.selected}}" on-checked-changed="_authorizationChanged"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>-->
+
                                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.date.hidden }}">
                                     <template class="header">
                                         <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -363,9 +389,13 @@
                                         <vaadin-grid-filter path="resourceType" />
                                     </template>
                                     <template>
-                                        <vaadin-combo-box items="[[ResourceTypes]]" id="cmbResourceTypes" item-value-path="id" item-label-path="value" value="{{item.resourceType}}">
+                                        <vaadin-combo-box items="[[ResourceTypes]]" item-value-path="id" item-label-path="value" value="{{item.resourceType}}">
                                             <template>
-                                                <b>[[item.value]]</b>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
                                             </template>
                                         </vaadin-combo-box>
                                     </template>
@@ -403,7 +433,7 @@
                                         <vaadin-grid-filter path="externalGuideNo" />
                                     </template>
                                     <template>
-                                        <span slot="suffix">{{item.externalGuideNo}} (editável)</span>
+                                        <vaadin-text-field rows="5" value="{{item.externalGuideNo}}"> </vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.consumptionDate.hidden }}">
@@ -412,7 +442,7 @@
                                         <vaadin-grid-filter path="consumptionDate" />
                                     </template>
                                     <template>
-                                        <span slot="suffix">{{item.consumptionDate}} (editável)</span>
+                                        <vaadin-date-picker value="{{item.consumptionDate}}"></vaadin-date-picker>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueGuideNo.hidden }}">
@@ -421,7 +451,7 @@
                                         <vaadin-grid-filter path="residueGuideNo" />
                                     </template>
                                     <template>
-                                        <span slot="suffix">{{item.residueGuideNo}} (editável)</span>
+                                        <vaadin-text-field rows="5" value="{{item.residueGuideNo}}"> </vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocument.hidden }}">
@@ -457,7 +487,15 @@
                                         <vaadin-grid-filter path="mealType" />
                                     </template>
                                     <template>
-                                        <span slot="suffix">{{item.mealType}} (editável) </span>
+                                        <vaadin-combo-box items="[[MealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.documentNo.hidden }}">
@@ -570,6 +608,9 @@
                                 </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
+                        <div class="marginSpace">
+                            <paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </div>
                     </div>
                 </iron-form>
             </div>
@@ -584,10 +625,18 @@
             Polymer({
                 is: 'x-invoice-autorization',
                 properties: {
-                    _areaid: {
+                    _totalToAuthorize: {
                         type: Number,
                         notify: true,
-                        value: 0
+                        value: 0.00
+                    },
+                    inverted: {
+                        type: Boolean,
+                        value: false
+                    },
+                    indeterminate: {
+                        type: Boolean,
+                        value: false
                     },
                     _projectno: {
                         type: String,
@@ -625,6 +674,8 @@
                         }
                     }
                 },
+                observers: ['_resetSelection(inverted)'],
+
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
                     this.$.page_databound_ajax.generateRequest();
@@ -638,7 +689,6 @@
                     });
                     $(window).trigger('resize');
                 },
-
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.projectInvoiceAutorization);
                     var parentHeight = $(this).offsetParent().height();
@@ -695,6 +745,39 @@
                 },
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
+                },
+                _resetSelection: function (inverted) {
+                    this._totalToAuthorize = 0.00;
+                    this.$.projectInvoiceAutorization.selectedItems = [];
+                    this.updateStyles();
+                    this.indeterminate = false;
+                },
+                _invert: function (e) {
+                    this.inverted = !this.inverted;
+                },
+                // iOS needs indeterminated + checked at the same time
+                _isChecked: function (inverted, indeterminate) {
+                    return indeterminate || inverted;
+                },
+                _selectItem: function (e) {
+                    if (e.model.item != null) {
+                        if (e.target.checked === this.inverted) {
+                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
+                            this.$.projectInvoiceAutorization.deselectItem(e.model.item);
+                        } else {
+                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
+                            this.$.projectInvoiceAutorization.selectItem(e.model.item);
+                        }
+                        this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
+                    }
+                },
+                _isSelected: function (inverted, selected) {
+                    return inverted != selected;
+                },
+                _authorizationChanged: function (e) {
+                    debugger;
                 },
                 _exportEXCEL: function () {
                     //debugger;
