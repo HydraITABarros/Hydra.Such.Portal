@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Database
         public bool? AcertoDePreços { get; set; }
         public DateTime? DataDocumentoCorrigido { get; set; }
         public bool? FaturaçãoAutorizada { get; set; }
+        public bool? FaturaçãoAutorizada2 { get; set; }
         public DateTime? DataAutorizaçãoFaturação { get; set; }
         public int? CódGrupoServiço { get; set; }
         public int? TipoRecurso { get; set; }
