@@ -134,7 +134,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (createdItem.Id == null || createdItem.Id == "")
                     {
                         createdItem.eReasonCode = 2;
-                        createdItem.eMessage = "Erro ao criar o registo, Id vazio!";
+                        createdItem.eMessage = "Ocorreu um erro ao criar o registo, Id vazio!";
                     }
                     else
                     {
@@ -152,7 +152,8 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }
@@ -180,7 +181,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 updatedItem = new BillingReceptionModel();
                 updatedItem.eReasonCode = 2;
-                updatedItem.eMessage = "O registo não pode ser nulo";
+                //updatedItem.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(updatedItem);
         }
@@ -254,7 +256,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 updatedItem = new BillingReceptionModel();
                 updatedItem.eReasonCode = 2;
-                updatedItem.eMessage = "O registo não pode ser nulo";
+                //updatedItem.eMessage = "O registo não pode ser nulo";
+                updatedItem.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(updatedItem);
         }
@@ -291,7 +294,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 updatedItem = new BillingReceptionModel();
                 updatedItem.eReasonCode = 2;
-                updatedItem.eMessage = "O registo não pode ser nulo";
+                //updatedItem.eMessage = "O registo não pode ser nulo";
+                updatedItem.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(updatedItem);
         }
@@ -339,7 +343,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item = new BillingReceptionModel();
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+               // item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }
@@ -357,7 +362,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item = new BillingReceptionModel();
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }
@@ -375,7 +381,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item = new BillingReceptionModel();
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }
@@ -392,7 +399,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item = new BillingReceptionModel();
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }
@@ -406,7 +414,8 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(false);
         }
@@ -922,7 +931,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item = new BillingReceptionModel();
                 item.eReasonCode = 2;
-                item.eMessage = "O registo não pode ser nulo";
+                //item.eMessage = "O registo não pode ser nulo";
+                item.eMessage = "Ocorreu um Erro: O registo encontra-se vazio";
             }
             return Json(item);
         }

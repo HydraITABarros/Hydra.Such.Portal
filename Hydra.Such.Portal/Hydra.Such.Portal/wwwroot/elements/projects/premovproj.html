@@ -537,6 +537,15 @@
                     {{item.serviceClientDescription}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.mealTypeDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mealTypeDescription">Tipo de Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mealTypeDescription" />
+                </template>
+                <template>
+                    {{item.mealTypeDescription}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
         <paper-dialog id="dlg_registerPreMov" modal style="height:180px; width:400px">
             <div class="row break_clear">
@@ -710,7 +719,9 @@
                         "billable": { hidden: false, label: "Faturável" },
                         "folhaHoras": { hidden: false, label: "Folha de Horas" },
                         "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
-                        "serviceClientDescription": { hidden: false, label: "Serviço Cliente" }
+                        "serviceClientDescription": { hidden: false, label: "Serviço Cliente" },
+                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" }
+
                     };
 
                     if (localStorage["premovproj.ToggleColumn"]) {
