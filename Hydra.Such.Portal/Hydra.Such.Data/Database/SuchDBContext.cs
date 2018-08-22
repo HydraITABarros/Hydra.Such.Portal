@@ -5397,6 +5397,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.FaturaçãoAutorizada).HasColumnName("Faturação Autorizada");
 
+                entity.Property(e => e.FaturaçãoAutorizada2).HasColumnName("Faturação Autorizada2");
+
                 entity.Property(e => e.Grupo).HasMaxLength(20);
 
                 entity.Property(e => e.GrupoContabProjeto)

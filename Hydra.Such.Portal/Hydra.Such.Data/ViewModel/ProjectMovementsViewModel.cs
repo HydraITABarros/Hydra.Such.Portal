@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class ProjectDiaryViewModel : ErrorHandler
+    public class ProjectMovementViewModel : ErrorHandler
     {
         public int LineNo { get; set; }
         public string ProjectNo { get; set; }
@@ -36,45 +36,19 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitValueToInvoice { get; set; }
         public string Currency { get; set; }
         public bool Billed { get; set; }
-        public string FolhaHoras { get; set; }
-        //public string RequisitionNo { get; set; }
-        //public int? RequisitionLineNo { get; set; }
-        //public string Driver { get; set; }
         public int? MealType { get; set; }
         public string MealTypeDescription { get; set; }
-        //public int? FinalDestintyResidueCode { get; set; }
-        //public string OriginalDocument { get; set; }
-        //public string CorrectedDocument { get; set; }
-        //public bool? PriceAdjustment { get; set; }
-        //public DateTime? CorrectedDocumentDate { get; set; }
-        //public bool? AuthorizedInvoice { get; set; }
-        //public DateTime? AuthorizedInvoiceDate { get; set; }
         public int? ServiceGroupCode { get; set; }
-        //public int? ResourceType { get; set; }
-        //public string TimeSheetNo { get; set; }
-        //public string InternalRequisition { get; set; }
-        //public string EmployeeNo { get; set; }
-        //public decimal? ReturnedQuantity { get; set; }
         public string ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
         public string TypeDescription { get; set; }
-        //public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
-        //public LinhasRequisição Nº { get; set; }
-        //public Projetos NºProjetoNavigation { get; set; }
-        //public Requisição NºRequisiçãoNavigation { get; set; }
-        //public TiposRefeição TipoRefeiçãoNavigation { get; set; }
         public bool Selected { get; set; }
         public string CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
-
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
-
-
-
-
         public string ServiceData { get; set; }
         public string ClientRequest { get; set; }
         public string ServiceClientCode { get; set; }
@@ -85,17 +59,22 @@ namespace Hydra.Such.Data.ViewModel
         public string OriginalDocument { get; set; }
         public string AdjustedDocument { get; set; }
         public bool? AdjustedPrice { get; set; }
-        public string AdjustedDocumentData { get; set; }
+        public string AdjustedDocumentDate { get; set; }
         public bool? AutorizatedInvoice { get; set; }
         public bool? AutorizatedInvoice2 { get; set; }
-        public string AutorizatedInvoiceData { get; set; }
+        public string AutorizatedInvoiceDate { get; set; }
         public int? ResourceType { get; set; }
         public string TimesheetNo { get; set; }
         public string InternalRequest { get; set; }
         public string EmployeeNo { get; set; }
-        public decimal QuantityReturned { get; set; }
-        public string Coin { get; set; }
-        public bool? PreRegistered { get; set; }
+        public decimal? QuantityReturned { get; set; }
         public string ServiceClientDescription { get; set; }
+        public string CustomerNo { get; set; }
+        public string LicensePlate { get; set; }
+        public string ReadingCode { get; set; }
+        public string Group { get; set; }
+        public string Operation { get; set; }
+        public int? InvoiceGroup { get; set; }
+        public string InvoiceGroupDescription { get; set; }
     }
 }

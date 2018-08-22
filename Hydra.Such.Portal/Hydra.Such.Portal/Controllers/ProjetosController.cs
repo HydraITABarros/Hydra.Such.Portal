@@ -27,6 +27,7 @@ using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.Logic.ProjectMovements;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1609,7 +1610,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
+        public JsonResult GetAutorizacaoFaturacao([FromBody] JObject requestParams)
         {
             Result result = new Result();
             string projectNo = requestParams["projectNo"].ToString();
@@ -1622,58 +1623,16 @@ namespace Hydra.Such.Portal.Controllers
 
             var project = DBProjects.GetById(projectNo);
             
-            ProjectBillingAuthorization p = new ProjectBillingAuthorization(project);
+            ProjectBillingAuthorization p = new ProjectBillingAuthorization(project, _config.NAVDatabaseName, _config.NAVCompanyName);
             if (project != null)
             {
                 try
                 {
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
-                    
 
-                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable).Select(x => new ProjectDiaryViewModel()
-                    {
-                        LineNo = x.NºLinha,
-                        ProjectNo = x.NºProjeto,
-                        Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                        MovementType = x.TipoMovimento,
-                        Type = x.Tipo,
-                        Code = x.Código,
-                        Description = x.Descrição,
-                        Quantity = x.Quantidade,
-                        MeasurementUnitCode = x.CódUnidadeMedida,
-                        LocationCode = x.CódLocalização,
-                        ProjectContabGroup = x.GrupoContabProjeto,
-                        RegionCode = x.CódigoRegião,
-                        FunctionalAreaCode = x.CódigoÁreaFuncional,
-                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                        User = x.Utilizador,
-                        UnitCost = x.CustoUnitário,
-                        TotalCost = x.CustoTotal,
-                        UnitPrice = x.PreçoUnitário,
-                        TotalPrice = x.PreçoTotal,
-                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                        Currency = x.Moeda,
-                        Billable = x.Faturável.HasValue ? x.Faturável.Value : false,
-                        Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
-                        Registered = x.Registado.HasValue ? x.Registado.Value : false,
-                        ResourceType = x.TipoRecurso,
-                        ServiceClientCode = x.CódServiçoCliente,
-                        //ServiceClientDescription = x,
-                        ServiceGroupCode = x.CódGrupoServiço,
-                        ExternalGuideNo = x.NºGuiaExterna,
-                        ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
-                        ResidueGuideNo = x.NºGuiaResíduos,
-                        AdjustedDocument = x.DocumentoCorrigido,
-                        AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
-                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
-                        MealType = x.TipoRefeição,
-                        DocumentNo = x.NºDocumento,
-
-                        InvoiceToClientNo = x.FaturaANºCliente,
-                        CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
-                        ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
-                        ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                    }).OrderBy(x => x.ClientName).ToList();
+                    List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable)
+                        .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                        .OrderBy(x => x.ClientName).ToList();
 
                     if (projectMovements.Count > 0)
                     {
@@ -1723,6 +1682,93 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Não foi possivel obter o projecto.";
                 result.Value = new List<ProjectDiaryViewModel>();
+            }
+            return Json(result);
+        }
+
+        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, bool billable)
+        {
+            List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable)
+                        .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                        .OrderBy(x => x.ClientName).ToList();
+
+            if (projectMovements.Count > 0)
+            {
+                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                foreach (var lst in projectMovements)
+                {
+                    if (lst.MovementType == 3)
+                    {
+                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+
+                    if (!String.IsNullOrEmpty(lst.Currency))
+                    {
+                        lst.UnitPrice = lst.UnitValueToInvoice;
+                    }
+                }
+                List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+            }
+            return projectMovements;
+        }
+
+        //[HttpGet]
+        //public JsonResult GetProjectBillingResume(string projectId)
+        //{
+
+        //    dynamic projBillingResume = new JObject();
+        //    projBillingResume.TotalBillableConsumption = DateTime.Now;
+        //    projBillingResume.Album = "Me Against the world";
+        //    projBillingResume.Year = 1995;
+        //    projBillingResume.Artist = "2Pac";
+        //    return Json(result);
+        //}
+
+        [HttpPost]
+        public JsonResult UpdateProjectMovements([FromBody] List<ProjectMovementViewModel> projectMovements)
+        {
+            Result result = new Result();
+
+            string projectNo = projectMovements.Select(x => x.ProjectNo).FirstOrDefault();
+            List<int> movementIds = projectMovements.Select(x => x.LineNo).ToList();
+
+            var movementsToUpdate = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, true);
+            if (movementsToUpdate != null)
+                movementsToUpdate.RemoveAll(x => !movementIds.Contains(x.NºLinha));
+
+
+            movementsToUpdate.ForEach(x =>
+            {
+                var item = projectMovements.First(y => y.LineNo == x.NºLinha);
+                x.PreçoUnitário = item.UnitPrice;
+                x.Faturável = item.Billable;
+                x.TipoRecurso = item.ResourceType;
+                x.CódServiçoCliente = item.ServiceClientCode;
+                x.CódGrupoServiço = item.ServiceGroupCode;
+                x.NºGuiaExterna = item.ExternalGuideNo;
+                x.DataConsumo = string.IsNullOrEmpty(item.ConsumptionDate) ? (DateTime?)null : DateTime.Parse(item.ConsumptionDate);
+                x.NºGuiaResíduos = item.ResidueGuideNo;
+                x.FaturaçãoAutorizada2 = item.AutorizatedInvoice2;
+                x.TipoRefeição = item.MealType;
+            });
+            var updatedMovements = DBProjectMovements.Update(movementsToUpdate);
+            if (updatedMovements != null)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Movimentos atualizados com sucesso.";
+                result.Value = updatedMovements.ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi possivel atualizar os movimentos.";
+                result.Value = projectMovements;
             }
             return Json(result);
         }
@@ -1799,7 +1845,6 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
-
 
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)

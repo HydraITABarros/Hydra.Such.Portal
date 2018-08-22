@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hydra.Such.Data.Logic.Project
+namespace Hydra.Such.Data.Logic.ProjectMovements
 {
     public static class DBProjectMovements
     {
@@ -72,18 +72,29 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string user, string projectNo, bool billable)
+        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string user, string projectNo, bool? billable)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto
-                        .Where(x => x.NºProjeto == projectNo &&
+                    if (billable.HasValue)
+                    {
+                        return ctx.MovimentosDeProjeto
+                            .Where(x => x.NºProjeto == projectNo &&
                                     x.TipoMovimento == 1 && //Consumo
-                                    x.Faturável == billable && 
+                                    x.Faturável == billable &&
                                     x.FaturaçãoAutorizada == false)
-                        .ToList();
+                            .ToList();
+                    }
+                    else
+                    {
+                        return ctx.MovimentosDeProjeto
+                           .Where(x => x.NºProjeto == projectNo &&
+                                    x.TipoMovimento == 1 && //Consumo
+                                    x.FaturaçãoAutorizada == false)
+                            .ToList();
+                    }
                 }
             }
             catch (Exception ex)
@@ -143,6 +154,23 @@ namespace Hydra.Such.Data.Logic.Project
             catch (Exception ex)
             {
 
+                return null;
+            }
+        }
+
+        public static List<MovimentosDeProjeto> Update(List<MovimentosDeProjeto> projectMovements)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                    ctx.SaveChanges();
+                }
+                return projectMovements;
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }
@@ -335,6 +363,177 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        #region Parse Utilities
+        public static ProjectMovementViewModel ParseToViewModel(this MovimentosDeProjeto item, string navDatabaseName, string navCompanyName)
+        {
+            if (item != null)
+            {
+                return new ProjectMovementViewModel()
+                {
+                    LineNo = item.NºLinha,
+                    ProjectNo = item.NºProjeto,
+                    Date = item.Data == null ? String.Empty : item.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = item.TipoMovimento,
+                    DocumentNo = item.NºDocumento,
+                    Type = item.Tipo,
+                    //TypeDescription
+                    Code = item.Código,
+                    Description = item.Descrição,
+                    Quantity = item.Quantidade,
+                    MeasurementUnitCode = item.CódUnidadeMedida,
+                    LocationCode = item.CódLocalização,
+                    ProjectContabGroup = item.GrupoContabProjeto,
+                    RegionCode = item.CódigoRegião,
+                    FunctionalAreaCode = item.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                    User = item.Utilizador,
+                    UnitCost = item.CustoUnitário,
+                    TotalCost = item.CustoTotal,
+                    UnitPrice = item.PreçoUnitário,
+                    TotalPrice = item.PreçoTotal,
+                    UnitValueToInvoice = item.ValorUnitárioAFaturar,
+                    Currency = item.Moeda,
+                    Billable = item.Faturável.HasValue ? item.Faturável.Value : false,
+                    Billed = item.Faturada.HasValue ? item.Faturada.Value : false,
+                    Registered = item.Registado.HasValue ? item.Registado.Value : false,
+                    ResourceType = item.TipoRecurso,
+                    ServiceClientCode = item.CódServiçoCliente,
+                    //ServiceClientDescription
+                    ServiceGroupCode = item.CódGrupoServiço,
+                    ExternalGuideNo = item.NºGuiaExterna,
+                    ConsumptionDate = item.DataConsumo?.ToString("yyyy-MM-dd"),
+                    ResidueGuideNo = item.NºGuiaResíduos,
+                    AdjustedDocument = item.DocumentoCorrigido,
+                    AdjustedDocumentDate = item.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                    ResidueFinalDestinyCode = item.CódDestinoFinalResíduos,
+                    MealType = item.TipoRefeição,
+                    //MealTypeDescription
+                    InvoiceToClientNo = item.FaturaANºCliente,
+                    CreateUser = item.UtilizadorCriação,
+                    CreateDate = item.DataHoraCriação,
+                    UpdateUser = item.UtilizadorModificação,
+                    UpdateDate = item.DataHoraModificação,
+                    //ServiceData = item,
+                    //ClientRequest = item,
+                    RequestNo = item.NºRequisição,
+                    RequestLineNo = item.NºLinhaRequisição,
+                    Driver = item.Motorista,
+                    OriginalDocument = item.DocumentoOriginal,
+                    AdjustedPrice = item.AcertoDePreços,
+                    AutorizatedInvoice = item.FaturaçãoAutorizada,
+                    AutorizatedInvoice2 = item.FaturaçãoAutorizada2,
+                    AutorizatedInvoiceDate = item.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
+                    TimesheetNo = item.NºFolhaHoras,
+                    InternalRequest = item.RequisiçãoInterna,
+                    EmployeeNo = item.NºFuncionário,
+                    QuantityReturned = item.QuantidadeDevolvida,
+                    CustomerNo = item.CodCliente,
+                    LicensePlate = item.Matricula,
+                    ReadingCode = item.CodigoLer,
+                    Group = item.Grupo,
+                    Operation = item.Operacao,
+                    InvoiceGroup = item.GrupoFatura,
+                    InvoiceGroupDescription = item.GrupoFaturaDescricao,
+                    CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
+                    ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName),
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName)
+                };
+            }
+            return null;
+        }
 
+        public static List<ProjectMovementViewModel> ParseToViewModel(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
+        {
+            List<ProjectMovementViewModel> parsedItems = new List<ProjectMovementViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel(navDatabaseName, navCompanyName)));
+            return parsedItems;
+        }
+
+        public static MovimentosDeProjeto ParseToDB(this ProjectMovementViewModel item)
+        {
+            if (item != null)
+            {
+                return new MovimentosDeProjeto()
+                {
+                    NºLinha = item.LineNo,
+                    NºProjeto = item.ProjectNo,
+                    Data = string.IsNullOrEmpty(item.Date) ? (DateTime?)null : DateTime.Parse(item.Date),
+                    TipoMovimento = item.MovementType,
+                    NºDocumento = item.DocumentNo,
+                    Tipo = item.Type,
+                    //TypeDescription
+                    Código = item.Code,
+                    Descrição = item.Description,
+                    Quantidade = item.Quantity,
+                    CódUnidadeMedida = item.MeasurementUnitCode,
+                    CódLocalização = item.LocationCode,
+                    GrupoContabProjeto = item.ProjectContabGroup,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.ResponsabilityCenterCode,
+                    Utilizador = item.User,
+                    CustoUnitário = item.UnitCost,
+                    CustoTotal = item.TotalCost,
+                    PreçoUnitário = item.UnitPrice,
+                    PreçoTotal = item.TotalPrice ,
+                    ValorUnitárioAFaturar = item.UnitValueToInvoice,
+                    Moeda = item.Currency ,
+                    Faturável = item.Billable.HasValue ? item.Billable.Value : false,
+                    Faturada = item.Billed,
+                    Registado = item.Registered.HasValue ? item.Registered.Value : false,
+                    TipoRecurso = item.ResourceType,
+                    CódServiçoCliente = item.ServiceClientCode,
+                    //ServiceClientDescription
+                    CódGrupoServiço = item.ServiceGroupCode,
+                    NºGuiaExterna = item.ExternalGuideNo,
+                    DataConsumo = string.IsNullOrEmpty(item.ConsumptionDate) ? (DateTime?)null : DateTime.Parse(item.ConsumptionDate),
+                    NºGuiaResíduos = item.ResidueGuideNo,
+                    DocumentoCorrigido = item.AdjustedDocument,
+                    DataDocumentoCorrigido = string.IsNullOrEmpty(item.AdjustedDocumentDate) ? (DateTime?)null : DateTime.Parse(item.AdjustedDocumentDate),
+                    CódDestinoFinalResíduos = item.ResidueFinalDestinyCode,
+                    TipoRefeição = item.MealType,
+                    //MealTypeDescription
+                    FaturaANºCliente = item.InvoiceToClientNo,
+                    UtilizadorCriação = item.CreateUser,
+                    DataHoraCriação = item.CreateDate,
+                    UtilizadorModificação = item.UpdateUser,
+                    DataHoraModificação = item.UpdateDate,
+                    //ServiceData = item,
+                    //ClientRequest = item,
+                    NºRequisição = item.RequestNo,
+                    NºLinhaRequisição = item.RequestLineNo,
+                    Motorista = item.Driver,
+                    DocumentoOriginal = item.OriginalDocument,
+                    AcertoDePreços = item.AdjustedPrice,
+                    FaturaçãoAutorizada = item.AutorizatedInvoice,
+                    FaturaçãoAutorizada2 = item.AutorizatedInvoice2,
+                    DataAutorizaçãoFaturação = string.IsNullOrEmpty(item.AutorizatedInvoiceDate) ? (DateTime?)null : DateTime.Parse(item.AutorizatedInvoiceDate),
+                    NºFolhaHoras = item.TimesheetNo,
+                    RequisiçãoInterna = item.InternalRequest,
+                    NºFuncionário = item.EmployeeNo,
+                    QuantidadeDevolvida = item.QuantityReturned,
+                    CodCliente = item.CustomerNo,
+                    Matricula = item.LicensePlate,
+                    CodigoLer = item.ReadingCode,
+                    Grupo = item.Group,
+                    Operacao = item.Operation,
+                    GrupoFatura = item.InvoiceGroup,
+                    GrupoFaturaDescricao = item.InvoiceGroupDescription,
+                };
+            }
+            return null;
+        }
+
+        public static List<MovimentosDeProjeto> ParseToDB(this List<ProjectMovementViewModel> items)
+        {
+            List<MovimentosDeProjeto> parsedItems = new List<MovimentosDeProjeto>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+        #endregion
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using static Hydra.Such.Data.Enumerations;
-
+using Hydra.Such.Data.Logic.ProjectMovements;
 namespace Hydra.Such.Data.ViewModel.Projects
 {
     public class ProjectBillingAuthorization : ProjectDetailsViewModel
@@ -13,17 +13,22 @@ namespace Hydra.Such.Data.ViewModel.Projects
         
         public ProjectBillingAuthorization()
         {
-            this.Movements = new List<ProjectDiaryViewModel>();
+            this.Movements = new List<ProjectMovementViewModel>();
         }
 
-        public ProjectBillingAuthorization(Projetos project)
+        public ProjectBillingAuthorization(Projetos project, string navDatabaseName, string navCompanyName)
         {
+            
             this.project = project;
-            //if (project != null)
-            //    this.Movements = project.MovimentosDeProjeto;
+            if (project != null)
+            {
+                this.Movements = project.MovimentosDeProjeto
+                    .ToList()
+                    .ParseToViewModel(navDatabaseName, navCompanyName);
+            }
         }
 
-        public List<ProjectDiaryViewModel> Movements { get; set; }
+        public List<ProjectMovementViewModel> Movements { get; set; }
         public decimal TotalBillableConsumption
         {
             get
