@@ -292,12 +292,194 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CopiarConsultaMercado([FromBody] ConsultaMercadoView data)
         {
+            if (data != null)
+            {
+                //ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+                ConsultaMercado consultaMercado = DBConsultaMercado.Create(User.Identity.Name);
 
+                consultaMercado.CodProjecto = data.CodProjecto;
+                consultaMercado.Descricao = data.Descricao;
+                consultaMercado.CodRegiao = data.CodRegiao;
+                consultaMercado.CodAreaFuncional = data.CodAreaFuncional;
+                consultaMercado.CodCentroResponsabilidade = data.CodCentroResponsabilidade;
+                consultaMercado.CodActividade = data.CodActividade;
+                consultaMercado.DataPedidoCotacao = data.DataPedidoCotacao;
+                consultaMercado.FornecedorSelecionado = data.FornecedorSelecionado;
+                consultaMercado.NumDocumentoCompra = data.NumDocumentoCompra;
+                consultaMercado.CodLocalizacao = data.CodLocalizacao;
+                consultaMercado.FiltroActividade = data.FiltroActividade;
+                consultaMercado.ValorPedidoCotacao = data.ValorPedidoCotacao;
+                consultaMercado.Destino = data.Destino;
+                consultaMercado.Estado = data.Estado;
+                consultaMercado.UtilizadorRequisicao = data.UtilizadorRequisicao;
+                consultaMercado.DataLimite = data.DataLimite;
+                consultaMercado.EspecificacaoTecnica = data.EspecificacaoTecnica;
+                consultaMercado.Fase = data.Fase;
+                consultaMercado.Modalidade = data.Modalidade;
+                //consultaMercado.PedidoCotacaoCriadoEm = data.PedidoCotacaoCriadoEm;
+                //consultaMercado.PedidoCotacaoCriadoPor = data.PedidoCotacaoCriadoPor;
+                consultaMercado.ConsultaEm = data.ConsultaEm;
+                consultaMercado.ConsultaPor = data.ConsultaPor;
+                consultaMercado.NegociacaoContratacaoEm = data.NegociacaoContratacaoEm;
+                consultaMercado.NegociacaoContratacaoPor = data.NegociacaoContratacaoPor;
+                consultaMercado.AdjudicacaoEm = data.AdjudicacaoEm;
+                consultaMercado.AdjudicacaoPor = data.AdjudicacaoPor;
+                consultaMercado.NumRequisicao = data.NumRequisicao;
+                consultaMercado.PedidoCotacaoOrigem = data.NumConsultaMercado;
+                consultaMercado.ValorAdjudicado = data.ValorAdjudicado;
+                consultaMercado.CodFormaPagamento = data.CodFormaPagamento;
+                consultaMercado.SeleccaoEfectuada = data.SeleccaoEfectuada;
+
+                consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                if (data.LinhasConsultaMercado != null)
+                {
+                    foreach (LinhasConsultaMercadoView cmv in data.LinhasConsultaMercado)
+                    {
+                        DBConsultaMercado.Create_Copia(cmv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                if (data.CondicoesPropostasFornecedores != null)
+                {
+                    foreach (CondicoesPropostasFornecedoresView cpfv in data.CondicoesPropostasFornecedores)
+                    {
+                        DBConsultaMercado.Create_Copia(cpfv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+
+                if (data.LinhasCondicoesPropostasFornecedores != null)
+                {
+                    foreach (LinhasCondicoesPropostasFornecedoresView lcpfv in data.LinhasCondicoesPropostasFornecedores)
+                    {
+                        DBConsultaMercado.Create_Copia(lcpfv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                if (data.SeleccaoEntidades != null)
+                {
+                    foreach (SeleccaoEntidadesView sev in data.SeleccaoEntidades)
+                    {
+                        DBConsultaMercado.Create_Copia(sev, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                result.eReasonCode = 0;
+                result.eMessage = "Consulta de Mercado copiada com sucesso!";
+
+                return Json(result);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Por uma razão desconhecida, não foi efectuada qualquer cópia";
             return Json(data);
         }
 
 
-        
+        [HttpPost]
+        public JsonResult FecharPedido([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    consultaMercado.Estado = Estados[1].Id;
+                    consultaMercado.Fase = Fases[4].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    //Criar uma versão no histórico, com versão incrementada em 1
+                    HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
+
+                    if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
+                    {
+                        int _numversao = historicoconsultaMercado.NumVersao;
+
+                        //Histórico Linhas Consulta Mercado
+                        foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Condições Propostas Fornecedores
+                        foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Linhas Condições Propostas Fornecedores
+                        foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Selecção Entidades
+                        foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+                    }
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Pedido Fechado com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi Fechado o Pedido!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi Fechado o Pedido!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+
+        [HttpPost]
+        public JsonResult ConfirmarPedido([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+
+                    consultaMercado.Fase = Fases[1].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Pedido Confirmado com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi Confirmado o Pedido!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi Confirmado o Pedido!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+
 
         #region Linhas Consulta Mercado
 

@@ -1847,7 +1847,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
+        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
@@ -1880,8 +1880,9 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         try
                         {
+                            
+                            header.MovementType = Convert.ToInt32(OptionInvoice);
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
@@ -2028,6 +2029,18 @@ namespace Hydra.Such.Portal.Controllers
                         item.ServiceClientDescription = GetService.Descrição;
                     }
                     
+                }
+                if (item.MealType != null)
+                {
+                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                    if (TRrow != null)
+                    {
+                        item.MealTypeDescription = TRrow.Descrição;
+                    }
+                }
+                else
+                {
+                    item.MealTypeDescription = "";
                 }
             }
             return Json(dp);

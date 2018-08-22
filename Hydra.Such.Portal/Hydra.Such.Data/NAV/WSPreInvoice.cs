@@ -25,18 +25,37 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
+            WSCreatePreInvoice.Document_Type tipo;
+            bool notaDebito=false;
+
+            if (PreInvoiceToCreate.MovementType == 2)//Nota de débito
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Invoice;
+                notaDebito = true;
+            }
+            else if (PreInvoiceToCreate.MovementType == 4)//Nota de crédito
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
+                notaDebito = false;
+            }
+            else// Fatura
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Invoice;
+                notaDebito = false;
+            }
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
-                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
-                {
-                    Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
+                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
+
+                    Document_Type = tipo,
                     Document_TypeSpecified = true,
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
                     VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
-                    Contract_No=PreInvoiceToCreate.DocumentNo
-                    
-                   
+                    Contract_No = PreInvoiceToCreate.DocumentNo,
+                    Debit_Memo = notaDebito
+
                 }
+                
             };
 
             //Configure NAV Client

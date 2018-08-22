@@ -119,6 +119,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/ConfirmarPedido"
+                   last-response="{{confirmarPedidoData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmarPedido_consultaMercado"
+                   on-response="_confirmarPedidoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/ConsultaMercado/FecharPedido"
+                   last-response="{{fecharPedidoData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_fecharPedido_consultaMercado"
+                   on-response="_fecharPedidoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/EstadoAnteriorConsultaMercado"
                    last-response="{{estadoAnteriorData}}"
                    method="post"
@@ -142,7 +160,7 @@
                    method="post"
                    handle-as="json"
                    id="ajax_copiar_consultaMercado"
-                   on-response="_copiarConsultaResponse"
+                   on-response="_copiarConsultaMercadoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -724,7 +742,7 @@
                             this._confirmarPedido();
                             break;
                         case 2://
-
+                            this._fecharPedido();
                             break;
                         case 3://
                             this._estadoAnterior();
@@ -733,7 +751,7 @@
                             this._estadoSeguinte();
                             break;
                         case 5://
-
+                            this._copiarConsultaMercado();
                             break;
                         case 6://
 
@@ -777,21 +795,46 @@
                         }
                     }
 
-                    
+                    var ajax_request = this.$.ajax_confirmarPedido_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
 
-
+                    this._confirmAndExecuteActionToast(
+                        "Deseja confirmar o Pedido?", ajax_request
+                    );
                 },
                 _confirmarPedidoResponse: function () {
-
+                    if (this.confirmarPedidoData.eReasonCode == 0) {
+                        this._showMessage(this.confirmarPedidoData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.confirmarPedidoData.eMessage);
+                    }
                 },
 
                 _fecharPedido: function () {
+                    var ajax_request = this.$.ajax_fecharPedido_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Fecho do Pedido?", ajax_request
+                    );
                 },
                 _fecharPedidoResponse: function () {
-
+                    if (this.fecharPedidoData.eReasonCode == 0) {
+                        this._showMessage(this.fecharPedidoData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.fecharPedidoData.eMessage);
+                    }
                 },
-
 
                 _estadoAnterior: function () {
                     if (this.$.fase.value == 0) {
@@ -828,7 +871,6 @@
                     );
                 },
                 _estadoSeguinteConsultaResponse: function () {
-                    debugger
                     if (this.estadoSeguinteData.eReasonCode == 0) {
                         this._showMessage(this.estadoSeguinteData.eMessage);
                         setTimeout(
@@ -842,10 +884,25 @@
                 },
 
                 _copiarConsultaMercado: function () {
+                    var ajax_request = this.$.ajax_copiar_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a criação de uma cópia?", ajax_request
+                    );
                 },
                 _copiarConsultaMercadoResponse: function () {
-
+                    if (this.copiarData.eReasonCode == 0) {
+                        this._showMessage(this.copiarData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + this.copiarData.numConsultaMercado;
+                        //this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.copiarData.eMessage);
+                    }
                 },
 
                 _seleccaoEntidades: function () {
@@ -941,7 +998,6 @@
                 },
 
                 _createLinha: function () {
-                    debugger
                     this.$.page_createLinha_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
                         codProduto: this.$._CBItems.value,
