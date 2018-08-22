@@ -146,7 +146,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        
+
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -5398,11 +5399,15 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.FaturaçãoAutorizada).HasColumnName("Faturação Autorizada");
 
+                entity.Property(e => e.FaturaçãoAutorizada2).HasColumnName("Faturação Autorizada2");
+
                 entity.Property(e => e.Grupo).HasMaxLength(20);
 
                 entity.Property(e => e.GrupoContabProjeto)
                     .HasColumnName("Grupo Contab. Projeto")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.GrupoFaturaDescricao).HasMaxLength(50);
 
                 entity.Property(e => e.Matricula).HasMaxLength(20);
 
@@ -6230,7 +6235,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoTotal).HasColumnName("Custo Total");
 
-                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
@@ -6340,7 +6347,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.PreçoTotal).HasColumnName("Preço Total");
 
-                entity.Property(e => e.PreçoUnitário).HasColumnName("Preço Unitário");
+                entity.Property(e => e.PreçoUnitário)
+                    .HasColumnName("Preço Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.QuantidadeDevolvida).HasColumnName("Quantidade Devolvida");
 

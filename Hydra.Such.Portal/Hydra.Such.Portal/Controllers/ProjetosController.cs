@@ -1984,6 +1984,18 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     
                 }
+                if (item.MealType != null)
+                {
+                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                    if (TRrow != null)
+                    {
+                        item.MealTypeDescription = TRrow.Descrição;
+                    }
+                }
+                else
+                {
+                    item.MealTypeDescription = "";
+                }
             }
             return Json(dp);
         }
