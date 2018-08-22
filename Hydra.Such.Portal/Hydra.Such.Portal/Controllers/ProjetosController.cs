@@ -1802,7 +1802,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
+        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
@@ -1835,8 +1835,9 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         try
                         {
+                            
+                            header.MovementType = Convert.ToInt32(OptionInvoice);
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
