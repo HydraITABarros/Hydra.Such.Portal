@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? QuantidadeRecebida { get; set; }
         public decimal? ValorRecebidoNaoContabilizado { get; set; }
         public decimal? Valor { get; set; }
+        public decimal? ValorEncomendaActual { get; set; }
         public string CodRegiao { get; set; }
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }
