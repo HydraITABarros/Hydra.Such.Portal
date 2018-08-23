@@ -163,6 +163,14 @@
                    on-response="GetMovementsResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Projetos/UpdateProjectMovements"
+                   last-response="{{UpdateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatelines_ajax"
+                   on-response="_updateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/InvoiceLinesAuthorize"
                    last-response="{{lines}}"
                    method="post"
@@ -223,11 +231,12 @@
                                         <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-4 ">
-                                        
+
                                         <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura" value=""></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label="Data Prestação Serviços" value="15-10-2018"></vaadin-text-field>
+                                        <!--<vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label="Data Prestação Serviços" value="15-10-2018"></vaadin-text-field>-->
+                                        <vaadin-date-picker d="txtDataPrestacaoServ" label="Data Prestação Serviços"></vaadin-date-picker>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
@@ -257,27 +266,17 @@
                         </div>
                         <div class="row break_clear">
                             <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" class="editGrid">
-
-                                <vaadin-grid-column width="40px" flex-grow="0">
+                                
+                                <vaadin-grid-column width="110px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="date">Fat. Autorizada</vaadin-grid-sorter>
-                                        <!--<input aria-label="Select All" type="checkbox" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">-->
+                                        <vaadin-grid-sorter path="autorizatedInvoice2">Autorizado</vaadin-grid-sorter>
                                     </template>
                                     <template>
-                                        <input aria-label="Select Row" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                        <vaadin-checkbox checked="{{item.autorizatedInvoice2}}" on-checked-changed="_authorizationChanged"><input type="hidden" value="[[item.lineNo]]" /></vaadin-checkbox>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <!--<vaadin-grid-column width="15%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="selected">Autorizado</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox checked="{{item.selected}}" on-checked-changed="_authorizationChanged"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>-->
-
-                                <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.date.hidden }}">
+                                <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.date.hidden }}">
                                     <template class="header">
                                         <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="date" />
@@ -674,7 +673,7 @@
                         }
                     }
                 },
-                observers: ['_resetSelection(inverted)'],
+                //observers: ['_resetSelection(inverted)'],
 
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
@@ -706,7 +705,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
                         this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.page_autorizelines_ajax.generateRequest();
@@ -717,8 +715,6 @@
                     }
                 },
                 _toggleBillable: function (e) {
-                    debugger;
-
                     this._billable = !this._billable;
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
@@ -730,7 +726,7 @@
                     this.$.ToastMessageSuccess.text = 'Movimentos autorizados com sucesso';
                     this.$.ToastMessageSuccess.open();
                 },
-
+                
                 GetMovementsResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.result.eReasonCode !== 1) {
@@ -738,6 +734,19 @@
                             this.$.btnConfirm.disabled = true;
                         }
                         this.$.btnToggleBillable.textContent = this._billable ? "Não Faturáveis" : "Faturáveis";
+                        try {
+                            this._totalToAuthorize = 0;
+                            if (this.result.value != null) {
+                                for (i = 0; i < this.result.value.length; i++) {
+                                    var item = this.result.value[i];
+                                    if (item.autorizatedInvoice2 == true && item.totalPrice != null)
+                                        this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
+                                }
+                            }
+                        }
+                        catch {
+                            this.openToastError("Ocorreu um erro ao calcular o Total a Autorizar. Por favor atualize a página.");
+                        }
                     }
                     else {
                         this._openToastError("Não foi possivel obter os movimentos.");
@@ -746,38 +755,86 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                _resetSelection: function (inverted) {
-                    this._totalToAuthorize = 0.00;
-                    this.$.projectInvoiceAutorization.selectedItems = [];
-                    this.updateStyles();
-                    this.indeterminate = false;
-                },
-                _invert: function (e) {
-                    this.inverted = !this.inverted;
-                },
+                //_resetSelection: function (inverted) {
+                //    this._totalToAuthorize = 0.00;
+                //    this.$.projectInvoiceAutorization.selectedItems = [];
+                //    this.updateStyles();
+                //    this.indeterminate = false;
+                //},
+                //_invert: function (e) {
+                //    this.inverted = !this.inverted;
+                //},
                 // iOS needs indeterminated + checked at the same time
-                _isChecked: function (inverted, indeterminate) {
-                    return indeterminate || inverted;
-                },
-                _selectItem: function (e) {
-                    if (e.model.item != null) {
-                        if (e.target.checked === this.inverted) {
-                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
-                            this.$.projectInvoiceAutorization.deselectItem(e.model.item);
-                        } else {
-                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
-                            this.$.projectInvoiceAutorization.selectItem(e.model.item);
+                //_isChecked: function (inverted, indeterminate) {
+                //    return indeterminate || inverted;
+                //},
+                //_selectItem: function (e) {
+                //    if (e.model.item != null) {
+                //        if (e.target.checked === this.inverted) {
+                //            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
+                //            e.model.item.selected = false;
+                //            this.$.projectInvoiceAutorization.deselectItem(e.model.item);
+                //        } else {
+                //            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
+                //            e.model.item.selected = true;
+                //            this.$.projectInvoiceAutorization.selectItem(e.model.item);
+                //        }
+                //        this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
+                //    }
+                //},
+                //_isSelected: function (inverted, selected) {
+                //    return inverted != selected;
+                //},
+                _authorizationChanged: function (e) {
+                    var itemId = e.target.firstElementChild.value;
+                    var item = this.result.value.find(x => x.lineNo == itemId);
+                    if (item != null) {
+                        if (item.autorizatedInvoice2 == true) {
+                            if (item.totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(item.totalPrice)).toFixed(2);
                         }
-                        this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
+                        else {
+                            if (item.totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
+                        }
                     }
                 },
-                _isSelected: function (inverted, selected) {
-                    return inverted != selected;
+                //_changeAuthorization2For: function (itemId) {
+                //    if (itemId == undefined)
+                //        return;
+                //    debugger;
+                //    var item = this.result.value.find(x => x.lineNo == itemId); 
+                //    if (item != null) {
+                //        if (item.autorizatedInvoice2 == true) {
+                //            if (item.totalPrice != null && this._totalToAuthorize != null)
+                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(item.totalPrice)).toFixed(2);
+                //            item.autorizatedInvoice2 = true;
+                //        }
+                //        else {
+                //            if (item.totalPrice != null && this._totalToAuthorize != null)
+                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
+                //            item.autorizatedInvoice2 = false;
+                //        }
+                //    }
+                //},
+                _updateMovements: function () {
+                    this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
+                    this.$.updatelines_ajax.generateRequest();
                 },
-                _authorizationChanged: function (e) {
-                    debugger;
+                _updateLinesResponse: function (e) {
+                    //UpdateResponse
+                    if (e.detail.status === 200) {
+                        if (this.UpdateResponse.eReasonCode == "1") {
+                            this.$.projectInvoiceAutorization.clearCache();
+                            this.result.value = this.UpdateResponse;
+                            this._openToast(this.UpdateResponse.eMessage);
+                        }
+                        else {
+                            this._openToastError(this.UpdateResponse.eMessage);
+                        }
+                    }
                 },
                 _exportEXCEL: function () {
                     //debugger;
