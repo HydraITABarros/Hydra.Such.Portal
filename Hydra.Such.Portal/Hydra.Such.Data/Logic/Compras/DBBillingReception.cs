@@ -170,6 +170,7 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.DataResolucao= !item.DataResolucao.HasValue ? "" : item.DataResolucao.Value.ToString("yyyy-MM-dd");
                 parsedItem.AreaUltimaInteracao = item.AreaUltimaInteracao;
                 parsedItem.UserUltimaInteracao = item.UserUltimaInteracao;
+                parsedItem.ValorEncomendaActual = item.ValorEncomendaActual;
                 parsedItem.DescricaoStatus = Convert.ToString((Enumerations.BillingReceptionStates)item.Estado);
 
                 return parsedItem;
@@ -230,6 +231,7 @@ namespace Hydra.Such.Data.Logic.Request
                 parsedItem.DataResolucao = string.IsNullOrEmpty(item.DataResolucao) ? (DateTime?)null : DateTime.Parse(item.DataResolucao);
                 parsedItem.AreaUltimaInteracao = item.AreaUltimaInteracao;
                 parsedItem.UserUltimaInteracao = item.UserUltimaInteracao;
+                parsedItem.ValorEncomendaActual = item.ValorEncomendaActual;
                 return parsedItem;
                
               
