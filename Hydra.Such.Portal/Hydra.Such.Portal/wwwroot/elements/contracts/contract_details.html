@@ -1518,7 +1518,7 @@
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
-                                        ="
+           
 
                                     </template>
                                     <template>
@@ -1551,7 +1551,7 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            !i
+                                   
                                             [[ _clFormatResponsible(item.responsibleNo) ]]
                                         </template>
                                     </template>
@@ -2210,7 +2210,6 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        debugger;;
                         this.data.contractType = 3;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
@@ -2286,7 +2285,7 @@
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.$.versionNo.value = "1";
-                        this.data.filed = 0
+                        this.data.filed = 0;
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
