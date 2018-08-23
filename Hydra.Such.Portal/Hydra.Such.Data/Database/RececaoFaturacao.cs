@@ -49,6 +49,7 @@ namespace Hydra.Such.Data.Database
         public string AreaPendente2 { get; set; }
         public string AreaUltimaInteracao { get; set; }
         public string UserUltimaInteracao { get; set; }
+        public decimal? ValorEncomendaActual { get; set; }
 
         public ICollection<RececaoFaturacaoWorkflow> RececaoFaturacaoWorkflow { get; set; }
     }
