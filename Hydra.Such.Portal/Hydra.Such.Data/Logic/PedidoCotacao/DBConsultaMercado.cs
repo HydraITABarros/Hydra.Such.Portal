@@ -816,6 +816,30 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static LinhasConsultaMercado Create_Copia(LinhasConsultaMercadoView ObjectToCreate, string NumConsultaMercado, string UserID)
+        {
+            try
+            {
+                LinhasConsultaMercado linhasConsultaMercado = CastLinhasConsultaMercadoViewToDB(ObjectToCreate);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    linhasConsultaMercado.CriadoEm = DateTime.Now;
+                    linhasConsultaMercado.CriadoPor = UserID;
+                    linhasConsultaMercado.NumConsultaMercado = NumConsultaMercado;
+
+                    ctx.LinhasConsultaMercado.Add(linhasConsultaMercado);
+                    ctx.SaveChanges();
+                }
+
+                return linhasConsultaMercado;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static LinhasConsultaMercado Update(LinhasConsultaMercado ObjectToUpdate)
         {
             try
@@ -900,10 +924,64 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             return view;
         }
 
+        public static LinhasConsultaMercado CastLinhasConsultaMercadoViewToDB(LinhasConsultaMercadoView ObjectToTransform)
+        {
+            LinhasConsultaMercado linhasConsultaMercado = new LinhasConsultaMercado()
+            {
+                CodActividade = ObjectToTransform.CodActividade,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                CodLocalizacao = ObjectToTransform.CodLocalizacao,
+                CodProduto = ObjectToTransform.CodProduto,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                CodUnidadeMedida = ObjectToTransform.CodUnidadeMedida,
+                CriadoEm = ObjectToTransform.CriadoEm,
+                CriadoPor = ObjectToTransform.CriadoPor,
+                CustoTotalObjectivo = ObjectToTransform.CustoTotalObjectivo,
+                CustoTotalPrevisto = ObjectToTransform.CustoTotalPrevisto,
+                CustoUnitarioObjectivo = ObjectToTransform.CustoUnitarioObjectivo,
+                CustoUnitarioPrevisto = ObjectToTransform.CustoUnitarioPrevisto,
+                DataEntregaPrevista = ObjectToTransform.DataEntregaPrevista,
+                Descricao = ObjectToTransform.Descricao,
+                LinhaRequisicao = ObjectToTransform.LinhaRequisicao,
+                ModificadoEm = ObjectToTransform.ModificadoEm,
+                ModificadoPor = ObjectToTransform.ModificadoPor,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                //NumLinha = ObjectToTransform.NumLinha,
+                NumProjecto = ObjectToTransform.NumProjecto,
+                NumRequisicao = ObjectToTransform.NumRequisicao,
+                Quantidade = ObjectToTransform.Quantidade
+            };
+
+            return linhasConsultaMercado;
+        }
+
         #endregion
 
 
         #region Condicoes_Propostas_Fornecedores
+
+        public static CondicoesPropostasFornecedores Create_Copia(CondicoesPropostasFornecedoresView ObjectToCreate, string NumConsultaMercado, string UserID)
+        {
+            try
+            {
+                CondicoesPropostasFornecedores condicoesPropostasFornecedores = CastCondicoesPropostasFornecedoresViewToDB(ObjectToCreate);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    condicoesPropostasFornecedores.NumConsultaMercado = NumConsultaMercado;
+
+                    ctx.CondicoesPropostasFornecedores.Add(condicoesPropostasFornecedores);
+                    ctx.SaveChanges();
+                }
+
+                return condicoesPropostasFornecedores;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         public static CondicoesPropostasFornecedoresView CastCondicoesPropostasFornecedoresToView(CondicoesPropostasFornecedores ObjectToTransform)
         {
@@ -942,10 +1020,55 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             return view;
         }
 
+        public static CondicoesPropostasFornecedores CastCondicoesPropostasFornecedoresViewToDB(CondicoesPropostasFornecedoresView ObjectToTransform)
+        {
+            CondicoesPropostasFornecedores condicoesPropostasFornecedores = new CondicoesPropostasFornecedores()
+            {
+                Alternativa = ObjectToTransform.Alternativa,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
+                CodFornecedor = ObjectToTransform.CodFornecedor,
+                CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
+                DataProposta = ObjectToTransform.DataProposta,
+                EnviarPedidoProposta = ObjectToTransform.EnviarPedidoProposta,
+                FornecedorSelecionado = ObjectToTransform.FornecedorSelecionado,
+                NomeFornecedor = ObjectToTransform.NomeFornecedor,
+                Notificado = ObjectToTransform.Notificado,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                NumProjecto = ObjectToTransform.NumProjecto,
+                Preferencial = ObjectToTransform.Preferencial,
+                ValidadeProposta = ObjectToTransform.ValidadeProposta
+            };
+
+            return condicoesPropostasFornecedores;
+        }
+
         #endregion
 
 
         #region Linhas_Condicoes_Propostas_Fornecedores
+
+        public static LinhasCondicoesPropostasFornecedores Create_Copia(LinhasCondicoesPropostasFornecedoresView ObjectToCreate, string NumConsultaMercado, string UserID)
+        {
+            try
+            {
+                LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = CastLinhasCondicoesPropostasFornecedoresViewToDB(ObjectToCreate);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    linhasCondicoesPropostasFornecedores.NumConsultaMercado = NumConsultaMercado;
+                    
+                    ctx.LinhasCondicoesPropostasFornecedores.Add(linhasCondicoesPropostasFornecedores);
+                    ctx.SaveChanges();
+                }
+
+                return linhasCondicoesPropostasFornecedores;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         public static LinhasCondicoesPropostasFornecedoresView CastLinhasCondicoesPropostasFornecedoresToView(LinhasCondicoesPropostasFornecedores ObjectToTransform)
         {
@@ -994,10 +1117,66 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             return view;
         }
 
+        public static LinhasCondicoesPropostasFornecedores CastLinhasCondicoesPropostasFornecedoresViewToDB(LinhasCondicoesPropostasFornecedoresView ObjectToTransform)
+        {
+            LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = new LinhasCondicoesPropostasFornecedores()
+            {
+                Alternativa = ObjectToTransform.Alternativa,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodFornecedor = ObjectToTransform.CodFornecedor,
+                CodLocalizacao = ObjectToTransform.CodLocalizacao,
+                CodProduto = ObjectToTransform.CodProduto,
+                CodUnidadeMedida = ObjectToTransform.CodUnidadeMedida,
+                DataEntregaPrevista = ObjectToTransform.DataEntregaPrevista,
+                DataEntregaPrometida = ObjectToTransform.DataEntregaPrometida,
+                EstadoRespostaFornecedor = ObjectToTransform.EstadoRespostaFornecedor,
+                MotivoRejeicao = ObjectToTransform.MotivoRejeicao,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                //NumLinha = ObjectToTransform.NumLinha,
+                NumProjecto = ObjectToTransform.NumProjecto,
+                PercentagemDescontoLinha = ObjectToTransform.PercentagemDescontoLinha,
+                PrazoEntrega = ObjectToTransform.PrazoEntrega,
+                PrecoFornecedor = ObjectToTransform.PrecoFornecedor,
+                Quantidade = ObjectToTransform.Quantidade,
+                QuantidadeAAdjudicar = ObjectToTransform.QuantidadeAAdjudicar,
+                QuantidadeAdjudicada = ObjectToTransform.QuantidadeAdjudicada,
+                QuantidadeAEncomendar = ObjectToTransform.QuantidadeAEncomendar,
+                QuantidadeEncomendada = ObjectToTransform.QuantidadeEncomendada,
+                QuantidadeRespondida = ObjectToTransform.QuantidadeRespondida,
+                RespostaFornecedor = ObjectToTransform.RespostaFornecedor,
+                Validade = ObjectToTransform.Validade,
+                ValorAdjudicadoDl = ObjectToTransform.ValorAdjudicadoDl
+            };
+
+            return linhasCondicoesPropostasFornecedores;
+        }
+
         #endregion
 
 
         #region Seleccao_Entidades
+
+        public static SeleccaoEntidades Create_Copia(SeleccaoEntidadesView ObjectToCreate, string NumConsultaMercado, string UserID)
+        {
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = CastSeleccaoEntidadesViewToDB(ObjectToCreate);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    seleccaoEntidades.NumConsultaMercado = NumConsultaMercado;
+
+                    ctx.SeleccaoEntidades.Add(seleccaoEntidades);
+                    ctx.SaveChanges();
+                }
+
+                return seleccaoEntidades;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         public static SeleccaoEntidadesView CastSeleccaoEntidadesToView(SeleccaoEntidades ObjectToTransform)
         {
@@ -1029,6 +1208,24 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             };
 
             return view;
+        }
+
+        public static SeleccaoEntidades CastSeleccaoEntidadesViewToDB(SeleccaoEntidadesView ObjectToTransform)
+        {
+            SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades()
+            {
+                CidadeFornecedor = ObjectToTransform.CidadeFornecedor,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
+                CodFornecedor = ObjectToTransform.CodFornecedor,
+                CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
+                NomeFornecedor = ObjectToTransform.NomeFornecedor,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                Preferencial = ObjectToTransform.Preferencial,
+                Selecionado = ObjectToTransform.Selecionado
+            };
+
+            return seleccaoEntidades;
         }
 
         #endregion

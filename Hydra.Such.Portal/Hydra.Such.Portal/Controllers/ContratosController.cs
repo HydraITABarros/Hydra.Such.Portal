@@ -1489,7 +1489,7 @@ namespace Hydra.Such.Portal.Controllers
                             Problema += "Contrato Aberto!";
                         }
                         
-                        if (item.PróximaDataFatura < item.DataInicial || item.PróximaDataFatura >item.DataExpiração)
+                        if (item.ÚltimaDataFatura < item.DataInicial || item.ÚltimaDataFatura >item.DataExpiração)
                         {
                             Problema += "Contrato Não Vigente!";
                         }
@@ -1557,8 +1557,8 @@ namespace Hydra.Such.Portal.Controllers
                         if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
                         {
                             List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                            RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.PróximaDataFatura && x.DataFimCompromisso >= item.PróximaDataFatura);
-                            if(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "") {
+                            RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                            if(Reqcontract == null &&(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "")) {
                                 Problema += "Falta Nota Encomenda";
                             }
                         }
@@ -2104,7 +2104,12 @@ namespace Hydra.Such.Portal.Controllers
                                 if (line.Billable == true && Codgroup == line.InvoiceGroup)
                                 {
                                     LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                    PreInvoiceLinesToCreate.Tipo = "1";
+                                    if(line.Type==2)// Contratro Interno
+                                       PreInvoiceLinesToCreate.Tipo = "3";
+                                    else
+                                    {
+                                        PreInvoiceLinesToCreate.Tipo = "4";
+                                    }
                                     PreInvoiceLinesToCreate.Descrição = line.Description;
                                     PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
