@@ -1630,33 +1630,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
 
-                    List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable)
-                        .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
-                        .OrderBy(x => x.ClientName).ToList();
-
-                    if (projectMovements.Count > 0)
-                    {
-                        var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                        foreach (var lst in projectMovements)
-                        {
-                            if (lst.MovementType == 3)
-                            {
-                                lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                            }
-
-                            if (!String.IsNullOrEmpty(lst.Currency))
-                            {
-                                lst.UnitPrice = lst.UnitValueToInvoice;
-                            }
-                        }
-                        List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                    }
+                    List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, billable);
 
                     if (project.Estado.HasValue && (project.Estado == 3 || project.Estado == 4))
                     {
@@ -1686,9 +1660,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, bool billable)
+        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, bool? billable)
         {
-            List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, billable)
+            List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(projectNo, billable)
                         .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
                         .OrderBy(x => x.ClientName).ToList();
 
@@ -1718,17 +1692,47 @@ namespace Hydra.Such.Portal.Controllers
             return projectMovements;
         }
 
-        //[HttpGet]
-        //public JsonResult GetProjectBillingResume(string projectId)
-        //{
+        [HttpPost]
+        public JsonResult GetProjectBillingResume([FromBody] JObject requestParams)
+        {
+            string projectNo = requestParams["projectNo"].ToString();
 
-        //    dynamic projBillingResume = new JObject();
-        //    projBillingResume.TotalBillableConsumption = DateTime.Now;
-        //    projBillingResume.Album = "Me Against the world";
-        //    projBillingResume.Year = 1995;
-        //    projBillingResume.Artist = "2Pac";
-        //    return Json(result);
-        //}
+            List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, null);
+            //prevent errors
+            if (projectMovements == null)
+                projectMovements = new List<ProjectMovementViewModel>();
+
+            dynamic projBillingResume = new JObject();
+
+            projBillingResume.TotalBillableConsumption = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.AuthorizedBilling = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo &&
+                            x.AutorizatedInvoice == true)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.BillingToAuthorize = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo &&
+                            x.AutorizatedInvoice == false &&
+                            x.Billable == true)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.RegisteredInvoiceValue = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Venda)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+
+            decimal? totalInvoiceValue = DBNAV2017Projects.GetTotalInvoiceValue(_config.NAVDatabaseName, _config.NAVCompanyName, projectNo);
+            projBillingResume.CreatedInvoicesValue = totalInvoiceValue;
+
+            return Json(projBillingResume);
+        }
 
         [HttpPost]
         public JsonResult UpdateProjectMovements([FromBody] List<ProjectMovementViewModel> projectMovements)
@@ -1738,7 +1742,7 @@ namespace Hydra.Such.Portal.Controllers
             string projectNo = projectMovements.Select(x => x.ProjectNo).FirstOrDefault();
             List<int> movementIds = projectMovements.Select(x => x.LineNo).ToList();
 
-            var movementsToUpdate = DBProjectMovements.GetProjectMovementsFor(User.Identity.Name, projectNo, true);
+            var movementsToUpdate = DBProjectMovements.GetProjectMovementsFor(projectNo, true);
             if (movementsToUpdate != null)
                 movementsToUpdate.RemoveAll(x => !movementIds.Contains(x.NºLinha));
 

@@ -199,6 +199,12 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetProjectBillingResume"
+                   last-response="{{ProjectBillingResume}}"
+                   id="billingresume_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -214,7 +220,7 @@
                                         <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtNumCompromisso" name="txtNumCompromisso" label="Nº Compromisso" value="Obter detalhes: Qual o critério?"></vaadin-text-field>
+                                        <vaadin-text-field id="txtNumCompromisso" name="txtNumCompromisso" label="Nº Compromisso" value=""></vaadin-text-field>
                                     </div>
                                 </div>
 
@@ -235,8 +241,7 @@
                                         <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura" value=""></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <!--<vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label="Data Prestação Serviços" value="15-10-2018"></vaadin-text-field>-->
-                                        <vaadin-date-picker d="txtDataPrestacaoServ" label="Data Prestação Serviços"></vaadin-date-picker>
+                                        <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços"></vaadin-date-picker>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
@@ -247,32 +252,33 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-md-4 ">
-                                    Total Const. Faturáveis .. 696.321,00
+                                    Total Const. Faturáveis .. [[ProjectBillingResume.TotalBillableConsumption]]
+                                    <!--<vaadin-text-field  value="[[ProjectBillingResume.TotalBillableConsumption]]" disabled></vaadin-text-field>-->
                                 </div>
                                 <div class="col-md-4 ">
-                                    Faturação Autorizada ..... 696.321,00
+                                    Faturação Autorizada ..... [[ProjectBillingResume.AuthorizedBilling]]
                                 </div>
                                 <div class="col-md-4 ">
-                                    Faturação por Autorizar .. 696.321,00
+                                    Faturação por Autorizar .. [[ProjectBillingResume.BillingToAuthorize]]
                                 </div>
                                 <div class="col-md-4 ">
-                                    Valor Faturas Registadas . 696.321,00
+                                    Valor Faturas Registadas . [[ProjectBillingResume.RegisteredInvoiceValue]]
                                 </div>
                                 <div class="col-md-4 ">
-                                    Valor Faturadas Criadas .. 696.321,00
+                                    Valor Faturadas Criadas .. [[ProjectBillingResume.CreatedInvoicesValue]]
                                 </div>
 
                             </div>
                         </div>
                         <div class="row break_clear">
-                            <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" class="editGrid">
-                                
-                                <vaadin-grid-column width="110px" resizable>
+                            <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
+
+                                <vaadin-grid-column width="60px" flex-grow="0">
                                     <template class="header">
-                                        <vaadin-grid-sorter path="autorizatedInvoice2">Autorizado</vaadin-grid-sorter>
+                                        <input aria-label="Selecionar Todos" type="checkbox" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                     </template>
                                     <template>
-                                        <vaadin-checkbox checked="{{item.autorizatedInvoice2}}" on-checked-changed="_authorizationChanged"><input type="hidden" value="[[item.lineNo]]" /></vaadin-checkbox>
+                                        <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
                                     </template>
                                 </vaadin-grid-column>
 
@@ -673,11 +679,16 @@
                         }
                     }
                 },
-                //observers: ['_resetSelection(inverted)'],
+                observers: ['_resetSelection(inverted)'],
 
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
                     this.$.page_databound_ajax.generateRequest();
+
+                    this.$.billingresume_ajax.body = JSON.stringify({ "projectNo": this._projectno });
+                    this.$.billingresume_ajax.generateRequest();
+
+                    this._setDefaultDateForDatePickers();
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -734,19 +745,6 @@
                             this.$.btnConfirm.disabled = true;
                         }
                         this.$.btnToggleBillable.textContent = this._billable ? "Não Faturáveis" : "Faturáveis";
-                        try {
-                            this._totalToAuthorize = 0;
-                            if (this.result.value != null) {
-                                for (i = 0; i < this.result.value.length; i++) {
-                                    var item = this.result.value[i];
-                                    if (item.autorizatedInvoice2 == true && item.totalPrice != null)
-                                        this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
-                                }
-                            }
-                        }
-                        catch {
-                            this.openToastError("Ocorreu um erro ao calcular o Total a Autorizar. Por favor atualize a página.");
-                        }
                     }
                     else {
                         this._openToastError("Não foi possivel obter os movimentos.");
@@ -755,70 +753,6 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                //_resetSelection: function (inverted) {
-                //    this._totalToAuthorize = 0.00;
-                //    this.$.projectInvoiceAutorization.selectedItems = [];
-                //    this.updateStyles();
-                //    this.indeterminate = false;
-                //},
-                //_invert: function (e) {
-                //    this.inverted = !this.inverted;
-                //},
-                // iOS needs indeterminated + checked at the same time
-                //_isChecked: function (inverted, indeterminate) {
-                //    return indeterminate || inverted;
-                //},
-                //_selectItem: function (e) {
-                //    if (e.model.item != null) {
-                //        if (e.target.checked === this.inverted) {
-                //            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
-                //            e.model.item.selected = false;
-                //            this.$.projectInvoiceAutorization.deselectItem(e.model.item);
-                //        } else {
-                //            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
-                //            e.model.item.selected = true;
-                //            this.$.projectInvoiceAutorization.selectItem(e.model.item);
-                //        }
-                //        this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
-                //    }
-                //},
-                //_isSelected: function (inverted, selected) {
-                //    return inverted != selected;
-                //},
-                _authorizationChanged: function (e) {
-                    var itemId = e.target.firstElementChild.value;
-                    var item = this.result.value.find(x => x.lineNo == itemId);
-                    if (item != null) {
-                        if (item.autorizatedInvoice2 == true) {
-                            if (item.totalPrice != null && this._totalToAuthorize != null)
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(item.totalPrice)).toFixed(2);
-                        }
-                        else {
-                            if (item.totalPrice != null && this._totalToAuthorize != null)
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
-                        }
-                    }
-                },
-                //_changeAuthorization2For: function (itemId) {
-                //    if (itemId == undefined)
-                //        return;
-                //    debugger;
-                //    var item = this.result.value.find(x => x.lineNo == itemId); 
-                //    if (item != null) {
-                //        if (item.autorizatedInvoice2 == true) {
-                //            if (item.totalPrice != null && this._totalToAuthorize != null)
-                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(item.totalPrice)).toFixed(2);
-                //            item.autorizatedInvoice2 = true;
-                //        }
-                //        else {
-                //            if (item.totalPrice != null && this._totalToAuthorize != null)
-                //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(item.totalPrice)).toFixed(2);
-                //            item.autorizatedInvoice2 = false;
-                //        }
-                //    }
-                //},
                 _updateMovements: function () {
                     this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
                     this.$.updatelines_ajax.generateRequest();
@@ -836,6 +770,76 @@
                         }
                     }
                 },
+                _setDefaultDateForDatePickers: function () {
+                    try {
+                        if (this.$.dpDataPrestacaoServ == null)
+                            return;
+
+                        var today = new Date();
+
+                        var dd = today.getDate();
+                        if (dd < 10) {
+                            dd = '0' + dd;
+                        }
+
+                        var mm = today.getMonth() + 1; //January is 0!
+                        if (mm < 10) {
+                            mm = '0' + mm;
+                        }
+                        var yyyy = today.getFullYear();
+
+                        var today = yyyy + '-' + mm + '-' + dd; //value="2018-07-31"
+
+                        this.$.dpDataPrestacaoServ.value = today;
+                    }
+                    catch (err) { }
+                },
+
+                _resetSelection: function (inverted) {
+                    this._totalToAuthorize = 0.0;
+                    if (inverted) {
+                        var items = this.$.projectInvoiceAutorization._cache[0];
+                        for (i = 0; i < items.length; i++) {
+                            if (items[i].totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
+                            this.$.projectInvoiceAutorization.selectItem(items[i]);
+                        }
+                        var checkBoxes = this.$.projectInvoiceAutorization.querySelectorAll("input[aria-label='Selecionar']");
+                        for (i = 0; i < checkBoxes.length; i++) {
+                            checkBoxes[i].checked = true;
+                        }
+                    }
+                    else {
+                        this.$.projectInvoiceAutorization.selectedItems = [];
+                    }
+                    this.updateStyles();
+                    this.indeterminate = false;
+                },
+                _invert: function (e) {
+                    this.inverted = !this.inverted;
+                },
+                // iOS needs indeterminate + checked at the same time
+                _isChecked: function (inverted, indeterminate) {
+                    return indeterminate || inverted;
+                },
+                _selectItem: function (e) {
+                    if (e.target.checked /*=== this.inverted*/) {
+                        if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                            this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
+                        //e.model.item.autorizatedInvoice2 = true;
+                        this.$.projectInvoiceAutorization.selectItem(e.model.item);
+                    } else {
+                        if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                            this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
+                        //e.model.item.autorizatedInvoice2 = false;
+                        this.$.projectInvoiceAutorization.deselectItem(e.model.item);
+                    }
+                    this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
+                },
+                _isSelected: function (inverted, selected) {
+                    return selected;//inverted != selected;
+                },
+
                 _exportEXCEL: function () {
                     //debugger;
                     this.result.value[0].ColunasEXCEL = this._columns;
