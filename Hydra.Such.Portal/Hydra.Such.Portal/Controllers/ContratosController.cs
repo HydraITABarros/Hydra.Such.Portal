@@ -1654,6 +1654,7 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
+
                 DateTime Lastdate = item.DataDeRegisto.Value;
 
                 if (CountLines != null && CountLines > 1)
@@ -2031,6 +2032,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                     proj.ProjectNo = Contract.ContractNo;
+                    proj.ClientNo = Contract.ClientNo;
                     proj.Status = Contract.Status;
                     proj.RegionCode = Contract.CodeRegion;
                     proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;

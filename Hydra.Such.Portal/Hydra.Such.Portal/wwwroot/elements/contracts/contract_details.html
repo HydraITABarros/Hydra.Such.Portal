@@ -2218,7 +2218,7 @@
                 _update: function () {
 
                     if (this._validateData()) {
-                        this._executeRequest("/Contratos/UpdateContract", this.data)
+                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
                 _delete: function () {
@@ -2331,8 +2331,6 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-
-
                                 this._openToast("Contrato atualizado com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
@@ -2439,7 +2437,7 @@
 
                     if (!this._isCreate) {
                         if (this._validateData()) {
-                            this._executeRequest("/Contratos/UpdateContract", this.data)
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
                         }
                     }
                 },
