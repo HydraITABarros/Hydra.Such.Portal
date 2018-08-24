@@ -1489,7 +1489,7 @@ namespace Hydra.Such.Portal.Controllers
                             Problema += "Contrato Aberto!";
                         }
                         
-                        if (item.ÚltimaDataFatura < item.DataInicial || item.ÚltimaDataFatura >item.DataExpiração)
+                        if (lastDay < item.DataInicial || lastDay > item.DataExpiração)
                         {
                             Problema += "Contrato Não Vigente!";
                         }
@@ -1836,7 +1836,8 @@ namespace Hydra.Such.Portal.Controllers
                 
                 if (item.Situação == "" || item.Situação == null)
                 {
-                    
+                  
+
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -2199,12 +2200,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (line.Billable == true && Codgroup == line.InvoiceGroup)
                                 {
                                     LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                    if(line.Type==2)// Contratro Interno
-                                       PreInvoiceLinesToCreate.Tipo = "3";
-                                    else
-                                    {
-                                        PreInvoiceLinesToCreate.Tipo = "4";
-                                    }
+                                    PreInvoiceLinesToCreate.Tipo = "3";                                  
                                     PreInvoiceLinesToCreate.Descrição = line.Description;
                                     PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
@@ -2266,7 +2262,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (line.Billable == true && group == line.InvoiceGroup)
                                 {
                                     LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                    PreInvoiceLinesToCreate.Tipo = "1";
+                                    PreInvoiceLinesToCreate.Tipo = "3";
                                     PreInvoiceLinesToCreate.Descrição = line.Description;
                                     PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                     PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
