@@ -72,7 +72,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string user, string projectNo, bool? billable)
+        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string projectNo, bool? billable)
         {
             try
             {
