@@ -1556,10 +1556,17 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
                         {
-                            List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                            RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= lastDay && x.DataFimCompromisso >= lastDay);
-                            if(Reqcontract == null) {
+                            if (item.ÚltimaDataFatura == null)
+                            {
                                 Problema += "Falta Nota Encomenda";
+                            }
+                            else
+                            {
+                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                                if(Reqcontract == null ) {
+                                    Problema += "Falta Nota Encomenda";
+                                }
                             }
                         }
                        
@@ -1654,18 +1661,103 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
+                string Month = "";
+                string Year = "";
                 DateTime Lastdate = item.DataDeRegisto.Value;
-
+                Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                DateTime today = DateTime.Now;
+                DateTime StContractDate = today;
+                if (contractLine.DataInicial != null && contractLine.DataExpiração != null && item.DataPróximaFatura == null)
+                {
+                    //Bimensal 
+                    if (contractLine.PeríodoFatura == 2)
+                    {
+                        today = today.AddMonths(2);
+                    }
+                    //Trimestral 
+                    if (contractLine.PeríodoFatura == 3)
+                    {
+                        today = today.AddMonths(3);
+                    }
+                    //Semestral 
+                    if (contractLine.PeríodoFatura == 4)
+                    {
+                        today = today.AddMonths(6);
+                    }
+                    //Anual 
+                    if (contractLine.PeríodoFatura == 5)
+                    {
+                        today = today.AddMonths(12);
+                    }
+                    if (today < contractLine.DataInicial)
+                    {
+                        StContractDate = (DateTime)contractLine.DataInicial;
+                    }
+                    else if (today > contractLine.DataExpiração)
+                    {
+                        StContractDate = (DateTime)contractLine.DataExpiração;
+                    }
+                }
+                else if (item.DataPróximaFatura != null)
+                {
+                    StContractDate = (DateTime)item.DataPróximaFatura;
+                    today = (DateTime) item.DataPróximaFatura;
+                    //Mensal 
+                    if (contractLine.PeríodoFatura == 1)
+                    {
+                        today = today.AddMonths(-1);
+                    }
+                    //Bimensal 
+                    if (contractLine.PeríodoFatura == 2)
+                    {
+                        today = today.AddMonths(-2);
+                    }
+                    //Trimestral 
+                    if (contractLine.PeríodoFatura == 3)
+                    {
+                        today = today.AddMonths(-3);
+                    }
+                    //Semestral 
+                    if (contractLine.PeríodoFatura == 4)
+                    {
+                        today = today.AddMonths(-6);
+                    }
+                    //Anual 
+                    if (contractLine.PeríodoFatura == 5)
+                    {
+                        today = today.AddMonths(-12);
+                    }
+                    if (today < contractLine.DataInicial)
+                    {
+                        StContractDate = (DateTime)contractLine.DataInicial;
+                    }
+                    else if (today > contractLine.DataExpiração)
+                    {
+                        StContractDate = (DateTime)contractLine.DataExpiração;
+                    }
+                    else
+                    {
+                        StContractDate = today;
+                    }
+                }
+                if (Lastdate != StContractDate)
+                {
+                    Lastdate = StContractDate;
+                }
+                Month = StContractDate.ToString("MMMM").ToUpper();
+                Year = StContractDate.Year.ToString();
+                InvoiceBorrowed = Month + "/" + Year;
                 if (CountLines != null && CountLines > 1)
                 {
                     RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
                     if (GetReqClientCont != null)
                     {                     
                         Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                        string Month = Lastdate.ToString("MMMM").ToUpper();
-                        string Year = Lastdate.Year.ToString();
                         ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                        InvoiceBorrowed = Month+"/"+Year;
+                        //don't delete for now
+                        //string Month = Lastdate.ToString("MMMM").ToUpper();
+                        //string Year = Lastdate.Year.ToString();
+                        //InvoiceBorrowed = Month+"/"+Year;
                         //actualiar data ultima fatura para o fim do mes
                         GetReqClientCont.DataÚltimaFatura = Lastdate;
                         DBContractClientRequisition.Update(GetReqClientCont);
@@ -1674,9 +1766,8 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                     if (contractLine != null)
-                    {
+                    { 
                         if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
                         {
                             
@@ -1686,22 +1777,24 @@ namespace Hydra.Such.Portal.Controllers
                                 contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ","");
                                 if (contractLine.PróximoPeríodoFact.Length == 8)
                                 {
-                                    DateTime? date = Convert.ToDateTime(contractLine.PróximoPeríodoFact);
-                                    string Month =""; string Year = "";
-                                    if (date != null)
-                                    {
-                                        Month = date.Value.ToString("MMMM").ToUpper();
-                                        Year = date.Value.Year.ToString();
-                                    }
+
                                     ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                    if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                                    {
-                                        InvoiceBorrowed = ContractInvoicePeriod;
-                                    }
-                                    else
-                                    {
-                                        InvoiceBorrowed = Month + "/" + Year;
-                                    }
+                                    //don't delete for now
+                                    //DateTime? date = Convert.ToDateTime(contractLine.PróximoPeríodoFact);
+                                    //string Month =""; string Year = "";
+                                    //if (date != null)
+                                    //{
+                                    //    Month = date.Value.ToString("MMMM").ToUpper();
+                                    //    Year = date.Value.Year.ToString();
+                                    //}
+                                    //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
+                                    //{
+                                    //    InvoiceBorrowed = ContractInvoicePeriod;
+                                    //}
+                                    //else
+                                    //{
+                                    //    InvoiceBorrowed = Month + "/" + Year;
+                                    //}
                                 }
                             }
                             else if (findDate == 4)
@@ -1710,35 +1803,37 @@ namespace Hydra.Such.Portal.Controllers
                                 string[] ProxPerFac = proxperFacRep.Split('a');
                                 if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
                                 {
-                                    DateTime? date = Convert.ToDateTime(ProxPerFac[1]);
-                                    string Month = ""; string Year = "";
-                                    if (date != null)
-                                    {
-                                        Month = date.Value.ToString("MMMM").ToUpper();
-                                        Year = date.Value.Year.ToString();
-                                    }
                                     ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                    if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                                    {
-                                        InvoiceBorrowed = ContractInvoicePeriod;
-                                    }
-                                    else
-                                    {
-                                        InvoiceBorrowed = Month + "/" + Year;
-                                    }
+                                    //don't delete for now
+                                    //DateTime? date = Convert.ToDateTime(ProxPerFac[1]);
+                                    //string Month = ""; string Year = "";
+                                    //if (date != null)
+                                    //{
+                                    //    Month = date.Value.ToString("MMMM").ToUpper();
+                                    //    Year = date.Value.Year.ToString();
+                                    //}
+                                    //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
+                                    //{
+                                    //    InvoiceBorrowed = ContractInvoicePeriod;
+                                    //}
+                                    //else
+                                    //{
+                                    //    InvoiceBorrowed = Month + "/" + Year;
+                                    //}
                                 }
 
                             }
                         }
                     }
-
                     Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
+                    //actualiar data ultima fatura para o fim do mes
                     contractLine.ÚltimaDataFatura = Lastdate;
                     //Estado Pendente
                     contractLine.Estado = 3;
                     DBContracts.Update(contractLine);
                     
                 }
+                
                 if (item.Situação == "" || item.Situação == null)
                 {
                   
@@ -2031,6 +2126,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                     proj.ProjectNo = Contract.ContractNo;
+                    proj.ClientNo = Contract.ClientNo;
                     proj.Status = Contract.Status;
                     proj.RegionCode = Contract.CodeRegion;
                     proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;

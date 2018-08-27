@@ -2218,7 +2218,7 @@
                 _update: function () {
 
                     if (this._validateData()) {
-                        this._executeRequest("/Contratos/UpdateContract", this.data)
+                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
                 _delete: function () {
@@ -2331,8 +2331,6 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-
-
                                 this._openToast("Contrato atualizado com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
@@ -2439,7 +2437,7 @@
 
                     if (!this._isCreate) {
                         if (this._validateData()) {
-                            this._executeRequest("/Contratos/UpdateContract", this.data)
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
                         }
                     }
                 },
@@ -2695,7 +2693,7 @@
                 },
                 _clContractLineCodeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodes.findIndex(i => i.id === e.detail.value);
+                        var index = this.CBContractLineCodes.findIndex(i => i.id == e.detail.value);
                         //this.CBContractLineCodes[index].id;
                         this._CLDescription = this.CBContractLineCodes[index].value;
                         this._CLMeasureUnit = this.CBContractLineCodes[index].extra;
@@ -2711,10 +2709,12 @@
                     this.$.grid_contractlines.clearCache();
                 },
                 _clContractLineCodeGridChange: function (e) {
+                    debugger;;              
                     if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        var code = e.detail.value;
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id == code);
                         //this.CBContractLineCodes[index].id;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.dataLines.lines.find(x => x == this._SelectedLine).code = code;
                         this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
                         this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
                         this.$.grid_contractlines.clearCache();
