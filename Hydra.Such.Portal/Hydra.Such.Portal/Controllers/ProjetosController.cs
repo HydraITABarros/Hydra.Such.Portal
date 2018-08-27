@@ -1857,7 +1857,6 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
-
             if (data != null)
             {
                 List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new

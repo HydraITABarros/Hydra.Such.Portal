@@ -1661,6 +1661,8 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
+                string Month = "";
+                string Year = "";
                 DateTime Lastdate = item.DataDeRegisto.Value;
                 Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                 DateTime today = DateTime.Now;
