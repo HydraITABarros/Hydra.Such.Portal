@@ -1564,8 +1564,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
                                 RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if(Reqcontract == null &&(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "")) 
-                                    {
+                                if(Reqcontract == null ) {
                                     Problema += "Falta Nota Encomenda";
                                 }
                             }
@@ -1662,8 +1661,6 @@ namespace Hydra.Such.Portal.Controllers
                 int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
                 string ContractInvoicePeriod = "";
                 string InvoiceBorrowed = "";
-                string Month = "";
-                string Year = "";
                 DateTime Lastdate = item.DataDeRegisto.Value;
                 Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                 DateTime today = DateTime.Now;
@@ -2127,6 +2124,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                     proj.ProjectNo = Contract.ContractNo;
+                    proj.ClientNo = Contract.ClientNo;
                     proj.Status = Contract.Status;
                     proj.RegionCode = Contract.CodeRegion;
                     proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
