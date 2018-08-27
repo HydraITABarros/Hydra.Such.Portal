@@ -1564,7 +1564,8 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
                                 RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == line.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if(Reqcontract == null &&(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "")) {
+                                if(Reqcontract == null &&(Reqcontract.NºRequisiçãoCliente==null || Reqcontract.NºRequisiçãoCliente == "")) 
+                                    {
                                     Problema += "Falta Nota Encomenda";
                                 }
                             }
