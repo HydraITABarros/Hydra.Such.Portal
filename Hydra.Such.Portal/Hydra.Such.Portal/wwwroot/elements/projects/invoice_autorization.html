@@ -32,6 +32,8 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 <dom-module id="x-invoice-autorization">
     <template>
@@ -40,7 +42,7 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <div class="subMenu">
-            <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_openDlg"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <paper-button class="tablinks" id="btnToggleBillable" on-tap="_toggleBillable">Não Faturáveis</paper-button>
             <!--start ColumnToggle-->
@@ -159,8 +161,16 @@
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
-                   id="page_databound_ajax"
+                   id="movements_databound_ajax"
                    on-response="GetMovementsResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{Project}}"
+                   method="post"
+                   handle-as="json"
+                   id="projectDetails_ajax"
+                   on-response="GetProjectResponse"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/UpdateProjectMovements"
@@ -171,12 +181,20 @@
                    on-response="_updateLinesResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Projetos/InvoiceLinesAuthorize"
+        <iron-ajax url="/Projetos/AuthorizeProjectMovements"
                    last-response="{{lines}}"
                    method="post"
                    handle-as="json"
                    id="page_autorizelines_ajax"
-                   on-response="_CreateLinesResponse"
+                   on-response="_authorizeProjMovResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/ValidateMovementsForAuthorization"
+                   last-response="{{projMovValResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="projMovValidation_ajax"
+                   on-response="_projMovValidationResponse"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel_AutorizacaoFaturacao"
@@ -205,6 +223,20 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Clientes/Get"
+                   last-response="{{Customer}}"
+                   id="get_customer_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_getCustomerResponse"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetCommitmentDetails"
+                   last-response="{{CommitmentDetails}}"
+                   id="get_commitment_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_getCommitmentResponse"
+                   content-type="application/json"></iron-ajax>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -214,40 +246,34 @@
                             <div class="col-md-8">
                                 <div class="row break_clear">
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtCodProjeto" name="txtCodProjeto" label="Nº Projeto" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtCodProjeto" name="txtCodProjeto" label="Nº Projeto" value="[[Project.projectNo]]" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-4">
-                                        <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="[[Project.description]]" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtNumCompromisso" name="txtNumCompromisso" label="Nº Compromisso" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" disabled></vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="[[Project.clientNo]]" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-6">
-                                        <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="[[_customerName]]" disabled></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+                                        <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
                                     </div>
-                                    <div class="col-md-4 ">
-
-                                        <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura" value=""></vaadin-text-field>
-                                    </div>
-                                    <div class="col-md-2 ">
-                                        <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços"></vaadin-date-picker>
-                                    </div>
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-md-2 ">
                                         <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                     </div>
+                                </div>
+                                <div class="row break_clear">
+
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -271,11 +297,11 @@
                             </div>
                         </div>
                         <div class="row break_clear">
-                            <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
+                            <vaadin-grid id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
 
                                 <vaadin-grid-column width="60px" flex-grow="0">
                                     <template class="header">
-                                        <input aria-label="Selecionar Todos" type="checkbox" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
+                                        <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                     </template>
                                     <template>
                                         <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
@@ -602,24 +628,53 @@
                                         {{item.clientName}}
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="commitmentNumber" />
-                                    </template>
-                                    <template>
-                                        {{item.commitmentNumber}}
-                                    </template>
-                                </vaadin-grid-column>
+                                <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="commitmentNumber" />
+                                </template>
+                                <template>
+                                    {{item.commitmentNumber}}
+                                </template>
+                            </vaadin-grid-column>-->
+
+
                             </vaadin-grid>
+
+
                         </div>
                         <div class="marginSpace">
-                            <paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                         </div>
                     </div>
                 </iron-form>
             </div>
         </div>
+
+        <paper-dialog id="dlgValidation" modal style="height:200px; width:400px">
+            <div class="row break_clear">
+                <!--<div class="col-md-2 ">
+                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+                </div>-->
+                <div class="col-md-12 ">
+                    <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
+                </div>
+                <template is="dom-repeat" items="{{ _validationMessages }}">
+                    <template is="dom-if" if="{{ _isError(item.type) }}">
+                        <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                    </template>
+                    <template is="dom-if" if="{{ _isWarning(item.type) }}">
+                        <div>&nbsp;<i class="fa fa-info-circle" aria-hidden="true">{{ item.message }}</i></div>
+                    </template>
+                </template>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" disabled>Autorizar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -653,6 +708,26 @@
                         notify: true,
                         value: true,
                     },
+                    _commitmentNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _settedFromProjectOrContract: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _customerRequestNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _customerName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     ddCGTOM_Type: {
                         type: Number,
                         notify: true,
@@ -677,13 +752,21 @@
                         value: function () {
                             return {};
                         }
+                    },
+                    _permissions: {
+                        type: Array,
                     }
                 },
                 observers: ['_resetSelection(inverted)'],
 
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
+                    this.$.movements_databound_ajax.generateRequest();
+
+                    this.$.projectDetails_ajax.body = JSON.stringify({ "ProjectNo": this._projectno });
+                    this.$.projectDetails_ajax.generateRequest();
+
+
 
                     this.$.billingresume_ajax.body = JSON.stringify({ "projectNo": this._projectno });
                     this.$.billingresume_ajax.generateRequest();
@@ -700,7 +783,7 @@
                     $(window).trigger('resize');
                 },
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.projectInvoiceAutorization);
+                    var grid_el = $(this.$.grdProjectMovements);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
@@ -717,6 +800,19 @@
                 },
                 _confirm: function (selectedItem, selectedItems) {
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
+                        //Only biilable movements
+                        debugger;
+                        var notBillableItems = this.selectedItems.find(x => !x.billable);
+                        if (notBillableItems != undefined) {
+                            this.openToastError("Apenas podem ser autorizados movimentos de projeto faturáveis.");
+                        }
+                        var authorizedItems = this.selectedItems.find(x => x.autorizatedInvoice);
+                        if (authorizedItems != undefined) {
+                            this.openToastError("Existem movimentos que já foram autorizados.");
+                        }
+                        
+                        return;
+
                         this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.page_autorizelines_ajax.generateRequest();
                         //console.log(this.selectedItems);
@@ -725,19 +821,74 @@
                         this.openToastError("Selecione os movimentos a faturar");
                     }
                 },
+                _openDlg: function () {
+                    var validationRequest = {
+                        "projectNo": this._projectno,
+                        "commitmentNumber": this._commitmentNo,
+                        "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
+                        "customerRequestNo": this._customerRequestNo,
+                        "serviceDate": this.$.dpDataPrestacaoServ.value,
+                        "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                        "projMovements": this.selectedItems,
+                    };
+                    this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
+                    this.$.projMovValidation_ajax.generateRequest();
+                    this.$.dlgValidation.open();
+                },
+                _closedlgValidationDlg: function () {
+                    this.$.dlgValidation.close();
+                },
                 _toggleBillable: function (e) {
                     this._billable = !this._billable;
 
-                    this.$.page_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
+                    this.$.movements_databound_ajax.generateRequest();
                 },
 
-                _CreateLinesResponse: function (e) {
-                    this.$.page_databound_ajax.generateRequest();
+                _authorizeProjMovResponse: function (e) {
+                    this.$.movements_databound_ajax.generateRequest();
                     this.$.ToastMessageSuccess.text = 'Movimentos autorizados com sucesso';
                     this.$.ToastMessageSuccess.open();
                 },
-                
+                _projMovValidationResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.projMovValResponse.eReasonCode == 1) {
+                            //this.openToast(this.projMovValResponse.eMessage);
+                            var warnings = this.projMovValResponse.eMessages.find(x => x.type == 3);
+                            if (warnings != undefined) {
+                                if (this._validationMessages != undefined)
+                                    this._validationMessages.push = warnings;
+                                else
+                                    this._validationMessages = warnings;
+                            }
+                        }
+                        else {
+                            var errors = this.projMovValResponse.eMessages.find(x => x.type == 0 || x.type == 2);
+                            var warnings = this.projMovValResponse.eMessages.find(x => x.type == 3);
+
+                            if (errors != undefined) {
+                                this._validationMessages = errors;
+                                //Se tem erros impede autorização dos movimentos
+                                this.$.btnConfirmAuthorization.disabled = errors != undefined;
+                            }
+                            if (warnings != undefined) {
+                                if (this._validationMessages != undefined)
+                                    this._validationMessages.push = warnings;
+                                else
+                                    this._validationMessages = warnings;
+                            }
+                        }
+                    }
+                    else {
+                        this._openToastError(this.projMovValResponse.eMessage);
+                    }
+                },
+                _isError: function (type) {
+                    return type == 0 || type == 2;
+                },
+                _isWarning: function (type) {
+                    return type == 2;
+                },
                 GetMovementsResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.result.eReasonCode !== 1) {
@@ -750,6 +901,45 @@
                         this._openToastError("Não foi possivel obter os movimentos.");
                     }
                 },
+                GetProjectResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.Project.clientNo != "") {
+                            this.$.get_customer_ajax.body = JSON.stringify({ "customerNo": this.Project.clientNo });
+                            this.$.get_customer_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this.$.btnConfirm.disabled = true;
+                        this._openToastError("Não foi possivel obter dados do projeto.");
+                    }
+                },
+                _getCustomerResponse: function (e) {
+                    try {
+                        if (this.Customer != null && this.Customer.length == 1) {
+                            this._customerName = this.Customer[0].name;
+                        }
+                    }
+                    catch{ }
+                },
+                _getCommitmentResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.CommitmentDetails.eReasonCode == 1) {
+                            this._commitmentNo = this.CommitmentDetails.value.commitmentNo;
+                            this._customerRequestNo = this.CommitmentDetails.value.customerRequestNo;
+                            this._settedFromProjectOrContract = this.CommitmentDetails.value.settedFromProjectOrContract;
+
+                            this.$.txtNumCompromisso.disabled = this._commitmentNo == "" ? false : true
+                        }
+                        else {
+                            this.openToastError(this.CommitmentDetails.eMessage);
+                        }
+                    }
+                    else {
+                        this.$.btnConfirm.disabled = true;
+                        this.openToastError("Não foi possivel obter dados do compromisso.");
+                    }
+                },
+
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
@@ -761,7 +951,7 @@
                     //UpdateResponse
                     if (e.detail.status === 200) {
                         if (this.UpdateResponse.eReasonCode == "1") {
-                            this.$.projectInvoiceAutorization.clearCache();
+                            this.$.grdProjectMovements.clearCache();
                             this.result.value = this.UpdateResponse;
                             this._openToast(this.UpdateResponse.eMessage);
                         }
@@ -794,23 +984,30 @@
                     }
                     catch (err) { }
                 },
-
+                serviceDateChanged: function (e) {
+                    var date = e.detail.value;
+                    if (date != "" && !this._settedFromProjectOrContract) {
+                        this.$.get_commitment_ajax.body = JSON.stringify({ "projectNo": this._projectno, "serviceDeliveryDate": date });
+                        this.$.get_commitment_ajax.generateRequest();
+                    }
+                },
+                //### - Grid selection behaviour
                 _resetSelection: function (inverted) {
                     this._totalToAuthorize = 0.0;
                     if (inverted) {
-                        var items = this.$.projectInvoiceAutorization._cache[0];
+                        var items = this.$.grdProjectMovements._cache[0];
                         for (i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && this._totalToAuthorize != null)
                                 this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
-                            this.$.projectInvoiceAutorization.selectItem(items[i]);
+                            this.$.grdProjectMovements.selectItem(items[i]);
                         }
-                        var checkBoxes = this.$.projectInvoiceAutorization.querySelectorAll("input[aria-label='Selecionar']");
+                        var checkBoxes = this.$.grdProjectMovements.querySelectorAll("input[aria-label='Selecionar']");
                         for (i = 0; i < checkBoxes.length; i++) {
                             checkBoxes[i].checked = true;
                         }
                     }
                     else {
-                        this.$.projectInvoiceAutorization.selectedItems = [];
+                        this.$.grdProjectMovements.selectedItems = [];
                     }
                     this.updateStyles();
                     this.indeterminate = false;
@@ -827,18 +1024,19 @@
                         if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
                         //e.model.item.autorizatedInvoice2 = true;
-                        this.$.projectInvoiceAutorization.selectItem(e.model.item);
+                        this.$.grdProjectMovements.selectItem(e.model.item);
                     } else {
                         if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
                         //e.model.item.autorizatedInvoice2 = false;
-                        this.$.projectInvoiceAutorization.deselectItem(e.model.item);
+                        this.$.grdProjectMovements.deselectItem(e.model.item);
                     }
-                    this.indeterminate = this.$.projectInvoiceAutorization.selectedItems.length > 0;
+                    this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },
                 _isSelected: function (inverted, selected) {
                     return selected;//inverted != selected;
                 },
+                //###
 
                 _exportEXCEL: function () {
                     //debugger;

@@ -434,7 +434,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                     Operation = item.Operacao,
                     InvoiceGroup = item.GrupoFatura,
                     InvoiceGroupDescription = item.GrupoFaturaDescricao,
-                    CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
+                    //CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName)
                 };
