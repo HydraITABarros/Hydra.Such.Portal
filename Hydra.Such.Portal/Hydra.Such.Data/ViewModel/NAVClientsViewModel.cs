@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.ViewModel
         public string PostCode { get; set; }
         public string City { get; set; }
         public string Country_RegionCode { get; set; }
-        public int UnderCompromiseLaw { get; set; }
+        public bool UnderCompromiseLaw { get; set; }
     }
 }
