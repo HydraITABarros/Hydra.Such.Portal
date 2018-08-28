@@ -135,7 +135,8 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Actividades/GetAllActividades" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/Actividades/GetAllActividades" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGrid" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -352,10 +353,28 @@
                     <!-- Tab Seleção de Entidades-->
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <div class="row break_clear">
-                                <paper-button raised id="btnConfirmRecolhaPlataforma" class="btn--confirm pull-left" on-tap="_Gerar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Gerar</paper-button>
-                            </div>
+                            <!--
+                        <div class="row break_clear">
+                            <paper-button raised id="btnConfirmRecolhaPlataforma" class="btn--confirm pull-left" on-tap="_Gerar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Gerar</paper-button>
+                        </div>
+                        -->
 
+                            <paper-collapse-group>
+                                <paper-collapse-item class="panel-heading" header="Entidades" closed>
+                                    <div class="panel-body">
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="seleccaoentidade_codActividade" value="{{data.codActividade}}" label="Cód. Actividade" on-blur="_filtraFornecedores"
+                                                                items="[[CBActividades]]"
+                                                                text-path="codActividade"
+                                                                value-path="codActividade"
+                                                                fields='[{"field":"codActividade", "name":"Cód. Actividade"}, {"field":"descricao", "name":"Descrição"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="codFornecedor" label="Nº Fornecedor"
+                                                                items="[[Suppliers]]"
                                                                 text-path="name"
                                                                 value-path="no_"
                                                                 fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}, {"field":"blocked", "name":"Bloqueado"}]'
