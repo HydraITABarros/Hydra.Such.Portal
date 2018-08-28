@@ -2133,7 +2133,7 @@ namespace Hydra.Such.Portal.Controllers
                     SPInvoiceListViewModel exitNumb = groupedbyclient.Find(x => x.CommitmentNumber == "");
                     if (exitNumb != null)
                     {
-                       List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
+                        List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
                         if (Cliente != null)
                         {
                             if (Cliente[0].UnderCompromiseLaw == true)
