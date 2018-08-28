@@ -1815,7 +1815,7 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] 
         public JsonResult GetMovimentosFaturacao()
         {
             try
