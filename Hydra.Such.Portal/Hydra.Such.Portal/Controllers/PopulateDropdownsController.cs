@@ -27,6 +27,7 @@ using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.Logic.Telemoveis;
+using Hydra.Such.Data.ViewModel.PedidoCotacao;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1693,6 +1694,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNAVVendorComboGrid_FiltroActividade([FromBody]string id)
+        {
+            List<NAVVendorViewModel> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.Atividade == id).ToList();
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetMealTypes()
@@ -2159,6 +2167,15 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
+
+
+        [HttpPost]
+        public JsonResult GetNAVAtividadesComboGrid()
+        {
+            List<ActividadesView> result = DBNAV2017Atividades.GetAtividades(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+
     }
 
 
