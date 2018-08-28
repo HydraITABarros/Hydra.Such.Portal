@@ -1,0 +1,442 @@
+﻿
+@{
+    ViewData["Title"] = "Taxa Residuos";
+}
+
+
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<x-wasterate _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-wasterate>
+<dom-module id="x-wasterate">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <iron-ajax url="/PopulateDropdowns/GetCreateResourcesCodeWasteRate" auto last-response="{{codeOptions}}" id="ajax_Combo" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCodeWasteRate" auto last-response="{{codeOptions2}}"  method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetResourcesFamily" auto last-response="{{codeFamily}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/GetAllWasteRate" last-response="{{Griddate}}" auto id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/UpdateWasteRate" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
+
+             };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+        </style>
+        <div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box id="cboResourceId" items="[[codeOptions]]" item-value-path="id" item-label-path="id" value="{{ResourceNo}}" label="Código Recurso" disabled="{{ !_permissions.create }}" on-value-changed="_resourceChanged">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field value="{{ResourceDecNo}}" readonly id="Resourceid" name="Resource" disabled="{{ !_permissions.create }}" label="Nome Recurso"> </vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data" id="Dateid" name="Date" value="{{DateValue}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box id="cboResourceFamilyId" items="[[codeFamily]]" item-value-path="id" item-label-path="id" disabled="{{ !_permissions.create }}" value="{{ResourceFamilyNo}}" label="Familia Recurso">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2" disabled="{{ !_permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <br />
+        <vaadin-grid id="WasteRateGrid" aria-label="Tabela Taxa Recurso" items="[[Griddate]]" class="editGrid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="recurso">Código Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="recurso"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[codeOptions2]]" item-value-path="id" item-label-path="id" value="{{item.recurso}}" on-value-changed="_resourceGridChanged">
+                            <template>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.recurso}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="recursoName">Nome Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="recursoName"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="ResourceidGrid" value="{{item.recursoName}}" readonly></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.recursoName}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="data"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-date-picker id="dpDateGrid" name="dpDateGrid" value="{{item.data}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseDateFormat(item.data) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="familiaRecurso">Familia Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="familiaRecurso"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[codeFamily]]" item-value-path="id" item-label-path="id" value="{{item.familiaRecurso}}">
+                            <template>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.familiaRecurso}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove tablinks" disabled="{{ !_permissions.delete }}" on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <div class="marginSpace" hidden="{{ disabledFields }}">
+            <div class="marginSpace" hidden="{{ !_permissions.update }}">
+                <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-wasterate',
+                properties: {
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    ResourceNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ResourceDecNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ResourceFamilyNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    DateValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                },
+                observers: [
+                    '_onCacheLoaded(date)'
+                ],
+                _onCacheLoaded: function (date) {
+
+                    if (!this.Flag) {
+                        this.$.ajax_gridList.generateRequest();
+
+                        this.Flag = true;
+                    }
+                },
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _resourceChanged: function (e) {
+                    if (e.detail.value != "" && this.codeOptions != null && this.codeOptions != "") {
+                        this.$.Resourceid.value = this.codeOptions.find(x => x.id == e.detail.value).value;
+
+                    } else {
+                        this.$.Resourceid.value = "";
+                    }
+                },
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.Griddate.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+                        var sel = this.Griddate.find(x => x == item);
+                        if (sel != undefined) {
+                            this.Griddate.find(x => x == item).selected = true;
+                            this.$.WasteRateGrid.clearCache();
+                        }
+                    }
+                },
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var x = date.split("-");
+                        return x[2] + "-" + x[1] + "-" + x[0];
+                    }
+                },
+                _add() {
+                    if (this.ResourceNo != null && this.ResourceNo != "" &&
+                        this.DateValue != null && this.DateValue != "" &&
+                        this.ResourceFamilyNo != null && this.ResourceFamilyNo != "") {
+                        this.Griddate.unshift({
+                            recurso: this.ResourceNo,
+                            familiaRecurso: this.ResourceFamilyNo,
+                            data: this.DateValue
+
+                        });
+                        this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                        this.$.ajax_update.generateRequest();
+                        this.$.WasteRateGrid.clearCache();
+                    }
+                    else {
+                        this.openToastError("Os campos Recurso, data e Familia de Recurso, são obrigatórios.");
+                    }
+                },
+                _delete: function (e) {
+                    var index = this.Griddate.indexOf(e.model.item);
+                    this.Griddate.splice(index, 1);
+                    // Save to DB
+                    this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                    this.$.ajax_update.generateRequest();
+                    this.$.WasteRateGrid.clearCache();
+                },
+                _cancel: function () {
+                    this.$.ajax_gridList.generateRequest();
+                    this.$.WasteRateGrid.clearCache();
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.Griddate);
+                    this.$.ajax_update.generateRequest();
+                    this.$.WasteRateGrid.clearCache();
+                },
+                _updateResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.ajax_Combo.generateRequest();
+                        this.$.ajax_gridList.generateRequest();
+                        this.$.WasteRateGrid.clearCache();
+                        if (this.result.eReasonCode === 1) {
+                            this.openToastSuccess(this.result.eMessage);
+                        }
+                        else {
+                            this.openToastError(this.result.eMessage);
+                        }
+                    } else {
+                        this.openToastError("Occorreu um erro ao atualizar");
+                    }
+                    this._cleanValues();
+                },
+                _cleanValues: function () {
+                    this.$.cboResourceId.value = "";
+                    this.$.Resourceid.value = "";
+                    this.$.cboResourceFamilyId.value = "";
+                    this.$.Dateid.value = "";
+                },
+                _resourceGridChanged: function (e) {
+                    var res = this.Griddate.find(x => x.selected == true);
+                    if (res != null) {
+                        if (e.target.value != "" && this.codeOptions2 != null && this.codeOptions2 != "") {
+                            res.recursoName = this.codeOptions2.find(x => x.id == e.detail.value).value;
+                            res.recurso = e.target.value;
+                            this.$.WasteRateGrid.clearCache();
+                        } else {
+                            res.recursoName = "";
+                            res.recurso = "";
+                            this.$.WasteRateGrid.clearCache();
+                        }
+                    }
+                },
+            });
+        });
+    </script>
+</dom-module>

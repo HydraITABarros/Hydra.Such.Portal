@@ -943,6 +943,58 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetCreateResourcesCodeWasteRate()
+        {
+            List<DDMessageRelated> cboResult = new List<DDMessageRelated>();
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            List<TaxaResiduos> getAllLines = DBWasteRate.GetAll();
+            foreach (DDMessageRelated res in result)
+            {
+                int count = 0;
+                bool notfind = true;
+                foreach (TaxaResiduos line in getAllLines)
+                {
+                    if (res.id == line.Recurso)
+                    {
+                        notfind = false;
+                    }
+                }
+                if (notfind == true)
+                {
+                    cboResult.Add(res);
+                }
+            }
+            return Json(cboResult);
+        }
+        [HttpPost]
+        public JsonResult GetResourcesCodeWasteRate()
+        {
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+           
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetResourcesFamily()
+        {
+            List<DDMessageRelated> result = DBNAV2017ResourcesFamily.GetAllResourcesFamily(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetResourcesCode()
         {
             List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()

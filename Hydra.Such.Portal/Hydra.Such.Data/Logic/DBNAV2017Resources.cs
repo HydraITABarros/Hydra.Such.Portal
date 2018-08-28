@@ -3,6 +3,7 @@ using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 
 namespace Hydra.Such.Data.Logic
@@ -34,11 +35,12 @@ namespace Hydra.Such.Data.Logic
                             Code = (string)temp.No_,
                             Name = (string)temp.Name,
                             MeasureUnit = (string)temp.Base_Unit_of_Measure,
-                            ResourceGroup = (string)temp.Resource_Group_No
+                            ResourceGroup = (string)temp.Resource_Group_No,
+                            WasteRate = (int)temp.WasteRate
                         });
                     }
                 }
-
+                result = result.Where(x => x.WasteRate == 1).ToList();
                 return result;
             }
             catch (Exception ex)
