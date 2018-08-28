@@ -2136,7 +2136,7 @@ namespace Hydra.Such.Portal.Controllers
                        List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
                         if (Cliente != null)
                         {
-                            if (Cliente[0].UnderCompromiseLaw == 1)
+                            if (Cliente[0].UnderCompromiseLaw == true)
                             {
                                 execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
                                 result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
