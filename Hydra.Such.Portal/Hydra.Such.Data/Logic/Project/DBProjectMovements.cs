@@ -351,6 +351,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                         item.CreateUser = temp.UtilizadorCriacao.Equals(DBNull.Value) ? "" : (string)temp.UtilizadorCriacao;
                         item.Registered = temp.Registado.Equals(DBNull.Value) ? null : (bool?)temp.Registado;
                         item.Billed = temp.Faturada.Equals(DBNull.Value) ? null : (bool?)temp.Faturada;
+                        item.MealType= temp.TipoRefeicao.Equals(DBNull.Value) ? null : (int?)temp.TipoRefeicao;
 
                         result.Add(item);
                     }
@@ -434,7 +435,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                     Operation = item.Operacao,
                     InvoiceGroup = item.GrupoFatura,
                     InvoiceGroupDescription = item.GrupoFaturaDescricao,
-                    CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
+                    //CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName)
                 };

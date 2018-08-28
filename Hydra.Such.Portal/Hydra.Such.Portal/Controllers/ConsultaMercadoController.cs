@@ -16,6 +16,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using static Hydra.Such.Data.Enumerations;
 
+
 namespace Hydra.Such.Portal.Controllers
 {
     public class ConsultaMercadoController : Controller

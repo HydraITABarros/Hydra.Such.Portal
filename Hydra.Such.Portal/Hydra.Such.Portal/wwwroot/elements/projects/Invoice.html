@@ -574,12 +574,40 @@
                     }
 
                 },
-                _createInvoice: function () {
+                _validateData: function (Item) {
                     if (this.$._CLOptionInvoice.validate()) {
+                        for (var line = 0; line < Item.length; line++) {
+                            if (Item[line].totalPrice == "" || Item[line].totalPrice == null || Item[line].totalPrice == 0) {
+                                return "Selecionou Linhas com Valor a ZERO!";
+                            }
+                           //falta verificações
+                            if (Item[line].responsabilityCenterCode == "" ) {
+                                return "O Centro de Responsabilidade não está preenchido!";
+                            }
+                            if (Item[line].regionCode == "") {
+                                return "O Código de Região não está preenchido!";
+                            }
+                            if (Item[line].projectNo == "") {
+                                return "O Nº de Projeto não está preenchido!";             
+                            }   
+                            if (Item[line].functionalAreaCode == "") {
+                                return "O Código Área Funcional não está preenchido!";                            
+                            }                                  
+                        }
+                        return "";
+                    }
+                    return "Verifique os dados inseridos.";
+                },
+                _createInvoice: function () {
+                    var erro=this._validateData(this.selectedItem);
+                    if (erro == "") {
                         this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItem);
                         this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
                         this.$.page_autorizelines_ajax.generateRequest();
                         this.$.dlgInvoice.close();
+                    } else {
+                        this.$.dlgInvoice.close();
+                        this.openToastError(erro);
                     }
                 },
                 _CreateLinesResponse: function (e) {

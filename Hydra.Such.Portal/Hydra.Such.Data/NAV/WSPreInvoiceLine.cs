@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Projects;
 using System;
@@ -116,8 +117,8 @@ namespace Hydra.Such.Data.NAV
                    Unit_PriceSpecified = true,
                    //Amount = x.ValorVenda.Value,
                    //AmountSpecified = true,
-                   Service_Contract_No=x.NºContrato,
-                   Contract_No=x.NºContrato,
+                   Service_Contract_No = x.NºContrato,
+                   Contract_No = x.NºContrato,
                    Job_No = x.NºProjeto,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
@@ -143,37 +144,47 @@ namespace Hydra.Such.Data.NAV
             }
         }
         
-        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, string OptionInvoice, NAVWSConfigurations WSConfigurations)
         {
             int counter = 0;
-            WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
-               x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
-               { 
-                   
-                   Unit_PriceSpecified = true,
-                   Unit_Cost_LCYSpecified = true,
-                   Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
-                   Document_TypeSpecified = true,
-                   Document_No = HeaderNo,
-                   Type = ConvertInvoiceLineType(x.Type.ToString()),
-                   No = x.Code,
-                   Description = x.Description,
-                   QuantitySpecified = true,
-                   Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
-                   TypeSpecified = true,
-                   Unit_of_Measure = x.MeasurementUnitCode,
-                   Location_Code = x.LocationCode,
-                   Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0,
-                   Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0,
-                   Line_No = counter += 10000,
-                   Line_NoSpecified = true,
-                   Job_No=x.ProjectNo,
-                   Contract_No_Portal= x.DocumentNo
-                   
-                   //Job_Journal_Line_No_Portal = x.LineNo,
-                   //Job_Journal_Line_No_PortalSpecified = true,
+            int array = 0;
+            WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = new WSCreatePreInvoiceLine.WsPreInvoiceLine[LinesList.Count];
+  
+            foreach (var x in LinesList)
+            {
+                TiposRefeição refeicao = DBMealTypes.GetById(x.MealType??0);
 
-               }).ToArray();
+                WSCreatePreInvoiceLine.WsPreInvoiceLine line = new WSCreatePreInvoiceLine.WsPreInvoiceLine();
+
+                line.Unit_PriceSpecified = true;
+                line.Unit_Cost_LCYSpecified = true;
+                line.Document_Type = OptionInvoice.Replace(" ", String.Empty) == "4" ? WSCreatePreInvoiceLine.Document_Type.Credit_Memo : WSCreatePreInvoiceLine.Document_Type.Invoice;
+                line.Document_TypeSpecified = true;
+                line.Document_No = HeaderNo;
+                line.Type = ConvertInvoiceLineType(x.Type.ToString());
+                line.No = x.Code;
+                line.Description = x.Description;
+                line.QuantitySpecified = true;
+                line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
+                line.TypeSpecified = true;
+                line.Unit_of_Measure = x.MeasurementUnitCode;
+                line.Location_Code = x.LocationCode;
+                line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
+                line.Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0;
+                line.Line_No = counter += 10000;
+                line.Line_NoSpecified = true;
+                line.Job_No = x.ProjectNo;
+                line.Service_Contract_No = x.ProjectNo;
+                line.Contract_No = x.ProjectNo;
+                line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
+                line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
+                parsedList[array] = line;
+                array++;
+
+                //Job_Journal_Line_No_Portal = x.LineNo,
+                //Job_Journal_Line_No_PortalSpecified = true,
+
+            };
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
 

@@ -35,6 +35,7 @@ namespace Hydra.Such.Data.Logic
                             PostCode = (string)temp.PostalCode,
                             Country_RegionCode = (string)temp.Country_RegionCode,
                             //Country_RegionCode = (string)temp.Country_RegionCode
+                            UnderCompromiseLaw = ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
                         });
                     }
                 }
