@@ -1876,9 +1876,37 @@ namespace Hydra.Such.Portal.Controllers
 
                 }).ToList();
 
+                //Create Project if existe
+                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
+                Project.Wait();
+                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                {
+                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                    proj.ProjectNo = data[0].ProjectNo;
+                    proj.ClientNo = data[0].InvoiceToClientNo;
+                    proj.RegionCode = data[0].RegionCode;
+                    proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                    proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                    createProject.Wait();
+                }
 
                 if (groupedbyclient != null)
                 {
+                    //Verica Cliente estar ao abrigo da Lei dos Compromissos
+                    SPInvoiceListViewModel exitNumb = groupedbyclient.Find(x => x.CommitmentNumber == "");
+                    if (exitNumb != null)
+                    {
+                       List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
+                        if (Cliente != null)
+                        {
+                            if (Cliente[0].UnderCompromiseLaw == 1)
+                            {
+                                execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                            }
+                        }
+                    }
                     foreach (var header in groupedbyclient)
                     {
                         try
@@ -1905,7 +1933,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                     }
 
-                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, _configws);
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
@@ -1956,7 +1984,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel agrupar os registos";
+                    result.eMessage = "Selecionou registos com 'Nº de Compromisso' diferentes!";
                 }
             }
             else

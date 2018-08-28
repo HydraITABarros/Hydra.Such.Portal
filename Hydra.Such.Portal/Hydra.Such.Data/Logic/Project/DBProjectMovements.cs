@@ -351,6 +351,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                         item.CreateUser = temp.UtilizadorCriacao.Equals(DBNull.Value) ? "" : (string)temp.UtilizadorCriacao;
                         item.Registered = temp.Registado.Equals(DBNull.Value) ? null : (bool?)temp.Registado;
                         item.Billed = temp.Faturada.Equals(DBNull.Value) ? null : (bool?)temp.Faturada;
+                        item.MealType= temp.TipoRefeicao.Equals(DBNull.Value) ? null : (int?)temp.TipoRefeicao;
 
                         result.Add(item);
                     }

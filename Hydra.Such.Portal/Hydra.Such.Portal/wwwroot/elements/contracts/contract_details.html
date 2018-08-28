@@ -2714,9 +2714,10 @@
                         var code = e.detail.value;
                         var index = this.CBContractLineCodesGrid.findIndex(i => i.id == code);
                         //this.CBContractLineCodes[index].id;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).code = code;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).code = code;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).description = this.CBContractLineCodesGrid[index].value;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+
                         this.$.grid_contractlines.clearCache();
                     }
                 },

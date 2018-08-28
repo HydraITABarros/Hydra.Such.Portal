@@ -144,7 +144,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
         
-        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, string OptionInvoice, NAVWSConfigurations WSConfigurations)
         {
             int counter = 0;
             int array = 0;
@@ -158,7 +158,7 @@ namespace Hydra.Such.Data.NAV
 
                 line.Unit_PriceSpecified = true;
                 line.Unit_Cost_LCYSpecified = true;
-                line.Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice;
+                line.Document_Type = OptionInvoice.Replace(" ", String.Empty) == "4" ? WSCreatePreInvoiceLine.Document_Type.Credit_Memo : WSCreatePreInvoiceLine.Document_Type.Invoice;
                 line.Document_TypeSpecified = true;
                 line.Document_No = HeaderNo;
                 line.Type = ConvertInvoiceLineType(x.Type.ToString());
@@ -174,8 +174,9 @@ namespace Hydra.Such.Data.NAV
                 line.Line_No = counter += 10000;
                 line.Line_NoSpecified = true;
                 line.Job_No = x.ProjectNo;
-                line.Contract_No_Portal = x.DocumentNo;
-                line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Descrição : "";
+                line.Service_Contract_No = x.ProjectNo;
+                line.Contract_No = x.ProjectNo;
+                line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
                 parsedList[array] = line;
                 array++;
