@@ -122,11 +122,12 @@
         <iron-ajax url="/ConsultaMercado/CopiarConsultaMercado" last-response="{{copiarData}}" method="post" handle-as="json" id="ajax_copiar_consultaMercado" on-response="_copiarConsultaMercadoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoCreated}}" method="post" handle-as="json" id="page_createLinha_ajax" on-response="_createLinhaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaConsultaMercado" last-response="{{LinhaDeleted}}" method="post" handle-as="json" id="page_deleteLinha_ajax" on-response="_deleteLinhaResponse" content-type="application/json"></iron-ajax>
-                                                                                                                                                          
+
         <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
 
-
+        <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
+        
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -357,12 +358,6 @@
                     <!-- Tab Seleção de Entidades-->
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <!--
-                        <div class="row break_clear">
-                            <paper-button raised id="btnConfirmRecolhaPlataforma" class="btn--confirm pull-left" on-tap="_Gerar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Gerar</paper-button>
-                        </div>
-                        -->
-
                             <paper-collapse-group>
                                 <paper-collapse-item class="panel-heading" header="Entidades" closed>
                                     <div class="panel-body">
@@ -833,7 +828,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }],
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
@@ -861,6 +856,9 @@
                             break;
                         case 5://
                             this._copiarConsultaMercado();
+                            break;
+                        case 6://
+                            this._gerarRegistoPropostas();
                             break;
                     }
                 },
@@ -1033,6 +1031,42 @@
                     }
                     else {
                         this._showErrorMessage(this.copiarData.eMessage);
+                    }
+                },
+
+                _gerarRegistoPropostas: function () {
+                    debugger
+                    if (this.$.fase.value != 1) {
+                        this._showErrorMessage("Só é possível Gerar quando a Fase se encontra em 'Consulta'")
+                        return;
+                    }
+
+                    for (i = 0; i < this.data.seleccaoEntidades.length; i++) {
+                        if (((this.data.seleccaoEntidades[i].codTermosPagamento == null) || (this.data.seleccaoEntidades[i].codTermosPagamento == "")) && 
+                            ((this.data.seleccaoEntidades[i].codFormaPagamento == null) || (this.data.seleccaoEntidades[i].codFormaPagamento == ""))) {
+                            this._showErrorMessage("Existem Fornecedores sem 'Cód. Forma Pagamento' e 'Cód. Termos Pagamento' definidos!")
+                            return;
+                        }
+                    }
+
+                    var ajax_request = this.$.ajax_gerarRegistoPropostas;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Geração de Registo de Propostas?", ajax_request
+                    );
+                },
+                _gerarRegistoPropostasResponse: function () {
+                    debugger
+                    if (this.gerarRegistoPropostasData.eReasonCode == 0) {
+                        this._showMessage(this.gerarRegistoPropostasData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.gerarRegistoPropostasData.eMessage);
                     }
                 },
 
