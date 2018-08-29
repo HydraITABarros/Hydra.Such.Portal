@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Cod_Termos_Pagamento { get; set; }
         public string Cod_Formas_Pagamento { get; set; }
         public string Atividade { get; set; }
+        public int Preferencial { get; set; }
 
-        
     }
 }

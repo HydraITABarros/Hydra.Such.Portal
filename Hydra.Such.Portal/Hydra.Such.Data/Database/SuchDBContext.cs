@@ -149,8 +149,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-     
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -338,11 +336,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.CodFornecedor)
                     .HasColumnName("Cod_Fornecedor")
                     .HasMaxLength(20);
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.ActividadesPorFornecedor)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Actividades_por_Fornecedor_Actividades");
             });
 
             modelBuilder.Entity<ActividadesPorProduto>(entity =>
@@ -358,11 +351,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.CodProduto)
                     .HasColumnName("Cod_Produto")
                     .HasMaxLength(20);
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.ActividadesPorProduto)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Actividades_por_Produto_Actividades");
             });
 
             modelBuilder.Entity<Anexos>(entity =>
@@ -967,11 +955,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Validade_Proposta")
                     .HasMaxLength(10);
 
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.CondicoesPropostasFornecedores)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Condicoes_Propostas_Fornecedores_Actividades");
-
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.CondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumConsultaMercado)
@@ -1474,11 +1457,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorAdjudicado).HasColumnName("Valor_Adjudicado");
 
                 entity.Property(e => e.ValorPedidoCotacao).HasColumnName("Valor_Pedido_Cotacao");
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.ConsultaMercado)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Consulta_Mercado_Actividades");
 
                 entity.HasOne(d => d.CodProjectoNavigation)
                     .WithMany(p => p.ConsultaMercado)
@@ -3143,11 +3121,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Validade_Proposta")
                     .HasMaxLength(10);
 
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Historico_Condicoes_Propostas_Fornecedores_Actividades");
-
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumProjecto)
@@ -3268,11 +3241,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorPedidoCotacao).HasColumnName("Valor_Pedido_Cotacao");
 
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.HistoricoConsultaMercado)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Historico_Consulta_Mercado_Actividades");
-
                 entity.HasOne(d => d.CodProjectoNavigation)
                     .WithMany(p => p.HistoricoConsultaMercado)
                     .HasForeignKey(d => d.CodProjecto)
@@ -3358,11 +3326,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Validade).HasMaxLength(10);
 
                 entity.Property(e => e.ValorAdjudicadoDl).HasColumnName("Valor_Adjudicado_DL");
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Historico_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
 
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoLinhasCondicoesPropostasFornecedores)
@@ -3452,11 +3415,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
 
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.HistoricoLinhasConsultaMercado)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Historico_Linhas_Consulta_Mercado_Actividades");
-
                 entity.HasOne(d => d.NumProjectoNavigation)
                     .WithMany(p => p.HistoricoLinhasConsultaMercado)
                     .HasForeignKey(d => d.NumProjecto)
@@ -3505,11 +3463,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NomeFornecedor)
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.HistoricoSeleccaoEntidades)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Historico_Seleccao_Entidades_Actividades");
             });
 
             modelBuilder.Entity<Instrutores>(entity =>
@@ -3660,11 +3613,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorAdjudicadoDl).HasColumnName("Valor_Adjudicado_DL");
 
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Linhas_Condicoes_Propostas_Fornecedores_Actividades");
-
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.LinhasCondicoesPropostasFornecedores)
                     .HasForeignKey(d => d.NumConsultaMercado)
@@ -3755,11 +3703,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumRequisicao)
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.LinhasConsultaMercado)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Linhas_Consulta_Mercado_Actividades");
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.LinhasConsultaMercado)
@@ -7156,58 +7099,65 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<ProjectosAutorizados>(entity =>
             {
-                entity.HasKey(e => new { e.No, e.GrupoFactura });
+                entity.HasKey(e => new { e.CodProjeto, e.GrupoFactura });
 
-                entity.Property(e => e.No)
-                    .HasColumnName("No_")
+                entity.Property(e => e.CodProjeto)
                     .HasMaxLength(20)
                     .IsUnicode(false);
-
-                entity.Property(e => e.GrupoFactura).HasColumnName("Grupo Factura");
 
                 entity.Property(e => e.AreaFilter)
                     .HasColumnName("Area Filter")
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
-                entity.Property(e => e.BillToCustomerNo)
-                    .HasColumnName("Bill-to Customer No_")
+                entity.Property(e => e.CodAreaFuncional)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ContractNo)
-                    .HasColumnName("Contract No_")
+                entity.Property(e => e.CodCentroResponsabilidade)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.DataAutorização)
-                    .HasColumnName("Data Autorização")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.CodCliente)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.DataPedido)
-                    .HasColumnName("Data Pedido")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.CodContrato)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.DataPrestacaoServico)
-                    .HasColumnName("Data Prestacao Servico")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.CodEnderecoEnvio)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodMetodoPagamento)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodTermosPagamento)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataAutorizacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DataPedido).HasColumnType("datetime");
+
+                entity.Property(e => e.DataPrestacaoServico).HasColumnType("datetime");
 
                 entity.Property(e => e.DataServPrestado)
-                    .HasColumnName("Data Serv_ Prestado")
+                    .HasColumnName("[DataServPrestado")
                     .HasMaxLength(24)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Description)
+                entity.Property(e => e.Descricao)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Description2)
-                    .HasColumnName("Description 2")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescriçãoGrupo)
-                    .HasColumnName("Descrição Grupo")
+                entity.Property(e => e.DescricaoGrupo)
                     .HasMaxLength(30)
                     .IsUnicode(false);
 
@@ -7215,18 +7165,11 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.GlobalDimension1Code)
-                    .HasColumnName("Global Dimension 1 Code")
-                    .HasMaxLength(20)
+                entity.Property(e => e.GrupoContabilisticoObra)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.GlobalDimension2Code)
-                    .HasColumnName("Global Dimension 2 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobPostingGroup)
-                    .HasColumnName("Job Posting Group")
+                entity.Property(e => e.GrupoContabilisticoProjeto)
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
@@ -7234,45 +7177,26 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(80)
                     .IsUnicode(false);
 
-                entity.Property(e => e.NoCompromisso)
-                    .HasColumnName("No_ Compromisso")
+                entity.Property(e => e.NumCompromisso)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.NoSeries)
-                    .HasColumnName("No_ Series")
+                entity.Property(e => e.NumSerie)
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Observações)
+                entity.Property(e => e.Observacoes)
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Observações1)
-                    .HasColumnName("Observações 1")
+                entity.Property(e => e.Observacoes1)
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
                 entity.Property(e => e.OnlyForMaintInvoicing).HasColumnName("Only for Maint_ Invoicing");
 
-                entity.Property(e => e.PaymentMethodCode)
-                    .HasColumnName("Payment Method Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PaymentTermsCode)
-                    .HasColumnName("Payment Terms Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PedidoDoCliente)
-                    .HasColumnName("Pedido do Cliente")
+                entity.Property(e => e.PedidoCliente)
                     .HasMaxLength(60)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SearchDescription)
-                    .HasColumnName("Search Description")
-                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ShipToCode)
@@ -7290,25 +7214,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SituaçõesPendentes)
-                    .HasColumnName("Situações Pendentes")
+                entity.Property(e => e.SituacoesPendentes)
                     .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoGrupoContabOmProjecto)
-                    .HasColumnName("Tipo Grupo Contab _OM Projecto")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoGrupoContabProjecto)
-                    .HasColumnName("Tipo Grupo Contab _ Projecto")
-                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TipoProjecto).HasColumnName("Tipo Projecto");
 
                 entity.Property(e => e.Utilizador)
-                    .HasMaxLength(30)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -8381,11 +8294,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumConsultaMercado)
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
-
-                entity.HasOne(d => d.CodActividadeNavigation)
-                    .WithMany(p => p.SeleccaoEntidades)
-                    .HasForeignKey(d => d.CodActividade)
-                    .HasConstraintName("FK_Seleccao_Entidades_Actividades");
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.SeleccaoEntidades)

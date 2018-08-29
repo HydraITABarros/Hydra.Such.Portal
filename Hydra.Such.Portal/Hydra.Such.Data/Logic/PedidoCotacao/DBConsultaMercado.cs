@@ -1156,6 +1156,25 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
         #region Seleccao_Entidades
 
+
+        public static SeleccaoEntidades Create(SeleccaoEntidades ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.SeleccaoEntidades.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades Create_Copia(SeleccaoEntidadesView ObjectToCreate, string NumConsultaMercado, string UserID)
         {
             try
@@ -1174,6 +1193,25 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
             catch (Exception e)
             {
+                return null;
+            }
+        }
+
+        public static SeleccaoEntidades Delete(SeleccaoEntidades ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.SeleccaoEntidades.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToDelete;
+            }
+            catch (Exception ex)
+            {
+
                 return null;
             }
         }
