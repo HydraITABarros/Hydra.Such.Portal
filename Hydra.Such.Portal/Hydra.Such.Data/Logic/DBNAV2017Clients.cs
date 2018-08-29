@@ -37,18 +37,20 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new NAVClientsViewModel()
                         {
-                            No_ = (string)temp.No_,
-                            Name = (string)temp.Name,
-                            VATRegistrationNo_ = (string)temp.VATRegistrationNo,
-                            Address = (string)temp.Address,
-                            PostCode = (string)temp.PostalCode,
-                            Country_RegionCode = (string)temp.Country_RegionCode,
-                            //Country_RegionCode = (string)temp.Country_RegionCode
-                            UnderCompromiseLaw = ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
-                            National = ((int)temp.NationalCustomer) == 0 ? false : true,
-                            PaymentTermsCode = (string)temp.PaymentTermsCode,
-                            PaymentMethodCode = (string)temp.PaymentMethodCode,
-                            RegionCode = (string)temp.RegionCode,
+                            No_ = temp.No_.Equals(DBNull.Value) ? "" : (string)temp.No_,
+                            Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
+                            VATRegistrationNo_ = temp.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VATRegistrationNo,
+                            Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
+                            PostCode = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.PostalCode,
+                            Country_RegionCode = temp.Country_RegionCode.Equals(DBNull.Value) ? "" : (string)temp.Country_RegionCode,
+                            UnderCompromiseLaw = temp.UnderCompromiseLaw.Equals(DBNull.Value) ? false : ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
+                            InternalClient = temp.InternalClient.Equals(DBNull.Value) ? false : ((int)temp.InternalClient) == 0 ? false : true,
+                            National = temp.NationalCustomer.Equals(DBNull.Value) ? false : ((int)temp.NationalCustomer) == 0 ? false : true,
+                            PaymentTermsCode = temp.PaymentTermsCode.Equals(DBNull.Value) ? "" : (string)temp.PaymentTermsCode,
+                            PaymentMethodCode = temp.PaymentMethodCode.Equals(DBNull.Value) ? "" : (string)temp.PaymentMethodCode,
+                            RegionCode = temp.RegionCode.Equals(DBNull.Value) ? "" : (string)temp.RegionCode,
+
+
                         });
                     }
                     return result;
@@ -56,7 +58,6 @@ namespace Hydra.Such.Data.Logic
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }

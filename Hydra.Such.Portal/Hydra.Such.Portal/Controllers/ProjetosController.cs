@@ -1822,7 +1822,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (customerRequestNoValue != null)
                     customerRequestNo = (string)customerRequestNoValue.Value;
 
-                DateTime serviceDate;
+                DateTime serviceDate = DateTime.MinValue;
                 JValue serviceDateValue = requestParams["serviceDate"] as JValue;
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
@@ -1842,73 +1842,76 @@ namespace Hydra.Such.Portal.Controllers
 
                 Projetos project = null;
                 Contratos contract = null;
-                var customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
-
+                NAVClientsViewModel customer = null;
 
                 if (!string.IsNullOrEmpty(projectNo))
-                {
                     project = DBProjects.GetById(projectNo);
-                    if (project != null)
-                        contract = DBContracts.GetByIdLastVersion(project.NºContrato);
-                }
 
-                if (project != null && contract != null)
+                if (project != null)
                 {
-                    //Se o “Pedido” não estiver preenchido no projeto, preenche o “Pedido” e “Data do Pedido” com a informação que estiver indicada no Contrato/ Requisições do Contrato;
-                    //Se o campo “Observações” não estiver preenchido, vai buscar esta informação ao Contrato/ Texto Faturas Contrato;
-                    //Preenche as Dimensões (Região, Área e CResp) com as dimensões do projeto, exceto no caso do Cliente não ser nacional, que preenche a Região com a Região do Cliente.
-                    //No caso do projeto estar relacionado com um contrato, o “Código Termos de Pagamento” é o que estiver indicado no Contrato.Se não, preenche com o que estiver configurado na ficha do Cliente.
-                    //O campo “Método de Pagamento” é o que estiver configurado na ficha do Cliente.
-                    //Utilizador
-                    //Data de Autorização
-
+                    contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                    customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+                    
                     SuchDBContext ctx = new SuchDBContext();
-                    int? lastUsed = ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == projectNo).Select(x => x.GrupoFatura).OrderByDescending(x => x).FirstOrDefault();
-                    int nextInvoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
-                    ProjectosAutorizados proj = new ProjectosAutorizados();
-                    proj.No = project.NºProjeto;
-                    proj.GrupoFactura = nextInvoiceGroup;
-                    proj.NoCompromisso = commitmentNumber;
-                    proj.BillToCustomerNo = project.NºCliente;
-                    proj.ContractNo = contract.NºDeContrato;
-                    proj.DataAutorização = DateTime.Now;
-                    proj.PaymentTermsCode = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
-                    proj.GlobalDimension1Code = !customer.National ? customer.RegionCode : project.CódigoRegião;
+                    int? lastUsed = ctx.ProjectosAutorizados
+                        .Where(x => x.CodProjeto == projectNo)
+                        .Select(x => x.GrupoFactura)
+                        .Max();
+                    int invoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
+                    ProjectosAutorizados authorizedProject = new ProjectosAutorizados();
+                    authorizedProject.CodProjeto = project.NºProjeto;
+                    authorizedProject.GrupoFactura = invoiceGroup;
+                    authorizedProject.DescricaoGrupo = invoiceGroupDescription;
+                    authorizedProject.NumCompromisso = commitmentNumber;
+                    authorizedProject.CodCliente = project.NºCliente;
+                    authorizedProject.CodContrato = contract?.NºDeContrato;
+                    authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
+                    authorizedProject.CodMetodoPagamento = customer?.PaymentTermsCode;
+                    authorizedProject.CodRegiao = !customer.National ? customer.RegionCode : project.CódigoRegião;
+                    authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
+                    authorizedProject.CodCentroResponsabilidade = authorizedProject.CodCentroResponsabilidade;
+                    authorizedProject.PedidoCliente = customerRequestNo;
+                    authorizedProject.DataAutorizacao = DateTime.Now;
+                    authorizedProject.Utilizador = User.Identity.Name;
                     //proj.DataPedido Não definido
+                    if (serviceDate > DateTime.MinValue)
+                        authorizedProject.DataPrestacaoServico = serviceDate;
 
-
-
-                    //projMovements.ForEach(x => 
-                    //    {
-                    //        x.AutorizatedInvoice = true;
-                    //        x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-mm-dd");
-                    //        x.AuthorizedBy = User.Identity.Name;
-                    //        //x.RequestNo = customerRequestNo;
-                    //        //x.RegionCode = project.CódigoRegião;
-                    //        //x.FunctionalAreaCode = project.CódigoÁreaFuncional;
-                    //        //x.ResponsabilityCenterCode = project.CódigoCentroResponsabilidade;
-                            
-                    //    });
-
-                    var updatedMovements = DBProjectMovements.Update(projMovements.ParseToDB());
-                    if (updatedMovements != null)
+                    projMovements.ForEach(x =>
                     {
+                        x.AutorizatedInvoice = true;
+                        x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        x.AuthorizedBy = User.Identity.Name;
+                        x.InvoiceGroup = invoiceGroup;
+                    });
+
+                    ctx.ProjectosAutorizados.Add(authorizedProject);
+                    ctx.MovimentosDeProjeto.UpdateRange(projMovements.ParseToDB());
+
+                    try
+                    {
+                        ctx.SaveChanges();
                         result.eReasonCode = 1;
-                        result.eMessage = "Movimentos autorizados com sucesso";
+                        result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
                     }
-                    else
+                    catch (Exception ex)
                     {
                         result.eReasonCode = 2;
                         result.eMessage = "Ocorreu um erro ao tentar autorizar os movimentos.";
                     }
                 }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel obter o projeto.";
+                }
             }
             catch (Exception ex)
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Ocorreu um erro ao obter os dados a autorizar.";
+                result.eMessage = "Ocorreu um erro ao autorizar.";
             }
-            return Json(result);// null;
+            return Json(result);
         }
 
         [HttpPost]
@@ -1971,7 +1974,7 @@ namespace Hydra.Such.Portal.Controllers
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                 }
                 
-                if (project != null && contract != null)
+                if (project != null)
                 {
                     //Apenas movimentos de projeto faturáveis.
                     var notBillableItems = projMovements.Where(x => !x.Billable.Value).Select(x => x.LineNo);
@@ -1983,17 +1986,21 @@ namespace Hydra.Such.Portal.Controllers
                     if (authorizedItems.Count() > 0)
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "Existem movimentos que já foram autorizados (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
 
-                    //Validar se o contrato indicado no projeto está vigente
-                    if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
-                        (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
+                    if (contract != null)
                     {
-                        result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
+                        //Validar se o contrato indicado no projeto está vigente
+                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
+                            (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
+                        }
+                        //Validar se o compromisso é o que está no contrato                
+                        if (commitmentNumber != contract.NºCompromisso)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
+                        }
                     }
-                    //Validar se o compromisso é o que está no contrato                
-                    if (commitmentNumber != contract.NºCompromisso)
-                    {
-                        result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
-                    }
+
                     //Validar se o cliente está ao abrigo da lei dos compromissos
                     if (string.IsNullOrEmpty(commitmentNumber))
                     {
@@ -2037,7 +2044,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel obter detalhes do projeto e/ou do contato.";
+                    result.eMessage = "Não foi possivel obter detalhes do projeto.";
                 }
             }
             catch (Exception ex)
@@ -2150,7 +2157,7 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        [HttpPost] 
+        [HttpPost]
         public JsonResult GetMovimentosFaturacao()
         {
             try
@@ -2186,6 +2193,57 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data)
+        {
+            string execDetails = string.Empty;
+
+            ErrorHandler result = new ErrorHandler();
+            SPInvoiceListViewModel line = data[0];
+            List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
+            if (Cliente != null)
+            {
+                //Nº do Cliente > “999999”.
+                if (Convert.ToInt32(Cliente[0].No_) > 999999)
+                {
+                    execDetails += "ERRO! Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+                //Garantir que o campo “Nº do Contribuinte”
+                else if (Cliente[0].InternalClient==true)// Se Débito Interno
+                {
+                    if (Cliente[0].VATRegistrationNo_=="")
+                    {
+                        Cliente[0].VATRegistrationNo_="999999999";
+                            
+                    }
+                }
+                else if(Cliente[0].VATRegistrationNo_ == "")
+                {
+                    execDetails += "Este cliente não tem Nº Contribuinte preenchido!";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+
+                //Abrigo Lei Compromisso
+                if (line.CommitmentNumber == "")
+                {
+
+                    if (Cliente[0].UnderCompromiseLaw == true)
+                    {
+                        execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+                    else
+                    {
+                        execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                        result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                    }
+                }
+            }
+             
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {
             string execDetails = string.Empty;
@@ -2216,32 +2274,32 @@ namespace Hydra.Such.Portal.Controllers
                 Project.Wait();
                 if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
                 {
-                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                    proj.ProjectNo = data[0].ProjectNo;
-                    proj.ClientNo = data[0].InvoiceToClientNo;
-                    proj.RegionCode = data[0].RegionCode;
-                    proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
-                    proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
-                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                    createProject.Wait();
+                    try
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = data[0].ProjectNo;
+                        proj.ClientNo = data[0].InvoiceToClientNo;
+                        proj.RegionCode = data[0].RegionCode;
+                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
+
+                        execDetails += " Erro ao criar Projeto: ";
+                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        return Json(result);
+                    }
                 }
 
                 if (groupedbyclient != null)
                 {
-                    //Verica Cliente estar ao abrigo da Lei dos Compromissos
-                    SPInvoiceListViewModel exitNumb = groupedbyclient.Find(x => x.CommitmentNumber == "");
-                    if (exitNumb != null)
-                    {
-                        List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
-                        if (Cliente != null)
-                        {
-                            if (Cliente[0].UnderCompromiseLaw == true)
-                            {
-                                execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
-                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
-                            }
-                        }
-                    }
+                    
                     foreach (var header in groupedbyclient)
                     {
                         try

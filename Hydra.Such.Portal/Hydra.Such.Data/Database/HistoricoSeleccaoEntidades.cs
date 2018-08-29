@@ -16,7 +16,5 @@ namespace Hydra.Such.Data.Database
         public string CodFormaPagamento { get; set; }
         public bool? Selecionado { get; set; }
         public bool? Preferencial { get; set; }
-
-        public Actividades CodActividadeNavigation { get; set; }
     }
 }

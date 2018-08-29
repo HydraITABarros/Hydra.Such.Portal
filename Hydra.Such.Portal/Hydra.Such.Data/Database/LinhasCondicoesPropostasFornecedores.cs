@@ -31,7 +31,6 @@ namespace Hydra.Such.Data.Database
         public bool? RespostaFornecedor { get; set; }
         public decimal? QuantidadeRespondida { get; set; }
 
-        public Actividades CodActividadeNavigation { get; set; }
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
         public Projetos NumProjectoNavigation { get; set; }
     }
