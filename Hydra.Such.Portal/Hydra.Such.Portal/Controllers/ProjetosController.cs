@@ -2267,14 +2267,27 @@ namespace Hydra.Such.Portal.Controllers
                 Project.Wait();
                 if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
                 {
-                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                    proj.ProjectNo = data[0].ProjectNo;
-                    proj.ClientNo = data[0].InvoiceToClientNo;
-                    proj.RegionCode = data[0].RegionCode;
-                    proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
-                    proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
-                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                    createProject.Wait();
+                    try
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = data[0].ProjectNo;
+                        proj.ClientNo = data[0].InvoiceToClientNo;
+                        proj.RegionCode = data[0].RegionCode;
+                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
+
+                        execDetails += " Erro ao criar Projeto: ";
+                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        return Json(result);
+                    }
                 }
 
                 if (groupedbyclient != null)
