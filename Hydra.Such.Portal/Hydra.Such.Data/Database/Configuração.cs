@@ -30,6 +30,7 @@ namespace Hydra.Such.Data.Database
         public int? NumeracaoModelosRequisicao { get; set; }
         public int? NumeracaoProdutos { get; set; }
         public int? ConsultaMercado { get; set; }
+        public string CodAreaResiduos { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

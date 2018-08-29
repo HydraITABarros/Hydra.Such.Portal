@@ -11,5 +11,7 @@ namespace Hydra.Such.Data.ViewModel
         public string MeasureUnit { get; set; }
         public string ResourceGroup { get; set; }
         public int WasteRate { get; set; }
-    }
+        public decimal UnitPrice { get; set; }
+        public decimal UnitCost { get; set; }
+}
 }

@@ -2168,7 +2168,83 @@ namespace Hydra.Such.Portal.Controllers
                                             linesList.Add(lines);
                                         }
                                     }
+                                    //declarações
+                                    List<NAVResourcesViewModel> Resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
+                                    List<WasteRateViewModel> wr = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
+                                    List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
+                                    List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
 
+                                    //procurar grupo recurso das linhas a registar
+                                    foreach (SPInvoiceListViewModel spi in linesList)
+                                    {
+                                        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                        {
+                                            if (spi.Code == rl.Code)
+                                            {
+                                                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                newrow.LineNo = spi.LineNo;
+                                                newrow.Quantity = spi.Quantity;
+                                                newrow.ResourceGroup = rl.ResourceGroup;
+                                                myRLlist.Add(newrow);
+                                            }
+                                        }
+                                    }
+                                    if (myRLlist.Count > 0)
+                                    {
+                                        //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
+                                        foreach (WasteRateViewModel item in wr)
+                                        {
+                                            foreach (NAVResourcesViewModel rl in Resourceslines)
+                                            {
+                                                if (item.Recurso == rl.Code)
+                                                {
+                                                    ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                    newrow.Resource = rl.Code;
+                                                    newrow.ResourceName = rl.Name;
+                                                    newrow.ResourceGroup = item.FamiliaRecurso;
+                                                    newrow.Price = rl.UnitPrice;
+                                                    myWRlist.Add(newrow);
+                                                }
+                                            }
+                                        }
+                                        //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
+                                        //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
+                                        //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
+                                        //Adicionar essa linha como se de uma nova linha se tratasse
+                                        foreach (ResourceGroupLinesModelView item in myWRlist)
+                                        {
+                                            decimal quantity = 0;int lineNo = 0;bool found = false;
+                                            foreach (ResourceGroupLinesModelView rgl in myRLlist)
+                                            {
+                                                if (item.ResourceGroup == rgl.ResourceGroup)
+                                                {
+                                                    found = true;
+                                                    if (lineNo == 0)
+                                                    {
+                                                        lineNo = rgl.LineNo.Value;
+                                                    }
+                                                    if (rgl.Quantity != null)
+                                                    {
+                                                        quantity = quantity + rgl.Quantity.Value;
+                                                    }
+                                                }
+                                            }
+                                            if (lineNo != 0 && found)
+                                            {
+                                                foreach (SPInvoiceListViewModel spi in linesList)
+                                                {
+                                                    if (spi.LineNo == lineNo)
+                                                    {
+                                                        spi.Quantity = quantity;
+                                                        spi.Code = item.Resource;
+                                                        spi.Description = item.ResourceName;
+                                                        spi.UnitPrice = item.Price;
+                                                        linesList.Add(spi);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
