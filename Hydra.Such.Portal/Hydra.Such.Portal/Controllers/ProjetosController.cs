@@ -29,6 +29,7 @@ using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.Logic.ProjectMovements;
 using System.Globalization;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2206,8 +2207,10 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (Cliente[0].VATRegistrationNo_=="")
                     {
-                        Cliente[0].VATRegistrationNo_="999999999";
-                            
+                        ClientDetailsViewModel cli = new ClientDetailsViewModel();
+                        cli.VAT_Registration_No = "999999999";                    
+                        Task<WSClientNAV.Update_Result> updateCliente = WSClient.UpdateVATNumber(cli, _configws);
+                        updateCliente.Wait();
                     }
                 }
                 else if(Cliente[0].VATRegistrationNo_ == "")
@@ -2235,7 +2238,19 @@ namespace Hydra.Such.Portal.Controllers
              
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult CancelLines([FromBody] List<SPInvoiceListViewModel> data)
+        {
+            List<MovimentosDeProjeto> result = DBProjectMovements.GetProjectMovementsFor(data[0].ProjectNo,true).ToList();
+            foreach(MovimentosDeProjeto line in result)
+            {
+                line.FaturaçãoAutorizada = false;
+                line.FaturaçãoAutorizada2 = false;
+                line.Faturada = false;
+                DBProjectMovements.Update(line);
+            }
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {

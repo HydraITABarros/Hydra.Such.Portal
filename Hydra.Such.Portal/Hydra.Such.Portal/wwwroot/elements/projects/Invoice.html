@@ -39,6 +39,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -176,7 +177,14 @@
                    on-response="_CreateLinesResponse"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Projetos/CancelLines"
+                   last-response="{{CancelLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_cancelLines_ajax"
+                   on-response="_CancelLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel_FaturacaoProjetos"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -575,6 +583,18 @@
                         else {
                             this.openToastError("Selecionar apenas projetos de um cliente!");
                         }
+                    } else {
+                        this.openToastError("Selecionar pelo menos um projeto!");
+                    }
+
+                },
+                _CancelLinesResponse: function () {
+                    
+                },
+                _deleteLine: function (selectedItem, selectedItems) {
+                    if (this.selectedItems.length != 0) {
+                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_cancelLines_ajax.generateRequest();
                     } else {
                         this.openToastError("Selecionar pelo menos um projeto!");
                     }
