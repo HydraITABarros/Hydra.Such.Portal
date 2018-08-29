@@ -149,8 +149,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-       
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -7107,6 +7105,11 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.AreaFilter)
+                    .HasColumnName("Area Filter")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.CodAreaFuncional)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -7146,6 +7149,7 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataPrestacaoServico).HasColumnType("datetime");
 
                 entity.Property(e => e.DataServPrestado)
+                    .HasColumnName("[DataServPrestado")
                     .HasMaxLength(24)
                     .IsUnicode(false);
 
@@ -7169,6 +7173,10 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Motorista)
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.NumCompromisso)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -7185,13 +7193,32 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
+                entity.Property(e => e.OnlyForMaintInvoicing).HasColumnName("Only for Maint_ Invoicing");
+
                 entity.Property(e => e.PedidoCliente)
                     .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToCode)
+                    .HasColumnName("Ship-to Code")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShortcutDimension3Code)
+                    .HasColumnName("Shortcut Dimension 3 Code")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShortcutDimension4Code)
+                    .HasColumnName("Shortcut Dimension 4 Code")
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.SituacoesPendentes)
                     .HasMaxLength(80)
                     .IsUnicode(false);
+
+                entity.Property(e => e.TipoProjecto).HasColumnName("Tipo Projecto");
 
                 entity.Property(e => e.Utilizador)
                     .HasMaxLength(50)

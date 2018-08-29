@@ -182,11 +182,11 @@
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/AuthorizeProjectMovements"
-                   last-response="{{lines}}"
+                   last-response="{{authorizationResponse}}"
                    method="post"
                    handle-as="json"
-                   id="page_autorizelines_ajax"
-                   on-response="_authorizeProjMovResponse"
+                   id="autorize_ajax"
+                   on-response="_projMovAuthorizationResponse"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/ValidateMovementsForAuthorization"
@@ -651,25 +651,29 @@
             </div>
         </div>
 
-        <paper-dialog id="dlgValidation" modal style="height:200px; width:400px">
+        <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
+            
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
-                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+                    <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
                 </div>-->
                 <div class="col-md-12 ">
                     <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
                 </div>
-                <template is="dom-repeat" items="{{ _validationMessages }}">
-                    <template is="dom-if" if="{{ _isError(item.type) }}">
-                        <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                <div class="col-md-12 ">
+                    <h5 hidden id="validationTitle">Atenção</h5>
+                    <template is="dom-repeat" items="{{ _validationMessages }}">
+                        <template is="dom-if" if="{{ _isError(item.type) }}">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:red;">&nbsp;&nbsp;</i>{{ item.message }}<br />
+                        </template>
+                        <template is="dom-if" if="{{ _isWarning(item.type) }}">
+                            <i class="fa fa-info-circle" aria-hidden="true" style="color:orange;">&nbsp;&nbsp;</i>{{ item.message }}<br />
+                        </template>
                     </template>
-                    <template is="dom-if" if="{{ _isWarning(item.type) }}">
-                        <div>&nbsp;<i class="fa fa-info-circle" aria-hidden="true">{{ item.message }}</i></div>
-                    </template>
-                </template>
+                </div>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" disabled>Autorizar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" hidden>Autorizar</paper-button>
                 <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -747,6 +751,9 @@
                     selectedItems: {
                         type: Array,
                     },
+                    _validationMessages: {
+                        type: Array,
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -760,17 +767,7 @@
                 observers: ['_resetSelection(inverted)'],
 
                 ready: function () {
-                    this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
-                    this.$.movements_databound_ajax.generateRequest();
-
-                    this.$.projectDetails_ajax.body = JSON.stringify({ "ProjectNo": this._projectno });
-                    this.$.projectDetails_ajax.generateRequest();
-
-
-
-                    this.$.billingresume_ajax.body = JSON.stringify({ "projectNo": this._projectno });
-                    this.$.billingresume_ajax.generateRequest();
-
+                    this._loadData();
                     this._setDefaultDateForDatePickers();
 
                     /*ColumnToggle*/
@@ -782,6 +779,20 @@
                     });
                     $(window).trigger('resize');
                 },
+
+                _loadData: function () {
+                    this._totalToAuthorize = 0.0;
+                    this.$.grdProjectMovements.selectedItems = [];
+                    this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
+                    this.$.movements_databound_ajax.generateRequest();
+
+                    this.$.projectDetails_ajax.body = JSON.stringify({ "ProjectNo": this._projectno });
+                    this.$.projectDetails_ajax.generateRequest();
+
+                    this.$.billingresume_ajax.body = JSON.stringify({ "projectNo": this._projectno });
+                    this.$.billingresume_ajax.generateRequest();
+                },
+
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.grdProjectMovements);
                     var parentHeight = $(this).offsetParent().height();
@@ -800,94 +811,121 @@
                 },
                 _confirm: function (selectedItem, selectedItems) {
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
-                        //Only biilable movements
-                        debugger;
-                        var notBillableItems = this.selectedItems.find(x => !x.billable);
-                        if (notBillableItems != undefined) {
-                            this.openToastError("Apenas podem ser autorizados movimentos de projeto faturáveis.");
-                        }
-                        var authorizedItems = this.selectedItems.find(x => x.autorizatedInvoice);
-                        if (authorizedItems != undefined) {
-                            this.openToastError("Existem movimentos que já foram autorizados.");
-                        }
-                        
-                        return;
-
-                        this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
-                        this.$.page_autorizelines_ajax.generateRequest();
-                        //console.log(this.selectedItems);
+                        var authorizationRequest = {
+                            "projectNo": this._projectno,
+                            "commitmentNumber": this._commitmentNo,
+                            "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
+                            "customerRequestNo": this._customerRequestNo,
+                            "serviceDate": this.$.dpDataPrestacaoServ.value,
+                            "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                            "projMovements": this.selectedItems,
+                        };
+                        this.$.autorize_ajax.body = JSON.stringify(authorizationRequest);
+                        this.$.autorize_ajax.generateRequest();
                     }
                     else {
                         this.openToastError("Selecione os movimentos a faturar");
                     }
                 },
                 _openDlg: function () {
-                    var validationRequest = {
-                        "projectNo": this._projectno,
-                        "commitmentNumber": this._commitmentNo,
-                        "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
-                        "customerRequestNo": this._customerRequestNo,
-                        "serviceDate": this.$.dpDataPrestacaoServ.value,
-                        "authorizationTotalValue": this.$.txtValorAAutorizar.value,
-                        "projMovements": this.selectedItems,
-                    };
-                    this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
-                    this.$.projMovValidation_ajax.generateRequest();
-                    this.$.dlgValidation.open();
+                    if (this.selectedItems != null && this.selectedItems.length > 0) {
+                        this.validationMessages = [];
+                        var validationRequest = {
+                            "projectNo": this._projectno,
+                            "commitmentNumber": this._commitmentNo,
+                            "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
+                            "customerRequestNo": this._customerRequestNo,
+                            "serviceDate": this.$.dpDataPrestacaoServ.value,
+                            "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                            "projMovements": this.selectedItems,
+                        };
+                        this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
+                        this.$.projMovValidation_ajax.generateRequest();
+                        this.$.dlgValidation.open();
+                    }
+                    else {
+                        this.openToastError("Selecione os movimentos a autorizar");
+                    }
                 },
                 _closedlgValidationDlg: function () {
                     this.$.dlgValidation.close();
+                    this._resetDialogContent();
                 },
                 _toggleBillable: function (e) {
                     this._billable = !this._billable;
-
+                    this.$.grdProjectMovements.clearCache();
+                    this.$.grdProjectMovements.selectedItems = [];
                     this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
                     this.$.movements_databound_ajax.generateRequest();
                 },
 
-                _authorizeProjMovResponse: function (e) {
-                    this.$.movements_databound_ajax.generateRequest();
-                    this.$.ToastMessageSuccess.text = 'Movimentos autorizados com sucesso';
-                    this.$.ToastMessageSuccess.open();
+                _projMovAuthorizationResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this._validationMessages = [];
+                        if (this.authorizationResponse.eReasonCode == 1) {
+                            this.openToast(this.authorizationResponse.eMessage);
+                            this._closedlgValidationDlg();
+                            this._loadData();
+                        }
+                        else {
+                            this._closedlgValidationDlg();
+                            this.openToastError(this.authorizationResponse.eMessage);
+                        }
+                    }
+                    else {
+                        this._closedlgValidationDlg();
+                        this.openToastError("Ocorreu um erro ao processar o pedido.");
+                    }
+                },
+                _resizeDialogToContent: function () {
+                    var dialogDefaultSize = 200;
+                    var dlg = $(this.$.dlgValidation);
+                    var items = (this._validationMessages && this._validationMessages != undefined) ? this._validationMessages.length : 0;
+                    var height = dialogDefaultSize + (items * 20);
+                    if (items > 0)
+                        height += 40;//for title
+                    this.$.validationTitle.hidden = items <= 0;
+                    dlg.height(height);
+                },
+                _resetDialogContent: function () {
+                    this._validationMessages = [];
+                    this.$.btnConfirmAuthorization.hidden = true;
+                    this.$.txtDescGrupoFatura.value = "";
+                    this._resizeDialogToContent();
                 },
                 _projMovValidationResponse: function (e) {
                     if (e.detail.status === 200) {
+                        this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
-                            //this.openToast(this.projMovValResponse.eMessage);
-                            var warnings = this.projMovValResponse.eMessages.find(x => x.type == 3);
-                            if (warnings != undefined) {
-                                if (this._validationMessages != undefined)
-                                    this._validationMessages.push = warnings;
-                                else
-                                    this._validationMessages = warnings;
-                            }
+                            this.$.btnConfirmAuthorization.hidden = false;
+                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 3);
+                            if (warnings != undefined)
+                                this._validationMessages = warnings;
                         }
                         else {
-                            var errors = this.projMovValResponse.eMessages.find(x => x.type == 0 || x.type == 2);
-                            var warnings = this.projMovValResponse.eMessages.find(x => x.type == 3);
+                            var errors = this.projMovValResponse.eMessages.filter(x => x.type == 0 || x.type == 2);
+                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 3);
 
                             if (errors != undefined) {
                                 this._validationMessages = errors;
                                 //Se tem erros impede autorização dos movimentos
-                                this.$.btnConfirmAuthorization.disabled = errors != undefined;
+                                this.$.btnConfirmAuthorization.hidden = true;
                             }
                             if (warnings != undefined) {
-                                if (this._validationMessages != undefined)
-                                    this._validationMessages.push = warnings;
-                                else
-                                    this._validationMessages = warnings;
+                                this._validationMessages.push.apply(this._validationMessages, warnings);
                             }
                         }
+                        this._resizeDialogToContent();
                     }
                     else {
-                        this._openToastError(this.projMovValResponse.eMessage);
+                        this.openToastError("Ocorreu um erro ao processar o pedido.");
                     }
                 },
                 _isError: function (type) {
                     return type == 0 || type == 2;
                 },
                 _isWarning: function (type) {
-                    return type == 2;
+                    return type == 3;
                 },
                 GetMovementsResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -898,7 +936,7 @@
                         this.$.btnToggleBillable.textContent = this._billable ? "Não Faturáveis" : "Faturáveis";
                     }
                     else {
-                        this._openToastError("Não foi possivel obter os movimentos.");
+                        this.openToastError("Não foi possivel obter os movimentos.");
                     }
                 },
                 GetProjectResponse: function (e) {
@@ -910,7 +948,7 @@
                     }
                     else {
                         this.$.btnConfirm.disabled = true;
-                        this._openToastError("Não foi possivel obter dados do projeto.");
+                        this.openToastError("Não foi possivel obter dados do projeto.");
                     }
                 },
                 _getCustomerResponse: function (e) {
@@ -956,7 +994,7 @@
                             this._openToast(this.UpdateResponse.eMessage);
                         }
                         else {
-                            this._openToastError(this.UpdateResponse.eMessage);
+                            this.openToastError(this.UpdateResponse.eMessage);
                         }
                     }
                 },
@@ -999,6 +1037,7 @@
                         for (i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && this._totalToAuthorize != null)
                                 this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
+                            items[i].autorizatedInvoice2 = true;
                             this.$.grdProjectMovements.selectItem(items[i]);
                         }
                         var checkBoxes = this.$.grdProjectMovements.querySelectorAll("input[aria-label='Selecionar']");
@@ -1008,6 +1047,11 @@
                     }
                     else {
                         this.$.grdProjectMovements.selectedItems = [];
+                    }
+                    if (this.result) {
+                        for (i = 0; i < this.result.value; i++) {
+                            this.result.value[i].autorizatedInvoice2 = false;
+                        }
                     }
                     this.updateStyles();
                     this.indeterminate = false;
@@ -1023,12 +1067,12 @@
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
-                        //e.model.item.autorizatedInvoice2 = true;
+                        e.model.item.autorizatedInvoice2 = true;
                         this.$.grdProjectMovements.selectItem(e.model.item);
                     } else {
                         if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
-                        //e.model.item.autorizatedInvoice2 = false;
+                        e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
                     }
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;

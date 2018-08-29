@@ -481,6 +481,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GerarRegistoPropostas([FromBody] ConsultaMercadoView data)
+        {
+
+            return Json(data);
+        }
+
 
         #region Linhas Consulta Mercado
 
@@ -542,6 +549,60 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     result = false;
                 
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        #endregion
+
+        #region Selecção Entidades
+
+        [HttpPost]
+        public JsonResult CreateLinhaSeleccaoEntidade([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
+                seleccaoEntidades.CidadeFornecedor = null;
+                seleccaoEntidades.CodActividade = data.CodActividade;
+                seleccaoEntidades.CodFormaPagamento = data.CodFormaPagamento;
+                seleccaoEntidades.CodFornecedor = data.CodFornecedor;
+                seleccaoEntidades.CodTermosPagamento = data.CodTermosPagamento;
+                seleccaoEntidades.NomeFornecedor = data.NomeFornecedor;
+                seleccaoEntidades.NumConsultaMercado = data.NumConsultaMercado;
+                seleccaoEntidades.Preferencial = data.Preferencial;
+                seleccaoEntidades.Selecionado = true;
+
+                var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLinhaSeleccaoEntidade([FromBody] SeleccaoEntidades data)
+        {
+            bool result = false;
+            try
+            {
+                if (DBConsultaMercado.Delete(data) != null)
+                    result = true;
+                else
+                    result = false;
+
             }
             catch (Exception ex)
             {

@@ -786,7 +786,8 @@ namespace Hydra.Such.Portal.Controllers
                 DinnerEndTime = Cfg.FimHoraJantar,
                 DinnerStartTime = Cfg.InicioHoraJantar,
                 LunchEndTime = Cfg.FimHoraAlmoco,
-                LunchStartTime = Cfg.InicioHoraAlmoco
+                LunchStartTime = Cfg.InicioHoraAlmoco,
+                WasteAreaId = Cfg.CodAreaResiduos
             };
             return Json(result);
         }
@@ -822,6 +823,7 @@ namespace Hydra.Such.Portal.Controllers
             configObj.InicioHoraJantar = data.DinnerStartTime;
             configObj.InicioHoraAlmoco = data.LunchStartTime;
             configObj.FimHoraAlmoco = data.LunchEndTime;
+            configObj.CodAreaResiduos = data.WasteAreaId;
 
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;

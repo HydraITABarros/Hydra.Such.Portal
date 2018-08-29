@@ -37,7 +37,8 @@ namespace Hydra.Such.Data.Logic
                             City = (string)temp.City,
                             Cod_Termos_Pagamento = (string)temp.Cod_Termos_Pagamento,
                             Cod_Formas_Pagamento = (string)temp.Cod_Formas_Pagamento,
-                            Atividade = (string)temp.Atividade
+                            Atividade = (string)temp.Atividade,
+                            Preferencial = (int)temp.Preferencial
                         });
                     }
                 }
