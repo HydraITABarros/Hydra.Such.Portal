@@ -781,6 +781,8 @@
                 },
 
                 _loadData: function () {
+                    this._totalToAuthorize = 0.0;
+                    this.$.grdProjectMovements.selectedItems = [];
                     this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
                     this.$.movements_databound_ajax.generateRequest();
 

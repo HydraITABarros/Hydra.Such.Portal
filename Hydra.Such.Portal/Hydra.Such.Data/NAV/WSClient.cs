@@ -158,6 +158,40 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static async Task<WSClientNAV.Update_Result> UpdateVATNumber(ClientDetailsViewModel client, NAVWSConfigurations WSConfigurations)
+        {
+            if (client == null)
+                throw new ArgumentNullException("client");
+
+            WSClientNAV.Update navUpdate = new WSClientNAV.Update()
+            {
+                teste = new WSClientNAV.teste
+                {
+                    VAT_Registration_No = client.VAT_Registration_No,
+                  
+                }
+            };
+
+            //Configure NAV Client
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_Client_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSClientNAV.teste_PortClient ws_Client = new WSClientNAV.teste_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            WSClientNAV.Read_Result resultRead = await ws_Client.ReadAsync(navUpdate.teste.No);
+            navUpdate.teste.Key = resultRead.teste.Key;
+
+            try
+            {
+                WSClientNAV.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
         public static async Task<WSClientNAV.Delete_Result> DeleteAsync(string ClientNo, NAVWSConfigurations WSConfigurations)
         {
             if (ClientNo == null)
