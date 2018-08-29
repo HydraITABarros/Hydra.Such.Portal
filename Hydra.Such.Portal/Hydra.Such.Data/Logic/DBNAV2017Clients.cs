@@ -1,6 +1,7 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
@@ -9,6 +10,14 @@ namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017Clients
     {
+        public static NAVClientsViewModel GetClientById(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
+        {
+            List<NAVClientsViewModel> result = GetClients(NAVDatabaseName, NAVCompanyName, NAVClientNo);
+            if (result != null)
+                return result.FirstOrDefault();
+            return null;
+        }
+
         public static List<NAVClientsViewModel> GetClients(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
         {
             try
@@ -36,11 +45,14 @@ namespace Hydra.Such.Data.Logic
                             Country_RegionCode = (string)temp.Country_RegionCode,
                             //Country_RegionCode = (string)temp.Country_RegionCode
                             UnderCompromiseLaw = ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
+                            National = ((int)temp.NationalCustomer) == 0 ? false : true,
+                            PaymentTermsCode = (string)temp.PaymentTermsCode,
+                            PaymentMethodCode = (string)temp.PaymentMethodCode,
+                            RegionCode = (string)temp.RegionCode,
                         });
                     }
+                    return result;
                 }
-
-                return result;
             }
             catch (Exception ex)
             {

@@ -1794,33 +1794,121 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult AuthorizeProjectMovements([FromBody] List<ProjectDiaryViewModel> data)
+        public JsonResult AuthorizeProjectMovements([FromBody] JObject requestParams)//[FromBody] List<ProjectDiaryViewModel> data
         {
-            ErrorHandler result = new ErrorHandler();
+            ErrorHandler result = ValidateMovements(requestParams);
+            if (result.eReasonCode != 1)
+                return Json(result);
+
             try
             {
-                if (data != null)
+                string projectNo = string.Empty;
+                JValue projectNoValue = requestParams["projectNo"] as JValue;
+                if (projectNoValue != null)
+                    projectNo = (string)projectNoValue.Value;
+
+                string commitmentNumber = string.Empty;
+                JValue commitmentNumberValue = requestParams["commitmentNumber"] as JValue;
+                if (commitmentNumberValue != null)
+                    commitmentNumber = (string)commitmentNumberValue.Value;
+
+                string invoiceGroupDescription = string.Empty;
+                JValue invoiceGroupDescriptionValue = requestParams["invoiceGroupDescription"] as JValue;
+                if (invoiceGroupDescriptionValue != null)
+                    invoiceGroupDescription = (string)invoiceGroupDescriptionValue.Value;
+
+                string customerRequestNo = string.Empty;
+                JValue customerRequestNoValue = requestParams["customerRequestNo"] as JValue;
+                if (customerRequestNoValue != null)
+                    customerRequestNo = (string)customerRequestNoValue.Value;
+
+                DateTime serviceDate;
+                JValue serviceDateValue = requestParams["serviceDate"] as JValue;
+                if (serviceDateValue != null)
+                    DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
+
+                decimal authorizationTotal;
+                JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
+                if (authorizationTotalValue != null)
                 {
+                    string str = (string)authorizationTotalValue.Value;
+                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                }
 
-                    //data.RemoveAll(x => !x.Billable.HasValue && !x.Billable.Value  && x.AutorizatedInvoice == true);
+                List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
+                JArray projMovementsValue = requestParams["projMovements"] as JArray;
+                if (projMovementsValue != null)
+                    projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                Projetos project = null;
+                Contratos contract = null;
+                var customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
 
 
-                    //foreach (var updatedata in data)
-                    //{
-                    //    MovimentosDeProjeto lines = DBProjectMovements.GetByLineNo(updatedata.LineNo).FirstOrDefault();
-                    //    lines.FaturaçãoAutorizada = true;
-                    //    lines.DataAutorizaçãoFaturação = DateTime.Now;
-                    //    DBProjectMovements.Update(lines);
-                    //}
+                if (!string.IsNullOrEmpty(projectNo))
+                {
+                    project = DBProjects.GetById(projectNo);
+                    if (project != null)
+                        contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                }
 
-                    return Json(data);
+                if (project != null && contract != null)
+                {
+                    //Se o “Pedido” não estiver preenchido no projeto, preenche o “Pedido” e “Data do Pedido” com a informação que estiver indicada no Contrato/ Requisições do Contrato;
+                    //Se o campo “Observações” não estiver preenchido, vai buscar esta informação ao Contrato/ Texto Faturas Contrato;
+                    //Preenche as Dimensões (Região, Área e CResp) com as dimensões do projeto, exceto no caso do Cliente não ser nacional, que preenche a Região com a Região do Cliente.
+                    //No caso do projeto estar relacionado com um contrato, o “Código Termos de Pagamento” é o que estiver indicado no Contrato.Se não, preenche com o que estiver configurado na ficha do Cliente.
+                    //O campo “Método de Pagamento” é o que estiver configurado na ficha do Cliente.
+                    //Utilizador
+                    //Data de Autorização
+
+                    SuchDBContext ctx = new SuchDBContext();
+                    int? lastUsed = ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == projectNo).Select(x => x.GrupoFatura).OrderByDescending(x => x).FirstOrDefault();
+                    int nextInvoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
+                    ProjectosAutorizados proj = new ProjectosAutorizados();
+                    proj.No = project.NºProjeto;
+                    proj.GrupoFactura = nextInvoiceGroup;
+                    proj.NoCompromisso = commitmentNumber;
+                    proj.BillToCustomerNo = project.NºCliente;
+                    proj.ContractNo = contract.NºDeContrato;
+                    proj.DataAutorização = DateTime.Now;
+                    proj.PaymentTermsCode = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
+                    proj.GlobalDimension1Code = !customer.National ? customer.RegionCode : project.CódigoRegião;
+                    //proj.DataPedido Não definido
+
+
+
+                    //projMovements.ForEach(x => 
+                    //    {
+                    //        x.AutorizatedInvoice = true;
+                    //        x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-mm-dd");
+                    //        x.AuthorizedBy = User.Identity.Name;
+                    //        //x.RequestNo = customerRequestNo;
+                    //        //x.RegionCode = project.CódigoRegião;
+                    //        //x.FunctionalAreaCode = project.CódigoÁreaFuncional;
+                    //        //x.ResponsabilityCenterCode = project.CódigoCentroResponsabilidade;
+                            
+                    //    });
+
+                    var updatedMovements = DBProjectMovements.Update(projMovements.ParseToDB());
+                    if (updatedMovements != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Movimentos autorizados com sucesso";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao tentar autorizar os movimentos.";
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao obter os dados a autorizar.";
             }
-            return null;
+            return Json(result);// null;
         }
 
         [HttpPost]
@@ -1830,7 +1918,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        private ErrorHandler ValidateMovements([FromBody] JObject requestParams)
+        private ErrorHandler ValidateMovements(JObject requestParams)
         {
             ErrorHandler result = new ErrorHandler();
             try
@@ -1869,9 +1957,9 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
-                JValue projMovementsValue = requestParams["projMovements"] as JValue;
+                JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
-                    projMovements = (List<ProjectMovementViewModel>)projMovementsValue.Value;
+                    projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
 
                 Projetos project = null;
                 Contratos contract = null;
@@ -1882,7 +1970,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (project != null)
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                 }
-
+                
                 if (project != null && contract != null)
                 {
                     //Apenas movimentos de projeto faturáveis.
@@ -1926,13 +2014,25 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                             result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
-                    }                        
+                    }
 
-                    //No caso da área dos Resíduos, obrigar o preenchimento do campo “Data Consumo” em todas as linhas.
-                    var wasteAreaMovements = projMovements.Where(x => x.FunctionalAreaCode == "23").ToList();
-                    var invalidWasteAreaMovementIds = wasteAreaMovements.Where(x => string.IsNullOrEmpty(x.ConsumptionDate)).Select(x => x.LineNo);
-                    if (invalidWasteAreaMovementIds.Count() > 0)
-                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O preenchimento da Data de Consumo é obrigatório nos movimentos da áreas de residuos (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+                    Configuração conf = DBConfigurations.GetById(1);
+                    if (conf != null)
+                    {
+                        string wasteAreaId = conf.CodAreaResiduos;
+                        if (!string.IsNullOrEmpty(wasteAreaId))
+                        {
+                            //No caso da área dos Resíduos, obrigar o preenchimento do campo “Data Consumo” em todas as linhas.
+                            var wasteAreaMovements = projMovements.Where(x => x.FunctionalAreaCode == wasteAreaId).ToList();
+                            var invalidWasteAreaMovementIds = wasteAreaMovements.Where(x => string.IsNullOrEmpty(x.ConsumptionDate)).Select(x => x.LineNo);
+                            if (invalidWasteAreaMovementIds.Count() > 0)
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O preenchimento da Data de Consumo é obrigatório nos movimentos da áreas de residuos (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+                        }
+                        else
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "A área de residuos não está configurada. Contacte o administrador."));
+                    }
+                    else
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar a área de residuos."));
                 }
                 else
                 {
@@ -1945,7 +2045,6 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessages.Add(new TraceInformation(TraceType.Exception, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
             }
-
             bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error || x.Type == TraceType.Exception);
             if (hasErrors || result.eReasonCode > 1)
             {

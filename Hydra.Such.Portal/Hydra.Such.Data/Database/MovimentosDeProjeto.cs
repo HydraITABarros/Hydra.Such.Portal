@@ -64,6 +64,7 @@ namespace Hydra.Such.Data.Database
         public string Operacao { get; set; }
         public int? GrupoFatura { get; set; }
         public string GrupoFaturaDescricao { get; set; }
+        public string AutorizadoPor { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

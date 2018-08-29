@@ -63,6 +63,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool? AutorizatedInvoice { get; set; }
         public bool? AutorizatedInvoice2 { get; set; }
         public string AutorizatedInvoiceDate { get; set; }
+        public string AuthorizedBy { get; set; }
         public int? ResourceType { get; set; }
         public string TimesheetNo { get; set; }
         public string InternalRequest { get; set; }

@@ -103,6 +103,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ProcedimentosCcp> ProcedimentosCcp { get; set; }
         public virtual DbSet<ProcedimentosDeConfeção> ProcedimentosDeConfeção { get; set; }
         public virtual DbSet<ProcessosDisciplinaresInquérito> ProcessosDisciplinaresInquérito { get; set; }
+        public virtual DbSet<ProjectosAutorizados> ProjectosAutorizados { get; set; }
         public virtual DbSet<Projetos> Projetos { get; set; }
         public virtual DbSet<ProjetosFaturação> ProjetosFaturação { get; set; }
         public virtual DbSet<RececaoFaturacao> RececaoFaturacao { get; set; }
@@ -122,6 +123,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ServiçosCliente> ServiçosCliente { get; set; }
         public virtual DbSet<TabelaConfRecursosFh> TabelaConfRecursosFh { get; set; }
         public virtual DbSet<Tarifários> Tarifários { get; set; }
+        public virtual DbSet<TaxaResiduos> TaxaResiduos { get; set; }
         public virtual DbSet<Telefones> Telefones { get; set; }
         public virtual DbSet<Telemóveis> Telemóveis { get; set; }
         public virtual DbSet<TelemoveisCartoes> TelemoveisCartoes { get; set; }
@@ -1002,6 +1004,8 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<Configuração>(entity =>
             {
+                entity.Property(e => e.CodAreaResiduos).HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -5321,6 +5325,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.AcertoDePreços).HasColumnName("Acerto de Preços");
 
+                entity.Property(e => e.AutorizadoPor).HasMaxLength(50);
+
                 entity.Property(e => e.CodCliente).HasMaxLength(20);
 
                 entity.Property(e => e.CodigoLer).HasMaxLength(20);
@@ -7148,6 +7154,164 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Processos Disciplinares/Inquérito_Instrutores");
             });
 
+            modelBuilder.Entity<ProjectosAutorizados>(entity =>
+            {
+                entity.HasKey(e => new { e.No, e.GrupoFactura });
+
+                entity.Property(e => e.No)
+                    .HasColumnName("No_")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GrupoFactura).HasColumnName("Grupo Factura");
+
+                entity.Property(e => e.AreaFilter)
+                    .HasColumnName("Area Filter")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BillToCustomerNo)
+                    .HasColumnName("Bill-to Customer No_")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ContractNo)
+                    .HasColumnName("Contract No_")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataAutorização)
+                    .HasColumnName("Data Autorização")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataPedido)
+                    .HasColumnName("Data Pedido")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataPrestacaoServico)
+                    .HasColumnName("Data Prestacao Servico")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataServPrestado)
+                    .HasColumnName("Data Serv_ Prestado")
+                    .HasMaxLength(24)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Description2)
+                    .HasColumnName("Description 2")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DescriçãoGrupo)
+                    .HasColumnName("Descrição Grupo")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Diversos)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GlobalDimension1Code)
+                    .HasColumnName("Global Dimension 1 Code")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GlobalDimension2Code)
+                    .HasColumnName("Global Dimension 2 Code")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.JobPostingGroup)
+                    .HasColumnName("Job Posting Group")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Motorista)
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NoCompromisso)
+                    .HasColumnName("No_ Compromisso")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NoSeries)
+                    .HasColumnName("No_ Series")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Observações)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Observações1)
+                    .HasColumnName("Observações 1")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OnlyForMaintInvoicing).HasColumnName("Only for Maint_ Invoicing");
+
+                entity.Property(e => e.PaymentMethodCode)
+                    .HasColumnName("Payment Method Code")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaymentTermsCode)
+                    .HasColumnName("Payment Terms Code")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PedidoDoCliente)
+                    .HasColumnName("Pedido do Cliente")
+                    .HasMaxLength(60)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SearchDescription)
+                    .HasColumnName("Search Description")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShipToCode)
+                    .HasColumnName("Ship-to Code")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShortcutDimension3Code)
+                    .HasColumnName("Shortcut Dimension 3 Code")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ShortcutDimension4Code)
+                    .HasColumnName("Shortcut Dimension 4 Code")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SituaçõesPendentes)
+                    .HasColumnName("Situações Pendentes")
+                    .HasMaxLength(80)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoGrupoContabOmProjecto)
+                    .HasColumnName("Tipo Grupo Contab _OM Projecto")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoGrupoContabProjecto)
+                    .HasColumnName("Tipo Grupo Contab _ Projecto")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoProjecto).HasColumnName("Tipo Projecto");
+
+                entity.Property(e => e.Utilizador)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Projetos>(entity =>
             {
                 entity.HasKey(e => e.NºProjeto);
@@ -8339,6 +8503,39 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Descrição).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TaxaResiduos>(entity =>
+            {
+                entity.HasKey(e => e.Recurso);
+
+                entity.Property(e => e.Recurso)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Data).HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.FamiliaRecurso)
+                    .HasColumnName("Familia Recurso")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

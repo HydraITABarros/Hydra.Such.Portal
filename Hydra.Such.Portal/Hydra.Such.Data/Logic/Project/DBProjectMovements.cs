@@ -175,6 +175,23 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static bool Authorize(List<MovimentosDeProjeto> projectMovements)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public static bool Delete(MovimentosDeProjeto ObjectToDelete)
         {
             try
@@ -424,6 +441,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                     AutorizatedInvoice = item.FaturaçãoAutorizada,
                     AutorizatedInvoice2 = item.FaturaçãoAutorizada2,
                     AutorizatedInvoiceDate = item.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
+                    AuthorizedBy = item.AutorizadoPor,
                     TimesheetNo = item.NºFolhaHoras,
                     InternalRequest = item.RequisiçãoInterna,
                     EmployeeNo = item.NºFuncionário,
@@ -511,6 +529,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                     FaturaçãoAutorizada = item.AutorizatedInvoice,
                     FaturaçãoAutorizada2 = item.AutorizatedInvoice2,
                     DataAutorizaçãoFaturação = string.IsNullOrEmpty(item.AutorizatedInvoiceDate) ? (DateTime?)null : DateTime.Parse(item.AutorizatedInvoiceDate),
+                    AutorizadoPor = item.AuthorizedBy,
                     NºFolhaHoras = item.TimesheetNo,
                     RequisiçãoInterna = item.InternalRequest,
                     NºFuncionário = item.EmployeeNo,
