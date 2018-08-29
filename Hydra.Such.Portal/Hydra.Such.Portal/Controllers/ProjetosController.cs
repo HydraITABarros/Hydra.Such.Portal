@@ -2200,37 +2200,56 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
+        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data)
         {
-            foreach (SPInvoiceListViewModel line in data)
-            {
-                //List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
-                //if (Cliente != null)
-                //{
-                //    if (Cliente[0].)
-                //    {
-                //        if(Cliente[0].)
-                //    }
-                //        999999999
-                //    if (line.CommitmentNumber == "")
-                //    {
+            string execDetails = string.Empty;
 
-                //        if (Cliente[0].UnderCompromiseLaw == true)
-                //        {
-                //            execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
-                //            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
-                //        }
-                //        else
-                //        {
-                //            execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
-                //            result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
-                //        }
-                //    }
-                //}
+            ErrorHandler result = new ErrorHandler();
+            SPInvoiceListViewModel line = data[0];
+            List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
+            if (Cliente != null)
+            {
+                //Nº do Cliente > “999999”.
+                if (Convert.ToInt32(Cliente[0].No_) > 999999)
+                {
+                    execDetails += "ERRO! Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+                //Garantir que o campo “Nº do Contribuinte”
+                else if (Cliente[0].InternalClient==true)// Se Débito Interno
+                {
+                    if (Cliente[0].VATRegistrationNo_=="")
+                    {
+                        Cliente[0].VATRegistrationNo_="999999999";
+                            
+                    }
+                }
+                else if(Cliente[0].VATRegistrationNo_ == "")
+                {
+                    execDetails += "Este cliente não tem Nº Contribuinte preenchido!";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+
+                //Abrigo Lei Compromisso
+                if (line.CommitmentNumber == "")
+                {
+
+                    if (Cliente[0].UnderCompromiseLaw == true)
+                    {
+                        execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+                    else
+                    {
+                        execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                        result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                    }
+                }
             }
-            return null;
+             
+            return Json(result);
         }
- 
+
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {
@@ -2262,19 +2281,32 @@ namespace Hydra.Such.Portal.Controllers
                 Project.Wait();
                 if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
                 {
-                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                    proj.ProjectNo = data[0].ProjectNo;
-                    proj.ClientNo = data[0].InvoiceToClientNo;
-                    proj.RegionCode = data[0].RegionCode;
-                    proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
-                    proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
-                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                    createProject.Wait();
+                    try
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = data[0].ProjectNo;
+                        proj.ClientNo = data[0].InvoiceToClientNo;
+                        proj.RegionCode = data[0].RegionCode;
+                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
+
+                        execDetails += " Erro ao criar Projeto: ";
+                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        return Json(result);
+                    }
                 }
 
                 if (groupedbyclient != null)
                 {
-
+                    
                     foreach (var header in groupedbyclient)
                     {
                         try

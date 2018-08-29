@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Country_RegionCode { get; set; }
         public bool UnderCompromiseLaw { get; set; }
         public bool National { get; set; }
+        public bool InternalClient { get; set; }
         public string PaymentTermsCode { get; set; }
         public string PaymentMethodCode { get; set; }
         public string RegionCode { get; set; }
