@@ -2248,7 +2248,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CancelLines([FromBody] List<SPInvoiceListViewModel> data)
         {
-            List<MovimentosDeProjeto> result = DBProjectMovements.GetProjectMovementsFor(data[0].ProjectNo,true).ToList();
+            List<MovimentosDeProjeto> result = DBProjectMovements.GetProjectInvoiced(data[0].InvoiceGroup??0,data[0].ProjectNo).ToList();
             foreach(MovimentosDeProjeto line in result)
             {
                 line.FaturaçãoAutorizada = false;

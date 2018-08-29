@@ -230,6 +230,15 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroup">Grupo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroup" />
+                </template>
+                <template>
+                    {{item.invoiceGroup}}
+                </template>
+            </vaadin-grid-column>
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
                 <template class="header">
@@ -588,12 +597,11 @@
                     }
 
                 },
-                _CancelLinesResponse: function () {
-                    
-                },
+               
                 _deleteLine: function (selectedItem, selectedItems) {
+                    debugger;;
                     if (this.selectedItems.length != 0) {
-                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.page_cancelLines_ajax.generateRequest();
                     } else {
                         this.openToastError("Selecionar pelo menos um projeto!");
@@ -681,6 +689,10 @@
                         this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
                         this.$.page_autorizelines_ajax.generateRequest();
                     }
+                },
+                _CancelLinesResponse: function () {
+                    this.openToast("Linhas anuladas com sucesso");
+                    this.$.page_databound_ajax.generateRequest();
                 },
                 _CreateLinesResponse: function (e) {
                     if (this.CreateInvoiceResponse.eReasonCode == 1) {

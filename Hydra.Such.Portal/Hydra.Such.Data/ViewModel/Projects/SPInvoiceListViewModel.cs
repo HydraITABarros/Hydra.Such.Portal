@@ -63,8 +63,11 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public bool? Registered { get; set; }
         public string TypeDescription { get; set; }
         public string DocumentNo { get; set; }
+        public int? InvoiceGroup { get; set; }
+        public string InvoiceGroupDescription { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
+
     }
 }

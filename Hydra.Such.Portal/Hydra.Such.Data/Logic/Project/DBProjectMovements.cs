@@ -118,6 +118,20 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static List<MovimentosDeProjeto> GetProjectInvoiced(int grupo, string nProjecto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.Where(x => x.Faturável == true && x.FaturaçãoAutorizada == true && x.GrupoFatura== grupo && x.NºProjeto== nProjecto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static MovimentosDeProjeto Create(MovimentosDeProjeto ObjectToCreate)
         {
@@ -369,7 +383,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                         item.Registered = temp.Registado.Equals(DBNull.Value) ? null : (bool?)temp.Registado;
                         item.Billed = temp.Faturada.Equals(DBNull.Value) ? null : (bool?)temp.Faturada;
                         item.MealType= temp.TipoRefeicao.Equals(DBNull.Value) ? null : (int?)temp.TipoRefeicao;
-
+                        item.InvoiceGroup = temp.GrupoFatura.Equals(DBNull.Value) ? null : (int?)temp.GrupoFatura;
+                        item.InvoiceGroupDescription= temp.GrupoFaturaDescricao.Equals(DBNull.Value) ? "" : (string)temp.GrupoFaturaDescricao;
                         result.Add(item);
                     }
                 }
