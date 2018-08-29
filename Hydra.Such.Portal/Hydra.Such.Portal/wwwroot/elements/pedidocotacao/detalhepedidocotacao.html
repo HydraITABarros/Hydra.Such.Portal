@@ -122,6 +122,10 @@
         <iron-ajax url="/ConsultaMercado/CopiarConsultaMercado" last-response="{{copiarData}}" method="post" handle-as="json" id="ajax_copiar_consultaMercado" on-response="_copiarConsultaMercadoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoCreated}}" method="post" handle-as="json" id="page_createLinha_ajax" on-response="_createLinhaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaConsultaMercado" last-response="{{LinhaDeleted}}" method="post" handle-as="json" id="page_deleteLinha_ajax" on-response="_deleteLinhaResponse" content-type="application/json"></iron-ajax>
+                                                                                                                                                          
+        <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -363,7 +367,7 @@
                                 <paper-collapse-item class="panel-heading" header="Entidades" closed>
                                     <div class="panel-body">
                                         <div class="row break_clear">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-2">
                                                 <such-selectbox id="seleccaoentidade_codActividade" value="{{data.codActividade}}" label="Cód. Actividade" on-blur="_filtraFornecedores"
                                                                 items="[[CBActividades]]"
                                                                 text-path="codActividade"
@@ -373,7 +377,7 @@
                                                 </such-selectbox>
                                             </div>
                                             <div class="col-sm-3">
-                                                <such-selectbox id="codFornecedor" label="Nº Fornecedor"
+                                                <such-selectbox id="_Suppliers" value="{{_Suppliers}}" label="Nº Fornecedor"
                                                                 items="[[Suppliers]]"
                                                                 text-path="name"
                                                                 value-path="no_"
@@ -381,25 +385,20 @@
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>
                                             </div>
-                                            <div class="col-sm-3">
-
+                                            <div class="col-sm-2">
+                                                <vaadin-text-field type="text" id="_CodTermosPagamento" label="Cód. Termos Pagamento" maxlength="10"></vaadin-text-field>
                                             </div>
-                                            <div class="col-sm-3">
-
+                                            <div class="col-sm-2">
+                                                <vaadin-text-field type="text" id="_CodFormasPagamento" label="Cód. Formas Pagamento" maxlength="10"></vaadin-text-field>
                                             </div>
-                                        </div>
-                                        <div class="row break_clear">
-                                            <div class="col-sm-3">
-
+                                            <div class="col-sm-2" style="padding-top:16px">
+                                                <br />
+                                                <vaadin-checkbox id="_Preferencial" checked="{{chkPreferencial}}">Preferencial</vaadin-checkbox>
                                             </div>
-                                            <div class="col-sm-3">
-
-                                            </div>
-                                            <div class="col-sm-3">
-
-                                            </div>
-                                            <div class="col-sm-3">
-
+                                            <div class="col-sm-1" style="padding-top:32px">
+                                                <center>
+                                                    <paper-button id="btn_createLinhaSelecaoEntidade" class="btnSave tableBtn" raised on-tap="_createLinhaSelecaoEntidade" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </div>
                                         </div>
                                     </div>
@@ -460,7 +459,7 @@
                                                 <vaadin-grid-filter path="codTermosPagamento"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}"></vaadin-text-field>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -469,15 +468,7 @@
                                                 <vaadin-grid-filter path="codFormaPagamento"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="selecionado" style="text-align:center;">Selecionado</vaadin-grid-sorter>
-                                            </template>
-                                            <template>
-                                                <vaadin-checkbox id="tabSelecaoEntidadesselecionado" checked="{{item.selecionado}}"></vaadin-checkbox>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -485,7 +476,16 @@
                                                 <vaadin-grid-sorter path="preferencial" style="text-align:center;">Preferencial</vaadin-grid-sorter>
                                             </template>
                                             <template>
-                                                <vaadin-checkbox id="tabSelecaoEntidadespreferencial" checked="{{item.preferencial}}"></vaadin-checkbox>
+                                                <vaadin-checkbox id="tabSelecaoEntidadespreferencial" checked="{{item.preferencial}}" disabled="true"></vaadin-checkbox>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteLinhaSelecaoEntidade" class="btnRemove tableBtn" raised on-tap="_deleteLinhaSelecaoEntidade" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -826,12 +826,20 @@
                         type: Boolean,
                         value: false
                     },
+                    chkPreferencial: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                     _functionsMenuItems: {
                         type: Array,
                         value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
+                    },
+                    _Suppliers: {
+                        observer: '_setSuppliersData'
                     },
                 },
                 _functionsMenuItemSelected: function (e) {
@@ -872,7 +880,7 @@
 
                 _setFieldsEditability(data) {
                     var _self = this;
-
+                    
                     if (data.fase > 0) {
                         _self.$.descricao.disabled = true;
                         _self.$.codProjecto.disabled = true;
@@ -1049,6 +1057,14 @@
                         this.$._linhacustoUnitarioObjectivo.value = item.unitCost;
                     }
                 },
+                _setSuppliersData: function (e) {
+                    var item = this.Suppliers.find(x => x.no_ == e);
+                    if (item != null) {
+                        this.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
+                        this.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
+                        this.chkPreferencial = item.preferencial == 0 ? false : true;
+                    }
+                },
                 _formulaCalculoAutomatica: function () {
                     if (this.$._linhaquantidade.value != "") {
                         if (this.$._linhacustoUnitarioPrevisto.value != "") {
@@ -1099,7 +1115,7 @@
                     this.$.page_createLinha_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
                         codProduto: this.$._CBItems.value,
-                        cescricao: this.$._DescricaoProduto.value,
+                        descricao: this.$._DescricaoProduto.value,
                         numProjecto: this.$.linhacodProjecto.value,
                         codRegiao: this.$.linhacodigoRegiao.value,
                         codAreaFuncional: this.$.linhacodigoAreaFuncional.value,
@@ -1175,10 +1191,62 @@
                     }
                 },
 
+                _createLinhaSelecaoEntidade: function () {
+                    this.$.page_createLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
+                        numConsultaMercado: this.$.numConsultaMercado.value,
+                        codFornecedor: this.$._Suppliers.value,
+                        nomeFornecedor: this.$._Suppliers.valueText,
+                        codActividade: this.$.seleccaoentidade_codActividade.value,
+                        codTermosPagamento: this.$._CodTermosPagamento.value,
+                        codFormaPagamento: this.$._CodFormasPagamento.value,
+                        preferencial: this.$._Preferencial.__data.checked
+                    });
+
+                    this.$.page_createLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
+                },
+                _createLinhaSeleccaoEntidadeResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidadeCreated) {
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Linha com sucesso.');
+
+                        this.$.tabSelecaoEntidades.clearCache();
+
+                        //this.$._Suppliers.value = "";
+                        //this.$._CodTermosPagamento.value = "";
+                        //this.$._CodFormasPagamento.value = "";
+                        //this.$._Preferencial.__data.checked = false;
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
+                    }
+                },
+                _deleteLinhaSelecaoEntidade: function (e) {
+                    var index = this.data.seleccaoEntidades.indexOf(e.model.item);
+                    this.data.seleccaoEntidades.splice(index, 1);
+                    this.$.page_deleteLinhaSeleccaoEntidade_ajax.body = JSON.stringify({ idSeleccaoEntidades: e.model.item.idSeleccaoEntidades });
+                    this.$.page_deleteLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
+                },
+                _deleteLinhaSeleccaoEntidadeResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidadeDeleted) {
+                        this._showMessage('Linha eliminada com sucesso');
+                        this.$.tabSelecaoEntidades.clearCache();
+                    } else {
+                        this._showMessage('Não foi possível eliminar a Linha!');
+                        setTimeout(
+                            function () {
+                                window.location.replace("/");
+                            }, 2500);
+                    }
+                },
+
                 _responseProcessor: function (data) {
                     var self = this;
                     
                     self._setFieldsEditability(self.data);
+                    self._filtraFornecedores();
                 },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -1205,15 +1273,9 @@
                 _filtraFornecedores: function () {
                     var _self = this;
 
-                    //var ajax_request = this.$.ajax_supplier_options;
-                    //ajax_request.body = JSON.stringify({ "CodActividade": _self.$.seleccaoentidade_codActividade.value });
-                    //ajax_request.generateRequest();
-
                     this.$.ajax_supplier_options.body = JSON.stringify(_self.$.seleccaoentidade_codActividade.value);
                     this.$.ajax_supplier_options.params = { "id": _self.$.seleccaoentidade_codActividade.value };
                     this.$.ajax_supplier_options.generateRequest();
-
-
                 },
 
 
