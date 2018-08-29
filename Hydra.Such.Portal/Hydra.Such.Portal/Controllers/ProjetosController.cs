@@ -2205,7 +2205,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Nº do Cliente > “999999”.
                 if (Convert.ToInt32(Cliente[0].No_) > 999999)
                 {
-                    execDetails += "ERRO! Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    execDetails += "Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
                     result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
                 }
                 //Garantir que o campo “Nº do Contribuinte”
@@ -2268,9 +2268,11 @@ namespace Hydra.Such.Portal.Controllers
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
 
                 }).ToList();
-
+                result.eReasonCode = 2;
+                result.eMessage = "Selecione registos para faturar";
+                return Json(result);
                 //Create Project if existe
-                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
+                Task <WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
                 Project.Wait();
                 if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
                 {
