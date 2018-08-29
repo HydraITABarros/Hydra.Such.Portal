@@ -1851,15 +1851,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                     customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
-
-                    //Se o “Pedido” não estiver preenchido no projeto, preenche o “Pedido” e “Data do Pedido” com a informação que estiver indicada no Contrato/ Requisições do Contrato;
-                    //Se o campo “Observações” não estiver preenchido, vai buscar esta informação ao Contrato/ Texto Faturas Contrato;
-                    //Preenche as Dimensões (Região, Área e CResp) com as dimensões do projeto, exceto no caso do Cliente não ser nacional, que preenche a Região com a Região do Cliente.
-                    //No caso do projeto estar relacionado com um contrato, o “Código Termos de Pagamento” é o que estiver indicado no Contrato.Se não, preenche com o que estiver configurado na ficha do Cliente.
-                    //O campo “Método de Pagamento” é o que estiver configurado na ficha do Cliente.
-                    //Utilizador
-                    //Data de Autorização
-
+                    
                     SuchDBContext ctx = new SuchDBContext();
                     int? lastUsed = ctx.ProjectosAutorizados
                         .Where(x => x.CodProjeto == projectNo)
@@ -1873,15 +1865,16 @@ namespace Hydra.Such.Portal.Controllers
                     authorizedProject.NumCompromisso = commitmentNumber;
                     authorizedProject.CodCliente = project.NºCliente;
                     authorizedProject.CodContrato = contract?.NºDeContrato;
-                    authorizedProject.DataAutorizacao = DateTime.Now;
                     authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
                     authorizedProject.CodMetodoPagamento = customer?.PaymentTermsCode;
                     authorizedProject.CodRegiao = !customer.National ? customer.RegionCode : project.CódigoRegião;
                     authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
                     authorizedProject.CodCentroResponsabilidade = authorizedProject.CodCentroResponsabilidade;
                     authorizedProject.PedidoCliente = customerRequestNo;
+                    authorizedProject.DataAutorizacao = DateTime.Now;
+                    authorizedProject.Utilizador = User.Identity.Name;
                     //proj.DataPedido Não definido
-                    if(serviceDate > DateTime.MinValue)
+                    if (serviceDate > DateTime.MinValue)
                         authorizedProject.DataPrestacaoServico = serviceDate;
 
                     projMovements.ForEach(x =>
@@ -1918,7 +1911,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Ocorreu um erro ao autorizar.";
             }
-            return Json(result);// null;
+            return Json(result);
         }
 
         [HttpPost]
