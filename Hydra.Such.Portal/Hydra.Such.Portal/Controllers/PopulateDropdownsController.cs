@@ -947,7 +947,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCreateResourcesCodeWasteRate()
         {
             List<DDMessageRelated> cboResult = new List<DDMessageRelated>();
-            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesWR(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
                 value = x.Name,
@@ -975,7 +975,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetResourcesCodeWasteRate()
         {
-            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesWR(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
                 value = x.Name,
