@@ -152,8 +152,14 @@
             }
         </style>
 
-
-
+        <iron-ajax url="/Projetos/ValidationCliente"
+                   last-response="{{validateC}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validateC_ajax"
+                   on-response="_createInvoice"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/GetMovimentosFaturacao"
                    last-response="{{result}}"
                    method="post"
@@ -418,7 +424,7 @@
 
         <paper-dialog id="dlgInvoice" modal style="height:200px; width:300px">
             <div>
-                <vaadin-combo-box  id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Tipo de Fatura" required error-message="Este campo é obrigatório">
+                <vaadin-combo-box id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Tipo de Fatura" required error-message="Este campo é obrigatório">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -429,7 +435,7 @@
                 </vaadin-combo-box>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_createInvoice">Guardar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Guardar</paper-button>
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -598,16 +604,55 @@
                     }
                     return "Verifique os dados inseridos.";
                 },
-                _createInvoice: function () {
+                _validateInvoice: function () {
                     var erro=this._validateData(this.selectedItem);
                     if (erro == "") {
-                        this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
-                        this.$.page_autorizelines_ajax.generateRequest();
+                        this.$.page_validateC_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_validateC_ajax.generateRequest();
                         this.$.dlgInvoice.close();
                     } else {
                         this.$.dlgInvoice.close();
                         this.openToastError(erro);
+                    }
+                },
+                _createInvoice: function () {
+                    debugger;;
+                    var errors = this.validateC.eMessages.find(x => x.type != 0);
+                    var option = this.$._CLOptionInvoice.value;
+                    if (errors == undefined) {
+                        var validation = this.validateC.eMessages.find(x => x.type == 3);
+                        if (validation != undefined) {
+                            var ajax_request = this.$.page_autorizelines_ajax;
+
+                            bootbox.confirm({
+                                message: this.ExitSalesHeader.eMessage,
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        ajax_request.body = JSON.stringify(this.selectedItem);
+                                        ajax_request.params = { "OptionInvoice": option };
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItem);
+                            this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                            this.$.page_autorizelines_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this.openToastError(errors.eMessage);
                     }
                 },
                 _CreateLinesResponse: function (e) {

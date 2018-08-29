@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.Logic
                             UnderCompromiseLaw = ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
                             National = ((int)temp.NationalCustomer) == 0 ? false : true,
                             PaymentTermsCode = (string)temp.PaymentTermsCode,
+                            InternalClient = ((int)temp.InternalClient) == 0 ? false : true,
                             PaymentMethodCode = (string)temp.PaymentMethodCode,
                             RegionCode = (string)temp.RegionCode,
                         });

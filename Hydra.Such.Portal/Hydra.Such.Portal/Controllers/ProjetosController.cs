@@ -2186,35 +2186,54 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
+        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data)
         {
-            foreach (SPInvoiceListViewModel line in data)
+            string execDetails = string.Empty;
+
+            ErrorHandler result = new ErrorHandler();
+            SPInvoiceListViewModel line = data[0];
+            List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
+            if (Cliente != null)
             {
-                //List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
-                //if (Cliente != null)
-                //{
-                //    if (Cliente[0].)
-                //    {
-                //        if(Cliente[0].)
-                //    }
-                //        999999999
-                //    if (line.CommitmentNumber == "")
-                //    {
-                   
-                //        if (Cliente[0].UnderCompromiseLaw == true)
-                //        {
-                //            execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
-                //            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
-                //        }
-                //        else
-                //        {
-                //            execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
-                //            result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
-                //        }
-                //    }
-                //}
+                //Nº do Cliente > “999999”.
+                if (Convert.ToInt32(Cliente[0].No_) > 999999)
+                {
+                    execDetails += "ERRO! Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+                //Garantir que o campo “Nº do Contribuinte”
+                else if (Cliente[0].InternalClient==true)// Se Débito Interno
+                {
+                    if (Cliente[0].VATRegistrationNo_=="")
+                    {
+                        Cliente[0].VATRegistrationNo_="999999999";
+                            
+                    }
+                }
+                else if(Cliente[0].VATRegistrationNo_ == "")
+                {
+                    execDetails += "Este cliente não tem Nº Contribuinte preenchido!";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+
+                //Abrigo Lei Compromisso
+                if (line.CommitmentNumber == "")
+                {
+
+                    if (Cliente[0].UnderCompromiseLaw == true)
+                    {
+                        execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+                    else
+                    {
+                        execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                        result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                    }
+                }
             }
-            return null;
+             
+            return Json(result);
         }
 
         [HttpPost]
