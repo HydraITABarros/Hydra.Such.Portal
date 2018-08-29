@@ -2087,6 +2087,38 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
+        {
+            foreach (SPInvoiceListViewModel line in data)
+            {
+                //List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
+                //if (Cliente != null)
+                //{
+                //    if (Cliente[0].)
+                //    {
+                //        if(Cliente[0].)
+                //    }
+                //        999999999
+                //    if (line.CommitmentNumber == "")
+                //    {
+                   
+                //        if (Cliente[0].UnderCompromiseLaw == true)
+                //        {
+                //            execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                //            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                //        }
+                //        else
+                //        {
+                //            execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                //            result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                //        }
+                //    }
+                //}
+            }
+            return null;
+        }
+
+        [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
         {
             string execDetails = string.Empty;
@@ -2129,20 +2161,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (groupedbyclient != null)
                 {
-                    //Verica Cliente estar ao abrigo da Lei dos Compromissos
-                    SPInvoiceListViewModel exitNumb = groupedbyclient.Find(x => x.CommitmentNumber == "");
-                    if (exitNumb != null)
-                    {
-                        List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, exitNumb.InvoiceToClientNo);
-                        if (Cliente != null)
-                        {
-                            if (Cliente[0].UnderCompromiseLaw == true)
-                            {
-                                execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
-                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
-                            }
-                        }
-                    }
+                    
                     foreach (var header in groupedbyclient)
                     {
                         try
