@@ -118,7 +118,6 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-
         public static MovimentosDeProjeto Create(MovimentosDeProjeto ObjectToCreate)
         {
             try
@@ -175,23 +174,6 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-        public static bool Authorize(List<MovimentosDeProjeto> projectMovements)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
-                    ctx.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-            return true;
-        }
-
         public static bool Delete(MovimentosDeProjeto ObjectToDelete)
         {
             try
@@ -241,7 +223,6 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-
         public static List<MovimentosDeProjeto> GetByLineNo(int LineNo, string user = "")
         {
             try
@@ -261,7 +242,6 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-
         public static List<MovimentosDeProjeto> GetRegisteredDiary(string ProjectNo)
         {
             try
@@ -276,6 +256,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 return null;
             }
         }
+
         public static List<MovimentosDeProjeto> GetRegisteredDiaryDp(string ProjectNo, string user, bool AllProjs)
         {
             try
@@ -318,7 +299,6 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
             return totalConsumption.HasValue ? totalConsumption.Value : 0;
         }
-
 
         public static List<SPInvoiceListViewModel> GetAllAutorized()
         {

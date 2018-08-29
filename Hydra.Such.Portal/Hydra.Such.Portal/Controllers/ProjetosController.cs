@@ -2283,9 +2283,7 @@ namespace Hydra.Such.Portal.Controllers
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
 
                 }).ToList();
-                result.eReasonCode = 2;
-                result.eMessage = "Selecione registos para faturar";
-                return Json(result);
+
                 //Create Project if existe
                 Task <WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
                 Project.Wait();
