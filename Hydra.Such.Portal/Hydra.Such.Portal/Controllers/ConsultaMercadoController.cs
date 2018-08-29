@@ -481,6 +481,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GerarRegistoPropostas([FromBody] ConsultaMercadoView data)
+        {
+
+            return Json(data);
+        }
+
 
         #region Linhas Consulta Mercado
 
