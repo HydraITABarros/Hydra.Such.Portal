@@ -484,7 +484,50 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GerarRegistoPropostas([FromBody] ConsultaMercadoView data)
         {
+            /*
+             Verificar se para a consulta de mercado e para o fornecedor já existe Alternativa > 0
+             Inserir registo na tabela "Condicoes_Propostas_Fornecedores"
+             Para cada registo acima, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+             */
 
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                string _Alternativa = string.Empty;
+                foreach (SeleccaoEntidades seleccaoEntidades in consultaMercado.SeleccaoEntidades)
+                {
+                    _Alternativa = DBConsultaMercado.Get_MAX_Alternativa_CondicoesPropostasFornecedores(data.NumConsultaMercado, seleccaoEntidades.CodFornecedor);
+
+                    if (_Alternativa == null)
+                    {
+                        _Alternativa = "0";
+                    }
+                    else
+                    {
+                        _Alternativa = (int.Parse(_Alternativa) + 1).ToString();
+                    }
+
+                    //Inserir registo na tabela "Condicoes_Propostas_Fornecedores", com o valor Alternativa calculado acima
+                    CondicoesPropostasFornecedores condicoesPropostasFornecedores = DBConsultaMercado.Create(seleccaoEntidades, _Alternativa);
+
+                    //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+                    foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
+                    {
+                        LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, seleccaoEntidades.CodFornecedor);
+                    }
+                }
+
+                consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                data.eReasonCode = 0;
+                data.eMessage = "Foi Gerado o Registo de Proposta!";
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi possível Gerar o Registo de Proposta!";
             return Json(data);
         }
 

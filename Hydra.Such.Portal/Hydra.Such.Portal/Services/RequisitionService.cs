@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.Database;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -411,9 +413,104 @@ namespace Hydra.Such.Portal.Services
             return requisition;
         }
 
-        public ErrorHandler CreateMarketConsultFor(RequisitionViewModel requisition)
+        public RequisitionViewModel CreateMarketConsultFor(RequisitionViewModel requisition)
         {
-            throw new NotImplementedException("CreateMarketConsultFor");
+            try
+            {
+                //Criar nova Consulta Mercado - Obtenção do novo NumConsultaMercado e incrementar Numerações
+                ConsultaMercado consultaMercado = DBConsultaMercado.Create(changedByUserName);
+
+                //Actualizar o registo com os dados possiveis
+                consultaMercado.CodProjecto = requisition.ProjectNo == "" ? null : requisition.ProjectNo;
+                consultaMercado.Descricao = "Consulta Mercado - " + requisition.RequisitionNo;
+                consultaMercado.CodRegiao = requisition.RegionCode;
+                consultaMercado.CodAreaFuncional = requisition.FunctionalAreaCode;
+                consultaMercado.CodCentroResponsabilidade = requisition.CenterResponsibilityCode;
+                consultaMercado.DataPedidoCotacao = DateTime.Now;
+                consultaMercado.CodLocalizacao = requisition.LocalCode;
+                consultaMercado.Destino = 0;
+                consultaMercado.Estado = 0;
+                consultaMercado.UtilizadorRequisicao = requisition.CreateUser;
+                consultaMercado.Fase = 0;
+                consultaMercado.Modalidade = 0;
+                consultaMercado.PedidoCotacaoCriadoEm = DateTime.Now;
+                consultaMercado.PedidoCotacaoCriadoPor = changedByUserName;
+                consultaMercado.NumRequisicao = requisition.RequisitionNo;
+
+                consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                //Para cada linha da requisição
+                foreach (RequisitionLineViewModel requisitionLine in requisition.Lines)
+                {
+                    decimal _qty = requisitionLine.QuantityToRequire != null ? requisitionLine.QuantityToRequire.Value : 0;
+                    decimal _custo = requisitionLine.UnitCost != null ? requisitionLine.UnitCost.Value : 0;
+                    decimal _custoTotalPrev = Math.Round(_qty * _custo * 100) / 100;
+
+                    DateTime? _dataEntrega;
+
+                    try
+                    {
+                        _dataEntrega = DateTime.Parse(requisitionLine.ExpectedReceivingDate);
+                    }
+                    catch
+                    {
+                        _dataEntrega = null;
+                    }
+
+                    //Inserir Linhas na tabela "Linhas_Consulta_Mercado"
+                    LinhasConsultaMercado linhasConsultaMercado = new LinhasConsultaMercado()
+                    {
+                        NumConsultaMercado = consultaMercado.NumConsultaMercado,
+                        CodProduto = requisitionLine.Code,
+                        Descricao = requisitionLine.Description,
+                        NumProjecto = requisitionLine.ProjectNo,
+                        CodRegiao = requisitionLine.RegionCode,
+                        CodAreaFuncional = requisitionLine.FunctionalAreaCode,
+                        CodCentroResponsabilidade = requisitionLine.CenterResponsibilityCode,
+                        CodLocalizacao = requisitionLine.LocalCode,
+                        Quantidade = requisitionLine.QuantityToRequire,
+                        CustoUnitarioPrevisto = requisitionLine.UnitCost,
+                        CustoTotalPrevisto = _custoTotalPrev,
+                        CodUnidadeMedida = requisitionLine.UnitMeasureCode,
+                        DataEntregaPrevista = _dataEntrega,
+                        NumRequisicao = requisition.RequisitionNo,
+                        LinhaRequisicao = requisitionLine.LineNo,
+                        CriadoEm = DateTime.Now,
+                        CriadoPor = changedByUserName
+                    };
+                    linhasConsultaMercado = DBConsultaMercado.Create(linhasConsultaMercado);
+
+
+                    //Verificar se tem Fornecedor identificado
+                    if ((requisitionLine.SupplierNo != null) || (requisitionLine.SupplierNo != string.Empty))
+                    {
+                        //Verificar se na tabela "Seleccao_Entidades" já temos este Fornecedor para esta Consulta Mercado
+                        SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.GetSeleccaoEntidadesPorNumConsultaFornecedor(consultaMercado.NumConsultaMercado, requisitionLine.SupplierNo);
+
+                        if (seleccaoEntidades == null)
+                        {
+                            seleccaoEntidades = new SeleccaoEntidades() {
+                                NumConsultaMercado = consultaMercado.NumConsultaMercado,
+                                CodFornecedor = requisitionLine.SupplierNo,
+                                Selecionado = true,
+                                Preferencial = true
+                            };
+
+                            seleccaoEntidades = DBConsultaMercado.Create(seleccaoEntidades);
+                        }
+                    }
+                }
+                requisition.eReasonCode = 1;
+                requisition.eMessage = "Consulta ao Mercado " + consultaMercado.NumConsultaMercado + " criada com sucesso";
+            }
+            catch (Exception ex)
+            {
+                requisition.eReasonCode = -1;
+                requisition.eMessage = ex.Message;
+            }
+
+            return requisition;
+            //throw new NotImplementedException("CreateMarketConsultFor");
         }
 
         public GenericResult CreateTransferShipmentFor(string requisitionId)
