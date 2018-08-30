@@ -118,7 +118,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-        public static List<MovimentosDeProjeto> GetProjectInvoiced(int grupo, string nProjecto)
+        public static List<MovimentosDeProjeto> GetMovementProjectByGroupProj(int grupo, string nProjecto)
         {
             try
             {
@@ -188,7 +188,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 return null;
             }
         }
-
+   
         public static bool Delete(MovimentosDeProjeto ObjectToDelete)
         {
             try
