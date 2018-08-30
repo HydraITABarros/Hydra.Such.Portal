@@ -1246,6 +1246,22 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Seleccao_Entidades
 
 
+        public static SeleccaoEntidades GetSeleccaoEntidadesPorNumConsultaFornecedor(string _NumConsultaMercado, string _CodFornecedor)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == _NumConsultaMercado).Where(p => p.CodFornecedor == _CodFornecedor).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         public static SeleccaoEntidades Create(SeleccaoEntidades ObjectToCreate)
         {
             try
