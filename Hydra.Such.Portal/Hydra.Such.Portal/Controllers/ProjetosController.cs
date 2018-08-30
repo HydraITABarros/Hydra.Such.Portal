@@ -2337,7 +2337,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //get all movements from authProjects
             SuchDBContext ctx = new SuchDBContext();
-            var data = ctx.MovimentosDeProjeto
+            List<SPInvoiceListViewModel> data = ctx.MovimentosDeProjeto
                 .Where(x => x.Faturável == true &&
                     x.FaturaçãoAutorizada == true &&
                     x.Faturada == false &&
@@ -2345,14 +2345,22 @@ namespace Hydra.Such.Portal.Controllers
                     projectsIds.Contains(x.NºProjeto) &&
                     billingGroups.Contains(x.GrupoFatura.Value))
                 .Select(x => new SPInvoiceListViewModel
-                {
-                    ClientRequest = x.NºRequisição,
-                    InvoiceToClientNo = x.FaturaANºCliente,//###################### Esclarecer codcliente ou fatura a cliente
-                    //CommitmentNumber = ,//###################### 
+                {   
+                    InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodCliente,
+                    CommitmentNumber = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).NumCompromisso,
+                    Date = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).DataServPrestado,
+                    RegionCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodRegiao,//x.CódigoRegião,
+                    FunctionalAreaCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodAreaFuncional,//x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodCentroResponsabilidade,//x.CódigoCentroResponsabilidade,
+                    InvoiceGroupDescription = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).DescricaoGrupo,
+                    CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodTermosPagamento,
+                    PedidoCliente = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).PedidoCliente,
+                    SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).SituacoesPendentes,
+                    Opcao = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).Opcao,
                     ProjectNo = x.NºProjeto,
-                    //Date = Data serviço prestado?
                     LineNo = x.NºLinha,
                     MovementType = x.TipoMovimento,
+                    ClientRequest = x.NºRequisição,
                     Type = x.Tipo,
                     Code = x.Código,
                     Description = x.Descrição,
@@ -2360,9 +2368,6 @@ namespace Hydra.Such.Portal.Controllers
                     Quantity = x.Quantidade,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
-                    FunctionalAreaCode = x.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
                     UnitCost = x.CustoUnitário,
                     TotalCost = x.CustoTotal,
@@ -2378,10 +2383,31 @@ namespace Hydra.Such.Portal.Controllers
                     Billed = x.Faturada,
                     MealType = x.TipoRefeição,
                     InvoiceGroup = x.GrupoFatura,
-                    InvoiceGroupDescription = x.GrupoFaturaDescricao
+                    AdjustedDocument = x.DocumentoCorrigido,
+                    AdjustedDocumentData = x.DataDocumentoCorrigido.HasValue ? x.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
+                    AdjustedPrice = x.AcertoDePreços,
+                    Currency = x.Moeda,
+                    DocumentNo = x.NºDocumento,
+                    Driver = x.Motorista,
+                    EmployeeNo = x.NºFuncionário,
+                    ExternalGuideNo = x.NºGuiaExterna,
+                    InternalRequest = x.RequisiçãoInterna,
+                    OriginalDocument = x.DocumentoOriginal,
+                    QuantityReturned = x.QuantidadeDevolvida,
+                    RequestNo = x.NºRequisição,
+                    RequestLineNo = x.NºLinhaRequisição,
+                    ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                    ResidueGuideNo = x.NºGuiaResíduos,
+                    ResourceType = x.TipoRecurso,
+                    //ServiceClientCode = x.CódServiçoCliente, //int to string ?????
+                    //ServiceData ?
+                    ServiceGroupCode = x.CódGrupoServiço,
+                    TimesheetNo = x.NºFolhaHoras,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    UpdateDate = x.DataHoraModificação,
+                    UpdateUser = x.UtilizadorModificação
                 })
                 .ToList();
-
 
             if (data != null)
             {
