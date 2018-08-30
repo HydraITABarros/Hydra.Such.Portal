@@ -124,7 +124,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.Faturável == true && x.FaturaçãoAutorizada == true && x.GrupoFatura== grupo && x.NºProjeto== nProjecto).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.Faturável == true && x.FaturaçãoAutorizada == true && x.GrupoFatura == grupo && x.NºProjeto== nProjecto).ToList();
                 }
             }
             catch (Exception ex)

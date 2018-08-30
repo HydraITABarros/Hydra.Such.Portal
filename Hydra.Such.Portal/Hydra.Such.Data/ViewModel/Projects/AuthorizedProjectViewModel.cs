@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Data.ViewModel.Projects
 {
-    public partial class ProjectosAutorizados
+    public class AuthorizedProjectViewModel
     {
         public string CodProjeto { get; set; }
         public int GrupoFactura { get; set; }
@@ -33,5 +34,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataPrestacaoServico { get; set; }
         public string CodMetodoPagamento { get; set; }
         public bool Faturado { get; set; }
+        public decimal ValorAutorizado { get; set; }
     }
 }

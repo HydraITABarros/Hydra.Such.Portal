@@ -1,0 +1,774 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-invoice1">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <div class="subMenu">
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                       padding: 0 0;
+                   };
+                --paper-collapse-item-header: {
+                       padding: 0 15px;
+                       color: #333;
+                       background-color: #f5f5f5;
+                       border-bottom: solid #ddd 1px;
+                       border-top-left-radius: 3px;
+                       border-top-right-radius: 3px;
+
+                   };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <iron-ajax url="/PopulateDropdowns/GetCustomers"
+                   last-response="{{Customers}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/ValidateCustomerForBilling"
+                   last-response="{{CustBillingValResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="valCustomer_ajax"
+                   on-response="_createInvoice"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/GetAuthorizedMovements"
+                   last-response="{{authorizedMovements}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_getMovementsResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/CreateBillingDocuments"
+                   last-response="{{CreateInvoiceResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="billProjects_ajax"
+                   on-response="_CreateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/CancelLines"
+                   last-response="{{CancelLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_cancelLines_ajax"
+                   on-response="_CancelLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/ExportToExcel_FaturacaoProjetos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
+                   last-response="{{response2}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
+                   last-response="{{response3}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetInvoiceTypes"
+                   last-response="{{invoiceTypes}}"
+                   auto
+                   id="getInvoiceTypes"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+
+
+        <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
+            <vaadin-grid-selection-column id="selectColumn" auto-select>
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codProjeto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codProjeto">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codProjeto" />
+                </template>
+                <template>
+                    {{item.codProjeto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codCliente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCliente">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCliente" />
+                </template>
+                <template>
+                    {{item.codCliente}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.valorAutorizado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorAutorizado">Valor Autorizado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorAutorizado" />
+                </template>
+                <template>
+                    {{item.valorAutorizado}} link detalhes
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.valorPorFaturar.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorPorFaturar">Valor por Faturar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorPorFaturar" />
+                </template>
+                <template>
+                    {{item.valorPorFaturar}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codRegiao" />
+                </template>
+                <template>
+                    {{item.codRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codAreaFuncional" />
+                </template>
+                <template>
+                    {{item.codAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codTermosPagamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codTermosPagamento">Termos de Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codTermosPagamento" />
+                </template>
+                <template>
+                    editavel
+                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" disabled>
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dataServPrestado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataServPrestado">Data Serv. Prestado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataServPrestado" />
+                </template>
+                <template>
+                    {{item.dataServPrestado}} (editável)
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.numCompromisso.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numCompromisso">Núm. Compromisso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numCompromisso" />
+                </template>
+                <template>
+                    {{item.numCompromisso}} (editável)
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.pedidoCliente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pedidoCliente">Pedido Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pedidoCliente" />
+                </template>
+                <template>
+                    {{item.pedidoCliente}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dataPedido.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPedido">Data Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedido" />
+                </template>
+                <template>
+                    {{item.dataPedido}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.grupoFactura.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoFactura">Grupo Factura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoFactura" />
+                </template>
+                <template>
+                    {{item.grupoFactura}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.descricaoGrupo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoGrupo">Descrição Grupo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoGrupo" />
+                </template>
+                <template>
+                    {{item.descricaoGrupo}} (editável)
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.situacoesPendentes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="situacoesPendentes">Situaçõe Pendentes</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="situacoesPendentes" />
+                </template>
+                <template>
+                    {{item.situacoesPendentes}} (editável)
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dataAutorizacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataAutorizacao">Data Autorização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAutorizacao" />
+                </template>
+                <template>
+                    {{item.dataAutorizacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.utilizador.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizador">Autorizado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizador" />
+                </template>
+                <template>
+                    {{item.utilizador}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ CreateInvoiceResponse.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ _isSuccess(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{ _hasErrors }}">
+                <div style="text-align: right;">
+                    <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                </div>
+            </template>
+        </paper-toast>
+
+        <paper-dialog id="dlgInvoice" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-combo-box id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Tipo de Fatura" required error-message="Este campo é obrigatório">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Guardar</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+    </template>
+
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-invoice1',
+                properties: {
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_Type: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddCGTOM_FailType: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    selectedItem: {
+                        type: Array,
+                    },
+
+                    selectedItems: {
+                        type: Array,
+                    },
+                    typesFilter: {
+                        type: Array,
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
+                    },
+                },
+                ready: function () {
+                    this.$.page_databound_ajax.generateRequest();                    
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.projectInvoiceAutorization);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _toggleToastMultiple: function () {
+                    //check For Errors or exceptions
+                    var errors = this.CreateInvoiceResponse.eMessages.find(x => x.type != 1);
+                    this._hasErrors = !(errors == undefined);
+                    if (this._hasErrors)
+                        //keep open
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        //close
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.CreateInvoiceResponse.eMessages = [];
+                },
+                _isError: function (type) {
+                    //Used to show or hide close button
+                    if (!this._hasErrors)
+                        this._hasErrors = type != 1;
+                    return type != 1;
+                },
+                _getMovementsResponse: function (e) {
+                    if (this.authorizedMovements == null) {
+                        this.openToastError("Ocorreu um erro ao obter os registos.");
+                    }
+                },
+                _confirm: function (selectedItem, selectedItems) {
+                    if (this.selectedItems.length != 0) {
+                        //Verifica se a lista é do mesmo cliente
+                        var clienteNo = this.selectedItems[0].codCliente;
+                        var verifica = true;
+                        var saldo=0;
+                        for (i = 0; i < this.selectedItems.length; i++) {
+                            if (clienteNo != this.selectedItems[i].codCliente) {
+                                verifica = false;
+                            }
+                            saldo = saldo + this.selectedItems[i].valorAutorizado;
+                        }
+                        if (verifica == true) {
+                            this.selectedItem = this.selectedItems;
+                            if (saldo > 0) {
+                                delete this.invoiceTypes[2];
+                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                                
+                            }
+                            else{
+                                delete this.invoiceTypes[0];
+                                delete this.invoiceTypes[1];
+                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                            }
+                          
+                            this.$.dlgInvoice.open();
+                            this.$.getInvoiceTypes.generateRequest();      
+                        }
+                        else {
+                            this.openToastError("Selecione apenas projetos de um cliente!");
+                        }
+                    } else {
+                        this.openToastError("Selecione pelo menos um projeto!");
+                    }
+
+                },
+                _CancelLinesResponse: function () {
+                    
+                },
+                _deleteLine: function (selectedItem, selectedItems) {
+                    if (this.selectedItems.length != 0) {
+                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_cancelLines_ajax.generateRequest();
+                    } else {
+                        this.openToastError("Selecionar pelo menos um projeto!");
+                    }
+
+                },
+                _validateData: function (Item) {
+                    if (this.$._CLOptionInvoice.validate()) {
+                        for (var line = 0; line < Item.length; line++) {
+                            if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
+                                return "Selecionou Linhas com Valor Autorizado a ZERO!";
+                            }
+                           //falta verificações
+                            if (Item[line].codCentroResponsabilidade == "" ) {
+                                return "O Centro de Responsabilidade não está preenchido!";
+                            }
+                            if (Item[line].codRegiao == "") {
+                                return "O Código de Região não está preenchido!";
+                            }
+                            if (Item[line].codProjeto == "") {
+                                return "O Nº de Projeto não está preenchido!";             
+                            }   
+                            if (Item[line].codAreaFuncional == "") {
+                                return "O Código Área Funcional não está preenchido!";                            
+                            }                                  
+                        }
+                        return "";
+                    }
+                    return "Verifique os dados inseridos.";
+                },
+                _validateInvoice: function () {
+                    var erro=this._validateData(this.selectedItem);
+                    if (erro == "") {
+                        if (this.selectedItem && this.selectedItem.length > 0) {
+                            var customerNo = this.selectedItem[0].codCliente;
+                            var commitmentNo = this.selectedItem[0].numCompromisso;
+                            this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": "" });
+                            this.$.valCustomer_ajax.generateRequest();
+                            this.$.dlgInvoice.close();
+                        }
+                        else {
+                            this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                        }
+                    } else {
+                        this.$.dlgInvoice.close();
+                        this.openToastError(erro);
+                    }
+                },
+                _createInvoice: function () {
+                    //debugger;;
+                    if (this.CustBillingValResponse.eMessages.length != 0) {
+                        var option = this.$._CLOptionInvoice.value;
+                        var valError = this.CustBillingValResponse.eMessages.find(x => x.type == 0);
+                        if (valError) {
+                            this.openToastError(valError.message);
+                        }
+                        else {
+                            var valWarning = this.CustBillingValResponse.eMessages.find(x => x.type == 3);
+                            if (valWarning != undefined) {
+                                var ajax_request = this.$.billProjects_ajax;
+                                var selectedItem = this.selectedItem;
+                                bootbox.confirm({
+                                    message: valWarning.message,
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (authorizeMovements) {
+                                        if (authorizeMovements) {
+                                            ajax_request.body = JSON.stringify(selectedItem);
+                                            ajax_request.params = { "OptionInvoice": option };
+                                            ajax_request.generateRequest();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                                this.$.billProjects_ajax.generateRequest();
+                            }
+                        }
+                    }
+                    else {
+                        this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                        this.$.billProjects_ajax.generateRequest();
+                    }
+                },
+                _CreateLinesResponse: function (e) {
+                    if (this.CreateInvoiceResponse.eReasonCode == 1) {
+                        this.openToast("Faturas criadas com sucesso");
+                    }
+                    else {
+                        if (this.CreateInvoiceResponse.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this.openToastError(this.CreateInvoiceResponse.eMessage);
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.projectInvoiceAutorization.clearCache();
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.authorizedMovements[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.authorizedMovements);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "date": { hidden: false, label: "Data" },
+                        "movementType": { hidden: false, label: "Tipo Movimento" },
+                        "type": { hidden: false, label: "Tipo" },
+                        "code": { hidden: false, label: "Código" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
+                        "locationCode": { hidden: false, label: "Cód. Localização" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área" },
+                        "responsabilityCenterCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "totalCost": { hidden: false, label: "Custo Total" },
+                        "unitPrice": { hidden: false, label: "Preço Unitário" },
+                        "totalPrice": { hidden: false, label: "Preço Total" },
+                        "commitmentNumber": { hidden: false, label: "Nº Compromisso" }
+                    };
+
+                    if (localStorage["invoice.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["invoice.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["invoice.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
+
+            });
+        });
+    </script>
+</dom-module>
