@@ -17,14 +17,6 @@ namespace Hydra.Such.Data.Database
         public string GrupoContabilisticoObra { get; set; }
         public string GrupoContabilisticoProjeto { get; set; }
         public string NumSerie { get; set; }
-        public byte? Facturável { get; set; }
-        public string Motorista { get; set; }
-        public string AreaFilter { get; set; }
-        public string ShipToCode { get; set; }
-        public int? TipoProjecto { get; set; }
-        public byte? OnlyForMaintInvoicing { get; set; }
-        public string ShortcutDimension3Code { get; set; }
-        public string ShortcutDimension4Code { get; set; }
         public string Utilizador { get; set; }
         public DateTime? DataAutorizacao { get; set; }
         public string DataServPrestado { get; set; }
@@ -40,5 +32,6 @@ namespace Hydra.Such.Data.Database
         public string SituacoesPendentes { get; set; }
         public DateTime? DataPrestacaoServico { get; set; }
         public string CodMetodoPagamento { get; set; }
+        public bool Faturado { get; set; }
     }
 }

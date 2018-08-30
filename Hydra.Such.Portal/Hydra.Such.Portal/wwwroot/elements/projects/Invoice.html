@@ -178,7 +178,7 @@
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/Projetos/CancelLines"
-                   last-response="{{CancelLines}}"
+                   last-response="{{CancelLineRes}}"
                    method="post"
                    handle-as="json"
                    id="page_cancelLines_ajax"
@@ -691,8 +691,14 @@
                     }
                 },
                 _CancelLinesResponse: function () {
-                    this.openToast("Linhas anuladas com sucesso");
-                    this.$.page_databound_ajax.generateRequest();
+                    debugger;;
+                    if (this.CancelLineRes.length == 0) {
+                        this.openToastError("Não foi possivel eliminar as linhas");
+                    }
+                    else {
+                        this.openToast("Linhas anuladas com sucesso");
+                        this.$.page_databound_ajax.generateRequest();
+                    }
                 },
                 _CreateLinesResponse: function (e) {
                     if (this.CreateInvoiceResponse.eReasonCode == 1) {

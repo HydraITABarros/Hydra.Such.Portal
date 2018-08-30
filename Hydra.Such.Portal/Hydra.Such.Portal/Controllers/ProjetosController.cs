@@ -2248,14 +2248,23 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CancelLines([FromBody] List<SPInvoiceListViewModel> data)
         {
-            List<MovimentosDeProjeto> result = DBProjectMovements.GetProjectInvoiced(data[0].InvoiceGroup??0,data[0].ProjectNo).ToList();
-            foreach(MovimentosDeProjeto line in result)
+            List<MovimentosDeProjeto> result = DBProjectMovements.GetMovementProjectByGroupProj(data[0].InvoiceGroup??0,data[0].ProjectNo).ToList();
+           
+            foreach (MovimentosDeProjeto line in result)
             {
+                
                 line.FaturaçãoAutorizada = false;
                 line.FaturaçãoAutorizada2 = false;
                 line.Faturada = false;
                 DBProjectMovements.Update(line);
+               
             }
+
+            //Remove Project Authorized
+            SuchDBContext ctx = new SuchDBContext();
+            List<ProjectosAutorizados> authorizedProj = ctx.ProjectosAutorizados.Where(x=> x.GrupoFactura== data[0].InvoiceGroup && x.CodProjeto== data[0].ProjectNo).ToList(); ;
+            ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
+           
             return Json(result);
         }
         [HttpPost]
