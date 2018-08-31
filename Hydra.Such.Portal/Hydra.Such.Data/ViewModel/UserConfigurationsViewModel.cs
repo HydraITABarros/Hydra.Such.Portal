@@ -26,6 +26,9 @@ namespace Hydra.Such.Data.ViewModel
         public bool? RFRespostaContabilidade { get; set; }
         public bool? RFAlterarDestinatarios { get; set; }
         public string RFMailEnvio { get; set; }
+        public string NumSerieNotasCredito { get; set; }
+        public string NumSerieNotasDebito { get; set; }
+        public string NumSerieFaturas { get; set; }
 
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }

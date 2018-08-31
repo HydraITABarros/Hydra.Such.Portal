@@ -2465,6 +2465,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
 
                             header.MovementType = Convert.ToInt32(OptionInvoice);
+                            header.CreateUser = User.Identity.Name;
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
@@ -2764,6 +2765,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             
                             header.MovementType = Convert.ToInt32(OptionInvoice);
+                            header.CreateUser = User.Identity.Name;
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();

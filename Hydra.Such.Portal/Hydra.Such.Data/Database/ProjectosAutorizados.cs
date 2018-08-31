@@ -20,6 +20,7 @@ namespace Hydra.Such.Data.Database
         public string Utilizador { get; set; }
         public DateTime? DataAutorizacao { get; set; }
         public string DataServPrestado { get; set; }
+        public DateTime? DataPrestacaoServico { get; set; }
         public string Observacoes { get; set; }
         public string Observacoes1 { get; set; }
         public string PedidoCliente { get; set; }
@@ -30,7 +31,6 @@ namespace Hydra.Such.Data.Database
         public string Diversos { get; set; }
         public string NumCompromisso { get; set; }
         public string SituacoesPendentes { get; set; }
-        public DateTime? DataPrestacaoServico { get; set; }
         public string CodMetodoPagamento { get; set; }
         public bool Faturado { get; set; }
     }
