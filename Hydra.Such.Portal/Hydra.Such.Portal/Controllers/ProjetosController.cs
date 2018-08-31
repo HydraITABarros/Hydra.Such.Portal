@@ -2500,15 +2500,34 @@ namespace Hydra.Such.Portal.Controllers
                                             linesList.Add(lines);
                                         }
                                     }
+
                                     //declarações
                                     List<NAVResourcesViewModel> Resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
                                     List<WasteRateViewModel> wr = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
                                     List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
                                     List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
 
+                                    ////recursos com taxa residuo
+                                    //var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct();
+                                    //var selectedWasteResources = Resourceslines.Where(x => x.WasteRate == 1 && selectedResources.Contains(x.Code));
+                                    //foreach (var item in selectedWasteResources)
+                                    //{
+                                    //    var wasteFamilyResources = wr.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
+                                    //    wasteFamilyResources.ForEach(x =>
+                                    //    {
+                                    //        SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
+                                    //        wasteLineToAdd.Quantity = quantity;
+                                    //        wasteLineToAdd.Code = item.Resource;
+                                    //        wasteLineToAdd.Description = item.ResourceName;
+                                    //        wasteLineToAdd.UnitPrice = item.Price;
+
+                                    //    });
+                                    //}
+
                                     //procurar grupo recurso das linhas a registar
                                     foreach (SPInvoiceListViewModel spi in linesList)
                                     {
+                                        //var resources = Resourceslines.Where(x => x.);
                                         foreach (NAVResourcesViewModel rl in Resourceslines)
                                         {
                                             if (spi.Code == rl.Code)
