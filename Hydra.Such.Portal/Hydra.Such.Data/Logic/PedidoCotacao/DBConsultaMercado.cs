@@ -1268,6 +1268,10 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    //if ((ObjectToCreate.CodFornecedor != null || ObjectToCreate.CodFornecedor != "") && (ObjectToCreate.NomeFornecedor == null || ObjectToCreate.NomeFornecedor == ""))
+                    //{
+
+                    //}
                     ctx.SeleccaoEntidades.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }

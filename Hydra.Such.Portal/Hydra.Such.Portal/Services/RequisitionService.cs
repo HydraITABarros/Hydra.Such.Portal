@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -482,7 +483,7 @@ namespace Hydra.Such.Portal.Services
 
 
                     //Verificar se tem Fornecedor identificado
-                    if ((requisitionLine.SupplierNo != null) || (requisitionLine.SupplierNo != string.Empty))
+                    if (requisitionLine.SupplierNo != null)
                     {
                         //Verificar se na tabela "Seleccao_Entidades" já temos este Fornecedor para esta Consulta Mercado
                         SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.GetSeleccaoEntidadesPorNumConsultaFornecedor(consultaMercado.NumConsultaMercado, requisitionLine.SupplierNo);
@@ -499,9 +500,21 @@ namespace Hydra.Such.Portal.Services
                             seleccaoEntidades = DBConsultaMercado.Create(seleccaoEntidades);
                         }
                     }
+
+                    requisitionLine.QueryCreatedMarketNo = consultaMercado.NumConsultaMercado;
+
+                    DBRequestLine.Update(DBRequestLine.ParseToDB(requisitionLine));
                 }
+
+                requisition.MarketInquiryNo = consultaMercado.NumConsultaMercado;
+
+                Requisição requisição = DBRequest.ParseToDB(requisition);
+                DBRequest.Update(requisição);
+                requisition = DBRequest.ParseToViewModel(requisição);
+
                 requisition.eReasonCode = 1;
                 requisition.eMessage = "Consulta ao Mercado " + consultaMercado.NumConsultaMercado + " criada com sucesso";
+
             }
             catch (Exception ex)
             {
