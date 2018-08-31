@@ -173,14 +173,14 @@
                    on-response="GetProjectResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Projetos/UpdateProjectMovements"
+        <!--<iron-ajax url="/Projetos/UpdateProjectMovements"
                    last-response="{{UpdateResponse}}"
                    method="post"
                    handle-as="json"
                    id="updatelines_ajax"
                    on-response="_updateLinesResponse"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
         <iron-ajax url="/Projetos/AuthorizeProjectMovements"
                    last-response="{{authorizationResponse}}"
                    method="post"
@@ -252,7 +252,7 @@
                                         <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="[[Project.description]]" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-md-2 ">
-                                        <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}"></vaadin-text-field>
                                     </div>
                                 </div>
 
@@ -644,7 +644,7 @@
 
                         </div>
                         <div class="marginSpace">
-                            <paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <!--<paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
                         </div>
                     </div>
                 </iron-form>
@@ -658,7 +658,7 @@
                     <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
                 </div>-->
                 <div class="col-md-12 ">
-                    <vaadin-text-field id="txtDescGrupoFatura" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
+                    <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
                 </div>
                 <div class="col-md-12 ">
                     <h5 hidden id="validationTitle">Atenção</h5>
@@ -965,8 +965,6 @@
                             this._commitmentNo = this.CommitmentDetails.value.commitmentNo;
                             this._customerRequestNo = this.CommitmentDetails.value.customerRequestNo;
                             this._settedFromProjectOrContract = this.CommitmentDetails.value.settedFromProjectOrContract;
-
-                            this.$.txtNumCompromisso.disabled = this._commitmentNo == "" ? false : true
                         }
                         else {
                             this.openToastError(this.CommitmentDetails.eMessage);
@@ -981,10 +979,10 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                _updateMovements: function () {
-                    this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
-                    this.$.updatelines_ajax.generateRequest();
-                },
+                //_updateMovements: function () {
+                //    this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
+                //    this.$.updatelines_ajax.generateRequest();
+                //},
                 _updateLinesResponse: function (e) {
                     //UpdateResponse
                     if (e.detail.status === 200) {
