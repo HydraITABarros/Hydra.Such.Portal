@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Data.Logic.PedidoCotacao
 {
@@ -854,7 +855,6 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -947,11 +947,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
                 NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
-                //NumLinha = ObjectToTransform.NumLinha,
+                NumLinha = ObjectToTransform.NumLinha,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
-                Quantidade = ObjectToTransform.Quantidade
+                Quantidade = ObjectToTransform.Quantidade,
+                NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
+
 
             return linhasConsultaMercado;
         }
@@ -1268,6 +1270,10 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    //if ((ObjectToCreate.CodFornecedor != null || ObjectToCreate.CodFornecedor != "") && (ObjectToCreate.NomeFornecedor == null || ObjectToCreate.NomeFornecedor == ""))
+                    //{
+
+                    //}
                     ctx.SeleccaoEntidades.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
