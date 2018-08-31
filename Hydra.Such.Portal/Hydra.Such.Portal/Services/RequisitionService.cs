@@ -418,6 +418,14 @@ namespace Hydra.Such.Portal.Services
         {
             try
             {
+                //Verificar se pode criar uma consulta de mercado
+                if (requisition.Lines.Where(p => p.CreateMarketSearch == true).Where(p => p.QueryCreatedMarketNo == null).Count() <= 0)
+                {
+                    requisition.eReasonCode = -1;
+                    requisition.eMessage = "Consulta ao Mercado não pode ser criada! As linhas devem estar marcadas com 'Criar Consulta Mercado' e não ter 'Nº de Consulta Mercado Criada'";
+                    return requisition;
+                }
+
                 //Criar nova Consulta Mercado - Obtenção do novo NumConsultaMercado e incrementar Numerações
                 ConsultaMercado consultaMercado = DBConsultaMercado.Create(changedByUserName);
 
@@ -441,7 +449,7 @@ namespace Hydra.Such.Portal.Services
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
                 //Para cada linha da requisição
-                foreach (RequisitionLineViewModel requisitionLine in requisition.Lines)
+                foreach (RequisitionLineViewModel requisitionLine in requisition.Lines.Where(p => p.CreateMarketSearch == true).Where(p => p.QueryCreatedMarketNo == null))
                 {
                     decimal _qty = requisitionLine.QuantityToRequire != null ? requisitionLine.QuantityToRequire.Value : 0;
                     decimal _custo = requisitionLine.UnitCost != null ? requisitionLine.UnitCost.Value : 0;

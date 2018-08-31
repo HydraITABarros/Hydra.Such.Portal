@@ -122,12 +122,13 @@
         <iron-ajax url="/ConsultaMercado/CopiarConsultaMercado" last-response="{{copiarData}}" method="post" handle-as="json" id="ajax_copiar_consultaMercado" on-response="_copiarConsultaMercadoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoCreated}}" method="post" handle-as="json" id="page_createLinha_ajax" on-response="_createLinhaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaConsultaMercado" last-response="{{LinhaDeleted}}" method="post" handle-as="json" id="page_deleteLinha_ajax" on-response="_deleteLinhaResponse" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoUpdated}}" method="post" handle-as="json" id="page_updateLinhaConsultaMercado_ajax" on-response="_updateLinhaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_ajax" on-response="_updateLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
-        
+
+
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -136,7 +137,9 @@
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Modalidade" last-response="{{LModalidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Estado" last-response="{{LEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Fase" last-response="{{LFase}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetProjects" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBJobNo_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -176,9 +179,9 @@
                                 <div class="col-sm-3">
                                     <such-selectbox id="codProjecto" value="{{data.codProjecto}}" label="Cód. Projecto"
                                                     items="[[CBJobNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                    text-path="nºProjeto"
+                                                    value-path="nºProjeto"
+                                                    fields='[{"field":"nºProjeto", "name":"Nº Projecto"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}, {"field":"códigoRegião", "name":"Cód. Região"}, {"field":"códigoÁreaFuncional", "name":"Cód. Área Funcional"}, {"field":"CódigoCentroResponsabilidade", "name":"Cód. Centro Responsabilidade"}]'
                                                     disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                     </such-selectbox>
                                 </div>
@@ -503,11 +506,18 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-3">
+                                    <!--<such-selectbox id="linhacodProjecto" label="Nº Projecto"
+                                                items="[[CBJobNo]]"
+                                                text-path="no"
+                                                value-path="no"
+                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                disabled="{{ !_permissions.update }}">
+                                </such-selectbox>-->
                                     <such-selectbox id="linhacodProjecto" label="Nº Projecto"
                                                     items="[[CBJobNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                    text-path="nºProjeto"
+                                                    value-path="nºProjeto"
+                                                    fields='[{"field":"nºProjeto", "name":"Nº Projecto"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}, {"field":"códigoRegião", "name":"Cód. Região"}, {"field":"códigoÁreaFuncional", "name":"Cód. Área Funcional"}, {"field":"CódigoCentroResponsabilidade", "name":"Cód. Centro Responsabilidade"}]'
                                                     disabled="{{ !_permissions.update }}">
                                     </such-selectbox>
                                 </div>
@@ -640,7 +650,16 @@
                                         <vaadin-grid-filter path="numProjecto"></vaadin-grid-filter>
                                     </template>
                                     <template>
-                                        <vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" disabled="true"></vaadin-text-field>
+                                        <!--<vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                        <vaadin-combo-box items="[[CBJobNo_List]]" id="tabLinhasnumProjecto" item-value-path="id" item-label-path="value" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column resizable>
@@ -1225,6 +1244,43 @@
                     }
                 },
 
+                _updateLinha: function (e) {
+                    debugger
+                    this.$.page_updateLinhaConsultaMercado_ajax.body = JSON.stringify({
+                        numLinha: e.model.item.numLinha,
+                        numConsultaMercado: e.model.item.numConsultaMercado,
+                        codProduto: e.model.item.codProduto,
+                        descricao: e.model.item.descricao,
+                        numProjecto: e.model.item.numProjecto,
+                        codRegiao: e.model.item.codRegiao,
+                        codAreaFuncional: e.model.item.codAreaFuncional,
+                        codCentroResponsabilidade: e.model.item.codCentroResponsabilidade,
+                        codActividade: e.model.item.codActividade,
+                        codLocalizacao: e.model.item.codLocalizacao,
+                        quantidade: e.model.item.quantidade,
+                        custoUnitarioObjectivo: e.model.item.custoUnitarioObjectivo,
+                        custoTotalObjectivo: e.model.item.custoTotalObjectivo,
+                        custoUnitarioPrevisto: e.model.item.custoUnitarioPrevisto,
+                        custoTotalPrevisto: e.model.item.custoTotalPrevisto,
+                        codUnidadeMedida: e.model.item.codUnidadeMedida,
+                        dataEntregaPrevista: e.model.item.dataEntregaPrevista,
+                        dataEntregaPrevista_Show: e.model.item.dataEntregaPrevista_Show,
+                        numRequisicao: e.model.item.numRequisicao
+                    });
+                    this.$.page_updateLinhaConsultaMercado_ajax.generateRequest();
+                    this.$.tabLinhas.clearCache();
+                },
+                _updateLinhaResponse: function (e) {
+                    if (this.LinhaConsultaMercadoUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Actualizada com sucesso.');
+                    }
+                    else
+                    {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha.');    
+                    }
+                },
+
                 _createLinhaSelecaoEntidade: function () {
                     this.$.page_createLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
@@ -1275,6 +1331,13 @@
                             }, 2500);
                     }
                 },
+                _updateLinhaSeleccaoEntidade: function (e) {
+
+                },
+                _updateLinhaSeleccaoEntidadeResponse: function (e) {
+
+                },
+
 
                 _responseProcessor: function (data) {
                     var self = this;

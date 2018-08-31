@@ -577,7 +577,31 @@ namespace Hydra.Such.Portal.Controllers
                 //log
             }
             return Json(result);
+        }
 
+        [HttpPost]
+        public JsonResult UpdateLinhaConsultaMercado([FromBody] LinhasConsultaMercadoView data)
+        {
+            bool result = false;
+            try
+            {
+                LinhasConsultaMercado linhaConsultaMercado = DBConsultaMercado.CastLinhasConsultaMercadoViewToDB(data);
+                
+                linhaConsultaMercado.ModificadoEm = DateTime.Now;
+                linhaConsultaMercado.ModificadoPor = User.Identity.Name;
+
+                var dbUpdateResult = DBConsultaMercado.Update(linhaConsultaMercado);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
         }
 
 
@@ -624,6 +648,28 @@ namespace Hydra.Such.Portal.Controllers
                 var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
 
                 if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaSeleccaoEntidade([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                var dbUpdateResult = DBConsultaMercado.Create(seleccaoEntidades);
+
+                if (dbUpdateResult != null)
                     result = true;
                 else
                     result = false;
