@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -8,7 +7,6 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -16,13 +14,12 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -30,6 +27,11 @@
 <link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />-->
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 
 <dom-module id="x-invoice1">
     <template>
@@ -153,6 +155,8 @@
             }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" id="paymentTerms_ajax" last-response="{{PaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetCustomers"
                    last-response="{{Customers}}"
                    auto
@@ -224,8 +228,6 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-
-
         <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
@@ -256,7 +258,7 @@
                     <vaadin-grid-filter path="valorAutorizado" />
                 </template>
                 <template>
-                    {{item.valorAutorizado}} link detalhes
+                    {{item.valorAutorizado}}
                 </template>
             </vaadin-grid-column>
 
@@ -306,8 +308,7 @@
                     <vaadin-grid-filter path="codTermosPagamento" />
                 </template>
                 <template>
-                    editavel
-                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" disabled>
+                    <vaadin-combo-box items="[[PaymentTerms]]" id="cmbPaymentTerms" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" disabled="{{ !_permissions.update }}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -319,13 +320,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dataServPrestado.hidden }}">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dataPrestacaoServico.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataServPrestado">Data Serv. Prestado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataServPrestado" />
+                    <vaadin-grid-sorter path="dataPrestacaoServico">Data Serv. Prestado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPrestacaoServico" />
                 </template>
                 <template>
-                    {{item.dataServPrestado}} (editável)
+                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -335,7 +336,7 @@
                     <vaadin-grid-filter path="numCompromisso" />
                 </template>
                 <template>
-                    {{item.numCompromisso}} (editável)
+                    <vaadin-text-field rows="5" value="{{item.numCompromisso}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -375,17 +376,17 @@
                     <vaadin-grid-filter path="descricaoGrupo" />
                 </template>
                 <template>
-                    {{item.descricaoGrupo}} (editável)
+                    <vaadin-text-field rows="5" value="{{item.descricaoGrupo}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.situacoesPendentes.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="situacoesPendentes">Situaçõe Pendentes</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="situacoesPendentes">Situações Pendentes</vaadin-grid-sorter>
                     <vaadin-grid-filter path="situacoesPendentes" />
                 </template>
                 <template>
-                    {{item.situacoesPendentes}} (editável)
+                    <vaadin-text-field rows="5" maxlength="60" value="{{item.situacoesPendentes}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -498,7 +499,7 @@
                     },
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.generateRequest();                    
+                    this.$.page_databound_ajax.generateRequest();
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -554,7 +555,7 @@
                         //Verifica se a lista é do mesmo cliente
                         var clienteNo = this.selectedItems[0].codCliente;
                         var verifica = true;
-                        var saldo=0;
+                        var saldo = 0;
                         for (i = 0; i < this.selectedItems.length; i++) {
                             if (clienteNo != this.selectedItems[i].codCliente) {
                                 verifica = false;
@@ -566,16 +567,16 @@
                             if (saldo > 0) {
                                 delete this.invoiceTypes[2];
                                 this.$._CLOptionInvoice.items = this.invoiceTypes;
-                                
+
                             }
-                            else{
+                            else {
                                 delete this.invoiceTypes[0];
                                 delete this.invoiceTypes[1];
                                 this.$._CLOptionInvoice.items = this.invoiceTypes;
                             }
-                          
+
                             this.$.dlgInvoice.open();
-                            this.$.getInvoiceTypes.generateRequest();      
+                            this.$.getInvoiceTypes.generateRequest();
                         }
                         else {
                             this.openToastError("Selecione apenas projetos de um cliente!");
@@ -586,11 +587,11 @@
 
                 },
                 _CancelLinesResponse: function () {
-                    
+
                 },
                 _deleteLine: function (selectedItem, selectedItems) {
                     if (this.selectedItems.length != 0) {
-                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_cancelLines_ajax.body = JSON.stringify({ "data": this.selectedItem });
                         this.$.page_cancelLines_ajax.generateRequest();
                     } else {
                         this.openToastError("Selecionar pelo menos um projeto!");
@@ -603,26 +604,26 @@
                             if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
                                 return "Selecionou Linhas com Valor Autorizado a ZERO!";
                             }
-                           //falta verificações
-                            if (Item[line].codCentroResponsabilidade == "" ) {
+                            //falta verificações
+                            if (Item[line].codCentroResponsabilidade == "") {
                                 return "O Centro de Responsabilidade não está preenchido!";
                             }
                             if (Item[line].codRegiao == "") {
                                 return "O Código de Região não está preenchido!";
                             }
                             if (Item[line].codProjeto == "") {
-                                return "O Nº de Projeto não está preenchido!";             
-                            }   
+                                return "O Nº de Projeto não está preenchido!";
+                            }
                             if (Item[line].codAreaFuncional == "") {
-                                return "O Código Área Funcional não está preenchido!";                            
-                            }                                  
+                                return "O Código Área Funcional não está preenchido!";
+                            }
                         }
                         return "";
                     }
                     return "Verifique os dados inseridos.";
                 },
                 _validateInvoice: function () {
-                    var erro=this._validateData(this.selectedItem);
+                    var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
                         if (this.selectedItem && this.selectedItem.length > 0) {
                             var customerNo = this.selectedItem[0].codCliente;

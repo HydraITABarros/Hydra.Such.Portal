@@ -1304,6 +1304,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Nome).HasMaxLength(50);
 
+                entity.Property(e => e.NumSerieFaturas)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumSerieNotasCredito)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumSerieNotasDebito)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea).HasMaxLength(50);
 
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea2).HasMaxLength(50);
@@ -5356,7 +5368,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Grupo Contab. Projeto")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.GrupoFaturaDescricao).HasMaxLength(50);
+                entity.Property(e => e.GrupoFaturaDescricao).HasMaxLength(30);
 
                 entity.Property(e => e.Matricula).HasMaxLength(20);
 
