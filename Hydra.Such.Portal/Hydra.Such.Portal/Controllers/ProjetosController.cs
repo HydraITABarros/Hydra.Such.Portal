@@ -2206,7 +2206,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Nº do Cliente > “999999”.
                 if (Convert.ToInt32(Cliente[0].No_) > 999999)
                 {
-                    execDetails += "Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    execDetails += "Não é permitido contabilizar para o Cliente "+ Cliente[0].No_+".";
                     result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
                 }
                 //Garantir que o campo “Nº do Contribuinte”
