@@ -107,6 +107,50 @@ namespace Hydra.Such.Data.Logic.Project
                     parsedItems.Add(x.ParseToDB()));
             return parsedItems;
         }
+
+
+
+        public static AuthorizedProjectViewModel ParseMovProjToViewModel(this MovimentosDeProjeto item)
+        {
+            if (item != null)
+            {
+                Projetos projitm = DBProjects.GetById(item.NºProjeto);
+                AuthorizedProjectViewModel proj = new AuthorizedProjectViewModel();
+
+                proj.CodProjeto = item.NºProjeto;
+                proj.GrupoFactura = item.GrupoFatura.HasValue ? item.GrupoFatura.Value : 0;
+                proj.Descricao = item.Descrição;
+                proj.CodCliente = item.CodCliente;
+                proj.CodRegiao = item.CódigoRegião;
+                proj.CodAreaFuncional = item.CódigoÁreaFuncional;
+                proj.CodCentroResponsabilidade = item.CódigoCentroResponsabilidade;
+                proj.CodContrato = projitm.NºContrato;
+                proj.CodEnderecoEnvio = projitm.EnvioAEndereço;
+                proj.GrupoContabilisticoObra = projitm.GrupoContabObra;
+                proj.GrupoContabilisticoProjeto = projitm.TipoGrupoContabProjeto.ToString();
+                proj.Utilizador = item.Utilizador;
+                proj.DataAutorizacao = item.DataAutorizaçãoFaturação.HasValue ? item.DataAutorizaçãoFaturação.Value.ToString("yyyy-MM-dd") : "";
+                proj.DataPedido = projitm.DataDoPedido;
+                proj.DescricaoGrupo = item.GrupoFaturaDescricao;
+                proj.NumCompromisso = projitm.NºCompromisso;
+                proj.Faturado = (bool)item.Faturada;
+                proj.ValorAutorizado = item.PreçoTotal.HasValue ? item.PreçoTotal.Value : 0;//item.ValorAutorizado;
+                proj.Utilizador = item.AutorizadoPor;
+                proj.PedidoCliente = projitm.PedidoDoCliente;
+
+                return proj;
+            }
+            return null;
+        }
+
+        public static List<AuthorizedProjectViewModel> ParseMovProjToViewModel(this List<MovimentosDeProjeto> items)
+        {
+            List<AuthorizedProjectViewModel> parsedItems = new List<AuthorizedProjectViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseMovProjToViewModel()));
+            return parsedItems;
+        }
         #endregion
     }
 }

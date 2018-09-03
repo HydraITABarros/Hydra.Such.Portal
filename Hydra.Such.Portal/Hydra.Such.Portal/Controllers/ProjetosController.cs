@@ -2231,6 +2231,48 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup)
+        {
+            //TODO: substituir GetMovimentosFaturacao         
+               List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
+                    try
+                        {
+                                 projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup)
+                                .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                                .OrderBy(x => x.ClientName).ToList();
+
+                            if (projectMovements.Count > 0)
+                            {
+                                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                                foreach (var lst in projectMovements)
+                                {
+                                    if (lst.MovementType == 3)
+                                    {
+                                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                                    }
+
+                                    if (!String.IsNullOrEmpty(lst.Currency))
+                                    {
+                                        lst.UnitPrice = lst.UnitValueToInvoice;
+                                    }
+                                }
+                                List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                     projectMovements = new List<ProjectMovementViewModel>();
+                    }
+                return Json(projectMovements);
+        }
+
+        [HttpPost]
         public JsonResult GetCustomers()
         {
             try
