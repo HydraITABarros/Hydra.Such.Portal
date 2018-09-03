@@ -1836,7 +1836,12 @@ namespace Hydra.Such.Portal.Controllers
                     authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
-                List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
+                string ProjectObs = string.Empty;
+                JValue ProjectObsValue = requestParams["projObs"] as JValue;
+                if (ProjectObsValue != null)
+                    ProjectObs = (string)ProjectObsValue.Value;
+
+                List <ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
@@ -1878,6 +1883,7 @@ namespace Hydra.Such.Portal.Controllers
                         authorizedProject.PedidoCliente = customerRequestNo;
                         authorizedProject.DataAutorizacao = DateTime.Now;
                         authorizedProject.Utilizador = User.Identity.Name;
+                        authorizedProject.Observacoes = ProjectObs;
                         //proj.DataPedido Não definido
                         if (serviceDate > DateTime.MinValue)
                             authorizedProject.DataPrestacaoServico = serviceDate;
@@ -1888,6 +1894,7 @@ namespace Hydra.Such.Portal.Controllers
                             x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
                             x.AuthorizedBy = User.Identity.Name;
                             x.InvoiceGroup = invoiceGroup;
+                            
 
                             //Create Movement Project Authorized ::RUI
                             MovimentosProjectoAutorizados projMovement = new MovimentosProjectoAutorizados();
@@ -1916,7 +1923,7 @@ namespace Hydra.Such.Portal.Controllers
                             projMovement.CustoTotal = x.TotalCost;
                             projMovement.CodCliente = x.InvoiceToClientNo;
                             projMovement.GrupoFactura = x.InvoiceGroup ?? 0;
-
+                            
                             if (x.OriginalDocument != null && x.DocumentNo != "")
                                 projMovement.NumGuiaExterna = x.OriginalDocument;
                             else if (x.AdjustedDocument != null && x.AdjustedDocument != "")
