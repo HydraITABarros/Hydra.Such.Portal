@@ -1888,6 +1888,7 @@ namespace Hydra.Such.Portal.Controllers
                             x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
                             x.AuthorizedBy = User.Identity.Name;
                             x.InvoiceGroup = invoiceGroup;
+                            x.InvoiceGroupDescription = invoiceGroupDescription;
 
                             //Create Movement Project Authorized ::RUI
                             MovimentosProjectoAutorizados projMovement = new MovimentosProjectoAutorizados();

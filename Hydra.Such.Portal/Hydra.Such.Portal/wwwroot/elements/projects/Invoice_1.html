@@ -409,7 +409,7 @@
                     <vaadin-grid-filter path="descricaoGrupo" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" value="{{item.descricaoGrupo}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" maxlength="30" value="{{item.descricaoGrupo}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -773,24 +773,6 @@
                     </template>
                     <template>
                         {{item.clientName}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceGroup.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="invoiceGroup">Grupo Factura</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="invoiceGroup" />
-                    </template>
-                    <template>
-                        {{item.invoiceGroup}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceGroupDescription.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="invoiceGroupDescription">Descrição Grupo</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="invoiceGroupDescription" />
-                    </template>
-                    <template>
-                        {{item.invoiceGroupDescription}}
                     </template>
                 </vaadin-grid-column>
             </vaadin-grid>
