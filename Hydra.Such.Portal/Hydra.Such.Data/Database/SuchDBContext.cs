@@ -83,6 +83,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<MovimentosCafetariaRefeitório> MovimentosCafetariaRefeitório { get; set; }
         public virtual DbSet<MovimentosDeAprovação> MovimentosDeAprovação { get; set; }
         public virtual DbSet<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
+        public virtual DbSet<MovimentosProjectoAutorizados> MovimentosProjectoAutorizados { get; set; }
         public virtual DbSet<MovimentosTelefones> MovimentosTelefones { get; set; }
         public virtual DbSet<MovimentosTelemóveis> MovimentosTelemóveis { get; set; }
         public virtual DbSet<MovimentosViaturas> MovimentosViaturas { get; set; }
@@ -149,17 +150,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-        // Unable to generate entity type for table 'dbo.MovProjectoAutorizados'. Please see the warning messages.
-
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
-
+      
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -5473,6 +5465,87 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.MovimentosDeProjeto)
                     .HasForeignKey(d => new { d.NºRequisição, d.NºLinhaRequisição })
                     .HasConstraintName("FK_Movimentos De Projeto_Linhas Requisição");
+            });
+
+            modelBuilder.Entity<MovimentosProjectoAutorizados>(entity =>
+            {
+                entity.HasKey(e => e.NumMovimento);
+
+                entity.ToTable("Movimentos Projecto Autorizados");
+
+                entity.Property(e => e.NumMovimento).ValueGeneratedNever();
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodCliente).HasMaxLength(20);
+
+                entity.Property(e => e.CodContrato)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodGrupoServico)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodProjeto)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodServCliente)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CodUnidadeMedida)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Codigo)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DataConsumo).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRegisto).HasColumnType("datetime");
+
+                entity.Property(e => e.DescServCliente).HasMaxLength(80);
+
+                entity.Property(e => e.Descricao)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GrupoFactura).HasColumnName("Grupo Factura");
+
+                entity.Property(e => e.NumDocumento)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumGuiaExterna).HasMaxLength(80);
+
+                entity.Property(e => e.NumGuiaResiduosGar)
+                    .HasColumnName("NumGuiaResiduos_GAR")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.TipoRecurso)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TipoRefeicao)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<MovimentosTelefones>(entity =>
