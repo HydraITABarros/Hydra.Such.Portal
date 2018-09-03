@@ -351,6 +351,7 @@ namespace Hydra.Such.Portal.Controllers
                             supVal = string.Empty;
                             prodVal = string.Empty;
 
+                            //RUI DESENVOLVIMENTO:DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio == expectedReceipDate && x.DtValidadeFim == pricesDate && x.CodProduto == lr.CódigoProdutoFornecedor);
                             //Get Supplier by Code 
                             List<DDMessageString> supplierval = DBNAV2017Supplier
                                 .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
