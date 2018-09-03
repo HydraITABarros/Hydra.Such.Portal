@@ -41,6 +41,7 @@ namespace Hydra.Such.Data.ViewModel
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
         public int? MealType { get; set; }
+        public string MealTypeDescription { get; set; }
         //public int? FinalDestintyResidueCode { get; set; }
         //public string OriginalDocument { get; set; }
         //public string CorrectedDocument { get; set; }
@@ -86,6 +87,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool? AdjustedPrice { get; set; }
         public string AdjustedDocumentData { get; set; }
         public bool? AutorizatedInvoice { get; set; }
+        public bool? AutorizatedInvoice2 { get; set; }
         public string AutorizatedInvoiceData { get; set; }
         public int? ResourceType { get; set; }
         public string TimesheetNo { get; set; }

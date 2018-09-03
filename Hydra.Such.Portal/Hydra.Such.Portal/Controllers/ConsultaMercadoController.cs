@@ -8,12 +8,14 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.PedidoCotacao;
+using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using static Hydra.Such.Data.Enumerations;
+
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -108,6 +110,41 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
+        public JsonResult UpdateConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (data != null)
+                {
+                    ConsultaMercado consultaMercado = DBConsultaMercado.Update(data);
+                    if (consultaMercado == null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Ocorreu um erro";
+                        return Json(result);
+                    }
+
+                    result.eReasonCode = 0;
+                    result.eMessage = "Sucesso";
+                    return Json(result);
+                }
+                else
+                {
+                    result.eReasonCode = -1;
+                    result.eMessage = "Sem dados";
+                    return Json(result);
+                }
+            }
+            catch (Exception e)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Ocorreu um erro";
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
         public JsonResult DeleteConsultaMercado([FromBody] ConsultaMercadoView data)
         {
             ErrorHandler result = new ErrorHandler();
@@ -143,6 +180,358 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult EstadoAnteriorConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    if (consultaMercado.Fase == Fases[4].Id)
+                    {
+                        consultaMercado.Estado = Estados[0].Id;
+                    }
+
+                    consultaMercado.Fase = (consultaMercado.Fase - 1) >= 0 ? (consultaMercado.Fase - 1) : Fases[0].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Mudança para Estado Anterior com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Anterior!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Anterior!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult EstadoSeguinteConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    if (consultaMercado.Fase == Fases[3].Id)
+                    {
+                        consultaMercado.Estado = Estados[1].Id;
+                    }
+
+                    consultaMercado.Fase = (consultaMercado.Fase + 1) <= 4 ? (consultaMercado.Fase + 1) : Fases[4].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    //Criar uma versão no histórico, com versão incrementada em 1
+                    HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
+
+                    if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
+                    {
+                        int _numversao = historicoconsultaMercado.NumVersao;
+
+                        //Histórico Linhas Consulta Mercado
+                        foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
+                        {
+                            DBConsultaMercado.Create_Hist(lin,_numversao);
+                        }
+
+                        //Histórico Condições Propostas Fornecedores
+                        foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Linhas Condições Propostas Fornecedores
+                        foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Selecção Entidades
+                        foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+                    }
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Mudança para Estado Seguinte com sucesso!";
+                    
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Seguinte!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi alterado para Estado Seguinte!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult CopiarConsultaMercado([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                //ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+                ConsultaMercado consultaMercado = DBConsultaMercado.Create(User.Identity.Name);
+
+                consultaMercado.CodProjecto = data.CodProjecto;
+                consultaMercado.Descricao = data.Descricao;
+                consultaMercado.CodRegiao = data.CodRegiao;
+                consultaMercado.CodAreaFuncional = data.CodAreaFuncional;
+                consultaMercado.CodCentroResponsabilidade = data.CodCentroResponsabilidade;
+                consultaMercado.CodActividade = data.CodActividade;
+                consultaMercado.DataPedidoCotacao = data.DataPedidoCotacao;
+                consultaMercado.FornecedorSelecionado = data.FornecedorSelecionado;
+                consultaMercado.NumDocumentoCompra = data.NumDocumentoCompra;
+                consultaMercado.CodLocalizacao = data.CodLocalizacao;
+                consultaMercado.FiltroActividade = data.FiltroActividade;
+                consultaMercado.ValorPedidoCotacao = data.ValorPedidoCotacao;
+                consultaMercado.Destino = data.Destino;
+                consultaMercado.Estado = data.Estado;
+                consultaMercado.UtilizadorRequisicao = data.UtilizadorRequisicao;
+                consultaMercado.DataLimite = data.DataLimite;
+                consultaMercado.EspecificacaoTecnica = data.EspecificacaoTecnica;
+                consultaMercado.Fase = data.Fase;
+                consultaMercado.Modalidade = data.Modalidade;
+                //consultaMercado.PedidoCotacaoCriadoEm = data.PedidoCotacaoCriadoEm;
+                //consultaMercado.PedidoCotacaoCriadoPor = data.PedidoCotacaoCriadoPor;
+                consultaMercado.ConsultaEm = data.ConsultaEm;
+                consultaMercado.ConsultaPor = data.ConsultaPor;
+                consultaMercado.NegociacaoContratacaoEm = data.NegociacaoContratacaoEm;
+                consultaMercado.NegociacaoContratacaoPor = data.NegociacaoContratacaoPor;
+                consultaMercado.AdjudicacaoEm = data.AdjudicacaoEm;
+                consultaMercado.AdjudicacaoPor = data.AdjudicacaoPor;
+                consultaMercado.NumRequisicao = data.NumRequisicao;
+                consultaMercado.PedidoCotacaoOrigem = data.NumConsultaMercado;
+                consultaMercado.ValorAdjudicado = data.ValorAdjudicado;
+                consultaMercado.CodFormaPagamento = data.CodFormaPagamento;
+                consultaMercado.SeleccaoEfectuada = data.SeleccaoEfectuada;
+
+                consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                if (data.LinhasConsultaMercado != null)
+                {
+                    foreach (LinhasConsultaMercadoView cmv in data.LinhasConsultaMercado)
+                    {
+                        DBConsultaMercado.Create_Copia(cmv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                if (data.CondicoesPropostasFornecedores != null)
+                {
+                    foreach (CondicoesPropostasFornecedoresView cpfv in data.CondicoesPropostasFornecedores)
+                    {
+                        DBConsultaMercado.Create_Copia(cpfv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+
+                if (data.LinhasCondicoesPropostasFornecedores != null)
+                {
+                    foreach (LinhasCondicoesPropostasFornecedoresView lcpfv in data.LinhasCondicoesPropostasFornecedores)
+                    {
+                        DBConsultaMercado.Create_Copia(lcpfv, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                if (data.SeleccaoEntidades != null)
+                {
+                    foreach (SeleccaoEntidadesView sev in data.SeleccaoEntidades)
+                    {
+                        DBConsultaMercado.Create_Copia(sev, consultaMercado.NumConsultaMercado, User.Identity.Name);
+                    }
+                }
+
+                ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                result.eReasonCode = 0;
+                result.eMessage = "Consulta de Mercado copiada com sucesso!";
+
+                return Json(result);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Por uma razão desconhecida, não foi efectuada qualquer cópia";
+            return Json(data);
+        }
+
+
+        [HttpPost]
+        public JsonResult FecharPedido([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+                    List<EnumData> Estados = EnumerablesFixed.Estado;
+
+                    consultaMercado.Estado = Estados[1].Id;
+                    consultaMercado.Fase = Fases[4].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    //Criar uma versão no histórico, com versão incrementada em 1
+                    HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
+
+                    if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
+                    {
+                        int _numversao = historicoconsultaMercado.NumVersao;
+
+                        //Histórico Linhas Consulta Mercado
+                        foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Condições Propostas Fornecedores
+                        foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Linhas Condições Propostas Fornecedores
+                        foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+
+                        //Histórico Selecção Entidades
+                        foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
+                        {
+                            DBConsultaMercado.Create_Hist(lin, _numversao);
+                        }
+                    }
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Pedido Fechado com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi Fechado o Pedido!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi Fechado o Pedido!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+
+        [HttpPost]
+        public JsonResult ConfirmarPedido([FromBody] ConsultaMercadoView data)
+        {
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                if (consultaMercado != null)
+                {
+                    List<EnumData> Fases = EnumerablesFixed.Fase;
+
+                    consultaMercado.Fase = Fases[1].Id;
+                    consultaMercado = DBConsultaMercado.Update(consultaMercado);
+
+                    ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                    result.eReasonCode = 0;
+                    result.eMessage = "Pedido Confirmado com sucesso!";
+
+                    return Json(result);
+                }
+
+                data.eReasonCode = -1;
+                data.eMessage = "Aconteceu algo errado e não foi Confirmado o Pedido!";
+                //return GetDetalheConsultaMercado(data);
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi Confirmado o Pedido!";
+            //return GetDetalheConsultaMercado(data);
+            return Json(data);
+        }
+
+
+        [HttpPost]
+        public JsonResult GerarRegistoPropostas([FromBody] ConsultaMercadoView data)
+        {
+            /*
+             Verificar se para a consulta de mercado e para o fornecedor já existe Alternativa > 0
+             Inserir registo na tabela "Condicoes_Propostas_Fornecedores"
+             Para cada registo acima, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+             */
+
+            if (data != null)
+            {
+                ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                string _Alternativa = string.Empty;
+                foreach (SeleccaoEntidades seleccaoEntidades in consultaMercado.SeleccaoEntidades)
+                {
+                    _Alternativa = DBConsultaMercado.Get_MAX_Alternativa_CondicoesPropostasFornecedores(data.NumConsultaMercado, seleccaoEntidades.CodFornecedor);
+
+                    if (_Alternativa == null)
+                    {
+                        _Alternativa = "0";
+                    }
+                    else
+                    {
+                        _Alternativa = (int.Parse(_Alternativa) + 1).ToString();
+                    }
+
+                    //Inserir registo na tabela "Condicoes_Propostas_Fornecedores", com o valor Alternativa calculado acima
+                    CondicoesPropostasFornecedores condicoesPropostasFornecedores = DBConsultaMercado.Create(seleccaoEntidades, _Alternativa);
+
+                    //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+                    foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
+                    {
+                        LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, seleccaoEntidades.CodFornecedor);
+                    }
+                }
+
+                consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+                data.eReasonCode = 0;
+                data.eMessage = "Foi Gerado o Registo de Proposta!";
+                return Json(data);
+            }
+
+            data.eReasonCode = -1;
+            data.eMessage = "Aconteceu algo errado e não foi possível Gerar o Registo de Proposta!";
+            return Json(data);
+        }
+
+
         #region Linhas Consulta Mercado
 
         [HttpPost]
@@ -165,7 +554,7 @@ namespace Hydra.Such.Portal.Controllers
                 linhaConsultaMercado.CustoTotalPrevisto = data.CustoTotalPrevisto;
                 linhaConsultaMercado.CustoUnitarioObjectivo = data.CustoUnitarioObjectivo;
                 linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
-                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : default(DateTime);
+                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null;
                 linhaConsultaMercado.Descricao = data.Descricao;
                 linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
                 linhaConsultaMercado.ModificadoEm = data.ModificadoEm;
@@ -188,7 +577,31 @@ namespace Hydra.Such.Portal.Controllers
                 //log
             }
             return Json(result);
+        }
 
+        [HttpPost]
+        public JsonResult UpdateLinhaConsultaMercado([FromBody] LinhasConsultaMercadoView data)
+        {
+            bool result = false;
+            try
+            {
+                LinhasConsultaMercado linhaConsultaMercado = DBConsultaMercado.CastLinhasConsultaMercadoViewToDB(data);
+                
+                linhaConsultaMercado.ModificadoEm = DateTime.Now;
+                linhaConsultaMercado.ModificadoPor = User.Identity.Name;
+
+                var dbUpdateResult = DBConsultaMercado.Update(linhaConsultaMercado);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
         }
 
 
@@ -203,6 +616,82 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     result = false;
                 
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        #endregion
+
+        #region Selecção Entidades
+
+        [HttpPost]
+        public JsonResult CreateLinhaSeleccaoEntidade([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
+                seleccaoEntidades.CidadeFornecedor = null;
+                seleccaoEntidades.CodActividade = data.CodActividade;
+                seleccaoEntidades.CodFormaPagamento = data.CodFormaPagamento;
+                seleccaoEntidades.CodFornecedor = data.CodFornecedor;
+                seleccaoEntidades.CodTermosPagamento = data.CodTermosPagamento;
+                seleccaoEntidades.NomeFornecedor = data.NomeFornecedor;
+                seleccaoEntidades.NumConsultaMercado = data.NumConsultaMercado;
+                seleccaoEntidades.Preferencial = data.Preferencial;
+                seleccaoEntidades.Selecionado = true;
+
+                var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaSeleccaoEntidade([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                var dbUpdateResult = DBConsultaMercado.Create(seleccaoEntidades);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLinhaSeleccaoEntidade([FromBody] SeleccaoEntidades data)
+        {
+            bool result = false;
+            try
+            {
+                if (DBConsultaMercado.Delete(data) != null)
+                    result = true;
+                else
+                    result = false;
+
             }
             catch (Exception ex)
             {

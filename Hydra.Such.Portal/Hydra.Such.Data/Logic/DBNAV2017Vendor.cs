@@ -33,7 +33,12 @@ namespace Hydra.Such.Data.Logic
                             Address = (string)temp.Address,
                             VATRegistrationNo = (string)temp.VATRegistrationNo,
                             PostCode = (string)temp.PostCode,
-                            VATBusinessPostingGroup = (string)temp.VATBusinessPostingGroup
+                            VATBusinessPostingGroup = (string)temp.VATBusinessPostingGroup,
+                            City = (string)temp.City,
+                            Cod_Termos_Pagamento = (string)temp.Cod_Termos_Pagamento,
+                            Cod_Formas_Pagamento = (string)temp.Cod_Formas_Pagamento,
+                            Atividade = (string)temp.Atividade,
+                            Preferencial = (int)temp.Preferencial
                         });
                     }
                 }

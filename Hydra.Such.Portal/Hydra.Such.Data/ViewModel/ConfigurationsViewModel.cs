@@ -26,5 +26,6 @@ namespace Hydra.Such.Data.ViewModel
         public TimeSpan? LunchEndTime { get; set; }
         public TimeSpan? DinnerStartTime { get; set; }
         public TimeSpan? DinnerEndTime { get; set; }
+        public string WasteAreaId { get; set; }
     }
 }

@@ -1,32 +1,41 @@
-﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
-<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
-<link rel="import" href="/lib/iron-form/iron-form.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html" />
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <dom-module id="x-pedidocotacaodetails">
     <template>
@@ -76,6 +85,16 @@
                 --primary-font-color: rgba(48, 64, 84, 0.91);
             }
 
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
             paper-collapse-item {
                 --paper-item: {
                     padding: 0 0;
@@ -92,42 +111,25 @@
             }
         </style>
 
-        <iron-ajax url="/ConsultaMercado/GetDetalheConsultaMercado"
-                   last-response="{{data}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_databound_ajax"
-                   on-response="_responseProcessor"
-                   content-type="application/json">
-        </iron-ajax>
+        <!-- Acções -->
+        <iron-ajax url="/ConsultaMercado/GetDetalheConsultaMercado" last-response="{{data}}" method="post" handle-as="json" id="page_databound_ajax" on-response="_responseProcessor" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateConsultaMercado" last-response="{{ConsultaMercadoUpdated}}" method="post" handle-as="json" id="ajax_update_consultamercado" on-response="_updateConsultaMercadoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/DeleteConsultaMercado" last-response="{{deletedData}}" method="post" handle-as="json" id="ajax_delete_consultaMercado" on-response="_deleteConsultaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/ConfirmarPedido" last-response="{{confirmarPedidoData}}" method="post" handle-as="json" id="ajax_confirmarPedido_consultaMercado" on-response="_confirmarPedidoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/FecharPedido" last-response="{{fecharPedidoData}}" method="post" handle-as="json" id="ajax_fecharPedido_consultaMercado" on-response="_fecharPedidoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/EstadoAnteriorConsultaMercado" last-response="{{estadoAnteriorData}}" method="post" handle-as="json" id="ajax_estadoAnterior_consultaMercado" on-response="_estadoAnteriorConsultaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/EstadoSeguinteConsultaMercado" last-response="{{estadoSeguinteData}}" method="post" handle-as="json" id="ajax_estadoSeguinte_consultaMercado" on-response="_estadoSeguinteConsultaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/CopiarConsultaMercado" last-response="{{copiarData}}" method="post" handle-as="json" id="ajax_copiar_consultaMercado" on-response="_copiarConsultaMercadoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoCreated}}" method="post" handle-as="json" id="page_createLinha_ajax" on-response="_createLinhaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/DeleteLinhaConsultaMercado" last-response="{{LinhaDeleted}}" method="post" handle-as="json" id="page_deleteLinha_ajax" on-response="_deleteLinhaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaConsultaMercado" last-response="{{LinhaConsultaMercadoUpdated}}" method="post" handle-as="json" id="page_updateLinhaConsultaMercado_ajax" on-response="_updateLinhaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_ajax" on-response="_updateLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/ConsultaMercado/DeleteConsultaMercado"
-                   last-response="{{deletedData}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_delete_consultaMercado"
-                   on-response="_deleteConsultaResponse"
-                   content-type="application/json">
-        </iron-ajax>
 
-        <iron-ajax url="/ConsultaMercado/CreateLinhaConsultaMercado"
-                   last-response="{{LinhaConsultaMercadoCreated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_createLinha_ajax"
-                   on-response="_createLinhaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/ConsultaMercado/DeleteLinhaConsultaMercado"
-                   last-response="{{LinhaDeleted}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_deleteLinha_ajax"
-                   on-response="_deleteLinhaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
+        <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -135,27 +137,32 @@
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Modalidade" last-response="{{LModalidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Estado" last-response="{{LEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/Get_Consulta_Mercado_Fase" last-response="{{LFase}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetProjects" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBJobNo_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/Actividades/GetAllActividades" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
 
-        <iron-ajax url="/Actividades/GetAllActividades" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGrid" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-
             <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
         </div>
 
         <div class="panel panel-default">
             <div class="panel-body">
-
                 <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                     <paper-tab>Geral</paper-tab>
                     <paper-tab>Controlo Interno</paper-tab>
+                    <paper-tab>Seleção de Entidades</paper-tab>
+                    <paper-tab>Condições Propostas Fornecedores</paper-tab>
                 </paper-tabs>
 
                 <iron-pages selected="{{selected}}">
@@ -172,9 +179,9 @@
                                 <div class="col-sm-3">
                                     <such-selectbox id="codProjecto" value="{{data.codProjecto}}" label="Cód. Projecto"
                                                     items="[[CBJobNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                    text-path="nºProjeto"
+                                                    value-path="nºProjeto"
+                                                    fields='[{"field":"nºProjeto", "name":"Nº Projecto"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}, {"field":"códigoRegião", "name":"Cód. Região"}, {"field":"códigoÁreaFuncional", "name":"Cód. Área Funcional"}, {"field":"CódigoCentroResponsabilidade", "name":"Cód. Centro Responsabilidade"}]'
                                                     disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                     </such-selectbox>
                                 </div>
@@ -252,7 +259,7 @@
                                     <such-selectbox id="codActividade" value="{{data.codActividade}}" label="Cód. Actividade"
                                                     items="[[CBActividades]]"
                                                     text-path="codActividade"
-                                                    value-path="descricao"
+                                                    value-path="codActividade"
                                                     fields='[{"field":"codActividade", "name":"Cód. Actividade"}, {"field":"descricao", "name":"Descrição"}]'
                                                     disabled="{{ !_permissions.update }}">
                                     </such-selectbox>
@@ -274,7 +281,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <vaadin-combo-box value="{{data.fase}}" label="Fase" items="[[LFase]]" item-value-path="id" id="fase" item-label-path="value">
+                                    <vaadin-combo-box value="{{data.fase}}" label="Fase" items="[[LFase]]" item-value-path="id" id="fase" item-label-path="value" disabled="true">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -292,7 +299,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <br />
-                                    <vaadin-checkbox checked="{{data.especificacaoTecnica}}">Especificação Técnica</vaadin-checkbox>
+                                    <vaadin-checkbox id="especificacaoTecnica" checked="{{data.especificacaoTecnica}}">Especificação Técnica</vaadin-checkbox>
                                 </div>
                             </div>
                             <div class="row break_clear">
@@ -350,6 +357,147 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tab Seleção de Entidades-->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <paper-collapse-group>
+                                <paper-collapse-item class="panel-heading" header="Entidades" closed>
+                                    <div class="panel-body">
+                                        <div class="row break_clear">
+                                            <div class="col-sm-2">
+                                                <such-selectbox id="seleccaoentidade_codActividade" value="{{data.codActividade}}" label="Cód. Actividade" on-blur="_filtraFornecedores"
+                                                                items="[[CBActividades]]"
+                                                                text-path="codActividade"
+                                                                value-path="codActividade"
+                                                                fields='[{"field":"codActividade", "name":"Cód. Actividade"}, {"field":"descricao", "name":"Descrição"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <such-selectbox id="_Suppliers" value="{{_Suppliers}}" label="Nº Fornecedor"
+                                                                items="[[Suppliers]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}, {"field":"blocked", "name":"Bloqueado"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <vaadin-text-field type="text" id="_CodTermosPagamento" label="Cód. Termos Pagamento" maxlength="10"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <vaadin-text-field type="text" id="_CodFormasPagamento" label="Cód. Formas Pagamento" maxlength="10"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-2" style="padding-top:16px">
+                                                <br />
+                                                <vaadin-checkbox id="_Preferencial" checked="{{chkPreferencial}}">Preferencial</vaadin-checkbox>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top:32px">
+                                                <center>
+                                                    <paper-button id="btn_createLinhaSelecaoEntidade" class="btnSave tableBtn" raised on-tap="_createLinhaSelecaoEntidade" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </paper-collapse-item>
+                            </paper-collapse-group>
+
+                            <div class="row break_clear">
+                                <div class="panel-body">
+                                    <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="idSeleccaoEntidades" style="text-align:center;">ID</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="idSeleccaoEntidades"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesidSeleccaoEntidades" id="tabSelecaoEntidadesidSeleccaoEntidades" value="{{item.idSeleccaoEntidades}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numConsultaMercado"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesnumConsultaMercado" id="tabSelecaoEntidadesnumConsultaMercado" value="{{item.numConsultaMercado}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codFornecedor" style="text-align:center;">Cód. Fornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodFornecedor" id="tabSelecaoEntidadescodFornecedor" value="{{item.codFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Nome Fornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesnomeFornecedor" id="tabSelecaoEntidadesnomeFornecedor" value="{{item.nomeFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód. Actividade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodActividade" id="tabSelecaoEntidadescodActividade" value="{{item.codActividade}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codTermosPagamento" style="text-align:center;">Cód. Termos Pagamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codTermosPagamento"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codFormaPagamento" style="text-align:center;">Cód. Formas Pagamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codFormaPagamento"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="preferencial" style="text-align:center;">Preferencial</vaadin-grid-sorter>
+                                            </template>
+                                            <template>
+                                                <vaadin-checkbox id="tabSelecaoEntidadespreferencial" checked="{{item.preferencial}}" disabled="true"></vaadin-checkbox>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteLinhaSelecaoEntidade" class="btnRemove tableBtn" raised on-tap="_deleteLinhaSelecaoEntidade" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Condições Propostas Fornecedores-->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                        </div>
+                    </div>
                 </iron-pages>
 
                 <!-- Linhas Consulta Mercado -->
@@ -358,11 +506,18 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-3">
+                                    <!--<such-selectbox id="linhacodProjecto" label="Nº Projecto"
+                                                items="[[CBJobNo]]"
+                                                text-path="no"
+                                                value-path="no"
+                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                disabled="{{ !_permissions.update }}">
+                                </such-selectbox>-->
                                     <such-selectbox id="linhacodProjecto" label="Nº Projecto"
                                                     items="[[CBJobNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                    text-path="nºProjeto"
+                                                    value-path="nºProjeto"
+                                                    fields='[{"field":"nºProjeto", "name":"Nº Projecto"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}, {"field":"códigoRegião", "name":"Cód. Região"}, {"field":"códigoÁreaFuncional", "name":"Cód. Área Funcional"}, {"field":"CódigoCentroResponsabilidade", "name":"Cód. Centro Responsabilidade"}]'
                                                     disabled="{{ !_permissions.update }}">
                                     </such-selectbox>
                                 </div>
@@ -495,7 +650,16 @@
                                         <vaadin-grid-filter path="numProjecto"></vaadin-grid-filter>
                                     </template>
                                     <template>
-                                        <vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" disabled="true"></vaadin-text-field>
+                                        <!--<vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                        <vaadin-combo-box items="[[CBJobNo_List]]" id="tabLinhasnumProjecto" item-value-path="id" item-label-path="value" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column resizable>
@@ -637,7 +801,6 @@
                         </div>
                     </paper-collapse-item>
                 </paper-collapse-group>
-
             </div>
         </div>
 
@@ -663,6 +826,12 @@
                         type: Number,
                         value: 0
                     },
+                    selectedItems: {
+                        type: Array
+                    },
+                    selectedItem: {
+                        type: Array
+                    },
                     _isCreate: {
                         type: Boolean,
                         value: false
@@ -671,12 +840,20 @@
                         type: Boolean,
                         value: false
                     },
+                    chkPreferencial: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Estado Anterior" }, { value: 3, description: "Estado Seguinte" }, { value: 4, description: "Registo Propostas" }, { value: 5, description: "Exportar Propostas" }, { value: 6, description: "Criar Alternativa" }, { value: 7, description: "Criar Encomenda Compra" }, { value: 8, description: "Encomenda Aberta de Compra" }],
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar Registo de Propostas" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
+                    },
+                    _Suppliers: {
+                        observer: '_setSuppliersData'
                     },
                 },
                 _functionsMenuItemSelected: function (e) {
@@ -685,40 +862,32 @@
                         return;
                     switch (item.value) {
                         case 1: //
-
+                            this._confirmarPedido();
                             break;
                         case 2://
-
+                            this._fecharPedido();
                             break;
                         case 3://
-
+                            this._estadoAnterior();
                             break;
                         case 4://
-
+                            this._estadoSeguinte();
                             break;
                         case 5://
-
+                            this._copiarConsultaMercado();
                             break;
                         case 6://
-
-                            break;
-                        case 7://
-
-                            break;
-                        case 8://
-
+                            this._gerarRegistoPropostas();
                             break;
                     }
                 },
                 ready: function () {
-                    //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "NumConsultaMercado": this._id });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this._id == "") {
                         this._isCreate = true;
                     }
-
                 },
 
                 _validateData: function () {
@@ -728,7 +897,196 @@
 
                 _setFieldsEditability(data) {
                     var _self = this;
+                    
+                    if (data.fase > 0) {
+                        _self.$.descricao.disabled = true;
+                        _self.$.codProjecto.disabled = true;
+                        _self.$.destino.disabled = true;
+                        _self.$.codRegiao.disabled = true;
+                        _self.$.codAreaFuncional.disabled = true;
+                        _self.$.codCentroResponsabilidade.disabled = true;
+                        _self.$._CBLocations.disabled = true;
+                        _self.$.numRequisicao.disabled = true;
+                        _self.$.utilizadorRequisicao.disabled = true;
+                        _self.$.modalidade.disabled = true;
+                        _self.$.codActividade.disabled = true;
+                        _self.$.valorPedidoCotacao.disabled = true;
+                        _self.$.dataLimite.disabled = true;
+                        _self.$.dataPedidoCotacao.disabled = true;
+                        _self.$.valorAdjudicado.disabled = true;
+                        _self.$.fase.disabled = true;
+                        _self.$.pedidoCotacaoOrigem.disabled = true;
+                        _self.$.especificacaoTecnica.disabled = true;
+                        _self.$.estado.disabled = true;
+                        _self.$.codFormaPagamento.disabled = true;
+                        _self.$.filtroActividade.disabled = true;
+                    }
+                    
+                    _self.$.seleccaoentidade_codActividade.value = _self.$.codActividade.value;
+                },
 
+                _confirmarPedido: function () {
+                    if (this.$.fase.value == 4) {
+                        this._showErrorMessage("Não é possível Confirmar o Pedido, porque a Fase já se encontra no último estado!")
+                        return;
+                    }
+
+                    if (this.$._CBLocations.value == "") {
+                        this._showErrorMessage("O código de Localização tem que estar preenchido!")
+                        return;
+                    }
+
+                    for (i = 0; i < this.data.linhasConsultaMercado.length; i++) {
+                        if ((this.data.linhasConsultaMercado[i].codUnidadeMedida == null) || (this.data.linhasConsultaMercado[i].codUnidadeMedida == "")) {
+                            this._showErrorMessage("Existem linhas sem Unidade de Medida definida!")
+                            return;
+                        }
+                    }
+
+                    var ajax_request = this.$.ajax_confirmarPedido_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Deseja confirmar o Pedido?", ajax_request
+                    );
+                },
+                _confirmarPedidoResponse: function () {
+                    if (this.confirmarPedidoData.eReasonCode == 0) {
+                        this._showMessage(this.confirmarPedidoData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.confirmarPedidoData.eMessage);
+                    }
+                },
+
+                _fecharPedido: function () {
+                    var ajax_request = this.$.ajax_fecharPedido_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Fecho do Pedido?", ajax_request
+                    );
+                },
+                _fecharPedidoResponse: function () {
+                    if (this.fecharPedidoData.eReasonCode == 0) {
+                        this._showMessage(this.fecharPedidoData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.fecharPedidoData.eMessage);
+                    }
+                },
+
+                _estadoAnterior: function () {
+                    if (this.$.fase.value == 0) {
+                        this._showErrorMessage("Não há Estado Anterior!")
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_estadoAnterior_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a alteração para o Estado Anterior?", ajax_request
+                    );
+                },
+                _estadoAnteriorConsultaResponse: function () {
+                    if (this.estadoAnteriorData.eReasonCode == 0) {
+                        this._showMessage(this.estadoAnteriorData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.estadoAnteriorData.eMessage);
+                    }
+                },
+
+                _estadoSeguinte: function () {
+                    var ajax_request = this.$.ajax_estadoSeguinte_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a alteração para o Estado Seguinte?", ajax_request
+                    );
+                },
+                _estadoSeguinteConsultaResponse: function () {
+                    if (this.estadoSeguinteData.eReasonCode == 0) {
+                        this._showMessage(this.estadoSeguinteData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.estadoSeguinteData.eMessage);
+                    }
+                },
+
+                _copiarConsultaMercado: function () {
+                    var ajax_request = this.$.ajax_copiar_consultaMercado;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a criação de uma cópia?", ajax_request
+                    );
+                },
+                _copiarConsultaMercadoResponse: function () {
+                    if (this.copiarData.eReasonCode == 0) {
+                        this._showMessage(this.copiarData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + this.copiarData.numConsultaMercado;
+                        //this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.copiarData.eMessage);
+                    }
+                },
+
+                _gerarRegistoPropostas: function () {
+                    debugger
+                    if (this.$.fase.value != 1) {
+                        this._showErrorMessage("Só é possível Gerar o Registo de Propostas quando a Fase se encontra em 'Consulta'")
+                        return;
+                    }
+
+                    for (i = 0; i < this.data.seleccaoEntidades.length; i++) {
+                        if (((this.data.seleccaoEntidades[i].codTermosPagamento == null) || (this.data.seleccaoEntidades[i].codTermosPagamento == "")) && 
+                            ((this.data.seleccaoEntidades[i].codFormaPagamento == null) || (this.data.seleccaoEntidades[i].codFormaPagamento == ""))) {
+                            this._showErrorMessage("Existem Fornecedores sem 'Cód. Forma Pagamento' e 'Cód. Termos Pagamento' definidos!")
+                            return;
+                        }
+                    }
+
+                    var ajax_request = this.$.ajax_gerarRegistoPropostas;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Geração de Registo de Propostas?", ajax_request
+                    );
+                },
+                _gerarRegistoPropostasResponse: function () {
+                    debugger
+                    if (this.gerarRegistoPropostasData.eReasonCode == 0) {
+                        this._showMessage(this.gerarRegistoPropostasData.eMessage);
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.gerarRegistoPropostasData.eMessage);
+                    }
                 },
 
                 _openToast: function (message) {
@@ -752,10 +1110,18 @@
                         this.$._linhacustoUnitarioObjectivo.value = item.unitCost;
                     }
                 },
+                _setSuppliersData: function (e) {
+                    var item = this.Suppliers.find(x => x.no_ == e);
+                    if (item != null) {
+                        this.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
+                        this.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
+                        this.chkPreferencial = item.preferencial == 0 ? false : true;
+                    }
+                },
                 _formulaCalculoAutomatica: function () {
                     if (this.$._linhaquantidade.value != "") {
                         if (this.$._linhacustoUnitarioPrevisto.value != "") {
-                            this.$._linhacustoTotalPrevisto.value = (Math.round(this.$._linhaquantidade.value * this.$._linhacustoUnitarioPrevisto.value*100)/100).toString();
+                            this.$._linhacustoTotalPrevisto.value = (Math.round(this.$._linhaquantidade.value * this.$._linhacustoUnitarioPrevisto.value * 100) / 100).toString();
                         }
                         if (this.$._linhacustoUnitarioObjectivo.value != "") {
                             this.$._linhacustoTotalObjectivo.value = (Math.round(this.$._linhaquantidade.value * this.$._linhacustoUnitarioObjectivo.value * 100) / 100).toString();
@@ -768,10 +1134,15 @@
                 },
 
                 _update: function () {
-
+                    this.$.ajax_update_consultamercado.body = JSON.stringify(this.data);
+                    this.$.ajax_update_consultamercado.generateRequest();
                 },
-                _updateResponse: function (e) {
-
+                _updateConsultaMercadoResponse: function (e) {
+                    if (this.ConsultaMercadoUpdated.eReasonCode != 0) {
+                        this._showErrorMessage("Ocorreu um erro na gravação da Consulta de Mercado");
+                    } else {
+                        this._showMessage("Consulta de Mercado gravada com sucesso.")
+                    }
                 },
 
                 _delete: function () {
@@ -797,7 +1168,7 @@
                     this.$.page_createLinha_ajax.body = JSON.stringify({
                         numConsultaMercado: this.$.numConsultaMercado.value,
                         codProduto: this.$._CBItems.value,
-                        cescricao: this.$._DescricaoProduto.value,
+                        descricao: this.$._DescricaoProduto.value,
                         numProjecto: this.$.linhacodProjecto.value,
                         codRegiao: this.$.linhacodigoRegiao.value,
                         codAreaFuncional: this.$.linhacodigoAreaFuncional.value,
@@ -873,6 +1244,107 @@
                     }
                 },
 
+                _updateLinha: function (e) {
+                    debugger
+                    this.$.page_updateLinhaConsultaMercado_ajax.body = JSON.stringify({
+                        numLinha: e.model.item.numLinha,
+                        numConsultaMercado: e.model.item.numConsultaMercado,
+                        codProduto: e.model.item.codProduto,
+                        descricao: e.model.item.descricao,
+                        numProjecto: e.model.item.numProjecto,
+                        codRegiao: e.model.item.codRegiao,
+                        codAreaFuncional: e.model.item.codAreaFuncional,
+                        codCentroResponsabilidade: e.model.item.codCentroResponsabilidade,
+                        codActividade: e.model.item.codActividade,
+                        codLocalizacao: e.model.item.codLocalizacao,
+                        quantidade: e.model.item.quantidade,
+                        custoUnitarioObjectivo: e.model.item.custoUnitarioObjectivo,
+                        custoTotalObjectivo: e.model.item.custoTotalObjectivo,
+                        custoUnitarioPrevisto: e.model.item.custoUnitarioPrevisto,
+                        custoTotalPrevisto: e.model.item.custoTotalPrevisto,
+                        codUnidadeMedida: e.model.item.codUnidadeMedida,
+                        dataEntregaPrevista: e.model.item.dataEntregaPrevista,
+                        dataEntregaPrevista_Show: e.model.item.dataEntregaPrevista_Show,
+                        numRequisicao: e.model.item.numRequisicao
+                    });
+                    this.$.page_updateLinhaConsultaMercado_ajax.generateRequest();
+                    this.$.tabLinhas.clearCache();
+                },
+                _updateLinhaResponse: function (e) {
+                    if (this.LinhaConsultaMercadoUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Actualizada com sucesso.');
+                    }
+                    else
+                    {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha.');    
+                    }
+                },
+
+                _createLinhaSelecaoEntidade: function () {
+                    this.$.page_createLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
+                        numConsultaMercado: this.$.numConsultaMercado.value,
+                        codFornecedor: this.$._Suppliers.value,
+                        nomeFornecedor: this.$._Suppliers.valueText,
+                        codActividade: this.$.seleccaoentidade_codActividade.value,
+                        codTermosPagamento: this.$._CodTermosPagamento.value,
+                        codFormaPagamento: this.$._CodFormasPagamento.value,
+                        preferencial: this.$._Preferencial.__data.checked
+                    });
+
+                    this.$.page_createLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
+                },
+                _createLinhaSeleccaoEntidadeResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidadeCreated) {
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Linha com sucesso.');
+
+                        this.$.tabSelecaoEntidades.clearCache();
+
+                        //this.$._Suppliers.value = "";
+                        //this.$._CodTermosPagamento.value = "";
+                        //this.$._CodFormasPagamento.value = "";
+                        //this.$._Preferencial.__data.checked = false;
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
+                    }
+                },
+                _deleteLinhaSelecaoEntidade: function (e) {
+                    var index = this.data.seleccaoEntidades.indexOf(e.model.item);
+                    this.data.seleccaoEntidades.splice(index, 1);
+                    this.$.page_deleteLinhaSeleccaoEntidade_ajax.body = JSON.stringify({ idSeleccaoEntidades: e.model.item.idSeleccaoEntidades });
+                    this.$.page_deleteLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
+                },
+                _deleteLinhaSeleccaoEntidadeResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidadeDeleted) {
+                        this._showMessage('Linha eliminada com sucesso');
+                        this.$.tabSelecaoEntidades.clearCache();
+                    } else {
+                        this._showMessage('Não foi possível eliminar a Linha!');
+                        setTimeout(
+                            function () {
+                                window.location.replace("/");
+                            }, 2500);
+                    }
+                },
+                _updateLinhaSeleccaoEntidade: function (e) {
+
+                },
+                _updateLinhaSeleccaoEntidadeResponse: function (e) {
+
+                },
+
+
+                _responseProcessor: function (data) {
+                    var self = this;
+                    
+                    self._setFieldsEditability(self.data);
+                    self._filtraFornecedores();
+                },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
@@ -894,6 +1366,16 @@
                         }
                     });
                 },
+
+                _filtraFornecedores: function () {
+                    var _self = this;
+
+                    this.$.ajax_supplier_options.body = JSON.stringify(_self.$.seleccaoentidade_codActividade.value);
+                    this.$.ajax_supplier_options.params = { "id": _self.$.seleccaoentidade_codActividade.value };
+                    this.$.ajax_supplier_options.generateRequest();
+                },
+
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;

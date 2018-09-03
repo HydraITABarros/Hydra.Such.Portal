@@ -12,14 +12,17 @@
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
-
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -36,6 +39,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -149,8 +153,14 @@
             }
         </style>
 
-
-
+        <iron-ajax url="/Projetos/ValidationCliente"
+                   last-response="{{validateC}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validateC_ajax"
+                   on-response="_createInvoice"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/GetMovimentosFaturacao"
                    last-response="{{result}}"
                    method="post"
@@ -167,7 +177,14 @@
                    on-response="_CreateLinesResponse"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Projetos/CancelLines"
+                   last-response="{{CancelLineRes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_cancelLines_ajax"
+                   on-response="_CancelLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel_FaturacaoProjetos"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -192,6 +209,13 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetInvoiceTypes"
+                   last-response="{{invoiceTypes}}"
+                   auto
+                   id="getInvoiceTypes"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
 
         <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
             <vaadin-grid-selection-column id="selectColumn" auto-select>
@@ -204,6 +228,15 @@
                 </template>
                 <template>
                     {{item.projectNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroup">Grupo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroup" />
+                </template>
+                <template>
+                    {{item.invoiceGroup}}
                 </template>
             </vaadin-grid-column>
 
@@ -405,6 +438,25 @@
                 </div>
             </template>
         </paper-toast>
+
+        <paper-dialog id="dlgInvoice" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-combo-box id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Tipo de Fatura" required error-message="Este campo é obrigatório">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Guardar</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
     </template>
 
 
@@ -443,6 +495,9 @@
                     selectedItems: {
                         type: Array,
                     },
+                    typesFilter: {
+                        type: Array,
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -455,8 +510,7 @@
                     },
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.generateRequest();
-
+                    this.$.page_databound_ajax.generateRequest();                    
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -508,11 +562,144 @@
                     }
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItems);
-                    this.$.page_autorizelines_ajax.generateRequest();
-                    //console.log(this.selectedItems);
-                },
+                    if (this.selectedItems.length != 0) {
+                        //Verifica se a lista é do mesmo cliente
+                        var clienteNo = this.selectedItems[0].invoiceToClientNo;
+                        var verifica = true;
+                        var saldo=0;
+                        for (i = 0; i < this.selectedItems.length; i++) {
+                            if (clienteNo != this.selectedItems[i].invoiceToClientNo) {
+                                verifica = false;
+                            }
+                            saldo = saldo + this.selectedItems[i].totalPrice;
+                        }
+                        if (verifica == true) {
+                            this.selectedItem = this.selectedItems;
+                            if (saldo > 0) {
+                                delete this.invoiceTypes[2];
+                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                                
+                            }
+                            else{
+                                delete this.invoiceTypes[0];
+                                delete this.invoiceTypes[1];
+                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                            }
+                          
+                            this.$.dlgInvoice.open();
+                            this.$.getInvoiceTypes.generateRequest();      
+                        }
+                        else {
+                            this.openToastError("Selecionar apenas projetos de um cliente!");
+                        }
+                    } else {
+                        this.openToastError("Selecionar pelo menos um projeto!");
+                    }
 
+                },
+               
+                _deleteLine: function (selectedItem, selectedItems) {
+                    debugger;;
+                    if (this.selectedItems.length != 0) {
+                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItems);
+                        this.$.page_cancelLines_ajax.generateRequest();
+                    } else {
+                        this.openToastError("Selecionar pelo menos um projeto!");
+                    }
+
+                },
+                _validateData: function (Item) {
+                    if (this.$._CLOptionInvoice.validate()) {
+                        for (var line = 0; line < Item.length; line++) {
+                            if (Item[line].totalPrice == "" || Item[line].totalPrice == null || Item[line].totalPrice == 0) {
+                                return "Selecionou Linhas com Valor a ZERO!";
+                            }
+                           //falta verificações
+                            if (Item[line].responsabilityCenterCode == "" ) {
+                                return "O Centro de Responsabilidade não está preenchido!";
+                            }
+                            if (Item[line].regionCode == "") {
+                                return "O Código de Região não está preenchido!";
+                            }
+                            if (Item[line].projectNo == "") {
+                                return "O Nº de Projeto não está preenchido!";             
+                            }   
+                            if (Item[line].functionalAreaCode == "") {
+                                return "O Código Área Funcional não está preenchido!";                            
+                            }                                  
+                        }
+                        return "";
+                    }
+                    return "Verifique os dados inseridos.";
+                },
+                _validateInvoice: function () {
+                    var erro=this._validateData(this.selectedItem);
+                    if (erro == "") {
+                        this.$.page_validateC_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_validateC_ajax.generateRequest();
+                        this.$.dlgInvoice.close();
+                    } else {
+                        this.$.dlgInvoice.close();
+                        this.openToastError(erro);
+                    }
+                },
+                _createInvoice: function () {
+                    debugger;;
+                    if (this.validateC.eMessages.length != 0) {
+                        var validation = this.validateC.eMessages.find(x => x.type == 0);
+                        var option = this.$._CLOptionInvoice.value;
+                        if (validation == undefined) {
+                            var validateMess = validation.eMessages.find(x => x.type == 3);
+                            if (validateMess != undefined) {
+                                var ajax_request = this.$.page_autorizelines_ajax;
+                                bootbox.confirm({
+                                    message: validateMess.message,
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (result) {
+                                        if (result) {
+                                            ajax_request.body = JSON.stringify(this.selectedItem);
+                                            ajax_request.params = { "OptionInvoice": option };
+                                            ajax_request.generateRequest();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItem);
+                                this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                                this.$.page_autorizelines_ajax.generateRequest();
+                            }
+                        }
+                        else {
+                            var errors = this.validateC.eMessages.find(x => x.type == 0);
+                            this.openToastError(errors.message);
+                        }
+                    }
+                    else {
+                        this.$.page_autorizelines_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.page_autorizelines_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                        this.$.page_autorizelines_ajax.generateRequest();
+                    }
+                },
+                _CancelLinesResponse: function () {
+                    debugger;;
+                    if (this.CancelLineRes.length == 0) {
+                        this.openToastError("Não foi possivel eliminar as linhas");
+                    }
+                    else {
+                        this.openToast("Linhas anuladas com sucesso");
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
                 _CreateLinesResponse: function (e) {
                     if (this.CreateInvoiceResponse.eReasonCode == 1) {
                         this.openToast("Faturas criadas com sucesso");

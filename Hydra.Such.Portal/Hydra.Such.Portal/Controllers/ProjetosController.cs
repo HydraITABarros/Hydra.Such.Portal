@@ -27,6 +27,9 @@ using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.Logic.ProjectMovements;
+using System.Globalization;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -450,24 +453,32 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (TReadNavProj.IsCompletedSuccessfully)
                     {
-                        //Update Project on NAV
-                        Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
-                        bool statusL = true;
-                        try
-                        {
-                            TUpdateNavProj.Wait();
-                        }
-                        catch (Exception ex)
+                        if (TReadNavProj.Result.WSJob == null)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = ex.InnerException.Message;
-                            statusL = false;
+                            data.eMessage = "Erro ao atualizar: O projeto não existe no NAV";
                         }
+                        else
+                        {
+                            //Update Project on NAV
+                            Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                            bool statusL = true;
+                            try
+                            {
+                                TUpdateNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = ex.InnerException.Message;
+                                statusL = false;
+                            }
 
-                        if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
-                        {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            }
                         }
                     }
                 }
@@ -1508,6 +1519,7 @@ namespace Hydra.Such.Portal.Controllers
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 User = x.Utilizador,
+                MealType = x.TipoRefeição,
                 UnitCost = x.CustoUnitário,
                 TotalCost = x.CustoTotal,
                 UnitPrice = x.PreçoUnitário,
@@ -1519,6 +1531,22 @@ namespace Hydra.Such.Portal.Controllers
                 ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
 
             }).ToList();
+            foreach (ProjectDiaryViewModel item in dp)
+            {
+                if (item.MealType != null)
+                {
+                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                    if (TRrow != null)
+                    {
+                        item.MealTypeDescription = TRrow.Descrição;
+                    }
+                }
+                else
+                {
+                    item.MealTypeDescription = "";
+                }
+                
+            }
 
             return Json(dp);
         }
@@ -1579,82 +1607,41 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
-            ViewBag.projectNo = id;
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AutorizaçãoFaturação);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.projectNo = id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
-        public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
+        public JsonResult GetAutorizacaoFaturacao([FromBody] JObject requestParams)
         {
             Result result = new Result();
-            int areaId = int.Parse(requestParams["areaId"].ToString());
             string projectNo = requestParams["projectNo"].ToString();
+
+            bool billable = true;
+            JValue billableValue = requestParams["billable"] as JValue;
+            if (billableValue != null)
+                billable = (bool)billableValue.Value;
+
 
             var project = DBProjects.GetById(projectNo);
             
-            ProjectBillingAuthorization p = new ProjectBillingAuthorization(project);
+            ProjectBillingAuthorization p = new ProjectBillingAuthorization(projectNo, User.Identity.Name, _config.NAVDatabaseName, _config.NAVCompanyName);
             if (project != null)
             {
                 try
                 {
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
-                    
 
-                    List<ProjectDiaryViewModel> projectMovements = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
-                    {
-                        LineNo = x.NºLinha,
-                        ProjectNo = x.NºProjeto,
-                        Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                        MovementType = x.TipoMovimento,
-                        Type = x.Tipo,
-                        Code = x.Código,
-                        Description = x.Descrição,
-                        Quantity = x.Quantidade,
-                        MeasurementUnitCode = x.CódUnidadeMedida,
-                        LocationCode = x.CódLocalização,
-                        ProjectContabGroup = x.GrupoContabProjeto,
-                        RegionCode = x.CódigoRegião,
-                        FunctionalAreaCode = x.CódigoÁreaFuncional,
-                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                        User = x.Utilizador,
-                        UnitCost = x.CustoUnitário,
-                        TotalCost = x.CustoTotal,
-                        UnitPrice = x.PreçoUnitário,
-                        TotalPrice = x.PreçoTotal,
-                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                        Currency = x.Moeda,
-                        Billable = x.Faturável,
-                        Billed = (bool)x.Faturada,
-                        Registered = x.Registado,
-                        InvoiceToClientNo = x.FaturaANºCliente,
-                        CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
-                        ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
-                        ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                    }).OrderBy(x => x.ClientName).ToList();
-
-                    if (projectMovements.Count > 0)
-                    {
-                        var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                        foreach (var lst in projectMovements)
-                        {
-                            if (lst.MovementType == 3)
-                            {
-                                lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                            }
-
-                            if (!String.IsNullOrEmpty(lst.Currency))
-                            {
-                                lst.UnitPrice = lst.UnitValueToInvoice;
-                            }
-                        }
-                        List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
-                        if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                            projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                    }
+                    List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, billable);
 
                     if (project.Estado.HasValue && (project.Estado == 3 || project.Estado == 4))
                     {
@@ -1672,14 +1659,131 @@ namespace Hydra.Such.Portal.Controllers
                     result.eReasonCode = 2;
                     result.eMessage = "Ocorreu um erro ao obter os movimentos.";
                     result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
-                    result.Value = new List<ProjectDiaryViewModel>();
+                    result.Value = new List<ProjectMovementViewModel>();
                 }
             }
             else
             {
                 result.eReasonCode = 2;
                 result.eMessage = "Não foi possivel obter o projecto.";
-                result.Value = new List<ProjectDiaryViewModel>();
+                result.Value = new List<ProjectMovementViewModel>();
+            }
+            return Json(result);
+        }
+        
+        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, bool? billable)
+        {
+            List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(projectNo, billable)
+                        .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                        .OrderBy(x => x.ClientName).ToList();
+
+            if (projectMovements.Count > 0)
+            {
+                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                foreach (var lst in projectMovements)
+                {
+                    if (lst.MovementType == 3)
+                    {
+                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+
+                    if (!String.IsNullOrEmpty(lst.Currency))
+                    {
+                        lst.UnitPrice = lst.UnitValueToInvoice;
+                    }
+                }
+                List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+            }
+            return projectMovements;
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectBillingResume([FromBody] JObject requestParams)
+        {
+            string projectNo = requestParams["projectNo"].ToString();
+
+            List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, null);
+            //prevent errors
+            if (projectMovements == null)
+                projectMovements = new List<ProjectMovementViewModel>();
+
+            dynamic projBillingResume = new JObject();
+
+            projBillingResume.TotalBillableConsumption = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.AuthorizedBilling = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo &&
+                            x.AutorizatedInvoice == true)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.BillingToAuthorize = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Consumo &&
+                            x.AutorizatedInvoice == false &&
+                            x.Billable == true)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+            projBillingResume.RegisteredInvoiceValue = projectMovements
+                .Where(x => x.TotalPrice.HasValue &&
+                            x.Type == (int)ProjectDiaryMovementTypes.Venda)
+                .Select(x => x.TotalPrice.Value)
+                .Sum();
+
+            decimal? totalInvoiceValue = DBNAV2017Projects.GetTotalInvoiceValue(_config.NAVDatabaseName, _config.NAVCompanyName, projectNo);
+            projBillingResume.CreatedInvoicesValue = totalInvoiceValue;
+
+            return Json(projBillingResume);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProjectMovements([FromBody] List<ProjectMovementViewModel> projectMovements)
+        {
+            Result result = new Result();
+
+            string projectNo = projectMovements.Select(x => x.ProjectNo).FirstOrDefault();
+            List<int> movementIds = projectMovements.Select(x => x.LineNo).ToList();
+
+            var movementsToUpdate = DBProjectMovements.GetProjectMovementsFor(projectNo, true);
+            if (movementsToUpdate != null)
+                movementsToUpdate.RemoveAll(x => !movementIds.Contains(x.NºLinha));
+
+
+            movementsToUpdate.ForEach(x =>
+            {
+                var item = projectMovements.First(y => y.LineNo == x.NºLinha);
+                x.PreçoUnitário = item.UnitPrice;
+                x.Faturável = item.Billable;
+                x.TipoRecurso = item.ResourceType;
+                x.CódServiçoCliente = item.ServiceClientCode;
+                x.CódGrupoServiço = item.ServiceGroupCode;
+                x.NºGuiaExterna = item.ExternalGuideNo;
+                x.DataConsumo = string.IsNullOrEmpty(item.ConsumptionDate) ? (DateTime?)null : DateTime.Parse(item.ConsumptionDate);
+                x.NºGuiaResíduos = item.ResidueGuideNo;
+                x.FaturaçãoAutorizada2 = item.AutorizatedInvoice2;
+                x.TipoRefeição = item.MealType;
+            });
+            var updatedMovements = DBProjectMovements.Update(movementsToUpdate);
+            if (updatedMovements != null)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Movimentos atualizados com sucesso.";
+                result.Value = updatedMovements.ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi possivel atualizar os movimentos.";
+                result.Value = projectMovements;
             }
             return Json(result);
         }
@@ -1691,29 +1795,367 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult InvoiceLinesAuthorize([FromBody] List<ProjectDiaryViewModel> data)
+        public JsonResult AuthorizeProjectMovements([FromBody] JObject requestParams)//[FromBody] List<ProjectDiaryViewModel> data
         {
+            ErrorHandler result = ValidateMovements(requestParams);
+            if (result.eReasonCode != 1)
+                return Json(result);
+
             try
             {
-                if (data != null)
-                {
-                    foreach (var updatedata in data)
-                    {
-                        MovimentosDeProjeto lines = DBProjectMovements.GetByLineNo(updatedata.LineNo).FirstOrDefault();
-                        lines.FaturaçãoAutorizada = true;
-                        lines.DataAutorizaçãoFaturação = DateTime.Now;
-                        DBProjectMovements.Update(lines);
-                    }
+                string projectNo = string.Empty;
+                JValue projectNoValue = requestParams["projectNo"] as JValue;
+                if (projectNoValue != null)
+                    projectNo = (string)projectNoValue.Value;
 
-                    return Json(data);
+                string commitmentNumber = string.Empty;
+                JValue commitmentNumberValue = requestParams["commitmentNumber"] as JValue;
+                if (commitmentNumberValue != null)
+                    commitmentNumber = (string)commitmentNumberValue.Value;
+
+                string invoiceGroupDescription = string.Empty;
+                JValue invoiceGroupDescriptionValue = requestParams["invoiceGroupDescription"] as JValue;
+                if (invoiceGroupDescriptionValue != null)
+                    invoiceGroupDescription = (string)invoiceGroupDescriptionValue.Value;
+
+                string customerRequestNo = string.Empty;
+                JValue customerRequestNoValue = requestParams["customerRequestNo"] as JValue;
+                if (customerRequestNoValue != null)
+                    customerRequestNo = (string)customerRequestNoValue.Value;
+
+                DateTime serviceDate = DateTime.MinValue;
+                JValue serviceDateValue = requestParams["serviceDate"] as JValue;
+                if (serviceDateValue != null)
+                    DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
+
+                decimal authorizationTotal;
+                JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
+                if (authorizationTotalValue != null)
+                {
+                    string str = (string)authorizationTotalValue.Value;
+                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                }
+
+                List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
+                JArray projMovementsValue = requestParams["projMovements"] as JArray;
+                if (projMovementsValue != null)
+                    projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                Projetos project = null;
+                Contratos contract = null;
+                NAVClientsViewModel customer = null;
+
+                if (!string.IsNullOrEmpty(projectNo))
+                    project = DBProjects.GetById(projectNo);
+
+                if (project != null)
+                {
+                    contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                    customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+
+                    using (SuchDBContext ctx = new SuchDBContext())
+                    {
+                        int? lastUsed = ctx.ProjectosAutorizados
+                            .Where(x => x.CodProjeto == projectNo)
+                            .Select(x => x.GrupoFactura)
+                            .FirstOrDefault();
+                        int invoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
+                        ProjectosAutorizados authorizedProject = new ProjectosAutorizados();
+                        authorizedProject.CodProjeto = project.NºProjeto;
+                        authorizedProject.GrupoFactura = invoiceGroup;
+                        authorizedProject.Faturado = false;
+                        authorizedProject.DescricaoGrupo = invoiceGroupDescription;
+                        authorizedProject.NumCompromisso = commitmentNumber;
+                        authorizedProject.CodCliente = project.NºCliente;
+                        authorizedProject.CodContrato = contract?.NºDeContrato;
+                        authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
+                        authorizedProject.CodMetodoPagamento = customer?.PaymentTermsCode;
+                        authorizedProject.CodRegiao = customer.National ? project.CódigoRegião : customer.RegionCode;
+                        authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
+                        authorizedProject.CodCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                        authorizedProject.PedidoCliente = customerRequestNo;
+                        authorizedProject.DataAutorizacao = DateTime.Now;
+                        authorizedProject.Utilizador = User.Identity.Name;
+                        //proj.DataPedido Não definido
+                        if (serviceDate > DateTime.MinValue)
+                            authorizedProject.DataPrestacaoServico = serviceDate;
+
+                        projMovements.ForEach(x =>
+                        {
+                            x.AutorizatedInvoice = true;
+                            x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            x.AuthorizedBy = User.Identity.Name;
+                            x.InvoiceGroup = invoiceGroup;
+                        });
+
+                        ctx.ProjectosAutorizados.Add(authorizedProject);
+                        ctx.MovimentosDeProjeto.UpdateRange(projMovements.ParseToDB());
+
+                        try
+                        {
+                            ctx.SaveChanges();
+                            result.eReasonCode = 1;
+                            result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao tentar autorizar os movimentos.";
+                        }
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel obter o projeto.";
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao autorizar.";
             }
-            return null;
+            return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult ValidateMovementsForAuthorization([FromBody] JObject requestParams)
+        {
+            var result = ValidateMovements(requestParams);
+            return Json(result);
+        }
+
+        private ErrorHandler ValidateMovements(JObject requestParams)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                string projectNo = string.Empty;
+                JValue projectNoValue = requestParams["projectNo"] as JValue;
+                if (projectNoValue != null)
+                    projectNo = (string)projectNoValue.Value;
+
+                string commitmentNumber = string.Empty;
+                JValue commitmentNumberValue = requestParams["commitmentNumber"] as JValue;
+                if (commitmentNumberValue != null)
+                    commitmentNumber = (string)commitmentNumberValue.Value;
+
+                string invoiceGroupDescription = string.Empty;
+                JValue invoiceGroupDescriptionValue = requestParams["invoiceGroupDescription"] as JValue;
+                if (invoiceGroupDescriptionValue != null)
+                    invoiceGroupDescription = (string)invoiceGroupDescriptionValue.Value;
+
+                string customerRequestNo = string.Empty;
+                JValue customerRequestNoValue = requestParams["customerRequestNo"] as JValue;
+                if (customerRequestNoValue != null)
+                    customerRequestNo = (string)customerRequestNoValue.Value;
+
+                DateTime serviceDate;
+                JValue serviceDateValue = requestParams["serviceDate"] as JValue;
+                if (serviceDateValue != null)
+                    DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
+
+                decimal authorizationTotal;
+                JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
+                if (authorizationTotalValue != null)
+                {
+                    string str = (string)authorizationTotalValue.Value;
+                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                }
+
+                List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
+                JArray projMovementsValue = requestParams["projMovements"] as JArray;
+                if (projMovementsValue != null)
+                    projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                Projetos project = null;
+                Contratos contract = null;
+
+                if (!string.IsNullOrEmpty(projectNo))
+                {
+                    project = DBProjects.GetById(projectNo);
+                    if (project != null)
+                        contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                }
+                
+                if (project != null)
+                {
+                    //Apenas movimentos de projeto faturáveis.
+                    var notBillableItems = projMovements.Where(x => !x.Billable.Value).Select(x => x.LineNo);
+                    if (notBillableItems.Count() > 0)
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Apenas podem ser autorizados movimentos de projeto faturáveis (ver movimentos: " + string.Join(',', notBillableItems) + ")."));
+
+                    //Não permitir faturar mais do que uma vez
+                    var authorizedItems = projMovements.Where(x => x.AutorizatedInvoice.Value);
+                    if (authorizedItems.Count() > 0)
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Existem movimentos que já foram autorizados (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+
+                    if (contract != null)
+                    {
+                        //Validar se o contrato indicado no projeto está vigente
+                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
+                            (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
+                        }
+                        //Validar se o compromisso é o que está no contrato                
+                        if (commitmentNumber != contract.NºCompromisso)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
+                        }
+                    }
+
+                    //Validar se o cliente está ao abrigo da lei dos compromissos
+                    if (string.IsNullOrEmpty(commitmentNumber))
+                    {
+                        string customerNo = project.NºCliente;
+                        var customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
+                        if (customers != null)
+                        {
+                            var customer = customers.FirstOrDefault();
+                            if (customer != null)
+                            {
+                                if (customer.UnderCompromiseLaw)
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "O cliente está ao abrigo da lei de compromissos."));
+                                else
+                                    result.eMessages.Add(new TraceInformation(TraceType.Warning, "Não foi indicado um Nº do Compromisso."));
+                            }
+                            else
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente.")); 
+                        }
+                        else
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
+                    }
+
+                    Configuração conf = DBConfigurations.GetById(1);
+                    if (conf != null)
+                    {
+                        string wasteAreaId = conf.CodAreaResiduos;
+                        if (!string.IsNullOrEmpty(wasteAreaId))
+                        {
+                            //No caso da área dos Resíduos, obrigar o preenchimento do campo “Data Consumo” em todas as linhas.
+                            var wasteAreaMovements = projMovements.Where(x => x.FunctionalAreaCode == wasteAreaId).ToList();
+                            var invalidWasteAreaMovementIds = wasteAreaMovements.Where(x => string.IsNullOrEmpty(x.ConsumptionDate)).Select(x => x.LineNo);
+                            if (invalidWasteAreaMovementIds.Count() > 0)
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O preenchimento da Data de Consumo é obrigatório nos movimentos da áreas de residuos (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+                        }
+                        else
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "A área de residuos não está configurada. Contacte o administrador."));
+                    }
+                    else
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar a área de residuos."));
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel obter detalhes do projeto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 2;
+                result.eMessages.Add(new TraceInformation(TraceType.Exception, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
+            }
+            bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error || x.Type == TraceType.Exception);
+            if (hasErrors || result.eReasonCode > 1)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Foram detetados erros nos movimentos submetidos.";
+            }
+            else
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Não foram detetados erros de validação nos movimentos submetidos.";
+            }
+            return result;
+        }
+
+        [HttpPost]
+        public JsonResult GetCommitmentDetails([FromBody] JObject requestParams)
+        {
+            Result result = new Result();
+            dynamic commitmentDetails = new JObject();
+            string commitmentNo = string.Empty;
+            string customerRequestNo = string.Empty;
+            bool settedFromProjectOrContract = false;
+            Projetos project;
+            Contratos contract = null;
+
+
+            string projectNo = requestParams["projectNo"].ToString();
+            string serviceDeliveryValue = requestParams["serviceDeliveryDate"].ToString();
+            DateTime serviceDeliveryDate = DateTime.Parse(serviceDeliveryValue);
+
+            project = DBProjects.GetById(projectNo);
+            if (project != null && !string.IsNullOrEmpty(project.NºContrato))
+                contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+
+            if (project == null)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi possivel obter dados do projeto.";
+            }
+            else
+            {
+                //get from project then from contract
+                if (!string.IsNullOrEmpty(project.NºCompromisso))
+                {
+                    commitmentNo = project.NºCompromisso;
+                    settedFromProjectOrContract = true;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(contract?.NºCompromisso))
+                    {
+                        commitmentNo = contract?.NºCompromisso;
+                        settedFromProjectOrContract = true;
+                    }
+                }
+                if (!string.IsNullOrEmpty(project.PedidoDoCliente))
+                    customerRequestNo = project.PedidoDoCliente;
+                else
+                {
+                    if (!string.IsNullOrEmpty(contract?.NºRequisiçãoDoCliente))
+                        customerRequestNo = contract?.NºRequisiçãoDoCliente;
+                }
+
+                if (string.IsNullOrEmpty(commitmentNo) || string.IsNullOrEmpty(customerRequestNo))
+                {
+                    //Get from Contract Client Requisition
+                    List<RequisiçõesClienteContrato> contractReq = null;
+                    if(contract != null)
+                        contractReq = DBContractClientRequisition.GetByContract(contract.NºDeContrato);
+
+                    if (contractReq != null)
+                    {
+                        var billingGroupReq = contractReq.Where(x => x.GrupoFatura == 0 && x.DataInícioCompromisso <= serviceDeliveryDate);
+                        var projectReq = billingGroupReq.Where(x => x.NºProjeto == project.NºProjeto);
+
+                        if (string.IsNullOrEmpty(commitmentNo))
+                            commitmentNo = projectReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
+                        if (string.IsNullOrEmpty(customerRequestNo))
+                            customerRequestNo = projectReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente))?.NºRequisiçãoCliente;
+
+                        if (string.IsNullOrEmpty(commitmentNo) || string.IsNullOrEmpty(customerRequestNo))
+                        {
+                            if (string.IsNullOrEmpty(commitmentNo))
+                                commitmentNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
+                            if (string.IsNullOrEmpty(customerRequestNo))
+                                customerRequestNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente))?.NºRequisiçãoCliente;
+                        }
+                    }
+                }
+                result.eReasonCode = 1;
+            }
+            commitmentDetails.commitmentNo = commitmentNo;
+            commitmentDetails.customerRequestNo = customerRequestNo;
+            commitmentDetails.settedFromProjectOrContract = settedFromProjectOrContract;
+            result.Value = commitmentDetails;
+
+            return Json(result);
+        }
+
+
         #endregion InvoiceAutorization
 
         #region Invoice
@@ -1757,15 +2199,231 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetAuthorizedMovements()
+        {
+            //TODO: substituir GetMovimentosFaturacao
+            try
+            {
+                List<AuthorizedProjectViewModel> result = null;
+                using (SuchDBContext ctx = new SuchDBContext())
+                {
+                    result = ctx.ProjectosAutorizados
+                        .Where(x => !x.Faturado)
+                        .ToList()
+                        .ParseToViewModel();
+                }
+                if (result != null)
+                {
+                    result.ForEach(x =>
+                    {
+                        var movements = DBProjectMovements.GetMovementProjectByGroupProj(x.GrupoFactura, x.CodProjeto);
+                        if (movements != null)
+                            x.ValorAutorizado = movements.Where(y => y.PreçoTotal.HasValue).Sum(y => y.PreçoTotal.Value);
+                    });
+                }
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         [HttpPost]
-        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
+        public JsonResult GetCustomers()
+        {
+            try
+            {
+                List<ProjectosAutorizados> authProjects = null;
+                using (SuchDBContext ctx = new SuchDBContext())
+                {
+                    authProjects = ctx.ProjectosAutorizados.Where(x => !x.Faturado).ToList();
+                }
+                if (authProjects.Count > 0)
+                {
+                    List<NAVClientsViewModel> allCustomers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, null);
+                    if (allCustomers != null && allCustomers.Count() > 0)
+                    {
+                        var customerIds = authProjects.Select(x => x.CodCliente).Distinct();
+                        var customers = allCustomers.Where(x => customerIds.Contains(x.No_)).ToList();
+                        return Json(customers);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return Json(new List<NAVClientsViewModel>());
+        }
+
+        [HttpPost]
+        public JsonResult ValidateCustomerForBilling([FromBody]  JObject requestParams)
+        {
+            //TODO: substituir ValidationCliente
+
+            string customerNo = requestParams["customerNo"].ToString();
+            string commitmentNo = requestParams["commitmentNo"].ToString();
+            
+            string execDetails = string.Empty;
+
+            ErrorHandler result = new ErrorHandler();
+
+            if (!string.IsNullOrEmpty(customerNo))
+            {
+                NAVClientsViewModel customer = null;
+                if (!string.IsNullOrEmpty(customerNo))
+                    customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
+
+                if (customer != null)
+                {
+                    //Nº do Cliente > “999999”.
+                    if (Convert.ToInt32(customer.No_) > 999999)
+                    {
+                        execDetails += "Não é permitido contabilizar Notas de Crédito para o Cliente " + customer.No_ + ".";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+                    //Garantir que o campo “Nº do Contribuinte”
+                    else if (customer.InternalClient == true)// Se Débito Interno
+                    {
+                        if (customer.VATRegistrationNo_ == "")
+                        {
+                            ClientDetailsViewModel cli = new ClientDetailsViewModel();
+                            cli.VAT_Registration_No = "999999999";
+                            Task<WSClientNAV.Update_Result> updateCliente = WSClient.UpdateVATNumber(cli, _configws);
+                            updateCliente.Wait();
+                        }
+                    }
+                    else if (customer.VATRegistrationNo_ == "")
+                    {
+                        execDetails += "Este cliente não tem Nº Contribuinte preenchido!";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+
+                    //Abrigo Lei Compromisso
+                    if (string.IsNullOrEmpty(commitmentNo))
+                    {
+                        if (customer.UnderCompromiseLaw == true)
+                        {
+                            execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                        }
+                        else
+                        {
+                            execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                        }
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "O cliente não está definido.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi possivel validar o cliente.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateBillingDocuments([FromBody] List<AuthorizedProjectViewModel> authProjectMovements, string OptionInvoice)
         {
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
 
+            if (authProjectMovements == null)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Selecione registos para faturar";
+                return Json(result);
+            }
+
+            var projectsIds = authProjectMovements.Select(x => x.CodProjeto).Distinct();
+            var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
+
+            //get all movements from authProjects
+            List<SPInvoiceListViewModel> data = null;
+            using (SuchDBContext ctx = new SuchDBContext())
+            {
+                data = ctx.MovimentosDeProjeto
+                    .Where(x => x.Faturável == true &&
+                        x.FaturaçãoAutorizada == true &&
+                        x.Faturada == false &&
+                        x.GrupoFatura.HasValue &&
+                        projectsIds.Contains(x.NºProjeto) &&
+                        billingGroups.Contains(x.GrupoFatura.Value))
+                    .Select(x => new SPInvoiceListViewModel
+                    {
+                        InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodCliente,
+                        CommitmentNumber = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).NumCompromisso,
+                        Date = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).DataPrestacaoServico,
+                        RegionCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodRegiao,//x.CódigoRegião,
+                        FunctionalAreaCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodAreaFuncional,//x.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodCentroResponsabilidade,//x.CódigoCentroResponsabilidade,
+                        InvoiceGroupDescription = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).DescricaoGrupo,
+                        CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).CodTermosPagamento,
+                        PedidoCliente = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).PedidoCliente,
+                        SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).SituacoesPendentes,
+                        Opcao = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.NºProjeto && y.GrupoFactura == x.GrupoFatura).Opcao,
+                        ProjectNo = x.NºProjeto,
+                        LineNo = x.NºLinha,
+                        MovementType = x.TipoMovimento,
+                        ClientRequest = x.NºRequisição,
+                        Type = x.Tipo,
+                        Code = x.Código,
+                        Description = x.Descrição,
+                        MeasurementUnitCode = x.CódUnidadeMedida,
+                        Quantity = x.Quantidade,
+                        LocationCode = x.CódLocalização,
+                        ProjectContabGroup = x.GrupoContabProjeto,
+                        User = x.Utilizador,
+                        UnitCost = x.CustoUnitário,
+                        TotalCost = x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário,
+                        TotalPrice = x.PreçoTotal,
+                        Billable = x.Faturável,
+                        AutorizatedInvoice = x.FaturaçãoAutorizada,
+                        AutorizatedInvoiceData = x.DataAutorizaçãoFaturação.HasValue ? x.DataAutorizaçãoFaturação.Value.ToString("yyyy-MM-dd") : "",
+                        ConsumptionDate = x.DataConsumo.HasValue ? x.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
+                        CreateDate = x.DataHoraCriação,
+                        CreateUser = x.UtilizadorCriação,
+                        Registered = x.Registado,
+                        Billed = x.Faturada,
+                        MealType = x.TipoRefeição,
+                        InvoiceGroup = x.GrupoFatura,
+                        AdjustedDocument = x.DocumentoCorrigido,
+                        AdjustedDocumentData = x.DataDocumentoCorrigido.HasValue ? x.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
+                        AdjustedPrice = x.AcertoDePreços,
+                        Currency = x.Moeda,
+                        DocumentNo = x.NºDocumento,
+                        Driver = x.Motorista,
+                        EmployeeNo = x.NºFuncionário,
+                        ExternalGuideNo = x.NºGuiaExterna,
+                        InternalRequest = x.RequisiçãoInterna,
+                        OriginalDocument = x.DocumentoOriginal,
+                        QuantityReturned = x.QuantidadeDevolvida,
+                        RequestNo = x.NºRequisição,
+                        RequestLineNo = x.NºLinhaRequisição,
+                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                        ResidueGuideNo = x.NºGuiaResíduos,
+                        ResourceType = x.TipoRecurso,
+                        //ServiceClientCode = x.CódServiçoCliente, //int to string ?????
+                        //ServiceData ?
+                        ServiceGroupCode = x.CódGrupoServiço,
+                        TimesheetNo = x.NºFolhaHoras,
+                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                        UpdateDate = x.DataHoraModificação,
+                        UpdateUser = x.UtilizadorModificação
+                    })
+                    .ToList();
+            }
             if (data != null)
             {
                 List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
@@ -1784,16 +2442,47 @@ namespace Hydra.Such.Portal.Controllers
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
 
                 }).ToList();
+                
+                //Create Project if existe
+                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
+                Project.Wait();
+                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                {
+                    try
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = data[0].ProjectNo;
+                        proj.Description = data[0].Description;
+                        proj.ClientNo = data[0].InvoiceToClientNo;
+                        proj.RegionCode = data[0].RegionCode;
+                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
 
+                        execDetails += " Erro ao criar Projeto: ";
+                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        return Json(result);
+                    }
+                }
 
                 if (groupedbyclient != null)
                 {
+
                     foreach (var header in groupedbyclient)
                     {
                         try
                         {
-                            execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
 
+                            header.MovementType = Convert.ToInt32(OptionInvoice);
+                            header.CreateUser = User.Identity.Name;
+                            execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
@@ -1813,7 +2502,105 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                     }
 
-                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, _configws);
+                                    //declarações
+                                    List<NAVResourcesViewModel> Resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
+                                    List<WasteRateViewModel> wr = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
+                                    List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
+                                    List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
+
+                                    ////recursos com taxa residuo
+                                    //var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct();
+                                    //var selectedWasteResources = Resourceslines.Where(x => x.WasteRate == 1 && selectedResources.Contains(x.Code));
+                                    //foreach (var item in selectedWasteResources)
+                                    //{
+                                    //    var wasteFamilyResources = wr.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
+                                    //    wasteFamilyResources.ForEach(x =>
+                                    //    {
+                                    //        SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
+                                    //        wasteLineToAdd.Quantity = quantity;
+                                    //        wasteLineToAdd.Code = item.Resource;
+                                    //        wasteLineToAdd.Description = item.ResourceName;
+                                    //        wasteLineToAdd.UnitPrice = item.Price;
+
+                                    //    });
+                                    //}
+
+                                    //procurar grupo recurso das linhas a registar
+                                    foreach (SPInvoiceListViewModel spi in linesList)
+                                    {
+                                        //var resources = Resourceslines.Where(x => x.);
+                                        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                        {
+                                            if (spi.Code == rl.Code)
+                                            {
+                                                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                newrow.LineNo = spi.LineNo;
+                                                newrow.Quantity = spi.Quantity;
+                                                newrow.ResourceGroup = rl.ResourceGroup;
+                                                myRLlist.Add(newrow);
+                                            }
+                                        }
+                                    }
+                                    if (myRLlist.Count > 0)
+                                    {
+                                        //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
+                                        foreach (WasteRateViewModel item in wr)
+                                        {
+                                            foreach (NAVResourcesViewModel rl in Resourceslines)
+                                            {
+                                                if (item.Recurso == rl.Code)
+                                                {
+                                                    ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                    newrow.Resource = rl.Code;
+                                                    newrow.ResourceName = rl.Name;
+                                                    newrow.ResourceGroup = item.FamiliaRecurso;
+                                                    newrow.Price = rl.UnitPrice;
+                                                    myWRlist.Add(newrow);
+                                                }
+                                            }
+                                        }
+                                        //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
+                                        //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
+                                        //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
+                                        //Adicionar essa linha como se de uma nova linha se tratasse
+                                        foreach (ResourceGroupLinesModelView item in myWRlist)
+                                        {
+                                            decimal quantity = 0; int lineNo = 0; bool found = false;
+                                            foreach (ResourceGroupLinesModelView rgl in myRLlist)
+                                            {
+                                                if (item.ResourceGroup == rgl.ResourceGroup)
+                                                {
+                                                    found = true;
+                                                    if (lineNo == 0)
+                                                    {
+                                                        lineNo = rgl.LineNo.Value;
+                                                    }
+                                                    if (rgl.Quantity != null)
+                                                    {
+                                                        quantity = quantity + rgl.Quantity.Value;
+                                                    }
+                                                }
+                                            }
+                                            if (lineNo != 0 && found)
+                                            {
+                                                List<SPInvoiceListViewModel> linesToAdd = new List<SPInvoiceListViewModel>();
+                                                foreach (SPInvoiceListViewModel spi in linesList)
+                                                {
+                                                    if (spi.LineNo == lineNo)
+                                                    {
+                                                        spi.Quantity = quantity;
+                                                        spi.Code = item.Resource;
+                                                        spi.Description = item.ResourceName;
+                                                        spi.UnitPrice = item.Price;
+                                                        linesToAdd.Add(spi);
+                                                    }
+                                                }
+                                                if (linesToAdd.Count > 0)
+                                                    linesList.AddRange(linesToAdd);
+                                            }
+                                        }
+                                    }
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
@@ -1864,7 +2651,309 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel agrupar os registos";
+                    result.eMessage = "Selecionou registos com 'Nº de Compromisso' diferentes!";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Selecione registos para faturar";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult ValidationCliente([FromBody] List<SPInvoiceListViewModel> data)
+        {
+            string execDetails = string.Empty;
+
+            ErrorHandler result = new ErrorHandler();
+            SPInvoiceListViewModel line = data[0];
+            List<NAVClientsViewModel> Cliente = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, line.InvoiceToClientNo);
+            if (Cliente != null)
+            {
+                //Nº do Cliente > “999999”.
+                if (Convert.ToInt32(Cliente[0].No_) > 999999)
+                {
+                    execDetails += "Não é permitido contabilizar para o Cliente "+ Cliente[0].No_+".";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+                //Garantir que o campo “Nº do Contribuinte”
+                else if (Cliente[0].InternalClient==true)// Se Débito Interno
+                {
+                    if (Cliente[0].VATRegistrationNo_=="")
+                    {
+                        ClientDetailsViewModel cli = new ClientDetailsViewModel();
+                        cli.VAT_Registration_No = "999999999";                    
+                        Task<WSClientNAV.Update_Result> updateCliente = WSClient.UpdateVATNumber(cli, _configws);
+                        updateCliente.Wait();
+                    }
+                }
+                else if(Cliente[0].VATRegistrationNo_ == "")
+                {
+                    execDetails += "Este cliente não tem Nº Contribuinte preenchido!";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                }
+
+                //Abrigo Lei Compromisso
+                if (line.CommitmentNumber == "")
+                {
+
+                    if (Cliente[0].UnderCompromiseLaw == true)
+                    {
+                        execDetails += "Este cliente está ao abrigo da lei do compromisso. É obigatório o preenchimento do Nº de Compromisso ";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
+                    }
+                    else
+                    {
+                        execDetails += "Não indicou Nº Compromisso. Deseja continuar?";
+                        result.eMessages.Add(new TraceInformation(TraceType.Warning, execDetails));
+                    }
+                }
+            }
+             
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CancelLines([FromBody] List<SPInvoiceListViewModel> data)
+        {
+            List<MovimentosDeProjeto> result = DBProjectMovements.GetMovementProjectByGroupProj(data[0].InvoiceGroup ?? 0, data[0].ProjectNo).ToList();
+
+            foreach (MovimentosDeProjeto line in result)
+            {
+
+                line.FaturaçãoAutorizada = false;
+                line.FaturaçãoAutorizada2 = false;
+                line.Faturada = false;
+                line.GrupoFatura = (int?)null;
+                line.GrupoFaturaDescricao = string.Empty;
+                DBProjectMovements.Update(line);
+
+            }
+
+            //Remove Project Authorized
+            using (SuchDBContext ctx = new SuchDBContext())
+            {
+                List<ProjectosAutorizados> authorizedProj = ctx.ProjectosAutorizados.Where(x => x.GrupoFactura == data[0].InvoiceGroup && x.CodProjeto == data[0].ProjectNo).ToList();
+                ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
+                ctx.SaveChanges();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data, string OptionInvoice)
+        {
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            ErrorHandler result = new ErrorHandler();
+            if (data != null)
+            {
+                List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
+                {
+                    x.InvoiceToClientNo,
+                    x.Date,
+                    x.CommitmentNumber,
+                    x.ClientRequest,
+
+                }).Select(x => new SPInvoiceListViewModel
+                {
+                    InvoiceToClientNo = x.Key.InvoiceToClientNo,
+                    Date = x.Key.Date,
+                    CommitmentNumber = x.Key.CommitmentNumber,
+                    ClientRequest = x.Key.ClientRequest,
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
+
+                }).ToList();
+                
+                //Create Project if existe
+                Task <WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
+                Project.Wait();
+                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                {
+                    try
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = data[0].ProjectNo;
+                        proj.ClientNo = data[0].InvoiceToClientNo;
+                        proj.RegionCode = data[0].RegionCode;
+                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
+                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
+
+                        execDetails += " Erro ao criar Projeto: ";
+                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        return Json(result);
+                    }
+                }
+
+                if (groupedbyclient != null)
+                {
+                    
+                    foreach (var header in groupedbyclient)
+                    {
+                        try
+                        {
+                            
+                            header.MovementType = Convert.ToInt32(OptionInvoice);
+                            header.CreateUser = User.Identity.Name;
+                            execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
+                            TCreatePreInvoice.Wait();
+
+                            if (TCreatePreInvoice.IsCompletedSuccessfully)
+                            {
+                                string headerNo = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                execDetails += "Criada a fatura núm " + headerNo;
+
+                                try
+                                {
+                                    List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
+                                    foreach (var lines in data)
+                                    {
+                                        if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
+                                        {
+                                            linesList.Add(lines);
+                                        }
+                                    }
+                                    //declarações
+                                    List<NAVResourcesViewModel> Resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
+                                    List<WasteRateViewModel> wr = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
+                                    List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
+                                    List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
+
+                                    //procurar grupo recurso das linhas a registar
+                                    foreach (SPInvoiceListViewModel spi in linesList)
+                                    {
+                                        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                        {
+                                            if (spi.Code == rl.Code)
+                                            {
+                                                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                newrow.LineNo = spi.LineNo;
+                                                newrow.Quantity = spi.Quantity;
+                                                newrow.ResourceGroup = rl.ResourceGroup;
+                                                myRLlist.Add(newrow);
+                                            }
+                                        }
+                                    }
+                                    if (myRLlist.Count > 0)
+                                    {
+                                        //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
+                                        foreach (WasteRateViewModel item in wr)
+                                        {
+                                            foreach (NAVResourcesViewModel rl in Resourceslines)
+                                            {
+                                                if (item.Recurso == rl.Code)
+                                                {
+                                                    ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                                    newrow.Resource = rl.Code;
+                                                    newrow.ResourceName = rl.Name;
+                                                    newrow.ResourceGroup = item.FamiliaRecurso;
+                                                    newrow.Price = rl.UnitPrice;
+                                                    myWRlist.Add(newrow);
+                                                }
+                                            }
+                                        }
+                                        //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
+                                        //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
+                                        //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
+                                        //Adicionar essa linha como se de uma nova linha se tratasse
+                                        foreach (ResourceGroupLinesModelView item in myWRlist)
+                                        {
+                                            decimal quantity = 0;int lineNo = 0;bool found = false;
+                                            foreach (ResourceGroupLinesModelView rgl in myRLlist)
+                                            {
+                                                if (item.ResourceGroup == rgl.ResourceGroup)
+                                                {
+                                                    found = true;
+                                                    if (lineNo == 0)
+                                                    {
+                                                        lineNo = rgl.LineNo.Value;
+                                                    }
+                                                    if (rgl.Quantity != null)
+                                                    {
+                                                        quantity = quantity + rgl.Quantity.Value;
+                                                    }
+                                                }
+                                            }
+                                            if (lineNo != 0 && found)
+                                            {
+                                                foreach (SPInvoiceListViewModel spi in linesList)
+                                                {
+                                                    if (spi.LineNo == lineNo)
+                                                    {
+                                                        spi.Quantity = quantity;
+                                                        spi.Code = item.Resource;
+                                                        spi.Description = item.ResourceName;
+                                                        spi.UnitPrice = item.Price;
+                                                        linesList.Add(spi);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
+                                    TCreatePreInvoiceLine.Wait();
+
+                                    if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
+                                    {
+                                        execDetails += " Linhas criadas com sucesso.";
+                                        //update to Invoiced = true
+                                        foreach (var updatelist in linesList)
+                                        {
+                                            MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(updatelist.LineNo).FirstOrDefault();
+                                            mov.Faturada = true;
+                                            DBProjectMovements.Update(mov);
+                                        }
+                                        result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!hasErrors)
+                                hasErrors = true;
+
+                            execDetails += " Erro ao criar a fatura: ";
+                            errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + " " + errorMessage));
+                        }
+                    }
+                    if (hasErrors)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreram erros na criação de faturas.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Faturas criadas com sucesso.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Selecionou registos com 'Nº de Compromisso' diferentes!";
                 }
             }
             else
@@ -1877,6 +2966,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Pre registo de Projetos
+
         public IActionResult PreMovimentosProjetos(string id)
         {
             UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
@@ -1897,6 +2987,7 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
         [HttpPost]
         public JsonResult GetPreMovementsProject([FromBody] string ProjectNo)
         {
@@ -1923,6 +3014,7 @@ namespace Hydra.Such.Portal.Controllers
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
                 Registered = x.Registado,
+                MealType = x.TipoRefeição,
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
                 ServiceClientCode = x.CódServiçoCliente,
@@ -1940,9 +3032,22 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     
                 }
+                if (item.MealType != null)
+                {
+                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                    if (TRrow != null)
+                    {
+                        item.MealTypeDescription = TRrow.Descrição;
+                    }
+                }
+                else
+                {
+                    item.MealTypeDescription = "";
+                }
             }
             return Json(dp);
         }
+
         public IActionResult PreregistoProjetos(String id)
         {
              UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreRegistos);
@@ -2177,6 +3282,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(response);// dp);
         }
+
         [HttpPost]
         public JsonResult GetAllPreRegistProject([FromBody]string projectNo)
         {
@@ -2261,6 +3367,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(response);
         }
+
         [HttpPost]
         public JsonResult UpdatePreRegistProject([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
@@ -2390,6 +3497,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(response);
         }
+
         [HttpPost]
         public JsonResult GetPreMovements([FromBody] string projectNo, string data, string codSClient, string codSGroupClient)
         {
@@ -2508,6 +3616,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
         [HttpPost]
         public JsonResult RegisterPreRegistLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
@@ -2596,6 +3705,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(dp);
         }
+
         [HttpPost]
         public JsonResult RegisterPreMovements([FromBody]  List<ProjectDiaryViewModel> dp, string StartDate, string EndDate)
         {
@@ -2761,6 +3871,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(erro);
         }
+
         [HttpPost]
         public JsonResult CreateDiaryByPriceServiceCient(string projectNo, string serviceCod, string serviceGroup, string dateRegist) 
         {

@@ -317,6 +317,15 @@
 
         </vaadin-grid>
 
+        <paper-dialog id="dlgCreateCount" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-date-picker label="Data" id="_CLDateCount" name="_CLDateCount" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_createGenerateInvoice">Guardar</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -348,12 +357,22 @@
                             return {};
                         }
                     },
+                   
                 },
 
                 ready: function () {
+                    var date = new Date();
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+
+                    if (month < 10) month = "0" + month;
+                    if (day < 10) day = "0" + day;
+                    var today = year + "-" + month + "-" + day;
+                    this.$._CLDateCount.value = today;
                     /*ColumnToggle*/
                     this._startColumnToggle();
-
+       
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -384,16 +403,23 @@
                 _generateInvoice: function () {
                     //if (this.result == null || this.result == undefined || this.result.length == 0)
                     //{
-                    this.selectedItems = [];
-                    this._locked = true;
-                    this.$.ajax_generate.body = JSON.stringify(this.result);
-                    this.$.ajax_generate.generateRequest();
+                        this.$.dlgCreateCount.open();
                     //}
                     //else {
                     //    this.openToastError("Não existem linhas disponiíveis para faturar.");
                     //}
                 },
-
+                _createGenerateInvoice: function () {
+                    if (this.$._CLDateCount.validate()) {
+                        this.selectedItems = [];
+                        this._locked = true;
+                        this.$.ajax_generate.body = JSON.stringify(this.result);
+                        this.$.ajax_generate.params = { "dateCont": this.$._CLDateCount.value };
+                        this.$.ajax_generate.generateRequest();
+                        this.$.dlgCreateCount.close();
+                    }
+                    
+                },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.avencaFixaTable);
                     var parentHeight = $(this).offsetParent().height();
@@ -403,7 +429,6 @@
                 },
 
                 _showContract: function (e) {
-                    debugger;
                     if (e != null) {
                         var index = this.result.indexOf(e.model.item);
                         var contractNo = e.model.item.contractNo;
@@ -434,7 +459,7 @@
                         this.checked = false;
                     }
                 },
-                _count: function () {
+                _count: function () {                  
                     if (this.selectedItems != null && this.selectedItems != "") {
                         if (this.result != null || this.result != undefined || this.result.length != 0) {
                             this.$.ajax_count.body = JSON.stringify(this.selectedItems);
@@ -449,7 +474,7 @@
                         this.openToastError("As linhas não foram selecionadas.");
                     }
                 },
-
+              
                 _invoiceCountResponse: function (e) {
                     if (this.invoiceCount == true) {
                         this.$.avencaFixaTable.clearCache();

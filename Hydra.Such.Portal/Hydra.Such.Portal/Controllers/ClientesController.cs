@@ -79,8 +79,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get([FromBody] JObject requestParams)
         {
             //int AreaId = int.Parse(requestParams["areaid"].ToString());
+            JToken customerNoValue;
+            string customerNo = string.Empty;
+            if (requestParams != null)
+            {
+                if (requestParams.TryGetValue("customerNo", out customerNoValue))
+                    customerNo = (string)customerNoValue;
+            }
             List<ClientDetailsViewModel> result = new List<ClientDetailsViewModel>();
-            result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(c => new ClientDetailsViewModel()
+            result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo).Select(c => new ClientDetailsViewModel()
             {
                 No = c.No_,
                 Name = c.Name,

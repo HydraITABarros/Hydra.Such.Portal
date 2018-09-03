@@ -158,6 +158,8 @@ namespace Hydra.Such.Data
             AdminExistencias = 108,
             [Description("Administração Receção Faturação")]
             AdminReceçãoFaturação = 109,
+            [Description("Taxa Residuos")]
+            AdminTaxaResiduos = 110,
         }
 
         public enum Areas
@@ -269,6 +271,17 @@ namespace Hydra.Such.Data
             Venda,
             [Description("Devolução")]
             Devolucao
+        }
+
+        public enum ResourceTypes
+        {
+            [Description("Mão-de-Obra")]
+            MaoDeObra,
+            Custo,
+            [Description("Serviço Externo")]
+            ServicoExterno,
+            Ferramenta,
+            Invoicing
         }
     }
 }

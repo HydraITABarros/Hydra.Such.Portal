@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -887,6 +888,24 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "MP"
+            }
+        };
+
+        public static readonly List<EnumData> InvoiceType = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Faturas"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Notas de Débito"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Notas de Crédito"
             }
         };
 
@@ -2477,6 +2496,24 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //Pedidos de Cotação - Estado Resposta
+        public static readonly List<EnumData> EstadoResposta = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Rejeitado"
+            }
+        };
     }
 
     public class EnumDataString

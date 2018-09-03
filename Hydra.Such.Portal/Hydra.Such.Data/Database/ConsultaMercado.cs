@@ -47,7 +47,6 @@ namespace Hydra.Such.Data.Database
         public string CodFormaPagamento { get; set; }
         public bool? SeleccaoEfectuada { get; set; }
 
-        public Actividades CodActividadeNavigation { get; set; }
         public Projetos CodProjectoNavigation { get; set; }
         public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }

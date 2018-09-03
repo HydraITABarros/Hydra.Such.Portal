@@ -152,6 +152,9 @@ namespace Hydra.Such.Portal.Controllers
                 result.RFRespostaContabilidade = userConfig.RfrespostaContabilidade;
                 result.RFAlterarDestinatarios = userConfig.RfalterarDestinatarios;
                 result.RFMailEnvio = userConfig.RfmailEnvio;
+                result.NumSerieFaturas = userConfig.NumSerieFaturas;
+                result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
+                result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -203,7 +206,10 @@ namespace Hydra.Such.Portal.Controllers
                 RfrespostaContabilidade = data.RFRespostaContabilidade,
                 RfalterarDestinatarios = data.RFAlterarDestinatarios,
                 RfmailEnvio = data.RFMailEnvio,
-            });
+                NumSerieFaturas = data.NumSerieFaturas,
+                NumSerieNotasCredito = data.NumSerieNotasCredito,
+                NumSerieNotasDebito = data.NumSerieNotasDebito,
+        });
 
             data.IdUser = ObjectCreated.IdUtilizador;
 
@@ -270,6 +276,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RfrespostaContabilidade = data.RFRespostaContabilidade;
                 userConfig.RfalterarDestinatarios = data.RFAlterarDestinatarios;
                 userConfig.RfmailEnvio = data.RFMailEnvio;
+                userConfig.NumSerieFaturas = data.NumSerieFaturas;
+                userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
+                userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -782,11 +791,12 @@ namespace Hydra.Such.Portal.Controllers
                 SimplifiedReqTemplatesNumeration = Cfg.NumeraçãoModReqSimplificadas,
                 SimplifiedRequisitionNumeration = Cfg.NumeraçãoRequisiçõesSimplificada,
                 ProdutosNumeration = Cfg.NumeracaoProdutos,
-                ConsultaMercadoNumeration = Cfg.NumeracaoConsultaMercado,
+                ConsultaMercadoNumeration = Cfg.ConsultaMercado,
                 DinnerEndTime = Cfg.FimHoraJantar,
                 DinnerStartTime = Cfg.InicioHoraJantar,
                 LunchEndTime = Cfg.FimHoraAlmoco,
-                LunchStartTime = Cfg.InicioHoraAlmoco
+                LunchStartTime = Cfg.InicioHoraAlmoco,
+                WasteAreaId = Cfg.CodAreaResiduos
             };
             return Json(result);
         }
@@ -817,11 +827,12 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoModReqSimplificadas = data.SimplifiedReqTemplatesNumeration;
             configObj.NumeraçãoRequisiçõesSimplificada = data.SimplifiedRequisitionNumeration;
             configObj.NumeracaoProdutos = data.ProdutosNumeration;
-            configObj.NumeracaoConsultaMercado = data.ConsultaMercadoNumeration;
+            configObj.ConsultaMercado = data.ConsultaMercadoNumeration;
             configObj.FimHoraJantar = data.DinnerEndTime;
             configObj.InicioHoraJantar = data.DinnerStartTime;
             configObj.InicioHoraAlmoco = data.LunchStartTime;
             configObj.FimHoraAlmoco = data.LunchEndTime;
+            configObj.CodAreaResiduos = data.WasteAreaId;
 
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
@@ -5950,6 +5961,99 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
             }
             return Json(result);
+        }
+        #endregion
+
+        #region Taxa Residuos
+        public IActionResult TaxaResiduos()
+        {
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminTaxaResiduos);
+            if (userAccesses != null && userAccesses.Read.Value)
+            {
+                ViewBag.UserPermissions = userAccesses;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        public JsonResult GetAllWasteRate()
+        {
+            List<WasteRateViewModel> dp = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            foreach (WasteRateViewModel item in dp)
+            {
+                foreach (DDMessageRelated res in result)
+                {
+                    if (item.Recurso == res.id)
+                    {
+                        item.RecursoName = res.value;
+                    }
+                }
+            }
+            return Json(dp);
+        }
+        [HttpPost]
+        public JsonResult UpdateWasteRate([FromBody] List<WasteRateViewModel> dp)
+        {
+            ErrorHandler responde = new ErrorHandler();
+            responde.eReasonCode = 1;
+            responde.eMessage = "Atualizado com sucesso";
+            if (dp != null)
+            {
+                List<TaxaResiduos> getAllLines = DBWasteRate.GetAll();
+                if (getAllLines != null && getAllLines.Count > 0)
+                {
+                    foreach (TaxaResiduos psc in getAllLines)
+                    {
+                        if (!dp.Any(x => x.Recurso == psc.Recurso))
+                        {
+                            DBWasteRate.Delete(psc);
+                        }
+                    }
+                    dp.ForEach(x =>
+                    {
+                        TaxaResiduos dpObject = DBWasteRate.GetById(x.Recurso);
+                        if (dpObject != null)
+                        {
+                            TaxaResiduos newdp = DBWasteRate.ParseToDatabase(x);
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            DBWasteRate.Update(newdp);
+                        }
+                        else
+                        {
+                            TaxaResiduos newdp = DBWasteRate.ParseToDatabase(x);
+                            newdp.DataHoraCriação = DateTime.Now;
+                            newdp.UtilizadorCriação = User.Identity.Name;
+                            DBWasteRate.Create(newdp);
+                        }
+                    });
+                }
+                else
+                {
+                    dp.ForEach(x => {
+                        TaxaResiduos newdp = DBWasteRate.ParseToDatabase(x);
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBWasteRate.Create(newdp);
+                    });
+                }
+
+            }
+            else
+            {
+                responde.eReasonCode = 2;
+                responde.eMessage = "Ocorreu um erro ao atualizar";
+            }
+            return Json(responde);
         }
         #endregion
     }
