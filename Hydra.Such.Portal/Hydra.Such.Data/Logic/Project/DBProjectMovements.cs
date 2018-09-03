@@ -103,6 +103,27 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static List<MovimentosDeProjeto> GetProjMovementsById(string projectNo, int? ProjGroup)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                        return ctx.MovimentosDeProjeto
+                            .Where(x => x.NºProjeto == projectNo &&
+                                    x.Faturada == false && //Consumo
+                                    x.Faturável == true &&
+                                    x.GrupoFatura == ProjGroup &&
+                                    x.FaturaçãoAutorizada == true)
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<MovimentosDeProjeto> GetNonInvoiced()
         {
             try
